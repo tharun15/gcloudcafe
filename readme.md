@@ -2,11 +2,8 @@
 
 <p align="center">Hugoplate is a free starter template built with Hugo, and TailwindCSS, providing everything you need to jumpstart your Hugo project and save valuable time.</p>
 
-<p align="center">Made with ♥ by <a href="https://zeon.studio/"> Zeon Studio</a></p>
+<p align="center">Made with ♥ by <a href="https://gcloudcafe.com"> Gcloudcafe</a></p>
 <p align=center> If you find this project useful, please give it a ⭐ to show your support.</p>
-
-<h2 align="center"> <a target="_blank" href="https://zeon.studio/preview?project=hugoplate" rel="nofollow">👀 Demo</a> | <a  target="_blank" href="https://pagespeed.web.dev/analysis/https-hugoplate-netlify-app/6lyxjw6t4r?form_factor=desktop">Page Speed (95+)🚀</a>
-</h2>
 
 <p align="center">
   <a href="https://github.com/gohugoio/hugo/releases/tag/v0.126.0" alt="Contributors">
@@ -216,9 +213,9 @@ If your problem or idea has not been addressed yet, feel free to [open a new iss
 
 ### 📝 License
 
-Copyright (c) 2023 - Present, Designed & Developed by [Zeon Studio](https://zeon.studio/)
+Copyright (c) 2023 - Present, Designed & Developed by [Gcloudcafe](https://gcloudcafe.com/)
 
-**Code License:** Released under the [MIT](https://github.com/zeon-studio/hugoplate/blob/main/LICENSE) license.
+**Code License:** Released under the [MIT](https://github.com/tharun15/gcloudcafe/blob/main/LICENSE) license.
 
 **Image license:** The images are only for demonstration purposes. They have their license, we don't have permission to share those images.
 

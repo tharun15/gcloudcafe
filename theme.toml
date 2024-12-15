@@ -29,10 +29,10 @@ features = [
 ]
 
 [author]
-name = "Zeon Studio"
-homepage = "https://zeon.studio"
+name = "Gcloudcafe"
+homepage = "https://gcloudcafe.com"
 
 [original]
-author = "Zeon Studio"
-homepage = "https://zeon.studio"
-repo = "https://github.com/zeon-studio/themeplate"
+author = "Gcloudcafe"
+homepage = "https://gcloudcafe.com"
+repo = "https://github.com/tharun15/gcloudcafe"
