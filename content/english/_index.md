@@ -1,5 +1,5 @@
 ---
-title: "Blog Posts"
-meta_title: ""
+title: "Gcloudcafe"
+meta_title: "Gcloudcafe"
 description: "this is meta description"
 ---
