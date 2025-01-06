@@ -5,7 +5,7 @@ description: "this is meta description"
 date: 2022-04-04T05:00:00Z
 image: "/images/logo.png"
 categories: ["Application", "Data"]
-author: "John Doe"
+author: "Ramya"
 tags: ["nextjs", "tailwind"]
 draft: false
 ---
