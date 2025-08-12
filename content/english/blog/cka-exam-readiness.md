@@ -1,5 +1,5 @@
 ---
-title: "Are You Really Ready for the CKA Exam? 16 Topics to Test Your Preparedness"
+title: "Are You Really Ready for the CKA Exam? Exam readiness guide"
 meta_title: ""
 description: "A self-assessment guide to determine if you're truly ready for the Certified Kubernetes Administrator (CKA) exam"
 date: 2025-08-12
@@ -10,7 +10,7 @@ tags: ["kubernetes", "cka", "certification", "devops", "cloud-native"]
 draft: false
 ---
 
-# Are You Really Ready for the CKA Exam? 16 Topics to Test Your Preparedness
+# Are You Really Ready for the CKA Exam? Exam readiness guide
 
 ## Introduction
 
@@ -22,7 +22,7 @@ This blog isn't just another Kubernetes tutorial. It's a readiness assessment ba
 
 As prerequisites, you should already:
 - Understand Kubernetes cluster architecture
-- Have followed comprehensive guides like Mumshad Mannambeth's CKA course
+- Have followed comprehensive guides like Kode Kloud CKA or any other standard courses
 - Have hands-on experience with Kubernetes
 
 But knowing concepts and being exam-ready are different things. Let's determine where you stand.
@@ -38,9 +38,10 @@ Before diving into the topics, ask yourself these questions. Be honest—your ce
 
 ### Intermediate Readiness
 1. **Do I know how to configure Horizontal Pod Autoscaling?**
-2. **Have I configured TLS for services before?**
+2. **Knowledge of config Maps and Secrets?**
 3. **Do I understand why we need Ingress controllers and how to set them up?**
 4. **Can I manage resources for multi-container pods with sidecars/init containers?**
+5. **Have I configured TLS for services before?**
 
 ### Advanced Readiness
 1. **Can I troubleshoot cluster issues affecting control plane components?**
@@ -277,7 +278,7 @@ The endless cycle of rescheduling often stems from a lack of clear benchmarks fo
 1. **Can you complete practice exercises for all 16 topics without consulting solutions?**
 2. **Can you troubleshoot when things go wrong?**
 3. **Are you comfortable navigating the Kubernetes documentation to find information quickly?**
-4. **Can you complete most tasks within time constraints (typically 5-15 minutes per task)?**
+4. **Can you complete most tasks within time constraints (typically 5-7 minutes per task)?**
 
 If you answered "yes" to all of these, **stop rescheduling**. You're ready. Perfect readiness doesn't exist—there will always be more to learn. Trust your preparation and take the exam.
 
@@ -402,4 +403,4 @@ Your CKA journey doesn't need to be endless. Assess, prepare, and when ready—t
 
 ---
 
-*This blog post is based on my preparation for the CKA exam using practical exercises from my [GitHub repository](https://github.com/username/ckaexam2025). The repository contains hands-on tasks for each of these 16 topics to help you practice and assess your readiness. Use them as your final exam simulator before the real thing.*
+*This blog post is based on my preparation for the CKA exam using practical exercises from my [GitHub repository](https://github.com/tharun15/CKA). The repository contains hands-on tasks for each of these 16 topics to help you practice and assess your readiness. Use them as your final exam simulator before the real thing.*
