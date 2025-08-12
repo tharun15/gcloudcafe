@@ -44,7 +44,7 @@ Before diving into the topics, ask yourself these questions. Be honest—your ce
 5. **Have I configured TLS for services before?**
 
 ### Advanced Readiness
-1. **Can I troubleshoot cluster issues affecting control plane components?**
+1. **Have I troubleshoot kubernetes cluster components before??**
 2. **Am I comfortable configuring storage (PV, PVC, StorageClasses)?**
 3. **Have I worked with NetworkPolicies to secure pod communication?**
 
