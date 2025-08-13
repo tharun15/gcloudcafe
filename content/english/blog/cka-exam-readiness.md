@@ -17,7 +17,7 @@ This blog isn't just another Kubernetes tutorial. It's a readiness assessment ba
 
 As prerequisites, you should already:
 - Understand Kubernetes cluster architecture
-- Have followed comprehensive guides like Mumshad Mannambeth's CKA course
+- Have followed comprehensive guides like Kode kloud CKA course
 - Have hands-on experience with Kubernetes
 
 But knowing concepts and being exam-ready are different things. Let's determine where you stand.
@@ -119,7 +119,7 @@ Practice these search techniques that will help you work faster:
 
 Don't get stuck on difficult questions:
 - Give yourself a strict time limit for each question (e.g., 5-7 minutes)
-- If you can't make progress within that time, mark the question and move on
+- If you can't make progress within that time, flag the question and move on
 - Return to challenging questions after completing the easier ones
 - Sometimes solutions become clearer after working through other questions
 
@@ -177,11 +177,11 @@ The most valuable lesson? In the CKA exam, knowing where to find information qui
 
 ## Conclusion: The Decision Point
 
-This blog has presented 16 key topics that collectively represent the skills tested in the CKA exam. If you've worked through them and feel confident, congratulations—you're ready to face the exam.
+This blog has presented a self-assessment framework to determine your readiness for the CKA exam. The 16 key topics referenced in my GitHub repository collectively represent the skills tested in the exam. If you've worked through those exercises and feel confident, congratulations—you're ready to face the exam.
 
-If you discovered gaps in your knowledge, that's valuable information. Rather than falling into the trap of endless rescheduling, use these insights to create a focused study plan with a definite endpoint.
+If the self-assessment questions revealed gaps in your knowledge, that's valuable information. Rather than falling into the trap of endless rescheduling, use these insights to create a focused study plan with a definite endpoint.
 
-Remember: The goal isn't perfect knowledge of all things Kubernetes—it's practical competence in administering Kubernetes clusters. The 16 topics in this blog serve as your measuring stick. If you can handle them, you can handle the exam.
+Remember: The goal isn't perfect knowledge of all things Kubernetes—it's practical competence in administering Kubernetes clusters. The self-assessment questions and the hands-on exercises in the GitHub repository serve as your measuring stick. If you can handle them, you can handle the exam.
 
 The next time you feel the urge to reschedule, return to this assessment. Let it be your objective guide to readiness, breaking the cycle of doubt and helping you move forward with confidence.
 
