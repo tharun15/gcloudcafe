@@ -66,7 +66,7 @@ The endless cycle of rescheduling often stems from a lack of clear benchmarks fo
 1. **Can you complete practice exercises for all 16 topics without consulting solutions?**
 2. **Can you troubleshoot when things go wrong?**
 3. **Are you comfortable navigating the Kubernetes documentation to find information quickly?**
-4. **Can you complete most tasks within time constraints (typically 5-15 minutes per task)?**
+4. **Can you complete most tasks within time constraints (typically 5-7 minutes per task)?**
 
 If you answered "yes" to all of these, **stop rescheduling**. You're ready. Perfect readiness doesn't exist—there will always be more to learn. Trust your preparation and take the exam.
 
