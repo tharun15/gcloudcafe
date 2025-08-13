@@ -9,7 +9,7 @@ author: "tharun-vempati"
 tags: ["kubernetes", "cka", "certification", "devops", "cloud-native"]
 draft: false
 ---
-
+## Introduction
 Does this sound familiar? You schedule your CKA exam, then as the date approaches, anxiety kicks in. "Am I really prepared? Maybe I need another 10 days..." So you reschedule. Ten days later, the same doubts return, and the cycle continues.
 
 I've been there. This frustrating loop of uncertainty can be broken with a clear understanding of what "exam readiness" actually means.
