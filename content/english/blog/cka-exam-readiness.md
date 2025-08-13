@@ -36,28 +36,26 @@ Before diving into the topics, ask yourself these questions. Be honest—your ce
 2. **Have I configured TLS for services before?**
 3. **Do I understand why we need Ingress controllers and how to set them up?**
 4. **Can I manage resources for multi-container pods with sidecars/init containers?**
+5. **Have I used Helm to manage Kubernetes applications before?**
 
 ### Advanced Readiness
 1. **Have I troubleshoot kubernetes cluster components before?**
 2. **Am I comfortable configuring storage (PV, PVC, StorageClasses)?**
-3. **Have I worked with NetworkPolicies to secure pod communication?**
+3. **Can I configure and install CNI in a kubernetes cluster?**
+4. **Have I worked with NetworkPolicies to secure pod communication?**
+
 
 **The Simple Rule**: If your answer is "no" to even one of these questions, you're not ready for the exam yet. Focus your remaining preparation time on those specific areas.
 
 All 16 topics that test these skills can be found in my [GitHub repository](https://github.com/tharun15/CKA), where I've created hands-on exercises for each concept you'll encounter in the exam.
 
-## The Readiness Verdict: What These Topics Tell You
+## The Readiness Verdict
 
-Now that you've reviewed the 16 topics, let's interpret what they mean for your exam readiness:
+After reviewing the 16 topics in my GitHub repository, assess your readiness:
 
-### If You're Comfortable with All Topics:
-You're likely ready for the exam. The CKA tests practical skills, and if you can confidently work through these scenarios, you have the necessary hands-on experience.
-
-### If You Struggled with Some Topics:
-Identify the specific areas of weakness and focus your remaining preparation time there. Don't reschedule yet—targeted practice might get you ready faster than you think.
-
-### If Multiple Topics Were Unfamiliar:
-You should consider more practice before taking the exam. But rather than indefinitely postponing, set a specific preparation schedule with clear milestones.
+- **Ready to Proceed**: Comfortable with all topics → You likely have the necessary hands-on experience
+- **Almost Ready**: Struggled with some topics → Focus on those specific areas; don't reschedule yet
+- **Need More Time**: Multiple unfamiliar topics → Create a specific preparation schedule with clear milestones
 
 ## Breaking the Rescheduling Cycle
 
@@ -191,4 +189,4 @@ Your CKA journey doesn't need to be endless. Assess, prepare, and when ready—t
 
 ---
 
-*This blog post is based on my preparation for the CKA exam using practical exercises from my [GitHub repository](https://github.com/username/ckaexam2025). The repository contains hands-on tasks for each of these 16 topics to help you practice and assess your readiness. Use them as your final exam simulator before the real thing.*
+*This blog post is based on my preparation for the CKA exam using practical exercises from my [GitHub repository](https://github.com/tharun15/CKA). The repository contains hands-on tasks for each of these 16 topics to help you practice and assess your readiness. Use them as your final exam simulator before the real thing.*
