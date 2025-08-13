@@ -44,7 +44,7 @@ Before diving into the topics, ask yourself these questions. Be honest—your ce
 
 **The Simple Rule**: If your answer is "no" to even one of these questions, you're not ready for the exam yet. Focus your remaining preparation time on those specific areas.
 
-All 16 topics that test these skills can be found in my [GitHub repository](https://github.com/username/ckaexam2025), where I've created hands-on exercises for each concept you'll encounter in the exam.
+All 16 topics that test these skills can be found in my [GitHub repository](https://github.com/tharun15/CKA), where I've created hands-on exercises for each concept you'll encounter in the exam.
 
 ## The Readiness Verdict: What These Topics Tell You
 
