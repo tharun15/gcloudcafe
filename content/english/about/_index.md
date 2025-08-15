@@ -1,16 +1,16 @@
 # Welcome to GcloudCafe
 
-Your go-to source for practical tips on passing cloud certifications, up-to-date news on cloud technologies, and clear explanations of key cloud concepts.
+Your go-to source for up-to-date news on Cloud technologies, practical tips on passing Cloud certifications, and clear explanations of key Cloud concepts.
 
 ---
 
 ## What We Offer
 
-### 🎯 Certification Tips & Tricks  
-Proven strategies, study plans, and hands-on practice ideas to help you pass cloud certification exams confidently.
-
 ### 🌐 Cloud Technology News  
 Stay informed with the latest updates, tools, and trends in the cloud industry.
+
+### 🎯 Certification Tips & Tricks  
+Proven strategies, study plans, and hands-on practice ideas to help you pass cloud certification exams confidently.
 
 ### 📚 Cloud Concepts Explained  
 Understand fundamental cloud computing topics like:
