@@ -1,7 +1,7 @@
 ---
 title: Tharun Vempati
 email: tharunvempati268@gmail.com
-image: "/images/authors/profilepic_tharun.png"
+image: "/images/authors/profilepic_tharun.jpg"
 description: Tharun Vempati
 social:
   - name: github
