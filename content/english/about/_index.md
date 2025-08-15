@@ -24,4 +24,4 @@ Understand fundamental cloud computing topics like:
 
 ---
 
-Join our community to learn, share, and grow your cloud skills with **GcloudCafe** — where cloud success begins!
+Join our community to learn, share, and grow your cloud skills with **Gcloudcafe** — where cloud success begins!
