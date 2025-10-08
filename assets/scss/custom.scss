@@ -3,3 +3,23 @@
   // width: 75px !important;
   // height: auto !important;
 // }
+/* ✅ Standardize blog post image sizes across all posts */
+
+.single-post img,
+.post-content img,
+.article-content img {
+  width: 100%;
+  max-width: 800px;    // Keeps images responsive within layout
+  height: 400px;       // Consistent visual height
+  object-fit: cover;   // Ensures image fills nicely without distortion
+  border-radius: 12px; // Optional: smooth rounded corners
+  display: block;
+  margin: 1.5rem auto;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); // Optional: soft shadow for depth
+}
+
+/* Optional hover effect for subtle interactivity */
+.single-post img:hover {
+  transform: scale(1.01);
+  transition: transform 0.25s ease;
+}
