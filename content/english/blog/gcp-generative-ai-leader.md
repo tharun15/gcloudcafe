@@ -1,5 +1,5 @@
 ---
-title: "Journey Through Generative AI: Reflections After the Google Cloud Generative AI Leader Exam"
+title: "Journey Through Generative AI: Reflections from the Google Cloud Generative AI Leader Exam"
 meta_title: "Google Cloud Generative AI Leader Certification – A Reflective Journey into AI Innovation"
 description: "A storytelling reflection on the concepts behind the Google Cloud Generative AI Leader certification — from learning paradigms to prompt techniques, Gemini, and real-world business transformation."
 date: 2025-10-07
