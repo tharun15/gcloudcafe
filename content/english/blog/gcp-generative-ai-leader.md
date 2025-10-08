@@ -14,11 +14,7 @@ Last evening, after passing the **Google Cloud Generative AI Leader certificatio
 
 ---
 
-The journey began by revisiting the **core AI learning paradigms** —  
-**Supervised learning**, where models learn from labeled data;  
-**Unsupervised learning**, where hidden patterns emerge from unlabeled information; and  
-**Reinforcement learning**, where agents interact with environments to maximize rewards.  
-Together, these formed the mental map for understanding how intelligent systems evolve and adapt.
+The journey began by revisiting the **core AI learning paradigms** — the foundations of how intelligence takes shape. In **supervised learning**, models learn from labeled data; in **unsupervised learning**, they uncover hidden patterns within unlabeled information; and through **reinforcement learning**, agents interact with environments to maximize rewards. Together, these approaches form the mental map of how intelligent systems evolve, adapt, and grow smarter over time.
 
 Soon, the path split between **Agent Assist** and **Contact Center AI** — two seemingly similar, yet purposefully distinct, Google tools.  
 Agent Assist empowers human agents with **real-time AI suggestions**, while Contact Center AI delivers **automated, conversational experiences** for customers.  
