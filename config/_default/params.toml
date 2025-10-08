@@ -6,8 +6,8 @@ logo = "images/logo.png"
 logo_darkmode = "images/logo-darkmode.png"
 # use `px` or `x` with logo_width, example: "100px".
 # Note: logo_width is not work with .svg file
-logo_width = "160px"
-logo_height = "32px"
+logo_width = "100px"
+logo_height = "20px"
 # if logo_webp set false, will not generate WEBP version of logo | default is true
 logo_webp = true
 # logo text will only show when logo is missing.
@@ -22,10 +22,11 @@ mainSections = ["blog"]
 # contact form action
 contact_form_action = "#" # contact form works with [https://airform.io/] or [https://formspree.io]
 # google tag manager, see https://developers.google.com/tag-manager/
-google_tag_manager = "" # example: G-XXXXXXXXXX
+#google_tag_manager = "G-N8R2LLDRSM" # example: G-XXXXXXXXXX
 google_adsense = ""     # example: ca-pub-xxxxxxxxxxxxxxxx
 # custom script on header, example: custom_script= "<script>console.log(\"Hello World\")</script>"
-custom_script = ""
+custom_script = "<script async src='https://www.googletagmanager.com/gtag/js?id=G-N8R2LLDRSM'></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-N8R2LLDRSM');</script>"
+
 # copyright
 copyright = "Designed & Developed by [Gcloudcafe](https://gcloudcafe.com)"
 
@@ -63,11 +64,11 @@ content = "You must replace the **baseURL** in **hugo.toml** file when deploying
 # seo meta data for OpenGraph / Twitter Card
 # seo module: https://github.com/gethugothemes/hugo-modules/tree/master/seo-tools/basic-seo
 [metadata]
-keywords = ["Boilerplate", "Hugo"]
-description = "Hugo & Tailwindcss Starter"
-author = "zeon.studio"
-twitter = "zeon_studio"
-image = "images/og-image.png"
+keywords = ["Gcloudcafe", "Kubernetes", "Openshift", "AWS", "Azure", "GCP"]
+description = "Your go-to source for practical tips on passing cloud certifications, up-to-date news on cloud technologies"
+author = "Tharun Vempati"
+twitter = "tharun26"
+image = "images/logo.png"
 
 
 # site verifications
