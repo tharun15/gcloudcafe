@@ -4,7 +4,7 @@ date: 2025-10-25
 description: "My journey of passing the Red Hat OpenShift Administrator EX280 exam — non-technical setup, last-minute lessons, and preparation tips you shouldn’t overlook."
 tags: ["Red Hat", "OpenShift", "EX280", "Certification", "Remote Exam"]
 categories: ["Certifications", "DevOps"]
-draft: true
+draft: false
 ---
 
 Last week, I successfully passed the **Red Hat OpenShift Administrator (EX280)** exam — and what a journey it was!  
