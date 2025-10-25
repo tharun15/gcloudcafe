@@ -45,6 +45,8 @@ The USB hub becomes essential because you’ll need to connect multiple devices 
 
 ### 3. 8GB (or larger) USB Drive  
 This is used to **create the Red Hat Remote Exam bootable image**. You’ll boot into this environment during the exam, so make sure it’s empty or backed up first.
+
+*(Exam Essentials.)*
 ![Exam essentials](/images/post3-essentials-2.png)
 
 ---
