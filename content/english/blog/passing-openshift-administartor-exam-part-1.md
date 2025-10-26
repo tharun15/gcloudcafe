@@ -27,7 +27,7 @@ With only a few hours left before my exam, I literally rushed to a nearby comput
 When the exam finally started, I instantly realized **why** the external camera was mandatory. The proctor needs to monitor your **side profile and hands on the keyboard** to ensure exam integrity. Without a side-view camera, it’s impossible for them to do proper remote supervision.  
 In hindsight, it made perfect sense — but trust me, discovering it on exam day is *not* how you want to find out.
 
-*(This the exam env set up with camera placement that worked for me.)*
+*(This is the exam environment set up with camera placement that worked for me.)*
 ![My Exam Setup showing external camera placement](/images/post3-envsetup-1.png)
 
 ---
