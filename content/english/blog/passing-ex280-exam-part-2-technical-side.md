@@ -1,7 +1,7 @@
 ---
 title: "Passing the Red Hat OpenShift Administrator (EX280) Exam – Part 2: The Technical Side"
 meta_title: "A Hands-On Guide to the EX280 Exam's Technical Domains"
-date: 2025-11-05
+date: 2025-11-02
 image: "/images/post4-dp.png"
 description: "Deep-dive into the technical side of the EX280 exam — connecting to the cluster, understanding tasks, and mastering key topics through real-world practice."
 categories: ["Certifications", "DevOps", "Red Hat", "Openshift", "Administrator"]
