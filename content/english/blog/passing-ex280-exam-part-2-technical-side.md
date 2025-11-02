@@ -10,8 +10,6 @@ author: tharun-vempati
 draft: false
 ---
 
-![Passing the Red Hat OpenShift Administrator (EX280) Exam – Part 2: The Technical Side](/images/post4-dp.png)
-
 ## Introduction
 In [Part 1](/blog/passing-ex280-exam-part-1-non-technical-side/), I covered the *non-technical* aspects of the Red Hat OpenShift Administrator (EX280) exam — setting up the remote environment, managing testing conditions, and handling pre-exam prep.
 
