@@ -30,7 +30,7 @@ The **EX280** exam runs for **3 hours**, scores up to **300 points**, and requir
 Expect **21 – 23 real-world tasks** executed directly on the OpenShift cluster.
 
 ### Grading areas
-- Manage OpenShift Container Platform (80 %)  
+- Manage OpenShift Container Platform  
 - Deploy Applications  
 - Manage Storage for Application Configuration and Data  
 - Configure Applications for Reliability  
