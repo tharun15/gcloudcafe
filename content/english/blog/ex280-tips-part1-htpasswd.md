@@ -13,7 +13,9 @@ draft: false
 Welcome to the first part of my **EX280 – OpenShift Administrator Tips & Tricks** mini-series!  
 In this series, I’ll share short, focused posts that help you sharpen your OpenShift administration skills — the kind of real-world tips that make both the **EX280 exam** and your **day-to-day cluster work** smoother.
 
-The goal of the article is to make sure you complete these both taska in under 20 mins and if you can do that, half battle is won and you can save a lot of time and focus on other tasks. This comes with sheer practice. So the configuration of htpasswd identity provider task as many time as you can. Even my suggestion is to revise this task just before the start of the exam. 
+The goal of this article is to help you complete both of these tasks — connecting to the cluster and configuring the HTPasswd identity provider — in under 20 minutes. If you can achieve that, you’ve already won half the battle. Mastering these fundamentals early will save valuable time during the exam and allow you to focus on more complex tasks with confidence.
+
+This efficiency only comes with consistent practice. Perform the HTPasswd configuration multiple times until it feels second nature. In fact, I strongly recommend revisiting and practicing this specific task on the morning of your exam — it’s one of those setups that rewards muscle memory and precision.
 
 ---
 
@@ -86,7 +88,7 @@ flowchart TD
 
 ## 🔐 Configuring the HTPasswd Identity Provider
 
-One of the first tasks every OpenShift admin should master is setting up an **HTPasswd identity provider** — a lightweight, file-based authentication system that’s both exam-relevant and practical in test environments.
+One of the first tasks every OpenShift admin should master is setting up an **HTPasswd identity provider** — a lightweight, file-based authentication system that’s both exam-relevant and practical in test environments. It can be configured easily by following the 3 simple steps below:
 
 ### 🧩 Step 1: Create the HTPasswd File
 Use the `htpasswd` command to create a new user file. The `-B` flag ensures secure bcrypt encryption (required in modern OpenShift versions).
