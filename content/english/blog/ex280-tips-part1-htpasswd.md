@@ -105,7 +105,7 @@ Store this file as a secret in the `openshift-config` namespace so OpenShift can
 oc create secret generic htpass-secret   --from-file=htpasswd=users.htpasswd -n openshift-config
 ```
 
-### 🧩 Step 3: Patch the OAuth Configuration
+### 🧩 Step 3: Edit the OAuth Configuration
 Now, integrate your secret into the cluster’s OAuth configuration.
 ```bash
 oc edit oauth cluster (CLI)
