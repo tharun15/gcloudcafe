@@ -214,7 +214,7 @@ spec:
             command: ["sh","-c","echo Cleaning up..."]
           restartPolicy: OnFailure
 ```
-> 🚨 **Pro Tip:** Do Project Templates last — misconfigurations can affect everything.
+> 🚨 **Pro Tip:** Prioritize Project Templates task at the last — misconfigurations can affect everything.
 
 ---
 
