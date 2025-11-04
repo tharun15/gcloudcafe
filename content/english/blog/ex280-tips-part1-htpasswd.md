@@ -79,8 +79,8 @@ flowchart TD
     A[Start Exam] --> B[Locate Exam Instructions]
     B --> C[Identify Remote Workstation Details\n(Hostname, Username, Password)]
     C --> D[Connect to Remote Workstation\nusing SSH]
-    D --> E[Access Cluster Credentials\n(Username: kubeadmin, Password from instructions/file)]
-    E --> F[Connect to OpenShift Cluster\nusing 'oc login -u kubeadmin -p <password>']
+    D --> E[Access Cluster Credentials\n(Username: kubeadmin, Password from instructions or file)]
+    E --> F[Connect to OpenShift Cluster\nusing "oc login -u kubeadmin -p PASSWORD"]
     F --> G[Successful Cluster Login]
     G --> H[Begin Administrative Tasks]
 ```
