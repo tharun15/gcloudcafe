@@ -75,13 +75,12 @@ command and access the console and start attempting the tasks
 ```mermaid
 flowchart TD
     A[Start Exam] --> B[Locate Exam Instructions]
-    B --> C[Identify Remote Workstation Details<br/>(Hostname, Username, Password)]
-    C --> D[Connect to Remote Workstation<br/>using SSH]
-    D --> E[Access Cluster Credentials<br/>(Username: kubeadmin, Password from instructions/file)]
-    E --> F[Connect to OpenShift Cluster<br/>using 'oc login -u kubeadmin -p <password>']
+    B --> C[Identify Remote Workstation Details\n(Hostname, Username, Password)]
+    C --> D[Connect to Remote Workstation\nusing SSH]
+    D --> E[Access Cluster Credentials\n(Username: kubeadmin, Password from instructions/file)]
+    E --> F[Connect to OpenShift Cluster\nusing 'oc login -u kubeadmin -p <password>']
     F --> G[Successful Cluster Login]
     G --> H[Begin Administrative Tasks]
-
 ```
 ---
 
@@ -93,7 +92,8 @@ One of the first tasks every OpenShift admin should master is setting up an **HT
 Use the `htpasswd` command to create a new user file. The `-B` flag ensures secure bcrypt encryption (required in modern OpenShift versions).
 
 ```bash
-htpasswd -c -B -b users.htpasswd admin redhat123
+htpasswd -c -B -b users.htpasswd admin redhat123 # Comaand with -c flag to create the file
+htpasswd -B -b users.htpasswd user user123 # Command to update the previously creared file
 ```
 
 ### 🧩 Step 2: Create the Secret
@@ -105,31 +105,33 @@ oc create secret generic htpass-secret   --from-file=htpasswd=users.htpasswd -n 
 
 ### 🧩 Step 3: Patch the OAuth Configuration
 Now, integrate your secret into the cluster’s OAuth configuration.
-
 ```bash
-oc patch oauth cluster --type=merge -p '{
-  "spec": {
-    "identityProviders": [
-      {
-        "name": "local_htpasswd",
-        "mappingMethod": "claim",
-        "type": "HTPasswd",
-        "htpasswd": {
-          "fileData": { "name": "htpass-secret" }
-        }
-      }
-    ]
-  }
-}'
+oc edit oauth cluster (CLI)
+
+```
+```bash
+Console:
+Administration->Cluster Settings->Configuration->Oauth
+Identity pvoviders->Add->HTPasswd
+
+```
+```bash
+- htpasswd:
+        fileData:
+          name: htpass-secret
+      mappingMethod: claim
+      name: Ex280-htpasswd
+      type: HTPasswd
 ```
 
 ### 🧩 Step 4: Verify the Login
 Once configured, you can test authentication:
 
 ```bash
-oc whoami
+watch oc get pods -n openshift-authentication
 ```
-If you see your new user (`admin`), the configuration was successful.
+
+Once the pods get restarted , logic with the created users with respective passwords
 
 ---
 
@@ -137,8 +139,7 @@ If you see your new user (`admin`), the configuration was successful.
 
 - Always **backup** your `htpasswd` file and keep it versioned.  
 - Avoid overwriting an existing secret — use `oc get secret -n openshift-config` to check first.  
-- After configuration, **test login** both via CLI and web console.  
-- Remove temporary or test users after validation.  
+- After configuration, **test login** both via CLI and web console.   
 - In real environments, prefer **centralized authentication** (LDAP, SSO) — but `htpasswd` is perfect for labs and exams.
 
 ---
