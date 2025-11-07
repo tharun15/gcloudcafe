@@ -77,9 +77,9 @@ command and access the console and start attempting the tasks
 ```mermaid
 flowchart TD
     A[Start Exam] --> B[Locate Exam Instructions]
-    B --> C[Identify Remote Workstation Details (Hostname, Username, Password)]
+    B --> C[Identify Remote Workstation Details - Hostname, Username, Password]
     C --> D[Connect to Remote Workstation using SSH]
-    D --> E[Access Cluster Credentials (Username: kubeadmin, Password from instructions or file)]
+    D --> E[Access Cluster Credentials - Username kubeadmin, Password from instructions or file]
     E --> F[Connect to OpenShift Cluster using "oc login -u kubeadmin -p PASSWORD"]
     F --> G[Successful Cluster Login]
     G --> H[Begin Administrative Tasks]
