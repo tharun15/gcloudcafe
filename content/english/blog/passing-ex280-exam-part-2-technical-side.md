@@ -107,6 +107,9 @@ oc patch oauth cluster --type=merge -p '{"spec":{"identityProviders":[{"name":"l
 oc adm groups new dev-team
 oc adm groups add-users dev-team user1
 ```
+
+💡 **Note:** For further in depth information on this topic please visit: [EX280 Exam tips - Part 1] (/blog/ex280-tips-part1-htpasswd/)
+
 > 🧩 **Pro Tip:** Practice `oc adm policy` before exam day — syntax familiarity saves time.
 
 ---
@@ -267,7 +270,7 @@ The EX280 exam validates how effectively you can run OpenShift under real condit
 
 You’ve practiced — now execute.  
 
-If you haven’t yet, revisit [Part 1: The Non-Technical Side](/blog/passing-ex280-exam-part-1-non-technical-side/) to ensure your exam setup is solid before the big day.
+If you haven’t yet, revisit [Part 1: The Non-Technical Side](/blog/passing-openshift-administartor-exam-part-1/) to ensure your exam setup is solid before the big day.
 
 ---
 
