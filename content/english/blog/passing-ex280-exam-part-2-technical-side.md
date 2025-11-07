@@ -108,7 +108,7 @@ oc adm groups new dev-team
 oc adm groups add-users dev-team user1
 ```
 
-💡 **Note:** For further in depth information on this topic please visit: [EX280 Exam tips - Part 1] (/blog/ex280-tips-part1-htpasswd/)
+💡💡 **Note:** For further in depth information and tips on this topic please visit: [EX280 Exam tips - Part 1](/blog/ex280-tips-part1-htpasswd/)
 
 > 🧩 **Pro Tip:** Practice `oc adm policy` before exam day — syntax familiarity saves time.
 
