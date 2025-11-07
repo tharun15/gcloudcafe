@@ -17,7 +17,7 @@ This second part focuses on the **technical side** — the hands-on components y
 
 Before diving in, make sure you’ve completed these two key Red Hat courses:
 
-- [DO180 – OpenShift I: Containers, Kubernetes, and Red Hat OpenShift](https://www.redhat.com/it/services/training/red-hat-openshift-i-containers-kubernetes-and-red-hat-openshift)
+- [DO180 – OpenShift I: Containers, Kubernetes, and Red Hat OpenShift](https://www.redhat.com/en/services/training/red-hat-openshift-administration-i-operating-a-production-cluster)
 - [DO280 – OpenShift Administration II: Configuring a Production Cluster](https://www.redhat.com/it/services/training/red-hat-openshift-administration-ii-configuring-a-production-cluster)
 
 **DO180** teaches container fundamentals, storage, and health probes — topics that appear subtly in EX280.  
