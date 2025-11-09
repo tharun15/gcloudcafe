@@ -108,9 +108,9 @@ oc adm groups new dev-team
 oc adm groups add-users dev-team user1
 ```
 
-💡💡 **Note:** For further in depth information and tips on this topic please visit: [EX280 Exam tips - Part 1](/blog/ex280-tips-part1-htpasswd/)
-
 > 🧩 **Pro Tip:** Practice `oc adm policy` before exam day — syntax familiarity saves time.
+
+💡💡 **Note:** For further in depth information and tips on this topic please visit: [EX280 Exam tips - Part 1](/blog/ex280-tips-part1-htpasswd/)
 
 ---
 
@@ -141,6 +141,7 @@ spec:
 ```
 > 🔐 **Pro Tip:** Validate behavior with `oc exec` or console’s network graph.
 
+💡💡 **Note:** For further in depth information and tips on this topic please visit: [EX280 Exam tips - Part 1](/blog/ex280-tips-part2/)
 ---
 
 ### 3. Storage, ConfigMaps & Secrets
@@ -167,6 +168,8 @@ spec:
   storageClassName: gp2
 ```
 > 🗂️ **Pro Tip:** After mounting, `oc rsh` into the pod and check the mount point — that’s how graders confirm it works.
+
+💡💡 **Note:** For further in depth information and tips on this topic please visit: [EX280 Exam tips - Part 1](/blog/ex280-tips-part3/)
 
 ---
 
@@ -219,6 +222,8 @@ spec:
 ```
 > 🚨 **Pro Tip:** Prioritize Project Templates task at the last — misconfigurations can affect everything.
 
+💡💡 **Note:** For further in depth information and tips on this topic please visit: [EX280 Exam tips - Part 1](/blog/ex280-tips-part4/)
+
 ---
 
 ## Managing OpenShift Operators
@@ -233,6 +238,8 @@ oc get csv -n openshift-operators
 - Deploy resources via CRDs  
 
 > 📦 **Pro Tip:** Know namespace scope and CSV phases (`Succeeded` vs `Installing`).
+
+💡💡 **Note:** For further in depth information and tips on this topic please visit: [EX280 Exam tips - Part 1](/blog/ex280-tips-part5/)
 
 ---
 

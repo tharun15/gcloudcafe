@@ -1,7 +1,7 @@
 ---
 title: "EX280 – OpenShift Administrator Tips & Tricks (Part 2): Network Policies and Edge Routes"
 meta_title: "OpenShift EX280 Tips – Network Policies and Edge Routes"
-date: 2025-11-10
+date: 2025-11-9
 image: "/images/post6-dp-tips2.png"
 description: "Continuing the EX280 – OpenShift Administrator Tips & Tricks mini-series with a deep dive into Network Policies and Edge Routes."
 categories: ["Certifications", "DevOps", "Red Hat", "OpenShift", "Administrator"]
