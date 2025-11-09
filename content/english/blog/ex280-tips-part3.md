@@ -1,7 +1,7 @@
 ---
 title: "EX280 – OpenShift Administrator Tips & Tricks (Part 3): Storage (Storage Classes, PV, PVC, ConfigMaps & Secrets)"
 meta_title: "OpenShift EX280 Tips – Storage Classes, PV, PVC, ConfigMaps & Secrets"
-date: 2025-11-9
+date: 2025-11-09
 image: "/images/post7-dp-tips3.png"
 description: "Continuing the EX280 – OpenShift Administrator Tips & Tricks mini-series with a deep dive into Storage Classes, Persistent Volumes, PVCs, ConfigMaps & Secrets."
 categories: ["Certifications", "DevOps", "Red Hat", "OpenShift", "Administrator"]
