@@ -28,6 +28,14 @@ Key concepts to master:
 
 ---
 
+🗂️ Important Note: PersistentVolumes vs PersistentVolumeClaims
+
+Before anything else, remember this critical distinction:
+PersistentVolume (PV) → Cluster-scoped resource (NOT namespaced)
+PersistentVolumeClaim (PVC) → Namespaced resource
+
+This often trips up candidates under exam pressure. When you create a PV, do not specify a namespace. When you work with PVCs, ensure you're in the correct project.
+
 ## 🗂️ Creating Persistent Volumes and Claims
 
 In the exam, you might encounter a task like:  
@@ -45,9 +53,18 @@ spec:
     storage: 1Gi
   accessModes:
     - ReadWriteOnce
-  hostPath:
-    path: /mnt/data
+  nfs:
+    path: /tmp
+    server: 172.17.0.2
+  persistentVolumeReclaimPolicy: Retain
 ---
+Two fields here are absolutely critical:
+spec.nfs.path
+spec.nfs.server
+
+If either one is incorrect, your PVC will remain in a Pending state forever — which kills your exam time.
+
+```yaml
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -55,6 +72,7 @@ metadata:
 spec:
   accessModes:
     - ReadWriteOnce
+  storageClassName: nfs-storage
   resources:
     requests:
       storage: 1Gi
@@ -66,7 +84,112 @@ After applying both, verify the binding status:
 oc get pv,pvc
 ```
 
+🔍 Where to find NFS path and server information?
+
+The first instinct is to run:
+```bash
+oc describe storageclass nfs-storage
+```
+
+In some versions of OpenShift, you will see the NFS server/path information directly in the parameters field. But on newer clusters (and especially in EX280 environments), this information is not always visible.
+
+This is by design — it tests your ability to locate configuration details using multiple approaches.
+
+Here are the reliable methods:
+
+
+
 ✅ **Pro Tip:** Always ensure that the **storage size** and **access modes** match between PV and PVC — that’s the most common reason for unbound claims.
+
+✅ Method 1: OpenShift Web Console → Storage → Storage Classes
+
+Navigate to:
+
+Storage → Storage Classes → nfs-storage
+
+Look at the Description or Parameters section.
+
+For many environments, this contains:
+```bash
+server: <IP>
+
+path: <nfs-export>
+```
+This is usually the quickest way to confirm the correct details.
+
+✅ Method 2: Inspect Existing PersistentVolumes
+
+If storage information is unclear, check existing PVs:
+```bash
+oc get pv
+oc describe pv <name>
+```
+
+Sometimes the environment variables or parameters will reveal the correct NFS configuration. For example:
+```bash
+NFS_SERVER=172.17.0.2
+NFS_PATH=/exports/data
+```
+
+This is extremely valuable when clues are missing from the storage class itself.
+
+✅ Method 3: Browse the Console → Persistent Volumes
+
+Within the console, existing PV objects may display environment variables or annotations that hint at the path and server.
+
+This view sometimes shows details that the CLI hides — especially in exam-provided lab clusters.
+
+🧠 The Big Lesson: Always Look for Alternate Paths
+
+One hallmark of the EX280 exam (and most Red Hat performance-based exams) is that there is never only one way to gather required information.
+
+If a command does not show you what you expect, do not panic.
+
+Instead:
+
+Explore the Console UI
+
+Inspect existing objects
+
+Use oc describe on related resources
+
+Look inside template definitions
+
+Check logs or configuration maps if needed
+
+This mindset dramatically reduces the chances of getting stuck.
+
+✅ Exam-Proof Strategy for PV Tasks
+
+Triple-check NFS path and server before creating the PV
+
+Validate PV creation:
+```bash
+oc get pv my-pv
+```
+
+Bind it with a matching PVC:
+
+storageClassName: nfs-storage
+
+
+Ensure access modes match:
+
+PV AccessMode = PVC AccessMode
+
+Ensure capacity is equal or greater than the PVC request
+
+Confirm the PV binds properly:
+```bash
+oc get pvc
+```
+
+If the PVC is still Pending, troubleshoot using:
+```bash
+oc describe pvc <name>
+```
+
+This output will tell you exactly what’s wrong (path mismatch, server unreachable, access mode mismatch, wrong SC, etc.).
 
 ---
 
@@ -104,6 +227,39 @@ envFrom:
 
 ✅ **Pro Tip:** Secrets are base64-encoded, not encrypted — always limit who can view them using RBAC.
 
+📌 Pro Tip: Use the CLI Help for Quick Examples
+
+When you're in the middle of the exam and can’t recall the exact syntax, remember that the oc CLI help provides extremely useful examples that can save you time and prevent mistakes.
+
+Use:
+```bash
+oc create secret --help
+```
+
+and
+```bash
+oc create configmap --help
+```
+
+You’ll see several practical examples right there in the help output.
+
+Similarly, help pages for using these objects are often extremely useful:
+```bash
+oc explain configmap
+oc explain secret
+```
+
+or even:
+```bash
+oc explain deployment.spec.template.spec.containers.envFrom
+```
+
+These commands show the structure, accepted fields, and usage patterns.
+This becomes especially handy when you're working with YAML under time pressure.
+
+✅ Tip for the EX280:
+Treat the CLI help as your first reference before opening documentation. It is faster and directly relevant to the exact command you need.
+
 ---
 
 ## 📦 Attaching Storage to a Deployment
@@ -136,6 +292,7 @@ spec:
         persistentVolumeClaim:
           claimName: my-pvc
 ```
+✅ **Pro Tip:** Use console to perform this task in much easier way and take it as a home work.
 
 Test that your volume is working properly by writing data inside the pod and ensuring persistence after restarts.
 

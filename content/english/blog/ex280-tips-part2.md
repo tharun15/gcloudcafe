@@ -105,7 +105,7 @@ Use the `find` command:
 
 ```bash
 find / -type f -name "create-certs.sh" 2>/dev/null
-
+```
 If you only remember part of the script name (which is common in exam pressure):
 ```bash
 find / -type f | grep cert
