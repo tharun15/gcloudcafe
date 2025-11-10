@@ -77,18 +77,105 @@ The EX280 focuses mainly on your ability to **create secure routes** and underst
 
 ### Example: Creating a Secure Edge Route
 
+## 🔐 Edge Routes — The Exam's Subtle Sysadmin Challenge
+
+Creating an edge-terminated route in OpenShift is straightforward when everything is provided. But during the EX280 exam, things are deliberately structured to test your real-world troubleshooting mindset.
+
+You’ll often see instructions like:
+
+> “Use the provided script `create-certs.sh` to generate the certificates required for an edge route.”
+
+Sounds simple, right?  
+But here’s the catch:
+
+- The script name is provided ✅  
+- **The path to the script is not** ❌  
+
+This is intentional. It tests your ability to locate files across the Linux filesystem — a crucial skill for any OpenShift admin operating in production environments.
+
+---
+
+## 🕵️ Searching for the Certificate Script
+
+The script can be anywhere inside the workstation filesystem. Searching manually is time-consuming and inefficient.
+
+This is where your **Linux sysadmin skills** shine.
+
+Use the `find` command:
+
 ```bash
-oc expose service myapp --name=myapp-edge --hostname=myapp.apps.example.com --port=8080 --path=/ --insecure-policy=Redirect
-oc annotate route myapp-edge "haproxy.router.openshift.io/timeout"="5m"
+find / -type f -name "create-certs.sh" 2>/dev/null
+
+If you only remember part of the script name (which is common in exam pressure):
+```bash
+find / -type f | grep cert
 ```
 
-This exposes your application securely over HTTPS with automatic redirection from HTTP.
+
+If you only remember part of the script name (which is common in exam pressure):
+```bash
+find / -type f | grep cert
+```
+✅ Adding 2>/dev/null helps suppress permission-denied noise and keeps your output readable.
+
+Once you find the script:
+📁 Copy the Script to Your Working Directory
+```bash
+cd /path/to/script
+cp create-certs.sh ~/
+cd ~/
+```
+Next, ensure you have permission to execute it:
+```bash
+chmod +x create-certs.sh
+```
+And run it:
+```bash
+./create-certs.sh
+```
+
+The script typically generates:
+tls.crt
+tls.key
+sometimes ca.crt
+These files are essential for the edge route.
+
+🚀 Create the Edge Route Using Certificates
+Once you have the certificates in your home directory, run:
+```bash
+oc create route edge secure-app \
+  --service=myapp \
+  --cert=tls.crt \
+  --key=tls.key
+```
+If the script outputs a CA file and it's required:
+```bash
+--ca-cert=ca.crt
+```
+
+Make sure you reference the correct service name.
 
 ✅ **Pro Tip:**  
 You can test the route’s TLS configuration quickly using:
 ```bash
 oc get route myapp-edge -o yaml | grep tls
 ```
+
+🧠 Why This Matters
+
+This entire process tests more than OpenShift knowledge:
+
+Navigating Linux directories
+
+Using find and grep effectively
+
+Understanding file permissions
+
+Executing scripts
+
+Generating and applying certificates
+
+These are the real-world skills you’ll use in day-to-day OpenShift administration — and the exam expects you to perform them confidently.
 
 ---
 
@@ -101,6 +188,7 @@ oc get route myapp-edge -o yaml | grep tls
   oc describe route <route-name>
   ```
 - Always **label namespaces and pods consistently** when writing NetworkPolicies.
+- Practice using find and grep under pressure
 
 If you can configure a secure Edge route and apply a valid NetworkPolicy in **under 10 minutes**, you’re well on your way to scoring high in this section.
 
