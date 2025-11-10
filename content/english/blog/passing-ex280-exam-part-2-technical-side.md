@@ -194,6 +194,8 @@ livenessProbe:
 ```
 > ⚙️ **Pro Tip:** Use DO180 defaults for probes unless told otherwise.
 
+💡💡 **Note:** For further in depth information and tips on this topic please visit: [EX280 Exam tips - Part 4](/blog/ex280-tips-part4/)
+
 ---
 
 ### 5. Advanced Configuration & Developer Self-Service
@@ -223,7 +225,7 @@ spec:
 ```
 > 🚨 **Pro Tip:** Prioritize Project Templates task at the last — misconfigurations can affect everything.
 
-💡💡 **Note:** For further in depth information and tips on this topic please visit: [EX280 Exam tips - Part 4](/blog/ex280-tips-part4/)
+💡💡 **Note:** For further in depth information and tips on this topic please visit: [EX280 Exam tips - Part 5](/blog/ex280-tips-part5/)
 
 ---
 
@@ -238,9 +240,10 @@ oc get csv -n openshift-operators
 ```
 - Deploy resources via CRDs  
 
-> 📦 **Pro Tip:** Know namespace scope and CSV phases (`Succeeded` vs `Installing`).
+> 📦 **Pro Tip:** You cannot (and should not) manually create a new namespace (Project) that begins with the openshift- prefix. These namespaces are reserved for core OpenShift cluster components and services.
 
-💡💡 **Note:** For further in depth information and tips on this topic please visit: [EX280 Exam tips - Part 5](/blog/ex280-tips-part5/)
+In an exam scenario (or in a real-world environment), if you are asked to install an Operator that needs to be in a namespace like openshift-operators, it's because that namespace already exists for its intended purpose (i.e., managing cluster-wide Operators). Your task would be to select that existing namespace during the installation, not to create it.
+
 
 ---
 
