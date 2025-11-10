@@ -81,6 +81,23 @@ oc get hpa
 ## ❤️‍🔥 Probes: Liveness, Readiness, Startup
 
 These three probes determine your application's ability to run reliably in production.
+| Probe Type        | Purpose                                                     | Effect on Pod                                  | Triggers Restart? |
+|-------------------|--------------------------------------------------------------|-------------------------------------------------|-------------------|
+| **readinessProbe** | Determines if pod is ready to receive traffic               | Removes pod from service endpoints              | ❌ No              |
+| **livenessProbe**  | Detects if container is stuck or unhealthy                  | Restarts container if probe fails               | ✅ Yes             |
+| **startupProbe**   | Used for slow-starting applications; gates liveness checks  | Prevents early restarts until startup is done   | ✅ Yes (after startupProbe succeeds) |
+
+💡 YAML Patterns Are Similar for All Probes
+
+The good news is that all three probes use almost identical YAML structure.
+You can swap between probe types using the same field patterns:
+
+httpGet (API endpoint/health URL test)
+
+tcpSocket (TCP port check)
+
+exec (execute commands inside the container)
+
 
 ### Readiness Probe
 
@@ -116,6 +133,40 @@ startupProbe:
 ```
 
 ✅ **Pro Tip:** Know when to use each probe — this is a direct scoring area in the exam.
+
+Here’s a quick overview of supported probe types:
+- **HTTP GET Test**
+  Checks if an API endpoint returns success.
+  Example: `/healthz`, `/live`, `/startup`
+
+- **TCP Socket Test**
+  Verifies if the application responds on a specific port.
+
+- **Command Exec Test**
+  Runs a command inside the container and checks exit code.
+
+Example Patterns for Each Probe Method
+
+✅ HTTP GET probe:
+```yaml
+httpGet:
+  path: /healthz
+  port: 8080
+```
+
+✅ TCP Socket probe:
+```yaml
+tcpSocket:
+  port: 8080
+```
+
+✅ Exec probe:
+```yaml
+exec:
+  command:
+    - cat
+    - /tmp/healthy
+```
 
 ---
 

@@ -20,22 +20,6 @@ In this article, we'll explore **Developer Self-Service**—one of the most dyna
 
 The exam expects you to understand and configure the following:
 
-### ◼ Project Templates
-Project templates allow you to enforce default resources, quotas, limit ranges, and initial objects whenever a new project is created.
-
-You might be asked to:
-
-- Locate an existing template
-- Modify a template
-- Apply a template to create projects
-
-Example:
-
-```bash
-oc get templates -n openshift-config
-oc new-project demo-app --template=my-template
-```
-
 ---
 
 ### ◼ Quotas
@@ -98,6 +82,141 @@ Apply it:
 ```bash
 oc apply -f limit-range.yaml -n demo-app
 ```
+
+
+### ◼ Project Templates
+Project templates allow you to enforce default resources, quotas, limit ranges, and initial objects whenever a new project is created.
+
+You might be asked to:
+
+- Locate an existing template
+- Modify a template
+- Apply a template to create projects
+
+Example:
+
+```bash
+oc get templates -n openshift-config
+```
+🛠️ Complete Workflow: Creating and Applying a Project Template in OpenShift
+
+When configuring Developer Self-Service for the EX280 exam, a common task is to generate a project template, customize it, and then configure OpenShift to use that template for all new project requests. Here are the exact commands and sequence that you should know cold.
+
+✅ Step 1: Generate the Base Project Template
+
+Begin by exporting the default bootstrap project template:
+```bash
+oc adm create-bootstrap-project-template -o yaml > template.yaml
+```
+
+This generates a full YAML definition including:
+
+RBAC objects
+
+ServiceAccount
+
+RoleBinding
+
+Project object
+
+(and more)
+
+This template.yaml will be your base for customization.
+
+✅ Step 2: Edit the Generated Template
+
+Now open template.yaml and add or modify the objects you need, such as:
+
+LimitRange
+
+ResourceQuota
+
+Additional labels or annotations
+
+Custom parameters
+
+Example: Lets take an example to include limit range in the project template
+
+```bash
+oc get limitrange limit-range >> template.yaml
+```
+
+- Open the template.yaml with vi editor in view mode (:v)
+- Select the limitrange section at the end of the file and cut it by pressing the key - d and move it directly under Rolebindings section. This is also where you would paste your cleaned-up LimitRange object under objects:
+- Remove these fields - uuid, creationTimestamp, resourceVersion
+- If you find any indentation issue s withinin the limitrange section fix it by executing 
+```bash
+2>>
+```
+- Replace name and namespace of the template by ${PROJECT_NAME} or as per the information given in the task
+- Remove any extra lines left over at the end of the yaml
+
+
+
+✅ Step 3: Create (or Replace) the Template in OpenShift
+
+Once your edits are complete, apply the template:
+```bash
+oc create -f template.yaml -n openshift-config
+```
+
+If you’re updating an existing template, you may need:
+```bash
+oc replace -f template.yaml -n openshift-config
+```
+
+The namespace must be openshift-config — that’s where OpenShift stores cluster-wide config templates.
+
+✅ Step 4: Configure OpenShift to Use Your Template
+
+Next, configure the cluster to reference your new template for all future project requests.
+
+Edit the cluster-wide project configuration:
+```bash
+oc edit project.config.openshift.io/cluster
+```
+
+This opens the YAML in your default editor.
+
+Add/edit the following section:
+```bash
+apiVersion: config.openshift.io/v1
+kind: Project
+metadata:
+  name: cluster
+spec:
+  projectRequestTemplate:
+    name: <template_name>
+```
+
+Replace <template_name> with the name defined in your template’s metadata.
+
+✅ How This Works
+
+After this configuration:
+
+Any new project created via:
+```bash
+oc new-project <name>
+```
+
+or via the Web Console
+
+…will automatically include every object defined in your project template:
+
+LimitRange
+
+ResourceQuota
+
+RoleBindings
+
+ServiceAccounts
+
+Labels
+
+Annotations
+
+
 
 ---
 
