@@ -170,7 +170,7 @@ spec:
 ```
 > 🗂️ **Pro Tip:** After mounting, `oc rsh` into the pod and check the mount point — that’s how graders confirm it works.
 
-💡💡 **Note:** For further in depth information and tips on this topic please visit: [EX280 Exam tips - Part 1](/blog/ex280-tips-part3/)
+💡💡 **Note:** For further in depth information and tips on this topic please visit: [EX280 Exam tips - Part 3](/blog/ex280-tips-part3/)
 
 ---
 
@@ -223,7 +223,7 @@ spec:
 ```
 > 🚨 **Pro Tip:** Prioritize Project Templates task at the last — misconfigurations can affect everything.
 
-💡💡 **Note:** For further in depth information and tips on this topic please visit: [EX280 Exam tips - Part 1](/blog/ex280-tips-part4/)
+💡💡 **Note:** For further in depth information and tips on this topic please visit: [EX280 Exam tips - Part 4](/blog/ex280-tips-part4/)
 
 ---
 
@@ -240,7 +240,7 @@ oc get csv -n openshift-operators
 
 > 📦 **Pro Tip:** Know namespace scope and CSV phases (`Succeeded` vs `Installing`).
 
-💡💡 **Note:** For further in depth information and tips on this topic please visit: [EX280 Exam tips - Part 1](/blog/ex280-tips-part5/)
+💡💡 **Note:** For further in depth information and tips on this topic please visit: [EX280 Exam tips - Part 5](/blog/ex280-tips-part5/)
 
 ---
 
