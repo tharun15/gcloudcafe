@@ -141,7 +141,8 @@ spec:
 ```
 > 🔐 **Pro Tip:** Validate behavior with `oc exec` or console’s network graph.
 
-💡💡 **Note:** For further in depth information and tips on this topic please visit: [EX280 Exam tips - Part 1](/blog/ex280-tips-part2/)
+💡💡 **Note:** For further in depth information and tips on this topic please visit: [EX280 Exam tips - Part 2](/blog/ex280-tips-part2/)
+
 ---
 
 ### 3. Storage, ConfigMaps & Secrets
