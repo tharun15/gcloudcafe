@@ -60,7 +60,10 @@
     try {
       document.execCommand("copy");
       showCopied(btn);
-    } catch (_) {}
+    } catch (_) {
+      /* execCommand is deprecated; clipboard write is already the preferred path.
+         Silently ignore failures here — the user will simply see no "Copied!" feedback. */
+    }
     document.body.removeChild(ta);
   }
 

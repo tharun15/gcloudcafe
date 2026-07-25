@@ -204,10 +204,6 @@
   {{ end }}
 
   {{/* ─── Meet the Author ─── */}}
-  {{ $author := site.GetPage "/authors/tharun-vempati" }}
-  {{ if not $author }}
-    {{ $author = site.GetPage "/authors/tharun" }}
-  {{ end }}
   <section class="section-sm bg-theme-light dark:bg-darkmode-theme-light py-16">
     <div class="container">
       <div class="row justify-center text-center">
