@@ -165,13 +165,16 @@ def generate_drafts(topics_json, output_dir):
 
         print(json.dumps(result))
 
-        # Set GitHub output
+        # Set GitHub output with proper escaping for multiline content
         if os.getenv('GITHUB_OUTPUT'):
             with open(os.getenv('GITHUB_OUTPUT'), 'a') as f:
                 f.write(f"draft_created={'true' if created_drafts else 'false'}\n")
                 f.write(f"topic_title={result['topic_title']}\n")
                 f.write(f"topics_added={result['topics_added']}\n")
-                f.write(f"draft_list={result['draft_list']}\n")
+                # Use heredoc syntax for multiline content
+                f.write("draft_list<<EOF\n")
+                f.write(f"{result['draft_list']}\n")
+                f.write("EOF\n")
 
         return result
 
