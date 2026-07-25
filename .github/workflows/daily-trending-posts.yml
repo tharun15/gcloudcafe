@@ -15,12 +15,12 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.11'
           cache: 'pip'
@@ -35,22 +35,27 @@ jobs:
         run: |
           python .github/scripts/pytrends_fetch.py > trending_topics.json
           echo "topics=$(cat trending_topics.json)" >> $GITHUB_OUTPUT
+        continue-on-error: true
 
       - name: Check existing posts
         id: check_posts
+        if: steps.trending.outcome == 'success'
         run: |
           python .github/scripts/check_existing_posts.py ${{ steps.trending.outputs.topics }}
+        continue-on-error: true
 
       - name: Generate markdown drafts
         id: generate
+        if: steps.check_posts.outcome == 'success'
         run: |
           python .github/scripts/generate_draft.py \
             --topics ${{ steps.trending.outputs.topics }} \
             --output-dir content/english/blog/drafts
+        continue-on-error: true
 
       - name: Create Pull Request
         if: steps.generate.outputs.draft_created == 'true'
-        uses: peter-evans/create-pull-request@v5
+        uses: peter-evans/create-pull-request@v6
         with:
           commit-message: 'chore: add AI-generated trending topic drafts'
           title: 'Daily Trending: ${{ steps.generate.outputs.topic_title }}'
@@ -75,3 +80,11 @@ jobs:
           branch: feature/trending-${{ github.run_number }}
           delete-branch: true
           labels: 'automated,blog,trending'
+
+      - name: Workflow Summary
+        if: always()
+        run: |
+          echo "## Workflow Summary" >> $GITHUB_STEP_SUMMARY
+          echo "- Trending Topics: ${{ steps.trending.outcome }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Check Posts: ${{ steps.check_posts.outcome }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Generate Drafts: ${{ steps.generate.outcome }}" >> $GITHUB_STEP_SUMMARY
