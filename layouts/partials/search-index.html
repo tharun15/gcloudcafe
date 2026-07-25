@@ -1,0 +1,17 @@
+<!-- Search Index (JSON) -->
+{{ if site.Params.search_enabled | default false }}
+  <script type="application/json" id="search-index">
+    [
+      {{ $len := len (where site.RegularPages "Type" "blog") }}
+      {{ range $idx, $page := (where site.RegularPages "Type" "blog") }}
+        {
+          "title": {{ $page.Title | jsonify }},
+          "url": {{ $page.Permalink | jsonify }},
+          "content": {{ $page.Plain | jsonify }},
+          "date": {{ $page.Date.Format "2006-01-02" | jsonify }},
+          "section": {{ $page.Section | jsonify }}
+        }{{ if ne (add $idx 1) $len }},{{ end }}
+      {{ end }}
+    ]
+  </script>
+{{ end }}

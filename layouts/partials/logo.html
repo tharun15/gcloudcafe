@@ -1,0 +1,8 @@
+<!-- Logo partial -->
+<a href="{{ site.Home.RelPermalink }}" class="navbar-brand font-bold text-2xl" aria-label="Logo">
+  {{ with site.Params.logo }}
+    <img src="{{ . | relURL }}" alt="{{ site.Title }}" class="h-8 w-auto" />
+  {{ else }}
+    {{ site.Title }}
+  {{ end }}
+</a>

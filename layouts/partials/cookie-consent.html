@@ -1,0 +1,41 @@
+<!-- Cookie Consent Banner -->
+{{ if site.Params.cookie_consent_enabled | default false }}
+  <div id="cookie-consent" class="fixed bottom-0 left-0 right-0 z-40 hidden bg-body dark:bg-darkmode-body border-t border-border dark:border-darkmode-border p-4">
+    <div class="container flex flex-col items-center justify-between gap-4 md:flex-row">
+      <p class="text-sm text-text dark:text-darkmode-text">
+        {{ site.Params.cookie_consent_text | default "We use cookies to enhance your experience." | safeHTML }}
+      </p>
+      <div class="flex gap-2">
+        <button id="cookie-accept" class="btn btn-outline-primary btn-sm">
+          {{ i18n "accept" | default "Accept" }}
+        </button>
+        <button id="cookie-decline" class="btn btn-outline btn-sm">
+          {{ i18n "decline" | default "Decline" }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      const cookieName = 'gcloudcafe_cookies_accepted';
+      const banner = document.getElementById('cookie-consent');
+      const acceptBtn = document.getElementById('cookie-accept');
+      const declineBtn = document.getElementById('cookie-decline');
+
+      if (!localStorage.getItem(cookieName)) {
+        banner.classList.remove('hidden');
+      }
+
+      acceptBtn?.addEventListener('click', () => {
+        localStorage.setItem(cookieName, 'true');
+        banner.classList.add('hidden');
+      });
+
+      declineBtn?.addEventListener('click', () => {
+        localStorage.setItem(cookieName, 'false');
+        banner.classList.add('hidden');
+      });
+    })();
+  </script>
+{{ end }}

@@ -1,0 +1,21 @@
+<!-- Search Modal -->
+<div id="search-modal" class="fixed inset-0 z-50 hidden overflow-y-auto bg-black/50" aria-hidden="true">
+  <div class="flex min-h-screen items-center justify-center">
+    <div class="relative w-full max-w-2xl rounded-lg bg-body dark:bg-darkmode-body p-6">
+      <button
+        id="search-modal-close"
+        class="absolute right-4 top-4 text-gray-400 hover:text-gray-600"
+        aria-label="Close search">
+        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+      </button>
+      <input
+        id="search-input"
+        type="text"
+        placeholder="Search posts..."
+        class="w-full rounded border border-border bg-white dark:border-darkmode-border dark:bg-darkmode-body px-4 py-2" />
+      <div id="search-results" class="mt-4"></div>
+    </div>
+  </div>
+</div>
