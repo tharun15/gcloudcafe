@@ -26,6 +26,30 @@ contact_form_action = "#" # contact form works with [https://airform.io/] or [ht
 # custom script on header, example: custom_script= "<script>console.log(\"Hello World\")</script>"
 custom_script = "<script async src='https://www.googletagmanager.com/gtag/js?id=G-N8R2LLDRSM'></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('config', 'G-N8R2LLDRSM');</script>"
 
+# Mobile & Professional Features
+enable_table_of_contents = true
+enable_reading_time = true
+enable_breadcrumb = true
+enable_author_profile = true
+enable_related_posts = true
+enable_newsletter_signup = true
+enable_social_sharing = true
+enable_comments = false
+
+# Image Optimization
+use_webp = true
+lazy_load_images = true
+responsive_images = true
+
+# Performance
+enable_minify = true
+enable_cdn = false
+
+# Mobile-Specific
+mobile_menu_style = "slide"
+mobile_font_size = "16px"
+touch_target_size = "48px"
+
 # copyright
 copyright = "Designed & Developed by [Gcloudcafe](https://gcloudcafe.com)"
 
