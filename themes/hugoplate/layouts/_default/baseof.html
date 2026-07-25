@@ -19,10 +19,14 @@
   <body>
     <!-- cache partial only in production -->
     {{ if hugo.IsProduction }}
-      {{ partialCached "preloader.html" . }}
+      {{ if templates.Exists "partials/preloader.html" }}
+        {{ partialCached "preloader.html" . }}
+      {{ end }}
       {{ partialCached "gtm-noscript.html" . }}
     {{ else }}
-      {{ partial "preloader.html" . }}
+      {{ if templates.Exists "partials/preloader.html" }}
+        {{ partial "preloader.html" . }}
+      {{ end }}
 
 
       <!-- tailwind size indicator -->
@@ -31,7 +35,9 @@
 
 
     <!-- announcement -->
-    {{ partialCached "announcement.html" . }}
+    {{ if templates.Exists "partials/announcement.html" }}
+      {{ partialCached "announcement.html" . }}
+    {{ end }}
 
 
     <!-- header (don't cache it) -->
