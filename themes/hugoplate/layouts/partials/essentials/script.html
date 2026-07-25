@@ -43,7 +43,9 @@
   src="{{ $scriptsLazy.RelPermalink }}"></script>
 
 <!-- progressive web app -->
-{{ partialCached "pwa.html" . }}
+{{ if templates.Exists "partials/pwa.html" }}
+  {{ partialCached "pwa.html" . }}
+{{ end }}
 
 
 <!-- cookie consent -->
@@ -51,8 +53,12 @@
 
 
 <!-- google adsense -->
-{{ partialCached "adsense-script.html" . }}
+{{ if templates.Exists "partials/adsense-script.html" }}
+  {{ partialCached "adsense-script.html" . }}
+{{ end }}
 
 
 <!-- cookie consent -->
-{{ partialCached "announcement-script.html" . }}
+{{ if templates.Exists "partials/announcement-script.html" }}
+  {{ partialCached "announcement-script.html" . }}
+{{ end }}
