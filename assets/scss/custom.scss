@@ -35,11 +35,14 @@
 }
 
 .blog-card-media {
-  aspect-ratio: 16 / 10;
+  aspect-ratio: 16 / 9;
+  width: 100%;
+  overflow: hidden;
 
   .blog-card-image,
   img {
     @apply h-full w-full object-cover;
+    display: block;
   }
 
   &:hover {
@@ -47,6 +50,10 @@
     img {
       @apply scale-105;
     }
+  }
+
+  @media (max-width: 767px) {
+    max-height: 220px;
   }
 }
 
@@ -234,6 +241,10 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .header {
+    transition: none !important;
+  }
+
   .blog-card,
   .blog-card-image,
   .blog-chip,
@@ -257,6 +268,17 @@
       transform: none !important;
     }
   }
+}
+
+/* Auto-hide header on scroll down, reveal on scroll up */
+.header {
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+  will-change: transform;
+}
+
+.header--hidden {
+  transform: translateY(-100%);
+  box-shadow: none !important;
 }
 
 /* About page styles */
