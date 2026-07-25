@@ -34,8 +34,13 @@ jobs:
         id: trending
         run: |
           python .github/scripts/pytrends_fetch.py > trending_topics.json
-          if [ -f trending_topics.json ]; then
-            echo "Trending topics fetched successfully"
+          echo "File contents:"
+          cat trending_topics.json
+          echo ""
+          if [ -f trending_topics.json ] && [ -s trending_topics.json ]; then
+            echo "✓ Trending topics fetched successfully"
+          else
+            echo "✗ File is empty or missing"
           fi
         continue-on-error: true
 
@@ -43,13 +48,25 @@ jobs:
         id: check_posts
         if: steps.trending.outcome == 'success'
         run: |
+          echo "Reading topics from file:"
+          cat trending_topics.json
           python .github/scripts/check_existing_posts.py < trending_topics.json
         continue-on-error: true
 
       - name: Generate markdown drafts
         id: generate
-        if: steps.check_posts.outcome == 'success'
         run: |
+          echo "Debug: Checking if topics file exists"
+          if [ -f trending_topics.json ]; then
+            echo "✓ File exists"
+            echo "File size: $(wc -c < trending_topics.json) bytes"
+            echo "Contents:"
+            cat trending_topics.json
+          else
+            echo "✗ File does not exist!"
+            exit 1
+          fi
+          
           python .github/scripts/generate_draft.py \
             --topics-file trending_topics.json \
             --output-dir content/english/blog/drafts

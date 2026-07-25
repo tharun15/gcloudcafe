@@ -138,12 +138,16 @@ def generate_drafts(topics_json, output_dir):
             result = {'draft_created': 'false', 'count': 0}
             print(json.dumps(result))
             return result
-            
+        
+        logger.info(f"Parsing JSON: {topics_json[:100]}...")  # Log first 100 chars
         topics_data = json.loads(topics_json)
+        logger.info(f"JSON parsed successfully. Keys: {topics_data.keys()}")
+        
         topics = topics_data.get('topics', [])
+        logger.info(f"Found {len(topics)} topics")
 
         if not topics:
-            logger.warning("No topics in JSON data")
+            logger.warning(f"No topics in JSON data. Full data: {topics_data}")
             result = {'draft_created': 'false', 'count': 0}
             print(json.dumps(result))
             return result

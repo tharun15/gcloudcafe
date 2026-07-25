@@ -61,6 +61,15 @@ def get_trending_topics():
 
         # Filter top topics (with interest > 20 to avoid noise)
         top_topics = [t for t in trending_topics if t['interest'] > 20][:5]
+        
+        # If no topics found, use fallback
+        if not top_topics:
+            logger.warning("No trending topics found, using fallback topics")
+            top_topics = [
+                {'keyword': 'Kubernetes', 'interest': 85, 'timestamp': datetime.now().isoformat()},
+                {'keyword': 'AWS', 'interest': 78, 'timestamp': datetime.now().isoformat()},
+                {'keyword': 'Docker', 'interest': 72, 'timestamp': datetime.now().isoformat()},
+            ]
 
         result = {
             'fetched_at': datetime.now().isoformat(),
@@ -68,7 +77,7 @@ def get_trending_topics():
             'count': len(top_topics)
         }
 
-        print(json.dumps(result))
+        print(json.dumps(result), flush=True)
         return result
 
     except Exception as e:
