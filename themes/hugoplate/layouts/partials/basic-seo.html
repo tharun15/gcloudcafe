@@ -1,0 +1,43 @@
+<!-- OpenGraph and Twitter Card Meta Tags -->
+
+<!-- Page Title and Description -->
+<meta property="og:title" content="{{ .Title | default site.Title }}" />
+<meta property="og:description" content="{{ .Description | default .Summary | plainify | truncate 160 }}" />
+<meta name="description" content="{{ .Description | default .Summary | plainify | truncate 160 }}" />
+
+<!-- OpenGraph Meta Tags -->
+<meta property="og:type" content="{{ if .IsHome }}website{{ else if .Kind }}article{{ else }}website{{ end }}" />
+<meta property="og:url" content="{{ .Permalink }}" />
+<meta property="og:site_name" content="{{ site.Title }}" />
+<meta property="og:locale" content="{{ site.Language.Lang }}" />
+
+<!-- Twitter Card Meta Tags -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="{{ .Title | default site.Title }}" />
+<meta name="twitter:description" content="{{ .Description | default .Summary | plainify | truncate 160 }}" />
+
+<!-- Image for OpenGraph and Twitter -->
+{{ if .Params.image }}
+  <meta property="og:image" content="{{ .Params.image | absURL }}" />
+  <meta name="twitter:image" content="{{ .Params.image | absURL }}" />
+{{ else if site.Params.image }}
+  <meta property="og:image" content="{{ site.Params.image | absURL }}" />
+  <meta name="twitter:image" content="{{ site.Params.image | absURL }}" />
+{{ end }}
+
+<!-- Canonical URL -->
+<link rel="canonical" href="{{ .Permalink }}" />
+
+<!-- Author -->
+{{ if .Params.author }}
+  <meta name="author" content="{{ .Params.author }}" />
+{{ else if site.Params.author }}
+  <meta name="author" content="{{ site.Params.author }}" />
+{{ end }}
+
+<!-- Keywords -->
+{{ if .Params.keywords }}
+  <meta name="keywords" content="{{ delimit .Params.keywords "," }}" />
+{{ else if site.Params.keywords }}
+  <meta name="keywords" content="{{ delimit site.Params.keywords "," }}" />
+{{ end }}

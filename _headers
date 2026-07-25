@@ -1,0 +1,29 @@
+# Security headers
+/*
+  X-Frame-Options: SAMEORIGIN
+  X-Content-Type-Options: nosniff
+  X-XSS-Protection: 1; mode=block
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: geolocation=(), microphone=(), camera=()
+
+# Cache static assets
+/assets/*
+  Cache-Control: public, immutable, max-age=31536000
+
+/images/*
+  Cache-Control: public, immutable, max-age=31536000
+
+# Cache busting for CSS and JS
+/*.css
+  Cache-Control: public, immutable, max-age=31536000
+
+/*.js
+  Cache-Control: public, immutable, max-age=31536000
+
+# Don't cache HTML
+/*.html
+  Cache-Control: public, max-age=3600, must-revalidate
+
+# Default caching for other assets
+/*
+  Cache-Control: public, max-age=3600

@@ -1,0 +1,5 @@
+<!-- PWA Manifest and Service Worker -->
+{{ with site.Params.pwa_enabled }}
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="{{ site.Params.theme_color | default "#1a1a1a" }}" />
+{{ end }}
