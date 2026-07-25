@@ -11,7 +11,14 @@ from datetime import datetime, timedelta
 from pathlib import Path
 import logging
 import argparse
-from slugify import slugify
+
+# Handle import of slugify with fallback
+try:
+    from slugify import slugify
+except ImportError:
+    logging.warning("python-slugify not found, using simple slug generator")
+    def slugify(text):
+        return text.lower().replace(' ', '-').replace('/', '-').replace('.', '')
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -125,13 +132,21 @@ def generate_draft(topic, output_dir):
 def generate_drafts(topics_json, output_dir):
     """Generate markdown drafts for all topics."""
     try:
+        # Handle case where topics_json might be None or empty
+        if not topics_json or topics_json.strip() == '':
+            logger.warning("No topics provided for draft generation")
+            result = {'draft_created': 'false', 'count': 0}
+            print(json.dumps(result))
+            return result
+            
         topics_data = json.loads(topics_json)
         topics = topics_data.get('topics', [])
 
         if not topics:
-            logger.warning("No topics provided for draft generation")
-            print(json.dumps({'draft_created': 'false', 'count': 0}))
-            return
+            logger.warning("No topics in JSON data")
+            result = {'draft_created': 'false', 'count': 0}
+            print(json.dumps(result))
+            return result
 
         created_drafts = []
         for topic in topics:
@@ -144,8 +159,8 @@ def generate_drafts(topics_json, output_dir):
             'count': len(created_drafts),
             'drafts': created_drafts,
             'topic_title': created_drafts[0]['title'] if created_drafts else 'Trending Topics',
-            'topics_added': ', '.join([d['title'] for d in created_drafts]),
-            'draft_list': '\n'.join([f"- {d['title']} (`{d['filename']}`)" for d in created_drafts])
+            'topics_added': ', '.join([d['title'] for d in created_drafts]) if created_drafts else 'None',
+            'draft_list': '\n'.join([f"- {d['title']} (`{d['filename']}`)" for d in created_drafts]) if created_drafts else 'No drafts created'
         }
 
         print(json.dumps(result))
@@ -162,7 +177,14 @@ def generate_drafts(topics_json, output_dir):
 
     except json.JSONDecodeError as e:
         logger.error(f"Invalid JSON input: {str(e)}")
-        print(json.dumps({'draft_created': 'false', 'error': str(e)}))
+        result = {'draft_created': 'false', 'count': 0, 'error': str(e)}
+        print(json.dumps(result))
+        return result
+    except Exception as e:
+        logger.error(f"Unexpected error generating drafts: {str(e)}")
+        result = {'draft_created': 'false', 'count': 0, 'error': str(e)}
+        print(json.dumps(result))
+        return result
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Generate markdown drafts for trending topics')
