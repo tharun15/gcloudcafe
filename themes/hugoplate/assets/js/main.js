@@ -39,6 +39,25 @@
     });
   }
 
+  // Placeholder newsletter form
+  // ----------------------------------------
+  const placeholderNewsletterForms = document.querySelectorAll(
+    "[data-placeholder-subscribe]",
+  );
+
+  placeholderNewsletterForms.forEach((form) => {
+    const status = form.querySelector("[data-newsletter-status]");
+
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+
+      if (status) {
+        status.textContent =
+          "Thanks for your interest — email signup is still coming soon, so please follow along on social for now.";
+      }
+    });
+  });
+
   // Post feedback widget
   // ----------------------------------------
   const feedbackWidgets = document.querySelectorAll("[data-post-feedback]");
@@ -75,14 +94,20 @@
 
     buttons.forEach((button) => {
       button.addEventListener("click", () => {
-        const nextValue = button.dataset.feedbackValue || "";
+        const clickedValue = button.dataset.feedbackValue || "";
+        const nextValue = clickedValue === savedValue ? "" : clickedValue;
 
         try {
-          window.localStorage.setItem(storageKey, nextValue);
+          if (nextValue) {
+            window.localStorage.setItem(storageKey, nextValue);
+          } else {
+            window.localStorage.removeItem(storageKey);
+          }
         } catch (error) {
           // Ignore storage failures and still update the UI.
         }
 
+        savedValue = nextValue;
         updateWidget(nextValue);
       });
     });

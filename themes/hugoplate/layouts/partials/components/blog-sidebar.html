@@ -65,7 +65,7 @@
       the primary path.
     </p>
 
-    <form class="mb-5 space-y-3" action="#" method="post">
+    <form class="mb-5 space-y-3" data-placeholder-subscribe>
       <label class="sr-only" for="newsletter-email">Email address</label>
       <input
         id="newsletter-email"
@@ -76,11 +76,15 @@
         placeholder="Enter your email" />
       <button
         class="blog-focus-ring btn btn-primary w-full justify-center"
-        type="button"
+        type="submit"
         aria-describedby="newsletter-note">
         Subscribe soon
       </button>
-      <p id="newsletter-note" class="text-sm text-text dark:text-darkmode-text">
+      <p
+        id="newsletter-note"
+        class="text-sm text-text dark:text-darkmode-text"
+        data-newsletter-status
+        aria-live="polite">
         Email signup coming soon — follow along on social in the meantime.
       </p>
     </form>
