@@ -142,9 +142,8 @@
 .post-content img,
 .article-content img {
   width: 100%;
-  max-width: 800px;
-  height: 400px;
-  object-fit: cover;
+  max-width: 100%;
+  height: auto;
   border-radius: 12px;
   display: block;
   margin: 1.5rem auto;
@@ -156,17 +155,99 @@
   transform: scale(1.01);
 }
 
+/* Reading progress bar */
+#reading-progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  width: 0%;
+  z-index: 9999;
+  border-radius: 0 2px 2px 0;
+  transition: width 0.1s linear;
+  @apply bg-primary dark:bg-darkmode-primary;
+}
+
+/* Copy-code button */
+.code-block-wrapper {
+  position: relative;
+}
+
+.copy-code-btn {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.6rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  border-radius: 6px;
+  cursor: pointer;
+  border: 1px solid rgba(255,255,255,0.15);
+  background: rgba(255,255,255,0.08);
+  color: rgba(255,255,255,0.75);
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+
+  &:hover {
+    background: rgba(255,255,255,0.18);
+    color: #fff;
+    border-color: rgba(255,255,255,0.3);
+  }
+
+  &.copied {
+    color: #4ade80;
+    border-color: rgba(74,222,128,0.4);
+  }
+}
+
+/* Scroll-to-top button */
+#scroll-to-top {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  z-index: 999;
+  border: none;
+  @apply bg-primary dark:bg-darkmode-primary text-white shadow-lg;
+
+  &.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  &:hover {
+    @apply opacity-90;
+    transform: translateY(-2px);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .blog-card,
   .blog-card-image,
   .blog-chip,
   .feedback-button,
-  .single-post img {
+  .single-post img,
+  #reading-progress-bar,
+  #scroll-to-top,
+  .copy-code-btn {
     transition: none !important;
   }
 
   .blog-card:hover,
-  .single-post img:hover {
+  .single-post img:hover,
+  #scroll-to-top:hover {
     transform: none !important;
   }
 
@@ -175,5 +256,34 @@
     img {
       transform: none !important;
     }
+  }
+}
+
+/* About page styles */
+.about-hero {
+  @apply bg-gradient-to-br from-primary/10 via-body to-body dark:from-darkmode-primary/10 dark:via-darkmode-body dark:to-darkmode-body;
+}
+
+.about-stat-card {
+  @apply bg-body dark:bg-darkmode-theme-light rounded-2xl border border-border dark:border-darkmode-border p-6 text-center shadow-sm transition duration-300;
+
+  &:hover {
+    @apply -translate-y-1 shadow-md;
+  }
+}
+
+.about-service-card {
+  @apply bg-body dark:bg-darkmode-theme-light rounded-3xl border border-border dark:border-darkmode-border p-6 shadow-sm transition duration-300;
+
+  &:hover {
+    @apply -translate-y-1 shadow-md border-primary dark:border-darkmode-primary;
+  }
+}
+
+.about-tech-badge {
+  @apply bg-theme-light dark:bg-darkmode-theme-light text-dark dark:text-darkmode-dark inline-flex items-center gap-2 rounded-full border border-border dark:border-darkmode-border px-4 py-2 text-sm font-medium transition duration-300;
+
+  &:hover {
+    @apply border-primary text-primary dark:border-darkmode-primary dark:text-darkmode-primary;
   }
 }
