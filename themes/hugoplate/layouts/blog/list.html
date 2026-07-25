@@ -1,20 +1,64 @@
 {{ define "main" }}
-  {{ partial "page-header" . }}
+  {{ $posts := sort .RegularPages "Date" "desc" }}
+  {{ $featured := false }}
+  {{ if gt (len $posts) 0 }}
+    {{ $featured = index $posts 0 }}
+  {{ end }}
+  {{ partial "components/blog-hero" (dict
+    "Featured" $featured
+    "Eyebrow" "From the blog"
+    "Title" "Explore every post with richer context and easier discovery"
+    "BrowseLink" site.Home.RelPermalink
+    "BrowseLabel" "Back to home"
+    )
+  }}
 
 
-  <section class="section">
+  <section class="section pt-0" aria-labelledby="blog-posts-heading">
     <div class="container">
-      <ul class="text-center">
-        {{ range .RegularPages }}
-          <li class="m-3">
-            <a
-              href="{{ .Permalink }}"
-              class="text-dark dark:text-darkmode-dark block text-xl">
-              {{ .Title }}
+      <div class="mb-10">
+        <div class="mb-5 max-w-3xl">
+          <p class="blog-eyebrow">Discover by topic</p>
+          <h2 id="blog-posts-heading" class="mb-3">Filter by category</h2>
+          <p class="text-text dark:text-darkmode-text">
+            Jump into the topics you care about most, or browse the full archive
+            below.
+          </p>
+        </div>
+        <nav class="blog-chip-group" aria-label="Filter posts by category">
+          <a class="blog-chip is-active" href="{{ .RelPermalink }}">
+            All posts
+            <span>{{ len .RegularPages }}</span>
+          </a>
+          {{ range site.Taxonomies.categories.ByCount }}
+            <a class="blog-chip" href="{{ .Page.RelPermalink }}">
+              {{ .Page.Title }}
+              <span>{{ .Count }}</span>
             </a>
-          </li>
-        {{ end }}
-      </ul>
+          {{ end }}
+        </nav>
+      </div>
+
+      <div class="row gx-5 gy-5">
+        <div class="lg:col-8">
+          <div class="row">
+            {{ $listingPosts := $posts }}
+            {{ with $featured }}
+              {{ $listingPosts = where $posts ".RelPermalink" "!=" .RelPermalink }}
+            {{ end }}
+            {{ $paginator := .Paginate $listingPosts }}
+            {{ range $paginator.Pages }}
+              <div class="md:col-6 mb-8">
+                {{ partial "components/blog-card" . }}
+              </div>
+            {{ end }}
+          </div>
+          {{ partial "components/pagination.html" . }}
+        </div>
+        <div class="lg:col-4">
+          {{ partial "components/blog-sidebar" (dict "Posts" $posts "Featured" $featured) }}
+        </div>
+      </div>
     </div>
   </section>
 {{ end }}

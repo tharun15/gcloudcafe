@@ -1,25 +1,179 @@
-// Add your own custom styles here
-// .navbar-brand img {
-  // width: 75px !important;
-  // height: auto !important;
-// }
-/* ✅ Standardize blog post image sizes across all posts */
+.blog-focus-ring {
+  @apply focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary;
+}
+
+.blog-eyebrow {
+  @apply text-primary dark:text-darkmode-primary mb-3 inline-flex text-sm font-semibold uppercase tracking-widest;
+}
+
+.blog-hero,
+.blog-article-shell,
+.blog-sidebar-block,
+.post-feedback-widget {
+  @apply bg-body dark:bg-darkmode-theme-light rounded-3xl border border-border p-6 shadow-sm dark:border-darkmode-border lg:p-8;
+}
+
+.blog-hero {
+  @apply from-body via-theme-light to-body dark:from-darkmode-body dark:via-darkmode-theme-light dark:to-darkmode-body bg-gradient-to-br;
+}
+
+.blog-card {
+  @apply bg-body dark:bg-darkmode-theme-light flex h-full flex-col overflow-hidden rounded-3xl border border-border shadow-sm transition duration-300 dark:border-darkmode-border;
+
+  &:hover {
+    @apply -translate-y-1 shadow-xl;
+  }
+}
+
+.blog-card-media,
+.blog-hero-media {
+  @apply block overflow-hidden;
+}
+
+.blog-card-image {
+  @apply h-full w-full object-cover transition duration-300;
+}
+
+.blog-card-media {
+  aspect-ratio: 16 / 10;
+
+  .blog-card-image,
+  img {
+    @apply h-full w-full object-cover;
+  }
+
+  &:hover {
+    .blog-card-image,
+    img {
+      @apply scale-105;
+    }
+  }
+}
+
+.blog-card-body {
+  @apply flex h-full flex-col p-6;
+}
+
+.blog-badge {
+  @apply bg-primary/10 text-primary dark:bg-darkmode-primary/20 dark:text-darkmode-primary inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-wide;
+}
+
+.blog-reading-time {
+  @apply text-text dark:text-darkmode-text inline-flex items-center gap-2 text-sm;
+}
+
+.blog-card-title {
+  @apply mb-3 text-2xl;
+}
+
+.blog-card-copy {
+  @apply text-text dark:text-darkmode-text mb-5 text-base leading-7;
+}
+
+.blog-meta-list {
+  @apply text-text dark:text-darkmode-text flex flex-wrap items-center gap-4 text-sm;
+
+  li {
+    @apply inline-flex items-center gap-2;
+  }
+}
+
+.blog-card-link {
+  @apply text-primary dark:text-darkmode-primary mt-5 inline-flex items-center gap-2 font-semibold;
+}
+
+.blog-fallback-media {
+  @apply from-primary/10 via-theme-light to-body dark:from-darkmode-primary/20 dark:via-darkmode-theme-light dark:to-darkmode-body flex h-full flex-col justify-end gap-4 bg-gradient-to-br p-6;
+
+  h2,
+  h3 {
+    @apply text-dark dark:text-darkmode-dark mb-0;
+  }
+}
+
+.blog-card-fallback {
+  @apply min-h-full;
+}
+
+.blog-chip-group {
+  @apply flex flex-wrap gap-3;
+}
+
+.blog-chip,
+.feedback-button {
+  @apply bg-body dark:bg-darkmode-theme-light text-dark dark:text-darkmode-dark inline-flex items-center gap-2 rounded-full border border-border px-4 py-2 text-sm font-medium transition duration-300 dark:border-darkmode-border;
+}
+
+.blog-chip {
+  span {
+    @apply bg-theme-light dark:bg-darkmode-body rounded-full px-2 py-0.5 text-xs;
+  }
+
+  &.is-active,
+  &:hover {
+    @apply border-primary text-primary dark:border-darkmode-primary dark:text-darkmode-primary;
+  }
+}
+
+.blog-mini-card + .blog-mini-card {
+  @apply border-border dark:border-darkmode-border border-t pt-4;
+}
+
+.blog-newsletter-input {
+  @apply bg-theme-light dark:bg-darkmode-body text-dark dark:text-darkmode-dark placeholder:text-light dark:placeholder:text-darkmode-text w-full rounded-2xl border border-transparent px-5 py-4;
+}
+
+.blog-article-content {
+  @apply rounded-3xl;
+}
+
+.post-feedback-widget {
+  @apply mt-2;
+}
+
+.feedback-button {
+  &.is-active,
+  &:hover {
+    @apply border-primary bg-primary/10 text-primary dark:border-darkmode-primary dark:bg-darkmode-primary/20 dark:text-darkmode-primary;
+  }
+}
 
 .single-post img,
 .post-content img,
 .article-content img {
   width: 100%;
-  max-width: 800px;    // Keeps images responsive within layout
-  height: 400px;       // Consistent visual height
-  object-fit: cover;   // Ensures image fills nicely without distortion
-  border-radius: 12px; // Optional: smooth rounded corners
+  max-width: 800px;
+  height: 400px;
+  object-fit: cover;
+  border-radius: 12px;
   display: block;
   margin: 1.5rem auto;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); // Optional: soft shadow for depth
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: transform 0.25s ease;
 }
 
-/* Optional hover effect for subtle interactivity */
 .single-post img:hover {
   transform: scale(1.01);
-  transition: transform 0.25s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .blog-card,
+  .blog-card-image,
+  .blog-chip,
+  .feedback-button,
+  .single-post img {
+    transition: none !important;
+  }
+
+  .blog-card:hover,
+  .single-post img:hover {
+    transform: none !important;
+  }
+
+  .blog-card-media:hover {
+    .blog-card-image,
+    img {
+      transform: none !important;
+    }
+  }
 }

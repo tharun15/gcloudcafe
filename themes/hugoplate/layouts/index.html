@@ -1,27 +1,58 @@
 {{ define "main" }}
-  <!--{{ partial "page-header" . }}-->
+  {{ $posts := sort (where site.RegularPages "Section" "blog") "Date" "desc" }}
+  {{ $featured := false }}
+  {{ if gt (len $posts) 0 }}
+    {{ $featured = index $posts 0 }}
+  {{ end }}
 
-  
-  <section class="section">
+  {{ partial "components/blog-hero" (dict
+    "Featured" $featured
+    "Eyebrow" "Fresh from the cafe"
+    "Title" "Cloud journeys, certifications, and practical guides"
+    "BrowseLink" (`blog/` | relLangURL)
+    "BrowseLabel" "Browse the blog"
+    )
+  }}
+
+
+  <section class="section pt-0" aria-labelledby="home-posts-heading">
     <div class="container">
-      <div class="row gx-5">
-        <!-- blog posts -->
+      <div class="row gx-5 gy-5">
         <div class="lg:col-8">
+          <div
+            class="mb-10 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+            <div>
+              <p class="blog-eyebrow">Recent posts</p>
+              <h2 id="home-posts-heading" class="mb-3">
+                Start with the newest practical reads
+              </h2>
+              <p class="text-text dark:text-darkmode-text max-w-2xl">
+                The latest exam reflections, cloud walkthroughs, and
+                implementation notes — now with richer metadata and faster
+                scanning.
+              </p>
+            </div>
+            <a
+              class="blog-focus-ring btn btn-outline-primary btn-sm"
+              href="{{ `blog/` | relLangURL }}">
+              Visit the archive
+            </a>
+          </div>
+
           <div class="row">
-            {{ $paginator:= .Paginate (where .Site.RegularPages "Section" "blog") }}
-            {{ range $paginator.Pages }}
-              <div class="md:col-6 mb-14">
+            {{ $gridPosts := $posts }}
+            {{ with $featured }}
+              {{ $gridPosts = where $posts ".RelPermalink" "!=" .RelPermalink }}
+            {{ end }}
+            {{ range first 6 $gridPosts }}
+              <div class="md:col-6 mb-8">
                 {{ partial "components/blog-card" . }}
               </div>
             {{ end }}
           </div>
-          {{ partial "components/pagination.html" . }}
         </div>
-        <!-- sidebar -->
         <div class="lg:col-4">
-          <!-- widget -->
-          {{ $widget:= site.Params.widgets.sidebar }}
-          {{ partialCached "widgets/widget-wrapper" ( dict "Widgets" $widget "Scope" . ) }}
+          {{ partial "components/blog-sidebar" (dict "Posts" $posts "Featured" $featured) }}
         </div>
       </div>
     </div>
