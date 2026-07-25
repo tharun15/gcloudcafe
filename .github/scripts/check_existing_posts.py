@@ -93,10 +93,16 @@ def check_existing_posts(topics_json):
         return result
 
 if __name__ == '__main__':
-    if len(sys.argv) > 1:
-        topics_json = sys.argv[1]
-    else:
-        # Read from stdin if no argument provided
-        topics_json = sys.stdin.read()
+    # Read from stdin (piped from previous command)
+    topics_json = sys.stdin.read()
+    
+    if not topics_json.strip():
+        # Try command line argument as fallback
+        if len(sys.argv) > 1:
+            topics_json = sys.argv[1]
+        else:
+            logger.error("No topics data provided")
+            print(json.dumps({'new_topics': [], 'duplicate_topics': [], 'error': 'No input'}))
+            sys.exit(1)
     
     check_existing_posts(topics_json)
