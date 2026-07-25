@@ -1,0 +1,45 @@
+<section class="mt-12" aria-labelledby="post-feedback-heading">
+  <div class="post-feedback-widget" data-post-feedback="{{ .RelPermalink }}">
+    <div
+      class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+      <div>
+        <p class="blog-eyebrow">Quick feedback</p>
+        <h2 id="post-feedback-heading" class="h4 mb-2">
+          How did this post land for you?
+        </h2>
+        <p class="text-text dark:text-darkmode-text">
+          Pick one quick reaction. Your choice stays only in this browser.
+        </p>
+      </div>
+      <div
+        class="flex flex-wrap gap-3"
+        role="group"
+        aria-label="Post feedback options">
+        <button
+          class="feedback-button blog-focus-ring"
+          type="button"
+          data-feedback-value="Helpful">
+          👍 Helpful
+        </button>
+        <button
+          class="feedback-button blog-focus-ring"
+          type="button"
+          data-feedback-value="Clear">
+          💡 Clear
+        </button>
+        <button
+          class="feedback-button blog-focus-ring"
+          type="button"
+          data-feedback-value="Motivating">
+          🔥 Motivating
+        </button>
+      </div>
+    </div>
+    <p
+      class="mt-4 text-sm text-text dark:text-darkmode-text"
+      data-feedback-status
+      aria-live="polite">
+      No sign-in, no network request — just a lightweight local reaction.
+    </p>
+  </div>
+</section>
