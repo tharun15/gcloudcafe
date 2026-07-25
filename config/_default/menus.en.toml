@@ -61,3 +61,13 @@ weight = 1
 name = "Privacy Policy"
 url = "/privacy-policy"
 weight = 3
+
+[[footer]]
+name = "Terms of Service"
+url = "/terms-of-service"
+weight = 4
+
+[[footer]]
+name = "Cookie Policy"
+url = "/cookie-policy"
+weight = 5

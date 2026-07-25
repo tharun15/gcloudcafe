@@ -1,6 +1,45 @@
-/* blog-enhancements.js — reading progress, copy-code, scroll-to-top */
+/* blog-enhancements.js — reading progress, copy-code, scroll-to-top, header hide/show */
 (function () {
   "use strict";
+
+  /* ── Auto-hide Header on Scroll ── */
+  function initHeaderScroll() {
+    var header = document.querySelector(".header");
+    if (!header) return;
+
+    var lastScrollY = window.scrollY || window.pageYOffset;
+    var ticking = false;
+    var SCROLL_THRESHOLD = 80; // px from top before hide logic activates
+
+    function onScroll() {
+      // Don't hide header when mobile menu is open
+      var navToggle = document.getElementById("nav-toggle");
+      if (navToggle && navToggle.checked) return;
+
+      if (!ticking) {
+        window.requestAnimationFrame(function () {
+          var currentScrollY = window.scrollY || window.pageYOffset;
+          if (currentScrollY > SCROLL_THRESHOLD) {
+            if (currentScrollY > lastScrollY) {
+              // Scrolling down → hide header
+              header.classList.add("header--hidden");
+            } else {
+              // Scrolling up → reveal header
+              header.classList.remove("header--hidden");
+            }
+          } else {
+            // Near top → always show
+            header.classList.remove("header--hidden");
+          }
+          lastScrollY = currentScrollY;
+          ticking = false;
+        });
+        ticking = true;
+      }
+    }
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+  }
 
   /* ── Reading Progress Bar ── */
   function initReadingProgress() {
@@ -104,6 +143,7 @@
   }
 
   function init() {
+    initHeaderScroll();
     initReadingProgress();
     initCopyCode();
     initScrollToTop();

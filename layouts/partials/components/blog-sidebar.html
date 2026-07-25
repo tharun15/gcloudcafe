@@ -1,0 +1,54 @@
+{{ $posts := .Posts }}
+{{ $featured := .Featured }}
+{{ $recommended := sort $posts "WordCount" "desc" }}
+{{ with $featured }}
+  {{ $recommended = where $recommended ".RelPermalink" "!=" .RelPermalink }}
+{{ end }}
+
+
+<aside class="space-y-6" aria-label="Blog discovery">
+  <section
+    class="blog-sidebar-block"
+    aria-labelledby="recommended-posts-heading">
+    <div class="mb-5">
+      <p class="blog-eyebrow">Popular picks</p>
+      <h2 id="recommended-posts-heading" class="h4 mb-2">Recommended reads</h2>
+      <p class="text-sm text-text dark:text-darkmode-text">
+        In-depth posts surfaced with a lightweight on-site metadata heuristic
+        when analytics-based popularity data is unavailable.
+      </p>
+    </div>
+
+    <div class="space-y-4">
+      {{ range first 4 $recommended }}
+        {{ $category := index (.Params.categories | default (slice)) 0 }}
+        <article class="blog-mini-card">
+          <div class="mb-3 flex flex-wrap items-center gap-2">
+            {{ with $category }}
+              <a
+                class="blog-badge blog-focus-ring"
+                href="{{ `categories/` | relLangURL }}{{ . | urlize | lower }}/">
+                {{ . | humanize }}
+              </a>
+            {{ end }}
+            <span class="blog-reading-time">
+              <i class="fa-regular fa-clock"></i>
+              {{ .ReadingTime }} min read
+            </span>
+          </div>
+          <h3 class="mb-2 text-xl">
+            <a class="blog-focus-ring" href="{{ .RelPermalink }}"
+              >{{ .Title }}</a
+            >
+          </h3>
+          <p class="mb-3 text-sm leading-7 text-text dark:text-darkmode-text">
+            {{ .Params.description | default .Summary | plainify | truncate 110 }}
+          </p>
+          <p class="text-sm text-text dark:text-darkmode-text">
+            {{ time.Format ":date_long" .PublishDate }}
+          </p>
+        </article>
+      {{ end }}
+    </div>
+  </section>
+</aside>
