@@ -188,8 +188,25 @@ def generate_drafts(topics_json, output_dir):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Generate markdown drafts for trending topics')
-    parser.add_argument('--topics', required=True, help='JSON string with topics')
+    parser.add_argument('--topics', help='JSON string with topics')
+    parser.add_argument('--topics-file', help='File path to JSON with topics')
     parser.add_argument('--output-dir', default=BLOG_CONTENT_DIR, help='Output directory for drafts')
 
     args = parser.parse_args()
-    generate_drafts(args.topics, args.output_dir)
+    
+    # Read topics from file or argument
+    if args.topics_file:
+        try:
+            with open(args.topics_file, 'r') as f:
+                topics_json = f.read()
+        except Exception as e:
+            logger.error(f"Failed to read topics file: {str(e)}")
+            print(json.dumps({'draft_created': 'false', 'error': str(e)}))
+            sys.exit(1)
+    elif args.topics:
+        topics_json = args.topics
+    else:
+        # Read from stdin if no argument provided
+        topics_json = sys.stdin.read()
+    
+    generate_drafts(topics_json, args.output_dir)

@@ -34,14 +34,16 @@ jobs:
         id: trending
         run: |
           python .github/scripts/pytrends_fetch.py > trending_topics.json
-          echo "topics=$(cat trending_topics.json)" >> $GITHUB_OUTPUT
+          if [ -f trending_topics.json ]; then
+            echo "Trending topics fetched successfully"
+          fi
         continue-on-error: true
 
       - name: Check existing posts
         id: check_posts
         if: steps.trending.outcome == 'success'
         run: |
-          python .github/scripts/check_existing_posts.py ${{ steps.trending.outputs.topics }}
+          python .github/scripts/check_existing_posts.py < trending_topics.json
         continue-on-error: true
 
       - name: Generate markdown drafts
@@ -49,7 +51,7 @@ jobs:
         if: steps.check_posts.outcome == 'success'
         run: |
           python .github/scripts/generate_draft.py \
-            --topics ${{ steps.trending.outputs.topics }} \
+            --topics-file trending_topics.json \
             --output-dir content/english/blog/drafts
         continue-on-error: true
 
