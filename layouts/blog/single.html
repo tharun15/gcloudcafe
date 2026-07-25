@@ -1,0 +1,129 @@
+{{ define "main" }}
+  {{/* Reading progress bar – rendered once at the top of the article */}}
+  <div id="reading-progress-bar" aria-hidden="true"></div>
+
+  {{ $authorSlug := .Params.author }}
+  {{ $authorName := $authorSlug | humanize | title }}
+  {{ with site.GetPage (printf "/authors/%s" $authorSlug) }}
+    {{ $authorName = .Title }}
+  {{ end }}
+  <section class="section pt-7">
+    <div class="container">
+      <div class="row justify-center">
+        <article class="single-post lg:col-10">
+          <header class="blog-article-shell mb-10">
+            {{ $categories:= .Params.categories }}
+            {{ if $categories }}
+              <div class="mb-5 flex flex-wrap gap-2">
+                {{ range first 3 $categories }}
+                  <a
+                    class="blog-badge blog-focus-ring"
+                    href="{{ `categories/` | relLangURL }}{{ . | urlize | lower }}/">
+                    {{ . | humanize }}
+                  </a>
+                {{ end }}
+              </div>
+            {{ end }}
+            <h1 class="mb-4 text-4xl md:text-5xl">{{ .Title }}</h1>
+            <p
+              class="mb-6 max-w-3xl text-lg leading-8 text-text dark:text-darkmode-text">
+              {{ .Params.description | default .Summary | plainify }}
+            </p>
+            <ul class="blog-meta-list mb-8">
+              <li>
+                <i class="fa-regular fa-circle-user"></i>
+                <a
+                  class="blog-focus-ring"
+                  href="{{ `authors/` | relLangURL }}{{ $authorSlug | urlize }}/">
+                  {{ $authorName }}
+                </a>
+              </li>
+              <li>
+                <i class="fa-regular fa-calendar"></i>
+                {{ time.Format ":date_long" .PublishDate }}
+              </li>
+              <li>
+                <i class="fa-regular fa-clock"></i>
+                {{ .ReadingTime }} min read
+              </li>
+            </ul>
+            {{ $image:= .Params.image }}
+            {{ if $image }}
+              <div class="overflow-hidden rounded-3xl">
+                {{ partial "image" (dict "Src" $image "Context" .Page "Alt" .Title "Class" "blog-card-image") }}
+              </div>
+            {{ else }}
+              <div class="blog-fallback-media min-h-[280px] rounded-3xl">
+                <span class="blog-badge"
+                  >{{ index (.Params.categories | default (slice "Featured")) 0 | humanize }}</span
+                >
+                <h2>{{ .Title }}</h2>
+              </div>
+            {{ end }}
+          </header>
+
+          <div class="content blog-article-content mb-10">
+            {{ partial "toc.html" (dict "Class" "blog" "Collapsed" false "TableOfContents" .TableOfContents ) }}
+            {{ .Content }}
+          </div>
+          <div class="blog-article-shell row items-start justify-between">
+            {{ $tags:= .Params.tags }}
+            {{ if $tags }}
+              <div class="lg:col-5 mb-10 flex items-center lg:mb-0">
+                <h5 class="mr-3">{{ T "tags" }} :</h5>
+                <ul>
+                  {{ range $i,$p:= $tags }}
+                    <li class="inline-block">
+                      <a
+                        class="bg-theme-light hover:bg-primary dark:bg-darkmode-theme-light dark:hover:bg-darkmode-primary dark:hover:text-dark m-1 block rounded px-3 py-1 hover:text-white"
+                        href="{{ `tags/` | relLangURL }}{{ . | urlize | lower }}/">
+                        {{ . | humanize }}
+                      </a>
+                    </li>
+                  {{ end }}
+                </ul>
+              </div>
+            {{ end }}
+            <div class="lg:col-4 flex items-center">
+              {{ partial "social-share" (dict "Context" . "Class" "share-icons" "Title" (T "share") "Whatsapp" true "Telegram" true "Linkedin" true "Pinterest" false "Tumblr" false "Vk" false) }}
+            </div>
+          </div>
+          {{ partial "components/post-feedback" . }}
+          <!-- comments -->
+          {{ if site.Config.Services.Disqus.Shortname }}
+            <div class="mt-20">
+              {{ template "_internal/disqus.html" . }}
+            </div>
+          {{ end }}
+        </article>
+      </div>
+
+      <!-- Related posts -->
+      {{ $related := (where site.RegularPages "Section" "in" site.Params.mainSections) | intersect (where site.RegularPages ".Title" "!=" .Title) | union (site.RegularPages.Related . ) }}
+      {{ $related = $related | shuffle | first 3 }}
+      {{ with $related }}
+        <div class="section pb-0 pt-16" aria-labelledby="related-posts-heading">
+          <p class="blog-eyebrow">Keep exploring</p>
+          <h2 id="related-posts-heading" class="h3 mb-12">
+            {{ T "related_posts" }}
+          </h2>
+          <div class="row">
+            {{ range . }}
+              <div class="lg:col-4 md:col-6 mb-8">
+                {{ partial "components/blog-card" . }}
+              </div>
+            {{ end }}
+          </div>
+        </div>
+      {{ end }}
+    </div>
+  </section>
+
+  {{/* Scroll-to-top button */}}
+  <button
+    id="scroll-to-top"
+    aria-label="Scroll to top of page"
+    title="Back to top">
+    <i class="fa-solid fa-arrow-up"></i>
+  </button>
+{{ end }}

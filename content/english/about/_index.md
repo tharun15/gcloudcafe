@@ -1,27 +1,20 @@
-# Welcome to GcloudCafe
-
-Your go-to source for up-to-date news on Cloud technologies, practical tips on passing Cloud certifications, and clear explanations of key Cloud concepts.
-
+---
+title: "About GCloud Cafe"
+meta_title: "About GCloud Cafe — Cloud Certification Tips, News & Guides"
+description: "GCloud Cafe is your go-to destination for practical cloud certification tips, cloud technology news, and clear cloud concepts — written by practitioners for practitioners."
 ---
 
-## What We Offer
+## Our Mission
 
-### 🌐 Cloud Technology News  
-Stay informed with the latest updates, tools, and trends in the cloud industry.
+GCloud Cafe was born from a simple idea: cloud knowledge should be accessible, practical, and honest. No marketing fluff, no vendor spin — just real content that helps you learn, certify, and build.
 
-### 🎯 Certification Tips & Tricks  
-Proven strategies, study plans, and hands-on practice ideas to help you pass cloud certification exams confidently.
+## What We Believe
 
-### 📚 Cloud Concepts Explained  
-Understand fundamental cloud computing topics like:
-- Deployment models (public, private, hybrid)
-- Service models (IaaS, PaaS, SaaS)
-- Virtualization
-- Networking
-- Security
+- **Practical over theoretical** — every guide should help you do something real.
+- **Open access** — great content should never live behind a paywall.
+- **Community first** — we learn faster together.
+- **Quality over quantity** — fewer, deeper articles beat daily filler posts.
 
-...all broken down into easy-to-grasp explanations.
+## A Note on the Content
 
----
-
-Join our community to learn, share, and grow your cloud skills with **Gcloudcafe** — where cloud success begins!
+Every article on GCloud Cafe is written from hands-on experience. When we say we've configured HTPasswd on OpenShift or set up a CKA exam strategy, we mean we've actually done it — and want to share what worked (and what didn't).
