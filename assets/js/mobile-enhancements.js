@@ -73,33 +73,6 @@
         menu.classList.remove('open');
       }
     });
-
-    // Fix theme switcher overlap with breadcrumb
-    function fixThemeSwitcherOverlap() {
-      const themeSwitcher = document.querySelector('.theme-switcher');
-      const breadcrumbs = document.querySelectorAll('.breadcrumb');
-
-      if (!themeSwitcher || breadcrumbs.length === 0) return;
-
-      // Ensure theme switcher doesn't interfere with breadcrumb clicks
-      breadcrumbs.forEach(breadcrumb => {
-        breadcrumb.addEventListener('click', (e) => {
-          // Stop propagation to prevent theme switcher from being triggered
-          e.stopPropagation();
-
-          // If the click is on a link, let it proceed normally
-          if (e.target.tagName === 'A') {
-            return;
-          }
-
-          // For other breadcrumb elements, ensure they don't trigger theme switcher
-          e.preventDefault();
-        });
-      });
-    }
-
-    // Initialize the fix
-    fixThemeSwitcherOverlap();
   }
 
   /**
@@ -321,16 +294,20 @@
     // Ensure theme switcher doesn't interfere with breadcrumb clicks
     breadcrumbs.forEach(breadcrumb => {
       breadcrumb.addEventListener('click', (e) => {
-        // Stop propagation to prevent theme switcher from being triggered
-        e.stopPropagation();
-
-        // If the click is on a link, let it proceed normally
-        if (e.target.tagName === 'A') {
-          return;
+        // Only prevent default if it's not a link click
+        if (e.target.tagName !== 'A') {
+          e.preventDefault();
         }
+        // Don't stop propagation to allow dropdown menus to work
+      });
+    });
 
-        // For other breadcrumb elements, ensure they don't trigger theme switcher
-        e.preventDefault();
+    // Also ensure theme switcher doesn't interfere with navigation dropdowns
+    const navDropdowns = document.querySelectorAll('.nav-dropdown > .nav-link');
+    navDropdowns.forEach(dropdown => {
+      dropdown.addEventListener('click', (e) => {
+        // Allow normal dropdown functionality
+        e.stopPropagation();
       });
     });
   }
