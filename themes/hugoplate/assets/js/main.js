@@ -14,21 +14,6 @@
     });
   });
 
-  // Breadcrumb Dropdown Toggler
-  // ----------------------------------------
-  const breadcrumbTogglers = document.querySelectorAll(".breadcrumb > li:not(:last-child) > a");
-
-  breadcrumbTogglers.forEach((toggler) => {
-    toggler?.addEventListener("click", (e) => {
-      // Prevent default navigation for breadcrumb items that should have dropdowns
-      if (toggler.closest('li').querySelector('.breadcrumb-dropdown')) {
-        e.preventDefault();
-        toggler.closest('li').classList.toggle("active");
-        console.log("Breadcrumb dropdown toggled for:", toggler.textContent);
-      }
-    });
-  });
-
   // Testimonial Slider
   // ----------------------------------------
   if (

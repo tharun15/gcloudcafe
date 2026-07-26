@@ -2,8 +2,7 @@
 {{ $class := .Class }}
 {{ $base := site.Home.Permalink }}
 
-
-<ul class="{{ $class }} breadcrumb inline-flex space-x-1 capitalize">
+<ul class="{{ $class }} inline-flex space-x-1 capitalize">
   <li>
     <a class="text-primary dark:text-darkmode-primary" href="{{ $base }}">
       {{ T "home" | default "Home" }}
@@ -12,25 +11,13 @@
   </li>
   {{ range $i, $e:= $context.Ancestors.Reverse }}
     {{ if and (not .IsHome) (ne .Title "Pages") }}
-      <li class="breadcrumb-item">
+      <li>
         <a
-          class="text-primary dark:text-darkmode-primary breadcrumb-link"
+          class="text-primary dark:text-darkmode-primary"
           href="{{ .RelPermalink }}">
           {{ T (printf "%s" (lower .Title)) | default .Title }}
         </a>
         <span class="inlin-block mr-1">/</span>
-        <!-- Breadcrumb dropdown - always included for demo purposes -->
-        <div class="breadcrumb-dropdown">
-          <div class="breadcrumb-dropdown-item">
-            <a href="{{ .RelPermalink }}" class="breadcrumb-dropdown-link">View all {{ .Title }} posts</a>
-          </div>
-          <div class="breadcrumb-dropdown-item">
-            <a href="{{ .RelPermalink }}#categories" class="breadcrumb-dropdown-link">Browse categories</a>
-          </div>
-          <div class="breadcrumb-dropdown-item">
-            <a href="{{ .RelPermalink }}#tags" class="breadcrumb-dropdown-link">Explore tags</a>
-          </div>
-        </div>
       </li>
     {{ end }}
   {{ end }}
