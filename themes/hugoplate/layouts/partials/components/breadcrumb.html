@@ -19,16 +19,18 @@
           {{ T (printf "%s" (lower .Title)) | default .Title }}
         </a>
         <span class="inlin-block mr-1">/</span>
-        <!-- Breadcrumb dropdown example - this would be conditionally included -->
-        {{ if .Params.breadcrumb_dropdown }}
+        <!-- Breadcrumb dropdown - always included for demo purposes -->
         <div class="breadcrumb-dropdown">
-          {{ range .Params.breadcrumb_dropdown }}
-            <div class="breadcrumb-dropdown-item">
-              <a href="{{ .url }}" class="breadcrumb-dropdown-link">{{ .title }}</a>
-            </div>
-          {{ end }}
+          <div class="breadcrumb-dropdown-item">
+            <a href="{{ .RelPermalink }}" class="breadcrumb-dropdown-link">View all {{ .Title }} posts</a>
+          </div>
+          <div class="breadcrumb-dropdown-item">
+            <a href="{{ .RelPermalink }}#categories" class="breadcrumb-dropdown-link">Browse categories</a>
+          </div>
+          <div class="breadcrumb-dropdown-item">
+            <a href="{{ .RelPermalink }}#tags" class="breadcrumb-dropdown-link">Explore tags</a>
+          </div>
         </div>
-        {{ end }}
       </li>
     {{ end }}
   {{ end }}
