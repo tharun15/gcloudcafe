@@ -2,12 +2,6 @@
 (function () {
   "use strict";
 
-  // Import mobile enhancements
-  const script = document.createElement('script');
-  script.src = '/assets/js/mobile-enhancements.js';
-  script.async = true;
-  document.head.appendChild(script);
-
   // Dropdown Menu Toggler For Mobile
   // ----------------------------------------
   const dropdownMenuToggler = document.querySelectorAll(
