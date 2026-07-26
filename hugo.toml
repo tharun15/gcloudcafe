@@ -179,3 +179,6 @@ lazy = true
 [[params.plugins.js]]
 link = "js/blog-enhancements.js"
 lazy = true
+[[params.plugins.js]]
+link = "js/mobile-enhancements.js"
+lazy = true
