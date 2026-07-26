@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <svg width="800" height="400" viewBox="0 0 800 400" xmlns="http://www.w3.org/2000/svg">
   <!-- Background -->
@@ -49,3 +50,103 @@
   <!-- Description -->
   <text x="400" y="340" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" fill="#7f8c8d">Structured workflow automation with reusable Claude Skills</text>
 </svg>
+=======
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="100%" height="100%">
+  <defs>
+    <!-- Dark Background Gradient -->
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0b0f19" />
+      <stop offset="50%" stop-color="#111827" />
+      <stop offset="100%" stop-color="#070a10" />
+    </linearGradient>
+
+    <!-- Claude Warm Accent Gradient -->
+    <linearGradient id="claudeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#E07A5F" />
+      <stop offset="100%" stop-color="#D97706" />
+    </linearGradient>
+
+    <!-- Node Glow Filter -->
+    <filter id="softGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="25" result="blur" />
+    </filter>
+
+    <!-- Glassmorphism Card Gradient -->
+    <linearGradient id="glassGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.08" />
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0.02" />
+    </linearGradient>
+  </defs>
+
+  <!-- Base Canvas -->
+  <rect width="1200" height="630" fill="url(#bgGradient)" />
+
+  <!-- Background Ambient Glows -->
+  <circle cx="600" cy="260" r="180" fill="#E07A5F" opacity="0.15" filter="url(#softGlow)" />
+  <circle cx="250" cy="400" r="150" fill="#4F46E5" opacity="0.12" filter="url(#softGlow)" />
+  <circle cx="950" cy="200" r="160" fill="#0EA5E9" opacity="0.1" filter="url(#softGlow)" />
+
+  <!-- Data Stream / Automation Pipeline Lines -->
+  <g stroke="#ffffff" stroke-opacity="0.12" stroke-width="2" fill="none">
+    <path d="M 100 300 Q 350 300 450 260 T 600 260 T 750 260 T 1100 300" stroke-dasharray="6 6" />
+    <path d="M 200 180 Q 400 180 500 240 T 600 260 T 700 280 T 1000 180" />
+    <path d="M 150 420 Q 350 420 480 300 T 600 260 T 720 220 T 1050 420" />
+  </g>
+
+  <!-- Central "Claude Skill" Core Block (Glassmorphic) -->
+  <g transform="translate(480, 160)">
+    <!-- Card Frame -->
+    <rect x="0" y="0" width="240" height="200" rx="24" fill="url(#glassGrad)" stroke="#ffffff" stroke-opacity="0.2" stroke-width="1.5" />
+    
+    <!-- Outer Glow Ring -->
+    <rect x="20" y="20" width="200" height="160" rx="16" fill="none" stroke="url(#claudeGradient)" stroke-width="2" opacity="0.8" />
+    
+    <!-- Central Icon: Modular Puzzle / Skill Core -->
+    <g transform="translate(85, 65)">
+      <!-- Top Left Block -->
+      <rect x="0" y="0" width="30" height="30" rx="6" fill="#E07A5F" />
+      <!-- Top Right Block -->
+      <rect x="38" y="0" width="30" height="30" rx="6" fill="#ffffff" opacity="0.9" />
+      <!-- Bottom Left Block -->
+      <rect x="0" y="38" width="30" height="30" rx="6" fill="#ffffff" opacity="0.3" />
+      <!-- Bottom Right Block (Glowing Skill Element) -->
+      <rect x="38" y="38" width="30" height="30" rx="6" fill="url(#claudeGradient)" />
+    </g>
+
+    <!-- Label -->
+    <text x="120" y="152" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-weight="700" font-size="14" fill="#ffffff" letter-spacing="2">
+      SKILL MODULE
+    </text>
+  </g>
+
+  <!-- Peripheral Workflow Connection Nodes -->
+  <!-- Left Input Node -->
+  <g transform="translate(220, 260)">
+    <circle cx="0" cy="0" r="28" fill="#111827" stroke="#4F46E5" stroke-width="2" />
+    <path d="M-8 -4 L0 4 L10 -6" stroke="#4F46E5" stroke-width="2.5" fill="none" stroke-linecap="round" />
+  </g>
+
+  <!-- Right Output Node -->
+  <g transform="translate(980, 260)">
+    <circle cx="0" cy="0" r="28" fill="#111827" stroke="#0EA5E9" stroke-width="2" />
+    <path d="M-6 -6 L6 0 L-6 6 Z" fill="#0EA5E9" />
+  </g>
+
+  <!-- Typography -->
+  <text x="600" y="460" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-weight="800" font-size="42" fill="#FFFFFF" letter-spacing="-0.5">
+    CLAUDE SKILLS
+  </text>
+
+  <text x="600" y="505" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-weight="400" font-size="20" fill="#9CA3AF" letter-spacing="0.5">
+    Structured &amp; Reusable AI Workflows
+  </text>
+
+  <!-- Website Badge -->
+  <g transform="translate(500, 550)">
+    <rect x="0" y="0" width="200" height="32" rx="16" fill="#1f2937" stroke="#374151" stroke-width="1" />
+    <text x="100" y="21" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-weight="600" font-size="13" fill="#E07A5F" letter-spacing="1">
+      GCLOUDCAFE.COM
+    </text>
+  </g>
+</svg>
+>>>>>>> Stashed changes
