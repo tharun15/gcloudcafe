@@ -23,6 +23,7 @@
     lazyLoadImages();
     initBackToTop();
     updateActiveLink();
+    fixThemeSwitcherOverlap();
   }
 
   /**
@@ -72,6 +73,33 @@
         menu.classList.remove('open');
       }
     });
+
+    // Fix theme switcher overlap with breadcrumb
+    function fixThemeSwitcherOverlap() {
+      const themeSwitcher = document.querySelector('.theme-switcher');
+      const breadcrumbs = document.querySelectorAll('.breadcrumb');
+
+      if (!themeSwitcher || breadcrumbs.length === 0) return;
+
+      // Ensure theme switcher doesn't interfere with breadcrumb clicks
+      breadcrumbs.forEach(breadcrumb => {
+        breadcrumb.addEventListener('click', (e) => {
+          // Stop propagation to prevent theme switcher from being triggered
+          e.stopPropagation();
+
+          // If the click is on a link, let it proceed normally
+          if (e.target.tagName === 'A') {
+            return;
+          }
+
+          // For other breadcrumb elements, ensure they don't trigger theme switcher
+          e.preventDefault();
+        });
+      });
+    }
+
+    // Initialize the fix
+    fixThemeSwitcherOverlap();
   }
 
   /**
@@ -281,6 +309,32 @@
     });
   }
 
+  /**
+   * Fix theme switcher overlap with breadcrumb
+   */
+  function fixThemeSwitcherOverlap() {
+    const themeSwitcher = document.querySelector('.theme-switcher');
+    const breadcrumbs = document.querySelectorAll('.breadcrumb');
+
+    if (!themeSwitcher || breadcrumbs.length === 0) return;
+
+    // Ensure theme switcher doesn't interfere with breadcrumb clicks
+    breadcrumbs.forEach(breadcrumb => {
+      breadcrumb.addEventListener('click', (e) => {
+        // Stop propagation to prevent theme switcher from being triggered
+        e.stopPropagation();
+
+        // If the click is on a link, let it proceed normally
+        if (e.target.tagName === 'A') {
+          return;
+        }
+
+        // For other breadcrumb elements, ensure they don't trigger theme switcher
+        e.preventDefault();
+      });
+    });
+  }
+
   // Export for external use
   if (typeof window !== 'undefined') {
     window.gcloudcafe = {
@@ -292,7 +346,8 @@
       initMobileMenu,
       initFormValidation,
       initKeyboardNavigation,
-      fixViewportHeight
+      fixViewportHeight,
+      fixThemeSwitcherOverlap
     };
   }
 })();

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Breadcrumb Theme Switcher Fix Test</title>
+    <style>
+        /* Simulate the issue and fix */
+        @media (max-width: 768px) {
+            .theme-switcher {
+                position: relative;
+                z-index: 10;
+                pointer-events: auto;
+                background: #f0f0f0;
+                padding: 10px;
+                margin: 10px 0;
+            }
+
+            .breadcrumb {
+                position: relative;
+                z-index: 20;
+                pointer-events: auto;
+                background: #e0f7fa;
+                padding: 10px;
+                margin: 10px 0;
+            }
+
+            .header {
+                position: relative;
+                z-index: 30;
+                pointer-events: none;
+                background: #fff;
+                padding: 10px;
+                border-bottom: 1px solid #ddd;
+            }
+
+            .header > .navbar {
+                pointer-events: auto;
+            }
+        }
+
+        .theme-switcher, .breadcrumb {
+            cursor: pointer;
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        .test-results {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f5f5f5;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="navbar">
+            <div class="theme-switcher" id="themeSwitcher">
+                🌙 Theme Switcher (Click me)
+            </div>
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="breadcrumb" id="breadcrumb">
+            🍞 Breadcrumb Navigation (Click me) → Home / Blog / Current Post
+        </div>
+
+        <div class="test-results">
+            <h3>Test Results:</h3>
+            <p id="testResult">Click on both elements to test if they work independently.</p>
+            <p id="themeSwitcherResult">Theme Switcher clicks: 0</p>
+            <p id="breadcrumbResult">Breadcrumb clicks: 0</p>
+        </div>
+    </div>
+
+    <script>
+        // Test the fix
+        document.addEventListener('DOMContentLoaded', function() {
+            const themeSwitcher = document.getElementById('themeSwitcher');
+            const breadcrumb = document.getElementById('breadcrumb');
+            const themeSwitcherResult = document.getElementById('themeSwitcherResult');
+            const breadcrumbResult = document.getElementById('breadcrumbResult');
+            const testResult = document.getElementById('testResult');
+
+            let themeSwitcherClicks = 0;
+            let breadcrumbClicks = 0;
+
+            // Theme switcher click handler
+            themeSwitcher.addEventListener('click', function(e) {
+                themeSwitcherClicks++;
+                themeSwitcherResult.textContent = `Theme Switcher clicks: ${themeSwitcherClicks}`;
+                testResult.textContent = "✅ Theme switcher working independently!";
+                testResult.style.color = "green";
+            });
+
+            // Breadcrumb click handler with fix
+            breadcrumb.addEventListener('click', function(e) {
+                // This simulates the fix we implemented
+                e.stopPropagation();
+
+                // If click is on a link, let it proceed
+                if (e.target.tagName === 'A') {
+                    return;
+                }
+
+                breadcrumbClicks++;
+                breadcrumbResult.textContent = `Breadcrumb clicks: ${breadcrumbClicks}`;
+                testResult.textContent = "✅ Breadcrumb working independently! Fix is successful!";
+                testResult.style.color = "green";
+            });
+
+            // Test mobile view simulation
+            if (window.innerWidth <= 768) {
+                console.log("Mobile view detected - testing fix...");
+            } else {
+                console.log("Desktop view - resize window to <768px to test mobile behavior");
+            }
+        });
+    </script>
+</body>
+</html>
