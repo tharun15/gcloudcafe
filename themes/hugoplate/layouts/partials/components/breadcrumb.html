@@ -3,7 +3,7 @@
 {{ $base := site.Home.Permalink }}
 
 
-<ul class="{{ $class }} inline-flex space-x-1 capitalize">
+<ul class="{{ $class }} breadcrumb inline-flex space-x-1 capitalize">
   <li>
     <a class="text-primary dark:text-darkmode-primary" href="{{ $base }}">
       {{ T "home" | default "Home" }}

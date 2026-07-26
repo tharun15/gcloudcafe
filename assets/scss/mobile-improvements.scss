@@ -151,6 +151,31 @@ button {
     min-height: 48px;
     min-width: 48px;
   }
+
+  /* Fix theme switcher overlap with breadcrumb */
+  .theme-switcher {
+    position: relative;
+    z-index: 10;
+    pointer-events: auto;
+  }
+
+  /* Ensure breadcrumb area is clickable */
+  .breadcrumb {
+    position: relative;
+    z-index: 20;
+    pointer-events: auto;
+  }
+
+  /* Prevent theme switcher from overlapping content */
+  .header {
+    position: relative;
+    z-index: 30;
+    pointer-events: none;
+  }
+
+  .header > .navbar {
+    pointer-events: auto;
+  }
 }
 
 /* ============================================
