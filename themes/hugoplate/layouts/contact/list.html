@@ -6,7 +6,7 @@
     <div class="container">
       <div class="row">
         <div class="md:col-10 lg:col-6 mx-auto">
-          <form action="{{ site.Params.contact_form_action }}" method="POST">
+          <form action="{{ site.Params.contact_form_action }}" method="POST" data-validate-form>
             <div class="mb-6">
               <label for="name" class="form-label">
                 Full Name <span class="text-red-500">*</span>
@@ -16,7 +16,8 @@
                 name="name"
                 class="form-input"
                 placeholder="John Doe"
-                type="text" />
+                type="text"
+                required />
             </div>
             <div class="mb-6">
               <label for="email" class="form-label">
@@ -27,7 +28,8 @@
                 name="email"
                 class="form-input"
                 placeholder="john.doe@email.com"
-                type="email" />
+                type="email"
+                required />
             </div>
             <div class="mb-6">
               <label for="message" class="form-label">
@@ -38,7 +40,8 @@
                 name="message"
                 class="form-input"
                 placeholder="Message goes here..."
-                rows="8"></textarea>
+                rows="8"
+                required></textarea>
             </div>
             <button type="submit" class="btn btn-primary">Submit</button>
           </form>

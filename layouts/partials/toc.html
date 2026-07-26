@@ -1,14 +1,6 @@
-<!-- Table of Contents partial -->
-{{ $class := .Class | default "" }}
-{{ $collapsed := .Collapsed | default false }}
-
 {{ if .TableOfContents }}
-  <nav class="toc toc-{{ $class }} {{ if $collapsed }}toc-collapsed{{ end }}" aria-label="Table of Contents">
-    <details {{ if not $collapsed }}open{{ end }}>
-      <summary class="toc-summary">{{ i18n "table_of_contents" | default "Table of Contents" }}</summary>
-      <div class="toc-content">
-        {{ .TableOfContents | safeHTML }}
-      </div>
-    </details>
-  </nav>
+<div class="table-of-contents mb-8" data-toc-container>
+  <h3 class="text-lg font-semibold mb-4">Table of Contents</h3>
+  {{ .TableOfContents }}
+</div>
 {{ end }}
