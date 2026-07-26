@@ -1,20 +1,28 @@
 ---
-title: "About GCloud Cafe"
-meta_title: "About GCloud Cafe — Cloud Certification Tips, News & Guides"
-description: "GCloud Cafe is your go-to destination for practical cloud certification tips, cloud technology news, and clear cloud concepts — written by practitioners for practitioners."
+title: "About Gcloud Cafe"
+meta_title: "About Gcloud Cafe — Practical Cloud Architecture & Certifications"
+description: "Gcloud Cafe is a tech publication focusing on practical cloud certification guides, Kubernetes & OpenShift architectures, and real-world DevOps engineering."
 ---
 
-## Our Mission
+## Welcome to Gcloud Cafe
 
-GCloud Cafe was born from a simple idea: cloud knowledge should be accessible, practical, and honest. No marketing fluff, no vendor spin — just real content that helps you learn, certify, and build.
+Gcloud Cafe is a technical publication built for cloud architects, DevOps engineers, and system administrators. We deliver practical exam strategies, production-grade architecture patterns, and hands-on walkthroughs without marketing spin.
 
-## What We Believe
+### Core Focus Areas
 
-- **Practical over theoretical** — every guide should help you do something real.
-- **Open access** — great content should never live behind a paywall.
-- **Community first** — we learn faster together.
-- **Quality over quantity** — fewer, deeper articles beat daily filler posts.
+- **Cloud Platforms**: Deep dives into Google Cloud Platform (GCP), Amazon Web Services (AWS), and Microsoft Azure.
+- **Container Orchestration**: Production strategies for Kubernetes (CKA/CKAD/CKS) and Red Hat OpenShift (EX280).
+- **Infrastructure as Code**: Terraform, Ansible, GitOps practices, and automated pipeline delivery.
+- **Certification Guides**: Tested strategies and technical tips to pass industry-recognized cloud certifications.
 
-## A Note on the Content
+### Core Principles
 
-Every article on GCloud Cafe is written from hands-on experience. When we say we've configured HTPasswd on OpenShift or set up a CKA exam strategy, we mean we've actually done it — and want to share what worked (and what didn't).
+- **Practitioner-First**: Every guide is based on hands-on deployment experience in real lab and production environments.
+- **Clear & Actionable**: Concise code snippets, command references, and clear architectural diagrams.
+- **Quality & Depth**: Thorough, well-tested technical articles designed to solve real engineering problems.
+
+---
+
+### Get in Touch
+
+Have questions, feedback, or topic suggestions? Feel free to reach out or connect on social channels!

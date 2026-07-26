@@ -1,0 +1,127 @@
+{{ define "main" }}
+  {{ $posts := sort (where site.RegularPages "Section" "blog") "Date" "desc" }}
+  {{ $featured := false }}
+  {{ if gt (len $posts) 0 }}
+    {{ $featured = index $posts 0 }}
+  {{ end }}
+
+  <!-- Hero Section -->
+  {{ partial "components/blog-hero" (dict
+    "Featured" $featured
+    "Eyebrow" "Cloud Architecture & Certifications"
+    "Title" "Practical engineering guides, exam strategies & cloud insights"
+    "BrowseLink" (`blog/` | relLangURL)
+    "BrowseLabel" "Explore All Articles"
+    )
+  }}
+
+  <!-- Main Content & Sidebar -->
+  <section class="section pt-8 pb-16" aria-labelledby="home-posts-heading">
+    <div class="container">
+      <div class="row gx-5 gy-5">
+        <!-- Main Feed -->
+        <div class="lg:col-8">
+          <!-- Feed Header & Filters -->
+          <div class="mb-8 flex flex-col gap-4 border-b border-border/60 dark:border-darkmode-border/60 pb-6 md:flex-row md:items-end md:justify-between">
+            <div>
+              <p class="blog-eyebrow">
+                <i class="fa-solid fa-layer-group text-primary"></i> Recent Articles
+              </p>
+              <h2 id="home-posts-heading" class="mb-2 text-2xl font-bold tracking-tight md:text-3xl">
+                Latest Field Notes & Exam Prep
+              </h2>
+              <p class="text-text/80 dark:text-darkmode-text/80 text-sm max-w-xl">
+                In-depth hands-on guides for Kubernetes, OpenShift, Cloud Platforms, and certification success.
+              </p>
+            </div>
+
+            <!-- Search Trigger & Shortcut -->
+            <button 
+              data-search-trigger
+              class="blog-focus-ring btn btn-outline-primary btn-sm inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs font-semibold"
+              aria-label="Search articles">
+              <i class="fa-solid fa-magnifying-glass"></i> Search
+              <kbd class="ml-1 hidden sm:inline-block">Ctrl K</kbd>
+            </button>
+          </div>
+
+          <!-- Category Chips -->
+          {{ $categories := site.Taxonomies.categories }}
+          {{ if gt (len $categories) 0 }}
+            <div class="mb-8 flex flex-wrap items-center gap-2">
+              <span class="text-xs font-bold uppercase tracking-wider text-text/60 dark:text-darkmode-text/60 mr-2">Topics:</span>
+              <a href="{{ `blog/` | relLangURL }}" class="blog-chip is-active">
+                All <span>{{ len $posts }}</span>
+              </a>
+              {{ range $name, $items := $categories }}
+                <a href="{{ $items.Page.RelPermalink }}" class="blog-chip">
+                  {{ $items.Page.Title }} <span>{{ len $items }}</span>
+                </a>
+              {{ end }}
+            </div>
+          {{ end }}
+
+          <!-- Articles Grid -->
+          <div class="row">
+            {{ $gridPosts := $posts }}
+            {{ with $featured }}
+              {{ $gridPosts = where $posts ".RelPermalink" "!=" .RelPermalink }}
+            {{ end }}
+
+            {{ if eq (len $gridPosts) 0 }}
+              <div class="col-12 text-center py-12">
+                <p class="text-text/70 dark:text-darkmode-text/70">No additional articles found.</p>
+              </div>
+            {{ else }}
+              {{ range first 6 $gridPosts }}
+                <div class="md:col-6 mb-8">
+                  {{ partial "components/blog-card" . }}
+                </div>
+              {{ end }}
+            {{ end }}
+          </div>
+
+          <!-- View All Button -->
+          {{ if gt (len $posts) 6 }}
+            <div class="mt-8 text-center">
+              <a class="blog-focus-ring btn btn-primary rounded-full px-8 py-3 text-sm font-semibold shadow-md transition-all hover:shadow-lg hover:scale-105" href="{{ `blog/` | relLangURL }}">
+                View All Articles <i class="fa-solid fa-arrow-right ml-2"></i>
+              </a>
+            </div>
+          {{ end }}
+        </div>
+
+        <!-- Sidebar Column -->
+        <div class="lg:col-4">
+          {{ partial "components/blog-sidebar" (dict "Posts" $posts "Featured" $featured) }}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Newsletter / Community Section -->
+  <section class="section py-16 bg-theme-light dark:bg-darkmode-theme-light/40 border-t border-b border-border/60 dark:border-darkmode-border/60">
+    <div class="container max-w-4xl text-center">
+      <span class="blog-badge mb-4"><i class="fa-regular fa-paper-plane mr-1.5"></i> Stay Connected</span>
+      <h2 class="mb-4 text-2xl font-bold tracking-tight sm:text-3xl">
+        Level Up Your Cloud Architecture Skills
+      </h2>
+      <p class="text-text dark:text-darkmode-text mb-8 mx-auto max-w-2xl text-base leading-relaxed">
+        Get practical Cloud & DevOps tutorials, exam walkthroughs, and architecture patterns delivered straight to your inbox.
+      </p>
+
+      <form data-validate-form class="mx-auto max-w-md flex flex-col sm:flex-row gap-3">
+        <input 
+          type="email" 
+          placeholder="Enter your email address..." 
+          required 
+          class="blog-newsletter-input" 
+          aria-label="Email address for newsletter"
+        />
+        <button type="submit" class="btn btn-primary rounded-2xl px-6 py-3 text-sm font-semibold whitespace-nowrap shadow-md">
+          Subscribe Free
+        </button>
+      </form>
+    </div>
+  </section>
+{{ end }}

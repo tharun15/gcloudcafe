@@ -1,4 +1,4 @@
-/* blog-enhancements.js — reading progress, copy-code, scroll-to-top, header hide/show */
+/* blog-enhancements.js — reading progress, copy-code, scroll-to-top, header hide/show, search shortcut, active TOC */
 (function () {
   "use strict";
 
@@ -9,10 +9,9 @@
 
     var lastScrollY = window.scrollY || window.pageYOffset;
     var ticking = false;
-    var SCROLL_THRESHOLD = 80; // px from top before hide logic activates
+    var SCROLL_THRESHOLD = 80;
 
     function onScroll() {
-      // Don't hide header when mobile menu is open
       var navToggle = document.getElementById("nav-toggle");
       if (navToggle && navToggle.checked) return;
 
@@ -21,14 +20,11 @@
           var currentScrollY = window.scrollY || window.pageYOffset;
           if (currentScrollY > SCROLL_THRESHOLD) {
             if (currentScrollY > lastScrollY) {
-              // Scrolling down → hide header
               header.classList.add("header--hidden");
             } else {
-              // Scrolling up → reveal header
               header.classList.remove("header--hidden");
             }
           } else {
-            // Near top → always show
             header.classList.remove("header--hidden");
           }
           lastScrollY = currentScrollY;
@@ -65,20 +61,36 @@
     if (!blocks.length) return;
 
     blocks.forEach(function (pre) {
+      if (pre.parentNode.classList.contains("code-block-wrapper")) return;
+
       var wrapper = document.createElement("div");
       wrapper.className = "code-block-wrapper";
       pre.parentNode.insertBefore(wrapper, pre);
-      wrapper.appendChild(pre);
+
+      var code = pre.querySelector("code");
+      var lang = "CODE";
+      if (code) {
+        var match = code.className.match(/(?:lang|language)-(\w+)/);
+        if (match && match[1]) {
+          lang = match[1].toUpperCase();
+        }
+      }
+
+      var header = document.createElement("div");
+      header.className = "code-block-header";
+      header.innerHTML = '<span class="lang-tag">' + lang + '</span>';
 
       var btn = document.createElement("button");
       btn.className = "copy-code-btn blog-focus-ring";
       btn.setAttribute("aria-label", "Copy code to clipboard");
       btn.innerHTML = '<i class="fa-regular fa-copy"></i> Copy';
-      wrapper.appendChild(btn);
+      header.appendChild(btn);
+
+      wrapper.appendChild(header);
+      wrapper.appendChild(pre);
 
       btn.addEventListener("click", function () {
-        var code = pre.querySelector("code") || pre;
-        var text = code.innerText || code.textContent || "";
+        var text = (code || pre).innerText || (code || pre).textContent || "";
         if (!navigator.clipboard) {
           fallbackCopy(text, btn);
           return;
@@ -99,10 +111,7 @@
     try {
       document.execCommand("copy");
       showCopied(btn);
-    } catch (err) {
-      /* execCommand is deprecated; clipboard write is already the preferred path.
-         Silently ignore failures here — the user will simply see no "Copied!" feedback. */
-    }
+    } catch (err) {}
     document.body.removeChild(ta);
   }
 
@@ -135,6 +144,60 @@
     toggle();
   }
 
+  /* ── Active Table of Contents Tracking ── */
+  function initActiveTocTracking() {
+    var tocLinks = document.querySelectorAll(".toc-link");
+    if (!tocLinks.length) return;
+
+    var headings = [];
+    tocLinks.forEach(function (link) {
+      var href = link.getAttribute("href");
+      if (href && href.startsWith("#")) {
+        var el = document.getElementById(href.substring(1));
+        if (el) headings.push({ el: el, link: link });
+      }
+    });
+
+    if (!headings.length) return;
+
+    function onScroll() {
+      var scrollPos = (window.scrollY || document.documentElement.scrollTop) + 120;
+      var activeLink = null;
+
+      for (var i = 0; i < headings.length; i++) {
+        if (headings[i].el.offsetTop <= scrollPos) {
+          activeLink = headings[i].link;
+        } else {
+          break;
+        }
+      }
+
+      tocLinks.forEach(function (link) {
+        if (link === activeLink) {
+          link.classList.add("is-active");
+        } else {
+          link.classList.remove("is-active");
+        }
+      });
+    }
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+  }
+
+  /* ── Keyboard Search Shortcut (Ctrl+K / Cmd+K) ── */
+  function initSearchShortcut() {
+    document.addEventListener("keydown", function (e) {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
+        var searchTrigger = document.querySelector("[data-search-trigger], .search-trigger, [data-target='#search-modal']");
+        if (searchTrigger) {
+          e.preventDefault();
+          searchTrigger.click();
+        }
+      }
+    });
+  }
+
   /* ── Init ── */
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", init);
@@ -147,5 +210,7 @@
     initReadingProgress();
     initCopyCode();
     initScrollToTop();
+    initActiveTocTracking();
+    initSearchShortcut();
   }
 })();
