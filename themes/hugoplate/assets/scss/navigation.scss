@@ -85,3 +85,30 @@ input#nav-toggle:checked ~ #nav-menu {
     }
   }
 }
+
+// Breadcrumb dropdown styles
+.breadcrumb {
+  @apply relative;
+
+  li {
+    @apply relative;
+
+    &.active {
+      .breadcrumb-dropdown {
+        @apply block;
+      }
+    }
+  }
+}
+
+.breadcrumb-dropdown {
+  @apply bg-body dark:bg-darkmode-body z-20 min-w-[180px] rounded p-4 shadow hidden absolute top-full left-0 mt-1;
+}
+
+.breadcrumb-dropdown-item {
+  @apply [&:not(:last-child)]:mb-2;
+}
+
+.breadcrumb-dropdown-link {
+  @apply text-dark hover:text-primary dark:text-darkmode-text dark:hover:text-darkmode-primary block py-1 font-semibold transition;
+}

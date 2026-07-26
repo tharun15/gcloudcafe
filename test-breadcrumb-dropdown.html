@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Breadcrumb Dropdown Test</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Breadcrumb dropdown styles */
+        .breadcrumb {
+            position: relative;
+        }
+
+        .breadcrumb li {
+            position: relative;
+        }
+
+        .breadcrumb li.active .breadcrumb-dropdown {
+            display: block;
+        }
+
+        .breadcrumb-dropdown {
+            background-color: #fff;
+            z-index: 20;
+            min-width: 180px;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            margin-top: 0.25rem;
+        }
+
+        .breadcrumb-dropdown-item:not(:last-child) {
+            margin-bottom: 0.5rem;
+        }
+
+        .breadcrumb-dropdown-link {
+            color: #374151;
+            transition: color 0.2s;
+        }
+
+        .breadcrumb-dropdown-link:hover {
+            color: #3b82f6;
+        }
+
+        .breadcrumb-dropdown-link {
+            display: block;
+            padding: 0.25rem 0;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body class="p-8">
+    <h1 class="text-2xl font-bold mb-6">Breadcrumb Dropdown Test</h1>
+
+    <div class="mb-8">
+        <h2 class="text-xl font-semibold mb-4">Test Case 1: Basic Breadcrumb with Dropdown</h2>
+        <ul class="breadcrumb inline-flex space-x-1 capitalize">
+            <li>
+                <a class="text-primary" href="#">
+                    Home
+                </a>
+                <span class="inline-block mr-1">/</span>
+            </li>
+            <li class="breadcrumb-item">
+                <a class="text-primary breadcrumb-link" href="#">
+                    Blog
+                </a>
+                <span class="inline-block mr-1">/</span>
+                <!-- Breadcrumb dropdown -->
+                <div class="breadcrumb-dropdown">
+                    <div class="breadcrumb-dropdown-item">
+                        <a href="#" class="breadcrumb-dropdown-link">All Posts</a>
+                    </div>
+                    <div class="breadcrumb-dropdown-item">
+                        <a href="#" class="breadcrumb-dropdown-link">Categories</a>
+                    </div>
+                    <div class="breadcrumb-dropdown-item">
+                        <a href="#" class="breadcrumb-dropdown-link">Tags</a>
+                    </div>
+                </div>
+            </li>
+            <li>
+                <span class="text-primary">
+                    Current Post
+                </span>
+            </li>
+        </ul>
+    </div>
+
+    <div class="mb-8">
+        <h2 class="text-xl font-semibold mb-4">Test Case 2: Multiple Breadcrumb Items with Dropdowns</h2>
+        <ul class="breadcrumb inline-flex space-x-1 capitalize">
+            <li>
+                <a class="text-primary" href="#">
+                    Home
+                </a>
+                <span class="inline-block mr-1">/</span>
+            </li>
+            <li class="breadcrumb-item">
+                <a class="text-primary breadcrumb-link" href="#">
+                    Tutorials
+                </a>
+                <span class="inline-block mr-1">/</span>
+                <div class="breadcrumb-dropdown">
+                    <div class="breadcrumb-dropdown-item">
+                        <a href="#" class="breadcrumb-dropdown-link">Beginner</a>
+                    </div>
+                    <div class="breadcrumb-dropdown-item">
+                        <a href="#" class="breadcrumb-dropdown-link">Intermediate</a>
+                    </div>
+                    <div class="breadcrumb-dropdown-item">
+                        <a href="#" class="breadcrumb-dropdown-link">Advanced</a>
+                    </div>
+                </div>
+            </li>
+            <li class="breadcrumb-item">
+                <a class="text-primary breadcrumb-link" href="#">
+                    Cloud
+                </a>
+                <span class="inline-block mr-1">/</span>
+                <div class="breadcrumb-dropdown">
+                    <div class="breadcrumb-dropdown-item">
+                        <a href="#" class="breadcrumb-dropdown-link">AWS</a>
+                    </div>
+                    <div class="breadcrumb-dropdown-item">
+                        <a href="#" class="breadcrumb-dropdown-link">GCP</a>
+                    </div>
+                    <div class="breadcrumb-dropdown-item">
+                        <a href="#" class="breadcrumb-dropdown-link">Azure</a>
+                    </div>
+                </div>
+            </li>
+            <li>
+                <span class="text-primary">
+                    GCP Certification Guide
+                </span>
+            </li>
+        </ul>
+    </div>
+
+    <div class="test-results mt-8 p-4 bg-gray-100 rounded">
+        <h3 class="font-semibold mb-2">Test Instructions:</h3>
+        <ol class="list-decimal list-inside space-y-2">
+            <li>Click on "Blog" in the first breadcrumb - a dropdown should appear with "All Posts", "Categories", and "Tags"</li>
+            <li>Click on "Tutorials" in the second breadcrumb - a dropdown should appear with difficulty levels</li>
+            <li>Click on "Cloud" in the second breadcrumb - a dropdown should appear with cloud provider options</li>
+            <li>Click the same breadcrumb item again - the dropdown should disappear (toggle functionality)</li>
+            <li>Click on a dropdown link - it should navigate (since we're using # links, it will scroll to top)</li>
+        </ol>
+    </div>
+
+    <script>
+        // Breadcrumb Dropdown Toggler
+        document.addEventListener('DOMContentLoaded', function() {
+            const breadcrumbTogglers = document.querySelectorAll(".breadcrumb > li:not(:last-child) > a");
+
+            breadcrumbTogglers.forEach((toggler) => {
+                toggler.addEventListener("click", (e) => {
+                    // Prevent default navigation for breadcrumb items that should have dropdowns
+                    if (toggler.closest('li').querySelector('.breadcrumb-dropdown')) {
+                        e.preventDefault();
+                        toggler.closest('li').classList.toggle("active");
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

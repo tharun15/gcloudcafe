@@ -4,7 +4,7 @@
 
   // Import mobile enhancements
   const script = document.createElement('script');
-  script.src = '/js/mobile-enhancements.js';
+  script.src = '/assets/js/mobile-enhancements.js';
   script.async = true;
   document.head.appendChild(script);
 
@@ -17,6 +17,20 @@
   dropdownMenuToggler.forEach((toggler) => {
     toggler?.addEventListener("click", (e) => {
       e.target.closest(".nav-item").classList.toggle("active");
+    });
+  });
+
+  // Breadcrumb Dropdown Toggler
+  // ----------------------------------------
+  const breadcrumbTogglers = document.querySelectorAll(".breadcrumb > li:not(:last-child) > a");
+
+  breadcrumbTogglers.forEach((toggler) => {
+    toggler?.addEventListener("click", (e) => {
+      // Prevent default navigation for breadcrumb items that should have dropdowns
+      if (toggler.closest('li').querySelector('.breadcrumb-dropdown')) {
+        e.preventDefault();
+        toggler.closest('li').classList.toggle("active");
+      }
     });
   });
 
