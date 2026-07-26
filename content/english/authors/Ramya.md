@@ -1,7 +1,7 @@
 ---
 title: Ramya
 email: ramyasd110@gmail.com
-image: "/images/authors/ramya_author.joeg"
+image: "/images/authors/ramya_author.jpeg"
 description: AI Engineer passionate about artificial intelligence and machine learning, excited to enhance content with cutting-edge AI technologies
 social:
   - name: github
