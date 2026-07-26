@@ -44,7 +44,7 @@
               </li>
               <li>
                 <i class="fa-regular fa-clock"></i>
-                {{ .ReadingTime }} min read
+                <span data-reading-time>{{ .ReadingTime }} min read</span>
               </li>
             </ul>
             {{ $image:= .Params.image }}
@@ -62,10 +62,10 @@
             {{ end }}
           </header>
 
-          <div class="content blog-article-content mb-10">
-            {{ partial "toc.html" (dict "Class" "blog" "Collapsed" false "TableOfContents" .TableOfContents ) }}
-            {{ .Content }}
-          </div>
+           <div class="content blog-article-content mb-10" data-reading-content>
+             {{ partial "toc.html" (dict "Class" "blog" "Collapsed" false "TableOfContents" .TableOfContents ) }}
+             {{ .Content }}
+           </div>
           <div class="blog-article-shell row items-start justify-between">
             {{ $tags:= .Params.tags }}
             {{ if $tags }}
@@ -122,6 +122,7 @@
   {{/* Scroll-to-top button */}}
   <button
     id="scroll-to-top"
+    data-back-to-top
     aria-label="Scroll to top of page"
     title="Back to top">
     <i class="fa-solid fa-arrow-up"></i>
