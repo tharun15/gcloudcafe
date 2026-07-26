@@ -24,6 +24,7 @@
       if (toggler.closest('li').querySelector('.breadcrumb-dropdown')) {
         e.preventDefault();
         toggler.closest('li').classList.toggle("active");
+        console.log("Breadcrumb dropdown toggled for:", toggler.textContent);
       }
     });
   });
