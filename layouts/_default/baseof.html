@@ -1,0 +1,64 @@
+<!doctype html>
+<html
+  itemscope
+  class="{{- if not site.Params.theme_switcher -}}
+    {{- site.Params.theme_default -}}
+  {{- end -}}"
+  lang="{{ site.LanguageCode | default `en-US` }}"
+  itemtype="http://schema.org/WebPage">
+  <head>
+    <!-- head (don't cache it) -->
+    {{ partial "essentials/head.html" . }}
+
+
+    <!-- style (always cache it) -->
+    {{ partialCached "essentials/style.html" . }}
+
+  </head>
+
+  <body>
+    <!-- Skip to main content — WCAG 2.4.1 -->
+    <a href="#main-content" class="skip-to-content">Skip to main content</a>
+    <!-- aria-live region for screen reader announcements (theme switch, toast, etc.) -->
+    <div id="a11y-announce" class="a11y-announce" aria-live="polite" aria-atomic="true"></div>
+
+    <!-- cache partial only in production -->
+    {{ if hugo.IsProduction }}
+      {{ if templates.Exists "partials/preloader.html" }}
+        {{ partialCached "preloader.html" . }}
+      {{ end }}
+      {{ partialCached "gtm-noscript.html" . }}
+    {{ else }}
+      {{ if templates.Exists "partials/preloader.html" }}
+        {{ partial "preloader.html" . }}
+      {{ end }}
+
+
+      <!-- tailwind size indicator -->
+      {{ partial "components/tw-size-indicator.html" . }}
+    {{ end }}
+
+
+    <!-- announcement -->
+    {{ if templates.Exists "partials/announcement.html" }}
+      {{ partialCached "announcement.html" . }}
+    {{ end }}
+
+
+    <!-- header (don't cache it) -->
+    {{ partial "essentials/header.html" . }}
+    {{ partial "search-modal.html" (dict "Context" . ) }}
+
+
+    <main id="main-content" tabindex="-1">
+      {{ block "main" . }}{{ end }}
+    </main>
+
+    <!-- footer -->
+    {{ partial "essentials/footer.html" . }}
+
+
+    <!-- script (always cache it) -->
+    {{ partialCached "essentials/script.html" . }}
+  </body>
+</html>
