@@ -189,7 +189,7 @@
   function initSearchShortcut() {
     document.addEventListener("keydown", function (e) {
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
-        var searchTrigger = document.querySelector("[data-search-trigger], .search-trigger, [data-target='#search-modal']");
+        var searchTrigger = document.querySelector("[data-target='search-modal'], [data-search-trigger], .search-trigger, [data-target='#search-modal']");
         if (searchTrigger) {
           e.preventDefault();
           searchTrigger.click();
