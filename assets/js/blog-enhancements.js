@@ -345,7 +345,6 @@
         }
       });
     });
-  }
 
   function spawnEmojiParticle(btn) {
     var emoji = btn.querySelector("span") ? btn.querySelector("span").textContent : "✨";
