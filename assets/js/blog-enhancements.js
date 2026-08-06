@@ -1336,14 +1336,15 @@
 
     var championBadge = document.querySelector("[data-poll-champion-badge]");
     if (championBadge) {
-      championBadge.innerHTML = '<i class="fa-solid fa-crown text-amber-500"></i> LAST QUARTER CHAMPION (' + qInfo.prevQuarterLabel + '): GCP';
+      championBadge.classList.remove("hidden");
+      championBadge.innerHTML = '<i class="fa-solid fa-trophy text-amber-500"></i> ' + qInfo.quarterLabel + ' Live Competition — Be the first to vote!';
     }
 
     var pollData = [
-      { provider: "GCP", votes: 142, today_votes: 18 },
-      { provider: "AWS", votes: 128, today_votes: 24 },
-      { provider: "AZURE", votes: 65, today_votes: 8 },
-      { provider: "OTHERS", votes: 24, today_votes: 3 }
+      { provider: "GCP", votes: 0, today_votes: 0 },
+      { provider: "AWS", votes: 0, today_votes: 0 },
+      { provider: "AZURE", votes: 0, today_votes: 0 },
+      { provider: "OTHERS", votes: 0, today_votes: 0 }
     ];
 
     function fetchPollData() {
@@ -1401,9 +1402,13 @@
 
       // Update Trend Insight Badge
       var trendBadge = document.querySelector("[data-poll-trend-badge]");
-      if (trendBadge && todayLeader && quarterLeader) {
-        var qPercent = totalVotes > 0 ? (((quarterLeader.votes || 0) / totalVotes) * 100).toFixed(1) : "0.0";
-        trendBadge.innerHTML = '<i class="fa-solid fa-fire text-amber-500 animate-pulse"></i> <strong>TODAY\'S TREND:</strong> ' + todayLeader.provider + ' leads ' + qInfo.quarterLabel + ' today (+' + (todayLeader.today_votes || 0) + ' votes) &nbsp;|&nbsp; 🏆 <strong>CURRENT ' + qInfo.quarterLabel + ' LEADER:</strong> ' + quarterLeader.provider + ' (' + qPercent + '%)';
+      if (trendBadge) {
+        if (totalVotes === 0) {
+          trendBadge.innerHTML = '<i class="fa-solid fa-fire text-amber-500 animate-pulse"></i> <strong>TODAY\'S TREND:</strong> No votes cast yet for ' + qInfo.quarterLabel + '. Be the first to vote!';
+        } else if (todayLeader && quarterLeader) {
+          var qPercent = ((quarterLeader.votes || 0) / totalVotes * 100).toFixed(1);
+          trendBadge.innerHTML = '<i class="fa-solid fa-fire text-amber-500 animate-pulse"></i> <strong>TODAY\'S TREND:</strong> ' + todayLeader.provider + ' leads ' + qInfo.quarterLabel + ' today (+' + (todayLeader.today_votes || 0) + ' votes) &nbsp;|&nbsp; 🏆 <strong>CURRENT ' + qInfo.quarterLabel + ' LEADER:</strong> ' + quarterLeader.provider + ' (' + qPercent + '%)';
+        }
       }
 
       bindPollEvents();
