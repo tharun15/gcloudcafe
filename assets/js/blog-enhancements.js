@@ -571,6 +571,23 @@
     }, 2500);
   }
 
+  /* ── Shared Date Formatter ── */
+  function formatDate(dateStr) {
+    if (!dateStr) return "Just now";
+    try {
+      var d = new Date(dateStr);
+      if (isNaN(d.getTime())) return "Recently";
+      var diff = Math.floor((new Date() - d) / 1000);
+      if (diff < 60) return "Just now";
+      if (diff < 3600) return Math.floor(diff / 60) + "m ago";
+      if (diff < 86400) return Math.floor(diff / 3600) + "h ago";
+      if (diff < 2592000) return Math.floor(diff / 86400) + "d ago";
+      return d.toLocaleDateString();
+    } catch (e) {
+      return "Recently";
+    }
+  }
+
   /* ── Interactive Community Comments System (Supabase Backend) ── */
   function initCommentsSystem() {
     var section = document.getElementById("comments-section");
@@ -634,22 +651,6 @@
           }
         })
         .catch(function () {});
-    }
-
-    function formatDate(dateStr) {
-      if (!dateStr) return "Just now";
-      try {
-        var d = new Date(dateStr);
-        if (isNaN(d.getTime())) return "Recently";
-        var diff = Math.floor((new Date() - d) / 1000);
-        if (diff < 60) return "Just now";
-        if (diff < 3600) return Math.floor(diff / 60) + "m ago";
-        if (diff < 86400) return Math.floor(diff / 3600) + "h ago";
-        if (diff < 2592000) return Math.floor(diff / 86400) + "d ago";
-        return d.toLocaleDateString();
-      } catch (e) {
-        return "Recently";
-      }
     }
 
     function renderComments() {
@@ -911,27 +912,24 @@
     }
 
     function fetchPulses() {
-      var queryUrl = config.url + "/rest/v1/cloud_pulses?select=*&order=score.desc,created_at.desc&apikey=" + config.anonKey + "&_t=" + Date.now();
+      var queryUrl = config.url + "/rest/v1/cloud_pulses?select=*&order=score.desc,created_at.desc";
       
       fetch(queryUrl, {
         headers: {
+          "apikey": config.anonKey,
           "Authorization": "Bearer " + config.anonKey
         }
       })
       .then(function (res) { return res.json(); })
       .then(function (data) {
-        if (Array.isArray(data) && data.length > 0) {
+        if (Array.isArray(data)) {
           renderPulses(data);
         } else if (supabase) {
           supabase.from("cloud_pulses").select("*").order("score", { ascending: false }).then(function(sRes) {
-            if (sRes && Array.isArray(sRes.data) && sRes.data.length > 0) {
+            if (sRes && Array.isArray(sRes.data)) {
               renderPulses(sRes.data);
-            } else {
-              renderPulses(data);
             }
           });
-        } else {
-          renderPulses(data);
         }
       })
       .catch(function (err) {
@@ -940,8 +938,6 @@
           supabase.from("cloud_pulses").select("*").order("score", { ascending: false }).then(function(sRes) {
             if (sRes && sRes.data) renderPulses(sRes.data);
           });
-        } else {
-          feedContainer.innerHTML = '<div class="col-span-full text-center py-8 text-xs text-text/60 dark:text-darkmode-text/60">Unable to load pulses.</div>';
         }
       });
     }
