@@ -115,6 +115,9 @@
             {{ partial "toc.html" (dict "Class" "blog" "Collapsed" false "TableOfContents" .TableOfContents ) }}
           </div>
 
+          <!-- Series Playlist Widget (if post belongs to a series) -->
+          {{ partial "components/series-playlist" . }}
+
           <div class="content blog-article-content mb-12">
             {{ .Content }}
           </div>
@@ -147,6 +150,56 @@
               </a>
             </div>
           </div>
+
+          <!-- Series Prev/Next Navigation Footer -->
+          {{ $currentPage := . }}
+          {{ with $currentPage.Params.series }}
+            {{ $seriesName := . }}
+            {{ $allPosts := where site.RegularPages "Section" "blog" }}
+            {{ $seriesPosts := where $allPosts ".Params.series" $seriesName }}
+            {{ $sortedSeries := sort $seriesPosts ".Params.series_order" "asc" }}
+            
+            {{ if gt (len $sortedSeries) 1 }}
+              {{ $prevPost := false }}
+              {{ $nextPost := false }}
+              {{ range $index, $p := $sortedSeries }}
+                {{ if eq $p.Permalink $currentPage.Permalink }}
+                  {{ if gt $index 0 }}
+                    {{ $prevPost = index $sortedSeries (sub $index 1) }}
+                  {{ end }}
+                  {{ if lt (add $index 1) (len $sortedSeries) }}
+                    {{ $nextPost = index $sortedSeries (add $index 1) }}
+                  {{ end }}
+                {{ end }}
+              {{ end }}
+
+              <div class="series-nav-footer mb-10 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {{ with $prevPost }}
+                  <a href="{{ .RelPermalink }}" class="blog-article-shell p-4 rounded-2xl border border-border/60 dark:border-darkmode-border/60 hover:border-primary transition-all flex flex-col justify-between no-underline group">
+                    <div class="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-text/60 dark:text-darkmode-text/60 mb-2">
+                      <i class="fa-solid fa-arrow-left text-primary group-hover:-translate-x-1 transition-transform"></i> Previous in Series
+                    </div>
+                    <div class="text-sm font-bold text-dark dark:text-darkmode-dark group-hover:text-primary transition-colors line-clamp-2">
+                      {{ .Title }}
+                    </div>
+                  </a>
+                {{ else }}
+                  <div></div>
+                {{ end }}
+
+                {{ with $nextPost }}
+                  <a href="{{ .RelPermalink }}" class="blog-article-shell p-4 rounded-2xl border border-border/60 dark:border-darkmode-border/60 hover:border-primary transition-all flex flex-col justify-between text-right no-underline group sm:col-start-2">
+                    <div class="flex items-center justify-end gap-1.5 text-[11px] font-bold uppercase tracking-wider text-text/60 dark:text-darkmode-text/60 mb-2">
+                      Next in Series <i class="fa-solid fa-arrow-right text-primary group-hover:translate-x-1 transition-transform"></i>
+                    </div>
+                    <div class="text-sm font-bold text-dark dark:text-darkmode-dark group-hover:text-primary transition-colors line-clamp-2">
+                      {{ .Title }}
+                    </div>
+                  </a>
+                {{ end }}
+              </div>
+            {{ end }}
+          {{ end }}
 
           <!-- Article Feedback Widget -->
           {{ partial "components/post-feedback" . }}

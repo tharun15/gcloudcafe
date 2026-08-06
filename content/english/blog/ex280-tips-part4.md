@@ -7,6 +7,8 @@ description: "Kickstarting the EX280 – OpenShift Administrator Tips & Tricks m
 categories: ["Certifications", "DevOps", "Red Hat", "OpenShift", "Administrator"]
 tags: ["Red Hat", "OpenShift", "EX280", "Tips", "HTPasswd", "Authentication"]
 author: tharun-vempati
+series: "EX280 – OpenShift Administrator Tips & Tricks"
+series_order: 4
 draft: false
 ---
 

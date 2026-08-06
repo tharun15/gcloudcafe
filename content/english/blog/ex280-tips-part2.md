@@ -7,6 +7,8 @@ description: "Continuing the EX280 – OpenShift Administrator Tips & Tricks min
 categories: ["Certifications", "DevOps", "Red Hat", "OpenShift", "Administrator"]
 tags: ["Red Hat", "OpenShift", "EX280", "Tips", "NetworkPolicy", "EdgeRoutes", "Security"]
 author: tharun-vempati
+series: "EX280 – OpenShift Administrator Tips & Tricks"
+series_order: 2
 draft: false
 ---
 
