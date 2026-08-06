@@ -1434,28 +1434,38 @@
       localStorage.setItem("gcloudcafe_voted_provider_" + qInfo.quarterKey, provider);
 
       var row = pollData.find(function (r) { return r.provider === provider; });
+      var newVotes = row ? (row.votes || 0) + 1 : 1;
+      var newToday = row ? (row.today_votes || 0) + 1 : 1;
+
       if (row) {
-        row.votes = (row.votes || 0) + 1;
-        row.today_votes = (row.today_votes || 0) + 1;
+        row.votes = newVotes;
+        row.today_votes = newToday;
       }
 
       renderPollUI();
 
-      // Sync atomic update to Supabase
-      if (row && row.id) {
-        fetch(config.url + "/rest/v1/cloud_provider_polls?id=eq." + row.id, {
-          method: "PATCH",
-          headers: {
-            "apikey": config.anonKey,
-            "Authorization": "Bearer " + config.anonKey,
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({ votes: row.votes, today_votes: row.today_votes, updated_at: new Date().toISOString() })
-        });
-      }
+      // Sync atomic update to Supabase by provider name
+      fetch(config.url + "/rest/v1/cloud_provider_polls?provider=eq." + provider, {
+        method: "PATCH",
+        headers: {
+          "apikey": config.anonKey,
+          "Authorization": "Bearer " + config.anonKey,
+          "Content-Type": "application/json",
+          "Prefer": "return=representation"
+        },
+        body: JSON.stringify({ votes: newVotes, today_votes: newToday, updated_at: new Date().toISOString() })
+      })
+      .then(function () {
+        setTimeout(fetchPollData, 500);
+      })
+      .catch(function (err) {
+        console.error("Poll vote sync error:", err);
+      });
     }
 
     fetchPollData();
+    // Live sync polling: auto-refresh poll counts every 3 seconds across open browsers
+    setInterval(fetchPollData, 3000);
   }
 
   function initApp() {
