@@ -1,7 +1,9 @@
 [build]
 publish = "public"
-command = "npm run project-setup && npm run build"
+command = "npm run build"
 
 [build.environment]
-HUGO_VERSION = "0.139.2"
+HUGO_VERSION = "0.124.1"
+HUGO_ENABLE_EXTENDED = "true"
 GO_VERSION = "1.23.3"
+NODE_VERSION = "20"

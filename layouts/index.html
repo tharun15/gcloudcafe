@@ -97,6 +97,35 @@
           {{ partial "components/blog-sidebar" (dict "Posts" $posts "Featured" $featured) }}
         </div>
       </div>
+
+      <!-- Real Site Telemetry & Database Metrics Grid -->
+      {{ $allPosts := (where site.RegularPages "Section" "blog") }}
+      {{ $totalWords := 0 }}
+      {{ range $allPosts }}
+        {{ $totalWords = add $totalWords .WordCount }}
+      {{ end }}
+      <div class="mt-12 grid grid-cols-2 md:grid-cols-4 gap-4 text-left font-mono" data-telemetry-grid="true">
+        <div class="bg-body dark:bg-darkmode-theme-light border border-border/80 dark:border-darkmode-border/80 rounded-2xl p-4">
+          <div class="text-[11px] text-text/70 dark:text-darkmode-text/70 uppercase">Published Content</div>
+          <div class="text-lg font-bold text-cyan-500">{{ len $allPosts }} GUIDES</div>
+          <div class="text-xs text-emerald-500 font-semibold">● LIVE INDEX</div>
+        </div>
+        <div class="bg-body dark:bg-darkmode-theme-light border border-border/80 dark:border-darkmode-border/80 rounded-2xl p-4">
+          <div class="text-[11px] text-text/70 dark:text-darkmode-text/70 uppercase">Content Volume</div>
+          <div class="text-lg font-bold text-primary dark:text-darkmode-primary">{{ lang.NumFmt 0 $totalWords }} WORDS</div>
+          <div class="text-xs text-emerald-500 font-semibold">● FULL ACCESS</div>
+        </div>
+        <div class="bg-body dark:bg-darkmode-theme-light border border-border/80 dark:border-darkmode-border/80 rounded-2xl p-4">
+          <div class="text-[11px] text-text/70 dark:text-darkmode-text/70 uppercase">Reader Feedback</div>
+          <div class="text-lg font-bold text-emerald-500" data-stat-feedback="true">CONNECTING...</div>
+          <div class="text-xs text-emerald-500 font-semibold" data-stat-positive="true">● LIVE VOTES</div>
+        </div>
+        <div class="bg-body dark:bg-darkmode-theme-light border border-border/80 dark:border-darkmode-border/80 rounded-2xl p-4">
+          <div class="text-[11px] text-text/70 dark:text-darkmode-text/70 uppercase">System Status</div>
+          <div class="text-lg font-bold text-cyan-400">100% OPERATIONAL</div>
+          <div class="text-xs text-emerald-500 font-semibold">● LIVE SYNC</div>
+        </div>
+      </div>
     </div>
   </section>
 

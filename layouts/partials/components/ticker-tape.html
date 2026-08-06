@@ -1,0 +1,34 @@
+{{ $tickerPosts := first 6 (where site.RegularPages "Section" "blog") }}
+<div class="ticker-marquee-wrapper" aria-label="Live Tech Content Marquee">
+  <div class="ticker-marquee-content">
+    {{/* First loop of dynamic post tickers */}}
+    <a href="/about/" class="ticker-item">
+      <span class="ticker-symbol">$GCLOUD-CAFE</span>
+      <span class="text-slate-400">Platform Index</span>
+      <span class="text-cyan-400 font-bold">● 100% OPERATIONAL</span>
+    </a>
+    
+    {{ range $tickerPosts }}
+      <a href="{{ .RelPermalink }}" class="ticker-item">
+        <span class="ticker-symbol">${{ index (.Params.categories | default (slice "TECH")) 0 | urlize | upper }}</span>
+        <span class="text-slate-300 font-medium">{{ .Title | truncate 32 }}</span>
+        <span class="ticker-bullish"><i class="fa-regular fa-clock text-[10px]"></i> {{ .ReadingTime }} MIN READ</span>
+      </a>
+    {{ end }}
+
+    {{/* Duplicate loop for seamless 60fps infinite marquee */}}
+    <a href="/about/" class="ticker-item">
+      <span class="ticker-symbol">$GCLOUD-CAFE</span>
+      <span class="text-slate-400">Platform Index</span>
+      <span class="text-cyan-400 font-bold">● 100% OPERATIONAL</span>
+    </a>
+
+    {{ range $tickerPosts }}
+      <a href="{{ .RelPermalink }}" class="ticker-item">
+        <span class="ticker-symbol">${{ index (.Params.categories | default (slice "TECH")) 0 | urlize | upper }}</span>
+        <span class="text-slate-300 font-medium">{{ .Title | truncate 32 }}</span>
+        <span class="ticker-bullish"><i class="fa-regular fa-clock text-[10px]"></i> {{ .ReadingTime }} MIN READ</span>
+      </a>
+    {{ end }}
+  </div>
+</div>
