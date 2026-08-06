@@ -7,6 +7,8 @@ description: "My journey of passing the Red Hat OpenShift Administrator EX280 ex
 categories: ["Certifications", "DevOps", "Red Hat", "Openshift", "Administrator"]
 tags: ["Red Hat", "OpenShift", "EX280", "Certification", "Remote Exam"]
 author: tharun-vempati
+series: "Passing the OpenShift Administrator Exam"
+series_order: 1
 draft: false
 ---
 

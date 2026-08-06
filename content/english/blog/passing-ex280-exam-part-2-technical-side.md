@@ -7,6 +7,8 @@ description: "Deep-dive into the technical side of the EX280 exam — connecting
 categories: ["Certifications", "DevOps", "Red Hat", "Openshift", "Administrator"]
 tags: ["Red Hat", "OpenShift", "EX280", "Certification", "DevOps", "Technical"]
 author: tharun-vempati
+series: "Passing the OpenShift Administrator Exam"
+series_order: 2
 draft: false
 ---
 

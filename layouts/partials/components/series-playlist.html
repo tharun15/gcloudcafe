@@ -1,0 +1,86 @@
+{{ $currentPage := . }}
+{{ with $currentPage.Params.series }}
+  {{ $seriesName := . }}
+  {{ $allPosts := where site.RegularPages "Section" "blog" }}
+  {{ $seriesPosts := where $allPosts ".Params.series" $seriesName }}
+  {{ $sortedSeries := sort $seriesPosts ".Params.series_order" "asc" }}
+  
+  {{ if gt (len $sortedSeries) 1 }}
+    {{ $totalParts := len $sortedSeries }}
+    {{ $currentPartIndex := 0 }}
+    {{ range $index, $p := $sortedSeries }}
+      {{ if eq $p.Permalink $currentPage.Permalink }}
+        {{ $currentPartIndex = add $index 1 }}
+      {{ end }}
+    {{ end }}
+    
+    {{ $percent := math.Round (mul (div (float $currentPartIndex) (float $totalParts)) 100) }}
+
+    <div class="series-playlist-widget mb-10 border border-primary/20 dark:border-darkmode-primary/20 rounded-3xl p-6 bg-gradient-to-br from-primary/5 via-body to-theme-light/40 dark:from-darkmode-primary/10 dark:via-darkmode-body dark:to-darkmode-theme-light/30 shadow-sm" aria-label="Series Playlist">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4 pb-4 border-b border-border/60 dark:border-darkmode-border/60">
+        <div>
+          <div class="flex items-center gap-2 mb-1">
+            <span class="inline-flex items-center gap-1 text-[11px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-primary/15 text-primary">
+              <i class="fa-solid fa-layer-group text-[10px]"></i> Guide Series
+            </span>
+            <span class="text-xs font-semibold text-text/70 dark:text-darkmode-text/70">
+              Part {{ $currentPartIndex }} of {{ $totalParts }}
+            </span>
+          </div>
+          <h3 class="text-lg font-bold tracking-tight text-dark dark:text-darkmode-dark">
+            {{ $seriesName }}
+          </h3>
+        </div>
+
+        <div class="flex items-center gap-3 shrink-0">
+          <div class="w-32 sm:w-44">
+            <div class="flex justify-between text-[11px] font-bold text-primary mb-1">
+              <span>Progress</span>
+              <span>{{ $percent }}%</span>
+            </div>
+            <div class="h-2 w-full bg-border/60 dark:bg-darkmode-border/60 rounded-full overflow-hidden">
+              <div class="h-full bg-primary transition-all duration-500 rounded-full" style="width: {{ $percent }}%;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {{/* Playlist List Drawer */}}
+      <details class="series-playlist-details group" open>
+        <summary class="flex items-center justify-between text-xs font-bold uppercase tracking-wider text-text/80 dark:text-darkmode-text/80 cursor-pointer select-none py-1">
+          <span><i class="fa-solid fa-list-ol mr-1.5 text-primary"></i> Series Playlist ({{ $totalParts }} Parts)</span>
+          <span class="transition-transform group-open:rotate-180"><i class="fa-solid fa-chevron-down"></i></span>
+        </summary>
+        
+        <div class="mt-3 space-y-2 pt-2 border-t border-border/40 dark:border-darkmode-border/40">
+          {{ range $idx, $p := $sortedSeries }}
+            {{ $partNum := add $idx 1 }}
+            {{ $isCurrent := eq $p.Permalink $currentPage.Permalink }}
+            
+            <a href="{{ $p.RelPermalink }}" 
+               class="flex items-center justify-between p-3 rounded-2xl text-xs transition-all no-underline {{ if $isCurrent }}bg-primary text-white font-bold shadow-xs border border-primary{{ else }}bg-body dark:bg-darkmode-body hover:bg-primary/10 border border-border/50 dark:border-darkmode-border/50 text-dark dark:text-darkmode-dark{{ end }}">
+              <div class="flex items-center gap-3 min-w-0 pr-2">
+                <span class="w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-bold shrink-0 {{ if $isCurrent }}bg-white/20 text-white{{ else }}bg-primary/10 text-primary{{ end }}">
+                  {{ $partNum }}
+                </span>
+                <span class="truncate font-medium {{ if $isCurrent }}text-white{{ else }}text-dark dark:text-darkmode-dark{{ end }}">
+                  {{ $p.Title }}
+                </span>
+              </div>
+
+              <div class="shrink-0 flex items-center gap-1 text-[10px]">
+                {{ if $isCurrent }}
+                  <span class="px-2 py-0.5 rounded-full bg-white/20 text-white font-bold">CURRENT</span>
+                {{ else if lt $partNum $currentPartIndex }}
+                  <span class="text-emerald-500 font-bold flex items-center gap-1"><i class="fa-solid fa-check-circle"></i> READ</span>
+                {{ else }}
+                  <span class="opacity-60"><i class="fa-regular fa-clock"></i> {{ $p.ReadingTime }} min</span>
+                {{ end }}
+              </div>
+            </a>
+          {{ end }}
+        </div>
+      </details>
+    </div>
+  {{ end }}
+{{ end }}
