@@ -13,12 +13,10 @@
             {{ .Title }}
           </h1>
           <ul class="mb-4">
-            {{ if .Params.author }}
+            {{ with .Params.author }}
               <li class="mr-4 inline-block">
-                <a
-                  href="{{ `authors/` | relLangURL }}{{ .Params.Author | urlize }}/">
-                  <i class="fa-regular fa-circle-user mr-2"></i
-                  >{{ .Params.author }}
+                <a href="{{ `authors/` | relLangURL }}{{ . | urlize }}/">
+                  <i class="fa-regular fa-circle-user mr-2"></i>{{ . }}
                 </a>
               </li>
             {{ end }}
