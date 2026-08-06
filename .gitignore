@@ -15,3 +15,12 @@ jsconfig.json
 hugo_stats.json
 go.sum
 yarn.lock
+
+# Security & Secret Credentials Exclusions
+.env
+*.env
+*.env.*
+*.secret
+*.pem
+*.key
+*.token

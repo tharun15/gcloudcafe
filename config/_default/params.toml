@@ -37,7 +37,7 @@ enable_comments = true
 
 # Giscus Comments Configuration (https://giscus.app)
 [giscus]
-enable = true
+enable = false
 repo = "tharun15/gcloudcafe"
 repo_id = "R_kgDONdsAfw"
 category = "Announcements"

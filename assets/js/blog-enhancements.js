@@ -204,6 +204,11 @@
     var rawPath = widget.dataset.postFeedback || window.location.pathname;
     var permalink = (rawPath.replace(/\/+$/, "") + "/").toLowerCase();
     var storageKeyUser = "gcloudcafe:reaction:" + permalink;
+    var storageKeyCounts = "gcloudcafe:counts:" + permalink;
+    var channelName = "gcloudcafe_reactions_" + permalink;
+
+    var slug = permalink.replace(/^\/+|\/+$/g, "").replace(/[^a-z0-9_-]/gi, "_");
+    var counterNamespace = "gcloudcafe_reactions";
 
     var defaultCounts = {
       helpful: 0,
@@ -214,16 +219,85 @@
 
     var storedCounts = Object.assign({}, defaultCounts);
 
-    // Initialize Supabase Client
-    var supabase = null;
-    var supabaseUrl = widget.dataset.supabaseUrl;
-    var supabaseKey = widget.dataset.supabaseKey;
-    if ((!supabaseUrl || !supabaseKey) && window.SUPABASE_CONFIG) {
-      supabaseUrl = window.SUPABASE_CONFIG.url;
-      supabaseKey = window.SUPABASE_CONFIG.anonKey;
+    function mergeIncomingCounts(incoming, isDecrement) {
+      if (!incoming) return;
+      Object.keys(defaultCounts).forEach(function (k) {
+        if (typeof incoming[k] !== "undefined") {
+          var incVal = parseInt(incoming[k]) || 0;
+          if (isDecrement) {
+            storedCounts[k] = Math.max(0, incVal);
+          } else {
+            storedCounts[k] = Math.max(storedCounts[k] || 0, incVal);
+          }
+        }
+      });
+      try {
+        localStorage.setItem(storageKeyCounts, JSON.stringify(storedCounts));
+      } catch (e) {}
+      updateCountsUI();
     }
-    if (supabaseUrl && supabaseKey && window.supabase) {
-      supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+    // Load initial counts from localStorage cache or default
+    try {
+      var cachedCounts = localStorage.getItem(storageKeyCounts);
+      if (cachedCounts) {
+        mergeIncomingCounts(JSON.parse(cachedCounts), false);
+      }
+    } catch (e) {}
+
+    // Initialize BroadcastChannel for instant cross-tab / cross-window sync
+    var broadcastChannel = null;
+    if (typeof BroadcastChannel !== "undefined") {
+      try {
+        broadcastChannel = new BroadcastChannel(channelName);
+        broadcastChannel.onmessage = function (event) {
+          if (event && event.data && event.data.counts) {
+            mergeIncomingCounts(event.data.counts, event.data.isDecrement || false);
+          }
+        };
+      } catch (e) {}
+    }
+
+    // Listen to localStorage 'storage' event as fallback for cross-window sync
+    window.addEventListener("storage", function (e) {
+      if (e.key === storageKeyCounts && e.newValue) {
+        try {
+          mergeIncomingCounts(JSON.parse(e.newValue), false);
+        } catch (err) {}
+      }
+      if (e.key === storageKeyUser) {
+        try {
+          activeReaction = localStorage.getItem(storageKeyUser) || "";
+          updateCountsUI();
+        } catch (err) {}
+      }
+    });
+
+    function saveAndBroadcastCounts(isDecrement) {
+      try {
+        localStorage.setItem(storageKeyCounts, JSON.stringify(storedCounts));
+      } catch (e) {}
+      if (broadcastChannel) {
+        try {
+          broadcastChannel.postMessage({ counts: storedCounts, isDecrement: !!isDecrement });
+        } catch (e) {}
+      }
+    }
+
+    // Initialize Supabase Client dynamically
+    var supabase = null;
+    function getSupabase() {
+      if (supabase) return supabase;
+      var url = widget.dataset.supabaseUrl;
+      var key = widget.dataset.supabaseKey;
+      if ((!url || !key) && window.SUPABASE_CONFIG) {
+        url = window.SUPABASE_CONFIG.url;
+        key = window.SUPABASE_CONFIG.anonKey;
+      }
+      if (url && key && window.supabase) {
+        supabase = window.supabase.createClient(url, key);
+      }
+      return supabase;
     }
 
     var activeReaction = "";
@@ -238,7 +312,7 @@
         var type = btn.dataset.reactionBtn;
         var countSpan = btn.querySelector("[data-reaction-count]");
         
-        var count = (storedCounts[type] || 0) + (activeReaction === type ? 1 : 0);
+        var count = Math.max(0, storedCounts[type] || 0);
 
         if (countSpan) countSpan.textContent = count;
 
@@ -252,115 +326,185 @@
       });
     }
 
-    // Function to fetch updated counts from Supabase via RPC or Table query
-    function fetchSupabaseCounts(retryCount) {
+    // Fetch updated live counts from cloud persistence (Supabase & CounterAPI)
+    function fetchCloudCounts(retryCount) {
       retryCount = retryCount || 0;
-      if (!supabase) {
-        if ((!supabaseUrl || !supabaseKey) && window.SUPABASE_CONFIG) {
-          supabaseUrl = window.SUPABASE_CONFIG.url;
-          supabaseKey = window.SUPABASE_CONFIG.anonKey;
-        }
-        if (supabaseUrl && supabaseKey && window.supabase) {
-          supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
-        }
-      }
 
-      if (!supabase) {
-        if (retryCount < 5) {
-          setTimeout(function () {
-            fetchSupabaseCounts(retryCount + 1);
-          }, 300);
-        }
-        return;
-      }
+      // 1. Supabase Fetch (queries all path variations: /blog/slug/, blog/slug, slug, etc.)
+      var client = getSupabase();
+      if (client) {
+        var cleanSlug = permalink.split('/').filter(Boolean).pop() || "";
+        var possiblePaths = Array.from(new Set([
+          permalink,
+          rawPath,
+          permalink.replace(/\/+$/, ""),
+          permalink.replace(/^\/+/, ""),
+          permalink.replace(/^\/+|\/+$/g, ""),
+          cleanSlug,
+          "/blog/" + cleanSlug + "/",
+          "blog/" + cleanSlug
+        ])).filter(Boolean);
 
-      // Try RPC first (security definer function, immune to RLS and slash mismatches)
-      supabase
-        .rpc('get_post_reactions', { p_post_path: permalink })
-        .then(function (res) {
-          if (res && res.data && res.data.length > 0) {
-            var data = res.data[0];
-            storedCounts = {
-              helpful: parseInt(data.helpful_count) || 0,
-              insightful: parseInt(data.insightful_count) || 0,
-              awesome: parseInt(data.awesome_count) || 0,
-              brewtiful: parseInt(data.brewtiful_count) || 0
-            };
-            updateCountsUI();
-          } else {
-            fallbackTableSelect();
-          }
-        })
-        .catch(function () {
-          fallbackTableSelect();
-        });
-
-      function fallbackTableSelect() {
-        supabase
+        client
           .from('post_reactions')
           .select('helpful_count, insightful_count, awesome_count, brewtiful_count')
-          .eq('post_path', permalink)
-          .maybeSingle()
+          .in('post_path', possiblePaths)
           .then(function (response) {
-            if (response && response.data) {
-              storedCounts = {
-                helpful: parseInt(response.data.helpful_count) || 0,
-                insightful: parseInt(response.data.insightful_count) || 0,
-                awesome: parseInt(response.data.awesome_count) || 0,
-                brewtiful: parseInt(response.data.brewtiful_count) || 0
-              };
-              updateCountsUI();
+            if (response && response.data && response.data.length > 0) {
+              response.data.forEach(function (row) {
+                var dbCounts = {
+                  helpful: parseInt(row.helpful_count) || 0,
+                  insightful: parseInt(row.insightful_count) || 0,
+                  awesome: parseInt(row.awesome_count) || 0,
+                  brewtiful: parseInt(row.brewtiful_count) || 0
+                };
+                mergeIncomingCounts(dbCounts, false);
+              });
+              saveAndBroadcastCounts(false);
             }
-          });
+          })
+          .catch(function () {});
+      }
+
+      // 2. Global Cloud Counter Fetch (Ensures Brave, Mobile, and all fresh browsers get live totals!)
+      Object.keys(defaultCounts).forEach(function (type) {
+        var key = slug + "_" + type;
+        fetch("https://api.counterapi.dev/v1/" + counterNamespace + "/" + key)
+          .then(function (r) { return r.json(); })
+          .then(function (data) {
+            if (data && typeof data.count === "number") {
+              var obj = {};
+              obj[type] = data.count;
+              mergeIncomingCounts(obj, false);
+              saveAndBroadcastCounts(false);
+            }
+          })
+          .catch(function () {});
+      });
+    }
+
+    function setupRealtime() {
+      var client = getSupabase();
+      if (client && !widget.dataset.subscribed) {
+        widget.dataset.subscribed = "true";
+        try {
+          client
+            .channel('public:post_reactions:' + permalink)
+            .on('postgres_changes', { event: '*', schema: 'public', table: 'post_reactions', filter: 'post_path=eq.' + permalink }, function (payload) {
+              if (payload && payload.new) {
+                var dbCounts = {
+                  helpful: parseInt(payload.new.helpful_count) || 0,
+                  insightful: parseInt(payload.new.insightful_count) || 0,
+                  awesome: parseInt(payload.new.awesome_count) || 0,
+                  brewtiful: parseInt(payload.new.brewtiful_count) || 0
+                };
+                mergeIncomingCounts(dbCounts, false);
+                saveAndBroadcastCounts(false);
+              }
+            })
+            .subscribe();
+        } catch (e) {}
       }
     }
 
-    // Load initial counts from local cache first, then fetch live from Supabase
+    function sendIncrement(type) {
+      // 1. Cloud Counter API Increment (100% RLS-free, works across all browsers including Brave!)
+      var key = slug + "_" + type;
+      fetch("https://api.counterapi.dev/v1/" + counterNamespace + "/" + key + "/up")
+        .then(function (r) { return r.json(); })
+        .then(function (data) {
+          if (data && typeof data.count === "number") {
+            var obj = {};
+            obj[type] = data.count;
+            mergeIncomingCounts(obj, false);
+            saveAndBroadcastCounts(false);
+          }
+        })
+        .catch(function () {});
+
+      // 2. Supabase Increment
+      var client = getSupabase();
+      if (client) {
+        client
+          .rpc('increment_reaction', { p_post_path: permalink, p_reaction_type: type })
+          .then(function () { fetchCloudCounts(); })
+          .catch(function () {});
+      }
+    }
+
+    function sendDecrement(type) {
+      // 1. Cloud Counter API Decrement
+      var key = slug + "_" + type;
+      fetch("https://api.counterapi.dev/v1/" + counterNamespace + "/" + key + "/down")
+        .then(function (r) { return r.json(); })
+        .then(function (data) {
+          if (data && typeof data.count === "number") {
+            var obj = {};
+            obj[type] = Math.max(0, data.count);
+            mergeIncomingCounts(obj, true);
+            saveAndBroadcastCounts(true);
+          }
+        })
+        .catch(function () {});
+
+      // 2. Supabase Decrement
+      var client = getSupabase();
+      if (client) {
+        client
+          .rpc('decrement_reaction', { p_post_path: permalink, p_reaction_type: type })
+          .then(function () { fetchCloudCounts(); })
+          .catch(function () {});
+      }
+    }
+
+    // Load initial counts from local cache first, then fetch live from Cloud persistence
     updateCountsUI();
-    fetchSupabaseCounts();
+    fetchCloudCounts();
+    setTimeout(setupRealtime, 1000);
 
     // Re-sync when switching back to browser tab
-    window.addEventListener("focus", fetchSupabaseCounts);
-
-    // Track real user page view interaction in Supabase
-    if (supabase) {
-      try {
-        supabase.rpc('track_page_view', { p_post_path: permalink }).then(function(){}).catch(function(){});
-      } catch (e) {}
-    }
+    window.addEventListener("focus", fetchCloudCounts);
 
     reactionBtns.forEach(function (btn) {
       btn.addEventListener("click", function () {
         var type = btn.dataset.reactionBtn;
+        var oldReaction = activeReaction;
 
         if (activeReaction === type) {
-          // Deselect
+          // Deselect current reaction
           activeReaction = "";
           try {
             localStorage.removeItem(storageKeyUser);
           } catch (e) {}
+
+          // Optimistically update counts locally
+          storedCounts[type] = Math.max(0, (storedCounts[type] || 0) - 1);
+          saveAndBroadcastCounts(true);
           updateCountsUI();
+
+          // Persist decrement to Cloud Database
+          sendDecrement(type);
         } else {
-          // Select new reaction
+          // Select new reaction (and remove previous reaction if any)
           activeReaction = type;
           spawnEmojiParticle(btn);
           try {
             localStorage.setItem(storageKeyUser, activeReaction);
           } catch (e) {}
+
+          // Optimistically update counts locally
+          if (oldReaction && storedCounts[oldReaction]) {
+            storedCounts[oldReaction] = Math.max(0, storedCounts[oldReaction] - 1);
+          }
+          storedCounts[type] = (storedCounts[type] || 0) + 1;
+          saveAndBroadcastCounts(false);
           updateCountsUI();
 
-          // Persist increment to Supabase
-          if (supabase) {
-            supabase
-              .rpc('increment_reaction', { p_post_path: permalink, p_reaction_type: type })
-              .then(function (res) {
-                if (res.error) {
-                  console.error("Supabase RPC error:", res.error);
-                } else {
-                  fetchSupabaseCounts();
-                }
-              });
+          // Persist to Cloud Database
+          if (oldReaction) {
+            sendDecrement(oldReaction);
           }
+          sendIncrement(type);
         }
       });
     });
@@ -427,25 +571,28 @@
     }, 2500);
   }
 
-  /* ── Interactive Community Comments System ── */
+  /* ── Interactive Community Comments System (Supabase Backend) ── */
   function initCommentsSystem() {
     var section = document.getElementById("comments-section");
     if (!section) return;
 
-    var permalink = window.location.pathname;
+    var rawPath = window.location.pathname;
+    var permalink = (rawPath.replace(/\/+$/, "") + "/").toLowerCase();
+    var cleanSlug = permalink.split('/').filter(Boolean).pop() || "";
+    var possiblePaths = Array.from(new Set([
+      permalink,
+      rawPath,
+      permalink.replace(/\/+$/, ""),
+      permalink.replace(/^\/+/, ""),
+      permalink.replace(/^\/+|\/+$/g, ""),
+      cleanSlug,
+      "/blog/" + cleanSlug + "/",
+      "blog/" + cleanSlug
+    ])).filter(Boolean);
+
     var storageKey = "gcloudcafe:comments:" + permalink;
 
-    var defaultComments = [
-      {
-        id: "c1",
-        author: "Alex Rivers",
-        text: "Great walkthrough! The step-by-step breakdown was very clear and easy to follow.",
-        date: "2 days ago",
-        likes: 3
-      }
-    ];
-
-    var comments = defaultComments;
+    var comments = [];
     try {
       var raw = localStorage.getItem(storageKey);
       if (raw) {
@@ -456,6 +603,54 @@
     var form = section.querySelector("[data-comment-form]");
     var list = section.querySelector("[data-comments-list]");
     var countBadge = section.querySelector("[data-comments-count-badge]");
+
+    // Initialize Supabase Client
+    var supabase = null;
+    if (window.SUPABASE_CONFIG && window.supabase) {
+      supabase = window.supabase.createClient(window.SUPABASE_CONFIG.url, window.SUPABASE_CONFIG.anonKey);
+    }
+
+    function fetchSupabaseComments() {
+      if (!supabase) return;
+
+      supabase
+        .from('post_comments')
+        .select('*')
+        .in('post_path', possiblePaths)
+        .order('created_at', { ascending: false })
+        .then(function (res) {
+          if (res && res.data && res.data.length > 0) {
+            comments = res.data.map(function (row) {
+              return {
+                id: row.id,
+                author: row.author || "Cloud Practitioner",
+                text: row.content || row.text || "",
+                date: formatDate(row.created_at),
+                likes: row.likes || 0
+              };
+            });
+            saveComments();
+            renderComments();
+          }
+        })
+        .catch(function () {});
+    }
+
+    function formatDate(dateStr) {
+      if (!dateStr) return "Just now";
+      try {
+        var d = new Date(dateStr);
+        if (isNaN(d.getTime())) return "Recently";
+        var diff = Math.floor((new Date() - d) / 1000);
+        if (diff < 60) return "Just now";
+        if (diff < 3600) return Math.floor(diff / 60) + "m ago";
+        if (diff < 86400) return Math.floor(diff / 3600) + "h ago";
+        if (diff < 2592000) return Math.floor(diff / 86400) + "d ago";
+        return d.toLocaleDateString();
+      } catch (e) {
+        return "Recently";
+      }
+    }
 
     function renderComments() {
       if (countBadge) countBadge.textContent = comments.length;
@@ -495,6 +690,14 @@
             comments[index].likes = (comments[index].likes || 0) + 1;
             saveComments();
             renderComments();
+
+            if (supabase && comments[index].id) {
+              supabase
+                .from('post_comments')
+                .update({ likes: comments[index].likes })
+                .eq('id', comments[index].id)
+                .then(function(){}).catch(function(){});
+            }
           }
         });
       });
@@ -531,10 +734,29 @@
 
         if (textInput) textInput.value = "";
         showToast("Comment posted! 🚀");
+
+        if (supabase) {
+          supabase
+            .from('post_comments')
+            .insert([{
+              post_path: permalink,
+              author: author || "Cloud Practitioner",
+              content: text,
+              likes: 0
+            }])
+            .then(function (res) {
+              if (res.error) {
+                console.warn("Supabase comment insert note:", res.error.message);
+              } else {
+                fetchSupabaseComments();
+              }
+            });
+        }
       });
     }
 
     renderComments();
+    fetchSupabaseComments();
   }
 
   function escapeHtml(str) {
@@ -606,21 +828,20 @@
     });
   }
 
-  /* ── Dynamic Database Telemetry Stats ── */
+  /* ── Dynamic Database Telemetry Stats (Grounded in Real Data) ── */
   function initTelemetryStats() {
     var statElem = document.querySelector("[data-stat-feedback]");
     var posElem = document.querySelector("[data-stat-positive]");
-    if (!statElem) return;
+    var commentsElem = document.querySelector("[data-stat-comments]");
+    if (!statElem && !commentsElem) return;
 
     var supabase = null;
     if (window.SUPABASE_CONFIG && window.supabase) {
       supabase = window.supabase.createClient(window.SUPABASE_CONFIG.url, window.SUPABASE_CONFIG.anonKey);
     }
-    if (!supabase) {
-      statElem.textContent = "100% POSITIVE";
-      return;
-    }
+    if (!supabase) return;
 
+    // 1. Fetch total real reactions from Supabase database
     supabase
       .from("post_reactions")
       .select("helpful_count, insightful_count, awesome_count, brewtiful_count")
@@ -628,19 +849,29 @@
         if (res && res.data && res.data.length > 0) {
           var total = 0;
           res.data.forEach(function (row) {
-            total += (row.helpful_count || 0) + (row.insightful_count || 0) + (row.awesome_count || 0) + (row.brewtiful_count || 0);
+            total += (parseInt(row.helpful_count) || 0) + 
+                     (parseInt(row.insightful_count) || 0) + 
+                     (parseInt(row.awesome_count) || 0) + 
+                     (parseInt(row.brewtiful_count) || 0);
           });
-          var displayTotal = total + 48;
-          statElem.textContent = displayTotal + "+ VOTES";
-          if (posElem) posElem.textContent = "● 99.2% RATING";
+          if (statElem) statElem.textContent = total + (total === 1 ? " VOTE" : " VOTES");
+          if (posElem) posElem.textContent = total > 0 ? "● LIVE FEEDBACK" : "● NO VOTES YET";
         } else {
-          statElem.textContent = "48+ VOTES";
-          if (posElem) posElem.textContent = "● 99.2% RATING";
+          if (statElem) statElem.textContent = "0 VOTES";
+          if (posElem) posElem.textContent = "● NO VOTES YET";
         }
       })
-      .catch(function () {
-        statElem.textContent = "100% POSITIVE";
-      });
+      .catch(function () {});
+
+    // 2. Fetch total real comments from Supabase database
+    supabase
+      .from("post_comments")
+      .select("id", { count: 'exact', head: true })
+      .then(function (res) {
+        var count = res && typeof res.count === "number" ? res.count : 0;
+        if (commentsElem) commentsElem.textContent = count + (count === 1 ? " COMMENT" : " COMMENTS");
+      })
+      .catch(function () {});
   }
 
   /* ── Init ── */
