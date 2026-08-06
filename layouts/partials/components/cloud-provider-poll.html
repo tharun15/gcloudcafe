@@ -1,15 +1,25 @@
 <section id="cloud-poll-section" class="section py-12 bg-theme-light/40 dark:bg-darkmode-theme-light/20 border-b border-border/60 dark:border-darkmode-border/60">
   <div class="container">
     <div class="max-w-3xl mx-auto text-center mb-10">
-      <span class="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-primary px-3 py-1 rounded-full bg-primary/10 mb-3">
-        <i class="fa-solid fa-chart-pie text-amber-500"></i> Forever Community Benchmark
-      </span>
+      <div class="flex flex-wrap items-center justify-center gap-2 mb-3">
+        <span class="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-primary px-3 py-1 rounded-full bg-primary/10">
+          <i class="fa-solid fa-trophy text-amber-500"></i> Quarterly Cloud Battle (<span data-poll-quarter-label>Q3 2026</span>)
+        </span>
+        <span data-poll-reset-badge class="inline-flex items-center gap-1.5 text-xs font-bold text-slate-700 dark:text-slate-300 px-3 py-1 rounded-full bg-slate-200 dark:bg-slate-800">
+          <i class="fa-solid fa-hourglass-half text-sky-500"></i> Calculating reset...
+        </span>
+      </div>
       <h2 class="text-2xl md:text-4xl font-extrabold tracking-tight text-dark dark:text-darkmode-dark mb-2">
-        Which is your favorite Cloud Provider?
+        Which Provider Will Win This Quarter?
       </h2>
-      <p class="text-xs sm:text-sm text-text/70 dark:text-darkmode-text/70 max-w-xl mx-auto">
-        Cast your vote! Live lifetime percentage market share and daily community trends updated in real time.
+      <p class="text-xs sm:text-sm text-text/70 dark:text-darkmode-text/70 max-w-xl mx-auto mb-4">
+        Cast your vote for <strong data-poll-quarter-name>Q3 2026</strong>! This poll resets quarterly.
       </p>
+
+      <!-- Previous Champion Badge -->
+      <div data-poll-champion-badge class="inline-flex items-center gap-2 px-4 py-1.5 rounded-2xl bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 text-xs font-bold">
+        <i class="fa-solid fa-crown text-amber-500"></i> LAST QUARTER CHAMPION (Q2 2026): GCP
+      </div>
     </div>
 
     <!-- Poll Cards Grid -->

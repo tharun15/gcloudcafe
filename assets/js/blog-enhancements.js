@@ -1274,6 +1274,45 @@
     fetchPulses();
   }
 
+  function getCurrentQuarterInfo(nowDate) {
+    var now = nowDate || new Date();
+    var year = now.getFullYear();
+    var month = now.getMonth();
+
+    var quarterNum = Math.floor(month / 3) + 1;
+    var quarterLabel = "Q" + quarterNum + " " + year;
+    var quarterKey = "Q" + quarterNum + "_" + year;
+
+    var nextQuarterMonth = quarterNum * 3;
+    var resetYear = nextQuarterMonth === 12 ? year + 1 : year;
+    var resetMonth = nextQuarterMonth === 12 ? 0 : nextQuarterMonth;
+
+    var resetDate = new Date(resetYear, resetMonth, 1, 0, 0, 0);
+
+    var prevQuarterNum = quarterNum === 1 ? 4 : quarterNum - 1;
+    var prevQuarterYear = quarterNum === 1 ? year - 1 : year;
+    var prevQuarterLabel = "Q" + prevQuarterNum + " " + prevQuarterYear;
+
+    var diffMs = resetDate.getTime() - now.getTime();
+    var daysLeft = Math.max(0, Math.floor(diffMs / (1000 * 60 * 60 * 24)));
+    var hoursLeft = Math.max(0, Math.floor((diffMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)));
+
+    var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    var resetFormattedStr = monthNames[resetMonth] + " 1, " + resetYear;
+
+    return {
+      quarterNum: quarterNum,
+      year: year,
+      quarterLabel: quarterLabel,
+      quarterKey: quarterKey,
+      prevQuarterLabel: prevQuarterLabel,
+      resetDate: resetDate,
+      daysLeft: daysLeft,
+      hoursLeft: hoursLeft,
+      resetFormattedStr: resetFormattedStr
+    };
+  }
+
   /* ── Forever Cloud Provider Poll & Community Benchmark ── */
   function initCloudProviderPollSystem() {
     var container = document.querySelector("[data-cloud-poll-container]");
@@ -1283,6 +1322,22 @@
       url: "https://axiijcsxtiukloarbfor.supabase.co",
       anonKey: "sb_publishable_cRcwg02R3nXTykDrxalL6w_-kc9Wesc"
     };
+
+    var qInfo = getCurrentQuarterInfo();
+
+    // Update Header Labels & Badges
+    document.querySelectorAll("[data-poll-quarter-label]").forEach(function (el) { el.textContent = qInfo.quarterLabel; });
+    document.querySelectorAll("[data-poll-quarter-name]").forEach(function (el) { el.textContent = qInfo.quarterLabel; });
+
+    var resetBadge = document.querySelector("[data-poll-reset-badge]");
+    if (resetBadge) {
+      resetBadge.innerHTML = '<i class="fa-solid fa-hourglass-half text-sky-500"></i> Resets in ' + qInfo.daysLeft + 'd ' + qInfo.hoursLeft + 'h (' + qInfo.resetFormattedStr + ')';
+    }
+
+    var championBadge = document.querySelector("[data-poll-champion-badge]");
+    if (championBadge) {
+      championBadge.innerHTML = '<i class="fa-solid fa-crown text-amber-500"></i> LAST QUARTER CHAMPION (' + qInfo.prevQuarterLabel + '): GCP';
+    }
 
     var pollData = [
       { provider: "GCP", votes: 142, today_votes: 18 },
@@ -1312,10 +1367,10 @@
 
     function renderPollUI() {
       var totalVotes = pollData.reduce(function (acc, row) { return acc + (row.votes || 0); }, 0);
-      var userVotedProvider = localStorage.getItem("gcloudcafe_voted_provider");
+      var userVotedProvider = localStorage.getItem("gcloudcafe_voted_provider_" + qInfo.quarterKey);
 
       var todayLeader = pollData.slice().sort(function (a, b) { return (b.today_votes || 0) - (a.today_votes || 0); })[0];
-      var lifetimeLeader = pollData.slice().sort(function (a, b) { return (b.votes || 0) - (a.votes || 0); })[0];
+      var quarterLeader = pollData.slice().sort(function (a, b) { return (b.votes || 0) - (a.votes || 0); })[0];
 
       pollData.forEach(function (row) {
         var provider = row.provider;
@@ -1346,9 +1401,9 @@
 
       // Update Trend Insight Badge
       var trendBadge = document.querySelector("[data-poll-trend-badge]");
-      if (trendBadge && todayLeader && lifetimeLeader) {
-        var lifetimePercent = totalVotes > 0 ? (((lifetimeLeader.votes || 0) / totalVotes) * 100).toFixed(1) : "0.0";
-        trendBadge.innerHTML = '<i class="fa-solid fa-fire text-amber-500 animate-pulse"></i> <strong>TODAY\'S TREND:</strong> ' + todayLeader.provider + ' leads today (+' + (todayLeader.today_votes || 0) + ' votes) &nbsp;|&nbsp; 🏆 <strong>LIFETIME LEADER:</strong> ' + lifetimeLeader.provider + ' (' + lifetimePercent + '%)';
+      if (trendBadge && todayLeader && quarterLeader) {
+        var qPercent = totalVotes > 0 ? (((quarterLeader.votes || 0) / totalVotes) * 100).toFixed(1) : "0.0";
+        trendBadge.innerHTML = '<i class="fa-solid fa-fire text-amber-500 animate-pulse"></i> <strong>TODAY\'S TREND:</strong> ' + todayLeader.provider + ' leads ' + qInfo.quarterLabel + ' today (+' + (todayLeader.today_votes || 0) + ' votes) &nbsp;|&nbsp; 🏆 <strong>CURRENT ' + qInfo.quarterLabel + ' LEADER:</strong> ' + quarterLeader.provider + ' (' + qPercent + '%)';
       }
 
       bindPollEvents();
@@ -1368,10 +1423,10 @@
     }
 
     function castProviderVote(provider) {
-      var userVotedProvider = localStorage.getItem("gcloudcafe_voted_provider");
-      if (userVotedProvider) return; // Deduplicated: 1 lifetime vote per reader
+      var userVotedProvider = localStorage.getItem("gcloudcafe_voted_provider_" + qInfo.quarterKey);
+      if (userVotedProvider) return; // Deduplicated per quarter
 
-      localStorage.setItem("gcloudcafe_voted_provider", provider);
+      localStorage.setItem("gcloudcafe_voted_provider_" + qInfo.quarterKey, provider);
 
       var row = pollData.find(function (r) { return r.provider === provider; });
       if (row) {

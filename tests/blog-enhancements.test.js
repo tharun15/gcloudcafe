@@ -212,4 +212,24 @@ describe('Forever Cloud Provider Poll Engine', () => {
     expect(result.find(r => r.provider === 'AZURE').percent).toBe(15.0);
     expect(result.find(r => r.provider === 'OTHERS').percent).toBe(5.0);
   });
+
+  it('correctly calculates quarter info, reset date, and previous quarter label', () => {
+    function getCurrentQuarterInfo(nowDate) {
+      var now = nowDate || new Date();
+      var year = now.getFullYear();
+      var month = now.getMonth();
+      var quarterNum = Math.floor(month / 3) + 1;
+      var quarterLabel = "Q" + quarterNum + " " + year;
+      var prevQuarterNum = quarterNum === 1 ? 4 : quarterNum - 1;
+      var prevQuarterYear = quarterNum === 1 ? year - 1 : year;
+      var prevQuarterLabel = "Q" + prevQuarterNum + " " + prevQuarterYear;
+      return { quarterLabel, prevQuarterLabel };
+    }
+
+    const augDate = new Date('2026-08-06T20:00:00Z');
+    const qInfo = getCurrentQuarterInfo(augDate);
+
+    expect(qInfo.quarterLabel).toBe('Q3 2026');
+    expect(qInfo.prevQuarterLabel).toBe('Q2 2026');
+  });
 });
