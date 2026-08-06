@@ -107,53 +107,77 @@
     </div>
   </div>
 
-  <!-- Modern Interactive Comments & Discussion Box -->
-  <div class="comments-section mt-12" id="comments-section">
-    <div class="flex items-center justify-between mb-6">
-      <h3 class="text-xl font-bold tracking-tight flex items-center gap-2">
-        <i class="fa-regular fa-comments text-primary"></i> Community Discussion
-        <span class="text-xs font-medium px-2.5 py-0.5 rounded-full bg-primary/10 text-primary" data-comments-count-badge>0</span>
-      </h3>
+  <!-- Giscus GitHub Discussions Comments Container -->
+  {{ if site.Params.giscus.enable }}
+    <div class="giscus-wrapper mt-12" id="comments-section">
+      <div class="flex items-center justify-between mb-6">
+        <h3 class="text-xl font-bold tracking-tight flex items-center gap-2">
+          <i class="fa-regular fa-comments text-primary"></i> Community Discussion
+        </h3>
+      </div>
+      <div class="giscus"></div>
+      <script src="https://giscus.app/client.js"
+              data-repo="{{ site.Params.giscus.repo }}"
+              {{ with site.Params.giscus.repo_id }}data-repo-id="{{ . }}"{{ end }}
+              {{ with site.Params.giscus.category }}data-category="{{ . }}"{{ end }}
+              {{ with site.Params.giscus.category_id }}data-category-id="{{ . }}"{{ end }}
+              data-mapping="{{ site.Params.giscus.mapping | default "pathname" }}"
+              data-strict="{{ site.Params.giscus.strict | default "0" }}"
+              data-reactions-enabled="{{ site.Params.giscus.reactions_enabled | default "1" }}"
+              data-emit-metadata="{{ site.Params.giscus.emit_metadata | default "0" }}"
+              data-input-position="{{ site.Params.giscus.input_position | default "top" }}"
+              data-theme="{{ site.Params.giscus.theme | default "preferred_color_scheme" }}"
+              data-lang="{{ site.Params.giscus.lang | default "en" }}"
+              data-loading="lazy"
+              crossorigin="anonymous"
+              async>
+      </script>
     </div>
-
-    <!-- Comment Form -->
-    <form data-comment-form class="blog-article-shell mb-8 border border-border/60 dark:border-darkmode-border/60 p-6 rounded-2xl bg-body dark:bg-darkmode-body shadow-xs">
-      <div class="mb-4">
-        <label for="comment-author-input" class="block text-xs font-bold uppercase tracking-wider text-text/80 dark:text-darkmode-text/80 mb-2">
-          Your Name / Handle (Optional)
-        </label>
-        <input
-          id="comment-author-input"
-          type="text"
-          placeholder="Cloud Practitioner"
-          class="blog-newsletter-input text-sm w-full sm:max-w-xs"
-          maxlength="50"
-        />
+  {{ else }}
+    <!-- Fallback Local Discussion Box -->
+    <div class="comments-section mt-12" id="comments-section">
+      <div class="flex items-center justify-between mb-6">
+        <h3 class="text-xl font-bold tracking-tight flex items-center gap-2">
+          <i class="fa-regular fa-comments text-primary"></i> Community Discussion
+          <span class="text-xs font-medium px-2.5 py-0.5 rounded-full bg-primary/10 text-primary" data-comments-count-badge>0</span>
+        </h3>
       </div>
 
-      <div class="mb-4">
-        <label for="comment-text-input" class="block text-xs font-bold uppercase tracking-wider text-text/80 dark:text-darkmode-text/80 mb-2">
-          Add to the conversation
-        </label>
-        <textarea
-          id="comment-text-input"
-          rows="3"
-          required
-          placeholder="Share your thoughts, questions, or hands-on experience with this article..."
-          class="w-full rounded-xl border border-border/80 dark:border-darkmode-border/80 bg-theme-light/40 dark:bg-darkmode-theme-light/40 p-3 text-sm focus:outline-hidden focus:ring-2 focus:ring-primary/50 text-dark dark:text-darkmode-dark"
-          maxlength="800"></textarea>
-      </div>
+      <form data-comment-form class="blog-article-shell mb-8 border border-border/60 dark:border-darkmode-border/60 p-6 rounded-2xl bg-body dark:bg-darkmode-body shadow-xs">
+        <div class="mb-4">
+          <label for="comment-author-input" class="block text-xs font-bold uppercase tracking-wider text-text/80 dark:text-darkmode-text/80 mb-2">
+            Your Name / Handle (Optional)
+          </label>
+          <input
+            id="comment-author-input"
+            type="text"
+            placeholder="Cloud Practitioner"
+            class="blog-newsletter-input text-sm w-full sm:max-w-xs"
+            maxlength="50"
+          />
+        </div>
 
-      <div class="flex items-center justify-end">
-        <button type="submit" class="btn btn-primary rounded-xl px-5 py-2 text-xs font-semibold shadow-xs cursor-pointer">
-          Post Comment <i class="fa-solid fa-paper-plane ml-1"></i>
-        </button>
-      </div>
-    </form>
+        <div class="mb-4">
+          <label for="comment-text-input" class="block text-xs font-bold uppercase tracking-wider text-text/80 dark:text-darkmode-text/80 mb-2">
+            Add to the conversation
+          </label>
+          <textarea
+            id="comment-text-input"
+            rows="3"
+            required
+            placeholder="Share your thoughts, questions, or hands-on experience with this article..."
+            class="w-full rounded-xl border border-border/80 dark:border-darkmode-border/80 bg-theme-light/40 dark:bg-darkmode-theme-light/40 p-3 text-sm focus:outline-hidden focus:ring-2 focus:ring-primary/50 text-dark dark:text-darkmode-dark"
+            maxlength="800"></textarea>
+        </div>
 
-    <!-- Comments List Container -->
-    <div data-comments-list class="space-y-4">
-      <!-- Dynamic comments rendered here via JS -->
+        <div class="flex items-center justify-end">
+          <button type="submit" class="btn btn-primary rounded-xl px-5 py-2 text-xs font-semibold shadow-xs cursor-pointer">
+            Post Comment <i class="fa-solid fa-paper-plane ml-1"></i>
+          </button>
+        </div>
+      </form>
+
+      <div data-comments-list class="space-y-4"></div>
     </div>
-  </div>
+  {{ end }}
 </section>
