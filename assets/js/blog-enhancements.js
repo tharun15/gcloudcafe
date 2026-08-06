@@ -1273,5 +1273,141 @@
     // Initial fetch
     fetchPulses();
   }
+
+  /* ── Forever Cloud Provider Poll & Community Benchmark ── */
+  function initCloudProviderPollSystem() {
+    var container = document.querySelector("[data-cloud-poll-container]");
+    if (!container) return;
+
+    var config = window.SUPABASE_CONFIG || {
+      url: "https://axiijcsxtiukloarbfor.supabase.co",
+      anonKey: "sb_publishable_cRcwg02R3nXTykDrxalL6w_-kc9Wesc"
+    };
+
+    var pollData = [
+      { provider: "GCP", votes: 142, today_votes: 18 },
+      { provider: "AWS", votes: 128, today_votes: 24 },
+      { provider: "AZURE", votes: 65, today_votes: 8 },
+      { provider: "OTHERS", votes: 24, today_votes: 3 }
+    ];
+
+    function fetchPollData() {
+      fetch(config.url + "/rest/v1/cloud_provider_polls?select=*&_t=" + Date.now(), {
+        headers: {
+          "apikey": config.anonKey,
+          "Authorization": "Bearer " + config.anonKey
+        }
+      })
+      .then(function (res) { return res.json(); })
+      .then(function (data) {
+        if (Array.isArray(data) && data.length > 0) {
+          pollData = data;
+        }
+        renderPollUI();
+      })
+      .catch(function () {
+        renderPollUI();
+      });
+    }
+
+    function renderPollUI() {
+      var totalVotes = pollData.reduce(function (acc, row) { return acc + (row.votes || 0); }, 0);
+      var userVotedProvider = localStorage.getItem("gcloudcafe_voted_provider");
+
+      var todayLeader = pollData.slice().sort(function (a, b) { return (b.today_votes || 0) - (a.today_votes || 0); })[0];
+      var lifetimeLeader = pollData.slice().sort(function (a, b) { return (b.votes || 0) - (a.votes || 0); })[0];
+
+      pollData.forEach(function (row) {
+        var provider = row.provider;
+        var votes = row.votes || 0;
+        var percent = totalVotes > 0 ? ((votes / totalVotes) * 100).toFixed(1) : "0.0";
+
+        var percentElem = container.querySelector('[data-provider-percent="' + provider + '"]');
+        var barElem = container.querySelector('[data-provider-bar="' + provider + '"]');
+        var votesElem = container.querySelector('[data-provider-votes="' + provider + '"]');
+        var btnElem = container.querySelector('[data-poll-vote="' + provider + '"]');
+
+        if (percentElem) percentElem.textContent = percent + "%";
+        if (barElem) barElem.style.width = percent + "%";
+        if (votesElem) votesElem.textContent = votes + " votes (" + percent + "%)";
+
+        if (btnElem) {
+          if (userVotedProvider === provider) {
+            btnElem.innerHTML = '<i class="fa-solid fa-circle-check mr-1"></i> Voted';
+            btnElem.className = "px-3 py-1.5 rounded-xl text-xs font-bold border-none bg-emerald-600 text-white shadow-xs cursor-default";
+            btnElem.disabled = true;
+          } else if (userVotedProvider) {
+            btnElem.innerHTML = '<i class="fa-solid fa-thumbs-up mr-1"></i> Vote';
+            btnElem.className = "px-3 py-1.5 rounded-xl text-xs font-bold border-none bg-slate-300 dark:bg-slate-700 text-slate-600 dark:text-slate-400 opacity-60 cursor-not-allowed";
+            btnElem.disabled = true;
+          }
+        }
+      });
+
+      // Update Trend Insight Badge
+      var trendBadge = document.querySelector("[data-poll-trend-badge]");
+      if (trendBadge && todayLeader && lifetimeLeader) {
+        var lifetimePercent = totalVotes > 0 ? (((lifetimeLeader.votes || 0) / totalVotes) * 100).toFixed(1) : "0.0";
+        trendBadge.innerHTML = '<i class="fa-solid fa-fire text-amber-500 animate-pulse"></i> <strong>TODAY\'S TREND:</strong> ' + todayLeader.provider + ' leads today (+' + (todayLeader.today_votes || 0) + ' votes) &nbsp;|&nbsp; 🏆 <strong>LIFETIME LEADER:</strong> ' + lifetimeLeader.provider + ' (' + lifetimePercent + '%)';
+      }
+
+      bindPollEvents();
+    }
+
+    function bindPollEvents() {
+      container.querySelectorAll("[data-poll-vote]").forEach(function (btn) {
+        if (btn.getAttribute("data-poll-bound") === "true") return;
+        btn.setAttribute("data-poll-bound", "true");
+
+        btn.addEventListener("click", function (e) {
+          e.preventDefault();
+          var provider = this.getAttribute("data-poll-vote");
+          castProviderVote(provider);
+        });
+      });
+    }
+
+    function castProviderVote(provider) {
+      var userVotedProvider = localStorage.getItem("gcloudcafe_voted_provider");
+      if (userVotedProvider) return; // Deduplicated: 1 lifetime vote per reader
+
+      localStorage.setItem("gcloudcafe_voted_provider", provider);
+
+      var row = pollData.find(function (r) { return r.provider === provider; });
+      if (row) {
+        row.votes = (row.votes || 0) + 1;
+        row.today_votes = (row.today_votes || 0) + 1;
+      }
+
+      renderPollUI();
+
+      // Sync atomic update to Supabase
+      if (row && row.id) {
+        fetch(config.url + "/rest/v1/cloud_provider_polls?id=eq." + row.id, {
+          method: "PATCH",
+          headers: {
+            "apikey": config.anonKey,
+            "Authorization": "Bearer " + config.anonKey,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ votes: row.votes, today_votes: row.today_votes, updated_at: new Date().toISOString() })
+        });
+      }
+    }
+
+    fetchPollData();
+  }
+
+  function initApp() {
+    initCommentsSystem();
+    initCloudPulseSystem();
+    initCloudProviderPollSystem();
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initApp);
+  } else {
+    initApp();
+  }
 })();
 

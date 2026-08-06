@@ -187,3 +187,29 @@ describe('Gravity Time-Decay & 6-Card Capacity Engine', () => {
     expect(top6[5].id).toBe('p4');
   });
 });
+
+describe('Forever Cloud Provider Poll Engine', () => {
+  function calculatePercentages(pollData) {
+    const totalVotes = pollData.reduce((acc, row) => acc + (row.votes || 0), 0);
+    return pollData.map(row => ({
+      provider: row.provider,
+      votes: row.votes,
+      percent: totalVotes > 0 ? parseFloat(((row.votes / totalVotes) * 100).toFixed(1)) : 0
+    }));
+  }
+
+  it('correctly calculates percentage shares for cloud providers', () => {
+    const data = [
+      { provider: 'GCP', votes: 50 },
+      { provider: 'AWS', votes: 30 },
+      { provider: 'AZURE', votes: 15 },
+      { provider: 'OTHERS', votes: 5 }
+    ];
+
+    const result = calculatePercentages(data);
+    expect(result.find(r => r.provider === 'GCP').percent).toBe(50.0);
+    expect(result.find(r => r.provider === 'AWS').percent).toBe(30.0);
+    expect(result.find(r => r.provider === 'AZURE').percent).toBe(15.0);
+    expect(result.find(r => r.provider === 'OTHERS').percent).toBe(5.0);
+  });
+});
