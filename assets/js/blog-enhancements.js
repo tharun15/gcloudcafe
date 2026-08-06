@@ -972,14 +972,22 @@
         var upActiveClass = userVote === "up" ? "bg-emerald-500 text-white font-bold" : "bg-theme-light dark:bg-darkmode-theme-light hover:bg-emerald-500/10 text-text/80 dark:text-darkmode-text/80";
         var downActiveClass = userVote === "down" ? "bg-rose-500 text-white font-bold" : "bg-theme-light dark:bg-darkmode-theme-light hover:bg-rose-500/10 text-text/80 dark:text-darkmode-text/80";
 
+        var titleHtml = escapeHtml(p.title);
+        var eventLinkHtml = "";
+        if (p.link_url) {
+          titleHtml = '<a href="' + escapeHtml(p.link_url) + '" target="_blank" rel="noopener noreferrer" class="hover:underline flex items-center gap-1.5 no-underline hover:text-primary">' + titleHtml + ' <i class="fa-solid fa-arrow-up-right-from-square text-[11px] text-primary"></i></a>';
+          eventLinkHtml = '<div class="mb-3"><a href="' + escapeHtml(p.link_url) + '" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-primary/10 hover:bg-primary/20 text-primary text-[11px] font-bold no-underline transition-all"><i class="fa-solid fa-link text-[10px]"></i> Official Event / Page <i class="fa-solid fa-arrow-up-right-from-square text-[9px]"></i></a></div>';
+        }
+
         html += '<div class="cloud-pulse-card bg-body dark:bg-darkmode-body border border-border/80 dark:border-darkmode-border/80 rounded-3xl p-5 shadow-xs flex flex-col justify-between transition-all hover:border-primary/50 group">' +
           '<div>' +
             '<div class="flex items-center justify-between gap-2 mb-3">' +
               rankBadge +
               '<span class="text-[10px] font-medium text-text/60 dark:text-darkmode-text/60">' + formatDate(p.created_at) + '</span>' +
             '</div>' +
-            '<h4 class="text-sm font-bold text-dark dark:text-darkmode-dark mb-2 leading-snug group-hover:text-primary transition-colors">' + escapeHtml(p.title) + '</h4>' +
-            '<p class="text-xs text-text/80 dark:text-darkmode-text/80 mb-4 leading-relaxed">' + escapeHtml(p.content) + '</p>' +
+            '<h4 class="text-sm font-bold text-dark dark:text-darkmode-dark mb-2 leading-snug group-hover:text-primary transition-colors">' + titleHtml + '</h4>' +
+            '<p class="text-xs text-text/80 dark:text-darkmode-text/80 mb-3 leading-relaxed">' + escapeHtml(p.content) + '</p>' +
+            eventLinkHtml +
           '</div>' +
 
           '<div class="pt-3 border-t border-border/40 dark:border-darkmode-border/40 flex items-center justify-between gap-2">' +
@@ -1093,6 +1101,7 @@
         var passcode = (formData.get("passcode") || "").trim();
         var title = (formData.get("title") || "").trim();
         var content = (formData.get("content") || "").trim();
+        var linkUrl = (formData.get("link_url") || "").trim();
         var tagsRaw = (formData.get("tags") || "").trim();
 
         if (passcode !== "1526" && passcode !== "admin") {
@@ -1122,6 +1131,10 @@
           score: 1,
           author: "Tharun Vempati"
         };
+
+        if (linkUrl) {
+          payload.link_url = linkUrl;
+        }
 
         fetch(config.url + "/rest/v1/cloud_pulses", {
           method: "POST",
