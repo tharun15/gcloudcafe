@@ -942,14 +942,34 @@
       });
     }
 
+    function calculateTrendingScore(p) {
+      var score = typeof p.score === "number" ? p.score : ((p.upvotes || 0) - (p.downvotes || 0));
+      var createdAt = p.created_at ? new Date(p.created_at).getTime() : Date.now();
+      var ageInHours = Math.max(0, (Date.now() - createdAt) / (1000 * 60 * 60));
+      // Gravity Time Decay Formula: TrendingScore = (Score + 1) / ((AgeInHours + 2) ^ 1.5)
+      var gravity = Math.pow(ageInHours + 2, 1.5);
+      return (score + 1) / gravity;
+    }
+
     function renderPulses(pulses) {
       if (!pulses || pulses.length === 0) {
         feedContainer.innerHTML = '<div class="col-span-full text-center py-8 text-xs text-text/60 dark:text-darkmode-text/60">No cloud pulses yet. Be the first to post!</div>';
         return;
       }
 
+      // Compute Gravity Time-Decay score for each pulse & sort descending
+      var sortedPulses = pulses.slice().map(function (p) {
+        p._trendingScore = calculateTrendingScore(p);
+        return p;
+      }).sort(function (a, b) {
+        return b._trendingScore - a._trendingScore;
+      });
+
+      // Strict limit: Max 6 trending pulses displayed
+      var topPulses = sortedPulses.slice(0, 6);
+
       var html = "";
-      pulses.forEach(function (p, idx) {
+      topPulses.forEach(function (p, idx) {
         var rankBadge = idx === 0 ? '<span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-amber-500/20 text-amber-500 border border-amber-500/30">🔥 #1 TRENDING</span>'
                       : idx === 1 ? '<span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-slate-400/20 text-slate-400 border border-slate-400/30">#2 TOP PULSE</span>'
                       : idx === 2 ? '<span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-amber-700/20 text-amber-600 border border-amber-700/30">#3 TOP PULSE</span>'
@@ -1000,7 +1020,7 @@
       });
 
       feedContainer.innerHTML = html;
-      bindVoteEvents(pulses);
+      bindVoteEvents(topPulses);
     }
 
     var currentPulses = [];
