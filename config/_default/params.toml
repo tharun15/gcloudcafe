@@ -33,8 +33,22 @@ enable_breadcrumb = true
 enable_author_profile = true
 enable_related_posts = true
 enable_newsletter_signup = true
-enable_social_sharing = true
-enable_comments = false
+enable_comments = true
+
+# Giscus Comments Configuration (https://giscus.app)
+[giscus]
+enable = true
+repo = "tharun15/gcloudcafe"
+repo_id = "R_kgDONdsAfw"
+category = "Announcements"
+category_id = "DIC_kwDONdsAf84DCxn4"
+mapping = "pathname"
+strict = "0"
+reactions_enabled = "1"
+emit_metadata = "0"
+input_position = "bottom"
+theme = "preferred_color_scheme"
+lang = "en"
 
 # Image Optimization
 use_webp = true

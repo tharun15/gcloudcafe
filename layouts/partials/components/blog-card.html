@@ -1,0 +1,87 @@
+{{ $page := . }}
+{{ $authorSlug := $page.Params.author }}
+{{ $authorName := $authorSlug | humanize | title }}
+{{ with site.GetPage (printf "/authors/%s" $authorSlug) }}
+  {{ $authorName = .Title }}
+{{ end }}
+{{ $categories := $page.Params.categories }}
+{{ $tags := $page.Params.tags }}
+{{ $teaser := $page.Params.description | default $page.Summary | plainify | truncate 150 }}
+
+<article class="blog-card">
+  <a
+    class="blog-card-media blog-focus-ring"
+    href="{{ $page.RelPermalink }}"
+    aria-label="Read post: {{ $page.Title }}">
+    {{ with $page.Params.image }}
+      {{ partial "image" (dict "Src" . "Context" $page "Alt" $page.Title "Class" "blog-card-image") }}
+    {{ else }}
+      <div class="blog-fallback-media blog-card-fallback">
+        <span class="blog-badge"
+          >{{ index ($categories | default (slice "Fresh post")) 0 | humanize }}</span
+        >
+        <h3>{{ $page.Title }}</h3>
+      </div>
+    {{ end }}
+  </a>
+
+  <div class="blog-card-body">
+    <div class="mb-4 flex flex-wrap items-center gap-2">
+      {{ with index $categories 0 }}
+        <a
+          class="blog-badge blog-focus-ring"
+          href="{{ `categories/` | relLangURL }}{{ . | urlize | lower }}/">
+          {{ . | humanize }}
+        </a>
+      {{ else }}
+        {{ with index $tags 0 }}
+          <span class="blog-badge">{{ . | humanize }}</span>
+        {{ end }}
+      {{ end }}
+      <span class="blog-reading-time">
+        <i class="fa-regular fa-clock"></i>
+        {{ $page.ReadingTime }} min read
+      </span>
+    </div>
+
+    <h3 class="blog-card-title">
+      <a class="blog-focus-ring" href="{{ $page.RelPermalink }}"
+        >{{ $page.Title }}</a
+      >
+    </h3>
+
+    <p class="blog-card-copy">{{ $teaser }}</p>
+
+    <ul class="blog-meta-list mt-auto mb-4">
+      <li>
+        <i class="fa-regular fa-circle-user"></i>
+        <a
+          class="blog-focus-ring"
+          href="{{ `authors/` | relLangURL }}{{ $authorSlug | urlize }}/">
+          {{ $authorName }}
+        </a>
+      </li>
+      <li>
+        <i class="fa-regular fa-calendar"></i>
+        {{ time.Format ":date_long" $page.PublishDate }}
+      </li>
+    </ul>
+
+    <div class="flex items-center justify-between border-t border-border/40 dark:border-darkmode-border/40 pt-3">
+      <a class="blog-card-link blog-focus-ring" href="{{ $page.RelPermalink }}">
+        {{ T "read_more" }}
+        <i class="fa-solid fa-arrow-right text-xs"></i>
+      </a>
+
+      <a
+        class="text-xs font-bold text-[#0a66c2] dark:text-[#70b5f9] hover:text-[#004182] dark:hover:text-white transition-colors flex items-center gap-1.5 cursor-pointer no-underline"
+        target="_blank"
+        rel="noopener noreferrer"
+        href="https://www.linkedin.com/sharing/share-offsite/?url={{ $page.Permalink | safeURL }}"
+        aria-label="Share post on LinkedIn"
+        title="Share on LinkedIn">
+        <i class="fa-brands fa-linkedin text-sm"></i> Share
+      </a>
+    </div>
+  </div>
+</article>

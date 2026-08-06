@@ -54,22 +54,42 @@
           {{ .Params.description | default .Summary | plainify }}
         </p>
 
-        <ul class="blog-meta-list mb-8 border-t border-b border-border/60 dark:border-darkmode-border/60 py-4">
-          <li>
-            <i class="fa-regular fa-circle-user text-primary"></i>
-            <a class="blog-focus-ring font-semibold text-dark dark:text-darkmode-dark hover:text-primary" href="{{ `authors/` | relLangURL }}{{ $authorSlug | urlize }}/">
-              {{ $authorName }}
+        <div class="blog-meta-list-container mb-8 border-t border-b border-border/60 dark:border-darkmode-border/60 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <ul class="blog-meta-list flex flex-wrap items-center gap-x-6 gap-y-2 list-none p-0 m-0">
+            <li class="inline-flex items-center gap-1.5 text-xs text-text/80 dark:text-darkmode-text/80">
+              <i class="fa-regular fa-circle-user text-primary"></i>
+              <a class="blog-focus-ring font-semibold text-dark dark:text-darkmode-dark hover:text-primary no-underline" href="{{ `authors/` | relLangURL }}{{ $authorSlug | urlize }}/">
+                {{ $authorName }}
+              </a>
+            </li>
+            <li class="inline-flex items-center gap-1.5 text-xs text-text/80 dark:text-darkmode-text/80">
+              <i class="fa-regular fa-calendar text-primary"></i>
+              {{ time.Format ":date_long" .PublishDate }}
+            </li>
+            <li class="inline-flex items-center gap-1.5 text-xs text-text/80 dark:text-darkmode-text/80">
+              <i class="fa-regular fa-clock text-primary"></i>
+              {{ .ReadingTime }} min read
+            </li>
+          </ul>
+          
+          <div class="flex items-center gap-2">
+            <a
+              href="https://www.linkedin.com/sharing/share-offsite/?url={{ .Permalink | safeURL }}"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center gap-2 rounded-xl bg-[#0a66c2] hover:bg-[#004182] text-white px-3 py-1.5 text-[11px] font-bold shadow-xs transition-all hover:scale-105 active:scale-95 whitespace-nowrap cursor-pointer no-underline"
+              aria-label="Share on LinkedIn">
+              <i class="fa-brands fa-linkedin text-sm"></i> Share
             </a>
-          </li>
-          <li>
-            <i class="fa-regular fa-calendar text-primary"></i>
-            {{ time.Format ":date_long" .PublishDate }}
-          </li>
-          <li>
-            <i class="fa-regular fa-clock text-primary"></i>
-            {{ .ReadingTime }} min read
-          </li>
-        </ul>
+            <button
+              type="button"
+              data-copy-permalink="{{ .Permalink }}"
+              class="inline-flex items-center gap-1.5 rounded-xl border border-border/80 dark:border-darkmode-border/80 hover:border-primary text-text/95 dark:text-darkmode-text/95 px-3 py-1.5 text-[11px] font-semibold transition-all hover:scale-105 active:scale-95 whitespace-nowrap cursor-pointer"
+              aria-label="Copy direct article link">
+              <i class="fa-regular fa-copy"></i> Copy Link
+            </button>
+          </div>
+        </div>
 
         {{ $image:= .Params.image }}
         {{ if $image }}
@@ -115,9 +135,16 @@
               </div>
             {{ end }}
 
-            <div class="flex items-center gap-3">
+            <div class="flex items-center gap-3 shrink-0">
               <span class="text-xs font-bold uppercase tracking-wider text-text/70 dark:text-darkmode-text/70">Share:</span>
-              {{ partial "social-share" (dict "Context" . "Class" "share-icons" "Title" (T "share") "Whatsapp" true "Telegram" true "Linkedin" true "Pinterest" false "Tumblr" false "Vk" false) }}
+              <a
+                href="https://www.linkedin.com/sharing/share-offsite/?url={{ .Permalink | safeURL }}"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center gap-2 rounded-xl bg-[#0a66c2] hover:bg-[#004182] text-white px-4 py-2 text-xs font-bold shadow-xs transition-all hover:scale-105 active:scale-95 whitespace-nowrap cursor-pointer no-underline"
+                aria-label="Share on LinkedIn">
+                <i class="fa-brands fa-linkedin text-sm"></i> Share on LinkedIn
+              </a>
             </div>
           </div>
 
