@@ -257,22 +257,51 @@
       });
     }
 
-    // Function to fetch updated counts from Supabase
-    function fetchSupabaseCounts() {
-      if (!supabase) return;
+    // Function to fetch updated counts from Supabase with path dual-matching and retry resilience
+    function fetchSupabaseCounts(retryCount) {
+      retryCount = retryCount || 0;
+      if (!supabase) {
+        if ((!supabaseUrl || !supabaseKey) && window.SUPABASE_CONFIG) {
+          supabaseUrl = window.SUPABASE_CONFIG.url;
+          supabaseKey = window.SUPABASE_CONFIG.anonKey;
+        }
+        if (supabaseUrl && supabaseKey && window.supabase) {
+          supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+        }
+      }
+
+      if (!supabase) {
+        if (retryCount < 5) {
+          setTimeout(function () {
+            fetchSupabaseCounts(retryCount + 1);
+          }, 300);
+        }
+        return;
+      }
+
+      var cleanPath = permalink.replace(/\/+$/, "");
+      var pathWithSlash = cleanPath + "/";
+
       supabase
         .from('post_reactions')
         .select('helpful_count, insightful_count, awesome_count, brewtiful_count')
-        .eq('post_path', permalink)
-        .maybeSingle()
+        .or('post_path.eq.' + cleanPath + ',post_path.eq.' + pathWithSlash)
         .then(function (response) {
-          if (response && response.data) {
+          if (response && response.data && response.data.length > 0) {
             isLiveFromDb = true;
+            var dbHelpful = 0, dbInsightful = 0, dbAwesome = 0, dbBrewtiful = 0;
+            response.data.forEach(function (row) {
+              dbHelpful += parseInt(row.helpful_count) || 0;
+              dbInsightful += parseInt(row.insightful_count) || 0;
+              dbAwesome += parseInt(row.awesome_count) || 0;
+              dbBrewtiful += parseInt(row.brewtiful_count) || 0;
+            });
+
             storedCounts = {
-              helpful: (parseInt(response.data.helpful_count) || 0) + defaultCounts.helpful,
-              insightful: (parseInt(response.data.insightful_count) || 0) + defaultCounts.insightful,
-              awesome: (parseInt(response.data.awesome_count) || 0) + defaultCounts.awesome,
-              brewtiful: (parseInt(response.data.brewtiful_count) || 0) + defaultCounts.brewtiful
+              helpful: dbHelpful + defaultCounts.helpful,
+              insightful: dbInsightful + defaultCounts.insightful,
+              awesome: dbAwesome + defaultCounts.awesome,
+              brewtiful: dbBrewtiful + defaultCounts.brewtiful
             };
             updateCountsUI();
           }
