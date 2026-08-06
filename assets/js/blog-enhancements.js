@@ -828,21 +828,20 @@
     });
   }
 
-  /* ── Dynamic Database Telemetry Stats ── */
+  /* ── Dynamic Database Telemetry Stats (Grounded in Real Data) ── */
   function initTelemetryStats() {
     var statElem = document.querySelector("[data-stat-feedback]");
     var posElem = document.querySelector("[data-stat-positive]");
-    if (!statElem) return;
+    var commentsElem = document.querySelector("[data-stat-comments]");
+    if (!statElem && !commentsElem) return;
 
     var supabase = null;
     if (window.SUPABASE_CONFIG && window.supabase) {
       supabase = window.supabase.createClient(window.SUPABASE_CONFIG.url, window.SUPABASE_CONFIG.anonKey);
     }
-    if (!supabase) {
-      statElem.textContent = "100% POSITIVE";
-      return;
-    }
+    if (!supabase) return;
 
+    // 1. Fetch total real reactions from Supabase database
     supabase
       .from("post_reactions")
       .select("helpful_count, insightful_count, awesome_count, brewtiful_count")
@@ -850,19 +849,29 @@
         if (res && res.data && res.data.length > 0) {
           var total = 0;
           res.data.forEach(function (row) {
-            total += (row.helpful_count || 0) + (row.insightful_count || 0) + (row.awesome_count || 0) + (row.brewtiful_count || 0);
+            total += (parseInt(row.helpful_count) || 0) + 
+                     (parseInt(row.insightful_count) || 0) + 
+                     (parseInt(row.awesome_count) || 0) + 
+                     (parseInt(row.brewtiful_count) || 0);
           });
-          var displayTotal = total + 48;
-          statElem.textContent = displayTotal + "+ VOTES";
-          if (posElem) posElem.textContent = "● 99.2% RATING";
+          if (statElem) statElem.textContent = total + (total === 1 ? " VOTE" : " VOTES");
+          if (posElem) posElem.textContent = total > 0 ? "● LIVE FEEDBACK" : "● NO VOTES YET";
         } else {
-          statElem.textContent = "48+ VOTES";
-          if (posElem) posElem.textContent = "● 99.2% RATING";
+          if (statElem) statElem.textContent = "0 VOTES";
+          if (posElem) posElem.textContent = "● NO VOTES YET";
         }
       })
-      .catch(function () {
-        statElem.textContent = "100% POSITIVE";
-      });
+      .catch(function () {});
+
+    // 2. Fetch total real comments from Supabase database
+    supabase
+      .from("post_comments")
+      .select("id", { count: 'exact', head: true })
+      .then(function (res) {
+        var count = res && typeof res.count === "number" ? res.count : 0;
+        if (commentsElem) commentsElem.textContent = count + (count === 1 ? " COMMENT" : " COMMENTS");
+      })
+      .catch(function () {});
   }
 
   /* ── Init ── */
