@@ -1028,6 +1028,8 @@
 
     function castVote(id, clickedType, pulsesList) {
       var currentVote = localStorage.getItem("pulse_voted_" + id);
+      if (currentVote === clickedType) return; // If already upvoted/downvoted, repeated clicks do nothing
+
       var item = pulsesList.find(function (p) { return p.id === id; });
       if (!item) return;
 
@@ -1035,38 +1037,20 @@
       var origDown = item.downvotes || 0;
       var newUp = origUp;
       var newDown = origDown;
-      var newVote = null;
 
       if (clickedType === "up") {
-        if (currentVote === "up") {
-          // Toggle off upvote
-          newUp = Math.max(0, origUp - 1);
-          newVote = null;
-        } else if (currentVote === "down") {
-          // Cancel downvote to neutral
+        newUp = origUp + 1;
+        if (currentVote === "down") {
           newDown = Math.max(0, origDown - 1);
-          newVote = null;
-        } else {
-          // Upvote from neutral
-          newUp = origUp + 1;
-          newVote = "up";
         }
       } else if (clickedType === "down") {
-        if (currentVote === "down") {
-          // Toggle off downvote
-          newDown = Math.max(0, origDown - 1);
-          newVote = null;
-        } else if (currentVote === "up") {
-          // Cancel upvote to neutral
+        newDown = origDown + 1;
+        if (currentVote === "up") {
           newUp = Math.max(0, origUp - 1);
-          newVote = null;
-        } else {
-          // Downvote from neutral
-          newDown = origDown + 1;
-          newVote = "down";
         }
       }
 
+      var newVote = clickedType;
       var newScore = newUp - newDown;
       item.upvotes = newUp;
       item.downvotes = newDown;
