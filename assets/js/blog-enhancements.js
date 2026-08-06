@@ -571,25 +571,28 @@
     }, 2500);
   }
 
-  /* ── Interactive Community Comments System ── */
+  /* ── Interactive Community Comments System (Supabase Backend) ── */
   function initCommentsSystem() {
     var section = document.getElementById("comments-section");
     if (!section) return;
 
-    var permalink = window.location.pathname;
+    var rawPath = window.location.pathname;
+    var permalink = (rawPath.replace(/\/+$/, "") + "/").toLowerCase();
+    var cleanSlug = permalink.split('/').filter(Boolean).pop() || "";
+    var possiblePaths = Array.from(new Set([
+      permalink,
+      rawPath,
+      permalink.replace(/\/+$/, ""),
+      permalink.replace(/^\/+/, ""),
+      permalink.replace(/^\/+|\/+$/g, ""),
+      cleanSlug,
+      "/blog/" + cleanSlug + "/",
+      "blog/" + cleanSlug
+    ])).filter(Boolean);
+
     var storageKey = "gcloudcafe:comments:" + permalink;
 
-    var defaultComments = [
-      {
-        id: "c1",
-        author: "Alex Rivers",
-        text: "Great walkthrough! The step-by-step breakdown was very clear and easy to follow.",
-        date: "2 days ago",
-        likes: 3
-      }
-    ];
-
-    var comments = defaultComments;
+    var comments = [];
     try {
       var raw = localStorage.getItem(storageKey);
       if (raw) {
@@ -600,6 +603,54 @@
     var form = section.querySelector("[data-comment-form]");
     var list = section.querySelector("[data-comments-list]");
     var countBadge = section.querySelector("[data-comments-count-badge]");
+
+    // Initialize Supabase Client
+    var supabase = null;
+    if (window.SUPABASE_CONFIG && window.supabase) {
+      supabase = window.supabase.createClient(window.SUPABASE_CONFIG.url, window.SUPABASE_CONFIG.anonKey);
+    }
+
+    function fetchSupabaseComments() {
+      if (!supabase) return;
+
+      supabase
+        .from('post_comments')
+        .select('*')
+        .in('post_path', possiblePaths)
+        .order('created_at', { ascending: false })
+        .then(function (res) {
+          if (res && res.data && res.data.length > 0) {
+            comments = res.data.map(function (row) {
+              return {
+                id: row.id,
+                author: row.author || "Cloud Practitioner",
+                text: row.content || row.text || "",
+                date: formatDate(row.created_at),
+                likes: row.likes || 0
+              };
+            });
+            saveComments();
+            renderComments();
+          }
+        })
+        .catch(function () {});
+    }
+
+    function formatDate(dateStr) {
+      if (!dateStr) return "Just now";
+      try {
+        var d = new Date(dateStr);
+        if (isNaN(d.getTime())) return "Recently";
+        var diff = Math.floor((new Date() - d) / 1000);
+        if (diff < 60) return "Just now";
+        if (diff < 3600) return Math.floor(diff / 60) + "m ago";
+        if (diff < 86400) return Math.floor(diff / 3600) + "h ago";
+        if (diff < 2592000) return Math.floor(diff / 86400) + "d ago";
+        return d.toLocaleDateString();
+      } catch (e) {
+        return "Recently";
+      }
+    }
 
     function renderComments() {
       if (countBadge) countBadge.textContent = comments.length;
@@ -639,6 +690,14 @@
             comments[index].likes = (comments[index].likes || 0) + 1;
             saveComments();
             renderComments();
+
+            if (supabase && comments[index].id) {
+              supabase
+                .from('post_comments')
+                .update({ likes: comments[index].likes })
+                .eq('id', comments[index].id)
+                .then(function(){}).catch(function(){});
+            }
           }
         });
       });
@@ -675,10 +734,29 @@
 
         if (textInput) textInput.value = "";
         showToast("Comment posted! 🚀");
+
+        if (supabase) {
+          supabase
+            .from('post_comments')
+            .insert([{
+              post_path: permalink,
+              author: author || "Cloud Practitioner",
+              content: text,
+              likes: 0
+            }])
+            .then(function (res) {
+              if (res.error) {
+                console.warn("Supabase comment insert note:", res.error.message);
+              } else {
+                fetchSupabaseComments();
+              }
+            });
+        }
       });
     }
 
     renderComments();
+    fetchSupabaseComments();
   }
 
   function escapeHtml(str) {
