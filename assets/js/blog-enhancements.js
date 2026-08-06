@@ -993,6 +993,14 @@
           eventLinkHtml = '<div class="mb-3"><a href="' + escapeHtml(p.link_url) + '" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-primary/10 hover:bg-primary/20 text-primary text-[11px] font-bold no-underline transition-all"><i class="fa-solid fa-link text-[10px]"></i> Official Event / Page <i class="fa-solid fa-arrow-up-right-from-square text-[9px]"></i></a></div>';
         }
 
+        var hashtagsText = Array.isArray(p.tags) ? p.tags.join(" ") : "";
+        var shareText = "☕ " + p.title + "\n\n" + p.content + "\n\nExplore live micro-news & trends on GCloud Cafe: https://gcloudcafe.com/pulse/\n\n" + hashtagsText;
+        var linkedinShareUrl = "https://www.linkedin.com/feed/?shareActive=true&text=" + encodeURIComponent(shareText);
+
+        var linkedinBtnHtml = '<a href="' + linkedinShareUrl + '" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-xs font-bold bg-[#0a66c2]/10 hover:bg-[#0a66c2] text-[#0a66c2] hover:text-white transition-all no-underline shrink-0" title="Share pulse on LinkedIn">' +
+          '<i class="fa-brands fa-linkedin text-sm"></i> Share' +
+        '</a>';
+
         html += '<div class="cloud-pulse-card bg-body dark:bg-darkmode-body border border-border/80 dark:border-darkmode-border/80 rounded-3xl p-5 shadow-xs flex flex-col justify-between transition-all hover:border-primary/50 group">' +
           '<div>' +
             '<div class="flex items-center justify-between gap-2 mb-3">' +
@@ -1004,16 +1012,19 @@
             eventLinkHtml +
           '</div>' +
 
-          '<div class="pt-3 border-t border-border/40 dark:border-darkmode-border/40 flex items-center justify-between gap-2">' +
+          '<div class="pt-3 border-t border-border/40 dark:border-darkmode-border/40 flex items-center justify-between gap-2 flex-wrap sm:flex-nowrap">' +
             '<div class="flex flex-wrap gap-1">' + tagsHtml + '</div>' +
 
-            '<div class="flex items-center gap-1.5 shrink-0 bg-theme-light dark:bg-darkmode-theme-light rounded-xl p-1 border border-border/50 dark:border-darkmode-border/50">' +
-              '<button data-pulse-upvote="' + p.id + '" data-upvotes="' + (p.upvotes || 0) + '" data-downvotes="' + (p.downvotes || 0) + '" class="' + upActiveClass + '" title="Upvote pulse">' +
-                '<i class="fa-solid fa-caret-up text-sm"></i> <span>' + (p.score >= 0 ? '+' + p.score : p.score) + '</span>' +
-              '</button>' +
-              '<button data-pulse-downvote="' + p.id + '" data-upvotes="' + (p.upvotes || 0) + '" data-downvotes="' + (p.downvotes || 0) + '" class="' + downActiveClass + '" title="Downvote pulse">' +
-                '<i class="fa-solid fa-caret-down text-sm"></i>' +
-              '</button>' +
+            '<div class="flex items-center gap-2 shrink-0">' +
+              linkedinBtnHtml +
+              '<div class="flex items-center gap-1.5 shrink-0 bg-theme-light dark:bg-darkmode-theme-light rounded-xl p-1 border border-border/50 dark:border-darkmode-border/50">' +
+                '<button data-pulse-upvote="' + p.id + '" data-upvotes="' + (p.upvotes || 0) + '" data-downvotes="' + (p.downvotes || 0) + '" class="' + upActiveClass + '" title="Upvote pulse">' +
+                  '<i class="fa-solid fa-caret-up text-sm"></i> <span>' + (p.score >= 0 ? '+' + p.score : p.score) + '</span>' +
+                '</button>' +
+                '<button data-pulse-downvote="' + p.id + '" data-upvotes="' + (p.upvotes || 0) + '" data-downvotes="' + (p.downvotes || 0) + '" class="' + downActiveClass + '" title="Downvote pulse">' +
+                  '<i class="fa-solid fa-caret-down text-sm"></i>' +
+                '</button>' +
+              '</div>' +
             '</div>' +
           '</div>' +
         '</div>';
