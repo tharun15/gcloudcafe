@@ -1003,53 +1003,109 @@
       bindVoteEvents(pulses);
     }
 
-    function bindVoteEvents(pulsesMap) {
-      feedContainer.querySelectorAll("[data-pulse-upvote]").forEach(function (btn) {
-        btn.addEventListener("click", function () {
-          var id = this.getAttribute("data-pulse-upvote");
-          castVote(id, "up", pulsesMap);
-        });
-      });
+    var currentPulses = [];
 
-      feedContainer.querySelectorAll("[data-pulse-downvote]").forEach(function (btn) {
-        btn.addEventListener("click", function () {
-          var id = this.getAttribute("data-pulse-downvote");
-          castVote(id, "down", pulsesMap);
-        });
+    function bindVoteEvents(pulsesMap) {
+      currentPulses = pulsesMap || [];
+      if (feedContainer.getAttribute("data-vote-bound") === "true") return;
+      feedContainer.setAttribute("data-vote-bound", "true");
+
+      feedContainer.addEventListener("click", function (e) {
+        var upTarget = e.target.closest("[data-pulse-upvote]");
+        var downTarget = e.target.closest("[data-pulse-downvote]");
+
+        if (upTarget) {
+          e.preventDefault();
+          var id = upTarget.getAttribute("data-pulse-upvote");
+          castVote(id, "up", currentPulses);
+        } else if (downTarget) {
+          e.preventDefault();
+          var id = downTarget.getAttribute("data-pulse-downvote");
+          castVote(id, "down", currentPulses);
+        }
       });
     }
 
-    function castVote(id, voteType, pulsesList) {
+    function castVote(id, clickedType, pulsesList) {
       var currentVote = localStorage.getItem("pulse_voted_" + id);
-      if (currentVote === voteType) return; // Already voted this way
-
       var item = pulsesList.find(function (p) { return p.id === id; });
       if (!item) return;
 
-      var newUp = item.upvotes || 0;
-      var newDown = item.downvotes || 0;
+      var origUp = item.upvotes || 0;
+      var origDown = item.downvotes || 0;
+      var newUp = origUp;
+      var newDown = origDown;
+      var newVote = null;
 
-      if (voteType === "up") {
-        newUp += 1;
-        if (currentVote === "down") newDown = Math.max(0, newDown - 1);
-      } else if (voteType === "down") {
-        newDown += 1;
-        if (currentVote === "up") newUp = Math.max(0, newUp - 1);
+      if (currentVote === clickedType) {
+        // Toggle OFF existing vote
+        if (clickedType === "up") {
+          newUp = Math.max(0, origUp - 1);
+        } else {
+          newDown = Math.max(0, origDown - 1);
+        }
+        newVote = null;
+      } else {
+        // Applying new vote or switching vote
+        if (clickedType === "up") {
+          newUp = origUp + 1;
+          if (currentVote === "down") {
+            newDown = Math.max(0, origDown - 1);
+          }
+        } else {
+          newDown = origDown + 1;
+          if (currentVote === "up") {
+            newUp = Math.max(0, origUp - 1);
+          }
+        }
+        newVote = clickedType;
       }
 
       var newScore = newUp - newDown;
+      item.upvotes = newUp;
+      item.downvotes = newDown;
+      item.score = newScore;
 
       // Update LocalStorage
-      localStorage.setItem("pulse_voted_" + id, voteType);
+      if (newVote) {
+        localStorage.setItem("pulse_voted_" + id, newVote);
+      } else {
+        localStorage.removeItem("pulse_voted_" + id);
+      }
 
-      // Update Supabase
+      // Optimistic UI update with Google Stock Ticker animation
+      var upBtn = feedContainer.querySelector('[data-pulse-upvote="' + id + '"]');
+      var downBtn = feedContainer.querySelector('[data-pulse-downvote="' + id + '"]');
+      var scoreSpan = upBtn ? upBtn.querySelector('span') : null;
+
+      if (upBtn && downBtn) {
+        if (newVote === "up") {
+          upBtn.className = "pulse-vote-btn is-upvoted";
+          downBtn.className = "pulse-vote-btn pulse-vote-btn-down";
+        } else if (newVote === "down") {
+          upBtn.className = "pulse-vote-btn";
+          downBtn.className = "pulse-vote-btn pulse-vote-btn-down is-downvoted";
+        } else {
+          upBtn.className = "pulse-vote-btn";
+          downBtn.className = "pulse-vote-btn pulse-vote-btn-down";
+        }
+
+        if (scoreSpan) {
+          scoreSpan.textContent = (newScore >= 0 ? '+' + newScore : newScore);
+          var animClass = clickedType === "up" ? "stock-ticker-up" : "stock-ticker-down";
+          scoreSpan.classList.remove("stock-ticker-up", "stock-ticker-down");
+          void scoreSpan.offsetWidth; // Trigger reflow
+          scoreSpan.classList.add(animClass);
+          setTimeout(function() {
+            scoreSpan.classList.remove(animClass);
+          }, 450);
+        }
+      }
+
+      // Sync background payload to Supabase without triggering full DOM rebuild
+      var payload = { upvotes: newUp, downvotes: newDown, score: newScore };
       if (supabase) {
-        supabase
-          .from("cloud_pulses")
-          .update({ upvotes: newUp, downvotes: newDown, score: newScore })
-          .eq("id", id)
-          .then(function () { fetchPulses(); })
-          .catch(function () { fetchPulses(); });
+        supabase.from("cloud_pulses").update(payload).eq("id", id).then().catch();
       } else {
         fetch(config.url + "/rest/v1/cloud_pulses?id=eq." + id, {
           method: "PATCH",
@@ -1058,8 +1114,8 @@
             "Authorization": "Bearer " + config.anonKey,
             "Content-Type": "application/json"
           },
-          body: JSON.stringify({ upvotes: newUp, downvotes: newDown, score: newScore })
-        }).then(function () { fetchPulses(); });
+          body: JSON.stringify(payload)
+        });
       }
     }
 

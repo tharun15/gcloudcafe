@@ -486,3 +486,55 @@ kbd {
     color: #ffffff !important;
   }
 }
+
+/* ==========================================================================
+   GOOGLE STOCK TICKER TRANSITION ENGINE FOR PULSE VOTES
+   ========================================================================== */
+
+@keyframes stockFlashGreen {
+  0% {
+    transform: translateY(6px) scale(0.9);
+    background-color: #059669;
+    color: #ffffff;
+    box-shadow: 0 0 12px rgba(5, 150, 105, 0.6);
+  }
+  50% {
+    transform: translateY(-2px) scale(1.15);
+    background-color: #10b981;
+    color: #ffffff;
+  }
+  100% {
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes stockFlashRed {
+  0% {
+    transform: translateY(-6px) scale(0.9);
+    background-color: #e11d48;
+    color: #ffffff;
+    box-shadow: 0 0 12px rgba(225, 29, 72, 0.6);
+  }
+  50% {
+    transform: translateY(2px) scale(1.15);
+    background-color: #f43f5e;
+    color: #ffffff;
+  }
+  100% {
+    transform: translateY(0) scale(1);
+  }
+}
+
+.stock-ticker-up {
+  display: inline-block !important;
+  animation: stockFlashGreen 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+  border-radius: 4px;
+  padding: 0 4px;
+}
+
+.stock-ticker-down {
+  display: inline-block !important;
+  animation: stockFlashRed 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+  border-radius: 4px;
+  padding: 0 4px;
+}
