@@ -271,8 +271,8 @@
     });
 
     /* Copy permalink toast */
-    var copyBtn = widget.querySelector("[data-copy-permalink]");
-    if (copyBtn) {
+    var copyBtns = document.querySelectorAll("[data-copy-permalink]");
+    copyBtns.forEach(function (copyBtn) {
       copyBtn.addEventListener("click", function () {
         var url = copyBtn.dataset.copyPermalink || window.location.href;
 
@@ -284,7 +284,7 @@
           showToast("Link copied to clipboard! 📋");
         }
       });
-    }
+    });
   }
 
   function spawnEmojiParticle(btn) {
