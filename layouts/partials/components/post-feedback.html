@@ -1,0 +1,162 @@
+<section class="mt-14 pt-8 border-t border-border/60 dark:border-darkmode-border/60" aria-labelledby="post-engagement-heading">
+  <div class="post-feedback-widget rounded-3xl p-6 sm:p-8 bg-theme-light/60 dark:bg-darkmode-theme-light/40 border border-border/60 dark:border-darkmode-border/60 shadow-xs" data-post-feedback="{{ .RelPermalink }}">
+    
+    <!-- Reaction Header & Emoji Bar -->
+    <div class="mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+      <div>
+        <span class="blog-badge mb-2 inline-flex items-center gap-1.5"><i class="fa-solid fa-heart text-red-500"></i> Reader Feedback</span>
+        <h2 id="post-engagement-heading" class="text-xl font-bold tracking-tight sm:text-2xl">
+          Did you find this article valuable?
+        </h2>
+        <p class="text-sm text-text/80 dark:text-darkmode-text/80 mt-1">
+          Tap a reaction to let us know. Instant, private, and brews better content!
+        </p>
+      </div>
+
+      <!-- Playful Reactions Group -->
+      <div class="flex flex-wrap items-center gap-2 sm:gap-3" role="group" aria-label="Post reactions">
+        <button
+          class="engagement-btn blog-focus-ring flex items-center gap-2 rounded-full border border-border/70 dark:border-darkmode-border/70 bg-body dark:bg-darkmode-body px-3.5 py-2 text-xs font-semibold shadow-xs transition-all hover:scale-105 hover:border-primary active:scale-95 cursor-pointer"
+          type="button"
+          data-reaction-btn="helpful"
+          aria-label="Helpful reaction">
+          <span class="text-base">👍</span> <span class="font-bold">Helpful</span>
+          <span class="reaction-count text-[11px] rounded-full bg-theme-light dark:bg-darkmode-theme-light px-2 py-0.5" data-reaction-count="helpful">12</span>
+        </button>
+
+        <button
+          class="engagement-btn blog-focus-ring flex items-center gap-2 rounded-full border border-border/70 dark:border-darkmode-border/70 bg-body dark:bg-darkmode-body px-3.5 py-2 text-xs font-semibold shadow-xs transition-all hover:scale-105 hover:border-primary active:scale-95 cursor-pointer"
+          type="button"
+          data-reaction-btn="insightful"
+          aria-label="Insightful reaction">
+          <span class="text-base">💡</span> <span class="font-bold">Insightful</span>
+          <span class="reaction-count text-[11px] rounded-full bg-theme-light dark:bg-darkmode-theme-light px-2 py-0.5" data-reaction-count="insightful">8</span>
+        </button>
+
+        <button
+          class="engagement-btn blog-focus-ring flex items-center gap-2 rounded-full border border-border/70 dark:border-darkmode-border/70 bg-body dark:bg-darkmode-body px-3.5 py-2 text-xs font-semibold shadow-xs transition-all hover:scale-105 hover:border-primary active:scale-95 cursor-pointer"
+          type="button"
+          data-reaction-btn="awesome"
+          aria-label="Awesome reaction">
+          <span class="text-base">🔥</span> <span class="font-bold">Awesome</span>
+          <span class="reaction-count text-[11px] rounded-full bg-theme-light dark:bg-darkmode-theme-light px-2 py-0.5" data-reaction-count="awesome">15</span>
+        </button>
+
+        <button
+          class="engagement-btn blog-focus-ring flex items-center gap-2 rounded-full border border-border/70 dark:border-darkmode-border/70 bg-body dark:bg-darkmode-body px-3.5 py-2 text-xs font-semibold shadow-xs transition-all hover:scale-105 hover:border-primary active:scale-95 cursor-pointer"
+          type="button"
+          data-reaction-btn="brewtiful"
+          aria-label="Brew-tiful reaction">
+          <span class="text-base">☕</span> <span class="font-bold">Brew-tiful</span>
+          <span class="reaction-count text-[11px] rounded-full bg-theme-light dark:bg-darkmode-theme-light px-2 py-0.5" data-reaction-count="brewtiful">19</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Share Bar & Copy Link -->
+    <div class="pt-6 border-t border-border/40 dark:border-darkmode-border/40 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div class="flex items-center gap-2">
+        <span class="text-xs font-bold uppercase tracking-wider text-text/70 dark:text-darkmode-text/70">Share this guide:</span>
+      </div>
+
+      <div class="flex flex-wrap items-center gap-2">
+        <a
+          href="https://www.linkedin.com/sharing/share-offsite/?url={{ .Permalink | safeURL }}"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="btn btn-outline-primary btn-sm flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-semibold"
+          aria-label="Share on LinkedIn">
+          <i class="fa-brands fa-linkedin"></i> LinkedIn
+        </a>
+
+        <a
+          href="https://twitter.com/intent/tweet?text={{ .Title | urlquery }}&url={{ .Permalink | safeURL }}"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="btn btn-outline-primary btn-sm flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-semibold"
+          aria-label="Share on X">
+          <i class="fa-brands fa-x-twitter"></i> Twitter
+        </a>
+
+        <a
+          href="https://www.reddit.com/submit?url={{ .Permalink | safeURL }}&title={{ .Title | urlquery }}"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="btn btn-outline-primary btn-sm flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-semibold"
+          aria-label="Share on Reddit">
+          <i class="fa-brands fa-reddit-alien"></i> Reddit
+        </a>
+
+        <a
+          href="https://api.whatsapp.com/send?text={{ .Title | urlquery }}%20{{ .Permalink | safeURL }}"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="btn btn-outline-primary btn-sm flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-semibold"
+          aria-label="Share on WhatsApp">
+          <i class="fa-brands fa-whatsapp"></i> WhatsApp
+        </a>
+
+        <button
+          type="button"
+          data-copy-permalink="{{ .Permalink }}"
+          class="btn btn-primary btn-sm flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-semibold shadow-xs cursor-pointer"
+          aria-label="Copy direct article link">
+          <i class="fa-regular fa-copy"></i> Copy Link
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modern Interactive Comments & Discussion Box -->
+  <div class="comments-section mt-12" id="comments-section">
+    <div class="flex items-center justify-between mb-6">
+      <h3 class="text-xl font-bold tracking-tight flex items-center gap-2">
+        <i class="fa-regular fa-comments text-primary"></i> Community Discussion
+        <span class="text-xs font-medium px-2.5 py-0.5 rounded-full bg-primary/10 text-primary" data-comments-count-badge>0</span>
+      </h3>
+    </div>
+
+    <!-- Comment Form -->
+    <form data-comment-form class="blog-article-shell mb-8 border border-border/60 dark:border-darkmode-border/60 p-6 rounded-2xl bg-body dark:bg-darkmode-body shadow-xs">
+      <div class="mb-4">
+        <label for="comment-author-input" class="block text-xs font-bold uppercase tracking-wider text-text/80 dark:text-darkmode-text/80 mb-2">
+          Your Name / Handle (Optional)
+        </label>
+        <input
+          id="comment-author-input"
+          type="text"
+          placeholder="Cloud Practitioner"
+          class="blog-newsletter-input text-sm w-full sm:max-w-xs"
+          maxlength="50"
+        />
+      </div>
+
+      <div class="mb-4">
+        <label for="comment-text-input" class="block text-xs font-bold uppercase tracking-wider text-text/80 dark:text-darkmode-text/80 mb-2">
+          Add to the conversation
+        </label>
+        <textarea
+          id="comment-text-input"
+          rows="3"
+          required
+          placeholder="Share your thoughts, questions, or hands-on experience with this article..."
+          class="w-full rounded-xl border border-border/80 dark:border-darkmode-border/80 bg-theme-light/40 dark:bg-darkmode-theme-light/40 p-3 text-sm focus:outline-hidden focus:ring-2 focus:ring-primary/50 text-dark dark:text-darkmode-dark"
+          maxlength="800"></textarea>
+      </div>
+
+      <div class="flex items-center justify-between">
+        <span class="text-xs text-text/60 dark:text-darkmode-text/60">
+          <i class="fa-solid fa-shield-halved mr-1"></i> Friendly & AdSense compliant discussion
+        </span>
+        <button type="submit" class="btn btn-primary rounded-xl px-5 py-2 text-xs font-semibold shadow-xs cursor-pointer">
+          Post Comment <i class="fa-solid fa-paper-plane ml-1"></i>
+        </button>
+      </div>
+    </form>
+
+    <!-- Comments List Container -->
+    <div data-comments-list class="space-y-4">
+      <!-- Dynamic comments rendered here via JS -->
+    </div>
+  </div>
+</section>
