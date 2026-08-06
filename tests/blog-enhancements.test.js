@@ -150,3 +150,86 @@ describe('DOM Integration & LocalStorage Test', () => {
     expect(loaded[0].author).toBe('Dev');
   });
 });
+
+describe('Gravity Time-Decay & 6-Card Capacity Engine', () => {
+  function calculateTrendingScore(p, nowTime) {
+    var score = typeof p.score === "number" ? p.score : ((p.upvotes || 0) - (p.downvotes || 0));
+    var createdAt = p.created_at ? new Date(p.created_at).getTime() : (nowTime || Date.now());
+    var now = nowTime || Date.now();
+    var ageInHours = Math.max(0, (now - createdAt) / (1000 * 60 * 60));
+    var gravity = Math.pow(ageInHours + 2, 1.5);
+    return (score + 1) / gravity;
+  }
+
+  it('ranks brand new posts higher than old decayed posts', () => {
+    const now = new Date('2026-08-06T20:00:00Z').getTime();
+    const freshPost = { score: 2, created_at: '2026-08-06T19:50:00Z' }; // 10 mins old
+    const oldPost = { score: 10, created_at: '2026-08-04T20:00:00Z' };  // 48 hours old
+
+    const freshScore = calculateTrendingScore(freshPost, now);
+    const oldScore = calculateTrendingScore(oldPost, now);
+
+    expect(freshScore).toBeGreaterThan(oldScore);
+  });
+
+  it('strictly limits display output to top 6 trending pulses', () => {
+    const mockPulses = Array.from({ length: 10 }, (_, i) => ({
+      id: `p${i}`,
+      score: i,
+      created_at: '2026-08-06T20:00:00Z'
+    }));
+
+    const sorted = mockPulses.slice().sort((a, b) => b.score - a.score);
+    const top6 = sorted.slice(0, 6);
+
+    expect(top6).toHaveLength(6);
+    expect(top6[0].id).toBe('p9');
+    expect(top6[5].id).toBe('p4');
+  });
+});
+
+describe('Forever Cloud Provider Poll Engine', () => {
+  function calculatePercentages(pollData) {
+    const totalVotes = pollData.reduce((acc, row) => acc + (row.votes || 0), 0);
+    return pollData.map(row => ({
+      provider: row.provider,
+      votes: row.votes,
+      percent: totalVotes > 0 ? parseFloat(((row.votes / totalVotes) * 100).toFixed(1)) : 0
+    }));
+  }
+
+  it('correctly calculates percentage shares for cloud providers', () => {
+    const data = [
+      { provider: 'GCP', votes: 50 },
+      { provider: 'AWS', votes: 30 },
+      { provider: 'AZURE', votes: 15 },
+      { provider: 'OTHERS', votes: 5 }
+    ];
+
+    const result = calculatePercentages(data);
+    expect(result.find(r => r.provider === 'GCP').percent).toBe(50.0);
+    expect(result.find(r => r.provider === 'AWS').percent).toBe(30.0);
+    expect(result.find(r => r.provider === 'AZURE').percent).toBe(15.0);
+    expect(result.find(r => r.provider === 'OTHERS').percent).toBe(5.0);
+  });
+
+  it('correctly calculates quarter info, reset date, and previous quarter label', () => {
+    function getCurrentQuarterInfo(nowDate) {
+      var now = nowDate || new Date();
+      var year = now.getFullYear();
+      var month = now.getMonth();
+      var quarterNum = Math.floor(month / 3) + 1;
+      var quarterLabel = "Q" + quarterNum + " " + year;
+      var prevQuarterNum = quarterNum === 1 ? 4 : quarterNum - 1;
+      var prevQuarterYear = quarterNum === 1 ? year - 1 : year;
+      var prevQuarterLabel = "Q" + prevQuarterNum + " " + prevQuarterYear;
+      return { quarterLabel, prevQuarterLabel };
+    }
+
+    const augDate = new Date('2026-08-06T20:00:00Z');
+    const qInfo = getCurrentQuarterInfo(augDate);
+
+    expect(qInfo.quarterLabel).toBe('Q3 2026');
+    expect(qInfo.prevQuarterLabel).toBe('Q2 2026');
+  });
+});

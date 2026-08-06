@@ -38,6 +38,12 @@ describe('Hugo Site Build & HTML Integrity Tests', () => {
       const matches = (html.match(/images\/post7-dp-tips3\.png/g) || []);
       // Should appear in header image and meta og:image, not duplicated back-to-back in header
       expect(matches.length).toBeLessThanOrEqual(3);
+
+      // Verify LinkedIn Open Graph & SEO Schema
+      expect(html).toContain('property="og:site_name" content="GCloud Cafe"');
+      expect(html).toContain('property="og:type" content="article"');
+      expect(html).toContain('property="og:image"');
+      expect(html).toContain('TechArticle');
     }
   });
 });

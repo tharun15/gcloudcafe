@@ -571,6 +571,23 @@
     }, 2500);
   }
 
+  /* ── Shared Date Formatter ── */
+  function formatDate(dateStr) {
+    if (!dateStr) return "Just now";
+    try {
+      var d = new Date(dateStr);
+      if (isNaN(d.getTime())) return "Recently";
+      var diff = Math.floor((new Date() - d) / 1000);
+      if (diff < 60) return "Just now";
+      if (diff < 3600) return Math.floor(diff / 60) + "m ago";
+      if (diff < 86400) return Math.floor(diff / 3600) + "h ago";
+      if (diff < 2592000) return Math.floor(diff / 86400) + "d ago";
+      return d.toLocaleDateString();
+    } catch (e) {
+      return "Recently";
+    }
+  }
+
   /* ── Interactive Community Comments System (Supabase Backend) ── */
   function initCommentsSystem() {
     var section = document.getElementById("comments-section");
@@ -634,22 +651,6 @@
           }
         })
         .catch(function () {});
-    }
-
-    function formatDate(dateStr) {
-      if (!dateStr) return "Just now";
-      try {
-        var d = new Date(dateStr);
-        if (isNaN(d.getTime())) return "Recently";
-        var diff = Math.floor((new Date() - d) / 1000);
-        if (diff < 60) return "Just now";
-        if (diff < 3600) return Math.floor(diff / 60) + "m ago";
-        if (diff < 86400) return Math.floor(diff / 3600) + "h ago";
-        if (diff < 2592000) return Math.floor(diff / 86400) + "d ago";
-        return d.toLocaleDateString();
-      } catch (e) {
-        return "Recently";
-      }
     }
 
     function renderComments() {
@@ -892,6 +893,593 @@
     initCommentsSystem();
     initNewsletterSignup();
     initTelemetryStats();
+    initCloudPulseSystem();
+  }
+
+  /* ── 9. Cloud Pulse Micro-News & Upvote System ── */
+  function initCloudPulseSystem() {
+    var feedContainer = document.querySelector("[data-cloud-pulse-feed]");
+    if (!feedContainer) return;
+
+    var config = window.SUPABASE_CONFIG || {
+      url: "https://axiijcsxtiukloarbfor.supabase.co",
+      anonKey: "sb_publishable_cRcwg02R3nXTykDrxalL6w_-kc9Wesc"
+    };
+
+    var supabase = null;
+    if (window.supabase && typeof window.supabase.createClient === "function") {
+      supabase = window.supabase.createClient(config.url, config.anonKey);
+    }
+
+    function fetchPulses() {
+      var queryUrl = config.url + "/rest/v1/cloud_pulses?select=*&order=score.desc,created_at.desc";
+      
+      fetch(queryUrl, {
+        headers: {
+          "apikey": config.anonKey,
+          "Authorization": "Bearer " + config.anonKey
+        }
+      })
+      .then(function (res) { return res.json(); })
+      .then(function (data) {
+        if (Array.isArray(data)) {
+          renderPulses(data);
+        } else if (supabase) {
+          supabase.from("cloud_pulses").select("*").order("score", { ascending: false }).then(function(sRes) {
+            if (sRes && Array.isArray(sRes.data)) {
+              renderPulses(sRes.data);
+            }
+          });
+        }
+      })
+      .catch(function (err) {
+        console.error("Cloud Pulse fetch error:", err);
+        if (supabase) {
+          supabase.from("cloud_pulses").select("*").order("score", { ascending: false }).then(function(sRes) {
+            if (sRes && sRes.data) renderPulses(sRes.data);
+          });
+        }
+      });
+    }
+
+    function calculateTrendingScore(p) {
+      var score = typeof p.score === "number" ? p.score : ((p.upvotes || 0) - (p.downvotes || 0));
+      var createdAt = p.created_at ? new Date(p.created_at).getTime() : Date.now();
+      var ageInHours = Math.max(0, (Date.now() - createdAt) / (1000 * 60 * 60));
+      // Gravity Time Decay Formula: TrendingScore = (Score + 1) / ((AgeInHours + 2) ^ 1.5)
+      var gravity = Math.pow(ageInHours + 2, 1.5);
+      return (score + 1) / gravity;
+    }
+
+    function renderPulses(pulses) {
+      if (!pulses || pulses.length === 0) {
+        feedContainer.innerHTML = '<div class="col-span-full text-center py-8 text-xs text-text/60 dark:text-darkmode-text/60">No cloud pulses yet. Be the first to post!</div>';
+        return;
+      }
+
+      // Compute Gravity Time-Decay score for each pulse & sort descending
+      var sortedPulses = pulses.slice().map(function (p) {
+        p._trendingScore = calculateTrendingScore(p);
+        return p;
+      }).sort(function (a, b) {
+        return b._trendingScore - a._trendingScore;
+      });
+
+      // Strict limit: Max 6 trending pulses displayed
+      var topPulses = sortedPulses.slice(0, 6);
+
+      var html = "";
+      topPulses.forEach(function (p, idx) {
+        var rankBadge = idx === 0 ? '<span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-amber-500/20 text-amber-500 border border-amber-500/30">🔥 #1 TRENDING</span>'
+                      : idx === 1 ? '<span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-slate-400/20 text-slate-400 border border-slate-400/30">#2 TOP PULSE</span>'
+                      : idx === 2 ? '<span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-amber-700/20 text-amber-600 border border-amber-700/30">#3 TOP PULSE</span>'
+                      : '<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-primary/10 text-primary">#' + (idx + 1) + '</span>';
+
+        var tagsHtml = "";
+        if (Array.isArray(p.tags)) {
+          p.tags.forEach(function (tag) {
+            tagsHtml += '<span class="text-[10px] font-semibold text-primary/80 bg-primary/10 px-2 py-0.5 rounded-md">' + escapeHtml(tag) + '</span> ';
+          });
+        }
+
+        var userVote = localStorage.getItem("pulse_voted_" + p.id);
+        var upActiveClass = userVote === "up" ? "pulse-vote-btn is-upvoted" : "pulse-vote-btn";
+        var downActiveClass = userVote === "down" ? "pulse-vote-btn pulse-vote-btn-down is-downvoted" : "pulse-vote-btn pulse-vote-btn-down";
+
+        var titleHtml = escapeHtml(p.title);
+        var eventLinkHtml = "";
+        if (p.link_url) {
+          titleHtml = '<a href="' + escapeHtml(p.link_url) + '" target="_blank" rel="noopener noreferrer" class="hover:underline flex items-center gap-1.5 no-underline hover:text-primary">' + titleHtml + ' <i class="fa-solid fa-arrow-up-right-from-square text-[11px] text-primary"></i></a>';
+          eventLinkHtml = '<div class="mb-3"><a href="' + escapeHtml(p.link_url) + '" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-primary/10 hover:bg-primary/20 text-primary text-[11px] font-bold no-underline transition-all"><i class="fa-solid fa-link text-[10px]"></i> Official Event / Page <i class="fa-solid fa-arrow-up-right-from-square text-[9px]"></i></a></div>';
+        }
+
+        var hashtagsText = Array.isArray(p.tags) ? p.tags.join(" ") : "";
+        var shareText = "☕ " + p.title + "\n\n" + p.content + "\n\nExplore live micro-news & trends on GCloud Cafe: https://gcloudcafe.com/pulse/\n\n" + hashtagsText;
+        var linkedinShareUrl = "https://www.linkedin.com/feed/?shareActive=true&text=" + encodeURIComponent(shareText);
+
+        var linkedinBtnHtml = '<a href="' + linkedinShareUrl + '" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-xs font-bold bg-[#0a66c2]/10 hover:bg-[#0a66c2] text-[#0a66c2] hover:text-white transition-all no-underline shrink-0" title="Share pulse on LinkedIn">' +
+          '<i class="fa-brands fa-linkedin text-sm"></i> Share' +
+        '</a>';
+
+        html += '<div class="cloud-pulse-card bg-body dark:bg-darkmode-body border border-border/80 dark:border-darkmode-border/80 rounded-3xl p-5 shadow-xs flex flex-col justify-between transition-all hover:border-primary/50 group">' +
+          '<div>' +
+            '<div class="flex items-center justify-between gap-2 mb-3">' +
+              rankBadge +
+              '<span class="text-[10px] font-medium text-text/60 dark:text-darkmode-text/60">' + formatDate(p.created_at) + '</span>' +
+            '</div>' +
+            '<h4 class="text-sm font-bold text-dark dark:text-darkmode-dark mb-2 leading-snug group-hover:text-primary transition-colors">' + titleHtml + '</h4>' +
+            '<p class="text-xs text-text/80 dark:text-darkmode-text/80 mb-3 leading-relaxed">' + escapeHtml(p.content) + '</p>' +
+            eventLinkHtml +
+          '</div>' +
+
+          '<div class="pt-3 border-t border-border/40 dark:border-darkmode-border/40 flex items-center justify-between gap-2 flex-wrap sm:flex-nowrap">' +
+            '<div class="flex flex-wrap gap-1">' + tagsHtml + '</div>' +
+
+            '<div class="flex items-center gap-2 shrink-0">' +
+              linkedinBtnHtml +
+              '<div class="flex items-center gap-1.5 shrink-0 bg-theme-light dark:bg-darkmode-theme-light rounded-xl p-1 border border-border/50 dark:border-darkmode-border/50">' +
+                '<button data-pulse-upvote="' + p.id + '" data-upvotes="' + (p.upvotes || 0) + '" data-downvotes="' + (p.downvotes || 0) + '" class="' + upActiveClass + '" title="Upvote pulse">' +
+                  '<i class="fa-solid fa-caret-up text-sm"></i> <span>' + (p.score >= 0 ? '+' + p.score : p.score) + '</span>' +
+                '</button>' +
+                '<button data-pulse-downvote="' + p.id + '" data-upvotes="' + (p.upvotes || 0) + '" data-downvotes="' + (p.downvotes || 0) + '" class="' + downActiveClass + '" title="Downvote pulse">' +
+                  '<i class="fa-solid fa-caret-down text-sm"></i>' +
+                '</button>' +
+              '</div>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
+      });
+
+      feedContainer.innerHTML = html;
+      bindVoteEvents(topPulses);
+    }
+
+    var currentPulses = [];
+
+    function bindVoteEvents(pulsesMap) {
+      currentPulses = pulsesMap || [];
+      if (feedContainer.getAttribute("data-vote-bound") === "true") return;
+      feedContainer.setAttribute("data-vote-bound", "true");
+
+      feedContainer.addEventListener("click", function (e) {
+        var upTarget = e.target.closest("[data-pulse-upvote]");
+        var downTarget = e.target.closest("[data-pulse-downvote]");
+
+        if (upTarget) {
+          e.preventDefault();
+          var id = upTarget.getAttribute("data-pulse-upvote");
+          castVote(id, "up", currentPulses);
+        } else if (downTarget) {
+          e.preventDefault();
+          var id = downTarget.getAttribute("data-pulse-downvote");
+          castVote(id, "down", currentPulses);
+        }
+      });
+    }
+
+    function castVote(id, clickedType, pulsesList) {
+      var currentVote = localStorage.getItem("pulse_voted_" + id);
+      var item = pulsesList.find(function (p) { return p.id === id; });
+      if (!item) return;
+
+      var origScore = typeof item.score === "number" ? item.score : ((item.upvotes || 0) - (item.downvotes || 0));
+      var newScore = origScore;
+      var newVote = currentVote;
+
+      if (clickedType === "up") {
+        if (currentVote === "up") {
+          return; // Already upvoted -> locked
+        } else if (currentVote === "down") {
+          // Downvoted -> Neutral (+1 step)
+          newScore = origScore + 1;
+          newVote = null;
+        } else {
+          // Neutral -> Upvoted (+1 step)
+          newScore = origScore + 1;
+          newVote = "up";
+        }
+      } else if (clickedType === "down") {
+        if (currentVote === "down") {
+          return; // Already downvoted -> locked
+        } else if (currentVote === "up") {
+          // Upvoted -> Neutral (-1 step)
+          newScore = origScore - 1;
+          newVote = null;
+        } else {
+          // Neutral -> Downvoted (-1 step)
+          newScore = origScore - 1;
+          newVote = "down";
+        }
+      }
+
+      item.score = newScore;
+
+      // Update LocalStorage
+      if (newVote) {
+        localStorage.setItem("pulse_voted_" + id, newVote);
+      } else {
+        localStorage.removeItem("pulse_voted_" + id);
+      }
+
+      // Optimistic UI update with Google Stock Ticker animation
+      var upBtn = feedContainer.querySelector('[data-pulse-upvote="' + id + '"]');
+      var downBtn = feedContainer.querySelector('[data-pulse-downvote="' + id + '"]');
+      var scoreSpan = upBtn ? upBtn.querySelector('span') : null;
+
+      if (upBtn && downBtn) {
+        if (newVote === "up") {
+          upBtn.className = "pulse-vote-btn is-upvoted";
+          downBtn.className = "pulse-vote-btn pulse-vote-btn-down";
+        } else if (newVote === "down") {
+          upBtn.className = "pulse-vote-btn";
+          downBtn.className = "pulse-vote-btn pulse-vote-btn-down is-downvoted";
+        } else {
+          upBtn.className = "pulse-vote-btn";
+          downBtn.className = "pulse-vote-btn pulse-vote-btn-down";
+        }
+
+        if (scoreSpan) {
+          scoreSpan.textContent = (newScore >= 0 ? '+' + newScore : newScore);
+          var animClass = clickedType === "up" ? "stock-ticker-up" : "stock-ticker-down";
+          scoreSpan.classList.remove("stock-ticker-up", "stock-ticker-down");
+          void scoreSpan.offsetWidth; // Trigger reflow
+          scoreSpan.classList.add(animClass);
+          setTimeout(function() {
+            scoreSpan.classList.remove(animClass);
+          }, 450);
+        }
+      }
+
+      // Sync background payload to Supabase without triggering full DOM rebuild
+      var payload = { score: newScore };
+      if (supabase) {
+        supabase.from("cloud_pulses").update(payload).eq("id", id).then().catch();
+      } else {
+        fetch(config.url + "/rest/v1/cloud_pulses?id=eq." + id, {
+          method: "PATCH",
+          headers: {
+            "apikey": config.anonKey,
+            "Authorization": "Bearer " + config.anonKey,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(payload)
+        });
+      }
+    }
+
+    // Admin Modal & Secret Access Triggers
+    var adminModal = document.getElementById("pulse-admin-modal");
+    var openBtn = document.querySelector("[data-open-pulse-admin]");
+    var closeBtn = document.querySelector("[data-close-pulse-admin]");
+    var adminForm = document.querySelector("[data-pulse-admin-form]");
+    var statusElem = document.querySelector("[data-pulse-admin-status]");
+
+    if (openBtn && adminModal) {
+      openBtn.addEventListener("click", function () {
+        adminModal.classList.remove("hidden");
+      });
+    }
+
+    // Secret URL Hash (#admin) or Keyboard Shortcut (Ctrl+Shift+P) trigger
+    if (adminModal) {
+      if (window.location.hash === "#admin") {
+        adminModal.classList.remove("hidden");
+      }
+
+      window.addEventListener("keydown", function (e) {
+        if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === "P" || e.key === "p")) {
+          e.preventDefault();
+          adminModal.classList.toggle("hidden");
+        }
+      });
+    }
+
+    if (closeBtn && adminModal) {
+      closeBtn.addEventListener("click", function () {
+        adminModal.classList.add("hidden");
+      });
+    }
+
+    if (adminModal) {
+      adminModal.addEventListener("click", function (e) {
+        if (e.target === adminModal) adminModal.classList.add("hidden");
+      });
+    }
+
+    if (adminForm) {
+      adminForm.addEventListener("submit", function (e) {
+        e.preventDefault();
+        var formData = new FormData(adminForm);
+        var passcode = (formData.get("passcode") || "").trim();
+        var title = (formData.get("title") || "").trim();
+        var content = (formData.get("content") || "").trim();
+        var linkUrl = (formData.get("link_url") || "").trim();
+        var tagsRaw = (formData.get("tags") || "").trim();
+
+        if (passcode !== "1526" && passcode !== "admin") {
+          if (statusElem) {
+            statusElem.textContent = "Invalid passcode!";
+            statusElem.className = "text-xs font-semibold mr-auto text-rose-500";
+          }
+          return;
+        }
+
+        var tagsArr = tagsRaw.split(",").map(function (t) {
+          var trimmed = t.trim();
+          return trimmed.startsWith("#") ? trimmed : "#" + trimmed;
+        }).filter(function (t) { return t.length > 1; });
+
+        if (statusElem) {
+          statusElem.textContent = "Publishing pulse...";
+          statusElem.className = "text-xs font-semibold mr-auto text-primary animate-pulse";
+        }
+
+        var payload = {
+          title: title,
+          content: content,
+          tags: tagsArr,
+          upvotes: 1,
+          downvotes: 0,
+          score: 1,
+          author: "Tharun Vempati"
+        };
+
+        if (linkUrl) {
+          payload.link_url = linkUrl;
+        }
+
+        fetch(config.url + "/rest/v1/cloud_pulses", {
+          method: "POST",
+          headers: {
+            "apikey": config.anonKey,
+            "Authorization": "Bearer " + config.anonKey,
+            "Content-Type": "application/json",
+            "Prefer": "return=representation"
+          },
+          body: JSON.stringify(payload)
+        })
+        .then(function (res) {
+          if (res.ok) {
+            if (statusElem) {
+              statusElem.textContent = "Published live! 🎉";
+              statusElem.className = "text-xs font-semibold mr-auto text-emerald-500";
+            }
+            adminForm.reset();
+            setTimeout(function () {
+              if (adminModal) adminModal.classList.add("hidden");
+              if (statusElem) statusElem.textContent = "";
+              if (window.location.pathname.indexOf("pulse-admin") !== -1) {
+                window.location.href = "/pulse/";
+              } else {
+                fetchPulses();
+              }
+            }, 1000);
+          } else {
+            if (statusElem) {
+              statusElem.textContent = "Failed to publish.";
+              statusElem.className = "text-xs font-semibold mr-auto text-rose-500";
+            }
+          }
+        })
+        .catch(function () {
+          if (statusElem) {
+            statusElem.textContent = "Network error.";
+            statusElem.className = "text-xs font-semibold mr-auto text-rose-500";
+          }
+        });
+      });
+    }
+
+    // Initial fetch
+    fetchPulses();
+  }
+
+  function getCurrentQuarterInfo(nowDate) {
+    var now = nowDate || new Date();
+    var year = now.getFullYear();
+    var month = now.getMonth();
+
+    var quarterNum = Math.floor(month / 3) + 1;
+    var quarterLabel = "Q" + quarterNum + " " + year;
+    var quarterKey = "Q" + quarterNum + "_" + year;
+
+    var nextQuarterMonth = quarterNum * 3;
+    var resetYear = nextQuarterMonth === 12 ? year + 1 : year;
+    var resetMonth = nextQuarterMonth === 12 ? 0 : nextQuarterMonth;
+
+    var resetDate = new Date(resetYear, resetMonth, 1, 0, 0, 0);
+
+    var prevQuarterNum = quarterNum === 1 ? 4 : quarterNum - 1;
+    var prevQuarterYear = quarterNum === 1 ? year - 1 : year;
+    var prevQuarterLabel = "Q" + prevQuarterNum + " " + prevQuarterYear;
+
+    var diffMs = resetDate.getTime() - now.getTime();
+    var daysLeft = Math.max(0, Math.floor(diffMs / (1000 * 60 * 60 * 24)));
+    var hoursLeft = Math.max(0, Math.floor((diffMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)));
+
+    var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    var resetFormattedStr = monthNames[resetMonth] + " 1, " + resetYear;
+
+    return {
+      quarterNum: quarterNum,
+      year: year,
+      quarterLabel: quarterLabel,
+      quarterKey: quarterKey,
+      prevQuarterLabel: prevQuarterLabel,
+      resetDate: resetDate,
+      daysLeft: daysLeft,
+      hoursLeft: hoursLeft,
+      resetFormattedStr: resetFormattedStr
+    };
+  }
+
+  /* ── Forever Cloud Provider Poll & Community Benchmark ── */
+  function initCloudProviderPollSystem() {
+    var container = document.querySelector("[data-cloud-poll-container]");
+    if (!container) return;
+
+    var config = window.SUPABASE_CONFIG || {
+      url: "https://axiijcsxtiukloarbfor.supabase.co",
+      anonKey: "sb_publishable_cRcwg02R3nXTykDrxalL6w_-kc9Wesc"
+    };
+
+    var qInfo = getCurrentQuarterInfo();
+
+    // Update Header Labels & Badges
+    document.querySelectorAll("[data-poll-quarter-label]").forEach(function (el) { el.textContent = qInfo.quarterLabel; });
+    document.querySelectorAll("[data-poll-quarter-name]").forEach(function (el) { el.textContent = qInfo.quarterLabel; });
+
+    var resetBadge = document.querySelector("[data-poll-reset-badge]");
+    if (resetBadge) {
+      resetBadge.innerHTML = '<i class="fa-solid fa-hourglass-half text-sky-500"></i> Resets in ' + qInfo.daysLeft + 'd ' + qInfo.hoursLeft + 'h (' + qInfo.resetFormattedStr + ')';
+    }
+
+    var championBadge = document.querySelector("[data-poll-champion-badge]");
+    if (championBadge) {
+      championBadge.classList.remove("hidden");
+      championBadge.innerHTML = '<i class="fa-solid fa-trophy text-amber-500"></i> ' + qInfo.quarterLabel + ' Live Competition — Be the first to vote!';
+    }
+
+    var pollData = [
+      { provider: "GCP", votes: 0, today_votes: 0 },
+      { provider: "AWS", votes: 0, today_votes: 0 },
+      { provider: "AZURE", votes: 0, today_votes: 0 },
+      { provider: "OTHERS", votes: 0, today_votes: 0 }
+    ];
+
+    function fetchPollData() {
+      fetch(config.url + "/rest/v1/cloud_provider_polls?select=*", {
+        headers: {
+          "apikey": config.anonKey,
+          "Authorization": "Bearer " + config.anonKey,
+          "Cache-Control": "no-cache",
+          "Pragma": "no-cache"
+        }
+      })
+      .then(function (res) { return res.json(); })
+      .then(function (data) {
+        if (Array.isArray(data) && data.length > 0) {
+          pollData = data;
+        }
+        renderPollUI();
+      })
+      .catch(function () {
+        renderPollUI();
+      });
+    }
+
+    function renderPollUI() {
+      var totalVotes = pollData.reduce(function (acc, row) { return acc + (row.votes || 0); }, 0);
+      var userVotedProvider = localStorage.getItem("gcloudcafe_voted_provider_" + qInfo.quarterKey);
+
+      var todayLeader = pollData.slice().sort(function (a, b) { return (b.today_votes || 0) - (a.today_votes || 0); })[0];
+      var quarterLeader = pollData.slice().sort(function (a, b) { return (b.votes || 0) - (a.votes || 0); })[0];
+
+      pollData.forEach(function (row) {
+        var provider = row.provider;
+        var votes = row.votes || 0;
+        var percent = totalVotes > 0 ? ((votes / totalVotes) * 100).toFixed(1) : "0.0";
+
+        var percentElem = container.querySelector('[data-provider-percent="' + provider + '"]');
+        var barElem = container.querySelector('[data-provider-bar="' + provider + '"]');
+        var votesElem = container.querySelector('[data-provider-votes="' + provider + '"]');
+        var btnElem = container.querySelector('[data-poll-vote="' + provider + '"]');
+
+        if (percentElem) percentElem.textContent = percent + "%";
+        if (barElem) barElem.style.width = percent + "%";
+        if (votesElem) votesElem.textContent = votes + " votes (" + percent + "%)";
+
+        if (btnElem) {
+          if (userVotedProvider === provider) {
+            btnElem.innerHTML = '<i class="fa-solid fa-circle-check mr-1"></i> Voted';
+            btnElem.className = "px-3 py-1.5 rounded-xl text-xs font-bold border-none bg-emerald-600 text-white shadow-xs cursor-default";
+            btnElem.disabled = true;
+          } else if (userVotedProvider) {
+            btnElem.innerHTML = '<i class="fa-solid fa-thumbs-up mr-1"></i> Vote';
+            btnElem.className = "px-3 py-1.5 rounded-xl text-xs font-bold border-none bg-slate-300 dark:bg-slate-700 text-slate-600 dark:text-slate-400 opacity-60 cursor-not-allowed";
+            btnElem.disabled = true;
+          }
+        }
+      });
+
+      // Update Trend Insight Badge
+      var trendBadge = document.querySelector("[data-poll-trend-badge]");
+      if (trendBadge) {
+        if (totalVotes === 0) {
+          trendBadge.innerHTML = '<i class="fa-solid fa-fire text-amber-500 animate-pulse"></i> <strong>TODAY\'S TREND:</strong> No votes cast yet for ' + qInfo.quarterLabel + '. Be the first to vote!';
+        } else if (todayLeader && quarterLeader) {
+          var qPercent = ((quarterLeader.votes || 0) / totalVotes * 100).toFixed(1);
+          trendBadge.innerHTML = '<i class="fa-solid fa-fire text-amber-500 animate-pulse"></i> <strong>TODAY\'S TREND:</strong> ' + todayLeader.provider + ' leads ' + qInfo.quarterLabel + ' today (+' + (todayLeader.today_votes || 0) + ' votes) &nbsp;|&nbsp; 🏆 <strong>CURRENT ' + qInfo.quarterLabel + ' LEADER:</strong> ' + quarterLeader.provider + ' (' + qPercent + '%)';
+        }
+      }
+
+      bindPollEvents();
+    }
+
+    function bindPollEvents() {
+      container.querySelectorAll("[data-poll-vote]").forEach(function (btn) {
+        if (btn.getAttribute("data-poll-bound") === "true") return;
+        btn.setAttribute("data-poll-bound", "true");
+
+        btn.addEventListener("click", function (e) {
+          e.preventDefault();
+          var provider = this.getAttribute("data-poll-vote");
+          castProviderVote(provider);
+        });
+      });
+    }
+
+    function castProviderVote(provider) {
+      var userVotedProvider = localStorage.getItem("gcloudcafe_voted_provider_" + qInfo.quarterKey);
+      if (userVotedProvider) return; // Deduplicated per quarter
+
+      localStorage.setItem("gcloudcafe_voted_provider_" + qInfo.quarterKey, provider);
+
+      var row = pollData.find(function (r) { return r.provider === provider; });
+      var newVotes = row ? (row.votes || 0) + 1 : 1;
+      var newToday = row ? (row.today_votes || 0) + 1 : 1;
+
+      if (row) {
+        row.votes = newVotes;
+        row.today_votes = newToday;
+      }
+
+      renderPollUI();
+
+      // Sync atomic update to Supabase by provider name
+      fetch(config.url + "/rest/v1/cloud_provider_polls?provider=eq." + provider, {
+        method: "PATCH",
+        headers: {
+          "apikey": config.anonKey,
+          "Authorization": "Bearer " + config.anonKey,
+          "Content-Type": "application/json",
+          "Prefer": "return=representation"
+        },
+        body: JSON.stringify({ votes: newVotes, today_votes: newToday, updated_at: new Date().toISOString() })
+      })
+      .then(function () {
+        setTimeout(fetchPollData, 500);
+      })
+      .catch(function (err) {
+        console.error("Poll vote sync error:", err);
+      });
+    }
+
+    fetchPollData();
+    // Live sync polling: auto-refresh poll counts every 3 seconds across open browsers
+    setInterval(fetchPollData, 3000);
+  }
+
+  function initApp() {
+    initCommentsSystem();
+    initCloudPulseSystem();
+    initCloudProviderPollSystem();
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initApp);
+  } else {
+    initApp();
   }
 })();
 

@@ -1,0 +1,93 @@
+{{ define "main" }}
+<section class="section py-12 bg-gradient-to-b from-body via-theme-light/40 to-body dark:from-darkmode-body dark:via-darkmode-theme-light/20 dark:to-darkmode-body">
+  <div class="container max-w-2xl">
+    <div class="bg-body dark:bg-darkmode-body border border-border/80 dark:border-darkmode-border/80 rounded-3xl p-6 sm:p-10 shadow-xl">
+      <div class="mb-8 text-center">
+        <span class="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-primary px-3 py-1 rounded-full bg-primary/15 mb-3">
+          <i class="fa-solid fa-shield-halved text-amber-500"></i> Admin Portal
+        </span>
+        <h1 class="text-2xl sm:text-4xl font-extrabold tracking-tight text-dark dark:text-darkmode-dark mb-2">
+          Broadcast Cloud Pulse
+        </h1>
+        <p class="text-xs sm:text-sm text-text/70 dark:text-darkmode-text/70">
+          Submit micro-news updates, viral certification tips, or event links live to the community feed.
+        </p>
+      </div>
+
+      <form data-pulse-admin-form class="space-y-5">
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-text/80 dark:text-darkmode-text/80 mb-1.5">
+            Admin Passcode
+          </label>
+          <input 
+            type="password" 
+            name="passcode" 
+            placeholder="Enter admin passcode..." 
+            required 
+            class="w-full px-4 py-3 rounded-xl border border-border/80 dark:border-darkmode-border/80 bg-theme-light dark:bg-darkmode-theme-light text-xs sm:text-sm font-semibold focus:outline-none focus:border-primary text-dark dark:text-darkmode-dark"
+          />
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-text/80 dark:text-darkmode-text/80 mb-1.5">
+            Pulse Headline
+          </label>
+          <input 
+            type="text" 
+            name="title" 
+            placeholder="e.g. Google Cloud Next 2026 Announced" 
+            required 
+            class="w-full px-4 py-3 rounded-xl border border-border/80 dark:border-darkmode-border/80 bg-theme-light dark:bg-darkmode-theme-light text-xs sm:text-sm font-semibold focus:outline-none focus:border-primary text-dark dark:text-darkmode-dark"
+          />
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-text/80 dark:text-darkmode-text/80 mb-1.5">
+            Micro Content
+          </label>
+          <textarea 
+            name="content" 
+            rows="3" 
+            placeholder="Brief news update or key takeaway..." 
+            required 
+            class="w-full px-4 py-3 rounded-xl border border-border/80 dark:border-darkmode-border/80 bg-theme-light dark:bg-darkmode-theme-light text-xs sm:text-sm font-semibold focus:outline-none focus:border-primary text-dark dark:text-darkmode-dark resize-none"
+          ></textarea>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-text/80 dark:text-darkmode-text/80 mb-1.5">
+            Event / Official Link (Optional)
+          </label>
+          <input 
+            type="url" 
+            name="link_url" 
+            placeholder="e.g. https://cloud.google.com/next" 
+            class="w-full px-4 py-3 rounded-xl border border-border/80 dark:border-darkmode-border/80 bg-theme-light dark:bg-darkmode-theme-light text-xs sm:text-sm font-semibold focus:outline-none focus:border-primary text-dark dark:text-darkmode-dark"
+          />
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-text/80 dark:text-darkmode-text/80 mb-1.5">
+            Topic Hashtags (Comma Separated)
+          </label>
+          <input 
+            type="text" 
+            name="tags" 
+            placeholder="e.g. GoogleCloud, GCP, Certification" 
+            class="w-full px-4 py-3 rounded-xl border border-border/80 dark:border-darkmode-border/80 bg-theme-light dark:bg-darkmode-theme-light text-xs sm:text-sm font-semibold focus:outline-none focus:border-primary text-dark dark:text-darkmode-dark"
+          />
+        </div>
+
+        <div class="pt-3 flex items-center justify-between gap-4">
+          <span data-pulse-admin-status class="text-xs font-semibold mr-auto"></span>
+          <button 
+            type="submit" 
+            class="px-6 py-3 rounded-2xl bg-primary hover:bg-primary/90 text-white text-xs sm:text-sm font-bold shadow-md transition-all hover:scale-105 active:scale-95 border-none cursor-pointer">
+            <i class="fa-solid fa-paper-plane mr-1.5"></i> Broadcast Pulse Live
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+{{ end }}
