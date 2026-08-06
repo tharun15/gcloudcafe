@@ -911,29 +911,7 @@
     }
 
     function fetchPulses() {
-      if (supabase) {
-        supabase
-          .from("cloud_pulses")
-          .select("*")
-          .order("score", { ascending: false })
-          .order("created_at", { ascending: false })
-          .then(function (res) {
-            if (res && res.data) {
-              renderPulses(res.data);
-            } else {
-              fetchPulsesViaRest();
-            }
-          })
-          .catch(function () {
-            fetchPulsesViaRest();
-          });
-      } else {
-        fetchPulsesViaRest();
-      }
-    }
-
-    function fetchPulsesViaRest() {
-      fetch(config.url + "/rest/v1/cloud_pulses?select=*&order=score.desc,created_at.desc", {
+      fetch(config.url + "/rest/v1/cloud_pulses?select=*&order=score.desc,created_at.desc&_t=" + Date.now(), {
         headers: {
           "apikey": config.anonKey,
           "Authorization": "Bearer " + config.anonKey
@@ -943,9 +921,14 @@
       .then(function (data) {
         if (Array.isArray(data)) {
           renderPulses(data);
+        } else {
+          feedContainer.innerHTML = '<div class="col-span-full text-center py-8 text-xs text-text/60 dark:text-darkmode-text/60">No cloud pulses found.</div>';
         }
       })
-      .catch(function () {});
+      .catch(function (err) {
+        console.error("Cloud Pulse fetch error:", err);
+        feedContainer.innerHTML = '<div class="col-span-full text-center py-8 text-xs text-text/60 dark:text-darkmode-text/60">Unable to load pulses.</div>';
+      });
     }
 
     function renderPulses(pulses) {
