@@ -490,6 +490,66 @@
       .replace(/'/g, "&#039;");
   }
 
+  /* ── Supabase Newsletter Signup ── */
+  function initNewsletterSignup() {
+    var supabase = null;
+    if (window.SUPABASE_CONFIG && window.supabase) {
+      supabase = window.supabase.createClient(window.SUPABASE_CONFIG.url, window.SUPABASE_CONFIG.anonKey);
+    }
+    if (!supabase) return;
+
+    var forms = document.querySelectorAll("form[data-supabase-subscribe]");
+
+    forms.forEach(function (form) {
+      var status = form.querySelector("[data-newsletter-status]");
+      if (!status) {
+        var note = form.nextElementSibling;
+        if (note && note.hasAttribute("data-newsletter-status")) {
+          status = note;
+        } else {
+          status = document.createElement("p");
+          status.className = "text-xs mt-2 font-medium transition-all text-text/80 dark:text-darkmode-text/80";
+          form.appendChild(status);
+        }
+      }
+
+      var input = form.querySelector("input[type='email']");
+      var submitBtn = form.querySelector("button[type='submit']");
+
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+        if (!input || !input.value.trim()) return;
+
+        var emailValue = input.value.trim();
+        status.textContent = "Connecting to database... ☕";
+        status.className = "text-xs mt-2 font-semibold text-primary animate-pulse";
+        if (submitBtn) submitBtn.disabled = true;
+
+        supabase
+          .from("newsletter_subscribers")
+          .insert([{ email: emailValue }])
+          .then(function (res) {
+            if (submitBtn) submitBtn.disabled = false;
+            
+            if (res.error) {
+              if (res.error.code === "23505") { // unique constraint violation
+                status.textContent = "You are already subscribed! ☕";
+                status.className = "text-xs mt-2 font-semibold text-green-600 dark:text-green-400";
+              } else {
+                console.error("Supabase subscription error:", res.error);
+                status.textContent = "Oops! Something went wrong. Please try again.";
+                status.className = "text-xs mt-2 font-semibold text-red-500";
+              }
+            } else {
+              status.textContent = "Subscribed successfully! Welcome to the club! 🎉";
+              status.className = "text-xs mt-2 font-semibold text-green-600 dark:text-green-400";
+              input.value = ""; // clear input
+            }
+          });
+      });
+    });
+  }
+
   /* ── Init ── */
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", init);
@@ -506,6 +566,7 @@
     initSearchShortcut();
     initPostEngagement();
     initCommentsSystem();
+    initNewsletterSignup();
   }
 })();
 

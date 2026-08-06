@@ -6,7 +6,7 @@
 {{ end }}
 
 
-<aside class="space-y-6" aria-label="Blog discovery">
+<aside class="space-y-6" aria-label="Blog discovery and subscribe">
   <section
     class="blog-sidebar-block"
     aria-labelledby="recommended-posts-heading">
@@ -50,5 +50,63 @@
         </article>
       {{ end }}
     </div>
+  </section>
+
+  <section
+    class="blog-sidebar-block blog-newsletter-block"
+    aria-labelledby="newsletter-heading">
+    <p class="blog-eyebrow">Stay in the loop</p>
+    <h2 id="newsletter-heading" class="h4 mb-3">
+      Join readers following Gcloudcafe
+    </h2>
+    <p class="mb-5 text-text dark:text-darkmode-text">
+      Get cloud certification notes, platform tips, and new post alerts.
+    </p>
+
+    <form class="mb-5 space-y-3" data-supabase-subscribe>
+      <label class="sr-only" for="newsletter-email">Email address</label>
+      <input
+        id="newsletter-email"
+        class="blog-focus-ring blog-newsletter-input"
+        type="email"
+        name="email"
+        autocomplete="email"
+        required
+        placeholder="Enter your email" />
+      <button
+        class="blog-focus-ring btn btn-primary w-full justify-center"
+        type="submit"
+        aria-describedby="newsletter-note">
+        Subscribe
+      </button>
+      <p
+        id="newsletter-note"
+        class="text-sm text-text dark:text-darkmode-text"
+        data-newsletter-status
+        aria-live="polite">
+        Get the latest updates delivered directly to your inbox.
+      </p>
+    </form>
+
+    <div class="flex items-center justify-between gap-3">
+      <h3 class="text-base font-semibold">Follow along</h3>
+      <span class="text-sm text-text dark:text-darkmode-text"
+        >Social proof</span
+      >
+    </div>
+    <ul class="social-icons mt-4">
+      {{ range site.Data.social.main }}
+        <li>
+          <a
+            class="blog-focus-ring"
+            target="_blank"
+            aria-label="Follow on {{ .name }}"
+            rel="nofollow noopener"
+            href="{{ .link | safeURL }}">
+            <i class="{{ .icon }}"></i>
+          </a>
+        </li>
+      {{ end }}
+    </ul>
   </section>
 </aside>

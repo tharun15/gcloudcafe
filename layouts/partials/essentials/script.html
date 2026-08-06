@@ -31,6 +31,12 @@
 <!-- Supabase CDN Client -->
 {{ if site.Params.supabase.enable }}
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    window.SUPABASE_CONFIG = {
+      url: {{ site.Params.supabase.url }},
+      anonKey: {{ site.Params.supabase.anon_key }}
+    };
+  </script>
 {{ end }}
 
 {{/* scripts */}}
