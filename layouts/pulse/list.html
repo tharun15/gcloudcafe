@@ -1,0 +1,17 @@
+{{ define "main" }}
+  <div class="py-6 bg-theme-light dark:bg-darkmode-theme-light/30 border-b border-border/60 dark:border-darkmode-border/60">
+    <div class="container text-center">
+      <span class="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-primary px-3 py-1 rounded-full bg-primary/10 mb-3">
+        <i class="fa-solid fa-fire text-amber-500 animate-pulse"></i> Live Community Feed
+      </span>
+      <h1 class="text-3xl md:text-5xl font-extrabold tracking-tight text-dark dark:text-darkmode-dark mb-3">
+        Cloud Pulse Hub
+      </h1>
+      <p class="text-sm md:text-base text-text/80 dark:text-darkmode-text/80 max-w-2xl mx-auto leading-relaxed">
+        Real-time micro-news, viral cloud trends, exam tips, and event updates ranked live by the community.
+      </p>
+    </div>
+  </div>
+
+  {{ partial "components/cloud-pulse.html" . }}
+{{ end }}

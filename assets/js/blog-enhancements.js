@@ -963,8 +963,8 @@
         }
 
         var userVote = localStorage.getItem("pulse_voted_" + p.id);
-        var upActiveClass = userVote === "up" ? "bg-emerald-500 text-white font-bold" : "bg-theme-light dark:bg-darkmode-theme-light hover:bg-emerald-500/10 text-text/80 dark:text-darkmode-text/80";
-        var downActiveClass = userVote === "down" ? "bg-rose-500 text-white font-bold" : "bg-theme-light dark:bg-darkmode-theme-light hover:bg-rose-500/10 text-text/80 dark:text-darkmode-text/80";
+        var upActiveClass = userVote === "up" ? "bg-emerald-600 text-white font-bold shadow-xs" : "bg-theme-light dark:bg-darkmode-theme-light hover:bg-emerald-500/15 text-slate-800 dark:text-slate-100 font-bold";
+        var downActiveClass = userVote === "down" ? "bg-rose-600 text-white font-bold shadow-xs" : "bg-theme-light dark:bg-darkmode-theme-light hover:bg-rose-500/15 text-slate-800 dark:text-slate-100 font-bold";
 
         var titleHtml = escapeHtml(p.title);
         var eventLinkHtml = "";
