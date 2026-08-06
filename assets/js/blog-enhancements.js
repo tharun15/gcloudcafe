@@ -1028,32 +1028,39 @@
 
     function castVote(id, clickedType, pulsesList) {
       var currentVote = localStorage.getItem("pulse_voted_" + id);
-      if (currentVote === clickedType) return; // If already upvoted/downvoted, repeated clicks do nothing
-
       var item = pulsesList.find(function (p) { return p.id === id; });
       if (!item) return;
 
-      var origUp = item.upvotes || 0;
-      var origDown = item.downvotes || 0;
-      var newUp = origUp;
-      var newDown = origDown;
+      var origScore = typeof item.score === "number" ? item.score : ((item.upvotes || 0) - (item.downvotes || 0));
+      var newScore = origScore;
+      var newVote = currentVote;
 
       if (clickedType === "up") {
-        newUp = origUp + 1;
-        if (currentVote === "down") {
-          newDown = Math.max(0, origDown - 1);
+        if (currentVote === "up") {
+          return; // Already upvoted -> locked
+        } else if (currentVote === "down") {
+          // Downvoted -> Neutral (+1 step)
+          newScore = origScore + 1;
+          newVote = null;
+        } else {
+          // Neutral -> Upvoted (+1 step)
+          newScore = origScore + 1;
+          newVote = "up";
         }
       } else if (clickedType === "down") {
-        newDown = origDown + 1;
-        if (currentVote === "up") {
-          newUp = Math.max(0, origUp - 1);
+        if (currentVote === "down") {
+          return; // Already downvoted -> locked
+        } else if (currentVote === "up") {
+          // Upvoted -> Neutral (-1 step)
+          newScore = origScore - 1;
+          newVote = null;
+        } else {
+          // Neutral -> Downvoted (-1 step)
+          newScore = origScore - 1;
+          newVote = "down";
         }
       }
 
-      var newVote = clickedType;
-      var newScore = newUp - newDown;
-      item.upvotes = newUp;
-      item.downvotes = newDown;
       item.score = newScore;
 
       // Update LocalStorage
@@ -1093,7 +1100,7 @@
       }
 
       // Sync background payload to Supabase without triggering full DOM rebuild
-      var payload = { upvotes: newUp, downvotes: newDown, score: newScore };
+      var payload = { score: newScore };
       if (supabase) {
         supabase.from("cloud_pulses").update(payload).eq("id", id).then().catch();
       } else {
