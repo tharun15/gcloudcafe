@@ -197,13 +197,12 @@
       }
     });
   }
-
-  /* ── Modern Post Engagement & Reactions ── */
   function initPostEngagement() {
     var widget = document.querySelector("[data-post-feedback]");
     if (!widget) return;
 
-    var permalink = widget.dataset.postFeedback || window.location.pathname;
+    var rawPath = widget.dataset.postFeedback || window.location.pathname;
+    var permalink = (rawPath.replace(/\/+$/, "") + "/").toLowerCase();
     var storageKeyUser = "gcloudcafe:reaction:" + permalink;
 
     var defaultCounts = {
@@ -214,11 +213,16 @@
     };
 
     var storedCounts = Object.assign({}, defaultCounts);
+    var isLiveFromDb = false;
 
     // Initialize Supabase Client
     var supabase = null;
     var supabaseUrl = widget.dataset.supabaseUrl;
     var supabaseKey = widget.dataset.supabaseKey;
+    if ((!supabaseUrl || !supabaseKey) && window.SUPABASE_CONFIG) {
+      supabaseUrl = window.SUPABASE_CONFIG.url;
+      supabaseKey = window.SUPABASE_CONFIG.anonKey;
+    }
     if (supabaseUrl && supabaseKey && window.supabase) {
       supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
     }
@@ -234,7 +238,12 @@
       reactionBtns.forEach(function (btn) {
         var type = btn.dataset.reactionBtn;
         var countSpan = btn.querySelector("[data-reaction-count]");
-        var count = (storedCounts[type] || 0) + (activeReaction === type ? 1 : 0);
+        
+        // If loaded live from DB, storedCounts already includes all DB increments
+        var count = storedCounts[type] || 0;
+        if (!isLiveFromDb && activeReaction === type) {
+          count += 1;
+        }
 
         if (countSpan) countSpan.textContent = count;
 
@@ -258,6 +267,7 @@
         .maybeSingle()
         .then(function (response) {
           if (response && response.data) {
+            isLiveFromDb = true;
             storedCounts = {
               helpful: (parseInt(response.data.helpful_count) || 0) + defaultCounts.helpful,
               insightful: (parseInt(response.data.insightful_count) || 0) + defaultCounts.insightful,
@@ -272,6 +282,9 @@
     // Load initial counts from local cache first, then fetch live from Supabase
     updateCountsUI();
     fetchSupabaseCounts();
+
+    // Re-sync when switching back to browser tab
+    window.addEventListener("focus", fetchSupabaseCounts);
 
     // Track real user page view interaction in Supabase
     if (supabase) {
@@ -315,6 +328,7 @@
         }
       });
     });
+  }
 
     /* Copy permalink toast */
     var copyBtns = document.querySelectorAll("[data-copy-permalink]");
