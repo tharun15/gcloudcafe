@@ -54,8 +54,8 @@
           {{ .Params.description | default .Summary | plainify }}
         </p>
 
-        <div class="blog-meta-list mb-8 border-t border-b border-border/60 dark:border-darkmode-border/60 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <ul class="flex flex-wrap items-center gap-x-6 gap-y-2 list-none p-0 m-0">
+        <div class="blog-meta-list-container mb-8 border-t border-b border-border/60 dark:border-darkmode-border/60 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <ul class="blog-meta-list flex flex-wrap items-center gap-x-6 gap-y-2 list-none p-0 m-0">
             <li class="inline-flex items-center gap-1.5 text-xs text-text/80 dark:text-darkmode-text/80">
               <i class="fa-regular fa-circle-user text-primary"></i>
               <a class="blog-focus-ring font-semibold text-dark dark:text-darkmode-dark hover:text-primary no-underline" href="{{ `authors/` | relLangURL }}{{ $authorSlug | urlize }}/">
