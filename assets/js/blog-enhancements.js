@@ -1028,8 +1028,6 @@
 
     function castVote(id, clickedType, pulsesList) {
       var currentVote = localStorage.getItem("pulse_voted_" + id);
-      if (currentVote === clickedType) return; // Ignore repeated clicks on the same vote button
-
       var item = pulsesList.find(function (p) { return p.id === id; });
       if (!item) return;
 
@@ -1037,17 +1035,35 @@
       var origDown = item.downvotes || 0;
       var newUp = origUp;
       var newDown = origDown;
-      var newVote = clickedType;
+      var newVote = null;
 
       if (clickedType === "up") {
-        newUp = origUp + 1;
-        if (currentVote === "down") {
+        if (currentVote === "up") {
+          // Toggle off upvote
+          newUp = Math.max(0, origUp - 1);
+          newVote = null;
+        } else if (currentVote === "down") {
+          // Cancel downvote to neutral
           newDown = Math.max(0, origDown - 1);
+          newVote = null;
+        } else {
+          // Upvote from neutral
+          newUp = origUp + 1;
+          newVote = "up";
         }
       } else if (clickedType === "down") {
-        newDown = origDown + 1;
-        if (currentVote === "up") {
+        if (currentVote === "down") {
+          // Toggle off downvote
+          newDown = Math.max(0, origDown - 1);
+          newVote = null;
+        } else if (currentVote === "up") {
+          // Cancel upvote to neutral
           newUp = Math.max(0, origUp - 1);
+          newVote = null;
+        } else {
+          // Downvote from neutral
+          newDown = origDown + 1;
+          newVote = "down";
         }
       }
 
