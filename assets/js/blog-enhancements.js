@@ -206,14 +206,13 @@
     var storageKeyUser = "gcloudcafe:reaction:" + permalink;
 
     var defaultCounts = {
-      helpful: 12,
-      insightful: 8,
-      awesome: 15,
-      brewtiful: 19
+      helpful: 0,
+      insightful: 0,
+      awesome: 0,
+      brewtiful: 0
     };
 
     var storedCounts = Object.assign({}, defaultCounts);
-    var isLiveFromDb = false;
 
     // Initialize Supabase Client
     var supabase = null;
@@ -239,11 +238,7 @@
         var type = btn.dataset.reactionBtn;
         var countSpan = btn.querySelector("[data-reaction-count]");
         
-        // If loaded live from DB, storedCounts already includes all DB increments
-        var count = storedCounts[type] || 0;
-        if (!isLiveFromDb && activeReaction === type) {
-          count += 1;
-        }
+        var count = (storedCounts[type] || 0) + (activeReaction === type ? 1 : 0);
 
         if (countSpan) countSpan.textContent = count;
 
@@ -285,17 +280,11 @@
         .then(function (res) {
           if (res && res.data && res.data.length > 0) {
             var data = res.data[0];
-            var dbHelpful = parseInt(data.helpful_count) || 0;
-            var dbInsightful = parseInt(data.insightful_count) || 0;
-            var dbAwesome = parseInt(data.awesome_count) || 0;
-            var dbBrewtiful = parseInt(data.brewtiful_count) || 0;
-
-            isLiveFromDb = true;
             storedCounts = {
-              helpful: dbHelpful + defaultCounts.helpful,
-              insightful: dbInsightful + defaultCounts.insightful,
-              awesome: dbAwesome + defaultCounts.awesome,
-              brewtiful: dbBrewtiful + defaultCounts.brewtiful
+              helpful: parseInt(data.helpful_count) || 0,
+              insightful: parseInt(data.insightful_count) || 0,
+              awesome: parseInt(data.awesome_count) || 0,
+              brewtiful: parseInt(data.brewtiful_count) || 0
             };
             updateCountsUI();
           } else {
@@ -314,12 +303,11 @@
           .maybeSingle()
           .then(function (response) {
             if (response && response.data) {
-              isLiveFromDb = true;
               storedCounts = {
-                helpful: (parseInt(response.data.helpful_count) || 0) + defaultCounts.helpful,
-                insightful: (parseInt(response.data.insightful_count) || 0) + defaultCounts.insightful,
-                awesome: (parseInt(response.data.awesome_count) || 0) + defaultCounts.awesome,
-                brewtiful: (parseInt(response.data.brewtiful_count) || 0) + defaultCounts.brewtiful
+                helpful: parseInt(response.data.helpful_count) || 0,
+                insightful: parseInt(response.data.insightful_count) || 0,
+                awesome: parseInt(response.data.awesome_count) || 0,
+                brewtiful: parseInt(response.data.brewtiful_count) || 0
               };
               updateCountsUI();
             }
