@@ -1348,10 +1348,12 @@
     ];
 
     function fetchPollData() {
-      fetch(config.url + "/rest/v1/cloud_provider_polls?select=*&_t=" + Date.now(), {
+      fetch(config.url + "/rest/v1/cloud_provider_polls?select=*", {
         headers: {
           "apikey": config.anonKey,
-          "Authorization": "Bearer " + config.anonKey
+          "Authorization": "Bearer " + config.anonKey,
+          "Cache-Control": "no-cache",
+          "Pragma": "no-cache"
         }
       })
       .then(function (res) { return res.json(); })
