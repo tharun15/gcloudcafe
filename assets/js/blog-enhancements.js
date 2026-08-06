@@ -205,7 +205,6 @@
 
     var permalink = widget.dataset.postFeedback || window.location.pathname;
     var storageKeyUser = "gcloudcafe:reaction:" + permalink;
-    var storageKeyCounts = "gcloudcafe:reaction-counts:" + permalink;
 
     var defaultCounts = {
       helpful: 12,
@@ -214,11 +213,15 @@
       brewtiful: 19
     };
 
-    var storedCounts = defaultCounts;
-    try {
-      var raw = localStorage.getItem(storageKeyCounts);
-      if (raw) storedCounts = JSON.parse(raw);
-    } catch (e) {}
+    var storedCounts = Object.assign({}, defaultCounts);
+
+    // Initialize Supabase Client
+    var supabase = null;
+    var supabaseUrl = widget.dataset.supabaseUrl;
+    var supabaseKey = widget.dataset.supabaseKey;
+    if (supabaseUrl && supabaseKey && window.supabase) {
+      supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+    }
 
     var activeReaction = "";
     try {
@@ -245,28 +248,64 @@
       });
     }
 
+    // Function to fetch updated counts from Supabase
+    function fetchSupabaseCounts() {
+      if (!supabase) return;
+      supabase
+        .from('post_reactions')
+        .select('helpful_count, insightful_count, awesome_count, brewtiful_count')
+        .eq('post_path', permalink)
+        .maybeSingle()
+        .then(function (response) {
+          if (response && response.data) {
+            storedCounts = {
+              helpful: (parseInt(response.data.helpful_count) || 0) + defaultCounts.helpful,
+              insightful: (parseInt(response.data.insightful_count) || 0) + defaultCounts.insightful,
+              awesome: (parseInt(response.data.awesome_count) || 0) + defaultCounts.awesome,
+              brewtiful: (parseInt(response.data.brewtiful_count) || 0) + defaultCounts.brewtiful
+            };
+            updateCountsUI();
+          }
+        });
+    }
+
+    // Load initial counts from local cache first, then fetch live from Supabase
     updateCountsUI();
+    fetchSupabaseCounts();
 
     reactionBtns.forEach(function (btn) {
       btn.addEventListener("click", function () {
         var type = btn.dataset.reactionBtn;
 
         if (activeReaction === type) {
+          // Deselect
           activeReaction = "";
+          try {
+            localStorage.removeItem(storageKeyUser);
+          } catch (e) {}
+          updateCountsUI();
         } else {
+          // Select new reaction
           activeReaction = type;
           spawnEmojiParticle(btn);
-        }
-
-        try {
-          if (activeReaction) {
+          try {
             localStorage.setItem(storageKeyUser, activeReaction);
-          } else {
-            localStorage.removeItem(storageKeyUser);
-          }
-        } catch (e) {}
+          } catch (e) {}
+          updateCountsUI();
 
-        updateCountsUI();
+          // Persist increment to Supabase
+          if (supabase) {
+            supabase
+              .rpc('increment_reaction', { post_path: permalink, reaction_type: type })
+              .then(function (res) {
+                if (res.error) {
+                  console.error("Supabase RPC error:", res.error);
+                } else {
+                  fetchSupabaseCounts();
+                }
+              });
+          }
+        }
       });
     });
 

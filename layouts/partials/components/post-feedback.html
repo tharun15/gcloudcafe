@@ -1,5 +1,5 @@
 <section class="mt-14 pt-8 border-t border-border/60 dark:border-darkmode-border/60" aria-labelledby="post-engagement-heading">
-  <div class="post-feedback-widget rounded-3xl p-6 sm:p-8 bg-theme-light/60 dark:bg-darkmode-theme-light/40 border border-border/60 dark:border-darkmode-border/60 shadow-xs" data-post-feedback="{{ .RelPermalink }}">
+  <div class="post-feedback-widget rounded-3xl p-6 sm:p-8 bg-theme-light/60 dark:bg-darkmode-theme-light/40 border border-border/60 dark:border-darkmode-border/60 shadow-xs" data-post-feedback="{{ .RelPermalink }}" data-supabase-url="{{ site.Params.supabase.url }}" data-supabase-key="{{ site.Params.supabase.anon_key }}">
     
     <!-- Reaction Header & Emoji Bar -->
     <div class="mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">

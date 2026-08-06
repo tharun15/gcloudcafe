@@ -50,6 +50,12 @@ input_position = "bottom"
 theme = "preferred_color_scheme"
 lang = "en"
 
+# Supabase Backend Configuration
+[supabase]
+enable = true
+url = "https://axiijcsxtiukloarbfor.supabase.co"
+anon_key = "sb_publishable_cRcwg02R3nXTykDrxalL6w_-kc9Wesc"
+
 # Image Optimization
 use_webp = true
 lazy_load_images = true
