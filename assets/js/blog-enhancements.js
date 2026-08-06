@@ -892,6 +892,277 @@
     initCommentsSystem();
     initNewsletterSignup();
     initTelemetryStats();
+    initCloudPulseSystem();
+  }
+
+  /* ── 9. Cloud Pulse Micro-News & Upvote System ── */
+  function initCloudPulseSystem() {
+    var feedContainer = document.querySelector("[data-cloud-pulse-feed]");
+    if (!feedContainer) return;
+
+    var config = window.SUPABASE_CONFIG || {
+      url: "https://axiijcsxtiukloarbfor.supabase.co",
+      anonKey: "sb_publishable_cRcwg02R3nXTykDrxalL6w_-kc9Wesc"
+    };
+
+    var supabase = null;
+    if (window.supabase && typeof window.supabase.createClient === "function") {
+      supabase = window.supabase.createClient(config.url, config.anonKey);
+    }
+
+    function fetchPulses() {
+      if (supabase) {
+        supabase
+          .from("cloud_pulses")
+          .select("*")
+          .order("score", { ascending: false })
+          .order("created_at", { ascending: false })
+          .then(function (res) {
+            if (res && res.data) {
+              renderPulses(res.data);
+            } else {
+              fetchPulsesViaRest();
+            }
+          })
+          .catch(function () {
+            fetchPulsesViaRest();
+          });
+      } else {
+        fetchPulsesViaRest();
+      }
+    }
+
+    function fetchPulsesViaRest() {
+      fetch(config.url + "/rest/v1/cloud_pulses?select=*&order=score.desc,created_at.desc", {
+        headers: {
+          "apikey": config.anonKey,
+          "Authorization": "Bearer " + config.anonKey
+        }
+      })
+      .then(function (res) { return res.json(); })
+      .then(function (data) {
+        if (Array.isArray(data)) {
+          renderPulses(data);
+        }
+      })
+      .catch(function () {});
+    }
+
+    function renderPulses(pulses) {
+      if (!pulses || pulses.length === 0) {
+        feedContainer.innerHTML = '<div class="col-span-full text-center py-8 text-xs text-text/60 dark:text-darkmode-text/60">No cloud pulses yet. Be the first to post!</div>';
+        return;
+      }
+
+      var html = "";
+      pulses.forEach(function (p, idx) {
+        var rankBadge = idx === 0 ? '<span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-amber-500/20 text-amber-500 border border-amber-500/30">🔥 #1 TRENDING</span>'
+                      : idx === 1 ? '<span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-slate-400/20 text-slate-400 border border-slate-400/30">#2 TOP PULSE</span>'
+                      : idx === 2 ? '<span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-amber-700/20 text-amber-600 border border-amber-700/30">#3 TOP PULSE</span>'
+                      : '<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-primary/10 text-primary">#' + (idx + 1) + '</span>';
+
+        var tagsHtml = "";
+        if (Array.isArray(p.tags)) {
+          p.tags.forEach(function (tag) {
+            tagsHtml += '<span class="text-[10px] font-semibold text-primary/80 bg-primary/10 px-2 py-0.5 rounded-md">' + escapeHtml(tag) + '</span> ';
+          });
+        }
+
+        var userVote = localStorage.getItem("pulse_voted_" + p.id);
+        var upActiveClass = userVote === "up" ? "bg-emerald-500 text-white font-bold" : "bg-theme-light dark:bg-darkmode-theme-light hover:bg-emerald-500/10 text-text/80 dark:text-darkmode-text/80";
+        var downActiveClass = userVote === "down" ? "bg-rose-500 text-white font-bold" : "bg-theme-light dark:bg-darkmode-theme-light hover:bg-rose-500/10 text-text/80 dark:text-darkmode-text/80";
+
+        html += '<div class="cloud-pulse-card bg-body dark:bg-darkmode-body border border-border/80 dark:border-darkmode-border/80 rounded-3xl p-5 shadow-xs flex flex-col justify-between transition-all hover:border-primary/50 group">' +
+          '<div>' +
+            '<div class="flex items-center justify-between gap-2 mb-3">' +
+              rankBadge +
+              '<span class="text-[10px] font-medium text-text/60 dark:text-darkmode-text/60">' + formatDate(p.created_at) + '</span>' +
+            '</div>' +
+            '<h4 class="text-sm font-bold text-dark dark:text-darkmode-dark mb-2 leading-snug group-hover:text-primary transition-colors">' + escapeHtml(p.title) + '</h4>' +
+            '<p class="text-xs text-text/80 dark:text-darkmode-text/80 mb-4 leading-relaxed">' + escapeHtml(p.content) + '</p>' +
+          '</div>' +
+
+          '<div class="pt-3 border-t border-border/40 dark:border-darkmode-border/40 flex items-center justify-between gap-2">' +
+            '<div class="flex flex-wrap gap-1">' + tagsHtml + '</div>' +
+
+            '<div class="flex items-center gap-1.5 shrink-0 bg-theme-light dark:bg-darkmode-theme-light rounded-xl p-1 border border-border/50 dark:border-darkmode-border/50">' +
+              '<button data-pulse-upvote="' + p.id + '" data-upvotes="' + (p.upvotes || 0) + '" data-downvotes="' + (p.downvotes || 0) + '" class="px-2 py-1 rounded-lg text-xs font-bold transition-all border-none cursor-pointer flex items-center gap-1 ' + upActiveClass + '" title="Upvote pulse">' +
+                '<i class="fa-solid fa-caret-up text-sm"></i> ' + (p.score >= 0 ? '+' + p.score : p.score) +
+              '</button>' +
+              '<button data-pulse-downvote="' + p.id + '" data-upvotes="' + (p.upvotes || 0) + '" data-downvotes="' + (p.downvotes || 0) + '" class="px-1.5 py-1 rounded-lg text-xs transition-all border-none cursor-pointer ' + downActiveClass + '" title="Downvote pulse">' +
+                '<i class="fa-solid fa-caret-down text-sm"></i>' +
+              '</button>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
+      });
+
+      feedContainer.innerHTML = html;
+      bindVoteEvents(pulses);
+    }
+
+    function bindVoteEvents(pulsesMap) {
+      feedContainer.querySelectorAll("[data-pulse-upvote]").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          var id = this.getAttribute("data-pulse-upvote");
+          castVote(id, "up", pulsesMap);
+        });
+      });
+
+      feedContainer.querySelectorAll("[data-pulse-downvote]").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          var id = this.getAttribute("data-pulse-downvote");
+          castVote(id, "down", pulsesMap);
+        });
+      });
+    }
+
+    function castVote(id, voteType, pulsesList) {
+      var currentVote = localStorage.getItem("pulse_voted_" + id);
+      if (currentVote === voteType) return; // Already voted this way
+
+      var item = pulsesList.find(function (p) { return p.id === id; });
+      if (!item) return;
+
+      var newUp = item.upvotes || 0;
+      var newDown = item.downvotes || 0;
+
+      if (voteType === "up") {
+        newUp += 1;
+        if (currentVote === "down") newDown = Math.max(0, newDown - 1);
+      } else if (voteType === "down") {
+        newDown += 1;
+        if (currentVote === "up") newUp = Math.max(0, newUp - 1);
+      }
+
+      var newScore = newUp - newDown;
+
+      // Update LocalStorage
+      localStorage.setItem("pulse_voted_" + id, voteType);
+
+      // Update Supabase
+      if (supabase) {
+        supabase
+          .from("cloud_pulses")
+          .update({ upvotes: newUp, downvotes: newDown, score: newScore })
+          .eq("id", id)
+          .then(function () { fetchPulses(); })
+          .catch(function () { fetchPulses(); });
+      } else {
+        fetch(config.url + "/rest/v1/cloud_pulses?id=eq." + id, {
+          method: "PATCH",
+          headers: {
+            "apikey": config.anonKey,
+            "Authorization": "Bearer " + config.anonKey,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ upvotes: newUp, downvotes: newDown, score: newScore })
+        }).then(function () { fetchPulses(); });
+      }
+    }
+
+    // Admin Modal Logic
+    var adminModal = document.getElementById("pulse-admin-modal");
+    var openBtn = document.querySelector("[data-open-pulse-admin]");
+    var closeBtn = document.querySelector("[data-close-pulse-admin]");
+    var adminForm = document.querySelector("[data-pulse-admin-form]");
+    var statusElem = document.querySelector("[data-pulse-admin-status]");
+
+    if (openBtn && adminModal) {
+      openBtn.addEventListener("click", function () {
+        adminModal.classList.remove("hidden");
+      });
+    }
+
+    if (closeBtn && adminModal) {
+      closeBtn.addEventListener("click", function () {
+        adminModal.classList.add("hidden");
+      });
+    }
+
+    if (adminModal) {
+      adminModal.addEventListener("click", function (e) {
+        if (e.target === adminModal) adminModal.classList.add("hidden");
+      });
+    }
+
+    if (adminForm) {
+      adminForm.addEventListener("submit", function (e) {
+        e.preventDefault();
+        var formData = new FormData(adminForm);
+        var passcode = (formData.get("passcode") || "").trim();
+        var title = (formData.get("title") || "").trim();
+        var content = (formData.get("content") || "").trim();
+        var tagsRaw = (formData.get("tags") || "").trim();
+
+        if (passcode !== "1526" && passcode !== "admin") {
+          if (statusElem) {
+            statusElem.textContent = "Invalid passcode!";
+            statusElem.className = "text-xs font-semibold mr-auto text-rose-500";
+          }
+          return;
+        }
+
+        var tagsArr = tagsRaw.split(",").map(function (t) {
+          var trimmed = t.trim();
+          return trimmed.startsWith("#") ? trimmed : "#" + trimmed;
+        }).filter(function (t) { return t.length > 1; });
+
+        if (statusElem) {
+          statusElem.textContent = "Publishing pulse...";
+          statusElem.className = "text-xs font-semibold mr-auto text-primary animate-pulse";
+        }
+
+        var payload = {
+          title: title,
+          content: content,
+          tags: tagsArr,
+          upvotes: 1,
+          downvotes: 0,
+          score: 1,
+          author: "Tharun Vempati"
+        };
+
+        fetch(config.url + "/rest/v1/cloud_pulses", {
+          method: "POST",
+          headers: {
+            "apikey": config.anonKey,
+            "Authorization": "Bearer " + config.anonKey,
+            "Content-Type": "application/json",
+            "Prefer": "return=representation"
+          },
+          body: JSON.stringify(payload)
+        })
+        .then(function (res) {
+          if (res.ok) {
+            if (statusElem) {
+              statusElem.textContent = "Published live! 🎉";
+              statusElem.className = "text-xs font-semibold mr-auto text-emerald-500";
+            }
+            adminForm.reset();
+            setTimeout(function () {
+              if (adminModal) adminModal.classList.add("hidden");
+              if (statusElem) statusElem.textContent = "";
+              fetchPulses();
+            }, 1000);
+          } else {
+            if (statusElem) {
+              statusElem.textContent = "Failed to publish.";
+              statusElem.className = "text-xs font-semibold mr-auto text-rose-500";
+            }
+          }
+        })
+        .catch(function () {
+          if (statusElem) {
+            statusElem.textContent = "Network error.";
+            statusElem.className = "text-xs font-semibold mr-auto text-rose-500";
+          }
+        });
+      });
+    }
+
+    // Initial fetch
+    fetchPulses();
   }
 })();
 
