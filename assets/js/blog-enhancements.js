@@ -963,8 +963,8 @@
         }
 
         var userVote = localStorage.getItem("pulse_voted_" + p.id);
-        var upActiveClass = userVote === "up" ? "bg-emerald-600 text-white font-bold shadow-xs" : "bg-theme-light dark:bg-darkmode-theme-light hover:bg-emerald-500/15 text-slate-800 dark:text-slate-100 font-bold";
-        var downActiveClass = userVote === "down" ? "bg-rose-600 text-white font-bold shadow-xs" : "bg-theme-light dark:bg-darkmode-theme-light hover:bg-rose-500/15 text-slate-800 dark:text-slate-100 font-bold";
+        var upActiveClass = userVote === "up" ? "pulse-vote-btn is-upvoted" : "pulse-vote-btn";
+        var downActiveClass = userVote === "down" ? "pulse-vote-btn pulse-vote-btn-down is-downvoted" : "pulse-vote-btn pulse-vote-btn-down";
 
         var titleHtml = escapeHtml(p.title);
         var eventLinkHtml = "";
@@ -988,10 +988,10 @@
             '<div class="flex flex-wrap gap-1">' + tagsHtml + '</div>' +
 
             '<div class="flex items-center gap-1.5 shrink-0 bg-theme-light dark:bg-darkmode-theme-light rounded-xl p-1 border border-border/50 dark:border-darkmode-border/50">' +
-              '<button data-pulse-upvote="' + p.id + '" data-upvotes="' + (p.upvotes || 0) + '" data-downvotes="' + (p.downvotes || 0) + '" class="px-2 py-1 rounded-lg text-xs font-bold transition-all border-none cursor-pointer flex items-center gap-1 ' + upActiveClass + '" title="Upvote pulse">' +
-                '<i class="fa-solid fa-caret-up text-sm"></i> ' + (p.score >= 0 ? '+' + p.score : p.score) +
+              '<button data-pulse-upvote="' + p.id + '" data-upvotes="' + (p.upvotes || 0) + '" data-downvotes="' + (p.downvotes || 0) + '" class="' + upActiveClass + '" title="Upvote pulse">' +
+                '<i class="fa-solid fa-caret-up text-sm"></i> <span>' + (p.score >= 0 ? '+' + p.score : p.score) + '</span>' +
               '</button>' +
-              '<button data-pulse-downvote="' + p.id + '" data-upvotes="' + (p.upvotes || 0) + '" data-downvotes="' + (p.downvotes || 0) + '" class="px-1.5 py-1 rounded-lg text-xs transition-all border-none cursor-pointer ' + downActiveClass + '" title="Downvote pulse">' +
+              '<button data-pulse-downvote="' + p.id + '" data-upvotes="' + (p.upvotes || 0) + '" data-downvotes="' + (p.downvotes || 0) + '" class="' + downActiveClass + '" title="Downvote pulse">' +
                 '<i class="fa-solid fa-caret-down text-sm"></i>' +
               '</button>' +
             '</div>' +
