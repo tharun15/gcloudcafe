@@ -376,3 +376,54 @@ kbd {
     @apply border-primary text-primary dark:border-darkmode-primary dark:text-darkmode-primary;
   }
 }
+
+/* ==========================================================================
+   STOCK TRADING TERMINAL UI ENGINE & METRICS SYSTEM
+   ========================================================================== */
+
+.ticker-marquee-wrapper {
+  @apply bg-slate-900 text-slate-200 border-y border-slate-800/80 overflow-hidden relative py-2.5 text-xs font-mono select-none z-30;
+}
+
+.ticker-marquee-content {
+  display: flex;
+  width: max-content;
+  animation: stockTicker 35s linear infinite;
+}
+
+.ticker-marquee-content:hover {
+  animation-play-state: paused;
+}
+
+@keyframes stockTicker {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.ticker-item {
+  @apply inline-flex items-center gap-2 px-5 whitespace-nowrap border-r border-slate-800/60 transition-colors hover:bg-slate-800/40 no-underline text-slate-300 hover:text-white;
+}
+
+.ticker-symbol {
+  @apply font-extrabold tracking-wider text-cyan-400;
+}
+
+.ticker-bullish {
+  @apply text-emerald-400 font-semibold flex items-center gap-1;
+}
+
+.ticker-bearish {
+  @apply text-rose-400 font-semibold flex items-center gap-1;
+}
+
+.ticker-badge {
+  @apply font-mono bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded text-[11px] font-bold tracking-tight inline-flex items-center gap-1;
+}
+
+.sparkline-container {
+  @apply inline-block h-6 w-16 overflow-hidden align-middle opacity-80 transition-opacity hover:opacity-100;
+}

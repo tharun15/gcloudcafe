@@ -10,18 +10,11 @@
     <!-- head (don't cache it) -->
     {{ partial "essentials/head.html" . }}
 
-
     <!-- style (always cache it) -->
     {{ partialCached "essentials/style.html" . }}
-
   </head>
 
   <body>
-    <!-- Skip to main content — WCAG 2.4.1 -->
-    <a href="#main-content" class="skip-to-content">Skip to main content</a>
-    <!-- aria-live region for screen reader announcements (theme switch, toast, etc.) -->
-    <div id="a11y-announce" class="a11y-announce" aria-live="polite" aria-atomic="true"></div>
-
     <!-- cache partial only in production -->
     {{ if hugo.IsProduction }}
       {{ if templates.Exists "partials/preloader.html" }}
@@ -33,22 +26,22 @@
         {{ partial "preloader.html" . }}
       {{ end }}
 
-
-      <!-- tailwind size indicator -->
+      <!-- tailwind size indicator disabled -->
       {{ partial "components/tw-size-indicator.html" . }}
     {{ end }}
-
 
     <!-- announcement -->
     {{ if templates.Exists "partials/announcement.html" }}
       {{ partialCached "announcement.html" . }}
     {{ end }}
 
-
-    <!-- header (don't cache it) -->
+    <!-- header -->
     {{ partial "essentials/header.html" . }}
-    {{ partial "search-modal.html" (dict "Context" . ) }}
+    
+    <!-- Stock Trading Marquee Ticker -->
+    {{ partial "components/ticker-tape.html" . }}
 
+    {{ partial "search-modal.html" (dict "Context" . ) }}
 
     <main id="main-content" tabindex="-1">
       {{ block "main" . }}{{ end }}
@@ -56,7 +49,6 @@
 
     <!-- footer -->
     {{ partial "essentials/footer.html" . }}
-
 
     <!-- script (always cache it) -->
     {{ partialCached "essentials/script.html" . }}

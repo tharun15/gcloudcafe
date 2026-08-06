@@ -33,6 +33,19 @@
 
       <!-- Article Shell Header -->
       <header class="blog-article-shell mb-10">
+        <div class="mb-4 flex flex-wrap items-center justify-between gap-3 border-b border-border/60 pb-3 dark:border-darkmode-border/60">
+          <div class="flex items-center gap-2">
+            <span class="ticker-badge font-mono">
+              <i class="fa-solid fa-chart-line"></i> TICKER: ${{ index (.Params.categories | default (slice "ARTICLE")) 0 | urlize | upper }}
+            </span>
+            <span class="text-xs font-mono font-bold text-emerald-500">● LIVE ANALYSIS</span>
+          </div>
+          <div class="flex items-center gap-3 text-xs font-mono text-text/80 dark:text-darkmode-text/80">
+            <span><i class="fa-solid fa-bolt text-amber-500"></i> VOL: {{ .WordCount }} words</span>
+            <span><i class="fa-solid fa-signal text-cyan-500"></i> 99.8% UPTIME</span>
+          </div>
+        </div>
+
         {{ $categories:= .Params.categories }}
         {{ if $categories }}
           <div class="mb-4 flex flex-wrap gap-2">

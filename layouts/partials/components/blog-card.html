@@ -26,6 +26,21 @@
   </a>
 
   <div class="blog-card-body">
+    <div class="mb-3 flex flex-wrap items-center justify-between gap-2">
+      <div class="flex items-center gap-2">
+        <span class="ticker-badge">
+          <i class="fa-solid fa-arrow-trend-up"></i>
+          ${{ index ($categories | default (slice "TECH")) 0 | urlize | upper }}
+        </span>
+        <span class="text-[11px] font-mono text-emerald-500 font-bold">▲ +14.8%</span>
+      </div>
+      <span class="sparkline-container">
+        <svg viewBox="0 0 60 20" class="w-full h-full text-emerald-500 fill-none stroke-current stroke-2">
+          <path d="M0 15 L15 10 L30 14 L45 5 L60 2" />
+        </svg>
+      </span>
+    </div>
+
     <div class="mb-4 flex flex-wrap items-center gap-2">
       {{ with index $categories 0 }}
         <a

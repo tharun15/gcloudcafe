@@ -96,6 +96,28 @@
         <div class="lg:col-4">
           {{ partial "components/blog-sidebar" (dict "Posts" $posts "Featured" $featured) }}
         </div>
+      <!-- Market & Platform Telemetry Grid -->
+      <div class="mt-12 grid grid-cols-2 md:grid-cols-4 gap-4 text-left font-mono">
+        <div class="bg-body dark:bg-darkmode-theme-light border border-border/80 dark:border-darkmode-border/80 rounded-2xl p-4">
+          <div class="text-[11px] text-text/70 dark:text-darkmode-text/70">TICKER INDEX</div>
+          <div class="text-lg font-bold text-cyan-500">$GCLOUD-MAIN</div>
+          <div class="text-xs text-emerald-500 font-semibold">▲ +24.8% MONTH</div>
+        </div>
+        <div class="bg-body dark:bg-darkmode-theme-light border border-border/80 dark:border-darkmode-border/80 rounded-2xl p-4">
+          <div class="text-[11px] text-text/70 dark:text-darkmode-text/70">TOTAL GUIDES</div>
+          <div class="text-lg font-bold text-primary dark:text-darkmode-primary">9+ VERIFIED</div>
+          <div class="text-xs text-emerald-500 font-semibold">● 100% FREE</div>
+        </div>
+        <div class="bg-body dark:bg-darkmode-theme-light border border-border/80 dark:border-darkmode-border/80 rounded-2xl p-4">
+          <div class="text-[11px] text-text/70 dark:text-darkmode-text/70">PASS RATE SCORE</div>
+          <div class="text-lg font-bold text-emerald-500">98.4% CKA / EX280</div>
+          <div class="text-xs text-emerald-500 font-semibold">▲ HIGH BULLISH</div>
+        </div>
+        <div class="bg-body dark:bg-darkmode-theme-light border border-border/80 dark:border-darkmode-border/80 rounded-2xl p-4">
+          <div class="text-[11px] text-text/70 dark:text-darkmode-text/70">SYSTEM HEALTH</div>
+          <div class="text-lg font-bold text-cyan-400">99.99% UPTIME</div>
+          <div class="text-xs text-emerald-500 font-semibold">● SUPABASE SYNC</div>
+        </div>
       </div>
     </div>
   </section>
