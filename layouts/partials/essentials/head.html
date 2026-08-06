@@ -1,0 +1,48 @@
+<meta charset="utf-8" />
+
+<!-- responsive meta -->
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+
+<!-- theme meta -->
+<meta name="theme-name" content="gcloudcafe" />
+
+<!-- Title & Description -->
+<title>{{ if .Title }}{{ .Title }} | GCloud Cafe{{ else }}GCloud Cafe | Practical Cloud Architecture & Certifications{{ end }}</title>
+<meta name="description" content="{{ .Params.description | default .Summary | plainify | truncate 160 }}" />
+
+<!-- Favicon -->
+{{ partialCached "favicon" . }}
+
+<!-- LinkedIn & Open Graph Meta Tags -->
+<meta property="og:site_name" content="GCloud Cafe" />
+<meta property="og:title" content="{{ if .Title }}{{ .Title }}{{ else }}GCloud Cafe | Cloud Architecture & Certifications{{ end }}" />
+<meta property="og:description" content="{{ .Params.description | default .Summary | plainify | truncate 200 }}" />
+<meta property="og:url" content="{{ .Permalink }}" />
+<meta property="og:type" content="{{ if .IsPage }}article{{ else }}website{{ end }}" />
+
+{{ $imageURL := "" }}
+{{ with .Params.image }}
+  {{ $imageURL = . | absURL }}
+{{ else }}
+  {{ $imageURL = site.Params.logo | absURL }}
+{{ end }}
+<meta property="og:image" content="{{ $imageURL }}" />
+<meta property="og:image:secure_url" content="{{ $imageURL }}" />
+<meta property="og:image:alt" content="{{ .Title | default "GCloud Cafe" }}" />
+
+{{ if .IsPage }}
+  <meta property="article:published_time" content="{{ .PublishDate.Format "2006-01-02T15:04:05Z07:00" }}" />
+  <meta property="article:author" content="Tharun Vempati" />
+  {{ range .Params.tags }}
+    <meta property="article:tag" content="{{ . }}" />
+  {{ end }}
+{{ end }}
+
+<!-- Google TechArticle & WebSite JSON-LD Schema -->
+{{ partial "seo-schema.html" . }}
+
+<!-- custom script -->
+{{ partialCached "custom-script.html" . }}
+
+<!-- search index -->
+{{ partial "search-index.html" . }}
