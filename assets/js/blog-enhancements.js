@@ -205,7 +205,6 @@
 
     var permalink = widget.dataset.postFeedback || window.location.pathname;
     var storageKeyUser = "gcloudcafe:reaction:" + permalink;
-    var storageKeyCounts = "gcloudcafe:reaction-counts:" + permalink;
 
     var defaultCounts = {
       helpful: 12,
@@ -214,11 +213,15 @@
       brewtiful: 19
     };
 
-    var storedCounts = defaultCounts;
-    try {
-      var raw = localStorage.getItem(storageKeyCounts);
-      if (raw) storedCounts = JSON.parse(raw);
-    } catch (e) {}
+    var storedCounts = Object.assign({}, defaultCounts);
+
+    // Initialize Supabase Client
+    var supabase = null;
+    var supabaseUrl = widget.dataset.supabaseUrl;
+    var supabaseKey = widget.dataset.supabaseKey;
+    if (supabaseUrl && supabaseKey && window.supabase) {
+      supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+    }
 
     var activeReaction = "";
     try {
@@ -245,28 +248,64 @@
       });
     }
 
+    // Function to fetch updated counts from Supabase
+    function fetchSupabaseCounts() {
+      if (!supabase) return;
+      supabase
+        .from('post_reactions')
+        .select('helpful_count, insightful_count, awesome_count, brewtiful_count')
+        .eq('post_path', permalink)
+        .maybeSingle()
+        .then(function (response) {
+          if (response && response.data) {
+            storedCounts = {
+              helpful: (parseInt(response.data.helpful_count) || 0) + defaultCounts.helpful,
+              insightful: (parseInt(response.data.insightful_count) || 0) + defaultCounts.insightful,
+              awesome: (parseInt(response.data.awesome_count) || 0) + defaultCounts.awesome,
+              brewtiful: (parseInt(response.data.brewtiful_count) || 0) + defaultCounts.brewtiful
+            };
+            updateCountsUI();
+          }
+        });
+    }
+
+    // Load initial counts from local cache first, then fetch live from Supabase
     updateCountsUI();
+    fetchSupabaseCounts();
 
     reactionBtns.forEach(function (btn) {
       btn.addEventListener("click", function () {
         var type = btn.dataset.reactionBtn;
 
         if (activeReaction === type) {
+          // Deselect
           activeReaction = "";
+          try {
+            localStorage.removeItem(storageKeyUser);
+          } catch (e) {}
+          updateCountsUI();
         } else {
+          // Select new reaction
           activeReaction = type;
           spawnEmojiParticle(btn);
-        }
-
-        try {
-          if (activeReaction) {
+          try {
             localStorage.setItem(storageKeyUser, activeReaction);
-          } else {
-            localStorage.removeItem(storageKeyUser);
-          }
-        } catch (e) {}
+          } catch (e) {}
+          updateCountsUI();
 
-        updateCountsUI();
+          // Persist increment to Supabase
+          if (supabase) {
+            supabase
+              .rpc('increment_reaction', { p_post_path: permalink, p_reaction_type: type })
+              .then(function (res) {
+                if (res.error) {
+                  console.error("Supabase RPC error:", res.error);
+                } else {
+                  fetchSupabaseCounts();
+                }
+              });
+          }
+        }
       });
     });
 
@@ -451,6 +490,66 @@
       .replace(/'/g, "&#039;");
   }
 
+  /* ── Supabase Newsletter Signup ── */
+  function initNewsletterSignup() {
+    var supabase = null;
+    if (window.SUPABASE_CONFIG && window.supabase) {
+      supabase = window.supabase.createClient(window.SUPABASE_CONFIG.url, window.SUPABASE_CONFIG.anonKey);
+    }
+    if (!supabase) return;
+
+    var forms = document.querySelectorAll("form[data-supabase-subscribe]");
+
+    forms.forEach(function (form) {
+      var status = form.querySelector("[data-newsletter-status]");
+      if (!status) {
+        var note = form.nextElementSibling;
+        if (note && note.hasAttribute("data-newsletter-status")) {
+          status = note;
+        } else {
+          status = document.createElement("p");
+          status.className = "text-xs mt-2 font-medium transition-all text-text/80 dark:text-darkmode-text/80";
+          form.appendChild(status);
+        }
+      }
+
+      var input = form.querySelector("input[type='email']");
+      var submitBtn = form.querySelector("button[type='submit']");
+
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+        if (!input || !input.value.trim()) return;
+
+        var emailValue = input.value.trim();
+        status.textContent = "Connecting to database... ☕";
+        status.className = "text-xs mt-2 font-semibold text-primary animate-pulse";
+        if (submitBtn) submitBtn.disabled = true;
+
+        supabase
+          .from("newsletter_subscribers")
+          .insert([{ email: emailValue }])
+          .then(function (res) {
+            if (submitBtn) submitBtn.disabled = false;
+            
+            if (res.error) {
+              if (res.error.code === "23505") { // unique constraint violation
+                status.textContent = "You are already subscribed! ☕";
+                status.className = "text-xs mt-2 font-semibold text-green-600 dark:text-green-400";
+              } else {
+                console.error("Supabase subscription error:", res.error);
+                status.textContent = "Oops! Something went wrong. Please try again.";
+                status.className = "text-xs mt-2 font-semibold text-red-500";
+              }
+            } else {
+              status.textContent = "Subscribed successfully! Welcome to the club! 🎉";
+              status.className = "text-xs mt-2 font-semibold text-green-600 dark:text-green-400";
+              input.value = ""; // clear input
+            }
+          });
+      });
+    });
+  }
+
   /* ── Init ── */
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", init);
@@ -467,6 +566,7 @@
     initSearchShortcut();
     initPostEngagement();
     initCommentsSystem();
+    initNewsletterSignup();
   }
 })();
 
