@@ -39,14 +39,14 @@ enable_comments = true
 [giscus]
 enable = true
 repo = "tharun15/gcloudcafe"
-repo_id = "" # Replace with repo_id from giscus.app (e.g. R_kgDO...)
+repo_id = "R_kgDONdsAfw"
 category = "Announcements"
-category_id = "" # Replace with category_id from giscus.app (e.g. DIC_kwDO...)
+category_id = "DIC_kwDONdsAf84DCxn4"
 mapping = "pathname"
 strict = "0"
 reactions_enabled = "1"
 emit_metadata = "0"
-input_position = "top"
+input_position = "bottom"
 theme = "preferred_color_scheme"
 lang = "en"
 
