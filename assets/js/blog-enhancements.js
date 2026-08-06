@@ -257,7 +257,7 @@
       });
     }
 
-    // Function to fetch updated counts from Supabase with path dual-matching and retry resilience
+    // Function to fetch updated counts from Supabase via RPC or Table query
     function fetchSupabaseCounts(retryCount) {
       retryCount = retryCount || 0;
       if (!supabase) {
@@ -279,24 +279,18 @@
         return;
       }
 
-      var cleanPath = permalink.replace(/\/+$/, "");
-      var pathWithSlash = cleanPath + "/";
-
+      // Try RPC first (security definer function, immune to RLS and slash mismatches)
       supabase
-        .from('post_reactions')
-        .select('helpful_count, insightful_count, awesome_count, brewtiful_count')
-        .or('post_path.eq.' + cleanPath + ',post_path.eq.' + pathWithSlash)
-        .then(function (response) {
-          if (response && response.data && response.data.length > 0) {
-            isLiveFromDb = true;
-            var dbHelpful = 0, dbInsightful = 0, dbAwesome = 0, dbBrewtiful = 0;
-            response.data.forEach(function (row) {
-              dbHelpful += parseInt(row.helpful_count) || 0;
-              dbInsightful += parseInt(row.insightful_count) || 0;
-              dbAwesome += parseInt(row.awesome_count) || 0;
-              dbBrewtiful += parseInt(row.brewtiful_count) || 0;
-            });
+        .rpc('get_post_reactions', { p_post_path: permalink })
+        .then(function (res) {
+          if (res && res.data && res.data.length > 0) {
+            var data = res.data[0];
+            var dbHelpful = parseInt(data.helpful_count) || 0;
+            var dbInsightful = parseInt(data.insightful_count) || 0;
+            var dbAwesome = parseInt(data.awesome_count) || 0;
+            var dbBrewtiful = parseInt(data.brewtiful_count) || 0;
 
+            isLiveFromDb = true;
             storedCounts = {
               helpful: dbHelpful + defaultCounts.helpful,
               insightful: dbInsightful + defaultCounts.insightful,
@@ -304,8 +298,33 @@
               brewtiful: dbBrewtiful + defaultCounts.brewtiful
             };
             updateCountsUI();
+          } else {
+            fallbackTableSelect();
           }
+        })
+        .catch(function () {
+          fallbackTableSelect();
         });
+
+      function fallbackTableSelect() {
+        supabase
+          .from('post_reactions')
+          .select('helpful_count, insightful_count, awesome_count, brewtiful_count')
+          .eq('post_path', permalink)
+          .maybeSingle()
+          .then(function (response) {
+            if (response && response.data) {
+              isLiveFromDb = true;
+              storedCounts = {
+                helpful: (parseInt(response.data.helpful_count) || 0) + defaultCounts.helpful,
+                insightful: (parseInt(response.data.insightful_count) || 0) + defaultCounts.insightful,
+                awesome: (parseInt(response.data.awesome_count) || 0) + defaultCounts.awesome,
+                brewtiful: (parseInt(response.data.brewtiful_count) || 0) + defaultCounts.brewtiful
+              };
+              updateCountsUI();
+            }
+          });
+      }
     }
 
     // Load initial counts from local cache first, then fetch live from Supabase
