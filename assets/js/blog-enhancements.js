@@ -1136,7 +1136,7 @@
       }
     }
 
-    // Admin Modal Logic
+    // Admin Modal & Secret Access Triggers
     var adminModal = document.getElementById("pulse-admin-modal");
     var openBtn = document.querySelector("[data-open-pulse-admin]");
     var closeBtn = document.querySelector("[data-close-pulse-admin]");
@@ -1146,6 +1146,20 @@
     if (openBtn && adminModal) {
       openBtn.addEventListener("click", function () {
         adminModal.classList.remove("hidden");
+      });
+    }
+
+    // Secret URL Hash (#admin) or Keyboard Shortcut (Ctrl+Shift+P) trigger
+    if (adminModal) {
+      if (window.location.hash === "#admin") {
+        adminModal.classList.remove("hidden");
+      }
+
+      window.addEventListener("keydown", function (e) {
+        if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === "P" || e.key === "p")) {
+          e.preventDefault();
+          adminModal.classList.toggle("hidden");
+        }
       });
     }
 
@@ -1223,7 +1237,11 @@
             setTimeout(function () {
               if (adminModal) adminModal.classList.add("hidden");
               if (statusElem) statusElem.textContent = "";
-              fetchPulses();
+              if (window.location.pathname.indexOf("pulse-admin") !== -1) {
+                window.location.href = "/pulse/";
+              } else {
+                fetchPulses();
+              }
             }, 1000);
           } else {
             if (statusElem) {
