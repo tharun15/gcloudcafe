@@ -71,7 +71,7 @@ mobile_font_size = "16px"
 touch_target_size = "48px"
 
 # copyright
-copyright = "Designed & Developed by [Gcloudcafe](https://gcloudcafe.com)"
+copyright = "© 2023-Present [GCloud Cafe](https://gcloudcafe.com) • Code under [MIT](https://github.com/tharun15/gcloudcafe/blob/main/LICENSE) & Content under [CC BY-NC-ND 4.0](https://creativecommons.org/licenses/by-nc-nd/4.0/)"
 
 # search
 # search module: https://github.com/gethugothemes/hugo-modules/tree/master/search
