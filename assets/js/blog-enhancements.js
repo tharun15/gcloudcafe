@@ -273,6 +273,13 @@
     updateCountsUI();
     fetchSupabaseCounts();
 
+    // Track real user page view interaction in Supabase
+    if (supabase) {
+      try {
+        supabase.rpc('track_page_view', { p_post_path: permalink }).then(function(){}).catch(function(){});
+      } catch (e) {}
+    }
+
     reactionBtns.forEach(function (btn) {
       btn.addEventListener("click", function () {
         var type = btn.dataset.reactionBtn;

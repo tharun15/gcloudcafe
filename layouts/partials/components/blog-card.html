@@ -32,7 +32,7 @@
           <i class="fa-solid fa-arrow-trend-up"></i>
           ${{ index ($categories | default (slice "TECH")) 0 | urlize | upper }}
         </span>
-        <span class="text-[11px] font-mono text-emerald-500 font-bold">▲ +14.8%</span>
+        <span class="text-[11px] font-mono text-emerald-500 font-bold">● {{ $page.ReadingTime }} MIN READ</span>
       </div>
       <span class="sparkline-container">
         <svg viewBox="0 0 60 20" class="w-full h-full text-emerald-500 fill-none stroke-current stroke-2">

@@ -99,7 +99,7 @@
       </div>
 
       <!-- Real Site Telemetry & Database Metrics Grid -->
-      {{ $allPosts := (where site.RegularPages "Section" "in" site.Params.mainSections) }}
+      {{ $allPosts := (where site.RegularPages "Section" "blog") }}
       {{ $totalWords := 0 }}
       {{ range $allPosts }}
         {{ $totalWords = add $totalWords .WordCount }}
