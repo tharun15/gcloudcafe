@@ -296,7 +296,7 @@
           // Persist increment to Supabase
           if (supabase) {
             supabase
-              .rpc('increment_reaction', { post_path: permalink, reaction_type: type })
+              .rpc('increment_reaction', { p_post_path: permalink, p_reaction_type: type })
               .then(function (res) {
                 if (res.error) {
                   console.error("Supabase RPC error:", res.error);
