@@ -1,0 +1,100 @@
+{{ $root := . }}
+{{ with $root.Featured }}
+  {{ $page := . }}
+  {{ $authorSlug := .Params.author }}
+  {{ $authorName := $authorSlug | humanize | title }}
+  {{ with site.GetPage (printf "/authors/%s" $authorSlug) }}
+    {{ $authorName = .Title }}
+  {{ end }}
+  {{ $teaser := .Params.description | default .Summary | plainify | truncate 190 }}
+  {{ $categories := .Params.categories }}
+  <section class="section-sm pb-10" aria-labelledby="featured-post-title">
+    <div class="container">
+      <div class="blog-hero">
+        <div class="row items-center gy-5">
+          <div class="lg:col-7">
+            <p class="blog-eyebrow">
+              {{ $root.Eyebrow | default "Featured story" }}
+            </p>
+            <div class="mb-4 flex flex-wrap gap-2">
+              {{ range first 2 $categories }}
+                <a
+                  class="blog-badge blog-focus-ring"
+                  href="{{ `categories/` | relLangURL }}{{ . | urlize | lower }}/">
+                  {{ . | humanize }}
+                </a>
+              {{ end }}
+            </div>
+            <h1
+              id="featured-post-title"
+              class="mb-5 max-w-3xl text-4xl md:text-5xl">
+              {{ $page.Title }}
+            </h1>
+            <p
+              class="mb-6 max-w-3xl text-lg leading-8 text-text dark:text-darkmode-text">
+              {{ $teaser }}
+            </p>
+            <ul class="blog-meta-list mb-8">
+              <li>
+                <i class="fa-regular fa-circle-user"></i>
+                <a
+                  class="blog-focus-ring"
+                  href="{{ `authors/` | relLangURL }}{{ $authorSlug | urlize }}/">
+                  {{ $authorName }}
+                </a>
+              </li>
+              <li>
+                <i class="fa-regular fa-calendar"></i>
+                {{ time.Format ":date_long" $page.PublishDate }}
+              </li>
+              <li>
+                <i class="fa-regular fa-clock"></i>
+                {{ $page.ReadingTime }} min read
+              </li>
+            </ul>
+            <div class="flex flex-wrap gap-3">
+              <a
+                class="blog-focus-ring btn btn-primary"
+                href="{{ $page.RelPermalink }}">
+                Read the latest post
+              </a>
+              <a
+                class="blog-focus-ring btn btn-outline-primary flex items-center gap-1.5"
+                target="_blank"
+                rel="noopener noreferrer"
+                href="https://www.linkedin.com/sharing/share-offsite/?url={{ $page.Permalink | safeURL }}"
+                aria-label="Share post on LinkedIn"
+                title="Share on LinkedIn">
+                <i class="fa-brands fa-linkedin"></i> Share on LinkedIn
+              </a>
+              {{ with $root.BrowseLink }}
+                <a
+                  class="blog-focus-ring btn btn-outline-primary"
+                  href="{{ . }}">
+                  {{ $root.BrowseLabel | default "Browse all posts" }}
+                </a>
+              {{ end }}
+            </div>
+          </div>
+          <div class="lg:col-5">
+            <a
+              class="blog-hero-media blog-focus-ring"
+              href="{{ $page.RelPermalink }}"
+              aria-label="Read featured post: {{ $page.Title }}">
+              {{ with $page.Params.image }}
+                {{ partial "image" (dict "Src" . "Context" $page "Alt" $page.Title "Class" "blog-card-image") }}
+              {{ else }}
+                <div class="blog-fallback-media min-h-[320px]">
+                  <span class="blog-badge"
+                    >{{ index ($categories | default (slice "Latest")) 0 | humanize }}</span
+                  >
+                  <h2>{{ $page.Title }}</h2>
+                </div>
+              {{ end }}
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+{{ end }}
