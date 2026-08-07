@@ -1263,6 +1263,9 @@
     var passcodeBtn = document.getElementById("admin-login-btn");
     var passcodeInput = document.getElementById("admin-passcode-input");
     var passcodeStatus = document.getElementById("admin-passcode-status");
+    var dashboardContainer = document.getElementById("admin-dashboard-container");
+    var authPrompt = document.getElementById("admin-auth-prompt");
+
     var pendingGrid = document.getElementById("pending-cards-grid");
     var pendingCountBadge = document.getElementById("pending-count-badge");
     var refreshBtn = document.getElementById("refresh-candidates-btn");
@@ -1276,6 +1279,18 @@
       url: "https://axiijcsxtiukloarbfor.supabase.co",
       anonKey: "sb_publishable_cRcwg02R3nXTykDrxalL6w_-kc9Wesc"
     };
+
+    function unlockDashboard() {
+      if (dashboardContainer) dashboardContainer.classList.remove("hidden");
+      if (authPrompt) authPrompt.classList.add("hidden");
+      if (passcodeStatus) passcodeStatus.classList.add("hidden");
+      fetchPendingCandidates();
+    }
+
+    function lockDashboard() {
+      if (dashboardContainer) dashboardContainer.classList.add("hidden");
+      if (authPrompt) authPrompt.classList.remove("hidden");
+    }
 
     if (tabPendingBtn && tabManualBtn) {
       tabPendingBtn.addEventListener("click", function () {
@@ -1298,11 +1313,10 @@
         var val = passcodeInput.value.trim();
         if (val === "1526" || val === "admin") {
           sessionStorage.setItem("pulse_admin_authed", "true");
-          if (passcodeStatus) passcodeStatus.classList.add("hidden");
-          fetchPendingCandidates();
+          unlockDashboard();
         } else {
           if (passcodeStatus) {
-            passcodeStatus.textContent = "Invalid passcode. Please try again.";
+            passcodeStatus.textContent = "Invalid passcode. Access denied.";
             passcodeStatus.classList.remove("hidden");
           }
         }
@@ -1311,6 +1325,13 @@
 
     if (refreshBtn) {
       refreshBtn.addEventListener("click", fetchPendingCandidates);
+    }
+
+    // Check authentication state on page load
+    if (sessionStorage.getItem("pulse_admin_authed") === "true") {
+      unlockDashboard();
+    } else {
+      lockDashboard();
     }
 
     function fetchPendingCandidates() {

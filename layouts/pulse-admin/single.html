@@ -32,8 +32,19 @@
       <div id="admin-passcode-status" class="mt-2 text-xs font-semibold text-rose-500 hidden"></div>
     </div>
 
-    <!-- Protected Newsroom Dashboard (Visible after entering passcode) -->
-    <div id="admin-dashboard-container" class="space-y-8">
+    <!-- Locked Auth Prompt (Visible when unauthenticated) -->
+    <div id="admin-auth-prompt" class="bg-body dark:bg-darkmode-body border border-border/80 dark:border-darkmode-border/80 rounded-3xl p-12 text-center shadow-lg my-8">
+      <div class="w-16 h-16 rounded-full bg-amber-500/15 border border-amber-500/30 flex items-center justify-center mx-auto mb-4 text-amber-500 text-2xl">
+        <i class="fa-solid fa-lock"></i>
+      </div>
+      <h3 class="text-xl font-bold text-dark dark:text-darkmode-dark mb-2">Protected Newsroom Dashboard</h3>
+      <p class="text-xs sm:text-sm text-text/70 dark:text-darkmode-text/70 max-w-md mx-auto">
+        Please enter your admin passcode (<code class="px-1.5 py-0.5 bg-theme-light dark:bg-darkmode-theme-light rounded text-primary font-bold">1526</code>) in the header above and click <strong>Unlock</strong> to access candidate approvals and broadcasting tools.
+      </p>
+    </div>
+
+    <!-- Protected Newsroom Dashboard (Hidden until passcode authentication) -->
+    <div id="admin-dashboard-container" class="space-y-8 hidden">
       
       <!-- Tab Navigation -->
       <div class="flex items-center gap-3 border-b border-border/60 dark:border-darkmode-border/60 pb-3">
