@@ -912,7 +912,7 @@
     }
 
     function fetchPulses() {
-      var queryUrl = config.url + "/rest/v1/cloud_pulses?select=*&order=score.desc,created_at.desc";
+      var queryUrl = config.url + "/rest/v1/cloud_pulses_trending?select=*&limit=6";
       
       fetch(queryUrl, {
         headers: {
@@ -925,7 +925,7 @@
         if (Array.isArray(data)) {
           renderPulses(data);
         } else if (supabase) {
-          supabase.from("cloud_pulses").select("*").order("score", { ascending: false }).then(function(sRes) {
+          supabase.from("cloud_pulses_trending").select("*").limit(6).then(function(sRes) {
             if (sRes && Array.isArray(sRes.data)) {
               renderPulses(sRes.data);
             }
@@ -935,20 +935,11 @@
       .catch(function (err) {
         console.error("Cloud Pulse fetch error:", err);
         if (supabase) {
-          supabase.from("cloud_pulses").select("*").order("score", { ascending: false }).then(function(sRes) {
+          supabase.from("cloud_pulses_trending").select("*").limit(6).then(function(sRes) {
             if (sRes && sRes.data) renderPulses(sRes.data);
           });
         }
       });
-    }
-
-    function calculateTrendingScore(p) {
-      var score = typeof p.score === "number" ? p.score : ((p.upvotes || 0) - (p.downvotes || 0));
-      var createdAt = p.created_at ? new Date(p.created_at).getTime() : Date.now();
-      var ageInHours = Math.max(0, (Date.now() - createdAt) / (1000 * 60 * 60));
-      // Gravity Time Decay Formula: TrendingScore = (Score + 1) / ((AgeInHours + 2) ^ 1.5)
-      var gravity = Math.pow(ageInHours + 2, 1.5);
-      return (score + 1) / gravity;
     }
 
     function renderPulses(pulses) {
@@ -957,16 +948,8 @@
         return;
       }
 
-      // Compute Gravity Time-Decay score for each pulse & sort descending
-      var sortedPulses = pulses.slice().map(function (p) {
-        p._trendingScore = calculateTrendingScore(p);
-        return p;
-      }).sort(function (a, b) {
-        return b._trendingScore - a._trendingScore;
-      });
-
-      // Strict limit: Max 6 trending pulses displayed
-      var topPulses = sortedPulses.slice(0, 6);
+      // Pre-sorted & calculated by Supabase Postgres View (cloud_pulses_trending)
+      var topPulses = pulses.slice(0, 6);
 
       var html = "";
       topPulses.forEach(function (p, idx) {
