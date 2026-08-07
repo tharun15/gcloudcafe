@@ -1,0 +1,93 @@
+<!-- Modern Glassmorphic Cookie & Privacy Consent Banner (GDPR / CCPA Compliant) -->
+<div id="cookie-consent-banner" class="fixed bottom-4 left-4 right-4 sm:right-auto sm:max-w-md z-50 transition-all duration-500 transform translate-y-full opacity-0 hidden">
+  <div class="bg-body/95 dark:bg-darkmode-body/95 backdrop-blur-md border border-border/80 dark:border-darkmode-border/80 rounded-3xl p-5 shadow-2xl space-y-4">
+    
+    <!-- Banner Header -->
+    <div class="flex items-start justify-between gap-3">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-2xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-500 shrink-0 text-lg">
+          <i class="fa-solid fa-cookie-bite"></i>
+        </div>
+        <div>
+          <h4 class="text-sm font-extrabold text-dark dark:text-darkmode-dark leading-tight">
+            We value your privacy
+          </h4>
+          <p class="text-[11px] text-text/60 dark:text-darkmode-text/60 font-medium">
+            GDPR & Privacy Preferences
+          </p>
+        </div>
+      </div>
+
+      <button id="cookie-consent-close" class="text-text/40 hover:text-text/80 dark:text-darkmode-text/40 dark:hover:text-darkmode-text/80 text-xs p-1 transition-colors border-none bg-transparent cursor-pointer" aria-label="Close cookie banner">
+        <i class="fa-solid fa-xmark text-sm"></i>
+      </button>
+    </div>
+
+    <!-- Message Copy -->
+    <p class="text-xs text-text/80 dark:text-darkmode-text/80 leading-relaxed">
+      We use cookies to analyze site traffic, personalize content, and enhance your Cloud Pulse newsroom experience. By clicking <strong>"Accept All"</strong>, you consent to our privacy practices.
+    </p>
+
+    <!-- Action Control Buttons -->
+    <div class="flex items-center justify-end gap-2 pt-1 border-t border-border/40 dark:border-darkmode-border/40">
+      <button id="cookie-essential-only" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-theme-light dark:bg-darkmode-theme-light text-text/80 dark:text-darkmode-text/80 hover:text-primary border border-border/60 dark:border-darkmode-border/60 transition-all cursor-pointer">
+        Essential Only
+      </button>
+      <button id="cookie-accept-all" class="px-4 py-2 rounded-xl text-xs font-extrabold bg-primary text-white hover:bg-primary/90 shadow-xs transition-all border-none cursor-pointer">
+        <i class="fa-solid fa-check mr-1.5"></i> Accept All
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  (function () {
+    var banner = document.getElementById("cookie-consent-banner");
+    var btnAcceptAll = document.getElementById("cookie-accept-all");
+    var btnEssential = document.getElementById("cookie-essential-only");
+    var btnClose = document.getElementById("cookie-consent-close");
+
+    if (!banner) return;
+
+    // Check if preference already saved in localStorage
+    var savedConsent = localStorage.getItem("gcloudcafe_cookie_consent");
+
+    if (!savedConsent) {
+      setTimeout(function () {
+        banner.classList.remove("hidden");
+        // Force reflow for smooth slide-up animation
+        void banner.offsetWidth;
+        banner.classList.remove("translate-y-full", "opacity-0");
+        banner.classList.add("translate-y-0", "opacity-100");
+      }, 800);
+    }
+
+    function hideBanner(choice) {
+      localStorage.setItem("gcloudcafe_cookie_consent", choice);
+      banner.classList.remove("translate-y-0", "opacity-100");
+      banner.classList.add("translate-y-full", "opacity-0");
+      setTimeout(function () {
+        banner.classList.add("hidden");
+      }, 500);
+    }
+
+    if (btnAcceptAll) {
+      btnAcceptAll.addEventListener("click", function () {
+        hideBanner("accepted");
+      });
+    }
+
+    if (btnEssential) {
+      btnEssential.addEventListener("click", function () {
+        hideBanner("essential");
+      });
+    }
+
+    if (btnClose) {
+      btnClose.addEventListener("click", function () {
+        hideBanner("dismissed");
+      });
+    }
+  })();
+</script>
