@@ -52,12 +52,20 @@
   {{ $stylesLazy = $stylesLazy | resources.ExecuteAsTemplate "css/style-lazy.css" . }}
 {{ end }}
 
-{{/* styles */}}
+{{/* styles non-blocking optimization */}}
 <link rel="preload" as="style" href="{{ $styles.RelPermalink }}" />
 <link
   href="{{ $styles.RelPermalink }}"
   integrity="{{ $styles.Data.Integrity }}"
-  rel="stylesheet" />
+  rel="stylesheet"
+  media="print"
+  onload="this.media='all'" />
+<noscript>
+  <link
+    href="{{ $styles.RelPermalink }}"
+    integrity="{{ $styles.Data.Integrity }}"
+    rel="stylesheet" />
+</noscript>
 
 {{/* styles lazy */}}
 <link
