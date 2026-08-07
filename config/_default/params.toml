@@ -92,7 +92,7 @@ keywords = ["Gcloudcafe", "Kubernetes", "Openshift", "AWS", "Azure", "GCP"]
 description = "Your go-to source for practical tips on passing cloud certifications, up-to-date news on cloud technologies"
 author = "Tharun Vempati"
 twitter = "tharun26"
-image = "images/logo.png"
+image = "images/og-image.png"
 
 
 # site verifications

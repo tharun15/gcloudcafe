@@ -24,7 +24,7 @@
 {{ with .Params.image }}
   {{ $imageURL = . | absURL }}
 {{ else }}
-  {{ $imageURL = site.Params.logo | absURL }}
+  {{ $imageURL = "images/og-image.png" | absURL }}
 {{ end }}
 <meta property="og:image" content="{{ $imageURL }}" />
 <meta property="og:image:secure_url" content="{{ $imageURL }}" />
