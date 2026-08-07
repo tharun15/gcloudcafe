@@ -1,0 +1,32 @@
+# GCloud Cafe — Complete Technical Documentation & Knowledge Base
+
+> GCloud Cafe (https://gcloudcafe.com) is an engineering platform providing practical tutorials, exam preparation guides (Red Hat EX280, CKA, GCP, AWS), and real-time cloud micro-news (Cloud Pulse).
+
+# Core Site Structure & Entry Points
+- [GCloud Cafe Home](https://gcloudcafe.com/): Practical cloud architecture tutorials, exam strategies, and platform index.
+- [Cloud Pulse Feed](https://gcloudcafe.com/pulse/): Real-time community-ranked cloud updates and micro-news feed.
+- [Technical Blog Index](https://gcloudcafe.com/blog/): In-depth technical articles on OpenShift 4.x, Kubernetes, GCP, and AWS.
+- [Category Index](https://gcloudcafe.com/categories/): Browse technical articles grouped by category.
+- [Author Profile — Tharun Vempati](https://gcloudcafe.com/authors/tharun-vempati/): Author background and certifications.
+- [About Platform](https://gcloudcafe.com/about/): Platform mission and architecture overview.
+
+# Complete Technical Articles
+
+## Red Hat OpenShift EX280 Administrator Series
+- [EX280 Exam Readiness Part 1: HTPasswd & User Authentication](https://gcloudcafe.com/blog/ex280-tips-part1-htpasswd/): Configuring HTPasswd identity providers, RBAC cluster roles, and group permissions in OpenShift 4.
+- [EX280 Exam Readiness Part 2: Network Policies & Edge Routes](https://gcloudcafe.com/blog/ex280-tips-part2/): Configuring ingress NetworkPolicies, egress traffic control, Edge TLS termination, and re-encrypt routes.
+- [EX280 Exam Readiness Part 3: Storage Classes & Persistent Volume Claims](https://gcloudcafe.com/blog/ex280-tips-part3/): Managing PVs, PVCs, dynamic storage provisioning, and pod volume mounts.
+- [EX280 Exam Readiness Part 4: Deployments, StatefulSets & Reliability](https://gcloudcafe.com/blog/ex280-tips-part4/): Deployment rollouts, liveness/readiness probes, resource requests/limits, and horizontal pod autoscalers (HPA).
+- [EX280 Exam Readiness Part 5: Secret & ConfigMap Injection](https://gcloudcafe.com/blog/ex280-tips-part5/): Injecting sensitive environment variables, mounting secrets as volume files, and service account tokens.
+
+## Certified Kubernetes Administrator (CKA)
+- [CKA Exam Strategy & Hands-On Checklist](https://gcloudcafe.com/blog/cka-exam-readiness/): Essential `kubectl` imperative commands, cluster troubleshooting, CNI networking, and etcd backup/restore routines.
+
+## Google Cloud Platform (GCP)
+- [GCP Generative AI Leader Guide](https://gcloudcafe.com/blog/gcp-generative-ai-leader/): Gemini 1.5 Pro integration, Vertex AI Studio, Model Garden, and enterprise AI governance.
+
+# API Endpoints & Machine-Readable Resources
+- [Site Sitemap](https://gcloudcafe.com/sitemap.xml): XML sitemap listing all canonical URLs.
+- [LLM Summary](https://gcloudcafe.com/llms.txt): Concise markdown summary for AI agents.
+- [RSS Feed](https://gcloudcafe.com/index.xml): Live XML RSS feed of new posts.
+- [Search Index JSON](https://gcloudcafe.com/searchindex.json): Client-side search index JSON structure.

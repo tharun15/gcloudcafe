@@ -41,3 +41,4 @@ Allow: /
 # Sitemaps & AI Agent Indexes
 Sitemap: https://gcloudcafe.com/sitemap.xml
 Sitemap: https://gcloudcafe.com/llms.txt
+Sitemap: https://gcloudcafe.com/llms-full.txt

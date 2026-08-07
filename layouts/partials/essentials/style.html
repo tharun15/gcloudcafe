@@ -7,14 +7,11 @@
 <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
 <link rel="dns-prefetch" href="https://use.fontawesome.com" />
 
-<!-- Google Fonts Non-Blocking Optimization -->
+<!-- Google Fonts Preload Optimization -->
 {{ $pf:= site.Data.theme.fonts.font_family.primary }}
 {{ $sf:= site.Data.theme.fonts.font_family.secondary }}
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family={{$pf | safeURL}}{{with $sf}}&family={{. | safeURL}}{{end}}&display=swap" />
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family={{$pf | safeURL}}{{with $sf}}&family={{. | safeURL}}{{end}}&display=swap" media="print" onload="this.media='all'" />
-<noscript>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family={{$pf | safeURL}}{{with $sf}}&family={{. | safeURL}}{{end}}&display=swap" />
-</noscript>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family={{$pf | safeURL}}{{with $sf}}&family={{. | safeURL}}{{end}}&display=swap" />
 
 <!-- plugins + stylesheet -->
 {{ $styles := slice }}
@@ -52,20 +49,12 @@
   {{ $stylesLazy = $stylesLazy | resources.ExecuteAsTemplate "css/style-lazy.css" . }}
 {{ end }}
 
-{{/* styles non-blocking optimization */}}
+{{/* styles (preloaded & synchronous to eliminate CLS) */}}
 <link rel="preload" as="style" href="{{ $styles.RelPermalink }}" />
 <link
   href="{{ $styles.RelPermalink }}"
   integrity="{{ $styles.Data.Integrity }}"
-  rel="stylesheet"
-  media="print"
-  onload="this.media='all'" />
-<noscript>
-  <link
-    href="{{ $styles.RelPermalink }}"
-    integrity="{{ $styles.Data.Integrity }}"
-    rel="stylesheet" />
-</noscript>
+  rel="stylesheet" />
 
 {{/* styles lazy */}}
 <link
