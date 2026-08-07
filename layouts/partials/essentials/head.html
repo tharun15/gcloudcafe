@@ -24,7 +24,7 @@
 {{ with .Params.image }}
   {{ $imageURL = . | absURL }}
 {{ else }}
-  {{ $imageURL = "images/og-image.png" | absURL }}
+  {{ $imageURL = "images/og-share.png" | absURL }}
 {{ end }}
 <meta property="og:image" content="{{ $imageURL }}" />
 <meta property="og:image:url" content="{{ $imageURL }}" />
