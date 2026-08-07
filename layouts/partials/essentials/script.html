@@ -28,9 +28,9 @@
   {{ $scriptsLazy = $scriptsLazy | minify | fingerprint }}
 {{ end }}
 
-<!-- Supabase CDN Client -->
+<!-- Supabase CDN Client (deferred) -->
 {{ if site.Params.supabase.enable }}
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
     window.SUPABASE_CONFIG = {
       url: "{{ site.Params.supabase.url | safeJS }}",
@@ -39,8 +39,9 @@
   </script>
 {{ end }}
 
-{{/* scripts */}}
+{{/* scripts (deferred to unblock FCP) */}}
 <script
+  defer
   crossorigin="anonymous"
   integrity="{{ $scripts.Data.Integrity }}"
   src="{{ $scripts.RelPermalink }}"></script>
