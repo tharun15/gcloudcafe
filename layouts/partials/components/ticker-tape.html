@@ -9,10 +9,12 @@
     </a>
     
     {{ range $tickerPosts }}
-      {{ $cleanTitle := .Title | replaceRE `\s*&\s*$` "" | replaceRE `\s*[-–—:]\s*$` "" | truncate 40 }}
+      {{ $rawTitle := .Title | htmlUnescape | replaceRE `(?i)&amp;` "and" | replaceRE `&` "and" }}
+      {{ $cleanTitle := $rawTitle | replaceRE `\s*[-–—:]\s*$` "" | truncate 42 }}
+      {{ $finalTitle := $cleanTitle | replaceRE `(?i)\s+(?:and|-|–|—|:)\s*\.\.\.$` "..." | replaceRE `(?i)\s+(?:and|-|–|—|:)\s*$` "" }}
       <a href="{{ .RelPermalink }}" class="ticker-item flex items-center gap-2">
         <span class="ticker-symbol">${{ index (.Params.categories | default (slice "TECH")) 0 | urlize | upper }}</span>
-        <span class="text-slate-200 font-medium">{{ $cleanTitle | replaceRE `\s*&\s*$` "" }}</span>
+        <span class="text-slate-200 font-medium">{{ $finalTitle }}</span>
         <span class="ticker-bullish flex items-center gap-1"><i class="fa-regular fa-clock text-[10px]"></i> {{ .ReadingTime }} MIN READ</span>
       </a>
     {{ end }}
@@ -25,10 +27,12 @@
     </a>
 
     {{ range $tickerPosts }}
-      {{ $cleanTitle := .Title | replaceRE `\s*&\s*$` "" | replaceRE `\s*[-–—:]\s*$` "" | truncate 40 }}
+      {{ $rawTitle := .Title | htmlUnescape | replaceRE `(?i)&amp;` "and" | replaceRE `&` "and" }}
+      {{ $cleanTitle := $rawTitle | replaceRE `\s*[-–—:]\s*$` "" | truncate 42 }}
+      {{ $finalTitle := $cleanTitle | replaceRE `(?i)\s+(?:and|-|–|—|:)\s*\.\.\.$` "..." | replaceRE `(?i)\s+(?:and|-|–|—|:)\s*$` "" }}
       <a href="{{ .RelPermalink }}" class="ticker-item flex items-center gap-2">
         <span class="ticker-symbol">${{ index (.Params.categories | default (slice "TECH")) 0 | urlize | upper }}</span>
-        <span class="text-slate-200 font-medium">{{ $cleanTitle | replaceRE `\s*&\s*$` "" }}</span>
+        <span class="text-slate-200 font-medium">{{ $finalTitle }}</span>
         <span class="ticker-bullish flex items-center gap-1"><i class="fa-regular fa-clock text-[10px]"></i> {{ .ReadingTime }} MIN READ</span>
       </a>
     {{ end }}
