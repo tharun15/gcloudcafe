@@ -459,8 +459,6 @@ You should see a message similar to the following once all renewal requirements 
 >
 > Congratulations! Your certification status has been updated and no further action is required.
 
-<!-- Add your certification renewal completion screenshot here -->
-
 {{< figure
     src="/images/gcp-pca-cert-renewal.png"
     alt="Google Cloud Professional Cloud Architect renewal requirements completed"
