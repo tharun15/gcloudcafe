@@ -1370,8 +1370,8 @@
             '</div>' +
 
             '<div class="pt-3 border-t border-border/40 dark:border-darkmode-border/40 flex items-center justify-end gap-3 shrink-0">' +
-              '<button data-action-reject="' + c.id + '" class="px-3.5 py-2 rounded-xl bg-rose-500/10 hover:bg-rose-500 text-rose-500 hover:text-white text-xs font-bold transition-all border-none cursor-pointer"><i class="fa-solid fa-xmark mr-1"></i> Reject</button>' +
-              '<button data-action-approve="' + c.id + '" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold shadow-sm transition-all border-none cursor-pointer"><i class="fa-solid fa-check mr-1.5"></i> Approve & Publish</button>' +
+              '<button data-action-reject="' + c.id + '" class="px-3.5 py-2 rounded-xl text-xs font-bold transition-all border-none cursor-pointer" style="background-color: rgba(244, 63, 94, 0.12); color: #f43f5e;"><i class="fa-solid fa-xmark mr-1"></i> Reject</button>' +
+              '<button data-action-approve="' + c.id + '" class="px-4 py-2 rounded-xl text-xs font-extrabold shadow-sm transition-all border-none cursor-pointer" style="background-color: #059669; color: #ffffff;"><i class="fa-solid fa-check mr-1.5"></i> Approve & Publish</button>' +
             '</div>' +
           '</div>';
         });
