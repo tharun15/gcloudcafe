@@ -91,16 +91,18 @@
           </div>
         </div>
 
-        {{ with .Params.image }}
-          <div class="blog-header-image-container">
-            <img
-              src="{{ . }}"
-              alt="{{ $.Title }}"
-              class="blog-header-image"
-              loading="eager"
-              decoding="async" />
-          </div>
+        {{ $hdrImage := .Params.image | default "images/gcp-pca-cert-renewal-blog-pic.png" }}
+        {{ if not (hasPrefix $hdrImage "/") }}
+          {{ $hdrImage = printf "/%s" $hdrImage }}
         {{ end }}
+        <div class="mb-8 overflow-hidden rounded-2xl border border-border/50 dark:border-darkmode-border/50 shadow-sm">
+          <img
+            src="{{ $hdrImage }}"
+            alt="{{ .Title }}"
+            class="w-full h-auto object-cover max-h-[500px]"
+            loading="eager"
+            decoding="async" />
+        </div>
       </header>
 
       <!-- Article Grid: Main Content + Sticky Table of Contents -->

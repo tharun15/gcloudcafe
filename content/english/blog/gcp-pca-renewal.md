@@ -1,9 +1,9 @@
 ---
 title: "Renewing My Google Cloud Professional Cloud Architect Certification Without an Exam"
 meta_title: "Renewing GCP Professional Cloud Architect Certification"
-date: 2026-08-07
+date: 2026-08-01
 draft: false
-image: "/images/gcp-pca-cert-renewal-blog-pic.png"
+image: "images/gcp-pca-cert-renewal-blog-pic.png"
 description: "My experience renewing the Google Cloud Professional Cloud Architect certification through Continuing Education, including Skill Badge Challenge Labs, Terraform, VM migration, GKE, Cloud Run, and the lessons I learned."
 categories: ["Google Cloud", "Certifications"]
 tags: ["Google Cloud", "GCP", "Professional Cloud Architect", "Certification", "Terraform", "GKE", "Cloud Run", "Migrate to Virtual Machines"]
