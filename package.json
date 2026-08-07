@@ -17,7 +17,8 @@
     "theme-setup": "node ./scripts/themeSetup.js",
     "update-theme": "node ./scripts/themeUpdate.js",
     "format": "prettier -w .",
-    "test": "vitest run"
+    "test": "vitest run",
+    "trigger-sanitize-micro-posts": "node ./scripts/trigger-sanitize-micro-posts.js"
   },
   "devDependencies": {
     "@tailwindcss/forms": "^0.5.9",
