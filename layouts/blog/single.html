@@ -91,15 +91,16 @@
           </div>
         </div>
 
-        {{ $hdrImg := .Params.image | default .Params.Image | default "/images/og-share.png" }}
-        <div class="overflow-hidden rounded-3xl shadow-xs bg-slate-50/80 dark:bg-slate-900/50 flex items-center justify-center p-3 sm:p-5 border border-border/50 dark:border-darkmode-border/50 mb-8">
-          <img
-            src="{{ $hdrImg | safeURL }}"
-            alt="{{ .Title }}"
-            class="w-auto h-auto max-h-[480px] max-w-full object-contain rounded-2xl"
-            loading="eager"
-            decoding="async" />
-        </div>
+        {{ with .Params.image }}
+          <div class="blog-header-image-container">
+            <img
+              src="{{ . }}"
+              alt="{{ $.Title }}"
+              class="blog-header-image"
+              loading="eager"
+              decoding="async" />
+          </div>
+        {{ end }}
       </header>
 
       <!-- Article Grid: Main Content + Sticky Table of Contents -->
