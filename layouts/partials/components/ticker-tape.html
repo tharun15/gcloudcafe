@@ -1,4 +1,4 @@
-{{ $tickerPosts := first 6 (where site.RegularPages "Section" "blog") }}
+{{ $tickerPosts := first 8 (where site.RegularPages "Section" "blog").ByDate.Reverse }}
 <div class="ticker-marquee-wrapper" aria-label="Live Tech Content Marquee">
   <div class="ticker-marquee-content">
     {{/* First loop of dynamic post tickers */}}
@@ -9,12 +9,10 @@
     </a>
     
     {{ range $tickerPosts }}
-      {{ $rawTitle := .Title | htmlUnescape | replaceRE `(?i)&amp;` "and" | replaceRE `&` "and" }}
-      {{ $cleanTitle := $rawTitle | replaceRE `\s*[-–—:]\s*$` "" | truncate 42 }}
-      {{ $finalTitle := $cleanTitle | replaceRE `(?i)\s+(?:and|-|–|—|:)\s*\.\.\.$` "..." | replaceRE `(?i)\s+(?:and|-|–|—|:)\s*$` "" }}
+      {{ $cleanTitle := .Title | htmlUnescape }}
       <a href="{{ .RelPermalink }}" class="ticker-item flex items-center gap-2">
         <span class="ticker-symbol">${{ index (.Params.categories | default (slice "TECH")) 0 | urlize | upper }}</span>
-        <span class="text-slate-200 font-medium">{{ $finalTitle }}</span>
+        <span class="text-slate-200 font-medium">{{ $cleanTitle }}</span>
         <span class="ticker-bullish flex items-center gap-1"><i class="fa-regular fa-clock text-[10px]"></i> {{ .ReadingTime }} MIN READ</span>
       </a>
     {{ end }}
@@ -27,12 +25,10 @@
     </a>
 
     {{ range $tickerPosts }}
-      {{ $rawTitle := .Title | htmlUnescape | replaceRE `(?i)&amp;` "and" | replaceRE `&` "and" }}
-      {{ $cleanTitle := $rawTitle | replaceRE `\s*[-–—:]\s*$` "" | truncate 42 }}
-      {{ $finalTitle := $cleanTitle | replaceRE `(?i)\s+(?:and|-|–|—|:)\s*\.\.\.$` "..." | replaceRE `(?i)\s+(?:and|-|–|—|:)\s*$` "" }}
+      {{ $cleanTitle := .Title | htmlUnescape }}
       <a href="{{ .RelPermalink }}" class="ticker-item flex items-center gap-2">
         <span class="ticker-symbol">${{ index (.Params.categories | default (slice "TECH")) 0 | urlize | upper }}</span>
-        <span class="text-slate-200 font-medium">{{ $finalTitle }}</span>
+        <span class="text-slate-200 font-medium">{{ $cleanTitle }}</span>
         <span class="ticker-bullish flex items-center gap-1"><i class="fa-regular fa-clock text-[10px]"></i> {{ .ReadingTime }} MIN READ</span>
       </a>
     {{ end }}
