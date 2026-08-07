@@ -1420,10 +1420,8 @@
       });
     }
 
-    // Initial fetch if authed
-    if (sessionStorage.getItem("pulse_admin_authed") === "true") {
-      fetchPendingCandidates();
-    }
+    // Initial fetch - load candidate approval queue immediately
+    fetchPendingCandidates();
   }
 
   function getCurrentQuarterInfo(nowDate) {
