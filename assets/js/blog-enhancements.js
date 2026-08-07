@@ -996,7 +996,7 @@
               '<span class="text-[10px] font-medium text-text/60 dark:text-darkmode-text/60">' + formatDate(p.created_at) + '</span>' +
             '</div>' +
             '<h4 class="text-sm font-bold text-dark dark:text-darkmode-dark mb-2 leading-snug group-hover:text-primary transition-colors">' + titleHtml + '</h4>' +
-            '<p class="text-xs text-text/80 dark:text-darkmode-text/80 mb-3 leading-relaxed">' + escapeHtml(p.content) + '</p>' +
+            '<p class="text-xs text-text/80 dark:text-darkmode-text/80 mb-3 leading-relaxed">' + escapeHtml(cleanContentText) + '</p>' +
             eventLinkHtml +
           '</div>' +
 
