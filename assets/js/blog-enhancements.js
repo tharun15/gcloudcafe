@@ -1438,16 +1438,20 @@
 
     function bindCandidateActions() {
       pendingGrid.querySelectorAll("[data-action-approve]").forEach(function (btn) {
-        btn.addEventListener("click", function () {
-          var id = this.getAttribute("data-action-approve");
-          updatePulseStatus(id, "approved");
+        btn.addEventListener("click", function (e) {
+          e.preventDefault();
+          var targetBtn = e.currentTarget || this;
+          var id = targetBtn.getAttribute("data-action-approve");
+          if (id) updatePulseStatus(id.trim(), "approved");
         });
       });
 
       pendingGrid.querySelectorAll("[data-action-reject]").forEach(function (btn) {
-        btn.addEventListener("click", function () {
-          var id = this.getAttribute("data-action-reject");
-          updatePulseStatus(id, "rejected");
+        btn.addEventListener("click", function (e) {
+          e.preventDefault();
+          var targetBtn = e.currentTarget || this;
+          var id = targetBtn.getAttribute("data-action-reject");
+          if (id) updatePulseStatus(id.trim(), "rejected");
         });
       });
     }
@@ -1459,7 +1463,7 @@
         card.style.pointerEvents = "none";
       }
 
-      fetch(config.url + "/rest/v1/cloud_pulses?id=eq." + id, {
+      fetch(config.url + "/rest/v1/cloud_pulses?id=eq." + encodeURIComponent(id.trim()), {
         method: "PATCH",
         headers: {
           "apikey": config.anonKey,
