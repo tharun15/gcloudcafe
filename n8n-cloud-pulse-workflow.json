@@ -1,0 +1,97 @@
+{
+  "name": "GCloud Cafe - Automated Cloud Micro-Post Newsroom Ingestion",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 24
+            }
+          ]
+        }
+      },
+      "name": "Daily 24h Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        250,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://cloud.google.com/feeds/gcp-release-notes.xml"
+      },
+      "name": "Fetch GCP Release RSS",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        480,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://axiijcsxtiukloarbfor.supabase.co/rest/v1/cloud_pulses",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "sb_publishable_cRcwg02R3nXTykDrxalL6w_-kc9Wesc"
+            },
+            {
+              "name": "Authorization",
+              "value": "Bearer sb_publishable_cRcwg02R3nXTykDrxalL6w_-kc9Wesc"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Prefer",
+              "value": "return=representation"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"title\": \"{{$json.title}}\",\n  \"content\": \"{{$json.summary}}\",\n  \"author\": \"n8n Newsroom Bot\",\n  \"link_url\": \"{{$json.link}}\",\n  \"tags\": [\"#GoogleCloud\", \"#GCP\", \"#CloudNews\"],\n  \"upvotes\": 1,\n  \"downvotes\": 0,\n  \"score\": 1,\n  \"status\": \"pending_approval\",\n  \"eligibility_reason\": \"Automated n8n Ingestion: Grounded official GCP release note candidate for admin approval.\"\n}"
+      },
+      "name": "Insert Supabase Pending Candidate",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        710,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Daily 24h Trigger": {
+      "main": [
+        [
+          {
+            "node": "Fetch GCP Release RSS",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch GCP Release RSS": {
+      "main": [
+        [
+          {
+            "node": "Insert Supabase Pending Candidate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}

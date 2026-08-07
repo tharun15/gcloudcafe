@@ -1255,6 +1255,175 @@
 
     // Initial fetch
     fetchPulses();
+    initPulseAdminApprovalSystem();
+  }
+
+  /* ── Newsroom Candidate Approval Dashboard ── */
+  function initPulseAdminApprovalSystem() {
+    var passcodeBtn = document.getElementById("admin-login-btn");
+    var passcodeInput = document.getElementById("admin-passcode-input");
+    var passcodeStatus = document.getElementById("admin-passcode-status");
+    var pendingGrid = document.getElementById("pending-cards-grid");
+    var pendingCountBadge = document.getElementById("pending-count-badge");
+    var refreshBtn = document.getElementById("refresh-candidates-btn");
+
+    var tabPendingBtn = document.getElementById("tab-pending-btn");
+    var tabManualBtn = document.getElementById("tab-manual-btn");
+    var sectionPending = document.getElementById("section-pending-approvals");
+    var sectionManual = document.getElementById("section-manual-post");
+
+    var config = window.SUPABASE_CONFIG || {
+      url: "https://axiijcsxtiukloarbfor.supabase.co",
+      anonKey: "sb_publishable_cRcwg02R3nXTykDrxalL6w_-kc9Wesc"
+    };
+
+    if (tabPendingBtn && tabManualBtn) {
+      tabPendingBtn.addEventListener("click", function () {
+        tabPendingBtn.className = "px-4 py-2 rounded-xl text-xs font-extrabold bg-primary text-white border-none cursor-pointer";
+        tabManualBtn.className = "px-4 py-2 rounded-xl text-xs font-bold bg-theme-light dark:bg-darkmode-theme-light text-text/80 dark:text-darkmode-text/80 hover:text-primary border border-border/60 dark:border-darkmode-border/60 cursor-pointer";
+        if (sectionPending) sectionPending.classList.remove("hidden");
+        if (sectionManual) sectionManual.classList.add("hidden");
+      });
+
+      tabManualBtn.addEventListener("click", function () {
+        tabManualBtn.className = "px-4 py-2 rounded-xl text-xs font-extrabold bg-primary text-white border-none cursor-pointer";
+        tabPendingBtn.className = "px-4 py-2 rounded-xl text-xs font-bold bg-theme-light dark:bg-darkmode-theme-light text-text/80 dark:text-darkmode-text/80 hover:text-primary border border-border/60 dark:border-darkmode-border/60 cursor-pointer";
+        if (sectionManual) sectionManual.classList.remove("hidden");
+        if (sectionPending) sectionPending.classList.add("hidden");
+      });
+    }
+
+    if (passcodeBtn && passcodeInput) {
+      passcodeBtn.addEventListener("click", function () {
+        var val = passcodeInput.value.trim();
+        if (val === "1526" || val === "admin") {
+          sessionStorage.setItem("pulse_admin_authed", "true");
+          if (passcodeStatus) passcodeStatus.classList.add("hidden");
+          fetchPendingCandidates();
+        } else {
+          if (passcodeStatus) {
+            passcodeStatus.textContent = "Invalid passcode. Please try again.";
+            passcodeStatus.classList.remove("hidden");
+          }
+        }
+      });
+    }
+
+    if (refreshBtn) {
+      refreshBtn.addEventListener("click", fetchPendingCandidates);
+    }
+
+    function fetchPendingCandidates() {
+      if (!pendingGrid) return;
+      pendingGrid.innerHTML = '<div class="col-span-full text-center py-12 text-xs font-semibold text-text/60 dark:text-darkmode-text/60"><i class="fa-solid fa-spinner fa-spin text-lg text-primary block mb-2"></i>Loading candidate approval queue...</div>';
+
+      fetch(config.url + "/rest/v1/cloud_pulses?status=eq.pending_approval&order=created_at.desc", {
+        headers: {
+          "apikey": config.anonKey,
+          "Authorization": "Bearer " + config.anonKey
+        }
+      })
+      .then(function (res) { return res.json(); })
+      .then(function (candidates) {
+        if (!Array.isArray(candidates) || candidates.length === 0) {
+          pendingGrid.innerHTML = '<div class="col-span-full text-center py-12 bg-body dark:bg-darkmode-body border border-border/80 rounded-3xl text-xs text-text/60 dark:text-darkmode-text/60 font-semibold"><i class="fa-solid fa-circle-check text-emerald-500 text-xl block mb-2"></i>All candidate posts reviewed! No pending approvals in queue.</div>';
+          if (pendingCountBadge) pendingCountBadge.textContent = "0";
+          return;
+        }
+
+        if (pendingCountBadge) pendingCountBadge.textContent = String(candidates.length);
+
+        var html = "";
+        candidates.forEach(function (c) {
+          var tagsHtml = "";
+          if (Array.isArray(c.tags)) {
+            c.tags.forEach(function (tag) {
+              tagsHtml += '<span class="text-[10px] font-semibold text-primary/80 bg-primary/10 px-2 py-0.5 rounded-md">' + escapeHtml(tag) + '</span> ';
+            });
+          }
+
+          var linkHtml = "";
+          if (c.link_url) {
+            linkHtml = '<div class="mb-2"><a href="' + escapeHtml(c.link_url) + '" target="_blank" rel="noopener noreferrer" class="text-[11px] font-bold text-primary hover:underline inline-flex items-center gap-1"><i class="fa-solid fa-link text-[10px]"></i> View Source <i class="fa-solid fa-arrow-up-right-from-square text-[9px]"></i></a></div>';
+          }
+
+          var reasonHtml = c.eligibility_reason ? '<div class="mb-4 bg-amber-500/10 dark:bg-amber-500/15 border border-amber-500/30 rounded-2xl p-3 text-xs text-amber-800 dark:text-amber-300 font-medium"><i class="fa-solid fa-lightbulb text-amber-500 mr-1.5"></i> <strong>Grounding Reason:</strong> ' + escapeHtml(c.eligibility_reason) + '</div>' : '';
+
+          html += '<div class="bg-body dark:bg-darkmode-body border border-border/80 dark:border-darkmode-border/80 rounded-3xl p-6 shadow-xs flex flex-col justify-between" data-candidate-id="' + c.id + '">' +
+            '<div>' +
+              '<div class="flex items-center justify-between gap-2 mb-2">' +
+                '<span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-amber-500/20 text-amber-600 border border-amber-500/30">PENDING REVIEW</span>' +
+                '<span class="text-[10px] font-medium text-text/60 dark:text-darkmode-text/60">' + formatDate(c.created_at) + '</span>' +
+              '</div>' +
+              '<h4 class="text-sm font-bold text-dark dark:text-darkmode-dark mb-2 leading-snug">' + escapeHtml(c.title) + '</h4>' +
+              '<p class="text-xs text-text/80 dark:text-darkmode-text/80 mb-3 leading-relaxed">' + escapeHtml(c.content) + '</p>' +
+              linkHtml +
+              reasonHtml +
+            '</div>' +
+
+            '<div class="pt-3 border-t border-border/40 dark:border-darkmode-border/40 flex items-center justify-between gap-2">' +
+              '<div class="flex flex-wrap gap-1">' + tagsHtml + '</div>' +
+              '<div class="flex items-center gap-2 shrink-0">' +
+                '<button data-action-reject="' + c.id + '" class="px-3 py-1.5 rounded-xl bg-rose-500/10 hover:bg-rose-500 text-rose-500 hover:text-white text-xs font-bold transition-all border-none cursor-pointer"><i class="fa-solid fa-xmark mr-1"></i> Reject</button>' +
+                '<button data-action-approve="' + c.id + '" class="px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-xs transition-all border-none cursor-pointer"><i class="fa-solid fa-check mr-1"></i> Approve & Publish</button>' +
+              '</div>' +
+            '</div>' +
+          '</div>';
+        });
+
+        pendingGrid.innerHTML = html;
+        bindCandidateActions();
+      })
+      .catch(function (err) {
+        console.error("Error fetching candidates:", err);
+        pendingGrid.innerHTML = '<div class="col-span-full text-center py-12 text-xs font-semibold text-rose-500">Failed to load candidate approval queue.</div>';
+      });
+    }
+
+    function bindCandidateActions() {
+      pendingGrid.querySelectorAll("[data-action-approve]").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          var id = this.getAttribute("data-action-approve");
+          updatePulseStatus(id, "approved");
+        });
+      });
+
+      pendingGrid.querySelectorAll("[data-action-reject]").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          var id = this.getAttribute("data-action-reject");
+          updatePulseStatus(id, "rejected");
+        });
+      });
+    }
+
+    function updatePulseStatus(id, newStatus) {
+      var card = pendingGrid.querySelector('[data-candidate-id="' + id + '"]');
+      if (card) {
+        card.style.opacity = "0.4";
+        card.style.pointerEvents = "none";
+      }
+
+      fetch(config.url + "/rest/v1/cloud_pulses?id=eq." + id, {
+        method: "PATCH",
+        headers: {
+          "apikey": config.anonKey,
+          "Authorization": "Bearer " + config.anonKey,
+          "Content-Type": "application/json",
+          "Prefer": "return=representation"
+        },
+        body: JSON.stringify({ status: newStatus, updated_at: new Date().toISOString() })
+      })
+      .then(function (res) {
+        if (res.ok) {
+          setTimeout(fetchPendingCandidates, 400);
+        }
+      });
+    }
+
+    // Initial fetch if authed
+    if (sessionStorage.getItem("pulse_admin_authed") === "true") {
+      fetchPendingCandidates();
+    }
   }
 
   function getCurrentQuarterInfo(nowDate) {
