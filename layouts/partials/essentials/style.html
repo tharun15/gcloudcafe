@@ -11,7 +11,10 @@
 {{ $pf:= site.Data.theme.fonts.font_family.primary }}
 {{ $sf:= site.Data.theme.fonts.font_family.secondary }}
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family={{$pf | safeURL}}{{with $sf}}&family={{. | safeURL}}{{end}}&display=swap" />
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family={{$pf | safeURL}}{{with $sf}}&family={{. | safeURL}}{{end}}&display=swap" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family={{$pf | safeURL}}{{with $sf}}&family={{. | safeURL}}{{end}}&display=swap" media="print" onload="this.media='all'" />
+<noscript>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family={{$pf | safeURL}}{{with $sf}}&family={{. | safeURL}}{{end}}&display=swap" />
+</noscript>
 
 <!-- plugins + stylesheet -->
 {{ $styles := slice }}
