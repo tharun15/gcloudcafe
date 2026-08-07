@@ -53,6 +53,7 @@
 {{ end }}
 
 {{/* styles */}}
+<link rel="preload" as="style" href="{{ $styles.RelPermalink }}" />
 <link
   href="{{ $styles.RelPermalink }}"
   integrity="{{ $styles.Data.Integrity }}"

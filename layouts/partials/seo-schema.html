@@ -9,7 +9,7 @@
   {{ with .Params.image }}
     {{ $imageURL = . | absURL }}
   {{ else }}
-    {{ $imageURL = site.Params.logo | absURL }}
+    {{ $imageURL = "images/og-share.png" | absURL }}
   {{ end }}
 
   <script type="application/ld+json">
@@ -40,7 +40,7 @@
       "url": "{{ site.BaseURL }}",
       "logo": {
         "@type": "ImageObject",
-        "url": "{{ "images/logo.png" | absURL }}"
+        "url": "{{ "images/og-share.png" | absURL }}"
       }
     }
   }
@@ -49,10 +49,44 @@
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
-    "@type": "WebSite",
-    "name": "GCloud Cafe",
-    "url": "{{ site.BaseURL }}",
-    "description": "Practical Cloud Architecture guides, OpenShift tips, Kubernetes deep dives, and exam strategies."
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "@id": "{{ site.BaseURL }}#website",
+        "url": "{{ site.BaseURL }}",
+        "name": "GCloud Cafe",
+        "description": "Practical Cloud Architecture guides, OpenShift tips, Kubernetes deep dives, and exam strategies.",
+        "publisher": {
+          "@type": "Organization",
+          "name": "GCloud Cafe",
+          "url": "{{ site.BaseURL }}",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "{{ "images/og-share.png" | absURL }}"
+          }
+        },
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": {
+            "@type": "EntryPoint",
+            "urlTemplate": "{{ site.BaseURL }}search/?q={search_term_string}"
+          },
+          "query-input": "required name=search_term_string"
+        },
+        "inLanguage": "{{ site.LanguageCode | default "en-us" }}"
+      },
+      {
+        "@type": "Organization",
+        "@id": "{{ site.BaseURL }}#organization",
+        "name": "GCloud Cafe",
+        "url": "{{ site.BaseURL }}",
+        "logo": "{{ "images/og-share.png" | absURL }}",
+        "sameAs": [
+          "https://github.com/tharun15/gcloudcafe",
+          "https://www.linkedin.com/company/gcloudcafe"
+        ]
+      }
+    ]
   }
   </script>
 {{ end }}
