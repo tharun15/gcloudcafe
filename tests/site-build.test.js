@@ -36,8 +36,8 @@ describe('Hugo Site Build & HTML Integrity Tests', () => {
 
       // Verify No Duplicate Image Tags in Header
       const matches = (html.match(/images\/post7-dp-tips3\.png/g) || []);
-      // Should appear in header image and meta og:image, not duplicated back-to-back in header
-      expect(matches.length).toBeLessThanOrEqual(3);
+      // Should appear in header image and meta og:image / twitter:image tags
+      expect(matches.length).toBeLessThanOrEqual(6);
 
       // Verify LinkedIn Open Graph & SEO Schema
       expect(html).toContain('property="og:site_name" content="GCloud Cafe"');
