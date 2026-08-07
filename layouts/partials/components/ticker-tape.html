@@ -4,30 +4,32 @@
     {{/* First loop of dynamic post tickers */}}
     <a href="/about/" class="ticker-item">
       <span class="ticker-symbol">$GCLOUD-CAFE</span>
-      <span class="text-slate-400">Platform Index</span>
+      <span class="text-slate-400 font-medium">Platform Index</span>
       <span class="text-cyan-400 font-bold">● LIVE INDEX</span>
     </a>
     
     {{ range $tickerPosts }}
-      <a href="{{ .RelPermalink }}" class="ticker-item">
+      {{ $cleanTitle := .Title | replaceRE `\s*&\s*$` "" | replaceRE `\s*[-–—:]\s*$` "" | truncate 40 }}
+      <a href="{{ .RelPermalink }}" class="ticker-item flex items-center gap-2">
         <span class="ticker-symbol">${{ index (.Params.categories | default (slice "TECH")) 0 | urlize | upper }}</span>
-        <span class="text-slate-300 font-medium">{{ .Title | truncate 38 "" }}</span>
-        <span class="ticker-bullish"><i class="fa-regular fa-clock text-[10px]"></i> {{ .ReadingTime }} MIN READ</span>
+        <span class="text-slate-200 font-medium">{{ $cleanTitle | replaceRE `\s*&\s*$` "" }}</span>
+        <span class="ticker-bullish flex items-center gap-1"><i class="fa-regular fa-clock text-[10px]"></i> {{ .ReadingTime }} MIN READ</span>
       </a>
     {{ end }}
 
     {{/* Duplicate loop for seamless 60fps infinite marquee */}}
     <a href="/about/" class="ticker-item">
       <span class="ticker-symbol">$GCLOUD-CAFE</span>
-      <span class="text-slate-400">Platform Index</span>
+      <span class="text-slate-400 font-medium">Platform Index</span>
       <span class="text-cyan-400 font-bold">● LIVE INDEX</span>
     </a>
 
     {{ range $tickerPosts }}
-      <a href="{{ .RelPermalink }}" class="ticker-item">
+      {{ $cleanTitle := .Title | replaceRE `\s*&\s*$` "" | replaceRE `\s*[-–—:]\s*$` "" | truncate 40 }}
+      <a href="{{ .RelPermalink }}" class="ticker-item flex items-center gap-2">
         <span class="ticker-symbol">${{ index (.Params.categories | default (slice "TECH")) 0 | urlize | upper }}</span>
-        <span class="text-slate-300 font-medium">{{ .Title | truncate 38 "" }}</span>
-        <span class="ticker-bullish"><i class="fa-regular fa-clock text-[10px]"></i> {{ .ReadingTime }} MIN READ</span>
+        <span class="text-slate-200 font-medium">{{ $cleanTitle | replaceRE `\s*&\s*$` "" }}</span>
+        <span class="ticker-bullish flex items-center gap-1"><i class="fa-regular fa-clock text-[10px]"></i> {{ .ReadingTime }} MIN READ</span>
       </a>
     {{ end }}
   </div>
