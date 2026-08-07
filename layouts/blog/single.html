@@ -91,18 +91,12 @@
           </div>
         </div>
 
-        {{ $hdrImage := .Params.image | default "images/gcp-pca-cert-renewal-blog-pic.png" }}
-        {{ if not (hasPrefix $hdrImage "/") }}
-          {{ $hdrImage = printf "/%s" $hdrImage }}
+        {{ $image:= .Params.image }}
+        {{ if $image }}
+          <div class="mb-6 overflow-hidden rounded-2xl">
+            {{ partial "image" (dict "Src" $image "Context" .Page "Alt" .Title "Class" "w-full h-auto rounded-2xl") }}
+          </div>
         {{ end }}
-        <div class="mb-8 overflow-hidden rounded-2xl border border-border/50 dark:border-darkmode-border/50 shadow-sm">
-          <img
-            src="{{ $hdrImage }}"
-            alt="{{ .Title }}"
-            class="w-full h-auto object-cover max-h-[500px]"
-            loading="eager"
-            decoding="async" />
-        </div>
       </header>
 
       <!-- Article Grid: Main Content + Sticky Table of Contents -->
