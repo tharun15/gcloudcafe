@@ -1471,7 +1471,7 @@
           "Content-Type": "application/json",
           "Prefer": "return=representation"
         },
-        body: JSON.stringify({ status: newStatus, updated_at: new Date().toISOString() })
+        body: JSON.stringify({ status: newStatus })
       })
       .then(function (res) {
         if (res.ok) {
