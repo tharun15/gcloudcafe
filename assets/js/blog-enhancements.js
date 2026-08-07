@@ -1311,15 +1311,45 @@
     if (passcodeBtn && passcodeInput) {
       passcodeBtn.addEventListener("click", function () {
         var val = passcodeInput.value.trim();
-        if (val === "1526" || val === "admin") {
-          sessionStorage.setItem("pulse_admin_authed", "true");
-          unlockDashboard();
-        } else {
-          if (passcodeStatus) {
+        if (!val) return;
+
+        if (passcodeStatus) {
+          passcodeStatus.textContent = "Verifying passcode...";
+          passcodeStatus.className = "mt-2 text-xs font-semibold text-primary";
+          passcodeStatus.classList.remove("hidden");
+        }
+
+        // Fetch dynamic admin_passcode setting from Supabase public.site_settings table
+        fetch(config.url + "/rest/v1/site_settings?key=eq.admin_passcode&select=value", {
+          headers: {
+            "apikey": config.anonKey,
+            "Authorization": "Bearer " + config.anonKey
+          }
+        })
+        .then(function (res) { return res.json(); })
+        .then(function (settings) {
+          var expectedPasscode = (Array.isArray(settings) && settings.length > 0) ? settings[0].value : "1526";
+          if (val === expectedPasscode) {
+            sessionStorage.setItem("pulse_admin_authed", "true");
+            unlockDashboard();
+          } else {
+            if (passcodeStatus) {
+              passcodeStatus.textContent = "Invalid passcode. Access denied.";
+              passcodeStatus.className = "mt-2 text-xs font-semibold text-rose-500";
+              passcodeStatus.classList.remove("hidden");
+            }
+          }
+        })
+        .catch(function () {
+          if (val === "1526") {
+            sessionStorage.setItem("pulse_admin_authed", "true");
+            unlockDashboard();
+          } else if (passcodeStatus) {
             passcodeStatus.textContent = "Invalid passcode. Access denied.";
+            passcodeStatus.className = "mt-2 text-xs font-semibold text-rose-500";
             passcodeStatus.classList.remove("hidden");
           }
-        }
+        });
       });
     }
 
