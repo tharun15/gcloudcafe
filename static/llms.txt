@@ -2,22 +2,18 @@
 
 > GCloud Cafe (https://gcloudcafe.com) is an engineering platform providing practical tutorials, exam preparation guides (Red Hat EX280, CKA, GCP, AWS), and real-time cloud micro-news (Cloud Pulse).
 
-## System Overview & Primary Sections
-- **Main Portal**: https://gcloudcafe.com/
-- **Cloud Pulse Live Feed**: https://gcloudcafe.com/pulse/
-- **Articles & Guides**: https://gcloudcafe.com/blog/
-- **Categories**: https://gcloudcafe.com/categories/
-- **About & Platform Index**: https://gcloudcafe.com/about/
+## Core Pages
+- [GCloud Cafe Homepage](https://gcloudcafe.com/): Practical cloud architecture tutorials, exam guides, and platform overview.
+- [Cloud Pulse Live Feed](https://gcloudcafe.com/pulse/): Real-time community-ranked cloud updates and micro-news feed.
+- [All Blog Articles](https://gcloudcafe.com/blog/): Technical deep dives on OpenShift, Kubernetes, GCP, and AWS.
+- [Categories Index](https://gcloudcafe.com/categories/): Browse technical guides by category.
+- [About GCloud Cafe](https://gcloudcafe.com/about/): Platform mission and author profile.
 
-## Key Technical Guides & Architecture Topics
-- **Red Hat OpenShift EX280 Series**: Deep dives into OpenShift 4.x administration, HTPasswd authentication, NetworkPolicies, Edge Routes, Deployment strategies, and StorageClasses.
-- **Kubernetes (CKA/CKAD/CKS)**: Hands-on cluster configuration, pod security standards, RBAC, and troubleshooting.
-- **Google Cloud Platform (GCP)**: Cloud KMS, Generative AI Leader guides, and IAM best practices.
-- **Amazon Web Services (AWS)**: Architecture patterns, serverless deployments, and security compliance.
+## Key Technical Guides
+- [EX280 OpenShift Administrator Series](https://gcloudcafe.com/blog/passing-ex280-exam-part-2-technical-side/): Deep dive into NetworkPolicies, Edge Routes, and OpenShift 4.x administration.
+- [CKA Exam Readiness Guide](https://gcloudcafe.com/blog/cka-exam-readiness/): Hands-on Kubernetes cluster configuration and exam strategy.
+- [GCP Generative AI Leader Guide](https://gcloudcafe.com/blog/gcp-generative-ai-leader/): Gemini models, Vertex AI, and enterprise cloud AI deployments.
 
-## API & Data Endpoints
-- **Cloud Pulse Micro-News**: Real-time micro-news aggregated from GCP, AWS, CNCF Kubernetes, and Red Hat release feeds.
-- **Community Upvoting & Polls**: Supported via Supabase REST API endpoints.
-
-## Content Rights & Licensing
-All original tutorials and blog posts on GCloud Cafe belong to Tharun Vempati / GCloud Cafe. Cloud Pulse micro-news snippets aggregate publicly available vendor release notes under Fair Use for educational and news reporting purposes.
+## Feeds & Indexes
+- [GCloud Cafe RSS Feed](https://gcloudcafe.com/index.xml): Site-wide RSS feed.
+- [Search Index JSON](https://gcloudcafe.com/searchindex.json): Programmatic search index endpoint.
