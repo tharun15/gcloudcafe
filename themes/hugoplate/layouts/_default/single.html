@@ -1,89 +1,240 @@
 {{ define "main" }}
-  <section class="section pt-7">
+  {{/* Reading progress bar – fixed at top */}}
+  <div id="reading-progress-bar" aria-hidden="true"></div>
+
+  {{ $authorSlug := .Params.author | default "tharun" }}
+  {{ $authorName := $authorSlug | humanize | title }}
+  {{ with site.GetPage (printf "/authors/%s" $authorSlug) }}
+    {{ $authorName = .Title }}
+  {{ end }}
+
+  <section class="section pt-8 pb-16">
     <div class="container">
-      <div class="row justify-center">
-        <article class="lg:col-10">
-          {{ $image:= .Params.image }}
-          {{ if $image }}
-            <div class="mb-10">
-              {{ partial "image" (dict "Src" $image "Context" .Page "Alt" .Title "Class" "w-full rounded") }}
-            </div>
-          {{ end }}
-          <h1 class="h2 mb-4">
-            {{ .Title }}
-          </h1>
-          <ul class="mb-4">
-            <li class="mr-4 inline-block">
-              <a
-                href="{{ `authors/` | relLangURL }}{{ .Params.Author | urlize }}/">
-                <i class="fa-regular fa-circle-user mr-2"></i
-                >{{ .Params.author }}
+      <!-- Breadcrumbs -->
+      <nav aria-label="breadcrumb" class="mb-6">
+        <ol class="flex items-center gap-2 text-xs font-medium text-text/70 dark:text-darkmode-text/70">
+          <li>
+            <a href="{{ `/` | relLangURL }}" class="hover:text-primary transition-colors">Home</a>
+          </li>
+          <li><i class="fa-solid fa-chevron-right text-[10px] opacity-40"></i></li>
+          <li>
+            <a href="{{ `blog/` | relLangURL }}" class="hover:text-primary transition-colors">Blog</a>
+          </li>
+          {{ if .Params.categories }}
+            <li><i class="fa-solid fa-chevron-right text-[10px] opacity-40"></i></li>
+            <li>
+              <a href="{{ `categories/` | relLangURL }}{{ index .Params.categories 0 | urlize | lower }}/" class="hover:text-primary transition-colors">
+                {{ index .Params.categories 0 | humanize }}
               </a>
             </li>
-            {{ $categories:= .Params.categories }}
-            {{ if $categories }}
-              <li class="mr-4 inline-block">
-                <i class="fa-regular fa-folder mr-2"></i>
-                {{ range $i,$p:= $categories }}
-                  <a
-                    href="{{ `categories/` | relLangURL }}{{ . | urlize | lower }}/"
-                    class=""
-                    >{{ . | humanize }}{{ if ne $i (sub (len $categories) 1) }}
-                      {{ "," }}
-                    {{ end }}
-                  </a>
-                {{ end }}
-              </li>
+          {{ end }}
+        </ol>
+      </nav>
+
+      <!-- Post Header -->
+      <header class="mb-8">
+        {{ $categories:= .Params.categories }}
+        {{ if $categories }}
+          <div class="mb-4 flex flex-wrap gap-2">
+            {{ range first 3 $categories }}
+              <a
+                class="blog-badge blog-focus-ring"
+                href="{{ `categories/` | relLangURL }}{{ . | urlize | lower }}/">
+                <i class="fa-solid fa-tag mr-1 text-[10px]"></i> {{ . | humanize }}
+              </a>
             {{ end }}
-            <li class="mr-4 inline-block">
-              <i class="fa-regular fa-clock mr-2"></i>
+          </div>
+        {{ end }}
+
+        <h1 class="mb-4 text-3xl font-extrabold tracking-tight md:text-5xl lg:leading-tight">
+          {{ .Title }}
+        </h1>
+
+        <p class="mb-6 max-w-3xl text-lg leading-relaxed text-text/90 dark:text-darkmode-text/90">
+          {{ .Params.description | default .Summary | plainify }}
+        </p>
+
+        <div class="blog-meta-list-container mb-8 border-t border-b border-border/60 dark:border-darkmode-border/60 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <ul class="blog-meta-list flex flex-wrap items-center gap-x-6 gap-y-2 list-none p-0 m-0">
+            <li class="inline-flex items-center gap-1.5 text-xs text-text/80 dark:text-darkmode-text/80">
+              <i class="fa-regular fa-circle-user text-primary"></i>
+              <a class="blog-focus-ring font-semibold text-dark dark:text-darkmode-dark hover:text-primary no-underline" href="{{ `authors/` | relLangURL }}{{ $authorSlug | urlize }}/">
+                {{ $authorName }}
+              </a>
+            </li>
+            <li class="inline-flex items-center gap-1.5 text-xs text-text/80 dark:text-darkmode-text/80">
+              <i class="fa-regular fa-calendar text-primary"></i>
               {{ time.Format ":date_long" .PublishDate }}
             </li>
+            <li class="inline-flex items-center gap-1.5 text-xs text-text/80 dark:text-darkmode-text/80">
+              <i class="fa-regular fa-clock text-primary"></i>
+              {{ .ReadingTime }} min read
+            </li>
           </ul>
-          <div class="content mb-10">
+          
+          <div class="flex items-center gap-2">
+            <a
+              href="https://www.linkedin.com/sharing/share-offsite/?url={{ .Permalink | safeURL }}"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center gap-2 rounded-xl bg-[#0a66c2] hover:bg-[#004182] text-white px-3 py-1.5 text-[11px] font-bold shadow-xs transition-all hover:scale-105 active:scale-95 whitespace-nowrap cursor-pointer no-underline"
+              aria-label="Share on LinkedIn">
+              <i class="fa-brands fa-linkedin text-sm"></i> Share
+            </a>
+            <button
+              type="button"
+              data-copy-permalink="{{ .Permalink }}"
+              class="inline-flex items-center gap-1.5 rounded-xl border border-border/80 dark:border-darkmode-border/80 hover:border-primary text-text/95 dark:text-darkmode-text/95 px-3 py-1.5 text-[11px] font-semibold transition-all hover:scale-105 active:scale-95 whitespace-nowrap cursor-pointer"
+              aria-label="Copy direct article link">
+              <i class="fa-regular fa-copy"></i> Copy Link
+            </button>
+          </div>
+        </div>
+
+        {{ $hdrImg := "" }}
+        {{ if .Params.image }}
+          {{ $hdrImg = .Params.image }}
+        {{ else if .Params.Image }}
+          {{ $hdrImg = .Params.Image }}
+        {{ else }}
+          {{ $hdrImg = "/images/gcp-pca-cert-renewal-blog-pic.png" }}
+        {{ end }}
+        <div class="overflow-hidden rounded-3xl shadow-md border border-border/40 dark:border-darkmode-border/40 mb-8 max-h-[440px] bg-slate-900/5">
+          {{ partial "image" (dict "Src" $hdrImg "Context" .Page "Alt" .Title "Class" "w-full h-auto max-h-[440px] object-cover rounded-3xl") }}
+        </div>
+      </header>
+
+      <!-- Article Grid: Main Content + Sticky Table of Contents -->
+      <div class="row gx-5">
+        <!-- Main Article Content -->
+        <article class="single-post lg:col-8">
+          <!-- Inline Table of Contents for Mobile -->
+          <div class="block lg:hidden mb-8">
             {{ partial "toc.html" (dict "Class" "blog" "Collapsed" false "TableOfContents" .TableOfContents ) }}
+          </div>
+
+          <!-- Series Playlist Widget (if post belongs to a series) -->
+          {{ partial "components/series-playlist" . }}
+
+          <div class="content blog-article-content mb-12">
             {{ .Content }}
           </div>
-          <div class="row items-start justify-between">
+
+          <!-- Tags & Social Share Footer -->
+          <div class="blog-article-shell mb-8 flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
             {{ $tags:= .Params.tags }}
             {{ if $tags }}
-              <div class="lg:col-5 mb-10 flex items-center lg:mb-0">
-                <h5 class="mr-3">{{ T "tags" }} :</h5>
-                <ul>
-                  {{ range $i,$p:= $tags }}
-                    <li class="inline-block">
-                      <a
-                        class="bg-theme-light hover:bg-primary dark:bg-darkmode-theme-light dark:hover:bg-darkmode-primary dark:hover:text-dark m-1 block rounded px-3 py-1 hover:text-white"
-                        href="{{ `tags/` | relLangURL }}{{ . | urlize | lower }}/">
-                        {{ . | humanize }}
-                      </a>
-                    </li>
-                  {{ end }}
-                </ul>
+              <div class="flex flex-wrap items-center gap-2">
+                <span class="text-xs font-bold uppercase tracking-wider text-text/70 dark:text-darkmode-text/70 mr-1">Tags:</span>
+                {{ range $tags }}
+                  <a
+                    class="blog-chip text-xs"
+                    href="{{ `tags/` | relLangURL }}{{ . | urlize | lower }}/">
+                    #{{ . | humanize }}
+                  </a>
+                {{ end }}
               </div>
             {{ end }}
-            <div class="lg:col-4 flex items-center">
-              {{ partial "social-share" (dict "Context" . "Class" "share-icons" "Title" (T "share") "Whatsapp" false "Telegram" false "Linkedin" false "Pinterest" false "Tumblr" false "Vk" false) }}
+
+            <div class="flex items-center gap-3 shrink-0">
+              <span class="text-xs font-bold uppercase tracking-wider text-text/70 dark:text-darkmode-text/70">Share:</span>
+              <a
+                href="https://www.linkedin.com/sharing/share-offsite/?url={{ .Permalink | safeURL }}"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center gap-2 rounded-xl bg-[#0a66c2] hover:bg-[#004182] text-white px-4 py-2 text-xs font-bold shadow-xs transition-all hover:scale-105 active:scale-95 whitespace-nowrap cursor-pointer no-underline"
+                aria-label="Share on LinkedIn">
+                <i class="fa-brands fa-linkedin text-sm"></i> Share on LinkedIn
+              </a>
             </div>
           </div>
-          <!-- comments -->
+
+          <!-- Series Prev/Next Navigation Footer -->
+          {{ $currentPage := . }}
+          {{ with $currentPage.Params.series }}
+            {{ $seriesName := . }}
+            {{ $allPosts := where site.RegularPages "Section" "blog" }}
+            {{ $seriesPosts := where $allPosts ".Params.series" $seriesName }}
+            {{ $sortedSeries := sort $seriesPosts ".Params.series_order" "asc" }}
+            
+            {{ if gt (len $sortedSeries) 1 }}
+              {{ $prevPost := false }}
+              {{ $nextPost := false }}
+              {{ range $index, $p := $sortedSeries }}
+                {{ if eq $p.Permalink $currentPage.Permalink }}
+                  {{ if gt $index 0 }}
+                    {{ $prevPost = index $sortedSeries (sub $index 1) }}
+                  {{ end }}
+                  {{ if lt (add $index 1) (len $sortedSeries) }}
+                    {{ $nextPost = index $sortedSeries (add $index 1) }}
+                  {{ end }}
+                {{ end }}
+              {{ end }}
+
+              <div class="series-nav-footer mb-10 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {{ with $prevPost }}
+                  <a href="{{ .RelPermalink }}" class="blog-article-shell p-4 rounded-2xl border border-border/60 dark:border-darkmode-border/60 hover:border-primary transition-all flex flex-col justify-between no-underline group">
+                    <div class="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-text/60 dark:text-darkmode-text/60 mb-2">
+                      <i class="fa-solid fa-arrow-left text-primary group-hover:-translate-x-1 transition-transform"></i> Previous in Series
+                    </div>
+                    <div class="text-sm font-bold text-dark dark:text-darkmode-dark group-hover:text-primary transition-colors line-clamp-2">
+                      {{ .Title }}
+                    </div>
+                  </a>
+                {{ else }}
+                  <div></div>
+                {{ end }}
+
+                {{ with $nextPost }}
+                  <a href="{{ .RelPermalink }}" class="blog-article-shell p-4 rounded-2xl border border-border/60 dark:border-darkmode-border/60 hover:border-primary transition-all flex flex-col justify-between text-right no-underline group sm:col-start-2">
+                    <div class="flex items-center justify-end gap-1.5 text-[11px] font-bold uppercase tracking-wider text-text/60 dark:text-darkmode-text/60 mb-2">
+                      Next in Series <i class="fa-solid fa-arrow-right text-primary group-hover:translate-x-1 transition-transform"></i>
+                    </div>
+                    <div class="text-sm font-bold text-dark dark:text-darkmode-dark group-hover:text-primary transition-colors line-clamp-2">
+                      {{ .Title }}
+                    </div>
+                  </a>
+                {{ end }}
+              </div>
+            {{ end }}
+          {{ end }}
+
+          <!-- Article Feedback Widget -->
+          {{ partial "components/post-feedback" . }}
+
+          <!-- Disqus Comments (if enabled) -->
           {{ if site.Config.Services.Disqus.Shortname }}
-            <div class="mt-20">
+            <div class="mt-16">
               {{ template "_internal/disqus.html" . }}
             </div>
           {{ end }}
         </article>
+
+        <!-- Sticky Table of Contents Sidebar (Desktop) -->
+        <aside class="hidden lg:block lg:col-4">
+          <div class="toc-container">
+            <h4 class="toc-title">
+              <i class="fa-solid fa-list-ul mr-1.5 text-primary"></i> On This Page
+            </h4>
+            <div class="text-xs leading-relaxed">
+              {{ .TableOfContents }}
+            </div>
+          </div>
+        </aside>
       </div>
 
-      <!-- Related posts -->
+      <!-- Related Posts Grid -->
       {{ $related := (where site.RegularPages "Section" "in" site.Params.mainSections) | intersect (where site.RegularPages ".Title" "!=" .Title) | union (site.RegularPages.Related . ) }}
       {{ $related = $related | shuffle | first 3 }}
       {{ with $related }}
-        <div class="section pb-0">
-          <h2 class="h3 mb-12">{{ T "related_posts" }}</h2>
+        <div class="section pb-0 pt-16 border-t border-border/60 dark:border-darkmode-border/60" aria-labelledby="related-posts-heading">
+          <p class="blog-eyebrow">Continue Reading</p>
+          <h2 id="related-posts-heading" class="text-2xl font-bold tracking-tight mb-8">
+            Related Articles & Guides
+          </h2>
           <div class="row">
             {{ range . }}
-              <div class="lg:col-4 md:col-6 mb-14">
+              <div class="lg:col-4 md:col-6 mb-8">
                 {{ partial "components/blog-card" . }}
               </div>
             {{ end }}
@@ -92,4 +243,12 @@
       {{ end }}
     </div>
   </section>
+
+  <!-- Scroll-to-top button -->
+  <button
+    id="scroll-to-top"
+    aria-label="Scroll to top of page"
+    title="Back to top">
+    <i class="fa-solid fa-arrow-up"></i>
+  </button>
 {{ end }}

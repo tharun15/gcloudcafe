@@ -1,0 +1,10 @@
+{{ $src := .Src }}
+{{ $alt := .Alt | default "" }}
+{{ $class := .Class | default "" }}
+
+<img
+  src="{{ $src | relURL }}"
+  alt="{{ $alt }}"
+  class="{{ $class }}"
+  loading="eager"
+  decoding="async" />
