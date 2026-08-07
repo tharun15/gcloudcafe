@@ -91,16 +91,14 @@
           </div>
         </div>
 
-        {{ $hdrImg := "" }}
-        {{ if .Params.image }}
-          {{ $hdrImg = .Params.image }}
-        {{ else if .Params.Image }}
-          {{ $hdrImg = .Params.Image }}
-        {{ else }}
-          {{ $hdrImg = "/images/gcp-pca-cert-renewal-blog-pic.png" }}
-        {{ end }}
-        <div class="overflow-hidden rounded-3xl shadow-md border border-border/40 dark:border-darkmode-border/40 mb-8 max-h-[440px] bg-slate-900/5">
-          {{ partial "image" (dict "Src" $hdrImg "Context" .Page "Alt" .Title "Class" "w-full h-auto max-h-[440px] object-cover rounded-3xl") }}
+        {{ $hdrImg := .Params.image | default .Params.Image | default "/images/og-share.png" }}
+        <div class="overflow-hidden rounded-3xl shadow-xs bg-slate-50/80 dark:bg-slate-900/50 flex items-center justify-center p-3 sm:p-5 border border-border/50 dark:border-darkmode-border/50 mb-8">
+          <img
+            src="{{ $hdrImg | safeURL }}"
+            alt="{{ .Title }}"
+            class="w-auto h-auto max-h-[480px] max-w-full object-contain rounded-2xl"
+            loading="eager"
+            decoding="async" />
         </div>
       </header>
 
