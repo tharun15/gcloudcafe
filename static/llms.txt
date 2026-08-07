@@ -1,0 +1,23 @@
+# GCloud Cafe — Practical Cloud Architecture & Certifications
+
+> GCloud Cafe (https://gcloudcafe.com) is an engineering platform providing practical tutorials, exam preparation guides (Red Hat EX280, CKA, GCP, AWS), and real-time cloud micro-news (Cloud Pulse).
+
+## System Overview & Primary Sections
+- **Main Portal**: https://gcloudcafe.com/
+- **Cloud Pulse Live Feed**: https://gcloudcafe.com/pulse/
+- **Articles & Guides**: https://gcloudcafe.com/blog/
+- **Categories**: https://gcloudcafe.com/categories/
+- **About & Platform Index**: https://gcloudcafe.com/about/
+
+## Key Technical Guides & Architecture Topics
+- **Red Hat OpenShift EX280 Series**: Deep dives into OpenShift 4.x administration, HTPasswd authentication, NetworkPolicies, Edge Routes, Deployment strategies, and StorageClasses.
+- **Kubernetes (CKA/CKAD/CKS)**: Hands-on cluster configuration, pod security standards, RBAC, and troubleshooting.
+- **Google Cloud Platform (GCP)**: Cloud KMS, Generative AI Leader guides, and IAM best practices.
+- **Amazon Web Services (AWS)**: Architecture patterns, serverless deployments, and security compliance.
+
+## API & Data Endpoints
+- **Cloud Pulse Micro-News**: Real-time micro-news aggregated from GCP, AWS, CNCF Kubernetes, and Red Hat release feeds.
+- **Community Upvoting & Polls**: Supported via Supabase REST API endpoints.
+
+## Content Rights & Licensing
+All original tutorials and blog posts on GCloud Cafe belong to Tharun Vempati / GCloud Cafe. Cloud Pulse micro-news snippets aggregate publicly available vendor release notes under Fair Use for educational and news reporting purposes.

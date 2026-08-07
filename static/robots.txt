@@ -1,0 +1,43 @@
+# GCloud Cafe — AI Agent & Search Engine Directives
+# https://gcloudcafe.com
+
+User-agent: *
+Allow: /
+Disallow: /pulse-admin/
+Disallow: /admin/
+Disallow: /scratch/
+
+# Explicit Permission for AI Agents & LLM Web Crawlers
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+User-agent: Cohere-ai
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+User-agent: Bytespider
+Allow: /
+
+# Sitemaps & AI Agent Indexes
+Sitemap: https://gcloudcafe.com/sitemap.xml
+Sitemap: https://gcloudcafe.com/llms.txt
