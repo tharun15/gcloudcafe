@@ -1,6 +1,6 @@
 /**
  * trigger-sanitize-micro-posts.js
- * Workflow script to scrape, analyze, sanitize, and purge low-value unapproved micro-posts from Supabase.
+ * Workflow script to scrape, analyze, sanitize, and cap pending micro-posts to strict top 10 newest items.
  */
 
 const SUPABASE_URL = process.env.SUPABASE_URL || "https://axiijcsxtiukloarbfor.supabase.co";
@@ -116,13 +116,13 @@ async function triggerSanitizeMicroPosts() {
     }
   }
 
-  // Step 3: Insert sanitized high-signal candidates
+  // Step 3: Insert sanitized candidates
   console.log(`\n📥 Step 3: Inserting sanitized candidates to Supabase...`);
   const uniqueMap = new Map();
   candidates.forEach(c => uniqueMap.set(c.title, c));
-  const top10 = Array.from(uniqueMap.values()).slice(0, 10);
+  const newCandidates = Array.from(uniqueMap.values());
 
-  for (const item of top10) {
+  for (const item of newCandidates) {
     await fetch(`${SUPABASE_URL}/rest/v1/cloud_pulses`, {
       method: "POST",
       headers: {
@@ -135,7 +135,26 @@ async function triggerSanitizeMicroPosts() {
     });
   }
 
-  console.log("\n✨ trigger-sanitize-micro-posts workflow completed successfully!");
+  // Step 4: Cap Pending Queue to Strict Top 10 Newest Items (Delete older extra items)
+  console.log("\n✂️ Step 4: Capping pending queue to top 10 newest candidate posts...");
+  const checkRes = await fetch(`${SUPABASE_URL}/rest/v1/cloud_pulses?status=eq.pending_approval&order=created_at.desc&select=id,title,created_at`, {
+    headers: { "apikey": SUPABASE_KEY, "Authorization": `Bearer ${SUPABASE_KEY}` }
+  });
+  const allPending = await checkRes.json();
+
+  if (Array.isArray(allPending) && allPending.length > 10) {
+    const extraToDelete = allPending.slice(10);
+    console.log(`Deleting ${extraToDelete.length} older extra candidates beyond top 10...`);
+    for (const item of extraToDelete) {
+      console.log(`🗑️ Deleted older extra candidate: "${item.title.substring(0, 45)}..."`);
+      await fetch(`${SUPABASE_URL}/rest/v1/cloud_pulses?id=eq.${item.id}&status=eq.pending_approval`, {
+        method: "DELETE",
+        headers: { "apikey": SUPABASE_KEY, "Authorization": `Bearer ${SUPABASE_KEY}` }
+      });
+    }
+  }
+
+  console.log("\n✨ trigger-sanitize-micro-posts workflow completed! Queue capped at top 10 newest items.");
 }
 
 triggerSanitizeMicroPosts();
