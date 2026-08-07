@@ -15,7 +15,16 @@ const FEEDS = [
 
 function cleanText(text) {
   if (!text) return "";
-  return text.replace(/<[^>]+>/g, "").replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/\s+/g, " ").trim();
+  return text
+    .replace(/<[^>]+>/g, "")
+    .replace(/&lt;[^&]+&gt;/gi, "")
+    .replace(/&amp;/g, "&")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/\s+/g, " ")
+    .trim();
 }
 
 function extractSmartHeadline(rawTitle, rawSummary, provider) {
