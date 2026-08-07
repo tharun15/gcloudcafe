@@ -1342,12 +1342,12 @@
             });
           }
 
-          var linkHtml = "";
-          if (c.link_url) {
-            linkHtml = '<div class="mb-2"><a href="' + escapeHtml(c.link_url) + '" target="_blank" rel="noopener noreferrer" class="text-[11px] font-bold text-primary hover:underline inline-flex items-center gap-1"><i class="fa-solid fa-link text-[10px]"></i> View Source <i class="fa-solid fa-arrow-up-right-from-square text-[9px]"></i></a></div>';
-          }
-
-          var reasonHtml = c.eligibility_reason ? '<div class="mb-4 bg-amber-500/10 dark:bg-amber-500/15 border border-amber-500/30 rounded-2xl p-3 text-xs text-amber-800 dark:text-amber-300 font-medium"><i class="fa-solid fa-lightbulb text-amber-500 mr-1.5"></i> <strong>Grounding Reason:</strong> ' + escapeHtml(c.eligibility_reason) + '</div>' : '';
+          var cleanContent = escapeHtml(c.content || "")
+            .replace(/^&lt;p&gt;/i, "")
+            .replace(/&lt;\/p&gt;$/i, "")
+            .replace(/&lt;a[\s\S]*?&gt;/gi, "")
+            .replace(/&lt;\/a&gt;/gi, "")
+            .trim();
 
           html += '<div class="bg-body dark:bg-darkmode-body border border-border/80 dark:border-darkmode-border/80 rounded-3xl p-6 shadow-xs flex flex-col justify-between" data-candidate-id="' + c.id + '">' +
             '<div>' +
@@ -1356,17 +1356,15 @@
                 '<span class="text-[10px] font-medium text-text/60 dark:text-darkmode-text/60">' + formatDate(c.created_at) + '</span>' +
               '</div>' +
               '<h4 class="text-sm font-bold text-dark dark:text-darkmode-dark mb-2 leading-snug">' + escapeHtml(c.title) + '</h4>' +
-              '<p class="text-xs text-text/80 dark:text-darkmode-text/80 mb-3 leading-relaxed">' + escapeHtml(c.content) + '</p>' +
+              '<p class="text-xs text-text/80 dark:text-darkmode-text/80 mb-3 leading-relaxed">' + cleanContent + '</p>' +
               linkHtml +
               reasonHtml +
+              '<div class="flex flex-wrap gap-1 mb-4">' + tagsHtml + '</div>' +
             '</div>' +
 
-            '<div class="pt-3 border-t border-border/40 dark:border-darkmode-border/40 flex items-center justify-between gap-2">' +
-              '<div class="flex flex-wrap gap-1">' + tagsHtml + '</div>' +
-              '<div class="flex items-center gap-2 shrink-0">' +
-                '<button data-action-reject="' + c.id + '" class="px-3 py-1.5 rounded-xl bg-rose-500/10 hover:bg-rose-500 text-rose-500 hover:text-white text-xs font-bold transition-all border-none cursor-pointer"><i class="fa-solid fa-xmark mr-1"></i> Reject</button>' +
-                '<button data-action-approve="' + c.id + '" class="px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-xs transition-all border-none cursor-pointer"><i class="fa-solid fa-check mr-1"></i> Approve & Publish</button>' +
-              '</div>' +
+            '<div class="pt-3 border-t border-border/40 dark:border-darkmode-border/40 flex items-center justify-end gap-3 shrink-0">' +
+              '<button data-action-reject="' + c.id + '" class="px-3.5 py-2 rounded-xl bg-rose-500/10 hover:bg-rose-500 text-rose-500 hover:text-white text-xs font-bold transition-all border-none cursor-pointer"><i class="fa-solid fa-xmark mr-1"></i> Reject</button>' +
+              '<button data-action-approve="' + c.id + '" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold shadow-sm transition-all border-none cursor-pointer"><i class="fa-solid fa-check mr-1.5"></i> Approve & Publish</button>' +
             '</div>' +
           '</div>';
         });
