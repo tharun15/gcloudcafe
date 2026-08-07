@@ -389,6 +389,7 @@ kbd {
   display: flex;
   width: max-content;
   animation: stockTicker 65s linear infinite;
+  will-change: transform;
 }
 
 .ticker-marquee-content:hover {
