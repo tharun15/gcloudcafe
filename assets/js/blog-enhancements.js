@@ -894,6 +894,7 @@
     initNewsletterSignup();
     initTelemetryStats();
     initCloudPulseSystem();
+    initPulseAdminApprovalSystem();
   }
 
   /* ── 9. Cloud Pulse Micro-News & Upvote System ── */
@@ -1255,7 +1256,6 @@
 
     // Initial fetch
     fetchPulses();
-    initPulseAdminApprovalSystem();
   }
 
   /* ── Newsroom Candidate Approval Dashboard ── */
