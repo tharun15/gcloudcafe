@@ -1349,6 +1349,13 @@
             .replace(/&lt;\/a&gt;/gi, "")
             .trim();
 
+          var linkHtml = "";
+          if (c.link_url) {
+            linkHtml = '<div class="mb-2"><a href="' + escapeHtml(c.link_url) + '" target="_blank" rel="noopener noreferrer" class="text-[11px] font-bold text-primary hover:underline inline-flex items-center gap-1"><i class="fa-solid fa-link text-[10px]"></i> View Source <i class="fa-solid fa-arrow-up-right-from-square text-[9px]"></i></a></div>';
+          }
+
+          var reasonHtml = c.eligibility_reason ? '<div class="mb-4 bg-amber-500/10 dark:bg-amber-500/15 border border-amber-500/30 rounded-2xl p-3 text-xs text-amber-800 dark:text-amber-300 font-medium"><i class="fa-solid fa-lightbulb text-amber-500 mr-1.5"></i> <strong>Grounding Reason:</strong> ' + escapeHtml(c.eligibility_reason) + '</div>' : '';
+
           html += '<div class="bg-body dark:bg-darkmode-body border border-border/80 dark:border-darkmode-border/80 rounded-3xl p-6 shadow-xs flex flex-col justify-between" data-candidate-id="' + c.id + '">' +
             '<div>' +
               '<div class="flex items-center justify-between gap-2 mb-2">' +
