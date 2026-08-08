@@ -962,7 +962,7 @@
         var tagsHtml = "";
         if (Array.isArray(p.tags)) {
           p.tags.forEach(function (tag) {
-            tagsHtml += '<span class="text-[10px] font-semibold text-primary/80 bg-primary/10 px-2 py-0.5 rounded-md">' + escapeHtml(tag) + '</span> ';
+            tagsHtml += '<span class="text-xs font-bold text-primary/90 bg-primary/10 px-2.5 py-1 rounded-md">' + escapeHtml(tag) + '</span> ';
           });
         }
 
@@ -973,8 +973,8 @@
         var titleHtml = escapeHtml(p.title);
         var eventLinkHtml = "";
         if (p.link_url) {
-          titleHtml = '<a href="' + escapeHtml(p.link_url) + '" target="_blank" rel="noopener noreferrer" class="hover:underline flex items-center gap-1.5 no-underline hover:text-primary">' + titleHtml + ' <i class="fa-solid fa-arrow-up-right-from-square text-[11px] text-primary"></i></a>';
-          eventLinkHtml = '<div class="mb-3"><a href="' + escapeHtml(p.link_url) + '" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-primary/10 hover:bg-primary/20 text-primary text-[11px] font-bold no-underline transition-all"><i class="fa-solid fa-link text-[10px]"></i> Official Event / Page <i class="fa-solid fa-arrow-up-right-from-square text-[9px]"></i></a></div>';
+          titleHtml = '<a href="' + escapeHtml(p.link_url) + '" target="_blank" rel="noopener noreferrer" class="hover:underline flex items-center gap-1.5 no-underline hover:text-primary">' + titleHtml + ' <i class="fa-solid fa-arrow-up-right-from-square text-xs text-primary"></i></a>';
+          eventLinkHtml = '<div class="mb-4"><a href="' + escapeHtml(p.link_url) + '" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-primary/10 hover:bg-primary/20 text-primary text-xs sm:text-sm font-bold no-underline transition-all"><i class="fa-solid fa-link text-xs"></i> Official Event / Page <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i></a></div>';
         }
 
         var hashtagsText = Array.isArray(p.tags) ? p.tags.join(" ") : "";
@@ -993,10 +993,10 @@
           '<div>' +
             '<div class="flex items-center justify-between gap-2 mb-3">' +
               rankBadge +
-              '<span class="text-xs font-medium text-text/60 dark:text-darkmode-text/60">' + formatDate(p.created_at) + '</span>' +
+              '<span class="text-xs font-semibold text-text/70 dark:text-darkmode-text/70">' + formatDate(p.created_at) + '</span>' +
             '</div>' +
-            '<h4 class="text-base sm:text-lg font-bold text-dark dark:text-darkmode-dark mb-2 leading-snug group-hover:text-primary transition-colors">' + titleHtml + '</h4>' +
-            '<p class="text-sm sm:text-base text-text/90 dark:text-darkmode-text/90 mb-4 leading-relaxed font-normal">' + escapeHtml(cleanContentText) + '</p>' +
+            '<h4 class="text-lg sm:text-xl font-extrabold text-dark dark:text-darkmode-dark mb-3 leading-snug group-hover:text-primary transition-colors">' + titleHtml + '</h4>' +
+            '<p class="text-base sm:text-lg text-text/95 dark:text-darkmode-text/95 mb-4 leading-relaxed font-normal">' + escapeHtml(cleanContentText) + '</p>' +
             eventLinkHtml +
           '</div>' +
 
