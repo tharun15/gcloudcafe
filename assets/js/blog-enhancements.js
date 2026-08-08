@@ -1697,10 +1697,275 @@
     setInterval(fetchPollData, 3000);
   }
 
+  /* ── 12. Daily 3-Question Cloud Exam Challenge Engine ── */
+  function initDailyCloudQuizSystem() {
+    var section = document.getElementById("daily-cloud-quiz");
+    if (!section) return;
+
+    var quizState = {
+      questions: [],
+      currentIndex: 0,
+      userAnswers: [],
+      score: 0,
+      seed: 0,
+      todayKey: ""
+    };
+
+    function getTodayKey(date) {
+      var d = date || new Date();
+      var y = d.getUTCFullYear();
+      var m = String(d.getUTCMonth() + 1).padStart(2, "0");
+      var day = String(d.getUTCDate()).padStart(2, "0");
+      return y + "-" + m + "-" + day;
+    }
+
+    function getYesterdayKey(date) {
+      var d = date || new Date();
+      var prev = new Date(d.getTime() - 24 * 60 * 60 * 1000);
+      return getTodayKey(prev);
+    }
+
+    function calculateSeed(todayKeyStr) {
+      var parts = todayKeyStr.split("-");
+      return parseInt(parts[0]) * 10000 + parseInt(parts[1]) * 100 + parseInt(parts[2]);
+    }
+
+    function loadStreak() {
+      var streak = parseInt(localStorage.getItem("gcloudcafe_quiz_streak") || "0");
+      var lastDate = localStorage.getItem("gcloudcafe_quiz_last_date") || "";
+      var today = getTodayKey();
+      var yesterday = getYesterdayKey();
+
+      if (lastDate !== today && lastDate !== yesterday) {
+        streak = 0;
+        localStorage.setItem("gcloudcafe_quiz_streak", "0");
+      }
+
+      var streakEl = document.getElementById("quiz-streak-count");
+      if (streakEl) streakEl.textContent = streak;
+      return streak;
+    }
+
+    function updateStreakOnCompletion() {
+      var today = getTodayKey();
+      var yesterday = getYesterdayKey();
+      var lastDate = localStorage.getItem("gcloudcafe_quiz_last_date") || "";
+      var streak = parseInt(localStorage.getItem("gcloudcafe_quiz_streak") || "0");
+
+      if (lastDate === today) return streak; // Already completed today
+
+      if (lastDate === yesterday) {
+        streak += 1;
+      } else {
+        streak = 1;
+      }
+
+      localStorage.setItem("gcloudcafe_quiz_streak", String(streak));
+      localStorage.setItem("gcloudcafe_quiz_last_date", today);
+
+      var streakEl = document.getElementById("quiz-streak-count");
+      if (streakEl) streakEl.textContent = streak;
+      return streak;
+    }
+
+    function selectDailyQuestions(allQuestions, seed) {
+      var gcpList = allQuestions.filter(function (q) { return q.category.includes("GCP"); });
+      var ckaList = allQuestions.filter(function (q) { return q.category.includes("CKA"); });
+      var ex280List = allQuestions.filter(function (q) { return q.category.includes("EX280") || q.category.includes("OpenShift"); });
+
+      var q1 = gcpList.length > 0 ? gcpList[seed % gcpList.length] : allQuestions[0];
+      var q2 = ckaList.length > 0 ? ckaList[(seed + 1) % ckaList.length] : allQuestions[1 % allQuestions.length];
+      var q3 = ex280List.length > 0 ? ex280List[(seed + 2) % ex280List.length] : allQuestions[2 % allQuestions.length];
+
+      return [q1, q2, q3];
+    }
+
+    function renderQuestion(index) {
+      var q = quizState.questions[index];
+      if (!q) return;
+
+      var activeView = document.getElementById("quiz-active-view");
+      var completedView = document.getElementById("quiz-completed-view");
+      if (activeView) activeView.classList.remove("hidden");
+      if (completedView) completedView.classList.add("hidden");
+
+      // Update dots
+      var dots = document.querySelectorAll("[data-quiz-dot]");
+      dots.forEach(function (dot, dIdx) {
+        if (dIdx === index) {
+          dot.className = "w-7 h-7 rounded-xl flex items-center justify-center text-xs font-extrabold bg-primary text-white shadow-xs";
+        } else if (dIdx < index) {
+          dot.className = "w-7 h-7 rounded-xl flex items-center justify-center text-xs font-extrabold bg-emerald-500 text-white";
+        } else {
+          dot.className = "w-7 h-7 rounded-xl flex items-center justify-center text-xs font-extrabold bg-theme-light dark:bg-darkmode-theme-light text-text/60 border border-border/60 dark:border-darkmode-border/60";
+        }
+      });
+
+      var categoryTag = document.getElementById("quiz-category-tag");
+      var stepLabel = document.getElementById("quiz-step-label");
+      var questionText = document.getElementById("quiz-question-text");
+      var optionsContainer = document.getElementById("quiz-options-container");
+      var explanationPanel = document.getElementById("quiz-explanation-panel");
+      var explanationText = document.getElementById("quiz-explanation-text");
+      var nextBtn = document.getElementById("quiz-next-btn");
+
+      if (categoryTag) {
+        categoryTag.textContent = q.category;
+        var colorClass = q.category_color === "red" ? "bg-red-500/10 text-red-500 border-red-500/20"
+                       : q.category_color === "indigo" ? "bg-indigo-500/10 text-indigo-500 border-indigo-500/20"
+                       : "bg-blue-500/10 text-blue-500 border-blue-500/20";
+        categoryTag.className = "px-2.5 py-1 rounded-lg text-xs font-extrabold border " + colorClass;
+      }
+
+      if (stepLabel) stepLabel.textContent = "Question " + (index + 1) + " of 3";
+      if (questionText) questionText.textContent = q.question;
+      if (explanationPanel) explanationPanel.classList.add("hidden");
+      if (nextBtn) nextBtn.classList.add("hidden");
+
+      var optionsHtml = "";
+      var optionLetters = ["A", "B", "C", "D"];
+      q.options.forEach(function (optText, oIdx) {
+        optionsHtml += 
+          '<button data-quiz-option="' + oIdx + '" class="w-full text-left p-3.5 sm:p-4 rounded-2xl bg-theme-light/60 dark:bg-darkmode-theme-light/60 border border-border/60 dark:border-darkmode-border/60 hover:border-primary/60 transition-all flex items-start gap-3 cursor-pointer group">' +
+            '<span class="w-6 h-6 rounded-lg bg-body dark:bg-darkmode-body border border-border/80 dark:border-darkmode-border/80 flex items-center justify-center text-xs font-extrabold text-text/80 group-hover:border-primary group-hover:text-primary shrink-0 mt-0.5">' +
+              optionLetters[oIdx] +
+            '</span>' +
+            '<span class="text-xs sm:text-sm font-semibold text-dark dark:text-darkmode-dark leading-snug">' +
+              escapeHtml(optText) +
+            '</span>' +
+          '</button>';
+      });
+
+      if (optionsContainer) optionsContainer.innerHTML = optionsHtml;
+    }
+
+    function handleOptionSelect(optionIdx) {
+      var q = quizState.questions[quizState.currentIndex];
+      if (!q) return;
+
+      var isCorrect = optionIdx === q.answer;
+      if (isCorrect) quizState.score += 1;
+
+      var optionBtns = document.querySelectorAll("[data-quiz-option]");
+      optionBtns.forEach(function (btn, oIdx) {
+        btn.disabled = true;
+        btn.classList.remove("hover:border-primary/60", "cursor-pointer");
+
+        if (oIdx === q.answer) {
+          btn.className = "w-full text-left p-3.5 sm:p-4 rounded-2xl bg-emerald-500/15 border-2 border-emerald-500 flex items-start gap-3 text-emerald-600 dark:text-emerald-400 font-bold";
+        } else if (oIdx === optionIdx && !isCorrect) {
+          btn.className = "w-full text-left p-3.5 sm:p-4 rounded-2xl bg-red-500/15 border-2 border-red-500 flex items-start gap-3 text-red-600 dark:text-red-400 font-bold";
+        } else {
+          btn.className = "w-full text-left p-3.5 sm:p-4 rounded-2xl bg-theme-light/30 dark:bg-darkmode-theme-light/30 border border-border/40 dark:border-darkmode-border/40 flex items-start gap-3 opacity-60";
+        }
+      });
+
+      var explanationPanel = document.getElementById("quiz-explanation-panel");
+      var explanationText = document.getElementById("quiz-explanation-text");
+      var nextBtn = document.getElementById("quiz-next-btn");
+
+      if (explanationText) explanationText.textContent = q.explanation;
+      if (explanationPanel) explanationPanel.classList.remove("hidden");
+
+      if (nextBtn) {
+        nextBtn.classList.remove("hidden");
+        nextBtn.textContent = quizState.currentIndex < 2 ? "Next Question ➔" : "View Final Score 🏆";
+      }
+    }
+
+    function renderCompletionView() {
+      var activeView = document.getElementById("quiz-active-view");
+      var completedView = document.getElementById("quiz-completed-view");
+      var scoreText = document.getElementById("quiz-final-score-text");
+      var shareBtn = document.getElementById("quiz-share-score-btn");
+
+      if (activeView) activeView.classList.add("hidden");
+      if (completedView) completedView.classList.remove("hidden");
+
+      var finalScore = quizState.score;
+      if (scoreText) {
+        scoreText.textContent = "You scored " + finalScore + " / 3 on today's Cloud Challenge (" + quizState.todayKey + ").";
+      }
+
+      updateStreakOnCompletion();
+
+      // Store daily completion state
+      localStorage.setItem("gcloudcafe_quiz_date", quizState.todayKey);
+      localStorage.setItem("gcloudcafe_quiz_score", String(finalScore));
+
+      if (shareBtn) {
+        var shareText = "☕ GCloud Cafe | Daily Cloud Challenge (" + quizState.todayKey + ")\n\n🎯 Score: " + finalScore + "/3\n⚡ Scenario: GCP PCA, CKA, OpenShift EX280\n\nTest your cloud architecture skills live at: https://gcloudcafe.com";
+        var linkedinUrl = "https://www.linkedin.com/feed/?shareActive=true&text=" + encodeURIComponent(shareText);
+
+        shareBtn.onclick = function () {
+          window.open(linkedinUrl, "_blank");
+        };
+      }
+    }
+
+    function fetchAndStartQuiz() {
+      loadStreak();
+      var today = getTodayKey();
+      quizState.todayKey = today;
+      quizState.seed = calculateSeed(today);
+
+      var savedDate = localStorage.getItem("gcloudcafe_quiz_date");
+      var savedScore = localStorage.getItem("gcloudcafe_quiz_score");
+
+      fetch("/data/quiz_questions.json")
+        .then(function (res) { return res.json(); })
+        .then(function (data) {
+          if (!Array.isArray(data) || data.length === 0) return;
+
+          quizState.questions = selectDailyQuestions(data, quizState.seed);
+
+          if (savedDate === today) {
+            quizState.score = parseInt(savedScore || "3");
+            renderCompletionView();
+          } else {
+            renderQuestion(0);
+          }
+        })
+        .catch(function (err) {
+          console.error("Quiz load error:", err);
+        });
+
+      // Delegate option clicks
+      var optionsContainer = document.getElementById("quiz-options-container");
+      if (optionsContainer && !optionsContainer.getAttribute("data-quiz-bound")) {
+        optionsContainer.setAttribute("data-quiz-bound", "true");
+        optionsContainer.addEventListener("click", function (e) {
+          var optionBtn = e.target.closest("[data-quiz-option]");
+          if (optionBtn && !optionBtn.disabled) {
+            var oIdx = parseInt(optionBtn.getAttribute("data-quiz-option"));
+            handleOptionSelect(oIdx);
+          }
+        });
+      }
+
+      // Next button handler
+      var nextBtn = document.getElementById("quiz-next-btn");
+      if (nextBtn && !nextBtn.getAttribute("data-next-bound")) {
+        nextBtn.setAttribute("data-next-bound", "true");
+        nextBtn.addEventListener("click", function () {
+          if (quizState.currentIndex < 2) {
+            quizState.currentIndex += 1;
+            renderQuestion(quizState.currentIndex);
+          } else {
+            renderCompletionView();
+          }
+        });
+      }
+    }
+
+    fetchAndStartQuiz();
+  }
+
   function initApp() {
     initCommentsSystem();
     initCloudPulseSystem();
     initCloudProviderPollSystem();
+    initDailyCloudQuizSystem();
   }
 
   if (document.readyState === "loading") {
@@ -1709,4 +1974,5 @@
     initApp();
   }
 })();
+
 

@@ -1,0 +1,93 @@
+<!-- Daily 3-Question Cloud Exam Challenge Component -->
+<section id="daily-cloud-quiz" class="section py-10 border-b border-border/60 dark:border-darkmode-border/60 bg-theme-light/40 dark:bg-darkmode-theme-light/20">
+  <div class="container">
+    <div class="max-w-3xl mx-auto bg-body dark:bg-darkmode-body border border-border/80 dark:border-darkmode-border/80 rounded-3xl p-6 sm:p-8 shadow-xs relative overflow-hidden">
+      
+      <!-- Quiz Header -->
+      <div class="flex items-center justify-between gap-4 mb-6 pb-4 border-b border-border/50 dark:border-darkmode-border/50 flex-wrap">
+        <div>
+          <div class="flex items-center gap-2 mb-1.5">
+            <span class="inline-flex items-center gap-1.5 text-[11px] font-extrabold uppercase tracking-wider text-primary px-2.5 py-0.5 rounded-full bg-primary/10 border border-primary/20">
+              <i class="fa-solid fa-gamepad"></i> Daily Cloud Challenge
+            </span>
+            <span id="quiz-streak-badge" class="inline-flex items-center gap-1 text-[11px] font-extrabold text-amber-500 px-2.5 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/20">
+              <i class="fa-solid fa-bolt"></i> <span id="quiz-streak-count">0</span>-Day Streak
+            </span>
+          </div>
+          <h3 class="text-xl sm:text-2xl font-extrabold text-dark dark:text-darkmode-dark">
+            Today's 3-Question Cloud Quiz
+          </h3>
+        </div>
+
+        <!-- Question Step Dots -->
+        <div id="quiz-dots-container" class="flex items-center gap-1.5">
+          <span data-quiz-dot="0" class="w-7 h-7 rounded-xl flex items-center justify-center text-xs font-extrabold bg-primary text-white">1</span>
+          <span data-quiz-dot="1" class="w-7 h-7 rounded-xl flex items-center justify-center text-xs font-extrabold bg-theme-light dark:bg-darkmode-theme-light text-text/60 border border-border/60 dark:border-darkmode-border/60">2</span>
+          <span data-quiz-dot="2" class="w-7 h-7 rounded-xl flex items-center justify-center text-xs font-extrabold bg-theme-light dark:bg-darkmode-theme-light text-text/60 border border-border/60 dark:border-darkmode-border/60">3</span>
+        </div>
+      </div>
+
+      <!-- Question Active Card View -->
+      <div id="quiz-active-view">
+        <div class="flex items-center justify-between gap-2 mb-3">
+          <span id="quiz-category-tag" class="px-2.5 py-1 rounded-lg text-xs font-extrabold bg-blue-500/10 text-blue-500 border border-blue-500/20">
+            GCP PCA
+          </span>
+          <span id="quiz-step-label" class="text-xs font-bold text-text/60 dark:text-darkmode-text/60">
+            Question 1 of 3
+          </span>
+        </div>
+
+        <h4 id="quiz-question-text" class="text-base sm:text-lg font-bold text-dark dark:text-darkmode-dark mb-5 leading-snug">
+          Loading scenario question...
+        </h4>
+
+        <!-- Options Grid -->
+        <div id="quiz-options-container" class="space-y-2.5 mb-5">
+          <!-- Options rendered dynamically by JS -->
+        </div>
+
+        <!-- Explanation Panel (Hidden initially) -->
+        <div id="quiz-explanation-panel" class="hidden p-4 rounded-2xl bg-theme-light/80 dark:bg-darkmode-theme-light/80 border border-border/80 dark:border-darkmode-border/80 text-xs text-text/90 dark:text-darkmode-text/90 space-y-2 mb-5">
+          <div class="font-extrabold flex items-center gap-1.5 text-primary text-sm">
+            <i class="fa-solid fa-circle-info"></i> Explanation
+          </div>
+          <p id="quiz-explanation-text" class="leading-relaxed font-normal"></p>
+        </div>
+
+        <!-- Next Question Button -->
+        <div class="flex items-center justify-end">
+          <button id="quiz-next-btn" class="hidden px-5 py-2.5 rounded-xl text-xs font-extrabold bg-primary text-white hover:bg-primary/90 transition-all border-none cursor-pointer shadow-xs">
+            Next Question <i class="fa-solid fa-arrow-right ml-1"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Completion View (Shown after finishing 3 questions) -->
+      <div id="quiz-completed-view" class="hidden text-center py-6 space-y-4">
+        <div class="w-16 h-16 rounded-3xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-500 flex items-center justify-center text-3xl mx-auto">
+          <i class="fa-solid fa-trophy"></i>
+        </div>
+
+        <div>
+          <h4 class="text-2xl font-extrabold text-dark dark:text-darkmode-dark mb-1">
+            Challenge Completed! 🎉
+          </h4>
+          <p id="quiz-final-score-text" class="text-sm font-semibold text-text/80 dark:text-darkmode-text/80">
+            You scored 3 / 3 on today's Cloud Challenge.
+          </p>
+        </div>
+
+        <div class="pt-2 flex items-center justify-center gap-3 flex-wrap">
+          <button id="quiz-share-score-btn" class="px-5 py-2.5 rounded-xl text-xs font-extrabold bg-[#0a66c2] text-white hover:bg-[#0a66c2]/90 transition-all border-none cursor-pointer shadow-xs inline-flex items-center gap-2">
+            <i class="fa-brands fa-linkedin"></i> Share Score on LinkedIn
+          </button>
+          <span class="text-xs text-text/60 dark:text-darkmode-text/60 font-semibold block sm:inline">
+            Next challenge rotates at 00:00 UTC
+          </span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>

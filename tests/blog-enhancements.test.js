@@ -282,3 +282,52 @@ describe('LinkedIn & Mobile Social Share Payload Formatting', () => {
   });
 });
 
+describe('Daily 3-Question Cloud Quiz Engine', () => {
+  function calculateSeed(dateStr) {
+    const parts = dateStr.split('-');
+    return parseInt(parts[0]) * 10000 + parseInt(parts[1]) * 100 + parseInt(parts[2]);
+  }
+
+  function selectDailyQuestions(allQuestions, seed) {
+    const gcpList = allQuestions.filter(q => q.category.includes('GCP'));
+    const ckaList = allQuestions.filter(q => q.category.includes('CKA'));
+    const ex280List = allQuestions.filter(q => q.category.includes('EX280') || q.category.includes('OpenShift'));
+
+    const q1 = gcpList[seed % gcpList.length];
+    const q2 = ckaList[(seed + 1) % ckaList.length];
+    const q3 = ex280List[(seed + 2) % ex280List.length];
+
+    return [q1, q2, q3];
+  }
+
+  const mockQuestions = [
+    { id: 'gcp_1', category: 'GCP PCA', question: 'GCP VPC question?' },
+    { id: 'gcp_2', category: 'GCP PCA', question: 'GCP Spanner question?' },
+    { id: 'cka_1', category: 'CKA', question: 'CKA jsonpath question?' },
+    { id: 'cka_2', category: 'CKA', question: 'CKA PDB question?' },
+    { id: 'ex280_1', category: 'OpenShift EX280', question: 'OpenShift SCC question?' },
+    { id: 'ex280_2', category: 'OpenShift EX280', question: 'OpenShift Route question?' }
+  ];
+
+  it('generates consistent deterministic daily seed from date string', () => {
+    const seed1 = calculateSeed('2026-08-08');
+    const seed2 = calculateSeed('2026-08-08');
+    const seedNextDay = calculateSeed('2026-08-09');
+
+    expect(seed1).toBe(20260808);
+    expect(seed1).toBe(seed2);
+    expect(seedNextDay).toBe(20260809);
+  });
+
+  it('selects exactly 3 questions (1 GCP, 1 CKA, 1 EX280) deterministically', () => {
+    const seed = calculateSeed('2026-08-08');
+    const selected = selectDailyQuestions(mockQuestions, seed);
+
+    expect(selected).toHaveLength(3);
+    expect(selected[0].category).toBe('GCP PCA');
+    expect(selected[1].category).toBe('CKA');
+    expect(selected[2].category).toBe('OpenShift EX280');
+  });
+});
+
+
