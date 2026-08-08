@@ -1903,32 +1903,40 @@
       }
     }
 
+    function startWithQuestions(data) {
+      if (!Array.isArray(data) || data.length === 0) return;
+
+      quizState.questions = selectDailyQuestions(data, quizState.seed);
+
+      var savedDate = localStorage.getItem("gcloudcafe_quiz_date");
+      var savedScore = localStorage.getItem("gcloudcafe_quiz_score");
+
+      if (savedDate === quizState.todayKey) {
+        quizState.score = parseInt(savedScore || "3");
+        renderCompletionView();
+      } else {
+        renderQuestion(0);
+      }
+    }
+
     function fetchAndStartQuiz() {
       loadStreak();
       var today = getTodayKey();
       quizState.todayKey = today;
       quizState.seed = calculateSeed(today);
 
-      var savedDate = localStorage.getItem("gcloudcafe_quiz_date");
-      var savedScore = localStorage.getItem("gcloudcafe_quiz_score");
-
-      fetch("/data/quiz_questions.json")
-        .then(function (res) { return res.json(); })
-        .then(function (data) {
-          if (!Array.isArray(data) || data.length === 0) return;
-
-          quizState.questions = selectDailyQuestions(data, quizState.seed);
-
-          if (savedDate === today) {
-            quizState.score = parseInt(savedScore || "3");
-            renderCompletionView();
-          } else {
-            renderQuestion(0);
-          }
-        })
-        .catch(function (err) {
-          console.error("Quiz load error:", err);
-        });
+      if (window.QUIZ_QUESTIONS && Array.isArray(window.QUIZ_QUESTIONS) && window.QUIZ_QUESTIONS.length > 0) {
+        startWithQuestions(window.QUIZ_QUESTIONS);
+      } else {
+        fetch("/data/quiz_questions.json")
+          .then(function (res) { return res.json(); })
+          .then(function (data) {
+            startWithQuestions(data);
+          })
+          .catch(function (err) {
+            console.error("Quiz load error:", err);
+          });
+      }
 
       // Delegate option clicks
       var optionsContainer = document.getElementById("quiz-options-container");

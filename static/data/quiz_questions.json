@@ -1,0 +1,128 @@
+[
+  {
+    "id": "gcp_pca_1",
+    "category": "GCP PCA",
+    "category_color": "blue",
+    "question": "Your company needs to connect an on-premises data center to GCP with 99.99% SLA availability and encrypted traffic over the internet. Which architecture should you choose?",
+    "options": [
+      "Dedicated Interconnect with HA VPN fallback over the internet",
+      "HA VPN with dual Cloud Routers and BGP over public internet",
+      "Direct Peering with Cloud Router and IPsec VPN",
+      "Carrier Peering with static routing"
+    ],
+    "answer": 1,
+    "explanation": "HA VPN over public internet provides 99.99% availability SLA when configured with dual Cloud Routers and active-active BGP tunnels across two distinct GCP regions."
+  },
+  {
+    "id": "gcp_pca_2",
+    "category": "GCP PCA",
+    "category_color": "blue",
+    "question": "Which GCP database service is best suited for globally distributed relational data requiring ACID transactions and automatic horizontal scaling across multiple GCP regions?",
+    "options": [
+      "AlloyDB for PostgreSQL",
+      "Cloud Bigtable",
+      "Cloud Spanner",
+      "Cloud SQL for MySQL"
+    ],
+    "answer": 2,
+    "explanation": "Cloud Spanner provides enterprise-grade global scale with external consistency (ACID) and multi-region automatic replication with TrueTime API."
+  },
+  {
+    "id": "gcp_pca_3",
+    "category": "GCP PCA",
+    "category_color": "blue",
+    "question": "In a GCP Shared VPC setup, who has permission to attach VM instances running in Service Projects to subnets defined in the Host Project?",
+    "options": [
+      "Host Project Owner only",
+      "Service Project Admin with Compute Network User role on Host subnets",
+      "Service Project Viewer with Network Admin role",
+      "Compute Security Admin on Service Project"
+    ],
+    "answer": 1,
+    "explanation": "The Compute Network User role (roles/compute.networkUser) granted on specific host project subnets allows Service Project Admins to provision VMs connected to host networks."
+  },
+  {
+    "id": "cka_1",
+    "category": "CKA",
+    "category_color": "indigo",
+    "question": "You need to inspect all Pods in the 'backend' namespace and extract only their IP addresses using a single kubectl command with JSONPath. Which command is correct?",
+    "options": [
+      "kubectl get pods -n backend -o jsonpath='{.items[*].status.podIP}'",
+      "kubectl describe pods -n backend --grep='IP:'",
+      "kubectl get pods -n backend -o yaml | grep podIP",
+      "kubectl get pods -n backend -o custom-columns=IP:.spec.podIP"
+    ],
+    "answer": 0,
+    "explanation": "'-o jsonpath='{.items[*].status.podIP}'' iterates over all items in the PodList object and prints the status.podIP field separated by spaces."
+  },
+  {
+    "id": "cka_2",
+    "category": "CKA",
+    "category_color": "indigo",
+    "question": "A Deployment named 'web-api' is experiencing pod evictions during node maintenance. How can you ensure at least 2 replicas remain running at all times during voluntary disruptions?",
+    "options": [
+      "Set PodDisruptionBudget with minAvailable: 2 for app: web-api selector",
+      "Set replica count to 4 in deployment spec",
+      "Set nodeSelector to dedicated node pools",
+      "Add terminationGracePeriodSeconds: 300 to Pod spec"
+    ],
+    "answer": 0,
+    "explanation": "PodDisruptionBudget (PDB) with minAvailable: 2 protects workloads during node drains and cluster upgrades by limiting simultaneous voluntary evictions."
+  },
+  {
+    "id": "cka_3",
+    "category": "CKA",
+    "category_color": "indigo",
+    "question": "By default, Kubernetes Pods allow all ingress and egress traffic. What happens immediately after a NetworkPolicy is applied to a Pod with policyTypes: ['Ingress']?",
+    "options": [
+      "All ingress traffic is blocked unless explicitly permitted by spec.ingress rules",
+      "All egress traffic is blocked automatically",
+      "No traffic changes until CNI plugin is restarted",
+      "Only HTTP/HTTPS ingress traffic is allowed"
+    ],
+    "answer": 0,
+    "explanation": "Applying a NetworkPolicy with policyTypes: Ingress isolates the selected Pods, switching them to default-deny for ingress unless matching ingress rules permit traffic."
+  },
+  {
+    "id": "ex280_1",
+    "category": "OpenShift EX280",
+    "category_color": "red",
+    "question": "In Red Hat OpenShift 4.x, an application requires root user privileges and host path storage access. Which SecurityContextConstraint (SCC) must be granted to the ServiceAccount?",
+    "options": [
+      "restricted-v2",
+      "privileged",
+      "anyuid",
+      "hostmount-anyuid"
+    ],
+    "answer": 1,
+    "explanation": "The 'privileged' SCC grants full access to host resources, hostPath volumes, root user execution, and all Linux capabilities."
+  },
+  {
+    "id": "ex280_2",
+    "category": "OpenShift EX280",
+    "category_color": "red",
+    "question": "You need to expose an internal HTTPS microservice outside the OpenShift cluster while letting the OpenShift Ingress Router perform TLS termination. Which Route type should you configure?",
+    "options": [
+      "Passthrough Route",
+      "Re-encrypt Route",
+      "Edge Route",
+      "Insecure HTTP Route"
+    ],
+    "answer": 2,
+    "explanation": "Edge routes terminate TLS at the OpenShift Ingress Router (Router-to-Client TLS), forwarding unencrypted HTTP traffic to the backend pods over internal overlay networks."
+  },
+  {
+    "id": "ex280_3",
+    "category": "OpenShift EX280",
+    "category_color": "red",
+    "question": "When managing Virtual Machines on OpenShift using OpenShift Virtualization (KubeVirt), which CRD object defines a running VM instance?",
+    "options": [
+      "VirtualMachineInstance (VMI)",
+      "KubeVirtPod",
+      "VirtualMachineSpec",
+      "ContainerDiskVolume"
+    ],
+    "answer": 0,
+    "explanation": "VirtualMachineInstance (VMI) represents the ephemeral runtime state of a virtual machine running inside a virt-launcher pod on OpenShift Virtualization."
+  }
+]
