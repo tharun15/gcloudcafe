@@ -995,8 +995,8 @@
               rankBadge +
               '<span class="text-xs font-medium text-text/60 dark:text-darkmode-text/60">' + formatDate(p.created_at) + '</span>' +
             '</div>' +
-            '<h4 class="text-base font-bold text-dark dark:text-darkmode-dark mb-2 leading-snug group-hover:text-primary transition-colors">' + titleHtml + '</h4>' +
-            '<p class="text-sm text-text/90 dark:text-darkmode-text/90 mb-3 leading-relaxed font-normal">' + escapeHtml(cleanContentText) + '</p>' +
+            '<h4 class="text-base sm:text-lg font-bold text-dark dark:text-darkmode-dark mb-2 leading-snug group-hover:text-primary transition-colors">' + titleHtml + '</h4>' +
+            '<p class="text-sm sm:text-base text-text/90 dark:text-darkmode-text/90 mb-4 leading-relaxed font-normal">' + escapeHtml(cleanContentText) + '</p>' +
             eventLinkHtml +
           '</div>' +
 

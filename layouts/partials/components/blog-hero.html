@@ -6,7 +6,7 @@
   {{ with site.GetPage (printf "/authors/%s" $authorSlug) }}
     {{ $authorName = .Title }}
   {{ end }}
-  {{ $teaser := .Params.description | default .Summary | plainify | truncate 150 }}
+  {{ $teaser := .Params.description | default .Summary | plainify | truncate 220 }}
   {{ $categories := .Params.categories }}
 
   {{/* Next 3 recent posts for the Trending & Next Up side panel */}}
@@ -25,34 +25,34 @@
             <div class="absolute -top-24 -right-24 w-60 h-60 bg-primary/10 rounded-full blur-3xl pointer-events-none"></div>
 
             <div>
-              <!-- Hero Header Badges -->
+              <!-- Hero Header Badges (Streamlined for Mobile & Webview) -->
               <div class="flex items-center flex-wrap gap-2 mb-3">
-                <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30 shrink-0">
-                  <i class="fa-solid fa-star text-[9px]"></i> Featured Article
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-extrabold uppercase tracking-wider bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30 shrink-0">
+                  <i class="fa-solid fa-star text-[10px]"></i> Featured
                 </span>
-                {{ range first 2 $categories }}
-                  <a href="{{ `categories/` | relLangURL }}{{ . | urlize | lower }}/" class="blog-badge text-[11px] py-0.5 px-2.5">
+                {{ with index $categories 0 }}
+                  <a href="{{ `categories/` | relLangURL }}{{ . | urlize | lower }}/" class="blog-badge text-xs py-0.5 px-2.5">
                     {{ . | humanize }}
                   </a>
                 {{ end }}
               </div>
 
               <!-- Main Hero Title -->
-              <h1 id="featured-post-title" class="text-xl sm:text-2xl lg:text-3xl font-extrabold text-dark dark:text-darkmode-dark mb-3 leading-snug group-hover:text-primary transition-colors">
+              <h1 id="featured-post-title" class="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-dark dark:text-darkmode-dark mb-3.5 leading-snug group-hover:text-primary transition-colors">
                 <a href="{{ $page.RelPermalink }}" class="no-underline text-current hover:text-primary">
                   {{ $page.Title }}
                 </a>
               </h1>
 
-              <!-- Teaser Summary -->
-              <p class="text-xs sm:text-sm text-text/80 dark:text-darkmode-text/80 mb-5 leading-relaxed">
+              <!-- Teaser Summary (High Contrast & Legible Font Size) -->
+              <p class="text-sm sm:text-base text-text/90 dark:text-darkmode-text/90 mb-6 leading-relaxed font-normal">
                 {{ $teaser }}
               </p>
             </div>
 
             <!-- Bottom Metadata & Actions Bar -->
             <div>
-              <div class="flex flex-wrap items-center gap-x-4 gap-y-2 text-[11px] font-medium text-text/60 dark:text-darkmode-text/60 pt-4 border-t border-border/50 dark:border-darkmode-border/50 mb-4">
+              <div class="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs font-medium text-text/65 dark:text-darkmode-text/65 pt-4 border-t border-border/50 dark:border-darkmode-border/50 mb-5">
                 <span class="inline-flex items-center gap-1.5">
                   <i class="fa-regular fa-circle-user text-primary"></i>
                   <a href="{{ `authors/` | relLangURL }}{{ $authorSlug | urlize }}/" class="hover:text-primary font-bold text-dark dark:text-darkmode-dark">
@@ -60,25 +60,25 @@
                   </a>
                 </span>
                 <span class="inline-flex items-center gap-1.5">
-                  <i class="fa-regular fa-calendar"></i>
+                  <i class="fa-regular fa-calendar text-primary"></i>
                   {{ time.Format ":date_long" $page.PublishDate }}
                 </span>
                 <span class="inline-flex items-center gap-1.5">
-                  <i class="fa-regular fa-clock"></i>
+                  <i class="fa-regular fa-clock text-primary"></i>
                   {{ $page.ReadingTime }} min read
                 </span>
               </div>
 
-              <!-- Hero CTA Buttons -->
+              <!-- Hero CTA Buttons (1 Prominent Mobile Button; Full Desktop Actions) -->
               <div class="flex items-center flex-wrap gap-2.5">
-                <a href="{{ $page.RelPermalink }}" class="btn btn-primary py-2 px-4 text-xs font-bold rounded-xl shadow-xs">
-                  Read Latest Post <i class="fa-solid fa-arrow-right ml-1 text-[10px]"></i>
+                <a href="{{ $page.RelPermalink }}" class="btn btn-primary py-2.5 px-5 text-xs sm:text-sm font-bold rounded-xl shadow-xs w-full sm:w-auto text-center justify-center">
+                  Read Article <i class="fa-solid fa-arrow-right ml-1.5 text-xs"></i>
                 </a>
-                <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ $page.Permalink | safeURL }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#0a66c2]/15 hover:bg-[#0a66c2] text-[#0a66c2] hover:text-white text-xs font-bold transition-all no-underline shrink-0" title="Share on LinkedIn">
+                <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ $page.Permalink | safeURL }}" target="_blank" rel="noopener noreferrer" class="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-[#0a66c2]/15 hover:bg-[#0a66c2] text-[#0a66c2] hover:text-white text-xs font-bold transition-all no-underline shrink-0" title="Share on LinkedIn">
                   <i class="fa-brands fa-linkedin text-sm"></i> Share
                 </a>
                 {{ with $root.BrowseLink }}
-                  <a href="{{ . }}" class="btn btn-outline-primary py-2 px-3.5 text-xs font-bold rounded-xl">
+                  <a href="{{ . }}" class="hidden sm:inline-flex btn btn-outline-primary py-2.5 px-4 text-xs font-bold rounded-xl">
                     {{ $root.BrowseLabel | default "All Articles" }}
                   </a>
                 {{ end }}
@@ -94,7 +94,7 @@
             <span class="text-xs font-extrabold uppercase tracking-wider text-dark dark:text-darkmode-dark flex items-center gap-1.5">
               <i class="fa-solid fa-fire text-amber-500"></i> Trending & Next Up
             </span>
-            <a href="/blog/" class="text-[11px] font-bold text-primary hover:underline">
+            <a href="/blog/" class="text-xs font-bold text-primary hover:underline">
               View All <i class="fa-solid fa-chevron-right text-[9px]"></i>
             </a>
           </div>
@@ -104,14 +104,14 @@
               {{ $sideCategory := index (.Params.categories | default (slice "Tech")) 0 }}
               <a href="{{ .RelPermalink }}" class="bg-body dark:bg-darkmode-body border border-border/80 dark:border-darkmode-border/80 rounded-2xl p-4 shadow-xs hover:border-primary/50 transition-all no-underline group block">
                 <div class="flex items-center justify-between gap-2 mb-1.5">
-                  <span class="text-[10px] font-bold uppercase tracking-wider text-primary px-2 py-0.5 rounded-md bg-primary/10">
+                  <span class="text-xs font-bold uppercase tracking-wider text-primary px-2 py-0.5 rounded-md bg-primary/10">
                     {{ $sideCategory | humanize }}
                   </span>
-                  <span class="text-[10px] text-text/60 dark:text-darkmode-text/60">
+                  <span class="text-xs text-text/60 dark:text-darkmode-text/60">
                     <i class="fa-regular fa-clock"></i> {{ .ReadingTime }} min read
                   </span>
                 </div>
-                <h4 class="text-xs sm:text-sm font-bold text-dark dark:text-darkmode-dark group-hover:text-primary transition-colors leading-snug line-clamp-2">
+                <h4 class="text-sm font-bold text-dark dark:text-darkmode-dark group-hover:text-primary transition-colors leading-snug line-clamp-2">
                   {{ .Title }}
                 </h4>
               </a>
