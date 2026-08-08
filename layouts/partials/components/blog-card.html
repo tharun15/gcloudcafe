@@ -6,7 +6,7 @@
 {{ end }}
 {{ $categories := $page.Params.categories }}
 {{ $tags := $page.Params.tags }}
-{{ $teaser := $page.Params.description | default $page.Summary | plainify | truncate 150 }}
+{{ $teaser := $page.Params.description | default $page.Summary | plainify | truncate 200 }}
 
 <article class="blog-card">
   <a

@@ -108,7 +108,7 @@
 }
 
 .blog-card-copy {
-  @apply text-text dark:text-darkmode-text mb-5 text-sm leading-relaxed line-clamp-3;
+  @apply text-dark/90 dark:text-darkmode-text/95 mb-5 text-sm sm:text-base leading-relaxed line-clamp-3 font-normal;
 }
 
 .blog-meta-list {
