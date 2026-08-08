@@ -233,3 +233,52 @@ describe('Forever Cloud Provider Poll Engine', () => {
     expect(qInfo.prevQuarterLabel).toBe('Q2 2026');
   });
 });
+
+describe('LinkedIn & Mobile Social Share Payload Formatting', () => {
+  function generateSharePayload(pulseItem, origin) {
+    var tags = Array.isArray(pulseItem.tags) ? pulseItem.tags.map(function(t){ return '#' + t.replace(/^#/, ''); }).join(" ") : "";
+    var cleanContent = (pulseItem.content || "")
+      .replace(/<[^>]+>/g, "")
+      .replace(/&lt;[^&]+&gt;/g, "")
+      .trim();
+    var baseUrl = (origin || "https://gcloudcafe.com") + "/pulse/";
+    var shareText = "☕ GCloud Cafe | Cloud Pulse\n\n📌 " + pulseItem.title + "\n\n" + cleanContent + "\n\n" + tags + "\n\n🌐 Read live on GCloud Cafe: " + baseUrl;
+    var desktopUrl = "https://www.linkedin.com/feed/?shareActive=true&text=" + encodeURIComponent(shareText);
+    var mobileOffsiteUrl = "https://www.linkedin.com/sharing/share-offsite/?url=" + encodeURIComponent(baseUrl);
+
+    return {
+      cleanContent,
+      tags,
+      baseUrl,
+      shareText,
+      desktopUrl,
+      mobileOffsiteUrl
+    };
+  }
+
+  it('formats clean content without raw HTML tags', () => {
+    const pulse = {
+      title: 'Kubernetes v1.37 Update',
+      content: '<p>Kubernetes has <b>quietly</b> become the default.</p>',
+      tags: ['Kubernetes', 'CNCF']
+    };
+    const payload = generateSharePayload(pulse, 'https://gcloudcafe.com');
+
+    expect(payload.cleanContent).toBe('Kubernetes has quietly become the default.');
+    expect(payload.tags).toBe('#Kubernetes #CNCF');
+  });
+
+  it('generates valid desktop & offsite LinkedIn URLs', () => {
+    const pulse = {
+      title: 'OpenShift AI Optimization',
+      content: 'Uber and Microsoft optimized GPU workloads.',
+      tags: ['OpenShift', 'DevOps']
+    };
+    const payload = generateSharePayload(pulse, 'https://gcloudcafe.com');
+
+    expect(payload.desktopUrl).toContain('https://www.linkedin.com/feed/?shareActive=true&text=');
+    expect(payload.desktopUrl).toContain(encodeURIComponent('https://gcloudcafe.com/pulse/'));
+    expect(payload.mobileOffsiteUrl).toBe('https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Fgcloudcafe.com%2Fpulse%2F');
+  });
+});
+
