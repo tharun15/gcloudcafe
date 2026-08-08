@@ -977,6 +977,11 @@
           eventLinkHtml = '<div class="mb-4"><a href="' + escapeHtml(p.link_url) + '" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-primary/10 hover:bg-primary/20 text-primary text-xs sm:text-sm font-bold no-underline transition-all"><i class="fa-solid fa-link text-xs"></i> Official Event / Page <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i></a></div>';
         }
 
+        var cleanContentText = (p.content || "")
+          .replace(/<[^>]+>/g, "")
+          .replace(/&lt;[^&]+&gt;/g, "")
+          .trim();
+
         var pulseTargetUrl = p.link_url || (window.location.origin + "/pulse/");
         var linkedinShareUrl = "https://www.linkedin.com/sharing/share-offsite/?url=" + encodeURIComponent(pulseTargetUrl);
 
