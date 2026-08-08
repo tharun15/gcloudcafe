@@ -7,10 +7,24 @@ const SUPABASE_URL = process.env.SUPABASE_URL || "https://axiijcsxtiukloarbfor.s
 const SUPABASE_KEY = process.env.SUPABASE_ANON_KEY || "sb_publishable_cRcwg02R3nXTykDrxalL6w_-kc9Wesc";
 
 const FEEDS = [
+  // Official Cloud Provider Feeds
   { provider: "GCP", name: "Google Cloud Release Notes", url: "https://cloud.google.com/feeds/gcp-release-notes.xml", defaultTags: ["#GoogleCloud", "#GCP", "#CloudNews"] },
+  { provider: "GCP", name: "Google Cloud Official Tech Blog", url: "https://cloudblog.withgoogle.com/rss/", defaultTags: ["#GoogleCloud", "#GCP", "#CloudArchitecture"] },
   { provider: "AWS", name: "AWS What's New", url: "https://aws.amazon.com/about-aws/whats-new/recent/feed/", defaultTags: ["#AWS", "#CloudArchitecture", "#CloudNews"] },
-  { provider: "Kubernetes", name: "Kubernetes CNCF Blog", url: "https://kubernetes.io/feed.xml", defaultTags: ["#Kubernetes", "#CNCF", "#CloudNative"] },
-  { provider: "OpenShift", name: "Red Hat Blog & OpenShift Releases", url: "https://www.redhat.com/en/rss/blog", defaultTags: ["#OpenShift", "#RedHat", "#DevOps"] }
+  { provider: "AWS", name: "AWS Architecture Blog", url: "https://aws.amazon.com/blogs/architecture/feed/", defaultTags: ["#AWS", "#CloudArchitecture", "#DevOps"] },
+  { provider: "AWS", name: "AWS DevOps Blog", url: "https://aws.amazon.com/blogs/devops/feed/", defaultTags: ["#AWS", "#DevOps", "#CI_CD"] },
+  { provider: "Azure", name: "Microsoft Azure Updates", url: "https://azure.microsoft.com/en-us/blog/feed/", defaultTags: ["#Azure", "#MicrosoftCloud", "#DevOps"] },
+
+  // Cloud Native & Infrastructure Engineering
+  { provider: "Kubernetes", name: "Kubernetes CNCF Official Blog", url: "https://kubernetes.io/feed.xml", defaultTags: ["#Kubernetes", "#CNCF", "#CloudNative"] },
+  { provider: "CNCF", name: "CNCF Official Blog", url: "https://www.cncf.io/feed/", defaultTags: ["#CNCF", "#Kubernetes", "#CloudNative"] },
+  { provider: "OpenShift", name: "Red Hat Blog & OpenShift Releases", url: "https://www.redhat.com/en/rss/blog", defaultTags: ["#OpenShift", "#RedHat", "#DevOps"] },
+  { provider: "Terraform", name: "HashiCorp Infrastructure Blog", url: "https://www.hashicorp.com/blog/feed.xml", defaultTags: ["#Terraform", "#HashiCorp", "#IaC"] },
+
+  // DevOps & SRE Engineering News & Analysis
+  { provider: "DevOps", name: "DevOps.com Feed", url: "https://devops.com/feed/", defaultTags: ["#DevOps", "#SRE", "#CI_CD"] },
+  { provider: "CloudNative", name: "The New Stack Cloud Engineering", url: "https://thenewstack.io/feed/", defaultTags: ["#CloudNative", "#DevOps", "#SRE"] },
+  { provider: "Sysdig", name: "Sysdig Cloud Security & SRE Blog", url: "https://sysdig.com/blog/feed/", defaultTags: ["#Security", "#SRE", "#Kubernetes"] }
 ];
 
 function cleanText(text) {
