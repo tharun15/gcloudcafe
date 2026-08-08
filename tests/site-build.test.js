@@ -14,6 +14,14 @@ describe('Hugo Site Build & HTML Integrity Tests', () => {
       const content = fs.readFileSync(indexPath, 'utf-8');
       expect(content).toContain('<title>');
       expect(content.toLowerCase()).toContain('gcloudcafe');
+
+      // Verify Header Quick-Pill and Antenna Live Icon
+      expect(content).toContain('fa-tower-broadcast');
+      expect(content).toContain('Pulse');
+
+      // Verify 1-Tap Homepage Navigation Switcher Bar
+      expect(content).toContain('Live Pulse');
+      expect(content).toContain('Topics');
     }
   });
 
