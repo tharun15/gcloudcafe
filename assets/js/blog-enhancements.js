@@ -977,15 +977,17 @@
           eventLinkHtml = '<div class="mb-4"><a href="' + escapeHtml(p.link_url) + '" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-primary/10 hover:bg-primary/20 text-primary text-xs sm:text-sm font-bold no-underline transition-all"><i class="fa-solid fa-link text-xs"></i> Official Event / Page <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i></a></div>';
         }
 
+        var hashtagsText = Array.isArray(p.tags) ? p.tags.map(function(t){ return '#' + t.replace(/^#/, ''); }).join(" ") : "";
         var cleanContentText = (p.content || "")
           .replace(/<[^>]+>/g, "")
           .replace(/&lt;[^&]+&gt;/g, "")
           .trim();
 
         var pulseTargetUrl = window.location.origin + "/pulse/";
-        var linkedinShareUrl = "https://www.linkedin.com/sharing/share-offsite/?url=" + encodeURIComponent(pulseTargetUrl);
+        var shareText = "☕ GCloud Cafe | Cloud Pulse\n\n📌 " + p.title + "\n\n" + cleanContentText + "\n\n" + hashtagsText + "\n\n🌐 Read live on GCloud Cafe: " + pulseTargetUrl;
+        var linkedinShareUrl = "https://www.linkedin.com/feed/?shareActive=true&text=" + encodeURIComponent(shareText);
 
-        var linkedinBtnHtml = '<a href="' + linkedinShareUrl + '" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-xs font-bold bg-[#0a66c2]/10 hover:bg-[#0a66c2] text-[#0a66c2] hover:text-white transition-all no-underline shrink-0" title="Share pulse on LinkedIn">' +
+        var linkedinBtnHtml = '<a href="' + linkedinShareUrl + '" data-pulse-share-title="' + escapeHtml(p.title) + '" data-pulse-share-text="' + escapeHtml(cleanContentText + (hashtagsText ? '\n\n' + hashtagsText : '')) + '" data-pulse-share-url="' + escapeHtml(pulseTargetUrl) + '" target="_blank" rel="noopener noreferrer" class="pulse-share-btn inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-xs font-bold bg-[#0a66c2]/10 hover:bg-[#0a66c2] text-[#0a66c2] hover:text-white transition-all no-underline shrink-0" title="Share pulse on LinkedIn">' +
           '<i class="fa-brands fa-linkedin text-sm"></i> Share' +
         '</a>';
 
@@ -1032,8 +1034,19 @@
       feedContainer.addEventListener("click", function (e) {
         var upTarget = e.target.closest("[data-pulse-upvote]");
         var downTarget = e.target.closest("[data-pulse-downvote]");
+        var shareTarget = e.target.closest(".pulse-share-btn");
 
-        if (upTarget) {
+        if (shareTarget && navigator.share && /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+          e.preventDefault();
+          var shareTitle = shareTarget.getAttribute("data-pulse-share-title");
+          var shareText = shareTarget.getAttribute("data-pulse-share-text");
+          var shareUrl = shareTarget.getAttribute("data-pulse-share-url");
+          navigator.share({
+            title: shareTitle,
+            text: shareTitle + "\n\n" + shareText,
+            url: shareUrl
+          }).catch(function () {});
+        } else if (upTarget) {
           e.preventDefault();
           var id = upTarget.getAttribute("data-pulse-upvote");
           castVote(id, "up", currentPulses);
