@@ -982,7 +982,7 @@
           .replace(/&lt;[^&]+&gt;/g, "")
           .trim();
 
-        var pulseTargetUrl = p.link_url || (window.location.origin + "/pulse/");
+        var pulseTargetUrl = window.location.origin + "/pulse/";
         var linkedinShareUrl = "https://www.linkedin.com/sharing/share-offsite/?url=" + encodeURIComponent(pulseTargetUrl);
 
         var linkedinBtnHtml = '<a href="' + linkedinShareUrl + '" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-xs font-bold bg-[#0a66c2]/10 hover:bg-[#0a66c2] text-[#0a66c2] hover:text-white transition-all no-underline shrink-0" title="Share pulse on LinkedIn">' +
