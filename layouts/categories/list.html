@@ -1,0 +1,37 @@
+{{ define "main" }}
+  <!-- Top Navigation Bar -->
+  <div class="py-3 bg-body dark:bg-darkmode-body border-b border-border/40 dark:border-darkmode-border/40">
+    <div class="container flex items-center justify-between gap-3 overflow-x-auto no-scrollbar">
+      <div class="inline-flex items-center gap-1.5 p-1 rounded-2xl bg-theme-light dark:bg-darkmode-theme-light border border-border/60 dark:border-darkmode-border/60">
+        <a href="{{ site.Home.RelPermalink }}" class="px-4 sm:px-5 py-2 rounded-xl text-xs sm:text-sm font-bold text-text/80 dark:text-darkmode-text/80 hover:text-primary transition-all no-underline flex items-center gap-2">
+          <i class="fa-solid fa-newspaper text-xs"></i> Articles
+        </a>
+        <a href="{{ `pulse/` | relLangURL }}" class="px-4 sm:px-5 py-2 rounded-xl text-xs sm:text-sm font-bold text-text/80 dark:text-darkmode-text/80 hover:text-primary transition-all no-underline flex items-center gap-2">
+          <i class="fa-solid fa-tower-broadcast text-emerald-500 animate-pulse"></i> Live Pulse
+        </a>
+        <a href="{{ `categories/` | relLangURL }}" class="px-4 sm:px-5 py-2 rounded-xl text-xs sm:text-sm font-bold bg-primary text-white shadow-xs no-underline flex items-center gap-2">
+          <i class="fa-solid fa-scale-balanced text-xs"></i> System Design Lab
+        </a>
+      </div>
+
+      <a href="#system-design-lab-root" class="hidden sm:inline-flex items-center gap-1.5 text-xs font-bold text-primary hover:underline whitespace-nowrap">
+        <i class="fa-solid fa-arrow-down text-[10px]"></i> Jump to Design Challenges
+      </a>
+    </div>
+  </div>
+
+  <section class="section py-10 sm:py-14">
+    <div class="container">
+      <!-- Root Container for Interactive System Design Trade-off Lab -->
+      <div id="system-design-lab-root">
+        <div class="text-center py-12 text-xs font-bold text-text/60 dark:text-darkmode-text/60">
+          <i class="fa-solid fa-spinner fa-spin text-xl text-primary mb-3 block"></i>
+          Loading Interactive System Design Trade-off Lab...
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Load Interactive System Design Lab JS Controller -->
+  <script src="{{ `js/system-design-lab.js` | relURL }}"></script>
+{{ end }}
