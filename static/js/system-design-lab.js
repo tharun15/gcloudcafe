@@ -1,4 +1,4 @@
-/* system-design-lab.js — Interactive Connection Rewiring & Rubberband Line Dragging Engine */
+/* system-design-lab.js — Sequential Pipeline & Dual-Endpoint Wire Rewiring Engine */
 (function () {
   "use strict";
 
@@ -115,7 +115,7 @@
         { from: "node_app", to: "node_db" }
       ],
       dragState: { isDragging: false, nodeId: null, offsetX: 0, offsetY: 0 },
-      wireDragState: { isDragging: false, mode: null, fromNodeId: null, connIdx: null, targetX: 0, targetY: 0 },
+      wireDragState: { isDragging: false, mode: null, fromNodeId: null, connIdx: null, startX: 0, startY: 0, targetX: 0, targetY: 0 },
       validationResult: null
     };
 
@@ -136,7 +136,7 @@
             'System Architecture Trade-off Lab' +
           '</h1>' +
           '<p style="font-size:0.875rem; color:var(--text-color, #4b5563); max-width:42rem; margin:0 auto; line-height:1.5;">' +
-            'No system is perfect — every architecture is defined by its trade-offs. Drag component boxes, drag wire handles to rewire connections, and validate your architecture!' +
+            'No system is perfect — every architecture is defined by its trade-offs. Drag component boxes, drag green/blue wire handles to rewire both ends, and validate your architecture!' +
           '</p>' +
         '</div>' +
 
@@ -180,7 +180,7 @@
         /* Step 3: Full-Width 1150px SVG Canvas Container */
         '<div style="padding:1.25rem; border-radius:1.5rem; background:var(--body-bg, #ffffff); border:1px solid var(--border-color, #e5e7eb); box-shadow:0 1px 3px rgba(0,0,0,0.05); display:flex; flex-direction:column; gap:1.25rem; width:100%;">' +
           '<div style="display:flex; align-items:center; justify-content:space-between; font-size:0.75rem; font-weight:700; color:#6b7280; padding-bottom:0.5rem; border-bottom:1px solid var(--border-color, #e5e7eb);">' +
-            '<span><i class="fa-solid fa-plug" style="color:var(--primary, #0ea5e9);"></i> Interactive Wiring Canvas (Drag Arrowhead Handles to Rewire, Drag "+" Handles to Connect)</span>' +
+            '<span><i class="fa-solid fa-plug" style="color:var(--primary, #0ea5e9);"></i> Dual Rewiring Canvas (Drag Green Handles to Move Start Node, Blue Arrowhead Handles to Move Target Node)</span>' +
             '<span>' + state.nodes.length + ' Nodes / ' + state.connections.length + ' Wires</span>' +
           '</div>' +
 
@@ -283,6 +283,7 @@
 
           pathsHtml += '<g data-wire-conn-idx="' + idx + '" style="cursor:pointer;">' +
             '<path class="connection-bezier-path" d="' + pathD + '" stroke="' + (isSelected ? "#f59e0b" : "#0ea5e9") + '" stroke-width="' + (isSelected ? "4" : "2.5") + '" stroke-dasharray="5 5" fill="none" marker-end="url(#arrowhead)" opacity="0.9" />' +
+            '<circle data-wire-start-idx="' + idx + '" cx="' + p1.x + '" cy="' + p1.y + '" r="6.5" fill="#10b981" stroke="#ffffff" stroke-width="2" style="cursor:grab;" />' +
             '<circle data-wire-endpoint-idx="' + idx + '" cx="' + p2.x + '" cy="' + p2.y + '" r="7" fill="#0ea5e9" stroke="#ffffff" stroke-width="2" style="cursor:grab;" />' +
           '</g>';
         }
@@ -290,12 +291,8 @@
 
       var rubberbandHtml = "";
       if (state.wireDragState.isDragging) {
-        var rFromNode = state.nodes.find(function (n) { return n.id === state.wireDragState.fromNodeId; });
-        if (rFromNode) {
-          var rP1 = getNodePortCoords(rFromNode, "output");
-          var rPathD = generateBezierPath(rP1.x, rP1.y, state.wireDragState.targetX, state.wireDragState.targetY);
-          rubberbandHtml = '<path d="' + rPathD + '" stroke="#f59e0b" stroke-width="3.5" stroke-dasharray="4 4" fill="none" marker-end="url(#arrowhead-drag)" opacity="0.95" />';
-        }
+        var rPathD = generateBezierPath(state.wireDragState.startX, state.wireDragState.startY, state.wireDragState.targetX, state.wireDragState.targetY);
+        rubberbandHtml = '<path class="rubberband-wire-preview" d="' + rPathD + '" stroke="#f59e0b" stroke-width="3.5" stroke-dasharray="4 4" fill="none" marker-end="url(#arrowhead-drag)" opacity="0.95" />';
       }
 
       var vpcBoxHtml = "";
@@ -395,6 +392,60 @@
       return { success: false, hint: hintMsg };
     }
 
+    function rebuildConnections() {
+      var clientNode = state.nodes.find(function (n) { return n.id === "node_client"; });
+      var appNode = state.nodes.find(function (n) { return n.id === "node_app"; });
+      var dbNode = state.nodes.find(function (n) { return n.id === "node_db"; });
+
+      var edgeNode = state.nodes.find(function (n) { return n.type === "cdn" || n.type === "load_balancer"; });
+      var gwNode = state.nodes.find(function (n) { return n.type === "gateway"; });
+      var redisNode = state.nodes.find(function (n) { return n.type === "redis"; });
+      var kafkaNode = state.nodes.find(function (n) { return n.type === "kafka"; });
+      var storageNode = state.nodes.find(function (n) { return n.type === "storage"; });
+      var replicaNode = state.nodes.find(function (n) { return n.type === "read_replicas"; });
+
+      var newConns = [];
+
+      // User -> Edge -> Gateway -> App Server
+      var firstIngress = edgeNode || gwNode || appNode;
+      if (clientNode && firstIngress) {
+        newConns.push({ from: clientNode.id, to: firstIngress.id });
+      }
+
+      if (edgeNode && gwNode) {
+        newConns.push({ from: edgeNode.id, to: gwNode.id });
+      }
+
+      var lastIngress = gwNode || edgeNode;
+      if (lastIngress && appNode && lastIngress !== appNode) {
+        newConns.push({ from: lastIngress.id, to: appNode.id });
+      }
+
+      // App Server -> Cache / Queue -> Database (Sequential pipeline!)
+      if (appNode) {
+        if (redisNode && dbNode) {
+          newConns.push({ from: appNode.id, to: redisNode.id });
+          newConns.push({ from: redisNode.id, to: dbNode.id });
+        }
+        if (kafkaNode && dbNode) {
+          newConns.push({ from: appNode.id, to: kafkaNode.id });
+          newConns.push({ from: kafkaNode.id, to: dbNode.id });
+        }
+        if (!redisNode && !kafkaNode && dbNode) {
+          newConns.push({ from: appNode.id, to: dbNode.id });
+        }
+        if (storageNode) {
+          newConns.push({ from: appNode.id, to: storageNode.id });
+        }
+      }
+
+      if (dbNode && replicaNode) {
+        newConns.push({ from: dbNode.id, to: replicaNode.id });
+      }
+
+      state.connections = newConns;
+    }
+
     function bindLabEvents() {
       var challengeBtns = document.querySelectorAll("[data-challenge-id]");
       challengeBtns.forEach(function (btn) {
@@ -452,14 +503,10 @@
                 y: defaultY,
                 isBase: false
               });
-
-              var appNode = state.nodes.find(function (n) { return n.id === "node_app"; });
-              if (appNode) {
-                state.connections.push({ from: appNode.id, to: newId });
-              }
             }
           }
 
+          rebuildConnections();
           state.selectedConnIdx = null;
           state.validationResult = null;
           renderLabUI();
@@ -566,6 +613,7 @@
         }
 
         var pathEls = canvasEl.querySelectorAll("path.connection-bezier-path");
+        var startCircles = canvasEl.querySelectorAll("circle[data-wire-start-idx]");
         var endCircles = canvasEl.querySelectorAll("circle[data-wire-endpoint-idx]");
         state.connections.forEach(function (c, idx) {
           var fromN = state.nodes.find(function (n) { return n.id === c.from; });
@@ -574,6 +622,10 @@
             var p1 = getNodePortCoords(fromN, "output");
             var p2 = getNodePortCoords(toN, "input");
             pathEls[idx].setAttribute("d", generateBezierPath(p1.x, p1.y, p2.x, p2.y));
+            if (startCircles[idx]) {
+              startCircles[idx].setAttribute("cx", String(p1.x));
+              startCircles[idx].setAttribute("cy", String(p1.y));
+            }
             if (endCircles[idx]) {
               endCircles[idx].setAttribute("cx", String(p2.x));
               endCircles[idx].setAttribute("cy", String(p2.y));
@@ -591,13 +643,13 @@
         var nodeId = gEl.getAttribute("data-drag-node-id");
 
         gEl.addEventListener("mousedown", function (e) {
-          if (e.target && e.target.getAttribute("data-wire-source-id")) return;
+          if (e.target && (e.target.getAttribute("data-wire-source-id") || e.target.getAttribute("data-wire-start-idx") || e.target.getAttribute("data-wire-endpoint-idx"))) return;
           e.preventDefault();
           startDrag(e, nodeId);
         });
 
         gEl.addEventListener("touchstart", function (e) {
-          if (e.target && e.target.getAttribute("data-wire-source-id")) return;
+          if (e.target && (e.target.getAttribute("data-wire-source-id") || e.target.getAttribute("data-wire-start-idx") || e.target.getAttribute("data-wire-endpoint-idx"))) return;
           startDrag(e, nodeId);
         }, { passive: true });
       });
@@ -613,10 +665,11 @@
       if (!canvasEl) return;
 
       var sourceHandles = canvasEl.querySelectorAll("[data-wire-source-id]");
+      var startHandles = canvasEl.querySelectorAll("[data-wire-start-idx]");
       var endpointHandles = canvasEl.querySelectorAll("[data-wire-endpoint-idx]");
       var connGroups = canvasEl.querySelectorAll("[data-wire-conn-idx]");
 
-      function startWireDrag(e, mode, fromId, connIdx) {
+      function startWireDrag(e, mode, fromId, connIdx, startX, startY) {
         e.stopPropagation();
         var rect = canvasEl.getBoundingClientRect();
         var clientX = e.clientX || (e.touches && e.touches[0] ? e.touches[0].clientX : 0);
@@ -626,6 +679,8 @@
         state.wireDragState.mode = mode;
         state.wireDragState.fromNodeId = fromId;
         state.wireDragState.connIdx = connIdx;
+        state.wireDragState.startX = startX;
+        state.wireDragState.startY = startY;
         state.wireDragState.targetX = clientX - rect.left;
         state.wireDragState.targetY = clientY - rect.top;
 
@@ -634,24 +689,49 @@
 
       sourceHandles.forEach(function (handle) {
         var nodeId = handle.getAttribute("data-wire-source-id");
-        handle.addEventListener("mousedown", function (e) {
-          startWireDrag(e, "new", nodeId, null);
-        });
-        handle.addEventListener("touchstart", function (e) {
-          startWireDrag(e, "new", nodeId, null);
-        }, { passive: true });
+        var nObj = state.nodes.find(function (n) { return n.id === nodeId; });
+        if (nObj) {
+          var p1 = getNodePortCoords(nObj, "output");
+          handle.addEventListener("mousedown", function (e) {
+            startWireDrag(e, "new", nodeId, null, p1.x, p1.y);
+          });
+          handle.addEventListener("touchstart", function (e) {
+            startWireDrag(e, "new", nodeId, null, p1.x, p1.y);
+          }, { passive: true });
+        }
+      });
+
+      startHandles.forEach(function (handle) {
+        var idx = parseInt(handle.getAttribute("data-wire-start-idx"), 10);
+        var conn = state.connections[idx];
+        if (conn) {
+          var toN = state.nodes.find(function (n) { return n.id === conn.to; });
+          if (toN) {
+            var p2 = getNodePortCoords(toN, "input");
+            handle.addEventListener("mousedown", function (e) {
+              startWireDrag(e, "rewire_source", conn.from, idx, p2.x, p2.y);
+            });
+            handle.addEventListener("touchstart", function (e) {
+              startWireDrag(e, "rewire_source", conn.from, idx, p2.x, p2.y);
+            }, { passive: true });
+          }
+        }
       });
 
       endpointHandles.forEach(function (handle) {
         var idx = parseInt(handle.getAttribute("data-wire-endpoint-idx"), 10);
         var conn = state.connections[idx];
         if (conn) {
-          handle.addEventListener("mousedown", function (e) {
-            startWireDrag(e, "rewire", conn.from, idx);
-          });
-          handle.addEventListener("touchstart", function (e) {
-            startWireDrag(e, "rewire", conn.from, idx);
-          }, { passive: true });
+          var fromN = state.nodes.find(function (n) { return n.id === conn.from; });
+          if (fromN) {
+            var p1 = getNodePortCoords(fromN, "output");
+            handle.addEventListener("mousedown", function (e) {
+              startWireDrag(e, "rewire_target", conn.from, idx, p1.x, p1.y);
+            });
+            handle.addEventListener("touchstart", function (e) {
+              startWireDrag(e, "rewire_target", conn.from, idx, p1.x, p1.y);
+            }, { passive: true });
+          }
         }
       });
 
@@ -674,14 +754,10 @@
         state.wireDragState.targetX = clientX - rect.left;
         state.wireDragState.targetY = clientY - rect.top;
 
-        var rNode = state.nodes.find(function (n) { return n.id === state.wireDragState.fromNodeId; });
-        if (rNode) {
-          var p1 = getNodePortCoords(rNode, "output");
-          var rPathD = generateBezierPath(p1.x, p1.y, state.wireDragState.targetX, state.wireDragState.targetY);
-          var rubEl = canvasEl.querySelector("path.rubberband-wire-preview");
-          if (rubEl) {
-            rubEl.setAttribute("d", rPathD);
-          }
+        var rubEl = canvasEl.querySelector("path.rubberband-wire-preview");
+        if (rubEl) {
+          var rPathD = generateBezierPath(state.wireDragState.startX, state.wireDragState.startY, state.wireDragState.targetX, state.wireDragState.targetY);
+          rubEl.setAttribute("d", rPathD);
         }
       }
 
@@ -695,14 +771,16 @@
         var canvasY = clientY - rect.top;
 
         var targetNode = state.nodes.find(function (n) {
-          return canvasX >= n.x && canvasX <= n.x + 140 && canvasY >= n.y && canvasY <= n.y + 50 && n.id !== state.wireDragState.fromNodeId;
+          return canvasX >= n.x && canvasX <= n.x + 140 && canvasY >= n.y && canvasY <= n.y + 50;
         });
 
         if (targetNode) {
-          if (state.wireDragState.mode === "new") {
+          if (state.wireDragState.mode === "new" && targetNode.id !== state.wireDragState.fromNodeId) {
             state.connections.push({ from: state.wireDragState.fromNodeId, to: targetNode.id });
-          } else if (state.wireDragState.mode === "rewire" && state.wireDragState.connIdx !== null) {
+          } else if (state.wireDragState.mode === "rewire_target" && state.wireDragState.connIdx !== null) {
             state.connections[state.wireDragState.connIdx].to = targetNode.id;
+          } else if (state.wireDragState.mode === "rewire_source" && state.wireDragState.connIdx !== null) {
+            state.connections[state.wireDragState.connIdx].from = targetNode.id;
           }
         }
 
