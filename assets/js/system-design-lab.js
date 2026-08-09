@@ -1,4 +1,4 @@
-/* system-design-lab.js — Excalidraw-Style Smart Curved Bezier Engine & AI Hints */
+/* system-design-lab.js — Interactive Connection Rewiring & Rubberband Line Dragging Engine */
 (function () {
   "use strict";
 
@@ -78,18 +78,7 @@
       .replace(/'/g, "&#039;");
   }
 
-  function generateBezierPath(fromNode, toNode) {
-    var x1 = fromNode.x + 140;
-    var y1 = fromNode.y + 25;
-    var x2 = toNode.x;
-    var y2 = toNode.y + 25;
-
-    // Handle leftward/vertical layout cleanly
-    if (toNode.x + 140 < fromNode.x) {
-      x1 = fromNode.x;
-      x2 = toNode.x + 140;
-    }
-
+  function generateBezierPath(x1, y1, x2, y2) {
     var dx = Math.abs(x2 - x1);
     var controlOffset = Math.max(dx * 0.45, 45);
 
@@ -97,6 +86,13 @@
     var cx2 = (x1 <= x2) ? (x2 - controlOffset) : (x2 + controlOffset);
 
     return "M " + x1 + " " + y1 + " C " + cx1 + " " + y1 + ", " + cx2 + " " + y2 + ", " + x2 + " " + y2;
+  }
+
+  function getNodePortCoords(node, portType) {
+    if (portType === "output") {
+      return { x: node.x + 140, y: node.y + 25 };
+    }
+    return { x: node.x, y: node.y + 25 };
   }
 
   function initSystemDesignLab() {
@@ -108,6 +104,7 @@
       failedAttempts: 0,
       showSolution: false,
       hasVpc: false,
+      selectedConnIdx: null,
       nodes: [
         { id: "node_client", type: "client", label: "Client User", category: "User Tier", x: 60, y: 210, isBase: true },
         { id: "node_app", type: "app", label: "API Web Server", category: "Compute Tier", x: 550, y: 210, isBase: true },
@@ -118,6 +115,7 @@
         { from: "node_app", to: "node_db" }
       ],
       dragState: { isDragging: false, nodeId: null, offsetX: 0, offsetY: 0 },
+      wireDragState: { isDragging: false, mode: null, fromNodeId: null, connIdx: null, targetX: 0, targetY: 0 },
       validationResult: null
     };
 
@@ -138,7 +136,7 @@
             'System Architecture Trade-off Lab' +
           '</h1>' +
           '<p style="font-size:0.875rem; color:var(--text-color, #4b5563); max-width:42rem; margin:0 auto; line-height:1.5;">' +
-            'No system is perfect — every architecture is defined by its trade-offs. Select an enterprise challenge, add components from the toolbar above, and drag nodes freely with dynamic Excalidraw Bezier curves!' +
+            'No system is perfect — every architecture is defined by its trade-offs. Drag component boxes, drag wire handles to rewire connections, and validate your architecture!' +
           '</p>' +
         '</div>' +
 
@@ -174,7 +172,6 @@
             '</div>' +
           '</div>' +
 
-          /* Horizontal Button Grid */
           '<div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap:0.625rem; width:100%;">' +
             renderToolboxButtons(addedComponentKeys) +
           '</div>' +
@@ -183,8 +180,8 @@
         /* Step 3: Full-Width 1150px SVG Canvas Container */
         '<div style="padding:1.25rem; border-radius:1.5rem; background:var(--body-bg, #ffffff); border:1px solid var(--border-color, #e5e7eb); box-shadow:0 1px 3px rgba(0,0,0,0.05); display:flex; flex-direction:column; gap:1.25rem; width:100%;">' +
           '<div style="display:flex; align-items:center; justify-content:space-between; font-size:0.75rem; font-weight:700; color:#6b7280; padding-bottom:0.5rem; border-bottom:1px solid var(--border-color, #e5e7eb);">' +
-            '<span><i class="fa-solid fa-pen-ruler" style="color:var(--primary, #0ea5e9);"></i> Excalidraw Dynamic Canvas (Smooth Bezier Flow)</span>' +
-            '<span>' + state.nodes.length + ' Nodes / ' + state.connections.length + ' Bezier Tunnels</span>' +
+            '<span><i class="fa-solid fa-plug" style="color:var(--primary, #0ea5e9);"></i> Interactive Wiring Canvas (Drag Arrowhead Handles to Rewire, Drag "+" Handles to Connect)</span>' +
+            '<span>' + state.nodes.length + ' Nodes / ' + state.connections.length + ' Wires</span>' +
           '</div>' +
 
           /* SVG Canvas Container */
@@ -193,6 +190,13 @@
               renderSVGCanvas() +
             '</div>' +
           '</div>' +
+
+          /* Selected Wire Action Control (Delete) */
+          (state.selectedConnIdx !== null && state.connections[state.selectedConnIdx] ?
+            '<div style="padding:0.75rem 1rem; border-radius:1rem; background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.3); display:flex; align-items:center; justify-content:space-between; font-size:0.75rem;">' +
+              '<span>Wire Selected: <strong>' + getNodeLabel(state.connections[state.selectedConnIdx].from) + ' ➔ ' + getNodeLabel(state.connections[state.selectedConnIdx].to) + '</strong></span>' +
+              '<button id="delete-selected-wire-btn" style="padding:0.4rem 0.875rem; border-radius:0.625rem; font-size:0.7rem; font-weight:800; background:#ef4444; color:#ffffff; border:none; cursor:pointer;"><i class="fa-solid fa-trash-can"></i> Remove Connection Wire</button>' +
+            '</div>' : "") +
 
           /* Validation Result & AI Hint Box */
           '<div id="validation-output-container">' +
@@ -206,6 +210,12 @@
 
       bindLabEvents();
       bindDragEngine();
+      bindWiringEngine();
+    }
+
+    function getNodeLabel(nodeId) {
+      var n = state.nodes.find(function (item) { return item.id === nodeId; });
+      return n ? n.label : nodeId;
     }
 
     function getAddedComponentKeys() {
@@ -262,14 +272,32 @@
 
     function renderSVGCanvas() {
       var pathsHtml = "";
-      state.connections.forEach(function (c) {
+      state.connections.forEach(function (c, idx) {
         var fromNode = state.nodes.find(function (n) { return n.id === c.from; });
         var toNode = state.nodes.find(function (n) { return n.id === c.to; });
         if (fromNode && toNode) {
-          var pathD = generateBezierPath(fromNode, toNode);
-          pathsHtml += '<path class="connection-bezier-path" d="' + pathD + '" stroke="#0ea5e9" stroke-width="2.5" stroke-dasharray="5 5" fill="none" marker-end="url(#arrowhead)" opacity="0.9" />';
+          var p1 = getNodePortCoords(fromNode, "output");
+          var p2 = getNodePortCoords(toNode, "input");
+          var pathD = generateBezierPath(p1.x, p1.y, p2.x, p2.y);
+          var isSelected = state.selectedConnIdx === idx;
+
+          pathsHtml += '<g data-wire-conn-idx="' + idx + '" style="cursor:pointer;">' +
+            '<path class="connection-bezier-path" d="' + pathD + '" stroke="' + (isSelected ? "#f59e0b" : "#0ea5e9") + '" stroke-width="' + (isSelected ? "4" : "2.5") + '" stroke-dasharray="5 5" fill="none" marker-end="url(#arrowhead)" opacity="0.9" />' +
+            /* Rewire Arrowhead Drag Handle */
+            '<circle data-wire-endpoint-idx="' + idx + '" cx="' + p2.x + '" cy="' + p2.y + '" r="7" fill="#0ea5e9" stroke="#ffffff" stroke-width="2" style="cursor:grab;" />' +
+          '</g>';
         }
       });
+
+      var rubberbandHtml = "";
+      if (state.wireDragState.isDragging) {
+        var rFromNode = state.nodes.find(function (n) { return n.id === state.wireDragState.fromNodeId; });
+        if (rFromNode) {
+          var rP1 = getNodePortCoords(rFromNode, "output");
+          var rPathD = generateBezierPath(rP1.x, rP1.y, state.wireDragState.targetX, state.wireDragState.targetY);
+          rubberbandHtml = '<path d="' + rPathD + '" stroke="#f59e0b" stroke-width="3.5" stroke-dasharray="4 4" fill="none" marker-end="url(#arrowhead-drag)" opacity="0.95" />';
+        }
+      }
 
       var vpcBoxHtml = "";
       if (state.hasVpc) {
@@ -284,6 +312,9 @@
           '<rect width="140" height="50" rx="14" fill="' + (isBase ? "#ffffff" : "rgba(16,185,129,0.12)") + '" stroke="' + (isBase ? "#cbd5e1" : "#10b981") + '" stroke-width="2" />' +
           '<text x="70" y="24" text-anchor="middle" font-size="10" font-weight="bold" fill="' + (isBase ? "#0f172a" : "#059669") + '">' + escapeHtml(n.label.slice(0, 20)) + '</text>' +
           '<text x="70" y="38" text-anchor="middle" font-size="8" fill="#64748b">' + escapeHtml(n.category || "Tier") + '</text>' +
+          /* Wire Connection '+' Source Port Handle */
+          '<circle data-wire-source-id="' + n.id + '" cx="140" cy="25" r="9" fill="#0ea5e9" stroke="#ffffff" stroke-width="2" style="cursor:crosshair;" />' +
+          '<text data-wire-source-id="' + n.id + '" x="140" y="28" text-anchor="middle" font-size="11" font-weight="bold" fill="#ffffff" style="cursor:crosshair; pointer-events:none;">+</text>' +
         '</g>';
       });
 
@@ -292,6 +323,9 @@
           '<marker id="arrowhead" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">' +
             '<path d="M 0 0 L 10 5 L 0 10 z" fill="#0ea5e9" />' +
           '</marker>' +
+          '<marker id="arrowhead-drag" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">' +
+            '<path d="M 0 0 L 10 5 L 0 10 z" fill="#f59e0b" />' +
+          '</marker>' +
           '<pattern id="canvas-grid-pattern" width="20" height="20" patternUnits="userSpaceOnUse">' +
             '<path d="M 20 0 L 0 0 0 20" fill="none" stroke="#e2e8f0" stroke-width="0.75" />' +
           '</pattern>' +
@@ -299,6 +333,7 @@
         '<rect width="100%" height="100%" fill="url(#canvas-grid-pattern)" />' +
         vpcBoxHtml +
         pathsHtml +
+        rubberbandHtml +
         nodesHtml +
       '</svg>';
     }
@@ -321,7 +356,7 @@
       if (!res) {
         return '<div style="padding:1.25rem; border-radius:1rem; background:rgba(0,0,0,0.02); border:1px solid var(--border-color, #e5e7eb); text-align:center; font-size:0.75rem; color:#6b7280; display:flex; flex-direction:column; gap:0.35rem;">' +
           '<i class="fa-solid fa-hand-pointer" style="font-size:1.25rem; color:var(--primary, #0ea5e9);"></i>' +
-          '<div>Add components from the toolbar above, drag nodes freely on the canvas grid, and click <strong>Validate Architecture</strong>!</div>' +
+          '<div>Add components from the toolbar above, drag wire handles to rewire, and click <strong>Validate Architecture</strong>!</div>' +
         '</div>';
       }
 
@@ -362,60 +397,6 @@
       return { success: false, hint: hintMsg };
     }
 
-    function rebuildConnections() {
-      var clientNode = state.nodes.find(function (n) { return n.id === "node_client"; });
-      var appNode = state.nodes.find(function (n) { return n.id === "node_app"; });
-      var dbNode = state.nodes.find(function (n) { return n.id === "node_db"; });
-
-      var edgeNode = state.nodes.find(function (n) { return n.type === "cdn" || n.type === "load_balancer"; });
-      var gwNode = state.nodes.find(function (n) { return n.type === "gateway"; });
-      var redisNode = state.nodes.find(function (n) { return n.type === "redis"; });
-      var kafkaNode = state.nodes.find(function (n) { return n.type === "kafka"; });
-      var storageNode = state.nodes.find(function (n) { return n.type === "storage"; });
-      var replicaNode = state.nodes.find(function (n) { return n.type === "read_replicas"; });
-
-      var newConns = [];
-
-      // User -> Edge -> Gateway -> App Server
-      var firstIngress = edgeNode || gwNode || appNode;
-      if (clientNode && firstIngress) {
-        newConns.push({ from: clientNode.id, to: firstIngress.id });
-      }
-
-      if (edgeNode && gwNode) {
-        newConns.push({ from: edgeNode.id, to: gwNode.id });
-      }
-
-      var lastIngress = gwNode || edgeNode;
-      if (lastIngress && appNode && lastIngress !== appNode) {
-        newConns.push({ from: lastIngress.id, to: appNode.id });
-      }
-
-      // App Server -> Cache / Queue / Storage / Database
-      if (appNode) {
-        if (redisNode) {
-          newConns.push({ from: appNode.id, to: redisNode.id });
-          if (dbNode) newConns.push({ from: redisNode.id, to: dbNode.id });
-        }
-        if (kafkaNode) {
-          newConns.push({ from: appNode.id, to: kafkaNode.id });
-          if (dbNode) newConns.push({ from: kafkaNode.id, to: dbNode.id });
-        }
-        if (!redisNode && !kafkaNode && dbNode) {
-          newConns.push({ from: appNode.id, to: dbNode.id });
-        }
-        if (storageNode) {
-          newConns.push({ from: appNode.id, to: storageNode.id });
-        }
-      }
-
-      if (dbNode && replicaNode) {
-        newConns.push({ from: dbNode.id, to: replicaNode.id });
-      }
-
-      state.connections = newConns;
-    }
-
     function bindLabEvents() {
       var challengeBtns = document.querySelectorAll("[data-challenge-id]");
       challengeBtns.forEach(function (btn) {
@@ -423,6 +404,7 @@
           state.activeChallengeId = btn.getAttribute("data-challenge-id");
           state.failedAttempts = 0;
           state.showSolution = false;
+          state.selectedConnIdx = null;
           state.validationResult = null;
           renderLabUI();
         });
@@ -439,7 +421,11 @@
           } else {
             var existingIdx = state.nodes.findIndex(function (n) { return n.type === key; });
             if (existingIdx !== -1) {
+              var removedId = state.nodes[existingIdx].id;
               state.nodes.splice(existingIdx, 1);
+              state.connections = state.connections.filter(function (c) {
+                return c.from !== removedId && c.to !== removedId;
+              });
             } else if (comp) {
               var newId = "node_" + key + "_" + Date.now();
               var defaultX = 780;
@@ -468,10 +454,16 @@
                 y: defaultY,
                 isBase: false
               });
+
+              // Default wire: connect from App Server if available
+              var appNode = state.nodes.find(function (n) { return n.id === "node_app"; });
+              if (appNode) {
+                state.connections.push({ from: appNode.id, to: newId });
+              }
             }
           }
 
-          rebuildConnections();
+          state.selectedConnIdx = null;
           state.validationResult = null;
           renderLabUI();
         });
@@ -492,6 +484,7 @@
           ];
           state.failedAttempts = 0;
           state.showSolution = false;
+          state.selectedConnIdx = null;
           state.validationResult = null;
           renderLabUI();
         });
@@ -519,6 +512,17 @@
           renderLabUI();
         });
       }
+
+      var deleteWireBtn = document.getElementById("delete-selected-wire-btn");
+      if (deleteWireBtn) {
+        deleteWireBtn.addEventListener("click", function () {
+          if (state.selectedConnIdx !== null && state.connections[state.selectedConnIdx]) {
+            state.connections.splice(state.selectedConnIdx, 1);
+            state.selectedConnIdx = null;
+            renderLabUI();
+          }
+        });
+      }
     }
 
     function bindDragEngine() {
@@ -528,6 +532,8 @@
       var nodeEls = canvasEl.querySelectorAll("[data-drag-node-id]");
 
       function startDrag(e, nodeId) {
+        if (state.wireDragState.isDragging) return;
+
         var nodeObj = state.nodes.find(function (n) { return n.id === nodeId; });
         if (!nodeObj) return;
 
@@ -554,23 +560,27 @@
         var newX = clientX - rect.left - state.dragState.offsetX;
         var newY = clientY - rect.top - state.dragState.offsetY;
 
-        // Clamp inside 1150px canvas bounds
         nodeObj.x = Math.max(10, Math.min(1150 - 150, newX));
         nodeObj.y = Math.max(10, Math.min(480 - 60, newY));
 
-        // Update node transform & SVG Bezier paths directly in DOM for 60fps performance
         var targetG = canvasEl.querySelector('[data-drag-node-id="' + nodeObj.id + '"]');
         if (targetG) {
           targetG.setAttribute("transform", "translate(" + nodeObj.x + "," + nodeObj.y + ")");
         }
 
-        // Redraw SVG Bezier paths dynamically
         var pathEls = canvasEl.querySelectorAll("path.connection-bezier-path");
+        var endCircles = canvasEl.querySelectorAll("circle[data-wire-endpoint-idx]");
         state.connections.forEach(function (c, idx) {
           var fromN = state.nodes.find(function (n) { return n.id === c.from; });
           var toN = state.nodes.find(function (n) { return n.id === c.to; });
           if (fromN && toN && pathEls[idx]) {
-            pathEls[idx].setAttribute("d", generateBezierPath(fromN, toN));
+            var p1 = getNodePortCoords(fromN, "output");
+            var p2 = getNodePortCoords(toN, "input");
+            pathEls[idx].setAttribute("d", generateBezierPath(p1.x, p1.y, p2.x, p2.y));
+            if (endCircles[idx]) {
+              endCircles[idx].setAttribute("cx", String(p2.x));
+              endCircles[idx].setAttribute("cy", String(p2.y));
+            }
           }
         });
       }
@@ -584,11 +594,13 @@
         var nodeId = gEl.getAttribute("data-drag-node-id");
 
         gEl.addEventListener("mousedown", function (e) {
+          if (e.target && e.target.getAttribute("data-wire-source-id")) return;
           e.preventDefault();
           startDrag(e, nodeId);
         });
 
         gEl.addEventListener("touchstart", function (e) {
+          if (e.target && e.target.getAttribute("data-wire-source-id")) return;
           startDrag(e, nodeId);
         }, { passive: true });
       });
@@ -597,6 +609,118 @@
       window.addEventListener("touchmove", onMove, { passive: true });
       window.addEventListener("mouseup", stopDrag);
       window.addEventListener("touchend", stopDrag);
+    }
+
+    function bindWiringEngine() {
+      var canvasEl = document.getElementById("architecture-svg-canvas");
+      if (!canvasEl) return;
+
+      var sourceHandles = canvasEl.querySelectorAll("[data-wire-source-id]");
+      var endpointHandles = canvasEl.querySelectorAll("[data-wire-endpoint-idx]");
+      var connGroups = canvasEl.querySelectorAll("[data-wire-conn-idx]");
+
+      function startWireDrag(e, mode, fromId, connIdx) {
+        e.stopPropagation();
+        var rect = canvasEl.getBoundingClientRect();
+        var clientX = e.clientX || (e.touches && e.touches[0] ? e.touches[0].clientX : 0);
+        var clientY = e.clientY || (e.touches && e.touches[0] ? e.touches[0].clientY : 0);
+
+        state.wireDragState.isDragging = true;
+        state.wireDragState.mode = mode;
+        state.wireDragState.fromNodeId = fromId;
+        state.wireDragState.connIdx = connIdx;
+        state.wireDragState.targetX = clientX - rect.left;
+        state.wireDragState.targetY = clientY - rect.top;
+
+        renderLabUI();
+      }
+
+      sourceHandles.forEach(function (handle) {
+        var nodeId = handle.getAttribute("data-wire-source-id");
+        handle.addEventListener("mousedown", function (e) {
+          startWireDrag(e, "new", nodeId, null);
+        });
+        handle.addEventListener("touchstart", function (e) {
+          startWireDrag(e, "new", nodeId, null);
+        }, { passive: true });
+      });
+
+      endpointHandles.forEach(function (handle) {
+        var idx = parseInt(handle.getAttribute("data-wire-endpoint-idx"), 10);
+        var conn = state.connections[idx];
+        if (conn) {
+          handle.addEventListener("mousedown", function (e) {
+            startWireDrag(e, "rewire", conn.from, idx);
+          });
+          handle.addEventListener("touchstart", function (e) {
+            startWireDrag(e, "rewire", conn.from, idx);
+          }, { passive: true });
+        }
+      });
+
+      connGroups.forEach(function (group) {
+        var idx = parseInt(group.getAttribute("data-wire-conn-idx"), 10);
+        group.addEventListener("click", function (e) {
+          e.stopPropagation();
+          state.selectedConnIdx = idx;
+          renderLabUI();
+        });
+      });
+
+      function onWireMove(e) {
+        if (!state.wireDragState.isDragging) return;
+
+        var rect = canvasEl.getBoundingClientRect();
+        var clientX = e.clientX || (e.touches && e.touches[0] ? e.touches[0].clientX : 0);
+        var clientY = e.clientY || (e.touches && e.touches[0] ? e.touches[0].clientY : 0);
+
+        state.wireDragState.targetX = clientX - rect.left;
+        state.wireDragState.targetY = clientY - rect.top;
+
+        // Render dynamic rubberband path directly in DOM
+        var rNode = state.nodes.find(function (n) { return n.id === state.wireDragState.fromNodeId; });
+        if (rNode) {
+          var p1 = getNodePortCoords(rNode, "output");
+          var rPathD = generateBezierPath(p1.x, p1.y, state.wireDragState.targetX, state.wireDragState.targetY);
+          var rubEl = canvasEl.querySelector("path.rubberband-wire-preview");
+          if (rubEl) {
+            rubEl.setAttribute("d", rPathD);
+          }
+        }
+      }
+
+      function stopWireDrag(e) {
+        if (!state.wireDragState.isDragging) return;
+
+        var clientX = e.clientX || (e.changedTouches && e.changedTouches[0] ? e.changedTouches[0].clientX : 0);
+        var clientY = e.clientY || (e.changedTouches && e.changedTouches[0] ? e.changedTouches[0].clientY : 0);
+        var rect = canvasEl.getBoundingClientRect();
+        var canvasX = clientX - rect.left;
+        var canvasY = clientY - rect.top;
+
+        // Check if dropped onto any node
+        var targetNode = state.nodes.find(function (n) {
+          return canvasX >= n.x && canvasX <= n.x + 140 && canvasY >= n.y && canvasY <= n.y + 50 && n.id !== state.wireDragState.fromNodeId;
+        });
+
+        if (targetNode) {
+          if (state.wireDragState.mode === "new") {
+            state.connections.push({ from: state.wireDragState.fromNodeId, to: targetNode.id });
+          } else if (state.wireDragState.mode === "rewire" && state.wireDragState.connIdx !== null) {
+            state.connections[state.wireDragState.connIdx].to = targetNode.id;
+          }
+        }
+
+        state.wireDragState.isDragging = false;
+        state.wireDragState.fromNodeId = null;
+        state.wireDragState.connIdx = null;
+        renderLabUI();
+      }
+
+      window.addEventListener("mousemove", onWireMove);
+      window.addEventListener("touchmove", onWireMove, { passive: true });
+      window.addEventListener("mouseup", stopWireDrag);
+      window.addEventListener("touchend", stopWireDrag);
     }
 
     renderLabUI();
