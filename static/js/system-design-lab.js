@@ -1,4 +1,4 @@
-/* system-design-lab.js — Sequential Pipeline & Dual-Endpoint Wire Rewiring Engine */
+/* system-design-lab.js — Magnetized Proximity Snap & Smart 4-Port Anchor Engine */
 (function () {
   "use strict";
 
@@ -78,21 +78,60 @@
       .replace(/'/g, "&#039;");
   }
 
-  function generateBezierPath(x1, y1, x2, y2) {
-    var dx = Math.abs(x2 - x1);
-    var controlOffset = Math.max(dx * 0.45, 45);
+  function getSmart4PortCoords(fromNode, toNode) {
+    var fx = fromNode.x, fy = fromNode.y;
+    var tx = toNode.x, ty = toNode.y;
 
-    var cx1 = (x1 <= x2) ? (x1 + controlOffset) : (x1 - controlOffset);
-    var cx2 = (x1 <= x2) ? (x2 - controlOffset) : (x2 + controlOffset);
+    var dx = (tx + 70) - (fx + 70);
+    var dy = (ty + 25) - (fy + 25);
 
-    return "M " + x1 + " " + y1 + " C " + cx1 + " " + y1 + ", " + cx2 + " " + y2 + ", " + x2 + " " + y2;
+    var p1 = { x: fx + 140, y: fy + 25, dir: "right" };
+    var p2 = { x: tx, y: ty + 25, dir: "left" };
+
+    if (Math.abs(dx) > Math.abs(dy)) {
+      if (dx >= 0) {
+        p1 = { x: fx + 140, y: fy + 25, dir: "right" };
+        p2 = { x: tx, y: ty + 25, dir: "left" };
+      } else {
+        p1 = { x: fx, y: fy + 25, dir: "left" };
+        p2 = { x: tx + 140, y: ty + 25, dir: "right" };
+      }
+    } else {
+      if (dy >= 0) {
+        p1 = { x: fx + 70, y: fy + 50, dir: "bottom" };
+        p2 = { x: tx + 70, y: ty, dir: "top" };
+      } else {
+        p1 = { x: fx + 70, y: fy, dir: "top" };
+        p2 = { x: tx + 70, y: ty + 50, dir: "bottom" };
+      }
+    }
+
+    return { p1: p1, p2: p2 };
   }
 
-  function getNodePortCoords(node, portType) {
-    if (portType === "output") {
-      return { x: node.x + 140, y: node.y + 25 };
-    }
-    return { x: node.x, y: node.y + 25 };
+  function generateSmartBezierPath(p1, p2) {
+    var dx = p2.x - p1.x;
+    var dy = p2.y - p1.y;
+    var dist = Math.sqrt(dx * dx + dy * dy);
+    var offset = Math.min(Math.max(dist * 0.4, 30), 120);
+
+    var cx1 = p1.x, cy1 = p1.y;
+    var cx2 = p2.x, cy2 = p2.y;
+
+    var dir1 = p1.dir || "right";
+    var dir2 = p2.dir || "left";
+
+    if (dir1 === "right") cx1 += offset;
+    else if (dir1 === "left") cx1 -= offset;
+    else if (dir1 === "bottom") cy1 += offset;
+    else if (dir1 === "top") cy1 -= offset;
+
+    if (dir2 === "left") cx2 -= offset;
+    else if (dir2 === "right") cx2 += offset;
+    else if (dir2 === "top") cy2 -= offset;
+    else if (dir2 === "bottom") cy2 += offset;
+
+    return "M " + p1.x + " " + p1.y + " C " + cx1 + " " + cy1 + ", " + cx2 + " " + cy2 + ", " + p2.x + " " + p2.y;
   }
 
   function initSystemDesignLab() {
@@ -115,9 +154,27 @@
         { from: "node_app", to: "node_db" }
       ],
       dragState: { isDragging: false, nodeId: null, offsetX: 0, offsetY: 0 },
-      wireDragState: { isDragging: false, mode: null, fromNodeId: null, connIdx: null, startX: 0, startY: 0, targetX: 0, targetY: 0 },
+      wireDragState: { isDragging: false, mode: null, fromNodeId: null, connIdx: null, startX: 0, startY: 0, targetX: 0, targetY: 0, snapNodeId: null },
       validationResult: null
     };
+
+    function findSnapTargetNode(canvasX, canvasY, ignoreNodeId) {
+      var bestNode = null;
+      var minDist = 65; // 65px magnetized snap distance!
+
+      state.nodes.forEach(function (n) {
+        if (n.id === ignoreNodeId) return;
+        var centerX = n.x + 70;
+        var centerY = n.y + 25;
+        var dist = Math.sqrt((canvasX - centerX) * (canvasX - centerX) + (canvasY - centerY) * (canvasY - centerY));
+        if (dist < minDist) {
+          minDist = dist;
+          bestNode = n;
+        }
+      });
+
+      return bestNode;
+    }
 
     function renderLabUI() {
       var currentChallenge = CHALLENGES.find(function (c) { return c.id === state.activeChallengeId; }) || CHALLENGES[0];
@@ -136,7 +193,7 @@
             'System Architecture Trade-off Lab' +
           '</h1>' +
           '<p style="font-size:0.875rem; color:var(--text-color, #4b5563); max-width:42rem; margin:0 auto; line-height:1.5;">' +
-            'No system is perfect — every architecture is defined by its trade-offs. Drag component boxes, drag green/blue wire handles to rewire both ends, and validate your architecture!' +
+            'No system is perfect — every architecture is defined by its trade-offs. Drag component boxes, drag wire handles with magnetized proximity snap to connect, and validate your architecture!' +
           '</p>' +
         '</div>' +
 
@@ -180,7 +237,7 @@
         /* Step 3: Full-Width 1150px SVG Canvas Container */
         '<div style="padding:1.25rem; border-radius:1.5rem; background:var(--body-bg, #ffffff); border:1px solid var(--border-color, #e5e7eb); box-shadow:0 1px 3px rgba(0,0,0,0.05); display:flex; flex-direction:column; gap:1.25rem; width:100%;">' +
           '<div style="display:flex; align-items:center; justify-content:space-between; font-size:0.75rem; font-weight:700; color:#6b7280; padding-bottom:0.5rem; border-bottom:1px solid var(--border-color, #e5e7eb);">' +
-            '<span><i class="fa-solid fa-plug" style="color:var(--primary, #0ea5e9);"></i> Dual Rewiring Canvas (Drag Green Handles to Move Start Node, Blue Arrowhead Handles to Move Target Node)</span>' +
+            '<span><i class="fa-solid fa-magnet" style="color:var(--primary, #0ea5e9);"></i> Magnetized Proximity Snap Canvas (Smart Top/Bottom/Left/Right Ports)</span>' +
             '<span>' + state.nodes.length + ' Nodes / ' + state.connections.length + ' Wires</span>' +
           '</div>' +
 
@@ -276,9 +333,10 @@
         var fromNode = state.nodes.find(function (n) { return n.id === c.from; });
         var toNode = state.nodes.find(function (n) { return n.id === c.to; });
         if (fromNode && toNode) {
-          var p1 = getNodePortCoords(fromNode, "output");
-          var p2 = getNodePortCoords(toNode, "input");
-          var pathD = generateBezierPath(p1.x, p1.y, p2.x, p2.y);
+          var ports = getSmart4PortCoords(fromNode, toNode);
+          var p1 = ports.p1;
+          var p2 = ports.p2;
+          var pathD = generateSmartBezierPath(p1, p2);
           var isSelected = state.selectedConnIdx === idx;
 
           pathsHtml += '<g data-wire-conn-idx="' + idx + '" style="cursor:pointer;">' +
@@ -291,7 +349,15 @@
 
       var rubberbandHtml = "";
       if (state.wireDragState.isDragging) {
-        var rPathD = generateBezierPath(state.wireDragState.startX, state.wireDragState.startY, state.wireDragState.targetX, state.wireDragState.targetY);
+        var targetP2 = { x: state.wireDragState.targetX, y: state.wireDragState.targetY, dir: "left" };
+        if (state.wireDragState.snapNodeId) {
+          var sNode = state.nodes.find(function (n) { return n.id === state.wireDragState.snapNodeId; });
+          if (sNode) {
+            targetP2 = { x: sNode.x + 70, y: sNode.y + 25, dir: "left" };
+          }
+        }
+        var startP1 = { x: state.wireDragState.startX, y: state.wireDragState.startY, dir: "right" };
+        var rPathD = generateSmartBezierPath(startP1, targetP2);
         rubberbandHtml = '<path class="rubberband-wire-preview" d="' + rPathD + '" stroke="#f59e0b" stroke-width="3.5" stroke-dasharray="4 4" fill="none" marker-end="url(#arrowhead-drag)" opacity="0.95" />';
       }
 
@@ -304,7 +370,10 @@
       var nodesHtml = "";
       state.nodes.forEach(function (n) {
         var isBase = n.isBase;
+        var isSnapCandidate = state.wireDragState.isDragging && state.wireDragState.snapNodeId === n.id;
+
         nodesHtml += '<g data-drag-node-id="' + n.id + '" transform="translate(' + n.x + ',' + n.y + ')" style="cursor:grab;">' +
+          (isSnapCandidate ? '<rect x="-6" y="-6" width="152" height="62" rx="18" fill="rgba(16,185,129,0.2)" stroke="#10b981" stroke-width="3" stroke-dasharray="4 4" />' : "") +
           '<rect width="140" height="50" rx="14" fill="' + (isBase ? "#ffffff" : "rgba(16,185,129,0.12)") + '" stroke="' + (isBase ? "#cbd5e1" : "#10b981") + '" stroke-width="2" />' +
           '<text x="70" y="24" text-anchor="middle" font-size="10" font-weight="bold" fill="' + (isBase ? "#0f172a" : "#059669") + '">' + escapeHtml(n.label.slice(0, 20)) + '</text>' +
           '<text x="70" y="38" text-anchor="middle" font-size="8" fill="#64748b">' + escapeHtml(n.category || "Tier") + '</text>' +
@@ -406,7 +475,6 @@
 
       var newConns = [];
 
-      // User -> Edge -> Gateway -> App Server
       var firstIngress = edgeNode || gwNode || appNode;
       if (clientNode && firstIngress) {
         newConns.push({ from: clientNode.id, to: firstIngress.id });
@@ -421,7 +489,6 @@
         newConns.push({ from: lastIngress.id, to: appNode.id });
       }
 
-      // App Server -> Cache / Queue -> Database (Sequential pipeline!)
       if (appNode) {
         if (redisNode && dbNode) {
           newConns.push({ from: appNode.id, to: redisNode.id });
@@ -619,9 +686,10 @@
           var fromN = state.nodes.find(function (n) { return n.id === c.from; });
           var toN = state.nodes.find(function (n) { return n.id === c.to; });
           if (fromN && toN && pathEls[idx]) {
-            var p1 = getNodePortCoords(fromN, "output");
-            var p2 = getNodePortCoords(toN, "input");
-            pathEls[idx].setAttribute("d", generateBezierPath(p1.x, p1.y, p2.x, p2.y));
+            var ports = getSmart4PortCoords(fromN, toN);
+            var p1 = ports.p1;
+            var p2 = ports.p2;
+            pathEls[idx].setAttribute("d", generateSmartBezierPath(p1, p2));
             if (startCircles[idx]) {
               startCircles[idx].setAttribute("cx", String(p1.x));
               startCircles[idx].setAttribute("cy", String(p1.y));
@@ -683,6 +751,7 @@
         state.wireDragState.startY = startY;
         state.wireDragState.targetX = clientX - rect.left;
         state.wireDragState.targetY = clientY - rect.top;
+        state.wireDragState.snapNodeId = null;
 
         renderLabUI();
       }
@@ -691,12 +760,11 @@
         var nodeId = handle.getAttribute("data-wire-source-id");
         var nObj = state.nodes.find(function (n) { return n.id === nodeId; });
         if (nObj) {
-          var p1 = getNodePortCoords(nObj, "output");
           handle.addEventListener("mousedown", function (e) {
-            startWireDrag(e, "new", nodeId, null, p1.x, p1.y);
+            startWireDrag(e, "new", nodeId, null, nObj.x + 140, nObj.y + 25);
           });
           handle.addEventListener("touchstart", function (e) {
-            startWireDrag(e, "new", nodeId, null, p1.x, p1.y);
+            startWireDrag(e, "new", nodeId, null, nObj.x + 140, nObj.y + 25);
           }, { passive: true });
         }
       });
@@ -707,12 +775,11 @@
         if (conn) {
           var toN = state.nodes.find(function (n) { return n.id === conn.to; });
           if (toN) {
-            var p2 = getNodePortCoords(toN, "input");
             handle.addEventListener("mousedown", function (e) {
-              startWireDrag(e, "rewire_source", conn.from, idx, p2.x, p2.y);
+              startWireDrag(e, "rewire_source", conn.from, idx, toN.x + 70, toN.y + 25);
             });
             handle.addEventListener("touchstart", function (e) {
-              startWireDrag(e, "rewire_source", conn.from, idx, p2.x, p2.y);
+              startWireDrag(e, "rewire_source", conn.from, idx, toN.x + 70, toN.y + 25);
             }, { passive: true });
           }
         }
@@ -724,12 +791,11 @@
         if (conn) {
           var fromN = state.nodes.find(function (n) { return n.id === conn.from; });
           if (fromN) {
-            var p1 = getNodePortCoords(fromN, "output");
             handle.addEventListener("mousedown", function (e) {
-              startWireDrag(e, "rewire_target", conn.from, idx, p1.x, p1.y);
+              startWireDrag(e, "rewire_target", conn.from, idx, fromN.x + 70, fromN.y + 25);
             });
             handle.addEventListener("touchstart", function (e) {
-              startWireDrag(e, "rewire_target", conn.from, idx, p1.x, p1.y);
+              startWireDrag(e, "rewire_target", conn.from, idx, fromN.x + 70, fromN.y + 25);
             }, { passive: true });
           }
         }
@@ -754,9 +820,17 @@
         state.wireDragState.targetX = clientX - rect.left;
         state.wireDragState.targetY = clientY - rect.top;
 
+        var snapTarget = findSnapTargetNode(state.wireDragState.targetX, state.wireDragState.targetY, state.wireDragState.fromNodeId);
+        state.wireDragState.snapNodeId = snapTarget ? snapTarget.id : null;
+
         var rubEl = canvasEl.querySelector("path.rubberband-wire-preview");
         if (rubEl) {
-          var rPathD = generateBezierPath(state.wireDragState.startX, state.wireDragState.startY, state.wireDragState.targetX, state.wireDragState.targetY);
+          var targetP2 = { x: state.wireDragState.targetX, y: state.wireDragState.targetY, dir: "left" };
+          if (snapTarget) {
+            targetP2 = { x: snapTarget.x + 70, y: snapTarget.y + 25, dir: "left" };
+          }
+          var startP1 = { x: state.wireDragState.startX, y: state.wireDragState.startY, dir: "right" };
+          var rPathD = generateSmartBezierPath(startP1, targetP2);
           rubEl.setAttribute("d", rPathD);
         }
       }
@@ -770,9 +844,7 @@
         var canvasX = clientX - rect.left;
         var canvasY = clientY - rect.top;
 
-        var targetNode = state.nodes.find(function (n) {
-          return canvasX >= n.x && canvasX <= n.x + 140 && canvasY >= n.y && canvasY <= n.y + 50;
-        });
+        var targetNode = findSnapTargetNode(canvasX, canvasY, state.wireDragState.fromNodeId);
 
         if (targetNode) {
           if (state.wireDragState.mode === "new" && targetNode.id !== state.wireDragState.fromNodeId) {
@@ -787,6 +859,7 @@
         state.wireDragState.isDragging = false;
         state.wireDragState.fromNodeId = null;
         state.wireDragState.connIdx = null;
+        state.wireDragState.snapNodeId = null;
         renderLabUI();
       }
 
@@ -797,10 +870,6 @@
     }
 
     renderLabUI();
-  }
-
-  function initApp() {
-    initSystemDesignLab();
   }
 
   if (document.readyState === "loading") {
