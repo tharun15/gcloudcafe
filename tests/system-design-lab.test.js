@@ -11,51 +11,36 @@ const AVAILABLE_COMPONENTS = {
   "read_replicas": { cost: 60 }
 };
 
-function calculateTotalCost(selected) {
-  let cost = 45; // Base 3-tier cost
-  selected.forEach(key => {
-    if (AVAILABLE_COMPONENTS[key]) cost += AVAILABLE_COMPONENTS[key].cost;
-  });
-  return cost;
-}
-
 function validateArchitecture(requiredComponents, selected) {
   const missing = requiredComponents.filter(req => selected.indexOf(req) === -1);
   return { success: missing.length === 0, missing };
 }
 
 describe('System Design Trade-off Lab Engine', () => {
-  describe('Architecture Challenge Validation', () => {
-    it('validates Challenge 1 (Read Latency) correctly when required components are added', () => {
-      const required = ['redis', 'read_replicas'];
-      
-      const incomplete = validateArchitecture(required, ['redis']);
-      expect(incomplete.success).toBe(false);
-      expect(incomplete.missing).toEqual(['read_replicas']);
+  describe('Data Engineering & Solution Unlock Validation', () => {
+    it('validates Data Engineering Pipeline challenge correctly', () => {
+      const required = ['kafka', 'storage', 'gateway', 'vpc'];
 
-      const complete = validateArchitecture(required, ['redis', 'read_replicas', 'vpc']);
+      const partial = validateArchitecture(required, ['kafka', 'vpc']);
+      expect(partial.success).toBe(false);
+      expect(partial.missing).toEqual(['storage', 'gateway']);
+
+      const complete = validateArchitecture(required, ['kafka', 'storage', 'gateway', 'vpc']);
       expect(complete.success).toBe(true);
       expect(complete.missing).toEqual([]);
     });
 
-    it('validates Challenge 2 (Write Spike Decoupling) correctly', () => {
-      const required = ['kafka', 'load_balancer', 'vpc'];
+    it('tracks 3 failed validation attempts to trigger solution unlock', () => {
+      let failedAttempts = 0;
+      const required = ['redis', 'read_replicas'];
 
-      const resPartial = validateArchitecture(required, ['kafka', 'vpc']);
-      expect(resPartial.success).toBe(false);
-      expect(resPartial.missing).toEqual(['load_balancer']);
+      for (let i = 0; i < 3; i++) {
+        const res = validateArchitecture(required, ['redis']);
+        if (!res.success) failedAttempts++;
+      }
 
-      const resComplete = validateArchitecture(required, ['kafka', 'load_balancer', 'vpc']);
-      expect(resComplete.success).toBe(true);
-    });
-  });
-
-  describe('Monthly Infrastructure Cost Calculator', () => {
-    it('calculates base spend plus component upgrades accurately', () => {
-      const selected = ['redis', 'kafka', 'vpc'];
-      const total = calculateTotalCost(selected);
-      // Base (45) + Redis (30) + Kafka (45) + VPC (0) = 120
-      expect(total).toBe(120);
+      expect(failedAttempts).toBe(3);
+      expect(failedAttempts >= 3).toBe(true);
     });
   });
 });

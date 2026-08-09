@@ -1,4 +1,4 @@
-/* system-design-lab.js — Interactive Drag-and-Drop Canvas & AI Architect Hint Engine */
+/* system-design-lab.js — Interactive Drag-and-Drop Canvas, Solution Unlock Engine & AI Architect Hints */
 (function () {
   "use strict";
 
@@ -19,6 +19,7 @@
       title: "⚡ Sub-20ms Read Latency & High Volume",
       targetGoal: "Handle 100,000 queries/sec with sub-20ms read latency.",
       requiredComponents: ["redis", "read_replicas"],
+      solutionComponents: ["redis", "read_replicas"],
       hintMissing: {
         "redis": "💡 AI Architect Hint: Reading directly from the primary DB creates query locks during spikes. What in-memory caching component intercepts frequent queries before hitting the DB?",
         "read_replicas": "💡 AI Architect Hint: A single database instance is overloaded by high query volume. What database component scales read throughput horizontally?"
@@ -30,6 +31,7 @@
       title: "💥 Write Throughput & Burst Decoupling",
       targetGoal: "Ingest 50,000 write events/sec during peak spikes without dropping data or crashing the DB.",
       requiredComponents: ["kafka", "load_balancer", "vpc"],
+      solutionComponents: ["kafka", "load_balancer", "vpc"],
       hintMissing: {
         "kafka": "💡 AI Architect Hint: Synchronous API writes crash your database during bursts. What event streaming queue buffers message spikes for asynchronous worker processing?",
         "load_balancer": "💡 AI Architect Hint: Incoming write bursts are saturating a single server instance. What networking component balances traffic across backend workers?",
@@ -38,10 +40,25 @@
       tradeoffExplanation: "By introducing a Kafka Event Queue and VPC Isolation, write bursts buffer safely. Trade-off: Sacrifices instant DB persistence for eventual consistency."
     },
     {
+      id: "data_engineering",
+      title: "📊 Real-Time Stream Ingestion & Pipeline",
+      targetGoal: "Ingest 1,000,000 IoT/log events/sec with sub-second stream processing and Data Lake storage.",
+      requiredComponents: ["kafka", "storage", "gateway", "vpc"],
+      solutionComponents: ["kafka", "storage", "gateway", "vpc"],
+      hintMissing: {
+        "kafka": "💡 AI Architect Hint: Batch ETL jobs crash under 1,000,000 events/sec. What distributed event streaming log decouples high-speed data ingestion from stream processing?",
+        "storage": "💡 AI Architect Hint: Raw event streams require persistent cold storage for auditing & replay. What object storage service acts as the Data Lake layer?",
+        "gateway": "💡 AI Architect Hint: IoT devices require a secure single point of entry for streaming data. What component authenticates & throttles incoming ingestion streams?",
+        "vpc": "💡 AI Architect Hint: Analytics worker pipelines need private network security. What component isolates streaming workers behind NAT gateways?"
+      },
+      tradeoffExplanation: "Pairing Kafka stream ingestion with GCS Object Storage in a private VPC enables 1M events/sec ingestion. Trade-off: Requires schema evolution governance (Avro/Protobuf) and partition key tuning."
+    },
+    {
       id: "global_edge",
       title: "🌍 Secure Global Edge Uptime & 99.99% Availability",
       targetGoal: "Deliver global static & API traffic with 99.99% SLA uptime and network isolation.",
       requiredComponents: ["cdn", "load_balancer", "vpc", "storage"],
+      solutionComponents: ["cdn", "load_balancer", "vpc", "storage"],
       hintMissing: {
         "cdn": "💡 AI Architect Hint: Users in Europe and Asia experience 300ms network round-trip delays to your US server. What Edge network caches static assets closer to global users?",
         "storage": "💡 AI Architect Hint: Serving heavy media files directly from API servers saturates bandwidth. What cloud storage service offloads static media files?",
@@ -67,6 +84,8 @@
 
     var state = {
       activeChallengeId: CHALLENGES[0].id,
+      failedAttempts: 0,
+      showSolution: false,
       nodes: [
         { id: "node_client", type: "client", label: "Client User", category: "User", x: 40, y: 160, isBase: true },
         { id: "node_app", type: "app", label: "API Web Server", category: "Compute", x: 260, y: 160, isBase: true },
@@ -107,7 +126,7 @@
             'Step 1: Select Your System Design Challenge' +
           '</label>' +
 
-          '<div id="challenges-grid" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:0.75rem;">' +
+          '<div id="challenges-grid" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap:0.75rem;">' +
             renderChallengeCards(state.activeChallengeId) +
           '</div>' +
 
@@ -133,10 +152,12 @@
               renderToolboxButtons(addedComponentKeys) +
             '</div>' +
 
-            '<div style="padding-top:0.75rem; border-top:1px solid var(--border-color, #e5e7eb);">' +
+            '<div style="padding-top:0.75rem; border-top:1px solid var(--border-color, #e5e7eb); display:flex; flex-direction:column; gap:0.5rem;">' +
               '<button id="validate-arch-btn" style="width:100%; padding:0.75rem; border-radius:1rem; font-size:0.75rem; font-weight:800; background:var(--primary, #0ea5e9); color:#ffffff; border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:0.5rem; box-shadow:0 1px 2px rgba(0,0,0,0.1);">' +
                 '<i class="fa-solid fa-circle-check"></i> Validate System Architecture' +
               '</button>' +
+
+              (state.failedAttempts >= 3 ? '<button id="unlock-solution-btn" style="width:100%; padding:0.625rem; border-radius:1rem; font-size:0.7rem; font-weight:800; background:rgba(245,158,11,0.15); color:#d97706; border:1px solid rgba(245,158,11,0.3); cursor:pointer; display:flex; align-items:center; justify-content:center; gap:0.5rem;"><i class="fa-solid fa-key"></i> 🔓 Unlock Optimal Solution</button>' : "") +
             '</div>' +
           '</div>' +
 
@@ -144,7 +165,7 @@
           '<div style="padding:1.25rem; border-radius:1.5rem; background:var(--body-bg, #ffffff); border:1px solid var(--border-color, #e5e7eb); box-shadow:0 1px 3px rgba(0,0,0,0.05); display:flex; flex-direction:column; gap:1.25rem; min-width:0;">' +
             '<div style="display:flex; align-items:center; justify-content:space-between; font-size:0.75rem; font-weight:700; color:#6b7280; padding-bottom:0.5rem; border-bottom:1px solid var(--border-color, #e5e7eb);">' +
               '<span><i class="fa-solid fa-hand" style="color:var(--primary, #0ea5e9);"></i> Drag & Drop Canvas Workspace</span>' +
-              '<span>' + state.nodes.length + ' Nodes / ' + state.connections.length + ' Connections (Hold & Drag Nodes)</span>' +
+              '<span>' + state.nodes.length + ' Nodes / ' + state.connections.length + ' Connections</span>' +
             '</div>' +
 
             /* Draggable SVG Container */
@@ -154,7 +175,7 @@
 
             /* Validation Result & AI Hint Box */
             '<div id="validation-output-container">' +
-              renderValidationOutput(state.validationResult, currentChallenge) +
+              renderValidationOutput(state.validationResult, currentChallenge, state.failedAttempts, state.showSolution) +
             '</div>' +
           '</div>' +
 
@@ -258,7 +279,21 @@
       '</svg>';
     }
 
-    function renderValidationOutput(res, currentChallenge) {
+    function renderValidationOutput(res, currentChallenge, failedAttempts, showSolution) {
+      if (showSolution) {
+        var solNames = currentChallenge.solutionComponents.map(function (k) {
+          return AVAILABLE_COMPONENTS[k] ? AVAILABLE_COMPONENTS[k].name : k;
+        }).join(" + ");
+
+        return '<div style="padding:1.25rem; border-radius:1.25rem; background:rgba(245,158,11,0.15); border:2px solid #f59e0b; color:#b45309; display:flex; flex-direction:column; gap:0.5rem;">' +
+          '<div style="font-weight:800; font-size:0.875rem; display:flex; align-items:center; gap:0.5rem; color:#d97706;">' +
+            '<i class="fa-solid fa-key" style="font-size:1.1rem;"></i> 🔓 Unlocked Optimal Solution Blueprint' +
+          '</div>' +
+          '<div style="font-size:0.75rem; font-weight:700; color:#92400e;">Required Upgrades: ' + escapeHtml(solNames) + '</div>' +
+          '<p style="font-size:0.75rem; line-height:1.5; font-weight:400; margin:0;">' + escapeHtml(currentChallenge.tradeoffExplanation) + '</p>' +
+        '</div>';
+      }
+
       if (!res) {
         return '<div style="padding:1.25rem; border-radius:1rem; background:rgba(0,0,0,0.02); border:1px solid var(--border-color, #e5e7eb); text-align:center; font-size:0.75rem; color:#6b7280; display:flex; flex-direction:column; gap:0.35rem;">' +
           '<i class="fa-solid fa-hand-pointer" style="font-size:1.25rem; color:var(--primary, #0ea5e9);"></i>' +
@@ -275,9 +310,12 @@
         '</div>';
       }
 
+      var attemptsRemainingNotice = failedAttempts < 3 ? ' <span style="font-size:0.7rem; font-weight:600; opacity:0.8;">(' + failedAttempts + '/3 failed validation attempts. Solution unlocks after 3 attempts.)</span>' : "";
+
       return '<div style="padding:1.25rem; border-radius:1.25rem; background:rgba(245,158,11,0.12); border:2px solid #f59e0b; color:#b45309; display:flex; flex-direction:column; gap:0.5rem;">' +
-        '<div style="font-weight:800; font-size:0.875rem; display:flex; align-items:center; gap:0.5rem; color:#d97706;">' +
-          '<i class="fa-solid fa-lightbulb" style="font-size:1.1rem;"></i> AI Architect Guidance' +
+        '<div style="font-weight:800; font-size:0.875rem; display:flex; align-items:center; justify-content:space-between; gap:0.5rem; color:#d97706; flex-wrap:wrap;">' +
+          '<span style="display:flex; align-items:center; gap:0.5rem;"><i class="fa-solid fa-lightbulb" style="font-size:1.1rem;"></i> AI Architect Guidance</span>' +
+          attemptsRemainingNotice +
         '</div>' +
         '<p style="font-size:0.75rem; line-height:1.5; font-weight:400; margin:0;">' + escapeHtml(res.hint) + '</p>' +
       '</div>';
@@ -305,6 +343,8 @@
       challengeBtns.forEach(function (btn) {
         btn.addEventListener("click", function () {
           state.activeChallengeId = btn.getAttribute("data-challenge-id");
+          state.failedAttempts = 0;
+          state.showSolution = false;
           state.validationResult = null;
           renderLabUI();
         });
@@ -364,6 +404,8 @@
             { from: "node_client", to: "node_app" },
             { from: "node_app", to: "node_db" }
           ];
+          state.failedAttempts = 0;
+          state.showSolution = false;
           state.validationResult = null;
           renderLabUI();
         });
@@ -375,6 +417,19 @@
           var currentChallenge = CHALLENGES.find(function (c) { return c.id === state.activeChallengeId; }) || CHALLENGES[0];
           var addedKeys = getAddedComponentKeys();
           state.validationResult = validateArchitecture(currentChallenge, addedKeys);
+
+          if (!state.validationResult.success) {
+            state.failedAttempts += 1;
+          }
+
+          renderLabUI();
+        });
+      }
+
+      var unlockBtn = document.getElementById("unlock-solution-btn");
+      if (unlockBtn) {
+        unlockBtn.addEventListener("click", function () {
+          state.showSolution = true;
           renderLabUI();
         });
       }
