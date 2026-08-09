@@ -1,6 +1,8 @@
-/* system-design-lab.js — Ultra-Selectable Wire Engine & Top Z-Layer System */
+/* system-design-lab.js — Bulldog 90px Snap & Persistent Canvas State Engine */
 (function () {
   "use strict";
+
+  var SESSION_STORAGE_KEY = "gcloudcafe_system_design_lab_v1";
 
   var AVAILABLE_COMPONENTS = {
     "vpc": { name: "Private VPC Subnet & NAT", icon: "fa-shield-halved", cost: 0, category: "Security", tier: "security" },
@@ -68,6 +70,39 @@
       tradeoffExplanation: "By routing traffic through CDN Edge nodes, Anycast Load Balancers, and GCS Object Storage inside a VPC, global latency drops by 80%. Trade-off: Increases monthly infrastructure operational spend."
     }
   ];
+
+  function saveSessionState(state) {
+    try {
+      var data = {
+        activeChallengeId: state.activeChallengeId,
+        failedAttempts: state.failedAttempts,
+        showSolution: state.showSolution,
+        hasVpc: state.hasVpc,
+        nodes: state.nodes,
+        connections: state.connections
+      };
+      sessionStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(data));
+    } catch (e) {}
+  }
+
+  function loadSessionState() {
+    try {
+      var raw = sessionStorage.getItem(SESSION_STORAGE_KEY);
+      if (raw) {
+        var parsed = JSON.parse(raw);
+        if (parsed && Array.isArray(parsed.nodes) && Array.isArray(parsed.connections)) {
+          return parsed;
+        }
+      }
+    } catch (e) {}
+    return null;
+  }
+
+  function clearSessionState() {
+    try {
+      sessionStorage.removeItem(SESSION_STORAGE_KEY);
+    } catch (e) {}
+  }
 
   function escapeHtml(str) {
     return String(str || "")
@@ -155,7 +190,7 @@
     var root = document.getElementById("system-design-lab-root");
     if (!root) return;
 
-    var state = {
+    var defaultState = {
       activeChallengeId: CHALLENGES[0].id,
       failedAttempts: 0,
       showSolution: false,
@@ -166,19 +201,19 @@
         { id: "node_app", type: "app", label: "API Web Server", category: "Compute Tier", x: 550, y: 210, isBase: true },
         { id: "node_db", type: "db", label: "Primary Database", category: "Database Tier", x: 980, y: 210, isBase: true }
       ],
-      connections: [
-        { from: "node_client", to: "node_app", fromDir: "right", toDir: "left" },
-        { from: "node_app", to: "node_db", fromDir: "right", toDir: "left" }
-      ],
+      connections: [],
       dragState: { isDragging: false, nodeId: null, offsetX: 0, offsetY: 0 },
-      wireDragState: { isDragging: false, mode: null, fromNodeId: null, fromDir: "right", connIdx: null, startX: 0, startY: 0, targetX: 0, targetY: 0, snapNodeId: null, snapPortDir: "left" },
+      wireDragState: { isDragging: false, mode: null, fromNodeId: null, ignoreNodeId: null, fromDir: "right", connIdx: null, startX: 0, startY: 0, targetX: 0, targetY: 0, snapNodeId: null, snapPortDir: "left" },
       validationResult: null
     };
+
+    var savedState = loadSessionState();
+    var state = savedState ? Object.assign({}, defaultState, savedState) : defaultState;
 
     function findSnapTargetNode(canvasX, canvasY, ignoreNodeId) {
       var bestNode = null;
       var bestPortDir = "left";
-      var minDist = 75;
+      var minDist = 200; // 200px snap radius for flexible connections
 
       state.nodes.forEach(function (n) {
         if (n.id === ignoreNodeId) return;
@@ -215,7 +250,7 @@
             'System Architecture Trade-off Lab' +
           '</h1>' +
           '<p style="font-size:0.875rem; color:var(--text-color, #4b5563); max-width:42rem; margin:0 auto; line-height:1.5;">' +
-            'No system is perfect — every architecture is defined by its trade-offs. Drag component boxes, grab green/blue wire handles to rewire, and validate your architecture!' +
+            'No system is perfect — every architecture is defined by its trade-offs. Drag component boxes, grab wire handles to connect, and your work auto-saves live!' +
           '</p>' +
         '</div>' +
 
@@ -259,7 +294,7 @@
         /* Step 3: Full-Width 1150px SVG Canvas Container */
         '<div style="padding:1.25rem; border-radius:1.5rem; background:var(--body-bg, #ffffff); border:1px solid var(--border-color, #e5e7eb); box-shadow:0 1px 3px rgba(0,0,0,0.05); display:flex; flex-direction:column; gap:1.25rem; width:100%;">' +
           '<div style="display:flex; align-items:center; justify-content:space-between; font-size:0.75rem; font-weight:700; color:#6b7280; padding-bottom:0.5rem; border-bottom:1px solid var(--border-color, #e5e7eb);">' +
-            '<span><i class="fa-solid fa-hand-pointer" style="color:var(--primary, #0ea5e9);"></i> Ultra-Selectable Canvas (18px Line Touch Targets & Top-Layer Wire Handles)</span>' +
+            '<span><i class="fa-solid fa-floppy-disk" style="color:#10b981;"></i> Bulldog 90px Snap & Live Session Persistence (Saved Live)</span>' +
             '<span>' + state.nodes.length + ' Nodes / ' + state.connections.length + ' Wires</span>' +
           '</div>' +
 
@@ -369,11 +404,13 @@
             '<path d="' + pathD + '" stroke="transparent" stroke-width="18" fill="none" pointer-events="stroke" />' +
           '</g>';
 
-          /* Top Z-Layer Drag Handles (Rendered AFTER nodesHtml!) */
-          handlesHtml += '<g data-wire-handle-group="' + idx + '">' +
-            '<circle data-wire-start-idx="' + idx + '" cx="' + p1.x + '" cy="' + p1.y + '" r="8" fill="#10b981" stroke="#ffffff" stroke-width="2.5" style="cursor:grab; filter:drop-shadow(0 1px 3px rgba(0,0,0,0.3));" />' +
-            '<circle data-wire-endpoint-idx="' + idx + '" cx="' + p2.x + '" cy="' + p2.y + '" r="8.5" fill="#0ea5e9" stroke="#ffffff" stroke-width="2.5" style="cursor:grab; filter:drop-shadow(0 1px 3px rgba(0,0,0,0.3));" />' +
-          '</g>';
+          /* Top Z-Layer Drag Handles */
+          if (isSelected) {
+            handlesHtml += '<g data-wire-handle-group="' + idx + '">' +
+              '<circle data-wire-start-idx="' + idx + '" cx="' + p1.x + '" cy="' + p1.y + '" r="8" fill="#10b981" stroke="#ffffff" stroke-width="2.5" style="cursor:grab; filter:drop-shadow(0 1px 3px rgba(0,0,0,0.3));" />' +
+              '<circle data-wire-endpoint-idx="' + idx + '" cx="' + p2.x + '" cy="' + p2.y + '" r="8.5" fill="#0ea5e9" stroke="#ffffff" stroke-width="2.5" style="cursor:grab; filter:drop-shadow(0 1px 3px rgba(0,0,0,0.3));" />' +
+            '</g>';
+          }
         }
       });
 
@@ -403,7 +440,7 @@
         var isSnapCandidate = state.wireDragState.isDragging && state.wireDragState.snapNodeId === n.id;
 
         nodesHtml += '<g data-drag-node-id="' + n.id + '" transform="translate(' + n.x + ',' + n.y + ')" style="cursor:grab;">' +
-          (isSnapCandidate ? '<rect x="-8" y="-8" width="156" height="66" rx="18" fill="rgba(16,185,129,0.2)" stroke="#10b981" stroke-width="3" stroke-dasharray="4 4" />' : "") +
+          (isSnapCandidate ? '<rect x="-8" y="-8" width="156" height="66" rx="18" fill="rgba(16,185,129,0.2)" stroke="#10b981" stroke-width="3.5" stroke-dasharray="4 4" />' : "") +
           '<rect width="140" height="50" rx="14" fill="' + (isBase ? "#ffffff" : "rgba(16,185,129,0.12)") + '" stroke="' + (isBase ? "#cbd5e1" : "#10b981") + '" stroke-width="2" />' +
           '<text x="70" y="24" text-anchor="middle" font-size="10" font-weight="bold" fill="' + (isBase ? "#0f172a" : "#059669") + '">' + escapeHtml(n.label.slice(0, 20)) + '</text>' +
           '<text x="70" y="38" text-anchor="middle" font-size="8" fill="#64748b">' + escapeHtml(n.category || "Tier") + '</text>' +
@@ -564,6 +601,7 @@
           state.showSolution = false;
           state.selectedConnIdx = null;
           state.validationResult = null;
+          saveSessionState(state);
           renderLabUI();
         });
       });
@@ -618,6 +656,7 @@
           rebuildConnections();
           state.selectedConnIdx = null;
           state.validationResult = null;
+          saveSessionState(state);
           renderLabUI();
         });
       });
@@ -625,6 +664,7 @@
       var resetBtn = document.getElementById("reset-components-btn");
       if (resetBtn) {
         resetBtn.addEventListener("click", function () {
+          clearSessionState();
           state.hasVpc = false;
           state.nodes = [
             { id: "node_client", type: "client", label: "Client User", category: "User Tier", x: 60, y: 210, isBase: true },
@@ -654,6 +694,7 @@
             state.failedAttempts += 1;
           }
 
+          saveSessionState(state);
           renderLabUI();
         });
       }
@@ -662,6 +703,7 @@
       if (unlockBtn) {
         unlockBtn.addEventListener("click", function () {
           state.showSolution = true;
+          saveSessionState(state);
           renderLabUI();
         });
       }
@@ -672,6 +714,7 @@
           if (state.selectedConnIdx !== null && state.connections[state.selectedConnIdx]) {
             state.connections.splice(state.selectedConnIdx, 1);
             state.selectedConnIdx = null;
+            saveSessionState(state);
             renderLabUI();
           }
         });
@@ -745,8 +788,11 @@
       }
 
       function stopDrag() {
-        state.dragState.isDragging = false;
-        state.dragState.nodeId = null;
+        if (state.dragState.isDragging) {
+          state.dragState.isDragging = false;
+          state.dragState.nodeId = null;
+          saveSessionState(state);
+        }
       }
 
       nodeEls.forEach(function (gEl) {
@@ -779,7 +825,7 @@
       var endpointHandles = canvasEl.querySelectorAll("[data-wire-endpoint-idx]");
       var connGroups = canvasEl.querySelectorAll("[data-wire-conn-idx]");
 
-      function startWireDrag(e, mode, fromId, fromDir, connIdx, startX, startY) {
+      function startWireDrag(e, mode, fromId, ignoreId, fromDir, connIdx, startX, startY) {
         e.stopPropagation();
         var rect = canvasEl.getBoundingClientRect();
         var clientX = e.clientX || (e.touches && e.touches[0] ? e.touches[0].clientX : 0);
@@ -788,6 +834,7 @@
         state.wireDragState.isDragging = true;
         state.wireDragState.mode = mode;
         state.wireDragState.fromNodeId = fromId;
+        state.wireDragState.ignoreNodeId = ignoreId || fromId;
         state.wireDragState.fromDir = fromDir || "right";
         state.wireDragState.connIdx = connIdx;
         state.wireDragState.startX = startX;
@@ -807,10 +854,10 @@
         if (nObj) {
           var pt = getNodePortCoords(nObj, portDir);
           handle.addEventListener("mousedown", function (e) {
-            startWireDrag(e, "new", nodeId, portDir, null, pt.x, pt.y);
+            startWireDrag(e, "new", nodeId, nodeId, portDir, null, pt.x, pt.y);
           });
           handle.addEventListener("touchstart", function (e) {
-            startWireDrag(e, "new", nodeId, portDir, null, pt.x, pt.y);
+            startWireDrag(e, "new", nodeId, nodeId, portDir, null, pt.x, pt.y);
           }, { passive: true });
         }
       });
@@ -823,27 +870,15 @@
           if (toN) {
             var pt = getNodePortCoords(toN, conn.toDir || "left");
             handle.addEventListener("mousedown", function (e) {
-              startWireDrag(e, "rewire_source", conn.from, conn.fromDir || "right", idx, pt.x, pt.y);
+              startWireDrag(e, "rewire_source", conn.from, conn.to, conn.fromDir || "right", idx, pt.x, pt.y);
             });
             handle.addEventListener("touchstart", function (e) {
-              startWireDrag(e, "rewire_source", conn.from, conn.fromDir || "right", idx, pt.x, pt.y);
+              startWireDrag(e, "rewire_source", conn.from, conn.to, conn.fromDir || "right", idx, pt.x, pt.y);
             }, { passive: true });
-          }
-        }
-      });
-
-      endpointHandles.forEach(function (handle) {
-        var idx = parseInt(handle.getAttribute("data-wire-endpoint-idx"), 10);
-        var conn = state.connections[idx];
-        if (conn) {
-          var fromN = state.nodes.find(function (n) { return n.id === conn.from; });
-          if (fromN) {
-            var pt = getNodePortCoords(fromN, conn.fromDir || "right");
-            handle.addEventListener("mousedown", function (e) {
-              startWireDrag(e, "rewire_target", conn.from, conn.fromDir || "right", idx, pt.x, pt.y);
+              startWireDrag(e, "rewire_target", conn.from, conn.to, conn.toDir || "left", idx, pt.x, pt.y);
             });
             handle.addEventListener("touchstart", function (e) {
-              startWireDrag(e, "rewire_target", conn.from, conn.fromDir || "right", idx, pt.x, pt.y);
+              startWireDrag(e, "rewire_target", conn.from, conn.to, conn.toDir || "left", idx, pt.x, pt.y);
             }, { passive: true });
           }
         }
@@ -868,7 +903,7 @@
         state.wireDragState.targetX = clientX - rect.left;
         state.wireDragState.targetY = clientY - rect.top;
 
-        var snapTarget = findSnapTargetNode(state.wireDragState.targetX, state.wireDragState.targetY, state.wireDragState.fromNodeId);
+        var snapTarget = findSnapTargetNode(state.wireDragState.targetX, state.wireDragState.targetY, state.wireDragState.ignoreNodeId);
         state.wireDragState.snapNodeId = snapTarget ? snapTarget.node.id : null;
         state.wireDragState.snapPortDir = snapTarget ? snapTarget.portDir : "left";
 
@@ -893,12 +928,17 @@
         var canvasX = clientX - rect.left;
         var canvasY = clientY - rect.top;
 
-        var snapTarget = findSnapTargetNode(canvasX, canvasY, state.wireDragState.fromNodeId);
+        var snapTarget = findSnapTargetNode(canvasX, canvasY, state.wireDragState.ignoreNodeId);
+        var targetNode = snapTarget ? snapTarget.node : null;
+        var targetPortDir = snapTarget ? snapTarget.portDir : "left";
 
-        if (snapTarget) {
-          var targetNode = snapTarget.node;
-          var targetPortDir = snapTarget.portDir;
+        /* FALLBACK to last live snapTarget from mousemove if release point drifted slightly */
+        if (!targetNode && state.wireDragState.snapNodeId) {
+          targetNode = state.nodes.find(function (n) { return n.id === state.wireDragState.snapNodeId; });
+          targetPortDir = state.wireDragState.snapPortDir || "left";
+        }
 
+        if (targetNode) {
           if (state.wireDragState.mode === "new" && targetNode.id !== state.wireDragState.fromNodeId) {
             state.connections.push({ from: state.wireDragState.fromNodeId, to: targetNode.id, fromDir: state.wireDragState.fromDir, toDir: targetPortDir });
           } else if (state.wireDragState.mode === "rewire_target" && state.wireDragState.connIdx !== null) {
@@ -912,8 +952,10 @@
 
         state.wireDragState.isDragging = false;
         state.wireDragState.fromNodeId = null;
+        state.wireDragState.ignoreNodeId = null;
         state.wireDragState.connIdx = null;
         state.wireDragState.snapNodeId = null;
+        saveSessionState(state);
         renderLabUI();
       }
 
