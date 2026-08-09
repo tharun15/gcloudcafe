@@ -1,4 +1,4 @@
-/* system-design-lab.js — Enterprise Architecture Network Topology Engine & AI Hints */
+/* system-design-lab.js — Clean Midline Architecture Canvas Engine & AI Hints */
 (function () {
   "use strict";
 
@@ -88,9 +88,9 @@
       showSolution: false,
       hasVpc: false,
       nodes: [
-        { id: "node_client", type: "client", label: "Client User", category: "User Tier", x: 40, y: 160, isBase: true },
-        { id: "node_app", type: "app", label: "API Web Server", category: "Compute Tier", x: 380, y: 160, isBase: true },
-        { id: "node_db", type: "db", label: "Primary Database", category: "Database Tier", x: 720, y: 160, isBase: true }
+        { id: "node_client", type: "client", label: "Client User", category: "User Tier", x: 40, y: 180, isBase: true },
+        { id: "node_app", type: "app", label: "API Web Server", category: "Compute Tier", x: 430, y: 180, isBase: true },
+        { id: "node_db", type: "db", label: "Primary Database", category: "Database Tier", x: 830, y: 180, isBase: true }
       ],
       connections: [
         { from: "node_client", to: "node_app" },
@@ -165,13 +165,15 @@
           /* Right Column: Interactive Drag-and-Drop SVG Canvas (1fr) */
           '<div style="padding:1.25rem; border-radius:1.5rem; background:var(--body-bg, #ffffff); border:1px solid var(--border-color, #e5e7eb); box-shadow:0 1px 3px rgba(0,0,0,0.05); display:flex; flex-direction:column; gap:1.25rem; min-width:0;">' +
             '<div style="display:flex; align-items:center; justify-content:space-between; font-size:0.75rem; font-weight:700; color:#6b7280; padding-bottom:0.5rem; border-bottom:1px solid var(--border-color, #e5e7eb);">' +
-              '<span><i class="fa-solid fa-network-wired" style="color:var(--primary, #0ea5e9);"></i> Enterprise Topology Canvas</span>' +
-              '<span>' + state.nodes.length + ' Nodes / ' + state.connections.length + ' Directional Data Tunnels</span>' +
+              '<span><i class="fa-solid fa-network-wired" style="color:var(--primary, #0ea5e9);"></i> Clean Architecture Canvas (1050px Grid)</span>' +
+              '<span>' + state.nodes.length + ' Nodes / ' + state.connections.length + ' Data Flow Arrows</span>' +
             '</div>' +
 
-            /* Draggable SVG Container */
-            '<div id="architecture-svg-canvas" style="width:100%; height:460px; background:rgba(0,0,0,0.02); border-radius:1rem; border:1px solid var(--border-color, #e5e7eb); position:relative; overflow:hidden; user-select:none; touch-action:none;">' +
-              renderSVGCanvas() +
+            /* Draggable SVG Container with 1050px Horizontal Scroll */
+            '<div style="width:100%; overflow-x:auto; scrollbar-width:thin; border-radius:1rem; border:1px solid var(--border-color, #e5e7eb);">' +
+              '<div id="architecture-svg-canvas" style="width:1050px; height:440px; background:rgba(0,0,0,0.02); position:relative; overflow:hidden; user-select:none; touch-action:none;">' +
+                renderSVGCanvas() +
+              '</div>' +
             '</div>' +
 
             /* Validation Result & AI Hint Box */
@@ -261,8 +263,8 @@
 
       var vpcBoxHtml = "";
       if (state.hasVpc) {
-        vpcBoxHtml = '<rect x="330" y="30" width="540" height="400" rx="20" fill="rgba(14,165,233,0.03)" stroke="#0ea5e9" stroke-width="2" stroke-dasharray="6 6" />' +
-          '<text x="350" y="55" font-size="11" font-weight="bold" fill="#0ea5e9">🔒 Private VPC Subnet & NAT Perimeter</text>';
+        vpcBoxHtml = '<rect x="390" y="20" width="630" height="390" rx="20" fill="rgba(14,165,233,0.03)" stroke="#0ea5e9" stroke-width="2" stroke-dasharray="6 6" />' +
+          '<text x="410" y="45" font-size="11" font-weight="bold" fill="#0ea5e9">🔒 Private VPC Subnet & NAT Perimeter</text>';
       }
 
       var nodesHtml = "";
@@ -275,7 +277,7 @@
         '</g>';
       });
 
-      return '<svg width="100%" height="100%" style="position:absolute; inset:0;">' +
+      return '<svg width="1050" height="440" viewBox="0 0 1050 440" style="position:absolute; inset:0;">' +
         '<defs>' +
           '<marker id="arrowhead" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">' +
             '<path d="M 0 0 L 10 5 L 0 10 z" fill="#0ea5e9" />' +
@@ -351,7 +353,6 @@
     }
 
     function rebuildConnections() {
-      // Rebuild architectural pipeline connections cleanly
       var clientNode = state.nodes.find(function (n) { return n.id === "node_client"; });
       var appNode = state.nodes.find(function (n) { return n.id === "node_app"; });
       var dbNode = state.nodes.find(function (n) { return n.id === "node_db"; });
@@ -365,30 +366,30 @@
 
       var newConns = [];
 
-      // User -> Gateway/Edge -> App Server
-      var entryNode = gwNode || edgeNode || appNode;
-      if (clientNode && entryNode) {
-        newConns.push({ from: clientNode.id, to: entryNode.id });
+      // User -> Edge -> Gateway -> App Server
+      var firstIngress = edgeNode || gwNode || appNode;
+      if (clientNode && firstIngress) {
+        newConns.push({ from: clientNode.id, to: firstIngress.id });
       }
 
       if (edgeNode && gwNode) {
         newConns.push({ from: edgeNode.id, to: gwNode.id });
       }
 
-      if (entryNode !== appNode && appNode) {
-        var lastIngress = gwNode || edgeNode;
-        if (lastIngress) newConns.push({ from: lastIngress.id, to: appNode.id });
+      var lastIngress = gwNode || edgeNode;
+      if (lastIngress && appNode && lastIngress !== appNode) {
+        newConns.push({ from: lastIngress.id, to: appNode.id });
       }
 
-      // App Server -> Cache / Queue -> Database
+      // App Server -> Cache / Queue / Storage / Database
       if (appNode) {
-        if (redisNode && dbNode) {
+        if (redisNode) {
           newConns.push({ from: appNode.id, to: redisNode.id });
-          newConns.push({ from: redisNode.id, to: dbNode.id });
+          if (dbNode) newConns.push({ from: redisNode.id, to: dbNode.id });
         }
-        if (kafkaNode && dbNode) {
+        if (kafkaNode) {
           newConns.push({ from: appNode.id, to: kafkaNode.id });
-          newConns.push({ from: kafkaNode.id, to: dbNode.id });
+          if (dbNode) newConns.push({ from: kafkaNode.id, to: dbNode.id });
         }
         if (!redisNode && !kafkaNode && dbNode) {
           newConns.push({ from: appNode.id, to: dbNode.id });
@@ -431,24 +432,21 @@
               state.nodes.splice(existingIdx, 1);
             } else if (comp) {
               var newId = "node_" + key + "_" + Date.now();
-              var defaultX = 560;
-              var defaultY = 160;
+              var defaultX = 630;
+              var defaultY = 180;
 
-              if (comp.tier === "edge" || comp.tier === "ingress") {
-                defaultX = 200;
-                defaultY = comp.tier === "edge" ? 100 : 220;
+              if (comp.tier === "edge") {
+                defaultX = 230; defaultY = 70;
+              } else if (comp.tier === "ingress") {
+                defaultX = 230; defaultY = 290;
               } else if (comp.tier === "caching") {
-                defaultX = 560;
-                defaultY = 80;
+                defaultX = 630; defaultY = 70;
               } else if (comp.tier === "queue") {
-                defaultX = 560;
-                defaultY = 250;
+                defaultX = 630; defaultY = 290;
               } else if (comp.tier === "storage") {
-                defaultX = 720;
-                defaultY = 50;
+                defaultX = 830; defaultY = 70;
               } else if (comp.tier === "database") {
-                defaultX = 720;
-                defaultY = 270;
+                defaultX = 830; defaultY = 290;
               }
 
               state.nodes.push({
@@ -474,9 +472,9 @@
         resetBtn.addEventListener("click", function () {
           state.hasVpc = false;
           state.nodes = [
-            { id: "node_client", type: "client", label: "Client User", category: "User Tier", x: 40, y: 160, isBase: true },
-            { id: "node_app", type: "app", label: "API Web Server", category: "Compute Tier", x: 380, y: 160, isBase: true },
-            { id: "node_db", type: "db", label: "Primary Database", category: "Database Tier", x: 720, y: 160, isBase: true }
+            { id: "node_client", type: "client", label: "Client User", category: "User Tier", x: 40, y: 180, isBase: true },
+            { id: "node_app", type: "app", label: "API Web Server", category: "Compute Tier", x: 430, y: 180, isBase: true },
+            { id: "node_db", type: "db", label: "Primary Database", category: "Database Tier", x: 830, y: 180, isBase: true }
           ];
           state.connections = [
             { from: "node_client", to: "node_app" },
@@ -546,9 +544,9 @@
         var newX = clientX - rect.left - state.dragState.offsetX;
         var newY = clientY - rect.top - state.dragState.offsetY;
 
-        // Clamp inside canvas bounds
-        nodeObj.x = Math.max(10, Math.min(rect.width - 150, newX));
-        nodeObj.y = Math.max(10, Math.min(rect.height - 60, newY));
+        // Clamp inside 1050px canvas bounds
+        nodeObj.x = Math.max(10, Math.min(1050 - 150, newX));
+        nodeObj.y = Math.max(10, Math.min(440 - 60, newY));
 
         // Update node transform & SVG lines directly in DOM for 60fps performance
         var targetG = canvasEl.querySelector('[data-drag-node-id="' + nodeObj.id + '"]');
