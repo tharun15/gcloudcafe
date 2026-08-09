@@ -1,4 +1,4 @@
-/* system-design-lab.js — Top-Toolbar Layout & Full-Width 1150px Architecture Canvas Engine */
+/* system-design-lab.js — Excalidraw-Style Smart Curved Bezier Engine & AI Hints */
 (function () {
   "use strict";
 
@@ -78,6 +78,27 @@
       .replace(/'/g, "&#039;");
   }
 
+  function generateBezierPath(fromNode, toNode) {
+    var x1 = fromNode.x + 140;
+    var y1 = fromNode.y + 25;
+    var x2 = toNode.x;
+    var y2 = toNode.y + 25;
+
+    // Handle leftward/vertical layout cleanly
+    if (toNode.x + 140 < fromNode.x) {
+      x1 = fromNode.x;
+      x2 = toNode.x + 140;
+    }
+
+    var dx = Math.abs(x2 - x1);
+    var controlOffset = Math.max(dx * 0.45, 45);
+
+    var cx1 = (x1 <= x2) ? (x1 + controlOffset) : (x1 - controlOffset);
+    var cx2 = (x1 <= x2) ? (x2 - controlOffset) : (x2 + controlOffset);
+
+    return "M " + x1 + " " + y1 + " C " + cx1 + " " + y1 + ", " + cx2 + " " + y2 + ", " + x2 + " " + y2;
+  }
+
   function initSystemDesignLab() {
     var root = document.getElementById("system-design-lab-root");
     if (!root) return;
@@ -117,7 +138,7 @@
             'System Architecture Trade-off Lab' +
           '</h1>' +
           '<p style="font-size:0.875rem; color:var(--text-color, #4b5563); max-width:42rem; margin:0 auto; line-height:1.5;">' +
-            'No system is perfect — every architecture is defined by its trade-offs. Select an enterprise challenge, add components from the toolbar above, and drag nodes freely on the canvas grid!' +
+            'No system is perfect — every architecture is defined by its trade-offs. Select an enterprise challenge, add components from the toolbar above, and drag nodes freely with dynamic Excalidraw Bezier curves!' +
           '</p>' +
         '</div>' +
 
@@ -153,7 +174,7 @@
             '</div>' +
           '</div>' +
 
-          /* Horizontal Button Grid (2 rows of 4 pills) */
+          /* Horizontal Button Grid */
           '<div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap:0.625rem; width:100%;">' +
             renderToolboxButtons(addedComponentKeys) +
           '</div>' +
@@ -162,11 +183,11 @@
         /* Step 3: Full-Width 1150px SVG Canvas Container */
         '<div style="padding:1.25rem; border-radius:1.5rem; background:var(--body-bg, #ffffff); border:1px solid var(--border-color, #e5e7eb); box-shadow:0 1px 3px rgba(0,0,0,0.05); display:flex; flex-direction:column; gap:1.25rem; width:100%;">' +
           '<div style="display:flex; align-items:center; justify-content:space-between; font-size:0.75rem; font-weight:700; color:#6b7280; padding-bottom:0.5rem; border-bottom:1px solid var(--border-color, #e5e7eb);">' +
-            '<span><i class="fa-solid fa-network-wired" style="color:var(--primary, #0ea5e9);"></i> 100% Full-Width Architecture Canvas</span>' +
-            '<span>' + state.nodes.length + ' Nodes / ' + state.connections.length + ' Data Flow Tunnels</span>' +
+            '<span><i class="fa-solid fa-pen-ruler" style="color:var(--primary, #0ea5e9);"></i> Excalidraw Dynamic Canvas (Smooth Bezier Flow)</span>' +
+            '<span>' + state.nodes.length + ' Nodes / ' + state.connections.length + ' Bezier Tunnels</span>' +
           '</div>' +
 
-          /* SVG Canvas Container with 100% Full-Width Span */
+          /* SVG Canvas Container */
           '<div style="width:100%; overflow-x:auto; scrollbar-width:thin; border-radius:1rem; border:1px solid var(--border-color, #e5e7eb);">' +
             '<div id="architecture-svg-canvas" style="width:100%; min-width:1150px; height:480px; background:rgba(0,0,0,0.02); position:relative; overflow:hidden; user-select:none; touch-action:none;">' +
               renderSVGCanvas() +
@@ -197,7 +218,7 @@
     }
 
     function calculateTotalCost(selected) {
-      var cost = 45; // Base 3-tier spend
+      var cost = 45;
       selected.forEach(function (key) {
         var comp = AVAILABLE_COMPONENTS[key];
         if (comp) cost += comp.cost;
@@ -240,12 +261,13 @@
     }
 
     function renderSVGCanvas() {
-      var linesHtml = "";
+      var pathsHtml = "";
       state.connections.forEach(function (c) {
         var fromNode = state.nodes.find(function (n) { return n.id === c.from; });
         var toNode = state.nodes.find(function (n) { return n.id === c.to; });
         if (fromNode && toNode) {
-          linesHtml += '<line x1="' + (fromNode.x + 70) + '" y1="' + (fromNode.y + 25) + '" x2="' + (toNode.x + 70) + '" y2="' + (toNode.y + 25) + '" stroke="#0ea5e9" stroke-width="2.5" stroke-dasharray="5 5" marker-end="url(#arrowhead)" opacity="0.9" />';
+          var pathD = generateBezierPath(fromNode, toNode);
+          pathsHtml += '<path class="connection-bezier-path" d="' + pathD + '" stroke="#0ea5e9" stroke-width="2.5" stroke-dasharray="5 5" fill="none" marker-end="url(#arrowhead)" opacity="0.9" />';
         }
       });
 
@@ -276,7 +298,7 @@
         '</defs>' +
         '<rect width="100%" height="100%" fill="url(#canvas-grid-pattern)" />' +
         vpcBoxHtml +
-        linesHtml +
+        pathsHtml +
         nodesHtml +
       '</svg>';
     }
@@ -536,22 +558,19 @@
         nodeObj.x = Math.max(10, Math.min(1150 - 150, newX));
         nodeObj.y = Math.max(10, Math.min(480 - 60, newY));
 
-        // Update node transform & SVG lines directly in DOM for 60fps performance
+        // Update node transform & SVG Bezier paths directly in DOM for 60fps performance
         var targetG = canvasEl.querySelector('[data-drag-node-id="' + nodeObj.id + '"]');
         if (targetG) {
           targetG.setAttribute("transform", "translate(" + nodeObj.x + "," + nodeObj.y + ")");
         }
 
-        // Redraw SVG connection lines
-        var lineEls = canvasEl.querySelectorAll("line");
+        // Redraw SVG Bezier paths dynamically
+        var pathEls = canvasEl.querySelectorAll("path.connection-bezier-path");
         state.connections.forEach(function (c, idx) {
           var fromN = state.nodes.find(function (n) { return n.id === c.from; });
           var toN = state.nodes.find(function (n) { return n.id === c.to; });
-          if (fromN && toN && lineEls[idx]) {
-            lineEls[idx].setAttribute("x1", String(fromN.x + 70));
-            lineEls[idx].setAttribute("y1", String(fromN.y + 25));
-            lineEls[idx].setAttribute("x2", String(toN.x + 70));
-            lineEls[idx].setAttribute("y2", String(toN.y + 25));
+          if (fromN && toN && pathEls[idx]) {
+            pathEls[idx].setAttribute("d", generateBezierPath(fromN, toN));
           }
         });
       }
