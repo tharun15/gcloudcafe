@@ -1,4 +1,4 @@
-/* system-design-lab.js — 4-Side Interactive Connecting Dots Engine */
+/* system-design-lab.js — Ultra-Selectable Wire Engine & Top Z-Layer System */
 (function () {
   "use strict";
 
@@ -82,7 +82,7 @@
     if (dir === "top") return { x: node.x + 70, y: node.y, dir: "top" };
     if (dir === "bottom") return { x: node.x + 70, y: node.y + 50, dir: "bottom" };
     if (dir === "left") return { x: node.x, y: node.y + 25, dir: "left" };
-    return { x: node.x + 140, y: node.y + 25, dir: "right" }; // default right
+    return { x: node.x + 140, y: node.y + 25, dir: "right" };
   }
 
   function getSmart4PortCoords(fromNode, toNode, preferredFromDir, preferredToDir) {
@@ -178,7 +178,7 @@
     function findSnapTargetNode(canvasX, canvasY, ignoreNodeId) {
       var bestNode = null;
       var bestPortDir = "left";
-      var minDist = 75; // 75px magnetized snap distance!
+      var minDist = 75;
 
       state.nodes.forEach(function (n) {
         if (n.id === ignoreNodeId) return;
@@ -215,7 +215,7 @@
             'System Architecture Trade-off Lab' +
           '</h1>' +
           '<p style="font-size:0.875rem; color:var(--text-color, #4b5563); max-width:42rem; margin:0 auto; line-height:1.5;">' +
-            'No system is perfect — every architecture is defined by its trade-offs. Drag component boxes, pull wires from any of the 4 side "+" dots, and validate your architecture!' +
+            'No system is perfect — every architecture is defined by its trade-offs. Drag component boxes, grab green/blue wire handles to rewire, and validate your architecture!' +
           '</p>' +
         '</div>' +
 
@@ -259,7 +259,7 @@
         /* Step 3: Full-Width 1150px SVG Canvas Container */
         '<div style="padding:1.25rem; border-radius:1.5rem; background:var(--body-bg, #ffffff); border:1px solid var(--border-color, #e5e7eb); box-shadow:0 1px 3px rgba(0,0,0,0.05); display:flex; flex-direction:column; gap:1.25rem; width:100%;">' +
           '<div style="display:flex; align-items:center; justify-content:space-between; font-size:0.75rem; font-weight:700; color:#6b7280; padding-bottom:0.5rem; border-bottom:1px solid var(--border-color, #e5e7eb);">' +
-            '<span><i class="fa-solid fa-circle-nodes" style="color:var(--primary, #0ea5e9);"></i> 4-Side Interactive Connecting Dots (Top, Right, Bottom, Left Ports)</span>' +
+            '<span><i class="fa-solid fa-hand-pointer" style="color:var(--primary, #0ea5e9);"></i> Ultra-Selectable Canvas (18px Line Touch Targets & Top-Layer Wire Handles)</span>' +
             '<span>' + state.nodes.length + ' Nodes / ' + state.connections.length + ' Wires</span>' +
           '</div>' +
 
@@ -351,6 +351,8 @@
 
     function renderSVGCanvas() {
       var pathsHtml = "";
+      var handlesHtml = "";
+
       state.connections.forEach(function (c, idx) {
         var fromNode = state.nodes.find(function (n) { return n.id === c.from; });
         var toNode = state.nodes.find(function (n) { return n.id === c.to; });
@@ -361,10 +363,16 @@
           var pathD = generateSmartBezierPath(p1, p2);
           var isSelected = state.selectedConnIdx === idx;
 
+          /* Visible Bezier Line & Invisible 18px Hit Target */
           pathsHtml += '<g data-wire-conn-idx="' + idx + '" style="cursor:pointer;">' +
             '<path class="connection-bezier-path" d="' + pathD + '" stroke="' + (isSelected ? "#f59e0b" : "#0ea5e9") + '" stroke-width="' + (isSelected ? "4" : "2.5") + '" stroke-dasharray="5 5" fill="none" marker-end="url(#arrowhead)" opacity="0.9" />' +
-            '<circle data-wire-start-idx="' + idx + '" cx="' + p1.x + '" cy="' + p1.y + '" r="6.5" fill="#10b981" stroke="#ffffff" stroke-width="2" style="cursor:grab;" />' +
-            '<circle data-wire-endpoint-idx="' + idx + '" cx="' + p2.x + '" cy="' + p2.y + '" r="7" fill="#0ea5e9" stroke="#ffffff" stroke-width="2" style="cursor:grab;" />' +
+            '<path d="' + pathD + '" stroke="transparent" stroke-width="18" fill="none" pointer-events="stroke" />' +
+          '</g>';
+
+          /* Top Z-Layer Drag Handles (Rendered AFTER nodesHtml!) */
+          handlesHtml += '<g data-wire-handle-group="' + idx + '">' +
+            '<circle data-wire-start-idx="' + idx + '" cx="' + p1.x + '" cy="' + p1.y + '" r="8" fill="#10b981" stroke="#ffffff" stroke-width="2.5" style="cursor:grab; filter:drop-shadow(0 1px 3px rgba(0,0,0,0.3));" />' +
+            '<circle data-wire-endpoint-idx="' + idx + '" cx="' + p2.x + '" cy="' + p2.y + '" r="8.5" fill="#0ea5e9" stroke="#ffffff" stroke-width="2.5" style="cursor:grab; filter:drop-shadow(0 1px 3px rgba(0,0,0,0.3));" />' +
           '</g>';
         }
       });
@@ -401,19 +409,15 @@
           '<text x="70" y="38" text-anchor="middle" font-size="8" fill="#64748b">' + escapeHtml(n.category || "Tier") + '</text>' +
 
           /* 4-Side Connecting Dots (+) */
-          /* Top Port Dot */
           '<circle data-wire-source-id="' + n.id + '" data-port-dir="top" cx="70" cy="0" r="8" fill="#0ea5e9" stroke="#ffffff" stroke-width="2" style="cursor:crosshair;" />' +
           '<text data-wire-source-id="' + n.id + '" data-port-dir="top" x="70" y="3" text-anchor="middle" font-size="10" font-weight="bold" fill="#ffffff" style="cursor:crosshair; pointer-events:none;">+</text>' +
 
-          /* Right Port Dot */
           '<circle data-wire-source-id="' + n.id + '" data-port-dir="right" cx="140" cy="25" r="8" fill="#0ea5e9" stroke="#ffffff" stroke-width="2" style="cursor:crosshair;" />' +
           '<text data-wire-source-id="' + n.id + '" data-port-dir="right" x="140" y="28" text-anchor="middle" font-size="10" font-weight="bold" fill="#ffffff" style="cursor:crosshair; pointer-events:none;">+</text>' +
 
-          /* Bottom Port Dot */
           '<circle data-wire-source-id="' + n.id + '" data-port-dir="bottom" cx="70" cy="50" r="8" fill="#0ea5e9" stroke="#ffffff" stroke-width="2" style="cursor:crosshair;" />' +
           '<text data-wire-source-id="' + n.id + '" data-port-dir="bottom" x="70" y="53" text-anchor="middle" font-size="10" font-weight="bold" fill="#ffffff" style="cursor:crosshair; pointer-events:none;">+</text>' +
 
-          /* Left Port Dot */
           '<circle data-wire-source-id="' + n.id + '" data-port-dir="left" cx="0" cy="25" r="8" fill="#0ea5e9" stroke="#ffffff" stroke-width="2" style="cursor:crosshair;" />' +
           '<text data-wire-source-id="' + n.id + '" data-port-dir="left" x="0" y="28" text-anchor="middle" font-size="10" font-weight="bold" fill="#ffffff" style="cursor:crosshair; pointer-events:none;">+</text>' +
         '</g>';
@@ -436,6 +440,7 @@
         pathsHtml +
         rubberbandHtml +
         nodesHtml +
+        handlesHtml +
       '</svg>';
     }
 
