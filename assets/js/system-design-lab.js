@@ -1,16 +1,16 @@
-/* system-design-lab.js — Interactive Drag-and-Drop Canvas, Solution Unlock Engine & AI Architect Hints */
+/* system-design-lab.js — Enterprise Architecture Network Topology Engine & AI Hints */
 (function () {
   "use strict";
 
   var AVAILABLE_COMPONENTS = {
-    "vpc": { name: "Private VPC Subnet & NAT", icon: "fa-shield-halved", cost: 0, category: "Security" },
-    "gateway": { name: "API Gateway & Rate Limiter", icon: "fa-filter", cost: 15, category: "Security" },
-    "cdn": { name: "Cloud CDN Edge Node", icon: "fa-bolt", cost: 20, category: "Edge" },
-    "load_balancer": { name: "Anycast Load Balancer", icon: "fa-network-wired", cost: 18, category: "Networking" },
-    "storage": { name: "GCS Object Storage Bucket", icon: "fa-box-archive", cost: 10, category: "Storage" },
-    "kafka": { name: "Kafka Event Stream", icon: "fa-diagram-project", cost: 45, category: "Queue" },
-    "redis": { name: "Redis In-Memory Cache", icon: "fa-database", cost: 30, category: "Caching" },
-    "read_replicas": { name: "DB Read Replicas", icon: "fa-server", cost: 60, category: "Database" }
+    "vpc": { name: "Private VPC Subnet & NAT", icon: "fa-shield-halved", cost: 0, category: "Security", tier: "security" },
+    "gateway": { name: "API Gateway & Rate Limiter", icon: "fa-filter", cost: 15, category: "Security", tier: "ingress" },
+    "cdn": { name: "Cloud CDN Edge Node", icon: "fa-bolt", cost: 20, category: "Edge", tier: "edge" },
+    "load_balancer": { name: "Anycast Load Balancer", icon: "fa-network-wired", cost: 18, category: "Networking", tier: "edge" },
+    "storage": { name: "GCS Object Storage Bucket", icon: "fa-box-archive", cost: 10, category: "Storage", tier: "storage" },
+    "kafka": { name: "Kafka Event Stream", icon: "fa-diagram-project", cost: 45, category: "Queue", tier: "queue" },
+    "redis": { name: "Redis In-Memory Cache", icon: "fa-database", cost: 30, category: "Caching", tier: "caching" },
+    "read_replicas": { name: "DB Read Replicas", icon: "fa-server", cost: 60, category: "Database", tier: "database" }
   };
 
   var CHALLENGES = [
@@ -86,10 +86,11 @@
       activeChallengeId: CHALLENGES[0].id,
       failedAttempts: 0,
       showSolution: false,
+      hasVpc: false,
       nodes: [
-        { id: "node_client", type: "client", label: "Client User", category: "User", x: 40, y: 160, isBase: true },
-        { id: "node_app", type: "app", label: "API Web Server", category: "Compute", x: 260, y: 160, isBase: true },
-        { id: "node_db", type: "db", label: "Primary Database", category: "Database", x: 480, y: 160, isBase: true }
+        { id: "node_client", type: "client", label: "Client User", category: "User Tier", x: 40, y: 160, isBase: true },
+        { id: "node_app", type: "app", label: "API Web Server", category: "Compute Tier", x: 380, y: 160, isBase: true },
+        { id: "node_db", type: "db", label: "Primary Database", category: "Database Tier", x: 720, y: 160, isBase: true }
       ],
       connections: [
         { from: "node_client", to: "node_app" },
@@ -109,14 +110,14 @@
         '<div style="text-align:center; display:flex; flex-direction:column; gap:0.5rem;">' +
           '<div>' +
             '<span style="display:inline-flex; align-items:center; gap:0.5rem; padding:0.25rem 0.875rem; border-radius:9999px; background:rgba(var(--primary-rgb, 14,165,233), 0.1); border:1px solid rgba(var(--primary-rgb, 14,165,233), 0.2); color:var(--primary, #0ea5e9); font-size:0.7rem; font-weight:800; text-transform:uppercase; letter-spacing:0.05em;">' +
-              '<i class="fa-solid fa-scale-balanced"></i> System Design Trade-off Lab' +
+              '<i class="fa-solid fa-scale-balanced"></i> Enterprise System Design Lab' +
             '</span>' +
           '</div>' +
           '<h1 style="font-size:2rem; font-weight:800; color:var(--dark-color, #0f172a); margin:0; letter-spacing:-0.02em;">' +
             'System Architecture Trade-off Lab' +
           '</h1>' +
           '<p style="font-size:0.875rem; color:var(--text-color, #4b5563); max-width:42rem; margin:0 auto; line-height:1.5;">' +
-            'No system is perfect — every architecture is defined by its trade-offs. Select a challenge, drag components freely on the canvas grid, and validate your system!' +
+            'No system is perfect — every architecture is defined by its trade-offs. Select an enterprise challenge, place components in their authoritative architectural tiers, and validate your system!' +
           '</p>' +
         '</div>' +
 
@@ -164,8 +165,8 @@
           /* Right Column: Interactive Drag-and-Drop SVG Canvas (1fr) */
           '<div style="padding:1.25rem; border-radius:1.5rem; background:var(--body-bg, #ffffff); border:1px solid var(--border-color, #e5e7eb); box-shadow:0 1px 3px rgba(0,0,0,0.05); display:flex; flex-direction:column; gap:1.25rem; min-width:0;">' +
             '<div style="display:flex; align-items:center; justify-content:space-between; font-size:0.75rem; font-weight:700; color:#6b7280; padding-bottom:0.5rem; border-bottom:1px solid var(--border-color, #e5e7eb);">' +
-              '<span><i class="fa-solid fa-hand" style="color:var(--primary, #0ea5e9);"></i> Drag & Drop Canvas Workspace</span>' +
-              '<span>' + state.nodes.length + ' Nodes / ' + state.connections.length + ' Connections</span>' +
+              '<span><i class="fa-solid fa-network-wired" style="color:var(--primary, #0ea5e9);"></i> Enterprise Topology Canvas</span>' +
+              '<span>' + state.nodes.length + ' Nodes / ' + state.connections.length + ' Directional Data Tunnels</span>' +
             '</div>' +
 
             /* Draggable SVG Container */
@@ -198,6 +199,7 @@
 
     function getAddedComponentKeys() {
       var keys = [];
+      if (state.hasVpc) keys.push("vpc");
       state.nodes.forEach(function (n) {
         if (!n.isBase && n.type) keys.push(n.type);
       });
@@ -241,7 +243,7 @@
             '</div>' +
           '</div>' +
 
-          '<span style="font-size:0.7rem; font-weight:800;">' + (isAdded ? "Placed ✓" : "+ $" + comp.cost + "/mo") + '</span>' +
+          '<span style="font-size:0.7rem; font-weight:800;">' + (isAdded ? "Active ✓" : "+ $" + comp.cost + "/mo") + '</span>' +
         '</button>';
       });
       return html;
@@ -253,9 +255,15 @@
         var fromNode = state.nodes.find(function (n) { return n.id === c.from; });
         var toNode = state.nodes.find(function (n) { return n.id === c.to; });
         if (fromNode && toNode) {
-          linesHtml += '<line x1="' + (fromNode.x + 70) + '" y1="' + (fromNode.y + 25) + '" x2="' + (toNode.x + 70) + '" y2="' + (toNode.y + 25) + '" stroke="#0ea5e9" stroke-width="2.5" stroke-dasharray="5 5" opacity="0.85" />';
+          linesHtml += '<line x1="' + (fromNode.x + 70) + '" y1="' + (fromNode.y + 25) + '" x2="' + (toNode.x + 70) + '" y2="' + (toNode.y + 25) + '" stroke="#0ea5e9" stroke-width="2.5" stroke-dasharray="5 5" marker-end="url(#arrowhead)" opacity="0.9" />';
         }
       });
+
+      var vpcBoxHtml = "";
+      if (state.hasVpc) {
+        vpcBoxHtml = '<rect x="330" y="30" width="540" height="400" rx="20" fill="rgba(14,165,233,0.03)" stroke="#0ea5e9" stroke-width="2" stroke-dasharray="6 6" />' +
+          '<text x="350" y="55" font-size="11" font-weight="bold" fill="#0ea5e9">🔒 Private VPC Subnet & NAT Perimeter</text>';
+      }
 
       var nodesHtml = "";
       state.nodes.forEach(function (n) {
@@ -269,11 +277,15 @@
 
       return '<svg width="100%" height="100%" style="position:absolute; inset:0;">' +
         '<defs>' +
+          '<marker id="arrowhead" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">' +
+            '<path d="M 0 0 L 10 5 L 0 10 z" fill="#0ea5e9" />' +
+          '</marker>' +
           '<pattern id="canvas-grid-pattern" width="20" height="20" patternUnits="userSpaceOnUse">' +
             '<path d="M 20 0 L 0 0 0 20" fill="none" stroke="#e2e8f0" stroke-width="0.75" />' +
           '</pattern>' +
         '</defs>' +
         '<rect width="100%" height="100%" fill="url(#canvas-grid-pattern)" />' +
+        vpcBoxHtml +
         linesHtml +
         nodesHtml +
       '</svg>';
@@ -297,7 +309,7 @@
       if (!res) {
         return '<div style="padding:1.25rem; border-radius:1rem; background:rgba(0,0,0,0.02); border:1px solid var(--border-color, #e5e7eb); text-align:center; font-size:0.75rem; color:#6b7280; display:flex; flex-direction:column; gap:0.35rem;">' +
           '<i class="fa-solid fa-hand-pointer" style="font-size:1.25rem; color:var(--primary, #0ea5e9);"></i>' +
-          '<div>Drag nodes freely on the canvas grid! Add upgrades and click <strong>Validate System Architecture</strong>.</div>' +
+          '<div>Drag components in their architectural tiers and click <strong>Validate System Architecture</strong>!</div>' +
         '</div>';
       }
 
@@ -338,6 +350,61 @@
       return { success: false, hint: hintMsg };
     }
 
+    function rebuildConnections() {
+      // Rebuild architectural pipeline connections cleanly
+      var clientNode = state.nodes.find(function (n) { return n.id === "node_client"; });
+      var appNode = state.nodes.find(function (n) { return n.id === "node_app"; });
+      var dbNode = state.nodes.find(function (n) { return n.id === "node_db"; });
+
+      var edgeNode = state.nodes.find(function (n) { return n.type === "cdn" || n.type === "load_balancer"; });
+      var gwNode = state.nodes.find(function (n) { return n.type === "gateway"; });
+      var redisNode = state.nodes.find(function (n) { return n.type === "redis"; });
+      var kafkaNode = state.nodes.find(function (n) { return n.type === "kafka"; });
+      var storageNode = state.nodes.find(function (n) { return n.type === "storage"; });
+      var replicaNode = state.nodes.find(function (n) { return n.type === "read_replicas"; });
+
+      var newConns = [];
+
+      // User -> Gateway/Edge -> App Server
+      var entryNode = gwNode || edgeNode || appNode;
+      if (clientNode && entryNode) {
+        newConns.push({ from: clientNode.id, to: entryNode.id });
+      }
+
+      if (edgeNode && gwNode) {
+        newConns.push({ from: edgeNode.id, to: gwNode.id });
+      }
+
+      if (entryNode !== appNode && appNode) {
+        var lastIngress = gwNode || edgeNode;
+        if (lastIngress) newConns.push({ from: lastIngress.id, to: appNode.id });
+      }
+
+      // App Server -> Cache / Queue -> Database
+      if (appNode) {
+        if (redisNode && dbNode) {
+          newConns.push({ from: appNode.id, to: redisNode.id });
+          newConns.push({ from: redisNode.id, to: dbNode.id });
+        }
+        if (kafkaNode && dbNode) {
+          newConns.push({ from: appNode.id, to: kafkaNode.id });
+          newConns.push({ from: kafkaNode.id, to: dbNode.id });
+        }
+        if (!redisNode && !kafkaNode && dbNode) {
+          newConns.push({ from: appNode.id, to: dbNode.id });
+        }
+        if (storageNode) {
+          newConns.push({ from: appNode.id, to: storageNode.id });
+        }
+      }
+
+      if (dbNode && replicaNode) {
+        newConns.push({ from: dbNode.id, to: replicaNode.id });
+      }
+
+      state.connections = newConns;
+    }
+
     function bindLabEvents() {
       var challengeBtns = document.querySelectorAll("[data-challenge-id]");
       challengeBtns.forEach(function (btn) {
@@ -356,37 +423,47 @@
           var key = btn.getAttribute("data-component-key");
           var comp = AVAILABLE_COMPONENTS[key];
 
-          var existingIdx = state.nodes.findIndex(function (n) { return n.type === key; });
-          if (existingIdx !== -1) {
-            // Remove node & its connections
-            var removedNodeId = state.nodes[existingIdx].id;
-            state.nodes.splice(existingIdx, 1);
-            state.connections = state.connections.filter(function (c) {
-              return c.from !== removedNodeId && c.to !== removedNodeId;
-            });
-          } else if (comp) {
-            // Add new node onto canvas
-            var newId = "node_" + key + "_" + Date.now();
-            var newX = 50 + (state.nodes.length * 40) % 320;
-            var newY = 50 + (state.nodes.length * 50) % 250;
+          if (key === "vpc") {
+            state.hasVpc = !state.hasVpc;
+          } else {
+            var existingIdx = state.nodes.findIndex(function (n) { return n.type === key; });
+            if (existingIdx !== -1) {
+              state.nodes.splice(existingIdx, 1);
+            } else if (comp) {
+              var newId = "node_" + key + "_" + Date.now();
+              var defaultX = 560;
+              var defaultY = 160;
 
-            state.nodes.push({
-              id: newId,
-              type: key,
-              label: comp.name,
-              category: comp.category,
-              x: newX,
-              y: newY,
-              isBase: false
-            });
+              if (comp.tier === "edge" || comp.tier === "ingress") {
+                defaultX = 200;
+                defaultY = comp.tier === "edge" ? 100 : 220;
+              } else if (comp.tier === "caching") {
+                defaultX = 560;
+                defaultY = 80;
+              } else if (comp.tier === "queue") {
+                defaultX = 560;
+                defaultY = 250;
+              } else if (comp.tier === "storage") {
+                defaultX = 720;
+                defaultY = 50;
+              } else if (comp.tier === "database") {
+                defaultX = 720;
+                defaultY = 270;
+              }
 
-            // Connect to previous app node
-            var appNode = state.nodes.find(function (n) { return n.id === "node_app"; }) || state.nodes[state.nodes.length - 2];
-            if (appNode) {
-              state.connections.push({ from: appNode.id, to: newId });
+              state.nodes.push({
+                id: newId,
+                type: key,
+                label: comp.name,
+                category: comp.category + " Tier",
+                x: defaultX,
+                y: defaultY,
+                isBase: false
+              });
             }
           }
 
+          rebuildConnections();
           state.validationResult = null;
           renderLabUI();
         });
@@ -395,10 +472,11 @@
       var resetBtn = document.getElementById("reset-components-btn");
       if (resetBtn) {
         resetBtn.addEventListener("click", function () {
+          state.hasVpc = false;
           state.nodes = [
-            { id: "node_client", type: "client", label: "Client User", category: "User", x: 40, y: 160, isBase: true },
-            { id: "node_app", type: "app", label: "API Web Server", category: "Compute", x: 260, y: 160, isBase: true },
-            { id: "node_db", type: "db", label: "Primary Database", category: "Database", x: 480, y: 160, isBase: true }
+            { id: "node_client", type: "client", label: "Client User", category: "User Tier", x: 40, y: 160, isBase: true },
+            { id: "node_app", type: "app", label: "API Web Server", category: "Compute Tier", x: 380, y: 160, isBase: true },
+            { id: "node_db", type: "db", label: "Primary Database", category: "Database Tier", x: 720, y: 160, isBase: true }
           ];
           state.connections = [
             { from: "node_client", to: "node_app" },
