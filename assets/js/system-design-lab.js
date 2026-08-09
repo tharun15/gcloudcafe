@@ -1,4 +1,4 @@
-/* system-design-lab.js — Clean Midline Architecture Canvas Engine & AI Hints */
+/* system-design-lab.js — Top-Toolbar Layout & Full-Width 1150px Architecture Canvas Engine */
 (function () {
   "use strict";
 
@@ -88,9 +88,9 @@
       showSolution: false,
       hasVpc: false,
       nodes: [
-        { id: "node_client", type: "client", label: "Client User", category: "User Tier", x: 40, y: 180, isBase: true },
-        { id: "node_app", type: "app", label: "API Web Server", category: "Compute Tier", x: 430, y: 180, isBase: true },
-        { id: "node_db", type: "db", label: "Primary Database", category: "Database Tier", x: 830, y: 180, isBase: true }
+        { id: "node_client", type: "client", label: "Client User", category: "User Tier", x: 60, y: 210, isBase: true },
+        { id: "node_app", type: "app", label: "API Web Server", category: "Compute Tier", x: 550, y: 210, isBase: true },
+        { id: "node_db", type: "db", label: "Primary Database", category: "Database Tier", x: 980, y: 210, isBase: true }
       ],
       connections: [
         { from: "node_client", to: "node_app" },
@@ -105,7 +105,7 @@
       var addedComponentKeys = getAddedComponentKeys();
       var estCost = calculateTotalCost(addedComponentKeys);
 
-      var html = '<div style="width:100%; max-width:1150px; margin:0 auto; display:flex; flex-direction:column; gap:1.75rem;">' +
+      var html = '<div style="width:100%; max-width:1150px; margin:0 auto; display:flex; flex-direction:column; gap:1.5rem;">' +
         /* Header Banner */
         '<div style="text-align:center; display:flex; flex-direction:column; gap:0.5rem;">' +
           '<div>' +
@@ -117,83 +117,71 @@
             'System Architecture Trade-off Lab' +
           '</h1>' +
           '<p style="font-size:0.875rem; color:var(--text-color, #4b5563); max-width:42rem; margin:0 auto; line-height:1.5;">' +
-            'No system is perfect — every architecture is defined by its trade-offs. Select an enterprise challenge, place components in their authoritative architectural tiers, and validate your system!' +
+            'No system is perfect — every architecture is defined by its trade-offs. Select an enterprise challenge, add components from the toolbar above, and drag nodes freely on the canvas grid!' +
           '</p>' +
         '</div>' +
 
         /* Step 1: Challenge Selector Card */
-        '<div style="padding:1.5rem; border-radius:1.5rem; background:var(--body-bg, #ffffff); border:1px solid var(--border-color, #e5e7eb); box-shadow:0 1px 3px rgba(0,0,0,0.05); display:flex; flex-direction:column; gap:1rem;">' +
+        '<div style="padding:1.25rem 1.5rem; border-radius:1.5rem; background:var(--body-bg, #ffffff); border:1px solid var(--border-color, #e5e7eb); box-shadow:0 1px 3px rgba(0,0,0,0.05); display:flex; flex-direction:column; gap:0.875rem;">' +
           '<label style="font-size:0.75rem; font-weight:800; text-transform:uppercase; letter-spacing:0.05em; color:var(--text-color, #6b7280); display:block;">' +
             'Step 1: Select Your System Design Challenge' +
           '</label>' +
 
-          '<div id="challenges-grid" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap:0.75rem;">' +
+          '<div id="challenges-grid" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap:0.75rem;">' +
             renderChallengeCards(state.activeChallengeId) +
           '</div>' +
 
-          '<div style="padding:0.875rem 1rem; border-radius:1rem; background:rgba(0,0,0,0.02); border:1px solid var(--border-color, #e5e7eb); font-size:0.75rem; font-weight:600; color:var(--dark-color, #1e293b); display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:0.5rem;">' +
+          '<div style="padding:0.75rem 1rem; border-radius:1rem; background:rgba(0,0,0,0.02); border:1px solid var(--border-color, #e5e7eb); font-size:0.75rem; font-weight:600; color:var(--dark-color, #1e293b); display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:0.5rem;">' +
             '<span>🎯 Challenge Goal: <strong>' + escapeHtml(currentChallenge.targetGoal) + '</strong></span>' +
             '<span style="color:#10b981; font-weight:800;">Est. Infra Spend: $' + estCost + '/mo</span>' +
           '</div>' +
         '</div>' +
 
-        /* Step 2: Main Workspace (Toolbox & Drag-and-Drop Canvas) */
-        '<div id="lab-workspace-grid" style="display:grid; grid-template-columns: 320px minmax(0, 1fr); gap:1.5rem; width:100%; align-items:start;">' +
+        /* Step 2: Top Horizontal Component Toolbar */
+        '<div style="padding:1.25rem; border-radius:1.5rem; background:var(--body-bg, #ffffff); border:1px solid var(--border-color, #e5e7eb); box-shadow:0 1px 3px rgba(0,0,0,0.05); display:flex; flex-direction:column; gap:1rem; width:100%;">' +
+          '<div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:0.5rem;">' +
+            '<h4 style="font-size:0.75rem; font-weight:800; text-transform:uppercase; letter-spacing:0.05em; display:flex; align-items:center; gap:0.5rem; margin:0;">' +
+              '<i class="fa-solid fa-toolbox" style="color:var(--primary, #0ea5e9);"></i> Step 2: Enterprise Component Toolbar' +
+            '</h4>' +
 
-          /* Left Column: Component Toolbox (320px) */
-          '<div style="padding:1.25rem; border-radius:1.5rem; background:var(--body-bg, #ffffff); border:1px solid var(--border-color, #e5e7eb); box-shadow:0 1px 3px rgba(0,0,0,0.05); display:flex; flex-direction:column; gap:1rem; min-width:280px;">' +
-            '<div style="display:flex; align-items:center; justify-content:space-between;">' +
-              '<h4 style="font-size:0.75rem; font-weight:800; text-transform:uppercase; letter-spacing:0.05em; display:flex; align-items:center; gap:0.5rem; margin:0;">' +
-                '<i class="fa-solid fa-toolbox" style="color:var(--primary, #0ea5e9);"></i> Step 2: Component Toolbox' +
-              '</h4>' +
+            '<div style="display:flex; align-items:center; gap:0.75rem;">' +
               '<button id="reset-components-btn" style="font-size:0.7rem; font-weight:700; color:#ef4444; background:transparent; border:none; cursor:pointer;">Reset Canvas</button>' +
-            '</div>' +
-
-            '<div style="display:flex; flex-direction:column; gap:0.5rem; max-height:450px; overflow-y:auto; padding-right:0.25rem;">' +
-              renderToolboxButtons(addedComponentKeys) +
-            '</div>' +
-
-            '<div style="padding-top:0.75rem; border-top:1px solid var(--border-color, #e5e7eb); display:flex; flex-direction:column; gap:0.5rem;">' +
-              '<button id="validate-arch-btn" style="width:100%; padding:0.75rem; border-radius:1rem; font-size:0.75rem; font-weight:800; background:var(--primary, #0ea5e9); color:#ffffff; border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:0.5rem; box-shadow:0 1px 2px rgba(0,0,0,0.1);">' +
-                '<i class="fa-solid fa-circle-check"></i> Validate System Architecture' +
+              '<button id="validate-arch-btn" style="padding:0.5rem 1.25rem; border-radius:0.875rem; font-size:0.75rem; font-weight:800; background:var(--primary, #0ea5e9); color:#ffffff; border:none; cursor:pointer; display:flex; align-items:center; gap:0.5rem; box-shadow:0 1px 2px rgba(0,0,0,0.1);">' +
+                '<i class="fa-solid fa-circle-check"></i> Validate Architecture' +
               '</button>' +
-
-              (state.failedAttempts >= 3 ? '<button id="unlock-solution-btn" style="width:100%; padding:0.625rem; border-radius:1rem; font-size:0.7rem; font-weight:800; background:rgba(245,158,11,0.15); color:#d97706; border:1px solid rgba(245,158,11,0.3); cursor:pointer; display:flex; align-items:center; justify-content:center; gap:0.5rem;"><i class="fa-solid fa-key"></i> 🔓 Unlock Optimal Solution</button>' : "") +
+              (state.failedAttempts >= 3 ? '<button id="unlock-solution-btn" style="padding:0.5rem 1rem; border-radius:0.875rem; font-size:0.7rem; font-weight:800; background:rgba(245,158,11,0.15); color:#d97706; border:1px solid rgba(245,158,11,0.3); cursor:pointer; display:flex; align-items:center; gap:0.5rem;"><i class="fa-solid fa-key"></i> 🔓 Solution</button>' : "") +
             '</div>' +
           '</div>' +
 
-          /* Right Column: Interactive Drag-and-Drop SVG Canvas (1fr) */
-          '<div style="padding:1.25rem; border-radius:1.5rem; background:var(--body-bg, #ffffff); border:1px solid var(--border-color, #e5e7eb); box-shadow:0 1px 3px rgba(0,0,0,0.05); display:flex; flex-direction:column; gap:1.25rem; min-width:0;">' +
-            '<div style="display:flex; align-items:center; justify-content:space-between; font-size:0.75rem; font-weight:700; color:#6b7280; padding-bottom:0.5rem; border-bottom:1px solid var(--border-color, #e5e7eb);">' +
-              '<span><i class="fa-solid fa-network-wired" style="color:var(--primary, #0ea5e9);"></i> Clean Architecture Canvas (1050px Grid)</span>' +
-              '<span>' + state.nodes.length + ' Nodes / ' + state.connections.length + ' Data Flow Arrows</span>' +
-            '</div>' +
-
-            /* Draggable SVG Container with 1050px Horizontal Scroll */
-            '<div style="width:100%; overflow-x:auto; scrollbar-width:thin; border-radius:1rem; border:1px solid var(--border-color, #e5e7eb);">' +
-              '<div id="architecture-svg-canvas" style="width:1050px; height:440px; background:rgba(0,0,0,0.02); position:relative; overflow:hidden; user-select:none; touch-action:none;">' +
-                renderSVGCanvas() +
-              '</div>' +
-            '</div>' +
-
-            /* Validation Result & AI Hint Box */
-            '<div id="validation-output-container">' +
-              renderValidationOutput(state.validationResult, currentChallenge, state.failedAttempts, state.showSolution) +
-            '</div>' +
+          /* Horizontal Button Grid (2 rows of 4 pills) */
+          '<div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap:0.625rem; width:100%;">' +
+            renderToolboxButtons(addedComponentKeys) +
           '</div>' +
-
         '</div>' +
+
+        /* Step 3: Full-Width 1150px SVG Canvas Container */
+        '<div style="padding:1.25rem; border-radius:1.5rem; background:var(--body-bg, #ffffff); border:1px solid var(--border-color, #e5e7eb); box-shadow:0 1px 3px rgba(0,0,0,0.05); display:flex; flex-direction:column; gap:1.25rem; width:100%;">' +
+          '<div style="display:flex; align-items:center; justify-content:space-between; font-size:0.75rem; font-weight:700; color:#6b7280; padding-bottom:0.5rem; border-bottom:1px solid var(--border-color, #e5e7eb);">' +
+            '<span><i class="fa-solid fa-network-wired" style="color:var(--primary, #0ea5e9);"></i> 100% Full-Width Architecture Canvas</span>' +
+            '<span>' + state.nodes.length + ' Nodes / ' + state.connections.length + ' Data Flow Tunnels</span>' +
+          '</div>' +
+
+          /* SVG Canvas Container with 100% Full-Width Span */
+          '<div style="width:100%; overflow-x:auto; scrollbar-width:thin; border-radius:1rem; border:1px solid var(--border-color, #e5e7eb);">' +
+            '<div id="architecture-svg-canvas" style="width:100%; min-width:1150px; height:480px; background:rgba(0,0,0,0.02); position:relative; overflow:hidden; user-select:none; touch-action:none;">' +
+              renderSVGCanvas() +
+            '</div>' +
+          '</div>' +
+
+          /* Validation Result & AI Hint Box */
+          '<div id="validation-output-container">' +
+            renderValidationOutput(state.validationResult, currentChallenge, state.failedAttempts, state.showSolution) +
+          '</div>' +
+        '</div>' +
+
       '</div>';
 
       root.innerHTML = html;
-
-      /* Inject Media Query for Mobile Stacking */
-      if (!document.getElementById("lab-grid-responsive-style")) {
-        var styleEl = document.createElement("style");
-        styleEl.id = "lab-grid-responsive-style";
-        styleEl.textContent = "@media (max-width: 900px) { #lab-workspace-grid { grid-template-columns: 1fr !important; } }";
-        document.head.appendChild(styleEl);
-      }
 
       bindLabEvents();
       bindDragEngine();
@@ -221,7 +209,7 @@
       var html = "";
       CHALLENGES.forEach(function (c) {
         var isActive = c.id === activeId;
-        html += '<button data-challenge-id="' + c.id + '" style="padding:1rem; border-radius:1rem; text-align:left; border:1px solid; transition:all 0.2s; cursor:pointer; display:flex; flex-direction:column; justify-between; gap:0.4rem; ' + (isActive ? "background:rgba(var(--primary-rgb, 14,165,233), 0.1); border-color:var(--primary, #0ea5e9); color:var(--primary, #0ea5e9);" : "background:rgba(0,0,0,0.02); border-color:var(--border-color, #e5e7eb); color:var(--dark-color, #0f172a);") + '">' +
+        html += '<button data-challenge-id="' + c.id + '" style="padding:0.875rem 1rem; border-radius:1rem; text-align:left; border:1px solid; transition:all 0.2s; cursor:pointer; display:flex; flex-direction:column; justify-between; gap:0.35rem; ' + (isActive ? "background:rgba(var(--primary-rgb, 14,165,233), 0.1); border-color:var(--primary, #0ea5e9); color:var(--primary, #0ea5e9);" : "background:rgba(0,0,0,0.02); border-color:var(--border-color, #e5e7eb); color:var(--dark-color, #0f172a);") + '">' +
           '<div style="font-weight:800; font-size:0.75rem;">' + escapeHtml(c.title) + '</div>' +
           '<div style="font-size:0.7rem; font-weight:400; opacity:0.8; line-height:1.3;">' + escapeHtml(c.targetGoal) + '</div>' +
         '</button>';
@@ -234,18 +222,18 @@
       Object.keys(AVAILABLE_COMPONENTS).forEach(function (key) {
         var comp = AVAILABLE_COMPONENTS[key];
         var isAdded = addedKeys.indexOf(key) !== -1;
-        html += '<button data-component-key="' + key + '" style="width:100%; text-align:left; padding:0.75rem; border-radius:1rem; border:1px solid; transition:all 0.2s; display:flex; align-items:center; justify-content:space-between; cursor:pointer; ' + (isAdded ? "background:rgba(16,185,129,0.12); border-color:#10b981; color:#059669; font-weight:700;" : "background:rgba(0,0,0,0.02); border-color:var(--border-color, #e5e7eb); color:var(--dark-color, #0f172a);") + '">' +
-          '<div style="display:flex; align-items:center; gap:0.625rem;">' +
-            '<span style="width:1.75rem; height:1.75rem; border-radius:0.625rem; display:flex; align-items:center; justify-content:center; font-size:0.75rem; flex-shrink:0; ' + (isAdded ? "background:#10b981; color:#ffffff;" : "background:rgba(var(--primary-rgb, 14,165,233), 0.1); color:var(--primary, #0ea5e9);") + '">' +
+        html += '<button data-component-key="' + key + '" style="text-align:left; padding:0.625rem 0.875rem; border-radius:0.875rem; border:1px solid; transition:all 0.2s; display:flex; align-items:center; justify-content:space-between; cursor:pointer; ' + (isAdded ? "background:rgba(16,185,129,0.12); border-color:#10b981; color:#059669; font-weight:700;" : "background:rgba(0,0,0,0.02); border-color:var(--border-color, #e5e7eb); color:var(--dark-color, #0f172a);") + '">' +
+          '<div style="display:flex; align-items:center; gap:0.5rem;">' +
+            '<span style="width:1.625rem; height:1.625rem; border-radius:0.5rem; display:flex; align-items:center; justify-content:center; font-size:0.7rem; flex-shrink:0; ' + (isAdded ? "background:#10b981; color:#ffffff;" : "background:rgba(var(--primary-rgb, 14,165,233), 0.1); color:var(--primary, #0ea5e9);") + '">' +
               '<i class="fa-solid ' + comp.icon + '"></i>' +
             '</span>' +
             '<div>' +
               '<div style="font-size:0.75rem; font-weight:700;">' + escapeHtml(comp.name) + '</div>' +
-              '<div style="font-size:0.65rem; color:#6b7280; font-weight:400;">' + comp.category + ' Tier</div>' +
+              '<div style="font-size:0.625rem; color:#6b7280; font-weight:400;">' + comp.category + ' Tier</div>' +
             '</div>' +
           '</div>' +
 
-          '<span style="font-size:0.7rem; font-weight:800;">' + (isAdded ? "Active ✓" : "+ $" + comp.cost + "/mo") + '</span>' +
+          '<span style="font-size:0.675rem; font-weight:800;">' + (isAdded ? "Active ✓" : "+ $" + comp.cost) + '</span>' +
         '</button>';
       });
       return html;
@@ -263,8 +251,8 @@
 
       var vpcBoxHtml = "";
       if (state.hasVpc) {
-        vpcBoxHtml = '<rect x="390" y="20" width="630" height="390" rx="20" fill="rgba(14,165,233,0.03)" stroke="#0ea5e9" stroke-width="2" stroke-dasharray="6 6" />' +
-          '<text x="410" y="45" font-size="11" font-weight="bold" fill="#0ea5e9">🔒 Private VPC Subnet & NAT Perimeter</text>';
+        vpcBoxHtml = '<rect x="490" y="30" width="640" height="420" rx="20" fill="rgba(14,165,233,0.03)" stroke="#0ea5e9" stroke-width="2" stroke-dasharray="6 6" />' +
+          '<text x="510" y="55" font-size="11" font-weight="bold" fill="#0ea5e9">🔒 Private VPC Subnet & NAT Perimeter</text>';
       }
 
       var nodesHtml = "";
@@ -277,7 +265,7 @@
         '</g>';
       });
 
-      return '<svg width="1050" height="440" viewBox="0 0 1050 440" style="position:absolute; inset:0;">' +
+      return '<svg width="1150" height="480" viewBox="0 0 1150 480" style="position:absolute; inset:0;">' +
         '<defs>' +
           '<marker id="arrowhead" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">' +
             '<path d="M 0 0 L 10 5 L 0 10 z" fill="#0ea5e9" />' +
@@ -311,7 +299,7 @@
       if (!res) {
         return '<div style="padding:1.25rem; border-radius:1rem; background:rgba(0,0,0,0.02); border:1px solid var(--border-color, #e5e7eb); text-align:center; font-size:0.75rem; color:#6b7280; display:flex; flex-direction:column; gap:0.35rem;">' +
           '<i class="fa-solid fa-hand-pointer" style="font-size:1.25rem; color:var(--primary, #0ea5e9);"></i>' +
-          '<div>Drag components in their architectural tiers and click <strong>Validate System Architecture</strong>!</div>' +
+          '<div>Add components from the toolbar above, drag nodes freely on the canvas grid, and click <strong>Validate Architecture</strong>!</div>' +
         '</div>';
       }
 
@@ -432,21 +420,21 @@
               state.nodes.splice(existingIdx, 1);
             } else if (comp) {
               var newId = "node_" + key + "_" + Date.now();
-              var defaultX = 630;
-              var defaultY = 180;
+              var defaultX = 780;
+              var defaultY = 210;
 
               if (comp.tier === "edge") {
-                defaultX = 230; defaultY = 70;
+                defaultX = 300; defaultY = 210;
               } else if (comp.tier === "ingress") {
-                defaultX = 230; defaultY = 290;
+                defaultX = 300; defaultY = 330;
               } else if (comp.tier === "caching") {
-                defaultX = 630; defaultY = 70;
+                defaultX = 780; defaultY = 90;
               } else if (comp.tier === "queue") {
-                defaultX = 630; defaultY = 290;
+                defaultX = 780; defaultY = 330;
               } else if (comp.tier === "storage") {
-                defaultX = 830; defaultY = 70;
+                defaultX = 980; defaultY = 90;
               } else if (comp.tier === "database") {
-                defaultX = 830; defaultY = 290;
+                defaultX = 980; defaultY = 330;
               }
 
               state.nodes.push({
@@ -472,9 +460,9 @@
         resetBtn.addEventListener("click", function () {
           state.hasVpc = false;
           state.nodes = [
-            { id: "node_client", type: "client", label: "Client User", category: "User Tier", x: 40, y: 180, isBase: true },
-            { id: "node_app", type: "app", label: "API Web Server", category: "Compute Tier", x: 430, y: 180, isBase: true },
-            { id: "node_db", type: "db", label: "Primary Database", category: "Database Tier", x: 830, y: 180, isBase: true }
+            { id: "node_client", type: "client", label: "Client User", category: "User Tier", x: 60, y: 210, isBase: true },
+            { id: "node_app", type: "app", label: "API Web Server", category: "Compute Tier", x: 550, y: 210, isBase: true },
+            { id: "node_db", type: "db", label: "Primary Database", category: "Database Tier", x: 980, y: 210, isBase: true }
           ];
           state.connections = [
             { from: "node_client", to: "node_app" },
@@ -544,9 +532,9 @@
         var newX = clientX - rect.left - state.dragState.offsetX;
         var newY = clientY - rect.top - state.dragState.offsetY;
 
-        // Clamp inside 1050px canvas bounds
-        nodeObj.x = Math.max(10, Math.min(1050 - 150, newX));
-        nodeObj.y = Math.max(10, Math.min(440 - 60, newY));
+        // Clamp inside 1150px canvas bounds
+        nodeObj.x = Math.max(10, Math.min(1150 - 150, newX));
+        nodeObj.y = Math.max(10, Math.min(480 - 60, newY));
 
         // Update node transform & SVG lines directly in DOM for 60fps performance
         var targetG = canvasEl.querySelector('[data-drag-node-id="' + nodeObj.id + '"]');
