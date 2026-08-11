@@ -977,17 +977,34 @@
           eventLinkHtml = '<div class="mb-4"><a href="' + escapeHtml(p.link_url) + '" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-primary/10 hover:bg-primary/20 text-primary text-xs sm:text-sm font-bold no-underline transition-all"><i class="fa-solid fa-link text-xs"></i> Official Event / Page <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i></a></div>';
         }
 
-        var hashtagsText = Array.isArray(p.tags) ? p.tags.map(function(t){ return '#' + t.replace(/^#/, ''); }).join(" ") : "";
+        var hashtagsText = Array.isArray(p.tags) ? p.tags.map(function(t){ return t.startsWith('#') ? t : '#' + t; }).join(" ") : "";
         var cleanContentText = (p.content || "")
           .replace(/<[^>]+>/g, "")
           .replace(/&lt;[^&]+&gt;/g, "")
           .trim();
 
+        // Derive source label from tags (e.g. #GoogleCloud → "Google Cloud", #AWS → "AWS")
+        var sourceLabel = "";
+        if (Array.isArray(p.tags) && p.tags.length > 0) {
+          sourceLabel = p.tags[0].replace(/^#/, "").replace(/([a-z])([A-Z])/g, "$1 $2");
+        }
+
         var pulseTargetUrl = window.location.origin + "/pulse/";
-        var shareText = "☕ GCloud Cafe | Cloud Pulse\n\n📌 " + p.title + "\n\n" + cleanContentText + "\n\n" + hashtagsText + "\n\n🌐 Read live on GCloud Cafe: " + pulseTargetUrl;
+        var originalUrl = p.link_url || pulseTargetUrl;
+
+        // Professional LinkedIn share template with source attribution
+        var shareText = "☕ GCloud Cafe | Cloud Pulse\n\n"
+          + "📌 " + p.title + "\n\n"
+          + cleanContentText + "\n\n"
+          + (sourceLabel ? "📖 Source: " + sourceLabel + (p.link_url ? "\n🔗 " + p.link_url : "") + "\n\n" : "")
+          + hashtagsText + " #CloudNews #GCloudCafe\n\n"
+          + "—\n"
+          + "Follow GCloud Cafe for daily cloud updates 👇\n"
+          + "🌐 " + pulseTargetUrl;
+
         var linkedinShareUrl = "https://www.linkedin.com/feed/?shareActive=true&text=" + encodeURIComponent(shareText);
 
-        var linkedinBtnHtml = '<a href="' + linkedinShareUrl + '" data-pulse-share-title="' + escapeHtml(p.title) + '" data-pulse-share-text="' + escapeHtml(cleanContentText + (hashtagsText ? '\n\n' + hashtagsText : '')) + '" data-pulse-share-url="' + escapeHtml(pulseTargetUrl) + '" target="_blank" rel="noopener noreferrer" class="pulse-share-btn inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-xs font-bold bg-[#0a66c2]/10 hover:bg-[#0a66c2] text-[#0a66c2] hover:text-white transition-all no-underline shrink-0" title="Share pulse on LinkedIn">' +
+        var linkedinBtnHtml = '<a href="' + linkedinShareUrl + '" data-pulse-share-title="' + escapeHtml(p.title) + '" data-pulse-share-text="' + escapeHtml(shareText) + '" data-pulse-share-url="' + escapeHtml(originalUrl) + '" target="_blank" rel="noopener noreferrer" class="pulse-share-btn inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-xs font-bold bg-[#0a66c2]/10 hover:bg-[#0a66c2] text-[#0a66c2] hover:text-white transition-all no-underline shrink-0" title="Share pulse on LinkedIn">' +
           '<i class="fa-brands fa-linkedin text-sm"></i> Share' +
         '</a>';
 
