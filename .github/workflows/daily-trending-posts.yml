@@ -57,7 +57,7 @@ jobs:
 
       - name: Create Pull Request
         if: steps.generate.outputs.draft_created == 'true'
-        uses: peter-evans/create-pull-request@v6
+        uses: peter-evans/create-pull-request@v7
         with:
           commit-message: 'chore: add AI-generated trending topic drafts'
           title: 'Daily Trending: ${{ steps.generate.outputs.topic_title }}'

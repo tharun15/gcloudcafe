@@ -1387,8 +1387,130 @@
       });
     }
 
+    var pullBtn = document.getElementById("pull-scraped-articles-btn");
     if (refreshBtn) {
       refreshBtn.addEventListener("click", fetchPendingCandidates);
+    }
+    if (pullBtn) {
+      pullBtn.addEventListener("click", ingestCleanedArticles);
+    }
+
+    function ingestCleanedArticles() {
+      if (!pullBtn) return;
+      var originalHtml = pullBtn.innerHTML;
+      pullBtn.disabled = true;
+      pullBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1.5"></i> Ingesting & Sanitizing Feeds...';
+
+      var feeds = [
+        { provider: "GCP", name: "Google Cloud Release Notes", url: "https://cloud.google.com/feeds/gcp-release-notes.xml", defaultTags: ["#GoogleCloud", "#GCP", "#CloudNews"] },
+        { provider: "AWS", name: "AWS What's New", url: "https://aws.amazon.com/about-aws/whats-new/recent/feed/", defaultTags: ["#AWS", "#CloudArchitecture", "#CloudNews"] },
+        { provider: "Kubernetes", name: "Kubernetes CNCF Blog", url: "https://kubernetes.io/feed.xml", defaultTags: ["#Kubernetes", "#CNCF", "#CloudNative"] },
+        { provider: "OpenShift", name: "Red Hat Blog & OpenShift Releases", url: "https://www.redhat.com/en/rss/blog", defaultTags: ["#OpenShift", "#RedHat", "#DevOps"] }
+      ];
+
+      var fetchPromises = feeds.map(function (feed) {
+        var proxyUrl = "https://api.allorigins.win/get?url=" + encodeURIComponent(feed.url);
+        return fetch(proxyUrl)
+          .then(function (res) { return res.json(); })
+          .then(function (data) {
+            if (data && data.contents) {
+              return parseFeedXml(data.contents, feed);
+            }
+            return [];
+          })
+          .catch(function () { return []; });
+      });
+
+      Promise.all(fetchPromises)
+        .then(function (results) {
+          var allCandidates = [];
+          results.forEach(function (list) {
+            if (Array.isArray(list)) allCandidates = allCandidates.concat(list);
+          });
+
+          if (allCandidates.length === 0) {
+            pullBtn.disabled = false;
+            pullBtn.innerHTML = '<i class="fa-solid fa-check mr-1.5"></i> Queue Up to Date';
+            setTimeout(function () { pullBtn.innerHTML = originalHtml; }, 3000);
+            fetchPendingCandidates();
+            return;
+          }
+
+          var uniqueMap = new Map();
+          allCandidates.forEach(function (c) { uniqueMap.set(c.title, c); });
+          var newCandidates = Array.from(uniqueMap.values());
+
+          var postPromises = newCandidates.map(function (item) {
+            return fetch(config.url + "/rest/v1/cloud_pulses", {
+              method: "POST",
+              headers: {
+                "apikey": config.anonKey,
+                "Authorization": "Bearer " + config.anonKey,
+                "Content-Type": "application/json",
+                "Prefer": "return=minimal"
+              },
+              body: JSON.stringify(item)
+            }).catch(function () {});
+          });
+
+          return Promise.all(postPromises);
+        })
+        .then(function () {
+          pullBtn.disabled = false;
+          pullBtn.innerHTML = '<i class="fa-solid fa-circle-check mr-1.5"></i> Articles Ingested!';
+          setTimeout(function () { pullBtn.innerHTML = originalHtml; }, 3000);
+          fetchPendingCandidates();
+        })
+        .catch(function () {
+          pullBtn.disabled = false;
+          pullBtn.innerHTML = originalHtml;
+          fetchPendingCandidates();
+        });
+    }
+
+    function parseFeedXml(xmlText, feed) {
+      var items = [];
+      try {
+        var parser = new DOMParser();
+        var xmlDoc = parser.parseFromString(xmlText, "text/xml");
+        var nodes = xmlDoc.querySelectorAll("item, entry");
+
+        nodes.forEach(function (node, idx) {
+          if (idx >= 5) return;
+          var titleNode = node.querySelector("title");
+          var linkNode = node.querySelector("link");
+          var summaryNode = node.querySelector("description, summary, content");
+
+          var rawTitle = titleNode ? titleNode.textContent : "";
+          var rawLink = linkNode ? (linkNode.getAttribute("href") || linkNode.textContent) : "";
+          var rawSummary = summaryNode ? summaryNode.textContent : "";
+
+          var title = cleanFeedText(rawTitle);
+          var summary = cleanFeedText(rawSummary);
+
+          if (title && summary.length >= 25 && !title.toLowerCase().includes("routine maintenance")) {
+            var microContent = summary.length > 220 ? summary.substring(0, 217) + "..." : summary;
+            items.push({
+              title: title,
+              content: microContent,
+              author: "Cloud Newsroom Bot",
+              link_url: rawLink || null,
+              tags: feed.defaultTags,
+              upvotes: 1,
+              downvotes: 0,
+              score: 1,
+              status: "pending_approval",
+              eligibility_reason: "Official " + feed.provider + " Release: Ingested & sanitized for high technical relevance."
+            });
+          }
+        });
+      } catch (e) {}
+      return items;
+    }
+
+    function cleanFeedText(str) {
+      if (!str) return "";
+      return str.replace(/<[^>]+>/g, "").replace(/&amp;/g, "&").replace(/\s+/g, " ").trim();
     }
 
     // Check authentication state on page load
