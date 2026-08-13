@@ -1026,10 +1026,10 @@
               linkedinBtnHtml +
               '<div class="flex items-center gap-1.5 shrink-0 bg-theme-light dark:bg-darkmode-theme-light rounded-xl p-1 border border-border/50 dark:border-darkmode-border/50">' +
                 '<button data-pulse-upvote="' + p.id + '" data-upvotes="' + (p.upvotes || 0) + '" data-downvotes="' + (p.downvotes || 0) + '" class="' + upActiveClass + '" title="Upvote pulse">' +
-                  '<i class="fa-solid fa-caret-up text-sm"></i> <span>' + (p.score >= 0 ? '+' + p.score : p.score) + '</span>' +
+                  '<svg class="w-3.5 h-3.5 fill-current inline-block mr-0.5" viewBox="0 0 24 24"><path d="M12 4l-6.5 8h4.5v8h4v-8h4.5z"/></svg><span>' + (p.score >= 0 ? '+' + p.score : p.score) + '</span>' +
                 '</button>' +
                 '<button data-pulse-downvote="' + p.id + '" data-upvotes="' + (p.upvotes || 0) + '" data-downvotes="' + (p.downvotes || 0) + '" class="' + downActiveClass + '" title="Downvote pulse">' +
-                  '<i class="fa-solid fa-caret-down text-sm"></i>' +
+                  '<svg class="w-3.5 h-3.5 fill-current inline-block" viewBox="0 0 24 24"><path d="M12 20l6.5-8h-4.5V4h-4v8H5.5z"/></svg>' +
                 '</button>' +
               '</div>' +
             '</div>' +
@@ -1373,6 +1373,8 @@
       return combined || title;
     }
 
+    var verifiedDefaultGeminiKey = "AIzaSyA0vfGV5i1yxOJpq2GKMta8R1exW4hOZR4";
+
     async function fetchGeminiApiKeyFromSupabase() {
       if (cachedGeminiApiKey) return cachedGeminiApiKey;
       try {
@@ -1386,12 +1388,20 @@
         if (Array.isArray(data) && data.length > 0 && data[0].value) {
           var val = data[0].value.trim();
           cachedGeminiApiKey = val;
+          localStorage.setItem("gcloudcafe_gemini_api_key", val);
           return val;
         }
       } catch (err) {
         console.warn("Could not fetch Gemini key from Supabase site_settings:", err);
       }
-      return (cachedGeminiApiKey || localStorage.getItem("gcloudcafe_gemini_api_key") || "").trim();
+      var stored = (localStorage.getItem("gcloudcafe_gemini_api_key") || "").trim();
+      if (stored) {
+        cachedGeminiApiKey = stored;
+        return stored;
+      }
+      cachedGeminiApiKey = verifiedDefaultGeminiKey;
+      localStorage.setItem("gcloudcafe_gemini_api_key", verifiedDefaultGeminiKey);
+      return verifiedDefaultGeminiKey;
     }
 
     // Call Gemini API to generate crisp TL;DR Hook with automatic fallback on rate limit / quota exhaustion
@@ -2732,7 +2742,8 @@
           return data[0].value.trim();
         }
       } catch (e) {}
-      return (localStorage.getItem("gcloudcafe_gemini_api_key") || "").trim();
+      var stored = (localStorage.getItem("gcloudcafe_gemini_api_key") || "").trim();
+      return stored || "AIzaSyA0vfGV5i1yxOJpq2GKMta8R1exW4hOZR4";
     }
 
     // Call Gemini API with Fallback Handling
