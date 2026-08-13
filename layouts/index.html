@@ -7,22 +7,30 @@
 
   <!-- Top Adaptable Tab Switcher Bar (Mobile & Webview Navigation Friction Removal) -->
   <div class="py-3 bg-body dark:bg-darkmode-body border-b border-border/40 dark:border-darkmode-border/40">
-    <div class="container flex items-center justify-between gap-3 overflow-x-auto no-scrollbar">
-      <div class="inline-flex items-center gap-1.5 p-1 rounded-2xl bg-theme-light dark:bg-darkmode-theme-light border border-border/60 dark:border-darkmode-border/60">
-        <a href="{{ site.Home.RelPermalink }}" class="px-4 sm:px-5 py-2 rounded-xl text-xs sm:text-sm font-bold bg-primary text-white shadow-xs no-underline flex items-center gap-2">
-          <i class="fa-solid fa-newspaper text-xs"></i> Articles
-        </a>
-        <a href="{{ `pulse/` | relLangURL }}" class="px-4 sm:px-5 py-2 rounded-xl text-xs sm:text-sm font-bold text-text/80 dark:text-darkmode-text/80 hover:text-primary transition-all no-underline flex items-center gap-2">
-          <i class="fa-solid fa-tower-broadcast text-emerald-500 animate-pulse"></i> Live Pulse
-        </a>
-        <a href="{{ `categories/` | relLangURL }}" class="px-4 sm:px-5 py-2 rounded-xl text-xs sm:text-sm font-bold text-text/80 dark:text-darkmode-text/80 hover:text-primary transition-all no-underline flex items-center gap-2">
-          <i class="fa-solid fa-tags text-xs"></i> Topics
+    <div class="container relative scroll-indicator-wrapper">
+      <!-- Left indicator overlay -->
+      <div class="indicator-left" aria-hidden="true"></div>
+      
+      <div class="scroll-switcher-scroller flex items-center justify-between gap-3 overflow-x-auto no-scrollbar">
+        <div class="inline-flex items-center gap-1.5 p-1 rounded-2xl bg-theme-light dark:bg-darkmode-theme-light border border-border/60 dark:border-darkmode-border/60">
+          <a href="{{ site.Home.RelPermalink }}" class="px-4 sm:px-5 py-2 rounded-xl text-xs sm:text-sm font-bold bg-primary text-white shadow-xs no-underline flex items-center gap-2">
+            <i class="fa-solid fa-newspaper text-xs"></i> Articles
+          </a>
+          <a href="{{ `pulse/` | relLangURL }}" class="px-4 sm:px-5 py-2 rounded-xl text-xs sm:text-sm font-bold text-text/80 dark:text-darkmode-text/80 hover:text-primary transition-all no-underline flex items-center gap-2">
+            <i class="fa-solid fa-tower-broadcast text-emerald-500 animate-pulse"></i> Live Pulse
+          </a>
+          <a href="{{ `categories/` | relLangURL }}" class="px-4 sm:px-5 py-2 rounded-xl text-xs sm:text-sm font-bold text-text/80 dark:text-darkmode-text/80 hover:text-primary transition-all no-underline flex items-center gap-2">
+            <i class="fa-solid fa-tags text-xs"></i> Topics
+          </a>
+        </div>
+
+        <a href="{{ `pulse/#cloud-pulse-section` | relLangURL }}" class="hidden sm:inline-flex items-center gap-1.5 text-xs font-bold text-primary hover:underline whitespace-nowrap">
+          <i class="fa-solid fa-arrow-down text-[10px]"></i> Jump to Live Micro-News
         </a>
       </div>
 
-      <a href="#cloud-pulse-section" class="hidden sm:inline-flex items-center gap-1.5 text-xs font-bold text-primary hover:underline whitespace-nowrap">
-        <i class="fa-solid fa-arrow-down text-[10px]"></i> Jump to Live Micro-News
-      </a>
+      <!-- Right indicator overlay -->
+      <div class="indicator-right" aria-hidden="true"></div>
     </div>
   </div>
 

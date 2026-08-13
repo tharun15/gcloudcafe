@@ -94,7 +94,7 @@
         {{ $image:= .Params.image }}
         {{ if $image }}
           <div class="overflow-hidden rounded-3xl shadow-sm bg-slate-100 dark:bg-slate-900/60 flex items-center justify-center p-3 border border-border/40 dark:border-darkmode-border/40">
-            {{ partial "image" (dict "Src" $image "Context" .Page "Alt" .Title "Class" "w-full h-auto max-h-[500px] object-contain rounded-2xl") }}
+            {{ partial "image" (dict "Src" $image "Context" .Page "Alt" .Title "Class" "w-full h-auto max-h-[500px] object-contain rounded-2xl" "FetchPriority" "high" "Loading" "eager") }}
           </div>
         {{ else }}
           <div class="blog-fallback-media min-h-[260px] rounded-3xl">
@@ -229,7 +229,7 @@
       {{ $related := (where site.RegularPages "Section" "in" site.Params.mainSections) | intersect (where site.RegularPages ".Title" "!=" .Title) | union (site.RegularPages.Related . ) }}
       {{ $related = $related | shuffle | first 3 }}
       {{ with $related }}
-        <div class="section pb-0 pt-16 border-t border-border/60 dark:border-darkmode-border/60" aria-labelledby="related-posts-heading">
+        <div class="heavy-section-deferred section pb-0 pt-16 border-t border-border/60 dark:border-darkmode-border/60" aria-labelledby="related-posts-heading">
           <p class="blog-eyebrow">Continue Reading</p>
           <h2 id="related-posts-heading" class="text-2xl font-bold tracking-tight mb-8">
             Related Articles & Guides

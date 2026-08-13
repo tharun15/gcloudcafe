@@ -22,7 +22,7 @@
 
 /* Glassmorphism Header */
 .header {
-  @apply sticky top-0 z-40 transition-all duration-300;
+  @apply sticky top-0 z-40 transition-all duration-300 py-3 lg:py-3.5;
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   background-color: rgba(255, 255, 255, 0.85);
@@ -690,3 +690,73 @@ kbd {
     box-shadow: none !important;
   }
 }
+
+/* ── Modern Typography Wrapping (Google Guidance) ── */
+h1, h2, h3, h4, h5, h6 {
+  text-wrap: balance;
+}
+
+p, li, blockquote, .blog-card-copy {
+  text-wrap: pretty;
+}
+
+/* ── Scrollability Affordance Hints (Google Guidance) ── */
+.scroll-indicator-wrapper {
+  position: relative;
+}
+
+.scroll-switcher-scroller {
+  overflow-x: auto;
+  container-type: scroll-state;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.indicator-left, .indicator-right {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 48px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 10;
+}
+
+.indicator-left {
+  left: 0;
+  background: linear-gradient(to right, #ffffff 10%, rgba(255, 255, 255, 0));
+  .dark & {
+    background: linear-gradient(to right, #11131a 10%, rgba(17, 19, 26, 0));
+  }
+}
+
+.indicator-right {
+  right: 0;
+  background: linear-gradient(to left, #ffffff 10%, rgba(255, 255, 255, 0));
+  .dark & {
+    background: linear-gradient(to left, #11131a 10%, rgba(17, 19, 26, 0));
+  }
+}
+
+@container scroll-state(scrollable: left) {
+  .indicator-left {
+    opacity: 1;
+  }
+}
+
+@container scroll-state(scrollable: right) {
+  .indicator-right {
+    opacity: 1;
+  }
+}
+
+/* ── Deferred Rendering below-the-fold (Google Guidance) ── */
+.heavy-section-deferred {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 350px;
+}
+
