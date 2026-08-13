@@ -28,9 +28,8 @@
   {{ $scriptsLazy = $scriptsLazy | minify | fingerprint }}
 {{ end }}
 
-<!-- Supabase CDN Client (deferred) -->
+<!-- Supabase Configuration -->
 {{ if site.Params.supabase.enable }}
-  <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
     window.SUPABASE_CONFIG = {
       url: "{{ site.Params.supabase.url | safeJS }}",
@@ -39,28 +38,32 @@
   </script>
 {{ end }}
 
-{{/* scripts (deferred to unblock FCP) */}}
+{{/* Main Core Script (Deferred) */}}
 <script
   defer
   crossorigin="anonymous"
   integrity="{{ $scripts.Data.Integrity }}"
   src="{{ $scripts.RelPermalink }}"></script>
 
-{{/* scripts lazy */}}
-<script
-  defer
-  async
-  crossorigin="anonymous"
-  integrity="{{ $scriptsLazy.Data.Integrity }}"
-  src="{{ $scriptsLazy.RelPermalink }}"></script>
-
-<!-- High-Performance Service Worker Registration for Instant Asset Caching -->
+<!-- Non-Critical Plugins & Idle Loaders (Zero Main-Thread Block) -->
 <script>
-  if ('serviceWorker' in navigator && (window.location.protocol === 'https:' || window.location.hostname === 'localhost')) {
-    window.addEventListener('load', function () {
+  window.addEventListener('load', function () {
+    var lazyScript = document.createElement('script');
+    lazyScript.src = "{{ $scriptsLazy.RelPermalink }}";
+    lazyScript.defer = true;
+    document.body.appendChild(lazyScript);
+
+    {{ if site.Params.supabase.enable }}
+      var supaScript = document.createElement('script');
+      supaScript.src = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2";
+      supaScript.defer = true;
+      document.body.appendChild(supaScript);
+    {{ end }}
+
+    if ('serviceWorker' in navigator && (window.location.protocol === 'https:' || window.location.hostname === 'localhost')) {
       navigator.serviceWorker.register('/sw.js').catch(function () {});
-    });
-  }
+    }
+  });
 </script>
 
 <!-- progressive web app -->
