@@ -45,7 +45,7 @@
 {{ $stylesLazy = $stylesLazy | resources.PostCSS }}
 
 {{ if hugo.IsProduction }}
-  {{ $styles = $styles | resources.ExecuteAsTemplate "css/style.css" . | minify }}
+  {{ $styles = $styles | resources.ExecuteAsTemplate "css/style.css" . | minify | fingerprint | resources.PostProcess }}
   {{ $stylesLazy = $stylesLazy | resources.ExecuteAsTemplate "css/style-lazy.css" . | minify | fingerprint | resources.PostProcess }}
 {{ else }}
   {{ $styles = $styles | resources.ExecuteAsTemplate "css/style.css" . }}
@@ -53,15 +53,11 @@
 {{ end }}
 
 {{/* styles */}}
-{{ if hugo.IsProduction }}
-  <style>{{ $styles.Content | safeCSS }}</style>
-{{ else }}
-  <link rel="preload" as="style" href="{{ $styles.RelPermalink }}" />
-  <link
-    href="{{ $styles.RelPermalink }}"
-    integrity="{{ $styles.Data.Integrity }}"
-    rel="stylesheet" />
-{{ end }}
+<link rel="preload" as="style" href="{{ $styles.RelPermalink }}" />
+<link
+  href="{{ $styles.RelPermalink }}"
+  integrity="{{ $styles.Data.Integrity }}"
+  rel="stylesheet" />
 
 {{/* styles lazy */}}
 <link
