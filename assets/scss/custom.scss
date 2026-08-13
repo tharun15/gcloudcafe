@@ -152,7 +152,10 @@
     @apply bg-theme-light dark:bg-darkmode-body rounded-full px-2 py-0.5 text-[10px] font-bold text-text/70 dark:text-darkmode-text/70;
   }
 
-  &.is-active,
+  &.is-active {
+    @apply bg-primary text-white border-primary dark:bg-darkmode-primary dark:text-darkmode-body dark:border-darkmode-primary;
+  }
+
   &:hover {
     @apply border-primary bg-primary/10 text-primary dark:border-darkmode-primary dark:bg-darkmode-primary/20 dark:text-darkmode-primary;
   }
@@ -759,4 +762,28 @@ p, li, blockquote, .blog-card-copy {
   content-visibility: auto;
   contain-intrinsic-size: auto 350px;
 }
+
+/* ── Global High-Contrast Opacity Overrides for Accessibility ── */
+.text-text\/60 {
+  color: rgba(51, 65, 85, 0.85) !important;
+  .dark & {
+    color: rgba(148, 163, 184, 0.85) !important;
+  }
+}
+
+.text-text\/70 {
+  color: rgba(51, 65, 85, 0.90) !important;
+  .dark & {
+    color: rgba(148, 163, 184, 0.90) !important;
+  }
+}
+
+.dark .dark\:text-darkmode-text\/60 {
+  color: rgba(148, 163, 184, 0.85) !important;
+}
+
+.dark .dark\:text-darkmode-text\/70 {
+  color: rgba(148, 163, 184, 0.90) !important;
+}
+
 
