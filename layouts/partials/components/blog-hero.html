@@ -45,7 +45,7 @@
             <div class="relative">
               <!-- Hero Header Badges -->
               <div class="flex items-center flex-wrap gap-2 mb-3">
-                <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-extrabold uppercase tracking-wider bg-amber-500/15 text-amber-700 dark:text-amber-400 border border-amber-500/30 shrink-0">
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-extrabold uppercase tracking-wider bg-amber-500/15 text-amber-800 dark:text-amber-400 border border-amber-500/30 shrink-0">
                   <i class="fa-solid fa-star text-[10px]"></i> Featured
                 </span>
                 {{ with index $categories 0 }}
@@ -92,7 +92,7 @@
                 <a href="{{ $page.RelPermalink }}" class="btn-gradient-primary py-2.5 px-5 text-xs sm:text-sm w-full sm:w-auto text-center justify-center" aria-label="Read featured article: {{ $page.Title }}">
                   Read Article <i class="fa-solid fa-arrow-right ml-1.5 text-xs"></i>
                 </a>
-                <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ $page.Permalink | safeURL }}" target="_blank" rel="noopener noreferrer" class="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-[#0a66c2]/15 hover:bg-[#0a66c2] text-[#0a66c2] hover:text-white text-xs font-bold transition-all no-underline shrink-0" title="Share on LinkedIn">
+                <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ $page.Permalink | safeURL }}" target="_blank" rel="noopener noreferrer" class="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-[#0a66c2]/15 hover:bg-[#0a66c2] text-[#0a66c2] hover:text-white text-xs font-bold transition-all no-underline shrink-0" title="Share on LinkedIn" aria-label="Share featured article: {{ $page.Title }} on LinkedIn">
                   <i class="fa-brands fa-linkedin text-sm"></i> Share
                 </a>
                 {{ with $root.BrowseLink }}
