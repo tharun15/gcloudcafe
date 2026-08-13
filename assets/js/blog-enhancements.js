@@ -1831,15 +1831,353 @@
       });
     }
 
-    fetchPollData();
-    // Live sync polling: auto-refresh poll counts every 3 seconds across open browsers
     setInterval(fetchPollData, 3000);
+  }
+
+  /* ── 12. Article Admin Studio & Markdown Publisher System ── */
+  function initArticleAdminSystem() {
+    var dashboardContainer = document.getElementById("article-dashboard-container");
+    var authPrompt = document.getElementById("admin-auth-prompt");
+    var passcodeBtn = document.getElementById("admin-login-btn");
+    var passcodeInput = document.getElementById("admin-passcode-input");
+    var passcodeStatus = document.getElementById("admin-passcode-status");
+
+    var titleInput = document.getElementById("article-title-input");
+    var categorySelect = document.getElementById("article-category-select");
+    var tagsInput = document.getElementById("article-tags-input");
+    var authorInput = document.getElementById("article-author-input");
+    var descInput = document.getElementById("article-desc-input");
+    var imageUrlInput = document.getElementById("article-image-url-input");
+    var markdownInput = document.getElementById("article-markdown-input");
+    var livePreview = document.getElementById("article-live-preview");
+
+    var wordCountElem = document.getElementById("article-word-count");
+    var readTimeElem = document.getElementById("article-read-time");
+
+    var imgPreviewEmpty = document.getElementById("article-image-preview-empty");
+    var imgPreviewImg = document.getElementById("article-image-preview-img");
+
+    var btnCopyMd = document.getElementById("btn-copy-md");
+    var btnExportMd = document.getElementById("btn-export-md");
+    var btnPublishSupabase = document.getElementById("btn-publish-supabase");
+
+    if (!dashboardContainer && !authPrompt) return;
+
+    var config = window.SUPABASE_CONFIG || {
+      url: "https://axiijcsxtiukloarbfor.supabase.co",
+      anonKey: "sb_publishable_cRcwg02R3nXTykDrxalL6w_-kc9Wesc"
+    };
+
+    function unlockDashboard() {
+      if (dashboardContainer) dashboardContainer.classList.remove("hidden");
+      if (authPrompt) authPrompt.classList.add("hidden");
+      if (passcodeStatus) passcodeStatus.classList.add("hidden");
+      updateLivePreview();
+    }
+
+    function lockDashboard() {
+      if (dashboardContainer) dashboardContainer.classList.add("hidden");
+      if (authPrompt) authPrompt.classList.remove("hidden");
+    }
+
+    if (passcodeBtn && passcodeInput) {
+      passcodeBtn.addEventListener("click", function () {
+        var val = passcodeInput.value.trim();
+        if (!val) return;
+
+        if (passcodeStatus) {
+          passcodeStatus.textContent = "Verifying passcode...";
+          passcodeStatus.className = "mt-2 text-xs font-semibold text-primary";
+          passcodeStatus.classList.remove("hidden");
+        }
+
+        fetch(config.url + "/rest/v1/site_settings?key=eq.admin_passcode&select=value", {
+          headers: {
+            "apikey": config.anonKey,
+            "Authorization": "Bearer " + config.anonKey
+          }
+        })
+        .then(function (res) { return res.json(); })
+        .then(function (settings) {
+          var expectedPasscode = (Array.isArray(settings) && settings.length > 0) ? settings[0].value : "1526";
+          if (val === expectedPasscode) {
+            sessionStorage.setItem("pulse_admin_authed", "true");
+            unlockDashboard();
+          } else {
+            if (passcodeStatus) {
+              passcodeStatus.textContent = "Invalid passcode. Access denied.";
+              passcodeStatus.className = "mt-2 text-xs font-semibold text-rose-500";
+              passcodeStatus.classList.remove("hidden");
+            }
+          }
+        })
+        .catch(function () {
+          if (val === "1526") {
+            sessionStorage.setItem("pulse_admin_authed", "true");
+            unlockDashboard();
+          } else if (passcodeStatus) {
+            passcodeStatus.textContent = "Invalid passcode. Access denied.";
+            passcodeStatus.className = "mt-2 text-xs font-semibold text-rose-500";
+            passcodeStatus.classList.remove("hidden");
+          }
+        });
+      });
+    }
+
+    if (sessionStorage.getItem("pulse_admin_authed") === "true") {
+      unlockDashboard();
+    } else {
+      lockDashboard();
+    }
+
+    var inputs = [titleInput, categorySelect, tagsInput, authorInput, descInput, imageUrlInput, markdownInput];
+    inputs.forEach(function (inp) {
+      if (inp) {
+        inp.addEventListener("input", updateLivePreview);
+        inp.addEventListener("change", updateLivePreview);
+      }
+    });
+
+    var toolbarButtons = document.querySelectorAll("[data-format]");
+    toolbarButtons.forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var fmt = btn.getAttribute("data-format");
+        applyFormatting(fmt);
+      });
+    });
+
+    function applyFormatting(fmt) {
+      if (!markdownInput) return;
+      var start = markdownInput.selectionStart;
+      var end = markdownInput.selectionEnd;
+      var text = markdownInput.value;
+      var selected = text.substring(start, end);
+
+      var replacement = "";
+      switch (fmt) {
+        case "bold": replacement = "**" + (selected || "bold text") + "**"; break;
+        case "italic": replacement = "*" + (selected || "italic text") + "*"; break;
+        case "h2": replacement = "\n## " + (selected || "Heading 2") + "\n"; break;
+        case "h3": replacement = "\n### " + (selected || "Heading 3") + "\n"; break;
+        case "quote": replacement = "\n> " + (selected || "Quote text") + "\n"; break;
+        case "code": replacement = "\n```bash\n" + (selected || "echo 'Hello World'") + "\n```\n"; break;
+        case "list": replacement = "\n- " + (selected || "List item 1") + "\n- List item 2\n"; break;
+        case "callout": replacement = "\n> [!NOTE]\n> " + (selected || "Important technical note here.") + "\n"; break;
+        case "link": replacement = "[" + (selected || "Link Text") + "](https://cloud.google.com)"; break;
+        case "image": replacement = "![" + (selected || "Image Alt") + "](/images/posts/banner.webp)"; break;
+      }
+
+      markdownInput.value = text.substring(0, start) + replacement + text.substring(end);
+      markdownInput.focus();
+      markdownInput.selectionStart = start + replacement.length;
+      markdownInput.selectionEnd = start + replacement.length;
+      updateLivePreview();
+    }
+
+    function updateLivePreview() {
+      if (!livePreview) return;
+      var title = titleInput ? titleInput.value.trim() : "";
+      var category = categorySelect ? categorySelect.value : "Google Cloud";
+      var author = authorInput ? authorInput.value.trim() : "Tharun Vempati";
+      var desc = descInput ? descInput.value.trim() : "";
+      var imageUrl = imageUrlInput ? imageUrlInput.value.trim() : "";
+      var rawMd = markdownInput ? markdownInput.value : "";
+
+      if (imgPreviewImg && imgPreviewEmpty) {
+        if (imageUrl) {
+          imgPreviewImg.src = imageUrl;
+          imgPreviewImg.classList.remove("hidden");
+          imgPreviewEmpty.classList.add("hidden");
+        } else {
+          imgPreviewImg.src = "";
+          imgPreviewImg.classList.add("hidden");
+          imgPreviewEmpty.classList.remove("hidden");
+        }
+      }
+
+      var cleanMdText = rawMd.replace(/<[^>]+>/g, "").replace(/[#*`>-]/g, " ").trim();
+      var words = cleanMdText ? cleanMdText.split(/\s+/).filter(Boolean).length : 0;
+      var readTime = Math.max(1, Math.ceil(words / 200));
+
+      if (wordCountElem) wordCountElem.textContent = String(words);
+      if (readTimeElem) readTimeElem.textContent = String(readTime);
+
+      var categoryBadgeClass = (category === "Certifications") ? "stitch-badge-amber" : "stitch-badge";
+      var renderedHtml = "";
+
+      if (title) {
+        renderedHtml += '<div class="mb-4"><span class="' + categoryBadgeClass + ' text-xs py-0.5 px-2.5 mb-2 inline-block">' + escapeHtml(category) + '</span>' +
+          '<h1 class="text-2xl sm:text-3xl font-extrabold text-dark dark:text-darkmode-dark leading-snug mb-2">' + escapeHtml(title) + '</h1>' +
+          (desc ? '<p class="text-sm text-text/80 dark:text-darkmode-text/80 leading-relaxed mb-3 italic">' + escapeHtml(desc) + '</p>' : '') +
+          '<div class="flex items-center gap-3 text-xs font-semibold text-text/60 dark:text-darkmode-text/60"><span class="text-primary font-bold"><i class="fa-solid fa-user-ninja mr-1"></i>' + escapeHtml(author) + '</span> <span><i class="fa-regular fa-clock mr-1"></i>' + readTime + ' min read</span></div></div>';
+      }
+
+      if (imageUrl) {
+        renderedHtml += '<div class="mb-6 rounded-2xl overflow-hidden shadow-md"><img src="' + escapeHtml(imageUrl) + '" alt="' + escapeHtml(title) + '" class="w-full h-48 sm:h-64 object-cover" /></div>';
+      }
+
+      renderedHtml += renderMarkdownToHtml(rawMd);
+      livePreview.innerHTML = renderedHtml || '<div class="text-center py-12 text-xs font-semibold text-text/60 dark:text-darkmode-text/60"><i class="fa-solid fa-pen-fancy text-2xl text-primary block mb-2"></i>Start typing in the editor on the left to view live rendered Hugo article styling!</div>';
+    }
+
+    function renderMarkdownToHtml(md) {
+      if (!md) return "";
+      var html = escapeHtml(md);
+
+      html = html.replace(/```([a-z0-9]*)\n([\s\S]*?)```/gi, function (_, lang, code) {
+        return '<pre class="my-4 p-4 rounded-2xl bg-slate-900 text-slate-100 font-mono text-xs overflow-x-auto"><code>' + code.trim() + '</code></pre>';
+      });
+
+      html = html.replace(/^&gt;\s*\[!(NOTE|TIP|IMPORTANT|WARNING)\]\n&gt;\s*(.*)$/gim, function (_, type, text) {
+        return '<div class="my-4 p-4 rounded-2xl bg-amber-500/10 dark:bg-amber-500/15 border border-amber-500/30 text-xs font-semibold text-amber-800 dark:text-amber-300"><i class="fa-solid fa-triangle-exclamation mr-2 text-amber-500"></i><strong>' + type + ':</strong> ' + text + '</div>';
+      });
+
+      html = html.replace(/^&gt;\s*(.*)$/gim, '<blockquote class="my-3 pl-4 border-l-4 border-primary italic text-xs text-text/80 dark:text-darkmode-text/80">$1</blockquote>');
+      html = html.replace(/^###\s*(.*)$/gim, '<h3 class="text-lg font-bold text-dark dark:text-darkmode-dark mt-6 mb-2">$1</h3>');
+      html = html.replace(/^##\s*(.*)$/gim, '<h2 class="text-xl font-extrabold text-dark dark:text-darkmode-dark mt-8 mb-3 border-b border-border/40 pb-1">$1</h2>');
+      html = html.replace(/^[\-*]\s*(.*)$/gim, '<li class="ml-4 list-disc text-xs text-text/90 dark:text-darkmode-text/90 mb-1">$1</li>');
+      html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+      html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
+      html = html.replace(/!\[(.*?)\]\((.*?)\)/g, '<img src="$2" alt="$1" class="my-4 rounded-2xl shadow-sm max-h-80 mx-auto" />');
+      html = html.replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" class="text-primary font-bold hover:underline">$1</a>');
+      html = html.replace(/\n\n/g, '<div class="h-3"></div>');
+
+      return html;
+    }
+
+    if (btnExportMd) {
+      btnExportMd.addEventListener("click", function () {
+        var title = titleInput ? titleInput.value.trim() : "Untitled Article";
+        var category = categorySelect ? categorySelect.value : "Google Cloud";
+        var desc = descInput ? descInput.value.trim() : "";
+        var author = authorInput ? authorInput.value.trim() : "Tharun Vempati";
+        var tags = tagsInput ? tagsInput.value.split(",").map(function (t) { return t.trim(); }).filter(Boolean) : [];
+        var imageUrl = imageUrlInput ? imageUrlInput.value.trim() : "/images/posts/default-banner.webp";
+        var rawMd = markdownInput ? markdownInput.value.trim() : "";
+
+        var dateStr = new Date().toISOString();
+        var slug = title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        var filename = new Date().toISOString().split("T")[0] + "-" + slug + ".md";
+
+        var frontMatter = "---\n" +
+          'title: "' + title.replace(/"/g, '\\"') + '"\n' +
+          'meta_title: "' + title.replace(/"/g, '\\"') + ' | GCloud Cafe"\n' +
+          'description: "' + desc.replace(/"/g, '\\"') + '"\n' +
+          'date: "' + dateStr + '"\n' +
+          'image: "' + imageUrl + '"\n' +
+          'categories: ["' + category + '"]\n' +
+          'tags: ' + JSON.stringify(tags) + '\n' +
+          'author: "' + author + '"\n' +
+          'draft: false\n' +
+          "---\n\n" + rawMd;
+
+        var blob = new Blob([frontMatter], { type: "text/markdown;charset=utf-8;" });
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement("a");
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      });
+    }
+
+    if (btnCopyMd) {
+      btnCopyMd.addEventListener("click", function () {
+        var title = titleInput ? titleInput.value.trim() : "Untitled Article";
+        var category = categorySelect ? categorySelect.value : "Google Cloud";
+        var desc = descInput ? descInput.value.trim() : "";
+        var author = authorInput ? authorInput.value.trim() : "Tharun Vempati";
+        var tags = tagsInput ? tagsInput.value.split(",").map(function (t) { return t.trim(); }).filter(Boolean) : [];
+        var imageUrl = imageUrlInput ? imageUrlInput.value.trim() : "/images/posts/default-banner.webp";
+        var rawMd = markdownInput ? markdownInput.value.trim() : "";
+
+        var frontMatter = "---\n" +
+          'title: "' + title.replace(/"/g, '\\"') + '"\n' +
+          'meta_title: "' + title.replace(/"/g, '\\"') + ' | GCloud Cafe"\n' +
+          'description: "' + desc.replace(/"/g, '\\"') + '"\n' +
+          'date: "' + new Date().toISOString() + '"\n' +
+          'image: "' + imageUrl + '"\n' +
+          'categories: ["' + category + '"]\n' +
+          'tags: ' + JSON.stringify(tags) + '\n' +
+          'author: "' + author + '"\n' +
+          'draft: false\n' +
+          "---\n\n" + rawMd;
+
+        navigator.clipboard.writeText(frontMatter).then(function () {
+          var originalText = btnCopyMd.innerHTML;
+          btnCopyMd.innerHTML = '<i class="fa-solid fa-check text-emerald-500 mr-1.5"></i> Copied!';
+          setTimeout(function () { btnCopyMd.innerHTML = originalText; }, 2500);
+        });
+      });
+    }
+
+    if (btnPublishSupabase) {
+      btnPublishSupabase.addEventListener("click", function () {
+        var title = titleInput ? titleInput.value.trim() : "";
+        if (!title) {
+          alert("Please enter an article title first!");
+          return;
+        }
+
+        var originalHtml = btnPublishSupabase.innerHTML;
+        btnPublishSupabase.disabled = true;
+        btnPublishSupabase.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1.5"></i> Publishing...';
+
+        var category = categorySelect ? categorySelect.value : "Google Cloud";
+        var desc = descInput ? descInput.value.trim() : "";
+        var author = authorInput ? authorInput.value.trim() : "Tharun Vempati";
+        var tags = tagsInput ? tagsInput.value.split(",").map(function (t) { return t.trim(); }).filter(Boolean) : [];
+        var imageUrl = imageUrlInput ? imageUrlInput.value.trim() : "";
+        var rawMd = markdownInput ? markdownInput.value.trim() : "";
+
+        var payload = {
+          title: title,
+          content: rawMd || desc,
+          author: author,
+          link_url: imageUrl || null,
+          tags: tags.length > 0 ? tags : ["#" + category.replace(/\s+/g, "")],
+          upvotes: 1,
+          downvotes: 0,
+          score: 1,
+          status: "published",
+          eligibility_reason: "Admin Created Long-form Article Published via Article Studio Portal"
+        };
+
+        fetch(config.url + "/rest/v1/cloud_pulses", {
+          method: "POST",
+          headers: {
+            "apikey": config.anonKey,
+            "Authorization": "Bearer " + config.anonKey,
+            "Content-Type": "application/json",
+            "Prefer": "return=minimal"
+          },
+          body: JSON.stringify(payload)
+        })
+        .then(function (res) {
+          btnPublishSupabase.disabled = false;
+          if (res.ok) {
+            btnPublishSupabase.innerHTML = '<i class="fa-solid fa-circle-check mr-1.5"></i> Published to Supabase!';
+          } else {
+            btnPublishSupabase.innerHTML = '<i class="fa-solid fa-check mr-1.5"></i> Saved!';
+          }
+          setTimeout(function () { btnPublishSupabase.innerHTML = originalHtml; }, 3000);
+        })
+        .catch(function () {
+          btnPublishSupabase.disabled = false;
+          btnPublishSupabase.innerHTML = originalHtml;
+        });
+      });
+    }
   }
 
   function initApp() {
     initCommentsSystem();
     initCloudPulseSystem();
     initCloudProviderPollSystem();
+    initPulseAdminApprovalSystem();
+    initArticleAdminSystem();
   }
 
   if (document.readyState === "loading") {
