@@ -54,6 +54,15 @@
   integrity="{{ $scriptsLazy.Data.Integrity }}"
   src="{{ $scriptsLazy.RelPermalink }}"></script>
 
+<!-- High-Performance Service Worker Registration for Instant Asset Caching -->
+<script>
+  if ('serviceWorker' in navigator && (window.location.protocol === 'https:' || window.location.hostname === 'localhost')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('/sw.js').catch(function () {});
+    });
+  }
+</script>
+
 <!-- progressive web app -->
 {{ if templates.Exists "partials/pwa.html" }}
   {{ partialCached "pwa.html" . }}
