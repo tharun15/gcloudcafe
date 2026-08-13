@@ -56,10 +56,12 @@
     if (!savedConsent) {
       setTimeout(function () {
         banner.classList.remove("hidden");
-        // Force reflow for smooth slide-up animation
-        void banner.offsetWidth;
-        banner.classList.remove("translate-y-full", "opacity-0");
-        banner.classList.add("translate-y-0", "opacity-100");
+        requestAnimationFrame(function () {
+          requestAnimationFrame(function () {
+            banner.classList.remove("translate-y-full", "opacity-0");
+            banner.classList.add("translate-y-0", "opacity-100");
+          });
+        });
       }, 800);
     }
 

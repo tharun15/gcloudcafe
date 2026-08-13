@@ -89,7 +89,7 @@
 
               <!-- Hero CTA Buttons -->
               <div class="flex items-center flex-wrap gap-2.5">
-                <a href="{{ $page.RelPermalink }}" class="btn-gradient-primary py-2.5 px-5 text-xs sm:text-sm w-full sm:w-auto text-center justify-center">
+                <a href="{{ $page.RelPermalink }}" class="btn-gradient-primary py-2.5 px-5 text-xs sm:text-sm w-full sm:w-auto text-center justify-center" aria-label="Read featured article: {{ $page.Title }}">
                   Read Article <i class="fa-solid fa-arrow-right ml-1.5 text-xs"></i>
                 </a>
                 <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ $page.Permalink | safeURL }}" target="_blank" rel="noopener noreferrer" class="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-[#0a66c2]/15 hover:bg-[#0a66c2] text-[#0a66c2] hover:text-white text-xs font-bold transition-all no-underline shrink-0" title="Share on LinkedIn">
