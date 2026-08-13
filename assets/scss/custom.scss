@@ -796,19 +796,16 @@ p, li, blockquote, .blog-card-copy {
 }
 
 @font-face {
-  font-family: 'Font Awesome 6 Free';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url("/fonts/fa-regular-400.woff2") format("woff2");
-}
-
-@font-face {
   font-family: 'Font Awesome 6 Brands';
   font-style: normal;
   font-weight: 400;
   font-display: swap;
   src: url("/fonts/fa-brands-400.woff2") format("woff2");
+}
+
+.fa-regular {
+  font-family: 'Font Awesome 6 Free' !important;
+  font-weight: 900 !important;
 }
 
 /* ── Modern Performance: content-visibility for Offscreen Sections ── */
