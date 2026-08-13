@@ -21,7 +21,7 @@
     href="{{ $page.RelPermalink }}"
     aria-label="Read post: {{ $page.Title }}">
     {{ with $page.Params.image }}
-      {{ partial "image" (dict "Src" . "Context" $page "Alt" $page.Title "Class" "blog-card-image-cover") }}
+      {{ partial "image" (dict "Src" . "Context" $page "Alt" $page.Title "Class" "blog-card-image-cover" "Size" "500x") }}
     {{ else }}
       <div class="blog-fallback-media blog-card-fallback">
         <span class="{{ $badgeClass }}"
