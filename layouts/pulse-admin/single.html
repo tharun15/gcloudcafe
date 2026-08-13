@@ -13,7 +13,7 @@
             Cloud Pulse Curation & Approvals
           </h1>
           <p class="text-xs sm:text-sm text-text/70 dark:text-darkmode-text/70 mt-1">
-            Review automatically ingested daily cloud release candidates, evaluate grounding reasons, and approve posts live to the public feed.
+            Review automatically ingested daily cloud release candidates, generate AI-powered TL;DR hooks, refine summaries, and broadcast to LinkedIn.
           </p>
         </div>
 
@@ -101,9 +101,17 @@
           </div>
 
           <div>
-            <label class="block text-xs font-bold uppercase tracking-wider text-text/80 dark:text-darkmode-text/80 mb-1">
-              Micro Content
-            </label>
+            <div class="flex items-center justify-between mb-1">
+              <label class="block text-xs font-bold uppercase tracking-wider text-text/80 dark:text-darkmode-text/80">
+                Micro Content / TL;DR
+              </label>
+              <button 
+                type="button" 
+                id="manual-form-gemini-btn" 
+                class="text-[11px] font-bold text-primary hover:underline bg-transparent border-none cursor-pointer inline-flex items-center gap-1">
+                <i class="fa-solid fa-wand-magic-sparkles"></i> AI Polish Hook
+              </button>
+            </div>
             <textarea 
               name="content" 
               rows="3" 
@@ -148,6 +156,141 @@
         </form>
       </div>
 
+    </div>
+  </div>
+
+  <!-- Admin Candidate Edit & Refinement Modal -->
+  <div id="pulse-edit-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-xs p-4 overflow-y-auto">
+    <div class="bg-body dark:bg-darkmode-body border border-border/80 dark:border-darkmode-border/80 rounded-3xl p-6 sm:p-8 max-w-3xl w-full shadow-2xl relative my-8 max-h-[90vh] overflow-y-auto">
+      <button 
+        id="close-pulse-edit-modal-btn" 
+        class="absolute top-5 right-5 w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-slate-900 dark:hover:text-white flex items-center justify-center border-none cursor-pointer transition-colors"
+        aria-label="Close edit modal">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div class="mb-5">
+        <span class="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-primary px-2.5 py-0.5 rounded-full bg-primary/15 mb-2">
+          <i class="fa-solid fa-pen-nib"></i> Newsroom Polish & LinkedIn Studio
+        </span>
+        <h3 class="text-xl sm:text-2xl font-bold text-dark dark:text-darkmode-dark">
+          Refine Candidate & Generate AI Hook
+        </h3>
+        <p class="text-xs text-text/70 dark:text-darkmode-text/70">
+          Craft a punchy 1–2 sentence TL;DR hook and verify attribution before publishing and sharing.
+        </p>
+      </div>
+
+      <!-- Scraped Original Reference Box -->
+      <div class="bg-theme-light/60 dark:bg-darkmode-theme-light/40 border border-border/60 dark:border-darkmode-border/60 rounded-2xl p-4 mb-5 text-xs">
+        <div class="font-bold text-text/90 dark:text-darkmode-text/90 mb-1 flex items-center justify-between">
+          <span class="text-primary"><i class="fa-solid fa-rss mr-1"></i> Original Scraped Context:</span>
+          <a id="edit-modal-orig-link" href="#" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline inline-flex items-center gap-1">
+            Source Link <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+          </a>
+        </div>
+        <p id="edit-modal-orig-content" class="text-text/75 dark:text-darkmode-text/75 italic leading-relaxed line-clamp-3"></p>
+      </div>
+
+      <!-- Edit Form -->
+      <form id="pulse-edit-form" class="space-y-4">
+        <input type="hidden" id="edit-modal-candidate-id" value="" />
+
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-text/80 dark:text-darkmode-text/80 mb-1">
+            Headline
+          </label>
+          <input 
+            type="text" 
+            id="edit-modal-title" 
+            required 
+            class="w-full px-3.5 py-2.5 rounded-xl border border-border/80 dark:border-darkmode-border/80 bg-theme-light dark:bg-darkmode-theme-light text-xs font-semibold focus:outline-none focus:border-primary text-dark dark:text-darkmode-dark"
+          />
+        </div>
+
+        <div>
+          <div class="flex items-center justify-between mb-1">
+            <label class="block text-xs font-bold uppercase tracking-wider text-text/80 dark:text-darkmode-text/80">
+              Crisp TL;DR Hook
+            </label>
+            <button 
+              type="button" 
+              id="edit-modal-generate-ai-btn" 
+              class="px-3 py-1 rounded-lg bg-gradient-to-r from-purple-600 to-primary text-white text-[11px] font-bold hover:opacity-90 border-none cursor-pointer inline-flex items-center gap-1.5 shadow-xs transition-all">
+              <i class="fa-solid fa-wand-magic-sparkles"></i> Generate AI Hook (Gemini)
+            </button>
+          </div>
+          <textarea 
+            id="edit-modal-content" 
+            rows="3" 
+            required 
+            placeholder="Concise 1-2 sentence TL;DR hook explaining what happened and why it matters..."
+            class="w-full px-3.5 py-2.5 rounded-xl border border-border/80 dark:border-darkmode-border/80 bg-theme-light dark:bg-darkmode-theme-light text-xs font-semibold focus:outline-none focus:border-primary text-dark dark:text-darkmode-dark resize-none"
+          ></textarea>
+          <div class="flex items-center justify-between text-[10px] text-text/60 dark:text-darkmode-text/60 mt-1">
+            <span id="edit-modal-ai-status" class="font-semibold"></span>
+            <span id="edit-modal-char-count">0 chars</span>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-text/80 dark:text-darkmode-text/80 mb-1">
+              Official Source URL
+            </label>
+            <input 
+              type="url" 
+              id="edit-modal-link" 
+              class="w-full px-3.5 py-2.5 rounded-xl border border-border/80 dark:border-darkmode-border/80 bg-theme-light dark:bg-darkmode-theme-light text-xs font-semibold focus:outline-none focus:border-primary text-dark dark:text-darkmode-dark"
+            />
+          </div>
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-text/80 dark:text-darkmode-text/80 mb-1">
+              Tags (Comma separated)
+            </label>
+            <input 
+              type="text" 
+              id="edit-modal-tags" 
+              placeholder="#GoogleCloud, #DevOps" 
+              class="w-full px-3.5 py-2.5 rounded-xl border border-border/80 dark:border-darkmode-border/80 bg-theme-light dark:bg-darkmode-theme-light text-xs font-semibold focus:outline-none focus:border-primary text-dark dark:text-darkmode-dark"
+            />
+          </div>
+        </div>
+
+        <!-- Live LinkedIn Post Preview -->
+        <div class="mt-4 pt-4 border-t border-border/60 dark:border-darkmode-border/60">
+          <div class="flex items-center justify-between mb-2">
+            <label class="block text-xs font-bold uppercase tracking-wider text-[#0a66c2] flex items-center gap-1.5">
+              <i class="fa-brands fa-linkedin text-sm"></i> Live LinkedIn Share Preview
+            </label>
+            <button 
+              type="button" 
+              id="edit-modal-copy-linkedin-btn" 
+              class="text-[11px] font-bold text-text/70 dark:text-darkmode-text/70 hover:text-primary border border-border/80 dark:border-darkmode-border/80 px-2.5 py-1 rounded-lg bg-theme-light dark:bg-darkmode-theme-light cursor-pointer inline-flex items-center gap-1 transition-all">
+              <i class="fa-regular fa-copy"></i> Copy Post Text
+            </button>
+          </div>
+          <div class="bg-[#f3f6f8] dark:bg-[#1b1f23] border border-border/80 dark:border-darkmode-border/80 rounded-2xl p-4 text-xs font-mono whitespace-pre-wrap text-dark dark:text-darkmode-dark select-all" id="edit-modal-linkedin-preview">
+            Loading preview...
+          </div>
+        </div>
+
+        <div class="pt-4 flex items-center justify-end gap-3 border-t border-border/60 dark:border-darkmode-border/60">
+          <span id="edit-modal-status" class="text-xs font-semibold mr-auto"></span>
+          <button 
+            type="button" 
+            id="edit-modal-cancel-btn" 
+            class="px-4 py-2.5 rounded-xl bg-theme-light dark:bg-darkmode-theme-light text-text/80 dark:text-darkmode-text/80 text-xs font-bold border border-border/80 dark:border-darkmode-border/80 hover:bg-border/30 cursor-pointer transition-all">
+            Cancel
+          </button>
+          <button 
+            type="submit" 
+            id="edit-modal-approve-btn" 
+            class="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold shadow-md border-none cursor-pointer inline-flex items-center gap-1.5 transition-all">
+            <i class="fa-solid fa-circle-check"></i> Save & Approve Live
+          </button>
+        </div>
+      </form>
     </div>
   </div>
 </section>

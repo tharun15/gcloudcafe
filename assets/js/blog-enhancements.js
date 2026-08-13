@@ -992,11 +992,11 @@
         var pulseTargetUrl = window.location.origin + "/pulse/";
         var originalUrl = p.link_url || pulseTargetUrl;
 
-        // Professional LinkedIn share template with source attribution
+        // Professional LinkedIn share template with crisp TL;DR & source attribution
         var shareText = "☕ GCloud Cafe | Cloud Pulse\n\n"
           + "📌 " + p.title + "\n\n"
-          + cleanContentText + "\n\n"
-          + (sourceLabel ? "📖 Source: " + sourceLabel + (p.link_url ? "\n🔗 " + p.link_url : "") + "\n\n" : "")
+          + "⚡ TL;DR: " + cleanContentText + "\n\n"
+          + (sourceLabel ? "📖 Source: " + sourceLabel + (p.link_url ? "\n🔗 " + p.link_url : "") + "\n\n" : (p.link_url ? "🔗 Source: " + p.link_url + "\n\n" : ""))
           + hashtagsText + " #CloudNews #GCloudCafe\n\n"
           + "—\n"
           + "Follow GCloud Cafe for daily cloud updates 👇\n"
@@ -1292,7 +1292,7 @@
     fetchPulses();
   }
 
-  /* ── Newsroom Candidate Approval Dashboard ── */
+  /* ── Newsroom Candidate Approval Dashboard & Gemini AI Studio ── */
   function initPulseAdminApprovalSystem() {
     var passcodeBtn = document.getElementById("admin-login-btn");
     var passcodeInput = document.getElementById("admin-passcode-input");
@@ -1309,15 +1309,189 @@
     var sectionPending = document.getElementById("section-pending-approvals");
     var sectionManual = document.getElementById("section-manual-post");
 
+    // Gemini API Key Controls
+    var geminiKeyInput = document.getElementById("gemini-api-key-input");
+    var saveGeminiKeyBtn = document.getElementById("save-gemini-key-btn");
+    var toggleGeminiKeyBtn = document.getElementById("toggle-gemini-key-visibility");
+    var geminiStatusBadge = document.getElementById("gemini-status-badge");
+
+    // Candidate Edit & Polish Modal Elements
+    var editModal = document.getElementById("pulse-edit-modal");
+    var editModalCloseBtn = document.getElementById("close-pulse-edit-modal-btn");
+    var editModalCancelBtn = document.getElementById("edit-modal-cancel-btn");
+    var editForm = document.getElementById("pulse-edit-form");
+    var editIdInput = document.getElementById("edit-modal-candidate-id");
+    var editOrigContent = document.getElementById("edit-modal-orig-content");
+    var editOrigLink = document.getElementById("edit-modal-orig-link");
+    var editTitleInput = document.getElementById("edit-modal-title");
+    var editContentInput = document.getElementById("edit-modal-content");
+    var editLinkInput = document.getElementById("edit-modal-link");
+    var editTagsInput = document.getElementById("edit-modal-tags");
+    var editGenerateAiBtn = document.getElementById("edit-modal-generate-ai-btn");
+    var editAiStatus = document.getElementById("edit-modal-ai-status");
+    var editCharCount = document.getElementById("edit-modal-char-count");
+    var editLinkedInPreview = document.getElementById("edit-modal-linkedin-preview");
+    var editCopyLinkedInBtn = document.getElementById("edit-modal-copy-linkedin-btn");
+    var editModalStatus = document.getElementById("edit-modal-status");
+
+    // Manual Form AI Polish Trigger
+    var manualFormGeminiBtn = document.getElementById("manual-form-gemini-btn");
+
+    var cachedCandidates = [];
+    var cachedGeminiApiKey = "";
+    var geminiCooldownUntil = 0;
+
     var config = window.SUPABASE_CONFIG || {
       url: "https://axiijcsxtiukloarbfor.supabase.co",
       anonKey: "sb_publishable_cRcwg02R3nXTykDrxalL6w_-kc9Wesc"
     };
 
+    // Smart extractive fallback generator (used during rate limits, quota limits, or network errors)
+    function createSmartFallbackHook(title, rawContent) {
+      var clean = (rawContent || "")
+        .replace(/<[^>]+>/g, "")
+        .replace(/&lt;[^&]+&gt;/gi, "")
+        .replace(/&amp;/g, "&")
+        .replace(/&quot;/g, '"')
+        .replace(/&#39;/g, "'")
+        .replace(/\s+/g, " ")
+        .trim();
+
+      if (!clean) return (title || "Cloud Release Update").trim();
+
+      var sentences = clean.match(/[^.!?]+[.!?]+/g) || [clean];
+      var firstSentence = (sentences[0] || "").trim();
+      var secondSentence = (sentences[1] || "").trim();
+
+      var combined = firstSentence;
+      if (combined.length < 90 && secondSentence) {
+        combined += " " + secondSentence;
+      }
+      if (combined.length > 210) {
+        combined = combined.substring(0, 207).trim() + "...";
+      }
+      return combined || title;
+    }
+
+    async function fetchGeminiApiKeyFromSupabase() {
+      if (cachedGeminiApiKey) return cachedGeminiApiKey;
+      try {
+        var res = await fetch(config.url + "/rest/v1/site_settings?key=eq.gemini_api_key&select=value", {
+          headers: {
+            "apikey": config.anonKey,
+            "Authorization": "Bearer " + config.anonKey
+          }
+        });
+        var data = await res.json();
+        if (Array.isArray(data) && data.length > 0 && data[0].value) {
+          var val = data[0].value.trim();
+          cachedGeminiApiKey = val;
+          return val;
+        }
+      } catch (err) {
+        console.warn("Could not fetch Gemini key from Supabase site_settings:", err);
+      }
+      return (cachedGeminiApiKey || localStorage.getItem("gcloudcafe_gemini_api_key") || "").trim();
+    }
+
+    // Call Gemini API to generate crisp TL;DR Hook with automatic fallback on rate limit / quota exhaustion
+    async function generateGeminiPulseHook(apiKey, title, content) {
+      var fallbackText = createSmartFallbackHook(title, content);
+
+      // Check if temporary rate-limit cooldown is active
+      if (Date.now() < geminiCooldownUntil) {
+        var remainingSec = Math.ceil((geminiCooldownUntil - Date.now()) / 1000);
+        return {
+          text: fallbackText,
+          isFallback: true,
+          reason: "Rate limit active (" + remainingSec + "s cooldown) — using smart summary excerpt"
+        };
+      }
+
+      var keyToUse = (apiKey || "").trim() || (await fetchGeminiApiKeyFromSupabase());
+      if (!keyToUse) {
+        return {
+          text: fallbackText,
+          isFallback: true,
+          reason: "No Gemini Key found in Supabase — using smart summary excerpt"
+        };
+      }
+
+      var prompt = "You are the chief cloud architect and news editor for GCloud Cafe (https://gcloudcafe.com).\n"
+        + "Turn the following cloud release update into a crisp, engaging 1-2 sentence TL;DR Hook for software engineers and architects.\n\n"
+        + "CRITICAL RULES:\n"
+        + "1. Clearly highlight what specifically launched/changed and why it matters (impact on scalability, security, cost, or developer experience).\n"
+        + "2. Strictly 1 to 2 sentences (between 100 and 190 characters max).\n"
+        + "3. Professional, punchy, active voice. No marketing fluff, no buzzwords, no intro phrases like 'Here is a TL;DR:' or 'In this update'.\n"
+        + "4. Return ONLY the clean summary text.\n\n"
+        + "Article Title: " + title + "\n"
+        + "Article Context: " + content;
+
+      var models = ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-1.5-flash"];
+      var lastError = null;
+
+      for (var i = 0; i < models.length; i++) {
+        var model = models[i];
+        try {
+          var url = "https://generativelanguage.googleapis.com/v1beta/models/" + model + ":generateContent?key=" + encodeURIComponent(keyToUse);
+          var controller = new AbortController();
+          var timeoutId = setTimeout(function() { controller.abort(); }, 8000); // 8s timeout
+
+          var res = await fetch(url, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            signal: controller.signal,
+            body: JSON.stringify({
+              contents: [{ parts: [{ text: prompt }] }],
+              generationConfig: {
+                temperature: 0.25,
+                maxOutputTokens: 250
+              }
+            })
+          });
+          clearTimeout(timeoutId);
+
+          if (res.ok) {
+            var data = await res.json();
+            var candidateText = data?.candidates?.[0]?.content?.parts?.[0]?.text || "";
+            var cleaned = candidateText.replace(/^[\s"'\`]+|[\s"'\`]+$/g, "").replace(/\n+/g, " ").trim();
+            if (cleaned) {
+              return { text: cleaned, isFallback: false };
+            }
+          } else {
+            var status = res.status;
+            var errData = await res.json().catch(function () { return {}; });
+            var errMsg = (errData?.error?.message || "").toLowerCase();
+
+            // Detect Rate Limit or Quota Exhaustion
+            if (status === 429 || errMsg.includes("quota") || errMsg.includes("resource_exhausted") || errMsg.includes("rate limit") || errMsg.includes("too many requests")) {
+              geminiCooldownUntil = Date.now() + (60 * 1000); // 60s cooldown
+              return {
+                text: fallbackText,
+                isFallback: true,
+                reason: "Quota / Rate limit reached — switched to smart summary excerpt"
+              };
+            }
+            lastError = new Error(errData?.error?.message || ("Gemini API Error (" + status + ")"));
+          }
+        } catch (err) {
+          lastError = err;
+        }
+      }
+
+      // If all attempts failed or timed out, naturally fallback to smart excerpt without breaking
+      return {
+        text: fallbackText,
+        isFallback: true,
+        reason: "API temporarily unavailable — switched to smart summary excerpt"
+      };
+    }
+
     function unlockDashboard() {
       if (dashboardContainer) dashboardContainer.classList.remove("hidden");
       if (authPrompt) authPrompt.classList.add("hidden");
       if (passcodeStatus) passcodeStatus.classList.add("hidden");
+      fetchGeminiApiKeyFromSupabase();
       fetchPendingCandidates();
     }
 
@@ -1520,6 +1694,245 @@
       lockDashboard();
     }
 
+    function updateLinkedInPreviewBox() {
+      if (!editLinkedInPreview) return;
+      var title = (editTitleInput ? editTitleInput.value : "").trim();
+      var content = (editContentInput ? editContentInput.value : "").trim();
+      var linkUrl = (editLinkInput ? editLinkInput.value : "").trim();
+      var rawTags = (editTagsInput ? editTagsInput.value : "").trim();
+
+      var tagsArr = rawTags.split(",").map(function (t) {
+        var tr = t.trim();
+        return tr.startsWith("#") ? tr : "#" + tr;
+      }).filter(function (t) { return t.length > 1; });
+
+      var hashtagsText = tagsArr.join(" ");
+      var sourceLabel = tagsArr.length > 0 ? tagsArr[0].replace(/^#/, "").replace(/([a-z])([A-Z])/g, "$1 $2") : "Official Release";
+      var pulseTargetUrl = window.location.origin + "/pulse/";
+
+      var previewText = "☕ GCloud Cafe | Cloud Pulse\n\n"
+        + "📌 " + (title || "[Headline]") + "\n\n"
+        + "⚡ TL;DR: " + (content || "[Refined TL;DR Hook will appear here...]") + "\n\n"
+        + "📖 Source: " + sourceLabel + (linkUrl ? "\n🔗 " + linkUrl : "") + "\n\n"
+        + (hashtagsText ? hashtagsText + " " : "") + "#CloudNews #GCloudCafe\n\n"
+        + "—\n"
+        + "Follow GCloud Cafe for daily cloud updates 👇\n"
+        + "🌐 " + pulseTargetUrl;
+
+      editLinkedInPreview.textContent = previewText;
+
+      if (editCharCount) {
+        editCharCount.textContent = content.length + " chars";
+      }
+    }
+
+    function openCandidateEditModal(candidate) {
+      if (!editModal || !candidate) return;
+      editIdInput.value = candidate.id;
+      editTitleInput.value = candidate.title || "";
+      editContentInput.value = candidate.content || "";
+      editLinkInput.value = candidate.link_url || "";
+      editTagsInput.value = Array.isArray(candidate.tags) ? candidate.tags.join(", ") : "";
+
+      if (editOrigContent) {
+        editOrigContent.textContent = candidate.content || "No original content available.";
+      }
+      if (editOrigLink) {
+        if (candidate.link_url) {
+          editOrigLink.href = candidate.link_url;
+          editOrigLink.classList.remove("hidden");
+        } else {
+          editOrigLink.classList.add("hidden");
+        }
+      }
+
+      if (editAiStatus) editAiStatus.textContent = "";
+      if (editModalStatus) editModalStatus.textContent = "";
+
+      updateLinkedInPreviewBox();
+      editModal.classList.remove("hidden");
+    }
+
+    function closeCandidateEditModal() {
+      if (editModal) editModal.classList.add("hidden");
+    }
+
+    if (editModalCloseBtn) editModalCloseBtn.addEventListener("click", closeCandidateEditModal);
+    if (editModalCancelBtn) editModalCancelBtn.addEventListener("click", closeCandidateEditModal);
+    if (editModal) {
+      editModal.addEventListener("click", function (e) {
+        if (e.target === editModal) closeCandidateEditModal();
+      });
+    }
+
+    [editTitleInput, editContentInput, editLinkInput, editTagsInput].forEach(function (inp) {
+      if (inp) {
+        inp.addEventListener("input", updateLinkedInPreviewBox);
+        inp.addEventListener("change", updateLinkedInPreviewBox);
+      }
+    });
+
+    if (editCopyLinkedInBtn) {
+      editCopyLinkedInBtn.addEventListener("click", function () {
+        var text = editLinkedInPreview ? editLinkedInPreview.textContent : "";
+        if (!text) return;
+        navigator.clipboard.writeText(text).then(function () {
+          editCopyLinkedInBtn.innerHTML = '<i class="fa-solid fa-check text-emerald-500"></i> Copied!';
+          setTimeout(function () {
+            editCopyLinkedInBtn.innerHTML = '<i class="fa-regular fa-copy"></i> Copy Post Text';
+          }, 2000);
+        });
+      });
+    }
+
+    // Modal AI Hook Generation Button
+    if (editGenerateAiBtn) {
+      editGenerateAiBtn.addEventListener("click", async function () {
+        var origTitle = (editTitleInput ? editTitleInput.value : "").trim();
+        var origCtx = (editOrigContent ? editOrigContent.textContent : "") || (editContentInput ? editContentInput.value : "");
+
+        var originalBtnHtml = editGenerateAiBtn.innerHTML;
+        editGenerateAiBtn.disabled = true;
+        editGenerateAiBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i> Generating Hook...';
+        if (editAiStatus) {
+          editAiStatus.textContent = "Consulting Gemini AI...";
+          editAiStatus.className = "text-primary animate-pulse font-semibold";
+        }
+
+        try {
+          var res = await generateGeminiPulseHook(cachedGeminiApiKey, origTitle, origCtx);
+          if (editContentInput && res && res.text) {
+            editContentInput.value = res.text;
+          }
+          updateLinkedInPreviewBox();
+
+          if (editAiStatus) {
+            if (res && res.isFallback) {
+              editAiStatus.textContent = "ℹ️ " + (res.reason || "Smart summary excerpt used");
+              editAiStatus.className = "text-amber-600 dark:text-amber-400 font-semibold";
+            } else {
+              editAiStatus.textContent = "AI Hook generated! ✨";
+              editAiStatus.className = "text-emerald-500 font-semibold";
+            }
+          }
+        } catch (err) {
+          if (editContentInput && !editContentInput.value) {
+            editContentInput.value = createSmartFallbackHook(origTitle, origCtx);
+            updateLinkedInPreviewBox();
+          }
+          if (editAiStatus) {
+            editAiStatus.textContent = "ℹ️ Smart summary excerpt used";
+            editAiStatus.className = "text-amber-600 dark:text-amber-400 font-semibold";
+          }
+        } finally {
+          editGenerateAiBtn.disabled = false;
+          editGenerateAiBtn.innerHTML = originalBtnHtml;
+        }
+      });
+    }
+
+    // Modal Submit - Save & Approve Post
+    if (editForm) {
+      editForm.addEventListener("submit", function (e) {
+        e.preventDefault();
+        var candidateId = editIdInput.value.trim();
+        var title = editTitleInput.value.trim();
+        var content = editContentInput.value.trim();
+        var linkUrl = editLinkInput.value.trim();
+        var tagsRaw = editTagsInput.value.trim();
+
+        if (!candidateId || !title || !content) return;
+
+        var tagsArr = tagsRaw.split(",").map(function (t) {
+          var trimmed = t.trim();
+          return trimmed.startsWith("#") ? trimmed : "#" + trimmed;
+        }).filter(function (t) { return t.length > 1; });
+
+        if (editModalStatus) {
+          editModalStatus.textContent = "Saving and approving post...";
+          editModalStatus.className = "text-xs font-semibold mr-auto text-primary animate-pulse";
+        }
+
+        var payload = {
+          title: title,
+          content: content,
+          link_url: linkUrl || null,
+          tags: tagsArr,
+          status: "approved"
+        };
+
+        fetch(config.url + "/rest/v1/cloud_pulses?id=eq." + encodeURIComponent(candidateId), {
+          method: "PATCH",
+          headers: {
+            "apikey": config.anonKey,
+            "Authorization": "Bearer " + config.anonKey,
+            "Content-Type": "application/json",
+            "Prefer": "return=representation"
+          },
+          body: JSON.stringify(payload)
+        })
+        .then(function (res) {
+          if (res.ok) {
+            if (editModalStatus) {
+              editModalStatus.textContent = "Published live! 🎉";
+              editModalStatus.className = "text-xs font-semibold mr-auto text-emerald-500";
+            }
+            setTimeout(function () {
+              closeCandidateEditModal();
+              fetchPendingCandidates();
+            }, 600);
+          } else {
+            if (editModalStatus) {
+              editModalStatus.textContent = "Failed to update pulse.";
+              editModalStatus.className = "text-xs font-semibold mr-auto text-rose-500";
+            }
+          }
+        })
+        .catch(function () {
+          if (editModalStatus) {
+            editModalStatus.textContent = "Network error.";
+            editModalStatus.className = "text-xs font-semibold mr-auto text-rose-500";
+          }
+        });
+      });
+    }
+
+    // Manual Form AI Polish
+    if (manualFormGeminiBtn) {
+      manualFormGeminiBtn.addEventListener("click", async function () {
+        var form = document.querySelector("[data-pulse-admin-form]");
+        if (!form) return;
+        var titleInput = form.querySelector('input[name="title"]');
+        var contentInput = form.querySelector('textarea[name="content"]');
+
+        var title = titleInput ? titleInput.value.trim() : "";
+        var content = contentInput ? contentInput.value.trim() : "";
+
+        if (!title && !content) {
+          alert("Please enter a headline or rough notes first to polish.");
+          return;
+        }
+
+        var origHtml = manualFormGeminiBtn.innerHTML;
+        manualFormGeminiBtn.disabled = true;
+        manualFormGeminiBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i> Polishing...';
+
+        try {
+          var res = await generateGeminiPulseHook(cachedGeminiApiKey, title || "Cloud Feature Update", content || title);
+          if (contentInput && res && res.text) {
+            contentInput.value = res.text;
+          }
+        } catch (err) {
+          if (contentInput && !contentInput.value) {
+            contentInput.value = createSmartFallbackHook(title, content);
+          }
+        } finally {
+          manualFormGeminiBtn.disabled = false;
+          manualFormGeminiBtn.innerHTML = origHtml;
+        }
+      });
+    }
+
     function fetchPendingCandidates() {
       if (!pendingGrid) return;
       pendingGrid.innerHTML = '<div class="col-span-full text-center py-12 text-xs font-semibold text-text/60 dark:text-darkmode-text/60"><i class="fa-solid fa-spinner fa-spin text-lg text-primary block mb-2"></i>Loading candidate approval queue...</div>';
@@ -1533,11 +1946,13 @@
       .then(function (res) { return res.json(); })
       .then(function (candidates) {
         if (!Array.isArray(candidates) || candidates.length === 0) {
+          cachedCandidates = [];
           pendingGrid.innerHTML = '<div class="col-span-full text-center py-12 bg-body dark:bg-darkmode-body border border-border/80 rounded-3xl text-xs text-text/60 dark:text-darkmode-text/60 font-semibold"><i class="fa-solid fa-circle-check text-emerald-500 text-xl block mb-2"></i>All candidate posts reviewed! No pending approvals in queue.</div>';
           if (pendingCountBadge) pendingCountBadge.textContent = "0";
           return;
         }
 
+        cachedCandidates = candidates;
         if (pendingCountBadge) pendingCountBadge.textContent = String(candidates.length);
 
         var html = "";
@@ -1576,9 +1991,12 @@
               '<div class="flex flex-wrap gap-1 mb-4">' + tagsHtml + '</div>' +
             '</div>' +
 
-            '<div class="pt-3 border-t border-border/40 dark:border-darkmode-border/40 flex items-center justify-end gap-3 shrink-0">' +
-              '<button data-action-reject="' + c.id + '" class="px-3.5 py-2 rounded-xl text-xs font-bold transition-all border-none cursor-pointer" style="background-color: rgba(244, 63, 94, 0.12); color: #f43f5e;"><i class="fa-solid fa-xmark mr-1"></i> Reject</button>' +
-              '<button data-action-approve="' + c.id + '" class="px-4 py-2 rounded-xl text-xs font-extrabold shadow-sm transition-all border-none cursor-pointer" style="background-color: #059669; color: #ffffff;"><i class="fa-solid fa-check mr-1.5"></i> Approve & Publish</button>' +
+            '<div class="pt-3 border-t border-border/40 dark:border-darkmode-border/40 flex items-center justify-between gap-2 flex-wrap sm:flex-nowrap shrink-0">' +
+              '<button data-action-reject="' + c.id + '" class="px-3 py-2 rounded-xl text-xs font-bold transition-all border-none cursor-pointer" style="background-color: rgba(244, 63, 94, 0.12); color: #f43f5e;"><i class="fa-solid fa-xmark mr-1"></i> Reject</button>' +
+              '<div class="flex items-center gap-2">' +
+                '<button data-action-edit="' + c.id + '" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-primary/10 hover:bg-primary/20 text-primary border border-primary/20 transition-all cursor-pointer inline-flex items-center gap-1"><i class="fa-solid fa-pen-nib text-[11px]"></i> Refine TL;DR</button>' +
+                '<button data-action-approve="' + c.id + '" class="px-4 py-2 rounded-xl text-xs font-extrabold shadow-sm transition-all border-none cursor-pointer" style="background-color: #059669; color: #ffffff;"><i class="fa-solid fa-check mr-1.5"></i> Quick Approve</button>' +
+              '</div>' +
             '</div>' +
           '</div>';
         });
@@ -1593,6 +2011,17 @@
     }
 
     function bindCandidateActions() {
+      pendingGrid.querySelectorAll("[data-action-edit]").forEach(function (btn) {
+        btn.addEventListener("click", function (e) {
+          e.preventDefault();
+          var id = (this.getAttribute("data-action-edit") || "").trim();
+          var candidate = cachedCandidates.find(function (c) { return String(c.id) === id; });
+          if (candidate) {
+            openCandidateEditModal(candidate);
+          }
+        });
+      });
+
       pendingGrid.querySelectorAll("[data-action-approve]").forEach(function (btn) {
         btn.addEventListener("click", function (e) {
           e.preventDefault();
@@ -2212,6 +2641,472 @@
     var imageFileInput = document.getElementById("article-image-file-input");
     var lblUploadImage = document.getElementById("lbl-upload-image");
     var btnPublishGithub = document.getElementById("btn-publish-github");
+
+    // ── AI Article Studio, Quality Audit & LinkedIn Generator Elements ──
+    var btnAiArticle = document.getElementById("btn-ai-generate-article");
+    var modalAiArticle = document.getElementById("ai-article-modal");
+    var closeAiArticleBtn = document.getElementById("close-ai-article-modal-btn");
+    var cancelAiArticleBtn = document.getElementById("cancel-ai-article-modal-btn");
+    var formAiArticle = document.getElementById("ai-article-form");
+    var aiPromptTopic = document.getElementById("ai-prompt-topic");
+    var aiPromptStyle = document.getElementById("ai-prompt-style");
+    var aiPromptCategory = document.getElementById("ai-prompt-category");
+    var aiPromptNotes = document.getElementById("ai-prompt-notes");
+    var aiArticleStatus = document.getElementById("ai-article-status");
+    var submitAiArticleBtn = document.getElementById("submit-ai-article-btn");
+
+    var btnPreflight = document.getElementById("btn-preflight-check");
+    var modalPreflight = document.getElementById("preflight-modal");
+    var closePreflightBtn = document.getElementById("close-preflight-modal-btn");
+    var preflightDoneBtn = document.getElementById("preflight-done-btn");
+    var preflightScoreLabel = document.getElementById("preflight-score-label");
+    var preflightScoreBadge = document.getElementById("preflight-score-badge");
+    var preflightChecklist = document.getElementById("preflight-checklist");
+    var preflightRecommendationsList = document.getElementById("preflight-recommendations-list");
+
+    var btnGenerateLinkedIn = document.getElementById("btn-generate-linkedin");
+    var modalLinkedIn = document.getElementById("linkedin-post-modal");
+    var closeLinkedInBtn = document.getElementById("close-linkedin-post-modal-btn");
+    var linkedinTextarea = document.getElementById("linkedin-post-textarea");
+    var btnRegenerateLinkedIn = document.getElementById("btn-regenerate-linkedin-ai");
+    var btnCopyLinkedInPost = document.getElementById("btn-copy-linkedin-post");
+    var btnSaveLinkedInRepo = document.getElementById("btn-save-linkedin-repo");
+    var btnOpenLinkedInShare = document.getElementById("btn-open-linkedin-share");
+    var linkedinSaveStatus = document.getElementById("linkedin-post-save-status");
+    var linkedinCharCounter = document.getElementById("linkedin-char-counter");
+
+    // ── AI Helper: Fetch Supabase-backed Gemini Key ──
+    async function getArticleGeminiApiKey() {
+      try {
+        var config = window.SUPABASE_CONFIG || {
+          url: "https://axiijcsxtiukloarbfor.supabase.co",
+          anonKey: "sb_publishable_cRcwg02R3nXTykDrxalL6w_-kc9Wesc"
+        };
+        var res = await fetch(config.url + "/rest/v1/site_settings?key=eq.gemini_api_key&select=value", {
+          headers: {
+            "apikey": config.anonKey,
+            "Authorization": "Bearer " + config.anonKey
+          }
+        });
+        var data = await res.json();
+        if (Array.isArray(data) && data.length > 0 && data[0].value) {
+          return data[0].value.trim();
+        }
+      } catch (e) {}
+      return (localStorage.getItem("gcloudcafe_gemini_api_key") || "").trim();
+    }
+
+    // Call Gemini API with Fallback Handling
+    async function callGeminiApi(promptText, maxTokens) {
+      var apiKey = await getArticleGeminiApiKey();
+      if (!apiKey) {
+        throw new Error("No Gemini API key found in Supabase site_settings.");
+      }
+
+      var models = ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-1.5-flash"];
+      var lastErr = null;
+
+      for (var i = 0; i < models.length; i++) {
+        var model = models[i];
+        try {
+          var url = "https://generativelanguage.googleapis.com/v1beta/models/" + model + ":generateContent?key=" + encodeURIComponent(apiKey);
+          var res = await fetch(url, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              contents: [{ parts: [{ text: promptText }] }],
+              generationConfig: {
+                temperature: 0.3,
+                maxOutputTokens: maxTokens || 2500
+              }
+            })
+          });
+
+          if (res.ok) {
+            var data = await res.json();
+            var text = data?.candidates?.[0]?.content?.parts?.[0]?.text || "";
+            if (text) return text.trim();
+          } else {
+            var errData = await res.json().catch(function () { return {}; });
+            lastErr = new Error(errData?.error?.message || ("Gemini error " + res.status));
+          }
+        } catch (e) {
+          lastErr = e;
+        }
+      }
+      throw lastErr || new Error("Gemini API call failed.");
+    }
+
+    // ── 1. AI Blog Draft Writer Integration ──
+    function openAiArticleModal() {
+      if (modalAiArticle) modalAiArticle.classList.remove("hidden");
+      if (aiArticleStatus) aiArticleStatus.textContent = "";
+    }
+
+    function closeAiArticleModal() {
+      if (modalAiArticle) modalAiArticle.classList.add("hidden");
+    }
+
+    if (btnAiArticle) btnAiArticle.addEventListener("click", openAiArticleModal);
+    if (closeAiArticleBtn) closeAiArticleBtn.addEventListener("click", closeAiArticleModal);
+    if (cancelAiArticleBtn) cancelAiArticleBtn.addEventListener("click", closeAiArticleModal);
+    if (modalAiArticle) {
+      modalAiArticle.addEventListener("click", function (e) {
+        if (e.target === modalAiArticle) closeAiArticleModal();
+      });
+    }
+
+    if (formAiArticle) {
+      formAiArticle.addEventListener("submit", async function (e) {
+        e.preventDefault();
+        var topic = (aiPromptTopic ? aiPromptTopic.value : "").trim();
+        var style = (aiPromptStyle ? aiPromptStyle.value : "storytelling");
+        var category = (aiPromptCategory ? aiPromptCategory.value : "Google Cloud");
+        var notes = (aiPromptNotes ? aiPromptNotes.value : "").trim();
+
+        if (!topic) return;
+
+        var origBtnHtml = submitAiArticleBtn ? submitAiArticleBtn.innerHTML : "";
+        if (submitAiArticleBtn) {
+          submitAiArticleBtn.disabled = true;
+          submitAiArticleBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1.5"></i> Drafting with Gemini...';
+        }
+        if (aiArticleStatus) {
+          aiArticleStatus.textContent = "Synthesizing architecture & narrative in GCloud Cafe style...";
+          aiArticleStatus.className = "text-xs font-semibold mr-auto text-primary animate-pulse";
+        }
+
+        var prompt = "You are Tharun Vempati, lead cloud architect and creator of GCloud Cafe (https://gcloudcafe.com).\n"
+          + "Write a publication-ready, deeply engaging technical blog post in your signature GCloud Cafe style.\n\n"
+          + "TOPIC: " + topic + "\n"
+          + "CATEGORY: " + category + "\n"
+          + "STYLE PRESET: " + style + "\n"
+          + (notes ? ("KEY CONCEPTS / NOTES: " + notes + "\n\n") : "\n")
+          + "RULES FOR THARUN'S SIGNATURE BLOG STYLE:\n"
+          + "1. Narrative Storytelling Hook: Open with an engaging, reflective first-person introduction (\"The journey began...\", \"A reflective journey...\", setting the real-world context).\n"
+          + "2. Deep Technical Substance: Break down core architecture concepts, tradeoffs, real-world tools, and design decisions.\n"
+          + "3. Structured Headings: Use emojis in headings (e.g. '### 🧠 The Art of...', '### ⚙️ The Invisible Backbone...', '### 🚀 Hands-on Implementation', '### 💡 Key Takeaways').\n"
+          + "4. Use bold keywords, bullet points, code blocks (```bash or ```yaml), and Callout Alert boxes (> [!NOTE] or > [!TIP]).\n"
+          + "5. Output MUST be valid JSON with this exact structure:\n"
+          + "{\n"
+          + '  "title": "Catchy, authoritative title",\n'
+          + '  "description": "1-2 sentence compelling summary for SEO and social sharing",\n'
+          + '  "category": "' + category + '",\n'
+          + '  "tags": ["gcp", "architecture", "devops", "cloud"],\n'
+          + '  "image": "/images/posts/cloud-architecture.webp",\n'
+          + '  "markdown_content": "Full markdown body of the post starting after frontmatter..."\n'
+          + "}\n"
+          + "Return ONLY the JSON object, without surrounding conversational text.";
+
+        try {
+          var responseText = await callGeminiApi(prompt, 3000);
+          var cleanJsonStr = responseText.replace(/^```json\s*/i, "").replace(/^```\s*/i, "").replace(/\s*```$/i, "").trim();
+          var parsed = JSON.parse(cleanJsonStr);
+
+          if (titleInput && parsed.title) titleInput.value = parsed.title;
+          if (categorySelect && parsed.category) categorySelect.value = parsed.category;
+          if (descInput && parsed.description) descInput.value = parsed.description;
+          if (tagsInput && Array.isArray(parsed.tags)) tagsInput.value = parsed.tags.join(", ");
+          if (authorInput) authorInput.value = "Tharun Vempati";
+          if (imageUrlInput) imageUrlInput.value = parsed.image || "/images/posts/cloud-architecture.webp";
+          if (markdownInput && parsed.markdown_content) markdownInput.value = parsed.markdown_content;
+
+          updateLivePreview();
+          if (aiArticleStatus) {
+            aiArticleStatus.textContent = "Article draft generated! 🎉";
+            aiArticleStatus.className = "text-xs font-semibold mr-auto text-emerald-500";
+          }
+          setTimeout(closeAiArticleModal, 600);
+        } catch (err) {
+          console.error("AI Article draft error:", err);
+          if (aiArticleStatus) {
+            aiArticleStatus.textContent = "⚠️ Could not generate: " + (err.message || "API error");
+            aiArticleStatus.className = "text-xs font-semibold mr-auto text-rose-500";
+          }
+        } finally {
+          if (submitAiArticleBtn) {
+            submitAiArticleBtn.disabled = false;
+            submitAiArticleBtn.innerHTML = origBtnHtml;
+          }
+        }
+      });
+    }
+
+    // ── 2. Pre-flight Publishability Quality Audit ──
+    function runPublishabilityAudit() {
+      var title = titleInput ? titleInput.value.trim() : "";
+      var desc = descInput ? descInput.value.trim() : "";
+      var category = categorySelect ? categorySelect.value : "";
+      var tags = tagsInput ? tagsInput.value.split(",").map(function (t) { return t.trim(); }).filter(Boolean) : [];
+      var rawMd = markdownInput ? markdownInput.value.trim() : "";
+
+      var cleanMdText = rawMd.replace(/<[^>]+>/g, "").replace(/[#*`>-]/g, " ").trim();
+      var wordCount = cleanMdText ? cleanMdText.split(/\s+/).filter(Boolean).length : 0;
+
+      var checks = [
+        {
+          name: "Article Title Quality",
+          passed: title.length >= 20 && title.length <= 95,
+          weight: 15,
+          detail: title ? (title.length + " chars (Target: 20-95 chars)") : "Title is missing"
+        },
+        {
+          name: "SEO Meta Description",
+          passed: desc.length >= 60 && desc.length <= 200,
+          weight: 15,
+          detail: desc ? (desc.length + " chars (Target: 60-200 chars)") : "Summary / description missing"
+        },
+        {
+          name: "Category & Taxonomy Tags",
+          passed: !!category && tags.length >= 3,
+          weight: 15,
+          detail: tags.length + " tags configured (Target: 3+ tags)"
+        },
+        {
+          name: "Article Depth & Word Count",
+          passed: wordCount >= 300,
+          weight: 25,
+          detail: wordCount + " words (" + (wordCount >= 600 ? "Deep-dive grade" : (wordCount >= 300 ? "Standard length" : "Needs more detail")) + ")"
+        },
+        {
+          name: "Structured Heading Hierarchy",
+          passed: /##\s+/i.test(rawMd) || /###\s+/i.test(rawMd),
+          weight: 15,
+          detail: (/##\s+/i.test(rawMd) ? "H2/H3 subheadings present" : "Add ## and ### subheadings to organize concepts")
+        },
+        {
+          name: "Code Blocks or Note Callouts",
+          passed: /```/i.test(rawMd) || />\s*\[!/i.test(rawMd) || />\s+/i.test(rawMd),
+          weight: 15,
+          detail: (/```/i.test(rawMd) || />/i.test(rawMd) ? "Technical callouts / code snippets included" : "Add code snippets or [!NOTE] callouts")
+        }
+      ];
+
+      var totalScore = checks.reduce(function (acc, c) { return acc + (c.passed ? c.weight : 0); }, 0);
+
+      if (preflightScoreLabel) {
+        if (totalScore >= 90) {
+          preflightScoreLabel.textContent = "Ready to Publish! 🚀";
+          preflightScoreLabel.className = "text-2xl font-extrabold text-emerald-600 dark:text-emerald-400 mt-0.5";
+        } else if (totalScore >= 70) {
+          preflightScoreLabel.textContent = "Good Draft — Minor Polish Recommended ⚡";
+          preflightScoreLabel.className = "text-2xl font-extrabold text-amber-600 dark:text-amber-400 mt-0.5";
+        } else {
+          preflightScoreLabel.textContent = "Draft in Progress (Needs Details) ✍️";
+          preflightScoreLabel.className = "text-2xl font-extrabold text-rose-500 mt-0.5";
+        }
+      }
+
+      if (preflightScoreBadge) {
+        preflightScoreBadge.textContent = totalScore + "%";
+        preflightScoreBadge.className = "w-14 h-14 rounded-2xl flex items-center justify-center text-xl font-extrabold border " + (totalScore >= 80 ? "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border-emerald-500/30" : "bg-amber-500/15 text-amber-600 dark:text-amber-400 border-amber-500/30");
+      }
+
+      if (preflightChecklist) {
+        var checklistHtml = "";
+        checks.forEach(function (c) {
+          var icon = c.passed ? '<i class="fa-solid fa-circle-check text-emerald-500 text-base"></i>' : '<i class="fa-solid fa-circle-exclamation text-amber-500 text-base"></i>';
+          checklistHtml += '<div class="flex items-center justify-between p-3 rounded-xl border ' + (c.passed ? "border-emerald-500/20 bg-emerald-500/5" : "border-amber-500/20 bg-amber-500/5") + '">' +
+            '<div class="flex items-center gap-2.5">' +
+              icon +
+              '<div><div class="text-xs font-bold text-dark dark:text-darkmode-dark">' + escapeHtml(c.name) + '</div><div class="text-[11px] text-text/70 dark:text-darkmode-text/70">' + escapeHtml(c.detail) + '</div></div>' +
+            '</div>' +
+            '<span class="text-xs font-bold ' + (c.passed ? "text-emerald-600 dark:text-emerald-400" : "text-amber-600 dark:text-amber-400") + '">' + (c.passed ? "+" + c.weight + " pts" : "0 pts") + '</span>' +
+          '</div>';
+        });
+        preflightChecklist.innerHTML = checklistHtml;
+      }
+
+      if (preflightRecommendationsList) {
+        var recs = [];
+        if (title.length < 20) recs.push("Make the article title more descriptive and compelling (target 30–70 characters).");
+        if (desc.length < 60) recs.push("Add a 1–2 sentence meta description for search engines and social cards.");
+        if (tags.length < 3) recs.push("Add at least 3 comma-separated tags (e.g. #GoogleCloud, #DevOps, #Architecture).");
+        if (wordCount < 300) recs.push("Expand on architecture concepts or add hands-on troubleshooting steps for reader depth.");
+        if (!/##\s+/i.test(rawMd)) recs.push("Organize the post with structured subheadings (## and ###).");
+        if (!/```/i.test(rawMd)) recs.push("Add bash commands, YAML snippets, or architectural code examples.");
+
+        if (recs.length === 0) {
+          preflightRecommendationsList.innerHTML = '<li class="text-emerald-600 dark:text-emerald-400 font-semibold">🎉 All checks passed! Your article meets highest quality standards.</li>';
+        } else {
+          preflightRecommendationsList.innerHTML = recs.map(function (r) { return '<li>' + escapeHtml(r) + '</li>'; }).join("");
+        }
+      }
+
+      if (modalPreflight) modalPreflight.classList.remove("hidden");
+    }
+
+    if (btnPreflight) btnPreflight.addEventListener("click", runPublishabilityAudit);
+    if (closePreflightBtn) closePreflightBtn.addEventListener("click", function () { if (modalPreflight) modalPreflight.classList.add("hidden"); });
+    if (preflightDoneBtn) preflightDoneBtn.addEventListener("click", function () { if (modalPreflight) modalPreflight.classList.add("hidden"); });
+    if (modalPreflight) {
+      modalPreflight.addEventListener("click", function (e) {
+        if (e.target === modalPreflight) modalPreflight.classList.add("hidden");
+      });
+    }
+
+    // ── 3. LinkedIn Post Generator & Repo Exporter Studio ──
+    async function generateLinkedInPostDraft() {
+      var title = titleInput ? titleInput.value.trim() : "Cloud Architecture Deep Dive";
+      var desc = descInput ? descInput.value.trim() : "";
+      var category = categorySelect ? categorySelect.value : "Google Cloud";
+      var tags = tagsInput ? tagsInput.value.split(",").map(function (t) { return t.trim(); }).filter(Boolean) : ["GoogleCloud", "DevOps"];
+      var rawMd = markdownInput ? markdownInput.value.trim() : "";
+
+      var cleanExcerpt = rawMd.replace(/<[^>]+>/g, "").replace(/[#*`>-]/g, " ").substring(0, 700).trim();
+      var slug = title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+      var articleUrl = "https://gcloudcafe.com/blog/" + (slug || "article") + "/";
+
+      if (linkedinTextarea) {
+        linkedinTextarea.value = "Generating high-converting LinkedIn post with Gemini AI...";
+      }
+
+      var prompt = "You are Tharun Vempati, creator of GCloud Cafe (https://gcloudcafe.com).\n"
+        + "Write an authentic, highly engaging LinkedIn post for your engineering audience based on this newly written blog article.\n\n"
+        + "ARTICLE TITLE: " + title + "\n"
+        + "SUMMARY: " + desc + "\n"
+        + "CONTENT EXCERPT: " + cleanExcerpt + "\n\n"
+        + "FORMAT:\n"
+        + "☕ GCloud Cafe | Deep Dive\n\n"
+        + "📌 [Punchy Hook / Main Question]\n\n"
+        + "[2-3 narrative sentences about what changed or the architectural challenge]\n\n"
+        + "Key Takeaways:\n"
+        + "🔹 [Takeaway 1]\n"
+        + "🔹 [Takeaway 2]\n"
+        + "🔹 [Takeaway 3]\n\n"
+        + "Read the full guide on GCloud Cafe 👇\n"
+        + "🔗 " + articleUrl + "\n\n"
+        + "#" + category.replace(/\s+/g, "") + " #GoogleCloud #CloudArchitecture #DevOps #GCloudCafe\n\n"
+        + "Return ONLY the formatted post text without quotes.";
+
+      try {
+        var post = await callGeminiApi(prompt, 1000);
+        if (linkedinTextarea) {
+          linkedinTextarea.value = post;
+          updateLinkedInCharCount();
+        }
+        if (btnOpenLinkedInShare) {
+          btnOpenLinkedInShare.href = "https://www.linkedin.com/feed/?shareActive=true&text=" + encodeURIComponent(post);
+        }
+      } catch (err) {
+        // Natural smart fallback template
+        var hashtags = tags.map(function (t) { return t.startsWith("#") ? t : "#" + t; }).join(" ");
+        var fallbackPost = "☕ GCloud Cafe | Deep Dive\n\n"
+          + "📌 " + title + "\n\n"
+          + (desc || "A deep technical dive into cloud architecture and best practices.") + "\n\n"
+          + "Read the full guide on GCloud Cafe 👇\n"
+          + "🔗 " + articleUrl + "\n\n"
+          + (hashtags ? hashtags + " " : "") + "#GoogleCloud #DevOps #GCloudCafe";
+
+        if (linkedinTextarea) {
+          linkedinTextarea.value = fallbackPost;
+          updateLinkedInCharCount();
+        }
+        if (btnOpenLinkedInShare) {
+          btnOpenLinkedInShare.href = "https://www.linkedin.com/feed/?shareActive=true&text=" + encodeURIComponent(fallbackPost);
+        }
+      }
+    }
+
+    function updateLinkedInCharCount() {
+      if (linkedinTextarea && linkedinCharCounter) {
+        linkedinCharCounter.textContent = linkedinTextarea.value.length + " chars";
+      }
+    }
+
+    if (linkedinTextarea) {
+      linkedinTextarea.addEventListener("input", function () {
+        updateLinkedInCharCount();
+        if (btnOpenLinkedInShare) {
+          btnOpenLinkedInShare.href = "https://www.linkedin.com/feed/?shareActive=true&text=" + encodeURIComponent(linkedinTextarea.value);
+        }
+      });
+    }
+
+    if (btnGenerateLinkedIn) {
+      btnGenerateLinkedIn.addEventListener("click", function () {
+        if (modalLinkedIn) modalLinkedIn.classList.remove("hidden");
+        if (linkedinSaveStatus) linkedinSaveStatus.textContent = "";
+        generateLinkedInPostDraft();
+      });
+    }
+
+    if (btnRegenerateLinkedIn) {
+      btnRegenerateLinkedIn.addEventListener("click", generateLinkedInPostDraft);
+    }
+
+    if (closeLinkedInBtn) {
+      closeLinkedInBtn.addEventListener("click", function () {
+        if (modalLinkedIn) modalLinkedIn.classList.add("hidden");
+      });
+    }
+
+    if (modalLinkedIn) {
+      modalLinkedIn.addEventListener("click", function (e) {
+        if (e.target === modalLinkedIn) modalLinkedIn.classList.add("hidden");
+      });
+    }
+
+    if (btnCopyLinkedInPost) {
+      btnCopyLinkedInPost.addEventListener("click", function () {
+        if (!linkedinTextarea) return;
+        navigator.clipboard.writeText(linkedinTextarea.value).then(function () {
+          var origHtml = btnCopyLinkedInPost.innerHTML;
+          btnCopyLinkedInPost.innerHTML = '<i class="fa-solid fa-check text-emerald-500 mr-1.5"></i> Copied!';
+          setTimeout(function () { btnCopyLinkedInPost.innerHTML = origHtml; }, 2500);
+        });
+      });
+    }
+
+    // Save LinkedIn Post Draft to Repository (as Markdown File)
+    if (btnSaveLinkedInRepo) {
+      btnSaveLinkedInRepo.addEventListener("click", function () {
+        var title = titleInput ? titleInput.value.trim() : "Article";
+        var slug = title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        var dateStr = new Date().toISOString().split("T")[0];
+        var filename = dateStr + "-" + (slug || "post") + "-linkedin.md";
+        var content = linkedinTextarea ? linkedinTextarea.value : "";
+
+        if (!content) return;
+
+        var fullDraftMd = "# LinkedIn Post Draft: " + title + "\n"
+          + "**Generated Date:** " + new Date().toISOString() + "\n"
+          + "**Article Link:** https://gcloudcafe.com/blog/" + slug + "/\n\n"
+          + "---\n\n"
+          + content + "\n";
+
+        // 1. If GitHub PAT configured, commit directly to content/linkedin-drafts/
+        var patToken = localStorage.getItem("gcloud_github_pat") || (githubPatInput ? githubPatInput.value.trim() : "");
+        if (patToken) {
+          var targetPath = "content/linkedin-drafts/" + filename;
+          var base64Draft = btoa(unescape(encodeURIComponent(fullDraftMd)));
+          uploadFileToGithub(targetPath, base64Draft, "docs(linkedin): add social draft for " + title, patToken)
+            .then(function () {
+              if (linkedinSaveStatus) {
+                linkedinSaveStatus.textContent = "✅ Committed draft to content/linkedin-drafts/" + filename + " on GitHub!";
+              }
+            })
+            .catch(function (e) {
+              console.warn("GitHub draft commit error:", e);
+            });
+        }
+
+        // 2. Also download local file as seamless backup
+        var blob = new Blob([fullDraftMd], { type: "text/markdown;charset=utf-8;" });
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement("a");
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+
+        if (linkedinSaveStatus && !patToken) {
+          linkedinSaveStatus.textContent = "💾 Downloaded " + filename + " (Save in repo drafts)!";
+        }
+      });
+    }
 
     if (githubPatInput) {
       var savedPat = localStorage.getItem("gcloud_github_pat") || "";
