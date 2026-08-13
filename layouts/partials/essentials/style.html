@@ -45,15 +45,18 @@
 {{ $stylesLazy = $stylesLazy | resources.PostCSS }}
 
 {{ if hugo.IsProduction }}
-  {{ $styles = $styles | resources.ExecuteAsTemplate "css/style.css" . | minify | fingerprint }}
-  {{ $stylesLazy = $stylesLazy | resources.ExecuteAsTemplate "css/style-lazy.css" . | minify | fingerprint }}
+  {{ $styles = $styles | resources.ExecuteAsTemplate "css/style.css" . | minify | fingerprint | resources.PostProcess }}
+  {{ $stylesLazy = $stylesLazy | resources.ExecuteAsTemplate "css/style-lazy.css" . | minify | fingerprint | resources.PostProcess }}
 {{ else }}
   {{ $styles = $styles | resources.ExecuteAsTemplate "css/style.css" . }}
   {{ $stylesLazy = $stylesLazy | resources.ExecuteAsTemplate "css/style-lazy.css" . }}
 {{ end }}
 
-{{/* Inlined Critical & Main CSS (0 Render-Blocking Requests / <0.5s FCP) */}}
-<style>{{ $styles.Content | safeCSS }}</style>
+{{/* styles */}}
+<link
+  href="{{ $styles.RelPermalink }}"
+  integrity="{{ $styles.Data.Integrity }}"
+  rel="stylesheet" />
 
 {{/* Lazy Stylesheet */}}
 <link
