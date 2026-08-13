@@ -2170,6 +2170,186 @@
         });
       });
     }
+
+    // ── GitHub Direct Integration & Image Uploader ──
+    var btnToggleGithub = document.getElementById("btn-toggle-github-config");
+    var githubDrawer = document.getElementById("github-config-drawer");
+    var githubPatInput = document.getElementById("github-pat-token");
+    var btnSaveGithubToken = document.getElementById("btn-save-github-token");
+    var githubTokenStatus = document.getElementById("github-token-status");
+
+    var imageFileInput = document.getElementById("article-image-file-input");
+    var lblUploadImage = document.getElementById("lbl-upload-image");
+    var btnPublishGithub = document.getElementById("btn-publish-github");
+
+    if (githubPatInput) {
+      var savedPat = localStorage.getItem("gcloud_github_pat") || "";
+      if (savedPat) githubPatInput.value = savedPat;
+    }
+
+    if (btnToggleGithub && githubDrawer) {
+      btnToggleGithub.addEventListener("click", function () {
+        githubDrawer.classList.toggle("hidden");
+      });
+    }
+
+    if (btnSaveGithubToken && githubPatInput) {
+      btnSaveGithubToken.addEventListener("click", function () {
+        var token = githubPatInput.value.trim();
+        if (!token) return;
+        localStorage.setItem("gcloud_github_pat", token);
+        if (githubTokenStatus) {
+          githubTokenStatus.textContent = "GitHub Personal Access Token saved securely in your browser!";
+          githubTokenStatus.classList.remove("hidden");
+          setTimeout(function () { githubTokenStatus.classList.add("hidden"); }, 3500);
+        }
+      });
+    }
+
+    function uploadFileToGithub(path, base64Content, commitMessage, patToken) {
+      var repo = "tharun15/gcloudcafe";
+      var url = "https://api.github.com/repos/" + repo + "/contents/" + path;
+
+      return fetch(url, {
+        headers: { "Authorization": "token " + patToken }
+      })
+      .then(function (res) {
+        if (res.ok) return res.json();
+        return null;
+      })
+      .then(function (existingData) {
+        var payload = {
+          message: commitMessage,
+          content: base64Content,
+          branch: "main"
+        };
+        if (existingData && existingData.sha) {
+          payload.sha = existingData.sha;
+        }
+
+        return fetch(url, {
+          method: "PUT",
+          headers: {
+            "Authorization": "token " + patToken,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(payload)
+        });
+      })
+      .then(function (res) {
+        if (!res.ok) {
+          return res.json().then(function (err) {
+            throw new Error((err && err.message) ? err.message : "GitHub API upload failed (" + res.status + ")");
+          });
+        }
+        return res.json();
+      });
+    }
+
+    // Direct Image Upload Handler
+    if (imageFileInput) {
+      imageFileInput.addEventListener("change", function (e) {
+        var file = e.target.files && e.target.files[0];
+        if (!file) return;
+
+        var patToken = localStorage.getItem("gcloud_github_pat") || (githubPatInput ? githubPatInput.value.trim() : "");
+        if (!patToken) {
+          if (githubDrawer) githubDrawer.classList.remove("hidden");
+          alert("Please enter and save your GitHub Personal Access Token first to upload images directly to the repo!");
+          return;
+        }
+
+        var origLbl = lblUploadImage ? lblUploadImage.innerHTML : "";
+        if (lblUploadImage) lblUploadImage.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Uploading...';
+
+        var reader = new FileReader();
+        reader.onload = function (evt) {
+          var dataUrl = evt.target.result;
+          var base64Data = dataUrl.split(",")[1];
+          var safeName = file.name.toLowerCase().replace(/[^a-z0-9.]+/g, "-").replace(/^-|-$/g, "");
+          var datePrefix = new Date().toISOString().split("T")[0];
+          var targetPath = "static/images/posts/" + datePrefix + "-" + safeName;
+
+          uploadFileToGithub(targetPath, base64Data, "upload: add post image " + safeName, patToken)
+            .then(function () {
+              var publicRelPath = "/images/posts/" + datePrefix + "-" + safeName;
+              if (imageUrlInput) {
+                imageUrlInput.value = publicRelPath;
+                imageUrlInput.dispatchEvent(new Event("input"));
+              }
+              if (lblUploadImage) {
+                lblUploadImage.innerHTML = '<i class="fa-solid fa-circle-check text-emerald-500"></i> Uploaded!';
+                setTimeout(function () { lblUploadImage.innerHTML = origLbl; }, 3000);
+              }
+            })
+            .catch(function (err) {
+              alert("Image upload error: " + err.message);
+              if (lblUploadImage) lblUploadImage.innerHTML = origLbl;
+            });
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    // 1-Click Publish Live to GitHub Repo Handler
+    if (btnPublishGithub) {
+      btnPublishGithub.addEventListener("click", function () {
+        var title = titleInput ? titleInput.value.trim() : "";
+        if (!title) {
+          alert("Please enter an article title first!");
+          return;
+        }
+
+        var patToken = localStorage.getItem("gcloud_github_pat") || (githubPatInput ? githubPatInput.value.trim() : "");
+        if (!patToken) {
+          if (githubDrawer) githubDrawer.classList.remove("hidden");
+          alert("Please enter and save your GitHub Personal Access Token first to enable 1-click live publishing!");
+          return;
+        }
+
+        var originalHtml = btnPublishGithub.innerHTML;
+        btnPublishGithub.disabled = true;
+        btnPublishGithub.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1.5"></i> Committing to GitHub...';
+
+        var category = categorySelect ? categorySelect.value : "Google Cloud";
+        var desc = descInput ? descInput.value.trim() : "";
+        var author = authorInput ? authorInput.value.trim() : "Tharun Vempati";
+        var tags = tagsInput ? tagsInput.value.split(",").map(function (t) { return t.trim(); }).filter(Boolean) : [];
+        var imageUrl = imageUrlInput ? imageUrlInput.value.trim() : "/images/posts/default-banner.webp";
+        var rawMd = markdownInput ? markdownInput.value.trim() : "";
+
+        var dateStr = new Date().toISOString();
+        var slug = title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        var filename = new Date().toISOString().split("T")[0] + "-" + slug + ".md";
+        var targetPath = "content/english/blog/" + filename;
+
+        var frontMatter = "---\n" +
+          'title: "' + title.replace(/"/g, '\\"') + '"\n' +
+          'meta_title: "' + title.replace(/"/g, '\\"') + ' | GCloud Cafe"\n' +
+          'description: "' + desc.replace(/"/g, '\\"') + '"\n' +
+          'date: "' + dateStr + '"\n' +
+          'image: "' + imageUrl + '"\n' +
+          'categories: ["' + category + '"]\n' +
+          'tags: ' + JSON.stringify(tags) + '\n' +
+          'author: "' + author + '"\n' +
+          'draft: false\n' +
+          "---\n\n" + rawMd;
+
+        var base64Md = btoa(unescape(encodeURIComponent(frontMatter)));
+
+        uploadFileToGithub(targetPath, base64Md, "feat(blog): publish article: " + title, patToken)
+          .then(function () {
+            btnPublishGithub.disabled = false;
+            btnPublishGithub.innerHTML = '<i class="fa-solid fa-circle-check text-emerald-400 mr-1.5"></i> Published Live to GitHub!';
+            setTimeout(function () { btnPublishGithub.innerHTML = originalHtml; }, 4000);
+          })
+          .catch(function (err) {
+            btnPublishGithub.disabled = false;
+            alert("GitHub publishing error: " + err.message);
+            btnPublishGithub.innerHTML = originalHtml;
+          });
+      });
+    }
   }
 
   function initApp() {
