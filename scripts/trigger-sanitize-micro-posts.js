@@ -108,10 +108,15 @@ async function generateAITLDRHook(apiKey, title, rawSummary) {
   for (const model of models) {
     try {
       const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
-      const prompt = `You are a Senior Cloud Architect & News Editor at GCloud Cafe.
-Summarize this cloud release into a punchy, 1-2 sentence TL;DR hook suitable for a technical LinkedIn post.
-Explain what changed, why it matters, or the key takeaway for engineers.
-Do NOT use hashtags, emojis, quotes, or markdown. Return only the plain 1-2 sentence summary.
+      const prompt = `You are a Senior Cloud Architect & News Editor at GCloud Cafe (https://gcloudcafe.com).
+Turn this cloud release into a high-engagement LinkedIn insight for software engineers and architects.
+
+CRITICAL FORMAT (Strictly 2 sentences):
+Sentence 1: Crisp summary of what specifically launched or changed.
+Sentence 2: Engaging takeaway explaining why this matters for cloud architecture, security, cost, or developer speed.
+
+Format as: <Sentence 1> Why it matters: <Sentence 2>
+Do NOT use hashtags, emojis, or markdown. Return only the plain text.
 
 Headline: ${title}
 Context: ${rawSummary}`;
@@ -121,7 +126,7 @@ Context: ${rawSummary}`;
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           contents: [{ parts: [{ text: prompt }] }],
-          generationConfig: { maxOutputTokens: 120, temperature: 0.3 }
+          generationConfig: { maxOutputTokens: 160, temperature: 0.25 }
         })
       });
 
