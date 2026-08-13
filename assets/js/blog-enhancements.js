@@ -1418,12 +1418,15 @@
       }
 
       var prompt = "You are the chief cloud architect and news editor for GCloud Cafe (https://gcloudcafe.com).\n"
-        + "Turn the following cloud release update into a crisp, engaging 1-2 sentence TL;DR Hook for software engineers and architects.\n\n"
-        + "CRITICAL RULES:\n"
-        + "1. Clearly highlight what specifically launched/changed and why it matters (impact on scalability, security, cost, or developer experience).\n"
-        + "2. Strictly 1 to 2 sentences (between 100 and 190 characters max).\n"
-        + "3. Professional, punchy, active voice. No marketing fluff, no buzzwords, no intro phrases like 'Here is a TL;DR:' or 'In this update'.\n"
-        + "4. Return ONLY the clean summary text.\n\n"
+        + "Turn the following cloud release update into a high-engagement LinkedIn insight for software engineers and architects.\n\n"
+        + "CRITICAL OUTPUT FORMAT (Strictly 2 sentences):\n"
+        + "Sentence 1: Crisp summary of what specifically launched or changed.\n"
+        + "Sentence 2: Engaging takeaway explaining why this matters (strategic impact on architecture, security, cost, or developer speed).\n\n"
+        + "RULES:\n"
+        + "1. Keep total length between 120 and 220 characters.\n"
+        + "2. Professional, punchy, active voice. No intro fluff or greetings.\n"
+        + "3. Format as: <Sentence 1> Why it matters: <Sentence 2>\n"
+        + "4. Return ONLY the plain text.\n\n"
         + "Article Title: " + title + "\n"
         + "Article Context: " + content;
 
@@ -1714,15 +1717,34 @@
         return tr.startsWith("#") ? tr : "#" + tr;
       }).filter(function (t) { return t.length > 1; });
 
-      var hashtagsText = tagsArr.join(" ");
+      var defaultTags = ["#CloudNews", "#GCloudCafe"];
+      var uniqueTags = Array.from(new Set(tagsArr.concat(defaultTags)));
+      var hashtagsText = uniqueTags.join(" ");
+
       var sourceLabel = tagsArr.length > 0 ? tagsArr[0].replace(/^#/, "").replace(/([a-z])([A-Z])/g, "$1 $2") : "Official Release";
       var pulseTargetUrl = window.location.origin + "/pulse/";
 
+      // Split into TL;DR and Why it matters if structured
+      var formattedContent = content;
+      if (content.toLowerCase().includes("why it matters:")) {
+        var parts = content.split(/Why it matters:\s*/i);
+        var tldrPart = parts[0].trim();
+        var impactPart = parts[1].trim();
+        formattedContent = "⚡ TL;DR: " + tldrPart + "\n\n💡 Why this matters: " + impactPart;
+      } else if (content.includes(". ") && content.length > 60) {
+        var firstDot = content.indexOf(". ");
+        var sentence1 = content.substring(0, firstDot + 1).trim();
+        var sentence2 = content.substring(firstDot + 2).trim();
+        formattedContent = "⚡ TL;DR: " + sentence1 + "\n\n💡 Why this matters: " + sentence2;
+      } else {
+        formattedContent = "⚡ TL;DR: " + (content || "[Refined TL;DR Hook will appear here...]");
+      }
+
       var previewText = "☕ GCloud Cafe | Cloud Pulse\n\n"
         + "📌 " + (title || "[Headline]") + "\n\n"
-        + "⚡ TL;DR: " + (content || "[Refined TL;DR Hook will appear here...]") + "\n\n"
+        + formattedContent + "\n\n"
         + "📖 Source: " + sourceLabel + (linkUrl ? "\n🔗 " + linkUrl : "") + "\n\n"
-        + (hashtagsText ? hashtagsText + " " : "") + "#CloudNews #GCloudCafe\n\n"
+        + hashtagsText + "\n\n"
         + "—\n"
         + "Follow GCloud Cafe for daily cloud updates 👇\n"
         + "🌐 " + pulseTargetUrl;
