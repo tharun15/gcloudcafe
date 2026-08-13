@@ -1569,11 +1569,11 @@
       pullBtn.addEventListener("click", ingestCleanedArticles);
     }
 
-    function ingestCleanedArticles() {
+    async function ingestCleanedArticles() {
       if (!pullBtn) return;
       var originalHtml = pullBtn.innerHTML;
       pullBtn.disabled = true;
-      pullBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1.5"></i> Ingesting & Sanitizing Feeds...';
+      pullBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1.5"></i> Ingesting & Generating AI TL;DRs...';
 
       var feeds = [
         { provider: "GCP", name: "Google Cloud Release Notes", url: "https://cloud.google.com/feeds/gcp-release-notes.xml", defaultTags: ["#GoogleCloud", "#GCP", "#CloudNews"] },
@@ -1582,64 +1582,72 @@
         { provider: "OpenShift", name: "Red Hat Blog & OpenShift Releases", url: "https://www.redhat.com/en/rss/blog", defaultTags: ["#OpenShift", "#RedHat", "#DevOps"] }
       ];
 
-      var fetchPromises = feeds.map(function (feed) {
-        var proxyUrl = "https://api.allorigins.win/get?url=" + encodeURIComponent(feed.url);
-        return fetch(proxyUrl)
-          .then(function (res) { return res.json(); })
-          .then(function (data) {
-            if (data && data.contents) {
-              return parseFeedXml(data.contents, feed);
-            }
-            return [];
-          })
-          .catch(function () { return []; });
-      });
+      try {
+        var fetchPromises = feeds.map(function (feed) {
+          var proxyUrl = "https://api.allorigins.win/get?url=" + encodeURIComponent(feed.url);
+          return fetch(proxyUrl)
+            .then(function (res) { return res.json(); })
+            .then(function (data) {
+              if (data && data.contents) {
+                return parseFeedXml(data.contents, feed);
+              }
+              return [];
+            })
+            .catch(function () { return []; });
+        });
 
-      Promise.all(fetchPromises)
-        .then(function (results) {
-          var allCandidates = [];
-          results.forEach(function (list) {
-            if (Array.isArray(list)) allCandidates = allCandidates.concat(list);
-          });
+        var results = await Promise.all(fetchPromises);
+        var allCandidates = [];
+        results.forEach(function (list) {
+          if (Array.isArray(list)) allCandidates = allCandidates.concat(list);
+        });
 
-          if (allCandidates.length === 0) {
-            pullBtn.disabled = false;
-            pullBtn.innerHTML = '<i class="fa-solid fa-check mr-1.5"></i> Queue Up to Date';
-            setTimeout(function () { pullBtn.innerHTML = originalHtml; }, 3000);
-            fetchPendingCandidates();
-            return;
-          }
-
-          var uniqueMap = new Map();
-          allCandidates.forEach(function (c) { uniqueMap.set(c.title, c); });
-          var newCandidates = Array.from(uniqueMap.values());
-
-          var postPromises = newCandidates.map(function (item) {
-            return fetch(config.url + "/rest/v1/cloud_pulses", {
-              method: "POST",
-              headers: {
-                "apikey": config.anonKey,
-                "Authorization": "Bearer " + config.anonKey,
-                "Content-Type": "application/json",
-                "Prefer": "return=minimal"
-              },
-              body: JSON.stringify(item)
-            }).catch(function () {});
-          });
-
-          return Promise.all(postPromises);
-        })
-        .then(function () {
+        if (allCandidates.length === 0) {
           pullBtn.disabled = false;
-          pullBtn.innerHTML = '<i class="fa-solid fa-circle-check mr-1.5"></i> Articles Ingested!';
+          pullBtn.innerHTML = '<i class="fa-solid fa-check mr-1.5"></i> Queue Up to Date';
           setTimeout(function () { pullBtn.innerHTML = originalHtml; }, 3000);
           fetchPendingCandidates();
-        })
-        .catch(function () {
-          pullBtn.disabled = false;
-          pullBtn.innerHTML = originalHtml;
-          fetchPendingCandidates();
-        });
+          return;
+        }
+
+        var uniqueMap = new Map();
+        allCandidates.forEach(function (c) { uniqueMap.set(c.title, c); });
+        var newCandidates = Array.from(uniqueMap.values()).slice(0, 10);
+
+        var apiKey = await fetchGeminiApiKeyFromSupabase();
+
+        // Synthesize AI TL;DR Hook for each candidate
+        for (var i = 0; i < newCandidates.length; i++) {
+          var item = newCandidates[i];
+          pullBtn.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles fa-spin mr-1.5"></i> AI TL;DR (' + (i + 1) + '/' + newCandidates.length + ')...';
+          try {
+            var hookRes = await generateGeminiPulseHook(apiKey, item.title, item.content);
+            if (hookRes && hookRes.text) {
+              item.content = hookRes.text;
+            }
+          } catch (e) {}
+
+          await fetch(config.url + "/rest/v1/cloud_pulses", {
+            method: "POST",
+            headers: {
+              "apikey": config.anonKey,
+              "Authorization": "Bearer " + config.anonKey,
+              "Content-Type": "application/json",
+              "Prefer": "return=minimal"
+            },
+            body: JSON.stringify(item)
+          }).catch(function () {});
+        }
+
+        pullBtn.disabled = false;
+        pullBtn.innerHTML = '<i class="fa-solid fa-circle-check mr-1.5"></i> ' + newCandidates.length + ' AI TL;DRs Ingested!';
+        setTimeout(function () { pullBtn.innerHTML = originalHtml; }, 3000);
+        fetchPendingCandidates();
+      } catch (err) {
+        pullBtn.disabled = false;
+        pullBtn.innerHTML = originalHtml;
+        fetchPendingCandidates();
+      }
     }
 
     function parseFeedXml(xmlText, feed) {
@@ -1751,6 +1759,15 @@
 
       updateLinkedInPreviewBox();
       editModal.classList.remove("hidden");
+
+      // Auto-trigger AI TL;DR Hook if content appears raw or un-summarized
+      if (editGenerateAiBtn && (!candidate.content || candidate.content.length > 180 || candidate.content.endsWith("..."))) {
+        setTimeout(function() {
+          if (!editModal.classList.contains("hidden")) {
+            editGenerateAiBtn.click();
+          }
+        }, 100);
+      }
     }
 
     function closeCandidateEditModal() {

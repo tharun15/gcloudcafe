@@ -87,10 +87,72 @@ function parseItems(xmlText, feed) {
   return items;
 }
 
-async function triggerSanitizeMicroPosts() {
-  console.log("⚡ Executing trigger-sanitize-micro-posts Workflow...");
+async function getGeminiApiKey() {
+  if (process.env.GEMINI_API_KEY) return process.env.GEMINI_API_KEY.trim();
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/site_settings?key=eq.gemini_api_key&select=value`, {
+      headers: { "apikey": SUPABASE_KEY, "Authorization": `Bearer ${SUPABASE_KEY}` }
+    });
+    const data = await res.json();
+    if (Array.isArray(data) && data.length > 0 && data[0].value) {
+      return data[0].value.trim();
+    }
+  } catch (e) {}
+  return "";
+}
 
-  // Step 1: Purge **all** pending_approval posts in Supabase
+async function generateAITLDRHook(apiKey, title, rawSummary) {
+  if (!apiKey) return generateSmartSummaryFallback(rawSummary);
+
+  const models = ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-1.5-flash"];
+  for (const model of models) {
+    try {
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+      const prompt = `You are a Senior Cloud Architect & News Editor at GCloud Cafe.
+Summarize this cloud release into a punchy, 1-2 sentence TL;DR hook suitable for a technical LinkedIn post.
+Explain what changed, why it matters, or the key takeaway for engineers.
+Do NOT use hashtags, emojis, quotes, or markdown. Return only the plain 1-2 sentence summary.
+
+Headline: ${title}
+Context: ${rawSummary}`;
+
+      const res = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }] }],
+          generationConfig: { maxOutputTokens: 120, temperature: 0.3 }
+        })
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        const text = data?.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
+        if (text && text.length >= 20) {
+          return text.replace(/^["'\s]+|["'\s]+$/g, "");
+        }
+      }
+    } catch (e) {}
+  }
+  return generateSmartSummaryFallback(rawSummary);
+}
+
+function generateSmartSummaryFallback(summary) {
+  if (!summary) return "";
+  const sentences = summary.split(/(?<=[.?!])\s+/);
+  if (sentences.length >= 2 && (sentences[0] + " " + sentences[1]).length <= 220) {
+    return (sentences[0] + " " + sentences[1]).trim();
+  }
+  return summary.length > 200 ? summary.substring(0, 197) + "..." : summary;
+}
+
+async function triggerSanitizeMicroPosts() {
+  console.log("⚡ Executing trigger-sanitize-micro-posts Workflow with Gemini AI TL;DR Generation...");
+
+  const geminiApiKey = await getGeminiApiKey();
+  console.log(geminiApiKey ? "✨ Gemini API Key loaded from Supabase site_settings!" : "ℹ️ No Gemini API Key found; using smart semantic excerpts.");
+
+  // Step 1: Purge all pending_approval posts in Supabase
   console.log("\n🧹 Step 1: Deleting all pending_approval posts in Supabase...");
   await fetch(`${SUPABASE_URL}/rest/v1/cloud_pulses?status=eq.pending_approval`, {
     method: "DELETE",
@@ -113,13 +175,17 @@ async function triggerSanitizeMicroPosts() {
     }
   }
 
-  // Step 3: Insert sanitized candidates
-  console.log(`\n📥 Step 3: Inserting sanitized candidates to Supabase...`);
+  // Step 3: Insert candidates with AI TL;DR synthesis
+  console.log(`\n📥 Step 3: Generating AI TL;DRs and inserting candidates to Supabase...`);
   const uniqueMap = new Map();
   candidates.forEach(c => uniqueMap.set(c.title, c));
-  const newCandidates = Array.from(uniqueMap.values());
+  const newCandidates = Array.from(uniqueMap.values()).slice(0, 10);
 
   for (const item of newCandidates) {
+    console.log(`🤖 Synthesizing AI TL;DR for: "${item.title}"...`);
+    const aiTLDR = await generateAITLDRHook(geminiApiKey, item.title, item.content);
+    item.content = aiTLDR;
+
     await fetch(`${SUPABASE_URL}/rest/v1/cloud_pulses`, {
       method: "POST",
       headers: {
@@ -132,7 +198,7 @@ async function triggerSanitizeMicroPosts() {
     });
   }
 
-  // Step 4: Cap Pending Queue to Strict Top 10 Newest Items (Delete older extra items)
+  // Step 4: Cap Pending Queue to Strict Top 10 Newest Items
   console.log("\n✂️ Step 4: Capping pending queue to top 10 newest candidate posts...");
   const checkRes = await fetch(`${SUPABASE_URL}/rest/v1/cloud_pulses?status=eq.pending_approval&order=created_at.desc&select=id,title,created_at`, {
     headers: { "apikey": SUPABASE_KEY, "Authorization": `Bearer ${SUPABASE_KEY}` }
@@ -151,7 +217,7 @@ async function triggerSanitizeMicroPosts() {
     }
   }
 
-  console.log("\n✨ trigger-sanitize-micro-posts workflow completed! Queue capped at top 10 newest items.");
+  console.log("\n✨ trigger-sanitize-micro-posts workflow completed! All candidates have AI TL;DRs.");
 }
 
 triggerSanitizeMicroPosts();
