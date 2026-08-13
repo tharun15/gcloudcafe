@@ -90,24 +90,12 @@ function parseItems(xmlText, feed) {
 async function triggerSanitizeMicroPosts() {
   console.log("⚡ Executing trigger-sanitize-micro-posts Workflow...");
 
-  // Step 1: Clean & Purge existing low-value unapproved posts in Supabase
-  console.log("\n🧹 Step 1: Analyzing existing unapproved candidates in Supabase...");
-  const fetchRes = await fetch(`${SUPABASE_URL}/rest/v1/cloud_pulses?status=eq.pending_approval&select=*`, {
+  // Step 1: Purge **all** pending_approval posts in Supabase
+  console.log("\n🧹 Step 1: Deleting all pending_approval posts in Supabase...");
+  await fetch(`${SUPABASE_URL}/rest/v1/cloud_pulses?status=eq.pending_approval`, {
+    method: "DELETE",
     headers: { "apikey": SUPABASE_KEY, "Authorization": `Bearer ${SUPABASE_KEY}` }
   });
-  const existingPending = await fetchRes.json();
-
-  if (Array.isArray(existingPending) && existingPending.length > 0) {
-    for (const c of existingPending) {
-      if (!isHighRelevanceCandidate(c.title, c.content) || /^August \d{2}, \d{4}$/i.test(c.title)) {
-        console.log(`❌ Purging low-value candidate: "${c.title}"`);
-        await fetch(`${SUPABASE_URL}/rest/v1/cloud_pulses?id=eq.${c.id}&status=eq.pending_approval`, {
-          method: "DELETE",
-          headers: { "apikey": SUPABASE_KEY, "Authorization": `Bearer ${SUPABASE_KEY}` }
-        });
-      }
-    }
-  }
 
   // Step 2: Scrape fresh feeds
   console.log("\n📡 Step 2: Fetching fresh cloud release feeds...");
