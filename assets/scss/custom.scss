@@ -576,7 +576,7 @@ kbd {
 .stitch-badge {
   @apply inline-flex items-center gap-1 rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-widest border transition-colors duration-200;
   background-color: rgba(79, 142, 247, 0.1);
-  color: #4F8EF7;
+  color: #026aa2;
   border-color: rgba(79, 142, 247, 0.2);
 
   .dark & {
@@ -590,7 +590,7 @@ kbd {
 .stitch-badge-amber {
   @apply inline-flex items-center gap-1 rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-widest border transition-colors duration-200;
   background-color: rgba(245, 158, 11, 0.1);
-  color: #b45309;
+  color: #92400e;
   border-color: rgba(245, 158, 11, 0.2);
 
   .dark & {
