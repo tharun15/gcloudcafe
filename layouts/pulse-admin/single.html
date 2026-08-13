@@ -58,13 +58,18 @@
 
       <!-- Section 1: Pending Approvals Queue -->
       <div id="section-pending-approvals" class="space-y-6">
-        <div class="flex items-center justify-between">
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
           <h3 class="text-lg font-bold text-dark dark:text-darkmode-dark flex items-center gap-2">
             <i class="fa-solid fa-robot text-primary"></i> Daily Scraped Candidate Micro-Posts
           </h3>
-          <button id="refresh-candidates-btn" class="px-3 py-1.5 rounded-xl bg-theme-light dark:bg-darkmode-theme-light text-xs font-bold text-primary hover:bg-primary/10 border border-primary/20 cursor-pointer transition-all">
-            <i class="fa-solid fa-rotate-right mr-1"></i> Refresh Queue
-          </button>
+          <div class="flex items-center gap-2">
+            <button id="pull-scraped-articles-btn" class="px-3.5 py-1.5 rounded-xl bg-primary text-white text-xs font-bold shadow-xs hover:bg-primary/90 border-none cursor-pointer transition-all">
+              <i class="fa-solid fa-cloud-arrow-down mr-1.5"></i> Pull Latest Cleaned Articles
+            </button>
+            <button id="refresh-candidates-btn" class="px-3 py-1.5 rounded-xl bg-theme-light dark:bg-darkmode-theme-light text-xs font-bold text-primary hover:bg-primary/10 border border-primary/20 cursor-pointer transition-all">
+              <i class="fa-solid fa-rotate-right mr-1"></i> Refresh Queue
+            </button>
+          </div>
         </div>
 
         <div id="pending-cards-grid" class="grid grid-cols-1 md:grid-cols-2 gap-6">
