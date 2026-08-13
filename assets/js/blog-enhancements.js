@@ -1930,7 +1930,10 @@
       lockDashboard();
     }
 
-    var inputs = [titleInput, categorySelect, tagsInput, authorInput, descInput, imageUrlInput, markdownInput];
+    var seriesInput = document.getElementById("article-series-input");
+    var seriesOrderInput = document.getElementById("article-series-order-input");
+
+    var inputs = [titleInput, categorySelect, tagsInput, authorInput, descInput, imageUrlInput, seriesInput, seriesOrderInput, markdownInput];
     inputs.forEach(function (inp) {
       if (inp) {
         inp.addEventListener("input", updateLivePreview);
@@ -1981,6 +1984,8 @@
       var author = authorInput ? authorInput.value.trim() : "Tharun Vempati";
       var desc = descInput ? descInput.value.trim() : "";
       var imageUrl = imageUrlInput ? imageUrlInput.value.trim() : "";
+      var seriesName = seriesInput ? seriesInput.value.trim() : "";
+      var seriesOrder = seriesOrderInput ? (parseInt(seriesOrderInput.value, 10) || 1) : 1;
       var rawMd = markdownInput ? markdownInput.value : "";
 
       if (imgPreviewImg && imgPreviewEmpty) {
@@ -2009,11 +2014,31 @@
         renderedHtml += '<div class="mb-4"><span class="' + categoryBadgeClass + ' text-xs py-0.5 px-2.5 mb-2 inline-block">' + escapeHtml(category) + '</span>' +
           '<h1 class="text-2xl sm:text-3xl font-extrabold text-dark dark:text-darkmode-dark leading-snug mb-2">' + escapeHtml(title) + '</h1>' +
           (desc ? '<p class="text-sm text-text/80 dark:text-darkmode-text/80 leading-relaxed mb-3 italic">' + escapeHtml(desc) + '</p>' : '') +
-          '<div class="flex items-center gap-3 text-xs font-semibold text-text/60 dark:text-darkmode-text/60"><span class="text-primary font-bold"><i class="fa-solid fa-user-ninja mr-1"></i>' + escapeHtml(author) + '</span> <span><i class="fa-regular fa-clock mr-1"></i>' + readTime + ' min read</span></div></div>';
+          '<div class="flex items-center gap-3 text-xs font-semibold text-text/60 dark:text-darkmode-text/60 mb-4"><span class="text-primary font-bold"><i class="fa-solid fa-user-ninja mr-1"></i>' + escapeHtml(author) + '</span> <span><i class="fa-regular fa-clock mr-1"></i>' + readTime + ' min read</span></div></div>';
       }
 
       if (imageUrl) {
         renderedHtml += '<div class="mb-6 rounded-2xl overflow-hidden shadow-md"><img src="' + escapeHtml(imageUrl) + '" alt="' + escapeHtml(title) + '" class="w-full h-48 sm:h-64 object-cover" /></div>';
+      }
+
+      // Live Render Guide Series Playlist Box if Series Name provided
+      if (seriesName) {
+        var totalParts = Math.max(seriesOrder, 5);
+        var percent = Math.round((seriesOrder / totalParts) * 100);
+
+        renderedHtml += '<div class="series-playlist-widget mb-6 border border-primary/20 dark:border-darkmode-primary/20 rounded-3xl p-5 bg-gradient-to-br from-primary/5 via-body to-theme-light/40 dark:from-darkmode-primary/10 dark:via-darkmode-body dark:to-darkmode-theme-light/30 shadow-xs">' +
+          '<div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-3 pb-3 border-b border-border/40 dark:border-darkmode-border/40">' +
+            '<div>' +
+              '<div class="flex items-center gap-2 mb-1"><span class="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-primary/15 text-primary"><i class="fa-solid fa-layer-group text-[9px]"></i> Guide Series</span><span class="text-xs font-semibold text-text/70 dark:text-darkmode-text/70">Part ' + seriesOrder + ' of ' + totalParts + '</span></div>' +
+              '<h3 class="text-base font-bold text-dark dark:text-darkmode-dark">' + escapeHtml(seriesName) + '</h3>' +
+            '</div>' +
+            '<div class="w-32 sm:w-40 shrink-0"><div class="flex justify-between text-[10px] font-bold text-primary mb-1"><span>Progress</span><span>' + percent + '%</span></div><div class="h-2 w-full bg-border/60 dark:bg-darkmode-border/60 rounded-full overflow-hidden"><div class="h-full bg-primary rounded-full" style="width: ' + percent + '%;"></div></div></div>' +
+          '</div>' +
+          '<div class="text-xs font-bold uppercase tracking-wider text-text/80 dark:text-darkmode-text/80 mb-2"><i class="fa-solid fa-list-ol mr-1.5 text-primary"></i> Series Playlist (' + totalParts + ' Parts)</div>' +
+          '<div class="space-y-1.5 pt-1">' +
+            '<div class="flex items-center justify-between p-2.5 rounded-xl text-xs bg-primary text-white font-bold shadow-xs"><div class="flex items-center gap-2 min-w-0 pr-2"><span class="w-5 h-5 rounded-full flex items-center justify-center text-[10px] bg-white/20">' + seriesOrder + '</span><span class="truncate">' + (title ? escapeHtml(title) : escapeHtml(seriesName) + ' (Part ' + seriesOrder + ')') + '</span></div><span class="px-2 py-0.5 rounded-full bg-white/20 text-[10px] shrink-0">CURRENT</span></div>' +
+          '</div>' +
+        '</div>';
       }
 
       renderedHtml += renderMarkdownToHtml(rawMd);
@@ -2053,6 +2078,8 @@
         var author = authorInput ? authorInput.value.trim() : "Tharun Vempati";
         var tags = tagsInput ? tagsInput.value.split(",").map(function (t) { return t.trim(); }).filter(Boolean) : [];
         var imageUrl = imageUrlInput ? imageUrlInput.value.trim() : "/images/posts/default-banner.webp";
+        var seriesName = seriesInput ? seriesInput.value.trim() : "";
+        var seriesOrder = seriesOrderInput ? (parseInt(seriesOrderInput.value, 10) || 1) : 1;
         var rawMd = markdownInput ? markdownInput.value.trim() : "";
 
         var dateStr = new Date().toISOString();
@@ -2068,6 +2095,7 @@
           'categories: ["' + category + '"]\n' +
           'tags: ' + JSON.stringify(tags) + '\n' +
           'author: "' + author + '"\n' +
+          (seriesName ? ('series: "' + seriesName.replace(/"/g, '\\"') + '"\nseries_order: ' + seriesOrder + '\n') : '') +
           'draft: false\n' +
           "---\n\n" + rawMd;
 
@@ -2091,6 +2119,8 @@
         var author = authorInput ? authorInput.value.trim() : "Tharun Vempati";
         var tags = tagsInput ? tagsInput.value.split(",").map(function (t) { return t.trim(); }).filter(Boolean) : [];
         var imageUrl = imageUrlInput ? imageUrlInput.value.trim() : "/images/posts/default-banner.webp";
+        var seriesName = seriesInput ? seriesInput.value.trim() : "";
+        var seriesOrder = seriesOrderInput ? (parseInt(seriesOrderInput.value, 10) || 1) : 1;
         var rawMd = markdownInput ? markdownInput.value.trim() : "";
 
         var frontMatter = "---\n" +
@@ -2102,6 +2132,7 @@
           'categories: ["' + category + '"]\n' +
           'tags: ' + JSON.stringify(tags) + '\n' +
           'author: "' + author + '"\n' +
+          (seriesName ? ('series: "' + seriesName.replace(/"/g, '\\"') + '"\nseries_order: ' + seriesOrder + '\n') : '') +
           'draft: false\n' +
           "---\n\n" + rawMd;
 
@@ -2316,6 +2347,8 @@
         var author = authorInput ? authorInput.value.trim() : "Tharun Vempati";
         var tags = tagsInput ? tagsInput.value.split(",").map(function (t) { return t.trim(); }).filter(Boolean) : [];
         var imageUrl = imageUrlInput ? imageUrlInput.value.trim() : "/images/posts/default-banner.webp";
+        var seriesName = seriesInput ? seriesInput.value.trim() : "";
+        var seriesOrder = seriesOrderInput ? (parseInt(seriesOrderInput.value, 10) || 1) : 1;
         var rawMd = markdownInput ? markdownInput.value.trim() : "";
 
         var dateStr = new Date().toISOString();
@@ -2332,6 +2365,7 @@
           'categories: ["' + category + '"]\n' +
           'tags: ' + JSON.stringify(tags) + '\n' +
           'author: "' + author + '"\n' +
+          (seriesName ? ('series: "' + seriesName.replace(/"/g, '\\"') + '"\nseries_order: ' + seriesOrder + '\n') : '') +
           'draft: false\n' +
           "---\n\n" + rawMd;
 

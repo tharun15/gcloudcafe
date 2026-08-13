@@ -212,6 +212,36 @@
               <img id="article-image-preview-img" src="" alt="Banner Preview" class="w-full h-full object-cover hidden" />
             </div>
           </div>
+
+          <!-- Series Metadata (Optional) -->
+          <div class="md:col-span-3 pt-3 border-t border-border/40 dark:border-darkmode-border/40">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <div class="md:col-span-3">
+                <label class="block text-xs font-bold uppercase tracking-wider text-text/80 dark:text-darkmode-text/80 mb-1.5 flex items-center gap-1.5">
+                  <i class="fa-solid fa-layer-group text-primary"></i> Series Name (Optional for Multi-part Guides)
+                </label>
+                <input 
+                  type="text" 
+                  id="article-series-input" 
+                  placeholder="e.g. EX280 – OpenShift Administrator Tips & Tricks" 
+                  class="w-full px-4 py-2.5 rounded-2xl border border-border/80 dark:border-darkmode-border/80 bg-theme-light dark:bg-darkmode-theme-light text-xs font-semibold focus:outline-none focus:border-primary text-dark dark:text-darkmode-dark"
+                />
+              </div>
+              <div>
+                <label class="block text-xs font-bold uppercase tracking-wider text-text/80 dark:text-darkmode-text/80 mb-1.5">
+                  Series Part #
+                </label>
+                <input 
+                  type="number" 
+                  id="article-series-order-input" 
+                  min="1" 
+                  max="50" 
+                  placeholder="e.g. 4" 
+                  class="w-full px-4 py-2.5 rounded-2xl border border-border/80 dark:border-darkmode-border/80 bg-theme-light dark:bg-darkmode-theme-light text-xs font-semibold focus:outline-none focus:border-primary text-dark dark:text-darkmode-dark"
+                />
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
