@@ -101,7 +101,7 @@ This story provides the intuitive foundation of public-key cryptography. But how
 
 In early TLS versions (like TLS 1.2 RSA handshakes), clients sent encrypted session keys directly using the server's public key. 
 
-However, **modern TLS 1.3 (RFC 8446) completely separated these roles** to guarantee **Forward Secrecy** (ensuring that a future private key compromise cannot decrypt past recorded sessions).
+However, **modern TLS 1.3 ([RFC 8446](https://datatracker.ietf.org/doc/html/rfc8446)) completely separated these roles** to guarantee **Forward Secrecy** (ensuring that a future private key compromise cannot retroactively decrypt past recorded traffic).
 
 Modern TLS divides responsibilities into three distinct engines:
 
@@ -115,7 +115,7 @@ Modern TLS divides responsibilities into three distinct engines:
       <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-indigo-500/20 text-indigo-700 dark:text-indigo-300 font-mono">RSA-PSS / ECDSA / Ed25519</span>
     </div>
     <p class="text-sm text-slate-800 dark:text-slate-200 leading-relaxed m-0">
-      The server's certificate contains an asymmetric public key. The server signs the handshake with its private key to prove it owns the identity. <b>The certificate key authenticates the server; it does NOT encrypt the session key.</b>
+      The server's certificate contains an asymmetric public key. The server signs the handshake transcript with its private key to prove it owns the certificate. <b>The certificate key authenticates the server's identity; it does NOT encrypt the session key.</b>
     </p>
   </div>
 
@@ -128,7 +128,7 @@ Modern TLS divides responsibilities into three distinct engines:
       <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-blue-500/20 text-blue-700 dark:text-blue-300 font-mono">ECDHE (X25519 / P-256)</span>
     </div>
     <p class="text-sm text-slate-800 dark:text-slate-200 leading-relaxed m-0">
-      Both parties generate temporary, one-time keys. Through mathematical key agreement, they calculate the exact same shared secret over an open network without transmitting the secret itself.
+      Both parties generate temporary, one-time keys. Through Diffie-Hellman mathematical key agreement, they calculate the exact same shared secret over an open channel without ever transmitting that secret over the wire.
     </p>
   </div>
 
@@ -141,14 +141,14 @@ Modern TLS divides responsibilities into three distinct engines:
       <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 font-mono">AES-GCM / ChaCha20-Poly1305</span>
     </div>
     <p class="text-sm text-slate-800 dark:text-slate-200 leading-relaxed m-0">
-      From the shared secret, both sides derive temporary symmetric keys for bulk data transfer. Hardware-accelerated directly on CPUs (AES-NI / ARM Crypto) to encrypt gigabits per second with minimal latency.
+      From the shared secret, both sides derive temporary symmetric keys for bulk data transfer using Authenticated Encryption with Associated Data (AEAD). Hardware-accelerated directly on CPUs (AES-NI / ARM Crypto) to encrypt gigabits per second with minimal latency.
     </p>
   </div>
 </div>
 
 ### 🗺️ The Complete TLS Mental Model Flowchart
 
-Here is how all these pieces connect during a real connection:
+Here is how all these components connect during a connection:
 
 <div class="p-6 sm:p-8 rounded-3xl bg-slate-900 border border-slate-800 my-8 shadow-xl text-slate-100">
   <div class="text-center font-bold text-base sm:text-lg text-white mb-6 flex items-center justify-center gap-2">
@@ -158,7 +158,7 @@ Here is how all these pieces connect during a real connection:
   <div class="flex flex-col items-center space-y-3 max-w-xl mx-auto">
     <!-- Step 1: Certificate -->
     <div class="w-full p-4 rounded-2xl bg-slate-800/90 border border-slate-700 text-center shadow-md">
-      <div class="text-xs font-bold uppercase tracking-wider text-sky-400 mb-1">Step 1 • X.509 Certificate</div>
+      <div class="text-xs font-bold uppercase tracking-wider text-sky-400 mb-1">Step 1 • X.509 Certificate (RFC 5280)</div>
       <div class="text-sm font-semibold text-white">Server Public Key · Domain / SANs · Issuer · CA Signature</div>
     </div>
 
@@ -166,7 +166,7 @@ Here is how all these pieces connect during a real connection:
 
     <!-- Step 2: Authentication -->
     <div class="w-full p-4 rounded-2xl bg-indigo-950/60 border border-indigo-700/60 text-center shadow-md">
-      <div class="text-xs font-bold uppercase tracking-wider text-indigo-300 mb-1">Step 2 • Identity Proof</div>
+      <div class="text-xs font-bold uppercase tracking-wider text-indigo-300 mb-1">Step 2 • Identity Proof (RFC 8446)</div>
       <div class="text-sm font-semibold text-indigo-100">Client Trusts CA ➔ Server Identity <span class="text-emerald-400 font-bold">AUTHENTICATED</span> via Signature</div>
     </div>
 
@@ -174,7 +174,7 @@ Here is how all these pieces connect during a real connection:
 
     <!-- Step 3: Key Exchange -->
     <div class="w-full p-4 rounded-2xl bg-blue-950/60 border border-blue-700/60 text-center shadow-md">
-      <div class="text-xs font-bold uppercase tracking-wider text-blue-300 mb-1">Step 3 • Ephemeral Key Agreement</div>
+      <div class="text-xs font-bold uppercase tracking-wider text-blue-300 mb-1">Step 3 • Ephemeral Key Agreement (ECDHE)</div>
       <div class="text-sm font-semibold text-blue-100">ECDHE (X25519 / P-256) ➔ Independent Computation of <span class="text-amber-300 font-bold">Shared Secret</span></div>
     </div>
 
@@ -182,7 +182,7 @@ Here is how all these pieces connect during a real connection:
 
     <!-- Step 4: Symmetric Keys -->
     <div class="w-full p-4 rounded-2xl bg-emerald-950/60 border border-emerald-700/60 text-center shadow-md">
-      <div class="text-xs font-bold uppercase tracking-wider text-emerald-300 mb-1">Step 4 • Bulk Encryption Keys</div>
+      <div class="text-xs font-bold uppercase tracking-wider text-emerald-300 mb-1">Step 4 • Bulk Encryption Keys (AEAD)</div>
       <div class="text-sm font-semibold text-emerald-100">Derive Symmetric Session Keys (AES-256-GCM / ChaCha20-Poly1305)</div>
     </div>
 
@@ -210,7 +210,7 @@ To prevent this Man-in-the-Middle impersonation, Bob cannot just send an unverif
 <div class="p-6 rounded-2xl bg-amber-50/80 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/60 my-6 shadow-sm">
   <h4 class="text-base font-bold text-amber-950 dark:text-amber-100 m-0 mb-2">📄 What is a CSR (Certificate Signing Request)?</h4>
   <p class="text-sm text-slate-800 dark:text-slate-200 leading-relaxed m-0">
-    A CSR is a standardized application package containing your <b>Public Key</b>, your organization details, and your domain names (SANs). It is signed by your Private Key to prove you possess the key pair. <b>A CSR never contains your Private Key.</b>
+    A CSR (defined in <a href="https://datatracker.ietf.org/doc/html/rfc2986" target="_blank" rel="noopener" class="underline font-bold">RFC 2986 / PKCS #10</a>) is a standardized application package containing your <b>Public Key</b>, your organization details, and your domain names (SANs). It is signed by your Private Key to prove you possess the key pair. <b>A CSR never contains your Private Key.</b>
   </p>
 </div>
 
@@ -218,7 +218,7 @@ To prevent this Man-in-the-Middle impersonation, Bob cannot just send an unverif
 
 ## 5. Digital Certificates: The Notarized Identity
 
-Once the CA verifies you control the domain, it produces an **X.509 Digital Certificate**.
+Once the CA verifies you control the domain, it produces an **X.509 Digital Certificate** ([RFC 5280](https://datatracker.ietf.org/doc/html/rfc5280)).
 
 Bob installs this certificate on his web server and presents it to clients during the TLS handshake.
 
@@ -261,7 +261,7 @@ Who issues and validates these certificates?
       <li><b>Examples:</b> Let's Encrypt, DigiCert, Sectigo, Google Trust Services.</li>
       <li><b>Trust Model:</b> For a publicly trusted certificate, the client is expected to already trust an appropriate Root CA through its trust store (pre-installed in OS, browser, or JVM).</li>
       <li><b>Use Case:</b> Public internet websites, customer-facing SaaS apps, public REST APIs.</li>
-      <li><b>Constraints:</b> Requires verifiable public domain control (ACME). Cannot issue certificates for internal private DNS.</li>
+      <li><b>Constraints:</b> Requires verifiable public domain control (ACME RFC 8555). Cannot issue certificates for internal private DNS.</li>
     </ul>
   </div>
 
@@ -431,7 +431,7 @@ openssl req -x509 -newkey rsa:2048 -nodes \
 
 ## 10. Anatomy of an X.509 Certificate
 
-An X.509 certificate contains several structured fields:
+An X.509 certificate ([RFC 5280](https://datatracker.ietf.org/doc/html/rfc5280)) contains several structured fields:
 
 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 my-8">
   <div class="p-5 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800">
@@ -505,6 +505,18 @@ openssl pkey -in server.key -pubout -outform DER | sha256sum
 
 ---
 
+## 📚 Authoritative Standards & References
+
+To explore the underlying cryptographic specifications and RFC standards:
+
+- **[RFC 8446](https://datatracker.ietf.org/doc/html/rfc8446):** *The Transport Layer Security (TLS) Protocol Version 1.3* (IETF Standard).
+- **[RFC 5280](https://datatracker.ietf.org/doc/html/rfc5280):** *Internet X.509 Public Key Infrastructure Certificate and Certificate Revocation List (CRL) Profile*.
+- **[RFC 2986](https://datatracker.ietf.org/doc/html/rfc2986):** *PKCS #10: Certification Request Syntax Specification Version 1.7*.
+- **[RFC 8555](https://datatracker.ietf.org/doc/html/rfc8555):** *Automatic Certificate Management Environment (ACME)*.
+- **[NIST SP 800-57](https://csrc.nist.gov/publications/detail/sp/800-57-part-1/rev-5/final):** *Recommendation for Key Management (Security Strength Comparisons)*.
+
+---
+
 ## Summary & What's Next in Part 2
 
 | Concept | Key Architectural Takeaway |
@@ -515,8 +527,8 @@ openssl pkey -in server.key -pubout -outform DER | sha256sum
 | **Public vs. Private PKI** | Public CAs secure internet-facing traffic via globally pre-trusted root stores; Private PKI (Vault, AWS Private CA, cert-manager) secures internal microservices/mTLS. |
 | **Chain of Trust** | Intermediates protect offline Root CAs. In server bundles, the Leaf certificate must be first, followed by Intermediates. |
 
-Now that you have a rigorous understanding of cryptographic roles, keys, CSRs, public/private PKI, and chain ordering, you are ready to explore the protocol handshake itself.
+Now that you have a rock-solid foundation on cryptographic roles, keys, CSRs, public/private PKI, and chain ordering, you are ready to explore the protocol handshake itself.
 
 👉 **In Part 2: The Standard TLS Handshake, Cipher Suites & SSL Troubleshooting**, we will break down:
-- The step-by-step TLS 1.2 vs 1.3 handshake packet exchange (0-RTT, ServerHello, Encrypted Extensions).
+- The step-by-step TLS 1.2 vs 1.3 handshake packet exchange (0-RTT, ServerHello, `CertificateVerify`, Encrypted Extensions).
 - Real-world diagnostic tools including [SSL Shopper](https://www.sslshopper.com/ssl-checker.html), [Qualys SSL Labs](https://www.ssllabs.com/ssltest/), and OpenSSL `s_client`.
