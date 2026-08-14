@@ -1373,10 +1373,13 @@
       return combined || title;
     }
 
-    var verifiedDefaultGeminiKey = "AIzaSyA0vfGV5i1yxOJpq2GKMta8R1exW4hOZR4";
-
     async function fetchGeminiApiKeyFromSupabase() {
       if (cachedGeminiApiKey) return cachedGeminiApiKey;
+      var stored = (localStorage.getItem("gcloudcafe_gemini_api_key") || "").trim();
+      if (stored) {
+        cachedGeminiApiKey = stored;
+        return stored;
+      }
       try {
         var res = await fetch(config.url + "/rest/v1/site_settings?key=eq.gemini_api_key&select=value", {
           headers: {
@@ -1394,14 +1397,7 @@
       } catch (err) {
         console.warn("Could not fetch Gemini key from Supabase site_settings:", err);
       }
-      var stored = (localStorage.getItem("gcloudcafe_gemini_api_key") || "").trim();
-      if (stored) {
-        cachedGeminiApiKey = stored;
-        return stored;
-      }
-      cachedGeminiApiKey = verifiedDefaultGeminiKey;
-      localStorage.setItem("gcloudcafe_gemini_api_key", verifiedDefaultGeminiKey);
-      return verifiedDefaultGeminiKey;
+      return (cachedGeminiApiKey || localStorage.getItem("gcloudcafe_gemini_api_key") || "").trim();
     }
 
     // Call Gemini API to generate crisp TL;DR Hook with automatic fallback on rate limit / quota exhaustion
@@ -1423,19 +1419,19 @@
         return {
           text: fallbackText,
           isFallback: true,
-          reason: "No Gemini Key found in Supabase — using smart summary excerpt"
+          reason: "No Gemini Key configured — enter your key in the top bar to activate AI synthesis"
         };
       }
 
       var prompt = "You are the chief cloud architect and news editor for GCloud Cafe (https://gcloudcafe.com).\n"
-        + "Turn the following cloud release update into a high-engagement LinkedIn insight for software engineers and architects.\n\n"
-        + "CRITICAL OUTPUT FORMAT (Strictly 2 sentences):\n"
-        + "Sentence 1: Crisp summary of what specifically launched or changed.\n"
-        + "Sentence 2: Engaging takeaway explaining why this matters (strategic impact on architecture, security, cost, or developer speed).\n\n"
+        + "Write an engaging, complete 2-sentence LinkedIn insight about this cloud update for software engineers and cloud architects.\n\n"
+        + "REQUIRED FORMAT (Strictly 2 complete sentences):\n"
+        + "Sentence 1: Clear, detailed explanation of what specifically launched or changed.\n"
+        + "Sentence 2: Practical insight explaining why this matters (impact on cloud architecture, security, cost savings, or developer speed).\n\n"
         + "RULES:\n"
-        + "1. Keep total length between 120 and 220 characters.\n"
-        + "2. Professional, punchy, active voice. No intro fluff or greetings.\n"
-        + "3. Format as: <Sentence 1> Why it matters: <Sentence 2>\n"
+        + "1. Write complete, well-formed sentences. Do NOT truncate or stop mid-sentence.\n"
+        + "2. Professional, punchy, active voice. No introductory filler like 'Here is a summary'.\n"
+        + "3. Format output exactly as: <Sentence 1> Why this matters: <Sentence 2>\n"
         + "4. Return ONLY the plain text.\n\n"
         + "Article Title: " + title + "\n"
         + "Article Context: " + content;
@@ -1457,8 +1453,8 @@
             body: JSON.stringify({
               contents: [{ parts: [{ text: prompt }] }],
               generationConfig: {
-                temperature: 0.25,
-                maxOutputTokens: 250
+                temperature: 0.3,
+                maxOutputTokens: 600
               }
             })
           });
@@ -1496,7 +1492,7 @@
       return {
         text: fallbackText,
         isFallback: true,
-        reason: "API temporarily unavailable — switched to smart summary excerpt"
+        reason: "Gemini API unavailable — smart fallback summary used"
       };
     }
 
@@ -1504,8 +1500,33 @@
       if (dashboardContainer) dashboardContainer.classList.remove("hidden");
       if (authPrompt) authPrompt.classList.add("hidden");
       if (passcodeStatus) passcodeStatus.classList.add("hidden");
+
+      if (geminiKeyInput) {
+        var existingKey = localStorage.getItem("gcloudcafe_gemini_api_key") || "";
+        geminiKeyInput.value = existingKey;
+        if (existingKey && geminiStatusBadge) {
+          geminiStatusBadge.textContent = "AI Key Active ✨";
+          geminiStatusBadge.classList.remove("hidden");
+        }
+      }
+
       fetchGeminiApiKeyFromSupabase();
       fetchPendingCandidates();
+    }
+
+    if (saveGeminiKeyBtn && geminiKeyInput) {
+      saveGeminiKeyBtn.addEventListener("click", function () {
+        var keyVal = geminiKeyInput.value.trim();
+        if (keyVal) {
+          localStorage.setItem("gcloudcafe_gemini_api_key", keyVal);
+          cachedGeminiApiKey = keyVal;
+          if (geminiStatusBadge) {
+            geminiStatusBadge.textContent = "Saved & Active! ✨";
+            geminiStatusBadge.classList.remove("hidden");
+            setTimeout(function () { geminiStatusBadge.textContent = "AI Key Active ✨"; }, 3000);
+          }
+        }
+      });
     }
 
     function lockDashboard() {
@@ -2743,7 +2764,7 @@
         }
       } catch (e) {}
       var stored = (localStorage.getItem("gcloudcafe_gemini_api_key") || "").trim();
-      return stored || "AIzaSyA0vfGV5i1yxOJpq2GKMta8R1exW4hOZR4";
+      return stored;
     }
 
     // Call Gemini API with Fallback Handling

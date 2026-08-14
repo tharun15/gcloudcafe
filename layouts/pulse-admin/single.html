@@ -46,14 +46,29 @@
     <!-- Protected Newsroom Dashboard (Hidden until passcode authentication) -->
     <div id="admin-dashboard-container" class="space-y-8 hidden">
       
-      <!-- Tab Navigation -->
-      <div class="flex items-center gap-3 border-b border-border/60 dark:border-darkmode-border/60 pb-3">
-        <button id="tab-pending-btn" class="px-4 py-2 rounded-xl text-xs font-extrabold bg-primary text-white border-none cursor-pointer">
-          <i class="fa-solid fa-inbox mr-1.5"></i> Pending Approvals (<span id="pending-count-badge">0</span>)
-        </button>
-        <button id="tab-manual-btn" class="px-4 py-2 rounded-xl text-xs font-bold bg-theme-light dark:bg-darkmode-theme-light text-text/80 dark:text-darkmode-text/80 hover:text-primary border border-border/60 dark:border-darkmode-border/60 cursor-pointer">
-          <i class="fa-solid fa-pen-to-square mr-1.5"></i> Manual Post Broadcast
-        </button>
+      <!-- Tab Navigation & Gemini AI Key Config -->
+      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-border/60 dark:border-darkmode-border/60 pb-3">
+        <div class="flex items-center gap-3">
+          <button id="tab-pending-btn" class="px-4 py-2 rounded-xl text-xs font-extrabold bg-primary text-white border-none cursor-pointer">
+            <i class="fa-solid fa-inbox mr-1.5"></i> Pending Approvals (<span id="pending-count-badge">0</span>)
+          </button>
+          <button id="tab-manual-btn" class="px-4 py-2 rounded-xl text-xs font-bold bg-theme-light dark:bg-darkmode-theme-light text-text/80 dark:text-darkmode-text/80 hover:text-primary border border-border/60 dark:border-darkmode-border/60 cursor-pointer">
+            <i class="fa-solid fa-pen-to-square mr-1.5"></i> Manual Post Broadcast
+          </button>
+        </div>
+
+        <div class="flex items-center gap-2 w-full sm:w-auto">
+          <input 
+            type="password" 
+            id="gemini-api-key-input" 
+            placeholder="Gemini API Key..." 
+            class="px-3 py-1.5 rounded-xl border border-border/80 dark:border-darkmode-border/80 bg-theme-light dark:bg-darkmode-theme-light text-xs font-mono focus:outline-none focus:border-primary text-dark dark:text-darkmode-dark w-full sm:w-48"
+          />
+          <button id="save-gemini-key-btn" class="px-3 py-1.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold border-none cursor-pointer whitespace-nowrap">
+            <i class="fa-solid fa-key mr-1"></i> Save Key
+          </button>
+          <span id="gemini-status-badge" class="text-[11px] font-semibold text-emerald-500 hidden"></span>
+        </div>
       </div>
 
       <!-- Section 1: Pending Approvals Queue -->
