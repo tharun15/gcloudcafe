@@ -210,7 +210,7 @@ Before configuring Ingress controllers or debugging certificate pipelines, let's
 <div class="p-5 rounded-2xl bg-rose-50/70 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-800/60">
 <h5 class="text-sm font-bold text-rose-950 dark:text-rose-200 m-0 mb-1.5">❌ Myth 3: "The CA creates and gives me my private key."</h5>
 <p class="text-xs text-slate-700 dark:text-slate-300 m-0 leading-relaxed">
-<b>Reality:</b> You generate the private key on your own machine. The CA only receives your CSR, verifies domain control, and issues a signed certificate.
+<b>Reality:</b> You generate the private key on your own machine. The CA only receives your CSR, verifies domain control, and issues a signed certificate containing your public key.
 </p>
 </div>
 
@@ -248,7 +248,7 @@ Private Key (server.key) [SECRET]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;│<br>
 &nbsp;&nbsp;&nbsp;&nbsp;└──→ Packages into CSR (server.csr) ──→ Submits to CA<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↓ CA signs with its key<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↓ CA validates identity & signs<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Signed Certificate (server.crt)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↓ Installed on Nginx / Ingress<br>
@@ -482,9 +482,9 @@ openssl req -x509 -newkey rsa:2048 -nodes \
   -subj "/CN=localhost"
 ```
 
-### When to Use Self-Signed Certificates (and When NOT To)
-- **Appropriate Uses:** Local Docker compose environments, isolated testbeds, bootstrapping initial control planes before provisioning `cert-manager`.
-- **Inappropriate for Production:** Using self-signed certificates in production leads developers to disable certificate verification (`curl -k`, `InsecureSkipVerify: true`, `NODE_TLS_REJECT_UNAUTHORIZED=0`), which disables authentication and leaves connections vulnerable to Man-in-the-Middle attacks.
+### Self-Signed Leaf vs. Self-Signed Root CAs (The Crucial Difference)
+- **Self-Signed Leaf (End-Entity) Certificates:** Useful for local Docker compose environments, isolated testbeds, and bootstrapping initial control planes before provisioning `cert-manager`. However, using self-signed leaf certificates in production is dangerous when it leads developers to disable certificate verification (`curl -k`, `InsecureSkipVerify: true`, `NODE_TLS_REJECT_UNAUTHORIZED=0`), leaving connections vulnerable to Man-in-the-Middle attacks.
+- **Self-Signed Root CAs (Private PKI):** The standard, legitimate foundation of **Private PKI** (HashiCorp Vault, AWS Private CA, corporate intranets). The Root CA signs internal certificates, and administrators securely distribute and trust this private root across internal servers, Kubernetes clusters, and JVM truststores (`cacerts`).
 
 ---
 
@@ -535,15 +535,20 @@ MHcCAQEEIJe7x8yB9...[Base64 Encoded Private Key Data]...
 -----END EC PRIVATE KEY-----
 ```
 
-### Step 2: Generate a Certificate Signing Request (CSR)
+### Step 2: Generate a Certificate Signing Request (CSR) with SAN
 ```bash
+# Generate CSR with Subject and Subject Alternative Names (SAN)
 openssl req -new -key server.key -out server.csr \
-  -subj "/C=US/ST=California/L=San Francisco/O=GCloudCafe/CN=api.gcloudcafe.com"
+  -subj "/C=US/ST=California/L=San Francisco/O=GCloudCafe/CN=api.gcloudcafe.com" \
+  -addext "subjectAltName=DNS:api.gcloudcafe.com,DNS:www.gcloudcafe.com"
 ```
+
+> **Why SAN is Mandatory:** Modern browsers, Go runtimes, and HTTP clients validate hostnames against **Subject Alternative Names (SAN)**, not the legacy Common Name (CN). Always include `-addext "subjectAltName=..."` when generating CSRs.
+
 **File contents of `server.csr`:**
 ```text
 -----BEGIN CERTIFICATE REQUEST-----
-MIICvDCCAaQCAQAw...[Public Key + Subject Identity Info]...
+MIICvDCCAaQCAQAw...[Public Key + Subject Identity + SAN Extensions]...
 -----END CERTIFICATE REQUEST-----
 ```
 
