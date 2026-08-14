@@ -1450,16 +1450,21 @@
         };
       }
 
-      var prompt = "You are the chief cloud architect and news editor for GCloud Cafe (https://gcloudcafe.com).\n"
-        + "Write an engaging, complete 2-sentence LinkedIn insight about this cloud update for software engineers and cloud architects.\n\n"
-        + "REQUIRED FORMAT (Strictly 2 complete sentences):\n"
-        + "Sentence 1: Clear, detailed explanation of what specifically launched or changed.\n"
-        + "Sentence 2: Practical insight explaining why this matters (impact on cloud architecture, security, cost savings, or developer speed).\n\n"
+      var prompt = "You are the lead cloud architect and news editor for GCloud Cafe (https://gcloudcafe.com).\n"
+        + "Write a comprehensive, deep-dive technical LinkedIn and Cloud Pulse article analyzing this official cloud announcement for software engineers, DevOps leads, and enterprise cloud architects.\n\n"
+        + "TARGET LENGTH: Minimum 400 - 500 words of rich, high-value technical prose.\n\n"
+        + "STRUCTURE REQUIRED:\n"
+        + "1. Executive Summary (1 strong paragraph): Explain clearly what launched or changed and why it is a critical milestone for engineering teams.\n"
+        + "2. Deep Architectural Breakdown (2 detailed paragraphs): Dive into the underlying infrastructure mechanics, API changes, container/orchestration behavior, performance implications, and how it solves real-world distributed systems challenges.\n"
+        + "3. Strategic Impact & Key Takeaways (Structured emoji bullet points):\n"
+        + "   👉 Core Infrastructure Shift: Key technical capabilities enabled.\n"
+        + "   💡 Enterprise Security & Cost Impact: Practical ROI, governance, or cost-optimization insight.\n"
+        + "   🚀 Production Implementation Steps: Actionable guide on how cloud architects should adopt and test this feature.\n"
+        + "4. Future Outlook: How this fits into modern multi-cloud and AI-driven architecture paradigms.\n\n"
         + "RULES:\n"
-        + "1. Write complete, well-formed sentences. Do NOT truncate or stop mid-sentence.\n"
-        + "2. Professional, punchy, active voice. No introductory filler like 'Here is a summary'.\n"
-        + "3. Format output exactly as: <Sentence 1> Why this matters: <Sentence 2>\n"
-        + "4. Return ONLY the plain text.\n\n"
+        + "1. Write thorough, complete paragraphs (aim for 400-500 words). Do NOT cut off or summarize prematurely.\n"
+        + "2. Professional, authoritative, active technical voice. No introductory filler like 'Here is the summary'.\n"
+        + "3. Return ONLY clean, beautifully formatted plain text.\n\n"
         + "Article Title: " + title + "\n"
         + "Article Context: " + content;
 
@@ -1471,7 +1476,7 @@
         try {
           var url = "https://generativelanguage.googleapis.com/v1beta/models/" + model + ":generateContent?key=" + encodeURIComponent(keyToUse);
           var controller = new AbortController();
-          var timeoutId = setTimeout(function() { controller.abort(); }, 10000); // 10s timeout
+          var timeoutId = setTimeout(function() { controller.abort(); }, 12000); // 12s timeout
 
           var res = await fetch(url, {
             method: "POST",
@@ -1481,7 +1486,7 @@
               contents: [{ parts: [{ text: prompt }] }],
               generationConfig: {
                 temperature: 0.3,
-                maxOutputTokens: 800
+                maxOutputTokens: 2500
               }
             })
           });

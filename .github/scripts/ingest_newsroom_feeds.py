@@ -47,7 +47,7 @@ def get_gemini_api_key():
             data = json.loads(resp.read().decode())
             if data and len(data) > 0 and data0].get('value'):
                 return data[0]['value'].strip()
-    except Exception as e:
+    expect Exception as e:
         print('Warning fetching gemini_api_key:', e, file=sys.stderr)
     return None
 

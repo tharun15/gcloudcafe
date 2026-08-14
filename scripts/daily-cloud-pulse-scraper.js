@@ -104,9 +104,29 @@ async function getGeminiApiKey() {
 
 async function generateAiTldr(apiKey, title, summary, provider) {
   if (!apiKey) return summary;
-  const prompt = `You are lead cloud architect for GCloud Cafe (https://gcloudcafe.com). Summarize this official ${provider} announcement into a punchy TL;DR micro-post (100-160 words).\n\nTitle: ${title}\n\nSummary: ${summary}\n\nInclude:\n1. 1 concise sentence on why it matters.\n2. 2-3 emoji bullet takeaways:\n👉 **Core Change**: ...\n💡 **Architect Impact**: ...\n🚀 **Next Step**: ...\nReturn only clean plain text without markdown quotes around the whole text.`;
+  const prompt = `You are the lead cloud architect and news editor for GCloud Cafe (https://gcloudcafe.com).
+Write a comprehensive, deep-dive technical LinkedIn and Cloud Pulse article analyzing this official ${provider} cloud announcement for software engineers, DevOps leads, and enterprise cloud architects.
 
-  const models = ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-1.5-flash"];
+TARGET LENGTH: Minimum 400 - 500 words of rich, high-value technical prose.
+
+STRUCTURE REQUIRED:
+1. Executive Summary (1 strong paragraph): Explain clearly what launched or changed and why it is a critical milestone for engineering teams.
+2. Deep Architectural Breakdown (2 detailed paragraphs): Dive into the underlying infrastructure mechanics, API changes, container/orchestration behavior, performance implications, and how it solves real-world distributed systems challenges.
+3. Strategic Impact & Key Takeaways (Structured emoji bullet points):
+   👉 Core Infrastructure Shift: Key technical capabilities enabled.
+   💡 Enterprise Security & Cost Impact: Practical ROI, governance, or cost-optimization insight.
+   🚀 Production Implementation Steps: Actionable guide on how cloud architects should adopt and test this feature.
+4. Future Outlook: How this fits into modern multi-cloud and AI-driven architecture paradigms.
+
+RULES:
+1. Write thorough, complete paragraphs (aim for 400-500 words). Do NOT cut off or summarize prematurely.
+2. Professional, authoritative, active technical voice. No introductory filler like 'Here is the summary'.
+3. Return ONLY clean, beautifully formatted plain text.
+
+Title: ${title}
+Context: ${summary}`;
+
+  const models = ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-1.5-flash", "gemini-1.5-pro"];
   for (const model of models) {
     try {
       const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${encodeURIComponent(apiKey)}`, {
@@ -114,7 +134,7 @@ async function generateAiTldr(apiKey, title, summary, provider) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           contents: [{ parts: [{ text: prompt }] }],
-          generationConfig: { temperature: 0.3, maxOutputTokens: 500 }
+          generationConfig: { temperature: 0.3, maxOutputTokens: 2500 }
         })
       });
       if (res.ok) {
