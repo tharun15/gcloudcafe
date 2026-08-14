@@ -2752,12 +2752,7 @@
 
     // ── AI Helper: Fetch Supabase-backed or locally saved Gemini Key ──
     async function getArticleGeminiApiKey() {
-      if (aiArticleGeminiKeyInput && aiArticleGeminiKeyInput.value.trim()) {
-        return aiArticleGeminiKeyInput.value.trim();
-      }
-      var stored = (localStorage.getItem("gcloudcafe_gemini_api_key") || "").trim();
-      if (stored) return stored;
-
+      // 1. Primary Source: Always fetch directly from Supabase site_settings
       try {
         var config = window.SUPABASE_CONFIG || {
           url: "https://axiijcsxtiukloarbfor.supabase.co",
@@ -2774,6 +2769,13 @@
           return data[0].value.trim();
         }
       } catch (e) {}
+
+      // 2. Fallback to localStorage or input field if Supabase is offline
+      var stored = (localStorage.getItem("gcloudcafe_gemini_api_key") || "").trim();
+      if (stored) return stored;
+      if (aiArticleGeminiKeyInput && aiArticleGeminiKeyInput.value.trim()) {
+        return aiArticleGeminiKeyInput.value.trim();
+      }
       return "";
     }
 
@@ -2782,10 +2784,28 @@
         var key = aiArticleGeminiKeyInput.value.trim();
         if (!key) return;
         localStorage.setItem("gcloudcafe_gemini_api_key", key);
-        saveArticleGeminiKeyBtn.innerHTML = '<i class="fa-solid fa-check mr-1"></i> Saved!';
+
+        // Sync directly to Supabase site_settings
+        try {
+          var config = window.SUPABASE_CONFIG || {
+            url: "https://axiijcsxtiukloarbfor.supabase.co",
+            anonKey: "sb_publishable_cRcwg02R3nXTykDrxalL6w_-kc9Wesc"
+          };
+          await fetch(config.url + "/rest/v1/site_settings?key=eq.gemini_api_key", {
+            method: "PATCH",
+            headers: {
+              "apikey": config.anonKey,
+              "Authorization": "Bearer " + config.anonKey,
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ value: key, updated_at: new Date().toISOString() })
+          });
+        } catch (e) {}
+
+        saveArticleGeminiKeyBtn.innerHTML = '<i class="fa-solid fa-check mr-1"></i> Saved to Supabase!';
         saveArticleGeminiKeyBtn.className = "px-3.5 py-2 rounded-xl bg-emerald-600 text-white text-xs font-bold border-none cursor-pointer whitespace-nowrap shadow-xs";
         if (aiArticleStatus) {
-          aiArticleStatus.textContent = "Gemini API Key saved successfully!";
+          aiArticleStatus.textContent = "Gemini API Key updated in Supabase!";
           aiArticleStatus.className = "text-xs font-semibold mr-auto text-emerald-500";
         }
         setTimeout(function () {
