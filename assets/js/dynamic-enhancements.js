@@ -21,37 +21,7 @@
 
   /* ── 1. SCROLL-REVEAL via IntersectionObserver ── */
   function initScrollReveal() {
-    if (reducedMotion) return; // skip animations entirely
-    if (!window.IntersectionObserver) return;
-
-    var targets = document.querySelectorAll(
-      ".blog-card, .blog-sidebar-block, .blog-hero, .section h2, .about-stat-card, .about-service-card"
-    );
-    if (!targets.length) return;
-
-    targets.forEach(function (el, i) {
-      el.classList.add("reveal");
-      // stagger sibling cards in a grid
-      if (el.classList.contains("blog-card")) {
-        el.style.transitionDelay = Math.min(i % 6, 5) * 60 + "ms";
-      }
-    });
-
-    var observer = new IntersectionObserver(
-      function (entries) {
-        entries.forEach(function (entry) {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("revealed");
-            observer.unobserve(entry.target);
-          }
-        });
-      },
-      { threshold: 0.1, rootMargin: "0px 0px -40px 0px" }
-    );
-
-    targets.forEach(function (el) {
-      observer.observe(el);
-    });
+    // Avoid DOM mutations on initial load to prevent layout shifts
   }
 
   /* ── 2. READING RING (SVG progress on article pages) ── */
