@@ -2746,8 +2746,18 @@
     var linkedinSaveStatus = document.getElementById("linkedin-post-save-status");
     var linkedinCharCounter = document.getElementById("linkedin-char-counter");
 
-    // ── AI Helper: Fetch Supabase-backed Gemini Key ──
+    var aiArticleGeminiKeyInput = document.getElementById("ai-article-gemini-key-input");
+    var toggleArticleGeminiKeyBtn = document.getElementById("toggle-article-gemini-key-visibility");
+    var saveArticleGeminiKeyBtn = document.getElementById("save-article-gemini-key-btn");
+
+    // ── AI Helper: Fetch Supabase-backed or locally saved Gemini Key ──
     async function getArticleGeminiApiKey() {
+      if (aiArticleGeminiKeyInput && aiArticleGeminiKeyInput.value.trim()) {
+        return aiArticleGeminiKeyInput.value.trim();
+      }
+      var stored = (localStorage.getItem("gcloudcafe_gemini_api_key") || "").trim();
+      if (stored) return stored;
+
       try {
         var config = window.SUPABASE_CONFIG || {
           url: "https://axiijcsxtiukloarbfor.supabase.co",
@@ -2764,18 +2774,47 @@
           return data[0].value.trim();
         }
       } catch (e) {}
-      var stored = (localStorage.getItem("gcloudcafe_gemini_api_key") || "").trim();
-      return stored;
+      return "";
     }
 
-    // Call Gemini API with Fallback Handling
+    if (saveArticleGeminiKeyBtn && aiArticleGeminiKeyInput) {
+      saveArticleGeminiKeyBtn.addEventListener("click", async function () {
+        var key = aiArticleGeminiKeyInput.value.trim();
+        if (!key) return;
+        localStorage.setItem("gcloudcafe_gemini_api_key", key);
+        saveArticleGeminiKeyBtn.innerHTML = '<i class="fa-solid fa-check mr-1"></i> Saved!';
+        saveArticleGeminiKeyBtn.className = "px-3.5 py-2 rounded-xl bg-emerald-600 text-white text-xs font-bold border-none cursor-pointer whitespace-nowrap shadow-xs";
+        if (aiArticleStatus) {
+          aiArticleStatus.textContent = "Gemini API Key saved successfully!";
+          aiArticleStatus.className = "text-xs font-semibold mr-auto text-emerald-500";
+        }
+        setTimeout(function () {
+          saveArticleGeminiKeyBtn.innerHTML = "Save Key";
+          saveArticleGeminiKeyBtn.className = "px-3.5 py-2 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold border-none cursor-pointer whitespace-nowrap shadow-xs";
+        }, 2000);
+      });
+    }
+
+    if (toggleArticleGeminiKeyBtn && aiArticleGeminiKeyInput) {
+      toggleArticleGeminiKeyBtn.addEventListener("click", function () {
+        if (aiArticleGeminiKeyInput.type === "password") {
+          aiArticleGeminiKeyInput.type = "text";
+          toggleArticleGeminiKeyBtn.innerHTML = '<i class="fa-regular fa-eye-slash"></i>';
+        } else {
+          aiArticleGeminiKeyInput.type = "password";
+          toggleArticleGeminiKeyBtn.innerHTML = '<i class="fa-regular fa-eye"></i>';
+        }
+      });
+    }
+
+    // Call Gemini API with Fallback Handling & Multi-Model Redundancy
     async function callGeminiApi(promptText, maxTokens) {
       var apiKey = await getArticleGeminiApiKey();
       if (!apiKey) {
-        throw new Error("No Gemini API key found in Supabase site_settings.");
+        throw new Error("Please enter your Google AI Studio Gemini API key in the field above.");
       }
 
-      var models = ["gemini-3.7-flash", "gemini-flash-latest", "gemini-3.5-flash", "gemini-3-flash-preview"];
+      var models = ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-1.5-flash", "gemini-1.5-pro", "gemini-2.5-pro", "gemini-3.7-flash", "gemini-flash-latest"];
       var lastErr = null;
 
       for (var i = 0; i < models.length; i++) {
@@ -2784,12 +2823,14 @@
           var url = "https://generativelanguage.googleapis.com/v1beta/models/" + model + ":generateContent?key=" + encodeURIComponent(apiKey);
           var res = await fetch(url, {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: { 
+              "Content-Type": "application/json"
+            },
             body: JSON.stringify({
               contents: [{ parts: [{ text: promptText }] }],
               generationConfig: {
-                temperature: 0.3,
-                maxOutputTokens: maxTokens || 2500
+                temperature: 0.35,
+                maxOutputTokens: maxTokens || 3500
               }
             })
           });
@@ -2800,19 +2841,30 @@
             if (text) return text.trim();
           } else {
             var errData = await res.json().catch(function () { return {}; });
-            lastErr = new Error(errData?.error?.message || ("Gemini error " + res.status));
+            var msg = errData?.error?.message || ("Gemini error " + res.status);
+            if (msg.toLowerCase().includes("api key not valid") || msg.toLowerCase().includes("api_key_invalid")) {
+              throw new Error("API key is not valid. Please paste a valid Gemini API key from https://aistudio.google.com above and click Save Key.");
+            }
+            lastErr = new Error(msg);
           }
         } catch (e) {
+          if (e.message && e.message.includes("API key is not valid")) {
+            throw e;
+          }
           lastErr = e;
         }
       }
-      throw lastErr || new Error("Gemini API call failed.");
+      throw lastErr || new Error("Gemini API call failed. Please check your API key and network connection.");
     }
 
     // ── 1. AI Blog Draft Writer Integration ──
-    function openAiArticleModal() {
+    async function openAiArticleModal() {
       if (modalAiArticle) modalAiArticle.classList.remove("hidden");
       if (aiArticleStatus) aiArticleStatus.textContent = "";
+      if (aiArticleGeminiKeyInput && !aiArticleGeminiKeyInput.value) {
+        var key = await getArticleGeminiApiKey();
+        if (key) aiArticleGeminiKeyInput.value = key;
+      }
     }
 
     function closeAiArticleModal() {
