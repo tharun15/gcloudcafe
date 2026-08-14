@@ -1462,24 +1462,25 @@
       }
 
       var prompt = "You are the lead cloud architect and news editor for GCloud Cafe (https://gcloudcafe.com).\n"
-        + "Write a comprehensive, deep-dive technical LinkedIn and Cloud Pulse article analyzing this official cloud announcement for software engineers, DevOps leads, and enterprise cloud architects.\n\n"
-        + "TARGET LENGTH: Minimum 400 - 500 words of rich, high-value technical prose.\n\n"
-        + "STRUCTURE REQUIRED:\n"
-        + "1. Executive Summary (1 strong paragraph): Explain clearly what launched or changed and why it is a critical milestone for engineering teams.\n"
-        + "2. Deep Architectural Breakdown (2 detailed paragraphs): Dive into the underlying infrastructure mechanics, API changes, container/orchestration behavior, performance implications, and how it solves real-world distributed systems challenges.\n"
-        + "3. Strategic Impact & Key Takeaways (Structured emoji bullet points):\n"
-        + "   👉 Core Infrastructure Shift: Key technical capabilities enabled.\n"
-        + "   💡 Enterprise Security & Cost Impact: Practical ROI, governance, or cost-optimization insight.\n"
-        + "   🚀 Production Implementation Steps: Actionable guide on how cloud architects should adopt and test this feature.\n"
-        + "4. Future Outlook: How this fits into modern multi-cloud and AI-driven architecture paradigms.\n\n"
+        + "Write a concise, punchy LinkedIn and Cloud Pulse insight analyzing this official cloud announcement.\n\n"
+        + "STRICT LENGTH REQUIREMENT:\n"
+        + "- Target 180 to 220 words total (Maximum 250 words).\n"
+        + "- Do NOT exceed 250 words under any circumstances.\n\n"
+        + "STRUCTURE (3 clean sections with spacing):\n"
+        + "1. Executive Hook (1 paragraph, ~50 words): What launched/changed and why it is significant for cloud engineering teams.\n"
+        + "2. Technical Impact (1 paragraph, ~70 words): Underlying infrastructure mechanics and architectural benefits.\n"
+        + "3. Strategic Takeaways (3 concise emoji bullet points, ~60 words):\n"
+        + "   👉 Core Shift: ...\n"
+        + "   💡 Impact: ...\n"
+        + "   🚀 Action: ...\n\n"
         + "RULES:\n"
-        + "1. Write thorough, complete paragraphs (aim for 400-500 words). Do NOT cut off or summarize prematurely.\n"
-        + "2. Professional, authoritative, active technical voice. No introductory filler like 'Here is the summary'.\n"
-        + "3. Return ONLY clean, beautifully formatted plain text with proper paragraph spacing.\n\n"
+        + "1. Do NOT use meta-section headers like '**Executive Summary**' or '**Deep Architectural Breakdown**'. Write seamless, engaging paragraphs.\n"
+        + "2. Maintain an authoritative, professional, active voice.\n"
+        + "3. Return ONLY clean plain text with paragraph line breaks.\n\n"
         + "Article Title: " + title + "\n"
         + "Article Context: " + content;
 
-      var models = ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-1.5-flash", "gemini-1.5-pro"];
+      var models = ["gemini-2.5-flash", "gemini-flash-latest"];
       var lastError = null;
 
       for (var i = 0; i < models.length; i++) {
@@ -1496,8 +1497,8 @@
             body: JSON.stringify({
               contents: [{ parts: [{ text: prompt }] }],
               generationConfig: {
-                temperature: 0.3,
-                maxOutputTokens: 2500
+                temperature: 0.2,
+                maxOutputTokens: 400
               }
             })
           });

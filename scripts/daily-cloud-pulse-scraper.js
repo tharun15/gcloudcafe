@@ -105,28 +105,29 @@ async function getGeminiApiKey() {
 async function generateAiTldr(apiKey, title, summary, provider) {
   if (!apiKey) return summary;
   const prompt = `You are the lead cloud architect and news editor for GCloud Cafe (https://gcloudcafe.com).
-Write a comprehensive, deep-dive technical LinkedIn and Cloud Pulse article analyzing this official ${provider} cloud announcement for software engineers, DevOps leads, and enterprise cloud architects.
+Write a concise, punchy LinkedIn and Cloud Pulse insight analyzing this official ${provider} cloud announcement.
 
-TARGET LENGTH: Minimum 400 - 500 words of rich, high-value technical prose.
+STRICT LENGTH REQUIREMENT:
+- Target 180 to 220 words total (Maximum 250 words).
+- Do NOT exceed 250 words under any circumstances.
 
-STRUCTURE REQUIRED:
-1. Executive Summary (1 strong paragraph): Explain clearly what launched or changed and why it is a critical milestone for engineering teams.
-2. Deep Architectural Breakdown (2 detailed paragraphs): Dive into the underlying infrastructure mechanics, API changes, container/orchestration behavior, performance implications, and how it solves real-world distributed systems challenges.
-3. Strategic Impact & Key Takeaways (Structured emoji bullet points):
-   👉 Core Infrastructure Shift: Key technical capabilities enabled.
-   💡 Enterprise Security & Cost Impact: Practical ROI, governance, or cost-optimization insight.
-   🚀 Production Implementation Steps: Actionable guide on how cloud architects should adopt and test this feature.
-4. Future Outlook: How this fits into modern multi-cloud and AI-driven architecture paradigms.
+STRUCTURE (3 clean sections with spacing):
+1. Executive Hook (1 paragraph, ~50 words): What launched/changed and why it is significant for cloud engineering teams.
+2. Technical Impact (1 paragraph, ~70 words): Underlying infrastructure mechanics and architectural benefits.
+3. Strategic Takeaways (3 concise emoji bullet points, ~60 words):
+   👉 Core Shift: ...
+   💡 Impact: ...
+   🚀 Action: ...
 
 RULES:
-1. Write thorough, complete paragraphs (aim for 400-500 words). Do NOT cut off or summarize prematurely.
-2. Professional, authoritative, active technical voice. No introductory filler like 'Here is the summary'.
-3. Return ONLY clean, beautifully formatted plain text.
+1. Do NOT use meta-section headers like '**Executive Summary**' or '**Deep Architectural Breakdown**'. Write seamless, engaging paragraphs.
+2. Maintain an authoritative, professional, active voice.
+3. Return ONLY clean plain text with paragraph line breaks.
 
 Title: ${title}
 Context: ${summary}`;
 
-  const models = ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-1.5-flash", "gemini-1.5-pro"];
+  const models = ["gemini-2.5-flash", "gemini-flash-latest"];
   for (const model of models) {
     try {
       const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${encodeURIComponent(apiKey)}`, {
@@ -134,7 +135,7 @@ Context: ${summary}`;
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           contents: [{ parts: [{ text: prompt }] }],
-          generationConfig: { temperature: 0.3, maxOutputTokens: 2500 }
+          generationConfig: { temperature: 0.2, maxOutputTokens: 400 }
         })
       });
       if (res.ok) {
