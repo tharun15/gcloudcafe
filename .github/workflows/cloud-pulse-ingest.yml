@@ -1,0 +1,25 @@
+name: Cloud Pulse Newsroom Ingestion
+
+on:
+  schedule:
+    # Run every 6 hours (00:00, 06:00, 12:00, 18:00 UTC)
+    - cron: '0 */6 * * *'
+  workflow_dispatch: # Allows 1-click manual trigger from /pulse-admin/ UI
+
+jobs:
+  scrape-and-ingest:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Run Cloud Pulse Newsroom Scraper
+        run: node scripts/daily-cloud-pulse-scraper.js
+        env:
+          SUPABASE_URL: "https://axiijcsxtiukloarbfor.supabase.co"
+          SUPABASE_ANON_KEY: "sb_publishable_cRcwg02R3nXTykDrxalL6w_-kc9Wesc"

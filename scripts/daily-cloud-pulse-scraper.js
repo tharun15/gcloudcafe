@@ -88,8 +88,52 @@ function parseItems(xmlText, feed) {
   return items;
 }
 
+async function getGeminiApiKey() {
+  if (process.env.GEMINI_API_KEY) return process.env.GEMINI_API_KEY;
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/site_settings?key=eq.gemini_api_key&select=value`, {
+      headers: { "apikey": SUPABASE_KEY, "Authorization": `Bearer ${SUPABASE_KEY}` }
+    });
+    if (res.ok) {
+      const data = await res.json();
+      if (Array.isArray(data) && data.length > 0 && data[0].value) return data[0].value.trim();
+    }
+  } catch (e) {}
+  return null;
+}
+
+async function generateAiTldr(apiKey, title, summary, provider) {
+  if (!apiKey) return summary;
+  const prompt = `You are lead cloud architect for GCloud Cafe (https://gcloudcafe.com). Summarize this official ${provider} announcement into a punchy TL;DR micro-post (100-160 words).\n\nTitle: ${title}\n\nSummary: ${summary}\n\nInclude:\n1. 1 concise sentence on why it matters.\n2. 2-3 emoji bullet takeaways:\n👉 **Core Change**: ...\n💡 **Architect Impact**: ...\n🚀 **Next Step**: ...\nReturn only clean plain text without markdown quotes around the whole text.`;
+
+  const models = ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-1.5-flash"];
+  for (const model of models) {
+    try {
+      const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${encodeURIComponent(apiKey)}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }] }],
+          generationConfig: { temperature: 0.3, maxOutputTokens: 500 }
+        })
+      });
+      if (res.ok) {
+        const data = await res.json();
+        const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+        if (text) return text.trim();
+      }
+    } catch (e) {}
+  }
+  return summary;
+}
+
 async function runScraper() {
-  console.log("🚀 Starting Smart Cloud Micro-Post Scraper...");
+  console.log("🚀 Starting Smart Cloud Micro-Post Scraper with Gemini 2.5 Flash...");
+  const apiKey = await getGeminiApiKey();
+  if (apiKey) {
+    console.log("✓ Gemini API key loaded from Supabase site_settings.");
+  }
+
   let candidates = [];
 
   for (const feed of FEEDS) {
@@ -113,6 +157,11 @@ async function runScraper() {
 
   for (const item of uniqueCandidates) {
     try {
+      if (apiKey) {
+        console.log(`  → Synthesizing AI TL;DR for: ${item.title}...`);
+        item.content = await generateAiTldr(apiKey, item.title, item.content, item.tags[0].replace("#", ""));
+      }
+
       await fetch(`${SUPABASE_URL}/rest/v1/cloud_pulses`, {
         method: "POST",
         headers: {
@@ -127,6 +176,7 @@ async function runScraper() {
       console.error("Error inserting candidate:", err.message);
     }
   }
+
 
   // Cap Pending Queue to Strict Top 10 Newest Items (Delete older extra items)
   console.log("\n✂️ Capping pending queue to top 10 newest candidate posts...");

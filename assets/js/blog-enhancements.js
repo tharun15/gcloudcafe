@@ -1598,12 +1598,78 @@
       pullBtn.addEventListener("click", ingestCleanedArticles);
     }
 
+    async function fetchFeedXmlWithFallback(feedUrl) {
+      var proxies = [
+        function (u) { return "https://api.allorigins.win/get?url=" + encodeURIComponent(u); },
+        function (u) { return "https://api.codetabs.com/v1/proxy?quest=" + encodeURIComponent(u); }
+      ];
+
+      for (var i = 0; i < proxies.length; i++) {
+        try {
+          var controller = new AbortController();
+          var timeoutId = setTimeout(function () { controller.abort(); }, 4000);
+          var pUrl = proxies[i](feedUrl);
+          var res = await fetch(pUrl, { signal: controller.signal });
+          clearTimeout(timeoutId);
+          if (res.ok) {
+            var data = await res.json().catch(function () { return null; });
+            if (data && data.contents) return data.contents;
+            var text = await res.text().catch(function () { return ""; });
+            if (text && text.includes("<")) return text;
+          }
+        } catch (e) {}
+      }
+      return null;
+    }
+
     async function ingestCleanedArticles() {
       if (!pullBtn) return;
       var originalHtml = pullBtn.innerHTML;
       pullBtn.disabled = true;
       pullBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1.5"></i> Ingesting & Generating AI TL;DRs...';
 
+      // 1. Try 1-Click Server-Side GitHub Actions Trigger (Zero CORS, 100% Reliable)
+      try {
+        var patToken = localStorage.getItem("gcloud_github_pat") || "";
+        if (!patToken) {
+          var sRes = await fetch(config.url + "/rest/v1/site_settings?key=eq.github_pat&select=value", {
+            headers: { "apikey": config.anonKey, "Authorization": "Bearer " + config.anonKey }
+          });
+          if (sRes.ok) {
+            var sRows = await sRes.json();
+            if (Array.isArray(sRows) && sRows.length > 0 && sRows[0].value) {
+              patToken = sRows[0].value.trim();
+            }
+          }
+        }
+
+        if (patToken) {
+          pullBtn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up mr-1.5"></i> Triggering GitHub Actions Scraper...';
+          var ghRes = await fetch("https://api.github.com/repos/tharun15/gcloudcafe/actions/workflows/cloud-pulse-ingest.yml/dispatches", {
+            method: "POST",
+            headers: {
+              "Authorization": "token " + patToken,
+              "Accept": "application/vnd.github.v3+json",
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ ref: "main" })
+          });
+
+          if (ghRes.status === 204 || ghRes.ok) {
+            pullBtn.innerHTML = '<i class="fa-solid fa-circle-check text-emerald-400 mr-1.5"></i> Cloud Scraper Running! Syncing...';
+            setTimeout(fetchPendingCandidates, 4000);
+            setTimeout(fetchPendingCandidates, 10000);
+            setTimeout(function () {
+              pullBtn.disabled = false;
+              pullBtn.innerHTML = originalHtml;
+              fetchPendingCandidates();
+            }, 15000);
+            return;
+          }
+        }
+      } catch (e) {}
+
+      // 2. Client-Side Fallback via Multi-Proxy
       var feeds = [
         { provider: "GCP", name: "Google Cloud Release Notes", url: "https://cloud.google.com/feeds/gcp-release-notes.xml", defaultTags: ["#GoogleCloud", "#GCP", "#CloudNews"] },
         { provider: "AWS", name: "AWS What's New", url: "https://aws.amazon.com/about-aws/whats-new/recent/feed/", defaultTags: ["#AWS", "#CloudArchitecture", "#CloudNews"] },
@@ -1612,17 +1678,12 @@
       ];
 
       try {
-        var fetchPromises = feeds.map(function (feed) {
-          var proxyUrl = "https://api.allorigins.win/get?url=" + encodeURIComponent(feed.url);
-          return fetch(proxyUrl)
-            .then(function (res) { return res.json(); })
-            .then(function (data) {
-              if (data && data.contents) {
-                return parseFeedXml(data.contents, feed);
-              }
-              return [];
-            })
-            .catch(function () { return []; });
+        var fetchPromises = feeds.map(async function (feed) {
+          var xmlData = await fetchFeedXmlWithFallback(feed.url);
+          if (xmlData) {
+            return parseFeedXml(xmlData, feed);
+          }
+          return [];
         });
 
         var results = await Promise.all(fetchPromises);
@@ -1678,6 +1739,7 @@
         fetchPendingCandidates();
       }
     }
+
 
     function parseFeedXml(xmlText, feed) {
       var items = [];
