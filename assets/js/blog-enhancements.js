@@ -2512,7 +2512,7 @@
       }
 
       if (imageUrl) {
-        renderedHtml += '<div class="mb-6 rounded-2xl overflow-hidden shadow-md"><img src="' + escapeHtml(imageUrl) + '" alt="' + escapeHtml(title) + '" class="w-full h-48 sm:h-64 object-cover" /></div>';
+        renderedHtml += '<div class="mb-6 rounded-2xl overflow-hidden shadow-md"><img src="' + escapeHtml(imageUrl) + '" alt="' + escapeHtml(title) + '" onerror="this.onerror=null; this.src=\'/images/og-image.png\';" class="w-full h-48 sm:h-64 object-cover" /></div>';
       }
 
       // Live Render Guide Series Playlist Box if Series Name provided
@@ -2986,7 +2986,7 @@
         + '  "description": "1-2 sentence compelling summary for SEO and social preview (140-160 characters)",\n'
         + '  "category": "' + category + '",\n'
         + '  "tags": ["DevOps", "Git", "Architecture", "Best Practices"],\n'
-        + '  "image": "/images/posts/cloud-architecture.webp",\n'
+        + '  "image": "/images/og-image.png",\n'
         + '  "markdown_content": "Full markdown content starting after frontmatter..."\n'
         + "}\n"
         + "Do not include any conversational preamble or outro. Output only the JSON object.";
@@ -3000,7 +3000,7 @@
         if (descInput && parsed.description) descInput.value = parsed.description;
         if (tagsInput && Array.isArray(parsed.tags)) tagsInput.value = parsed.tags.join(", ");
         if (authorInput) authorInput.value = "Tharun Vempati";
-        if (imageUrlInput) imageUrlInput.value = parsed.image || "/images/posts/cloud-architecture.webp";
+        if (imageUrlInput) imageUrlInput.value = parsed.image || "/images/og-image.png";
         if (markdownInput && parsed.markdown_content) markdownInput.value = parsed.markdown_content;
 
         updateLivePreview();
