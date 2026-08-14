@@ -2894,81 +2894,142 @@
       });
     }
 
-    if (formAiArticle) {
-      formAiArticle.addEventListener("submit", async function (e) {
-        e.preventDefault();
-        var topic = (aiPromptTopic ? aiPromptTopic.value : "").trim();
-        var style = (aiPromptStyle ? aiPromptStyle.value : "storytelling");
-        var category = (aiPromptCategory ? aiPromptCategory.value : "Google Cloud");
-        var notes = (aiPromptNotes ? aiPromptNotes.value : "").trim();
+    function extractAiArticleJson(rawText) {
+      try {
+        var cleaned = rawText.replace(/^```json\s*/i, "").replace(/^```\s*/i, "").replace(/\s*```$/i, "").trim();
+        return JSON.parse(cleaned);
+      } catch (e) {
+        var titleMatch = rawText.match(/"title"\s*:\s*"([^"]+)"/i);
+        var descMatch = rawText.match(/"description"\s*:\s*"([^"]+)"/i);
+        var catMatch = rawText.match(/"category"\s*:\s*"([^"]+)"/i);
+        var tagsMatch = rawText.match(/"tags"\s*:\s*\[([^\]]+)\]/i);
+        var mdMatch = rawText.match(/"markdown_content"\s*:\s*"([\s\S]*?)"\s*\}?\s*$/i);
 
-        if (!topic) return;
-
-        var origBtnHtml = submitAiArticleBtn ? submitAiArticleBtn.innerHTML : "";
-        if (submitAiArticleBtn) {
-          submitAiArticleBtn.disabled = true;
-          submitAiArticleBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1.5"></i> Drafting with Gemini...';
-        }
-        if (aiArticleStatus) {
-          aiArticleStatus.textContent = "Synthesizing architecture & narrative in GCloud Cafe style...";
-          aiArticleStatus.className = "text-xs font-semibold mr-auto text-primary animate-pulse";
+        var tags = [];
+        if (tagsMatch) {
+          tags = tagsMatch[1].split(",").map(function (t) {
+            return t.replace(/["'\s]/g, "").trim();
+          }).filter(Boolean);
         }
 
-        var prompt = "You are Tharun Vempati, lead cloud architect and creator of GCloud Cafe (https://gcloudcafe.com).\n"
-          + "Write a publication-ready, deeply engaging technical blog post in your signature GCloud Cafe style.\n\n"
-          + "TOPIC: " + topic + "\n"
-          + "CATEGORY: " + category + "\n"
-          + "STYLE PRESET: " + style + "\n"
-          + (notes ? ("KEY CONCEPTS / NOTES: " + notes + "\n\n") : "\n")
-          + "RULES FOR THARUN'S SIGNATURE BLOG STYLE:\n"
-          + "1. Narrative Storytelling Hook: Open with an engaging, reflective first-person introduction (\"The journey began...\", \"A reflective journey...\", setting the real-world context).\n"
-          + "2. Deep Technical Substance: Break down core architecture concepts, tradeoffs, real-world tools, and design decisions.\n"
-          + "3. Structured Headings: Use emojis in headings (e.g. '### 🧠 The Art of...', '### ⚙️ The Invisible Backbone...', '### 🚀 Hands-on Implementation', '### 💡 Key Takeaways').\n"
-          + "4. Use bold keywords, bullet points, code blocks (```bash or ```yaml), and Callout Alert boxes (> [!NOTE] or > [!TIP]).\n"
-          + "5. Output MUST be valid JSON with this exact structure:\n"
-          + "{\n"
-          + '  "title": "Catchy, authoritative title",\n'
-          + '  "description": "1-2 sentence compelling summary for SEO and social sharing",\n'
-          + '  "category": "' + category + '",\n'
-          + '  "tags": ["gcp", "architecture", "devops", "cloud"],\n'
-          + '  "image": "/images/posts/cloud-architecture.webp",\n'
-          + '  "markdown_content": "Full markdown body of the post starting after frontmatter..."\n'
-          + "}\n"
-          + "Return ONLY the JSON object, without surrounding conversational text.";
-
-        try {
-          var responseText = await callGeminiApi(prompt, 3000);
-          var cleanJsonStr = responseText.replace(/^```json\s*/i, "").replace(/^```\s*/i, "").replace(/\s*```$/i, "").trim();
-          var parsed = JSON.parse(cleanJsonStr);
-
-          if (titleInput && parsed.title) titleInput.value = parsed.title;
-          if (categorySelect && parsed.category) categorySelect.value = parsed.category;
-          if (descInput && parsed.description) descInput.value = parsed.description;
-          if (tagsInput && Array.isArray(parsed.tags)) tagsInput.value = parsed.tags.join(", ");
-          if (authorInput) authorInput.value = "Tharun Vempati";
-          if (imageUrlInput) imageUrlInput.value = parsed.image || "/images/posts/cloud-architecture.webp";
-          if (markdownInput && parsed.markdown_content) markdownInput.value = parsed.markdown_content;
-
-          updateLivePreview();
-          if (aiArticleStatus) {
-            aiArticleStatus.textContent = "Article draft generated! 🎉";
-            aiArticleStatus.className = "text-xs font-semibold mr-auto text-emerald-500";
-          }
-          setTimeout(closeAiArticleModal, 600);
-        } catch (err) {
-          console.error("AI Article draft error:", err);
-          if (aiArticleStatus) {
-            aiArticleStatus.textContent = "⚠️ Could not generate: " + (err.message || "API error");
-            aiArticleStatus.className = "text-xs font-semibold mr-auto text-rose-500";
-          }
-        } finally {
-          if (submitAiArticleBtn) {
-            submitAiArticleBtn.disabled = false;
-            submitAiArticleBtn.innerHTML = origBtnHtml;
-          }
+        var mdContent = "";
+        if (mdMatch) {
+          mdContent = mdMatch[1]
+            .replace(/\\n/g, "\n")
+            .replace(/\\"/g, '"')
+            .replace(/\\\\/g, "\\");
+        } else {
+          mdContent = rawText
+            .replace(/^[\s\S]*?"markdown_content"\s*:\s*"?/i, "")
+            .replace(/"?\s*\}\s*$/i, "")
+            .replace(/\\n/g, "\n")
+            .replace(/\\"/g, '"');
         }
-      });
+
+        return {
+          title: titleMatch ? titleMatch[1] : "",
+          description: descMatch ? descMatch[1] : "",
+          category: catMatch ? catMatch[1] : "",
+          tags: tags,
+          markdown_content: mdContent
+        };
+      }
     }
+
+    async function handleGenerateAiArticle(e) {
+      if (e && e.preventDefault) e.preventDefault();
+      var topic = (aiPromptTopic ? aiPromptTopic.value : "").trim();
+      var style = (aiPromptStyle ? aiPromptStyle.value : "storytelling");
+      var category = (aiPromptCategory ? aiPromptCategory.value : "Google Cloud");
+      var notes = (aiPromptNotes ? aiPromptNotes.value : "").trim();
+
+      if (!topic) {
+        if (aiArticleStatus) {
+          aiArticleStatus.textContent = "⚠️ Please enter a topic or target headline.";
+          aiArticleStatus.className = "text-xs font-semibold mr-auto text-rose-500";
+        }
+        if (aiPromptTopic) aiPromptTopic.focus();
+        return;
+      }
+
+      var origBtnHtml = submitAiArticleBtn ? submitAiArticleBtn.innerHTML : "";
+      if (submitAiArticleBtn) {
+        submitAiArticleBtn.disabled = true;
+        submitAiArticleBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1.5"></i> Drafting with Gemini...';
+      }
+      if (aiArticleStatus) {
+        aiArticleStatus.textContent = "Synthesizing architecture & narrative in GCloud Cafe style...";
+        aiArticleStatus.className = "text-xs font-semibold mr-auto text-primary animate-pulse";
+      }
+
+      var prompt = "You are Tharun Vempati, lead cloud architect and creator of GCloud Cafe (https://gcloudcafe.com).\n"
+        + "Write an authentic, publication-ready, deeply practical technical blog post in Tharun's signature GCloud Cafe style.\n\n"
+        + "TOPIC: " + topic + "\n"
+        + "CATEGORY: " + category + "\n"
+        + "STYLE PRESET: " + style + "\n"
+        + (notes ? ("USER SPECIFIC NOTES: " + notes + "\n\n") : "\n")
+        + "STRICT GUIDELINES FOR THARUN'S SIGNATURE BLOG STYLE:\n"
+        + "1. Paragraph Structure: Write in clean, short, punchy paragraphs with generous line spacing (1-2 sentences per paragraph). Never write dense, overwhelming walls of text.\n"
+        + "2. Narrative First-Person Voice: Open with an authentic, conversational reflection (\"I remember when...\", \"When working on cloud migrations...\", \"There is a big difference between knowing a concept and applying it in production...\").\n"
+        + "3. Signature Emoji Bullets: Use emoji markers for key takeaways and checklists:\n"
+        + "   👉 **Core Concept / Reference**\n"
+        + "   💡 **Key Architect Insight**\n"
+        + "   ⚠️ **Gotcha / Watch Out in Production**\n"
+        + "   🚀 **Actionable Step**\n"
+        + "4. Headings & Flow: Use clean H2 (##) and H3 (###) headers with clear, engaging titles (e.g. '## The Core Dilemma: Merge vs Rebase', '### What Actually Happens Under the Hood', '### Where Things Go Wrong in Production', '## Decision Framework: When to Use Which', '## Summary & Takeaways').\n"
+        + "5. Practical Code Blocks: Include concrete, realistic code snippets (```bash, ```yaml, ```dockerfile, or ```terraform) with comments explaining practical flags.\n"
+        + "6. Callouts: Include Hugo notice or alert callouts (e.g. '> **Note:** ...' or '> **Tip:** ...').\n"
+        + "7. Markdown Body: Generate a comprehensive, 700+ word deep dive.\n\n"
+        + "OUTPUT FORMAT: Return ONLY a valid JSON object matching this schema:\n"
+        + "{\n"
+        + '  "title": "Clean, Catchy & Authoritative Article Title",\n'
+        + '  "description": "1-2 sentence compelling summary for SEO and social preview (140-160 characters)",\n'
+        + '  "category": "' + category + '",\n'
+        + '  "tags": ["DevOps", "Git", "Architecture", "Best Practices"],\n'
+        + '  "image": "/images/posts/cloud-architecture.webp",\n'
+        + '  "markdown_content": "Full markdown content starting after frontmatter..."\n'
+        + "}\n"
+        + "Do not include any conversational preamble or outro. Output only the JSON object.";
+
+      try {
+        var responseText = await callGeminiApi(prompt, 3500);
+        var parsed = extractAiArticleJson(responseText);
+
+        if (titleInput && parsed.title) titleInput.value = parsed.title;
+        if (categorySelect && parsed.category) categorySelect.value = parsed.category;
+        if (descInput && parsed.description) descInput.value = parsed.description;
+        if (tagsInput && Array.isArray(parsed.tags)) tagsInput.value = parsed.tags.join(", ");
+        if (authorInput) authorInput.value = "Tharun Vempati";
+        if (imageUrlInput) imageUrlInput.value = parsed.image || "/images/posts/cloud-architecture.webp";
+        if (markdownInput && parsed.markdown_content) markdownInput.value = parsed.markdown_content;
+
+        updateLivePreview();
+        if (aiArticleStatus) {
+          aiArticleStatus.textContent = "Article draft generated! 🎉";
+          aiArticleStatus.className = "text-xs font-semibold mr-auto text-emerald-500";
+        }
+        setTimeout(closeAiArticleModal, 600);
+      } catch (err) {
+        console.error("AI Article draft error:", err);
+        if (aiArticleStatus) {
+          aiArticleStatus.textContent = "⚠️ " + (err.message || "Could not generate article draft");
+          aiArticleStatus.className = "text-xs font-semibold mr-auto text-rose-500";
+        }
+      } finally {
+        if (submitAiArticleBtn) {
+          submitAiArticleBtn.disabled = false;
+          submitAiArticleBtn.innerHTML = origBtnHtml;
+        }
+      }
+    }
+
+    if (formAiArticle) {
+      formAiArticle.addEventListener("submit", handleGenerateAiArticle);
+    }
+    if (submitAiArticleBtn) {
+      submitAiArticleBtn.addEventListener("click", handleGenerateAiArticle);
+    }
+
 
     // ── 2. Pre-flight Publishability Quality Audit ──
     function runPublishabilityAudit() {
