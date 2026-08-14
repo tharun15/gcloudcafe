@@ -1024,12 +1024,13 @@
 
             '<div class="flex items-center gap-2 shrink-0">' +
               linkedinBtnHtml +
-              '<div class="flex items-center gap-1.5 shrink-0 bg-theme-light dark:bg-darkmode-theme-light rounded-xl p-1 border border-border/50 dark:border-darkmode-border/50">' +
+              '<div class="pulse-vote-pill">' +
                 '<button data-pulse-upvote="' + p.id + '" data-upvotes="' + (p.upvotes || 0) + '" data-downvotes="' + (p.downvotes || 0) + '" class="' + upActiveClass + '" title="Upvote pulse">' +
-                  '<svg class="w-3.5 h-3.5 fill-current inline-block mr-0.5" viewBox="0 0 24 24"><path d="M12 4l-6.5 8h4.5v8h4v-8h4.5z"/></svg><span>' + (p.score >= 0 ? '+' + p.score : p.score) + '</span>' +
+                  '<svg viewBox="0 0 24 24"><path d="M12 4l-6.5 8h4.5v8h4v-8h4.5z"/></svg><span>' + (p.score >= 0 ? '+' + p.score : p.score) + '</span>' +
                 '</button>' +
+                '<div class="pulse-vote-divider"></div>' +
                 '<button data-pulse-downvote="' + p.id + '" data-upvotes="' + (p.upvotes || 0) + '" data-downvotes="' + (p.downvotes || 0) + '" class="' + downActiveClass + '" title="Downvote pulse">' +
-                  '<svg class="w-3.5 h-3.5 fill-current inline-block" viewBox="0 0 24 24"><path d="M12 20l6.5-8h-4.5V4h-4v8H5.5z"/></svg>' +
+                  '<svg viewBox="0 0 24 24"><path d="M12 20l6.5-8h-4.5V4h-4v8H5.5z"/></svg>' +
                 '</button>' +
               '</div>' +
             '</div>' +
