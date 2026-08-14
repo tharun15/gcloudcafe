@@ -40,7 +40,7 @@ Whenever you browse an unprotected website (`http://`), your computer transmits 
   <div class="flex items-center gap-2 font-bold text-slate-900 dark:text-white text-base">
     <span>📮</span> The Open Postcard Analogy
   </div>
-  <p class="text-xs text-slate-700 dark:text-slate-300 leading-relaxed m-0">
+  <p class="text-sm text-slate-800 dark:text-slate-200 leading-relaxed m-0">
     Anyone carrying an open postcard can read every word written on it. If you write your credit card number, login password, or private messages on a postcard, anyone along the delivery route can inspect it, photocopy it, or even take an eraser and rewrite the numbers.
   </p>
 </div>
@@ -61,33 +61,33 @@ Before diving into cryptographic algorithms, let's look at how two people—**Al
 
 Bob wants *anyone in the world* (including Alice) to be able to send him confidential mail, even if Bob and Alice have never met in person before.
 
-<div class="p-6 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 my-8 shadow-sm space-y-4">
-  <div class="flex items-center gap-2 font-bold text-slate-900 dark:text-white text-base">
+<div class="p-6 md:p-8 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 my-8 shadow-sm space-y-5">
+  <div class="flex items-center gap-2 font-bold text-slate-900 dark:text-white text-lg border-b border-slate-200/80 dark:border-slate-800/80 pb-3">
     <span>💡</span> The Padlock & Briefcase Story (How Public-Key Crypto Works)
   </div>
   
-  <div class="space-y-3">
-    <div class="flex items-start gap-3">
-      <span class="text-xl shrink-0">🔓</span>
-      <p class="text-xs text-slate-700 dark:text-slate-300 m-0 leading-relaxed">
+  <div class="space-y-4">
+    <div class="flex items-start gap-3.5">
+      <span class="text-2xl shrink-0 mt-0.5">🔓</span>
+      <p class="text-sm md:text-base text-slate-800 dark:text-slate-200 m-0 leading-relaxed">
         <b>1. The Open Padlock (Bob's Public Key):</b> Bob buys thousands of identical metal padlocks, leaves them all in the <b>open (unlocked)</b> state, and distributes them freely to anyone who asks.
       </p>
     </div>
-    <div class="flex items-start gap-3">
-      <span class="text-xl shrink-0">🔑</span>
-      <p class="text-xs text-slate-700 dark:text-slate-300 m-0 leading-relaxed">
+    <div class="flex items-start gap-3.5">
+      <span class="text-2xl shrink-0 mt-0.5">🔑</span>
+      <p class="text-sm md:text-base text-slate-800 dark:text-slate-200 m-0 leading-relaxed">
         <b>2. The Secret Key (Bob's Private Key):</b> Bob holds the single physical key that unlocks those padlocks. He keeps it safely in his pocket and never shares it with anyone.
       </p>
     </div>
-    <div class="flex items-start gap-3">
-      <span class="text-xl shrink-0">📦</span>
-      <p class="text-xs text-slate-700 dark:text-slate-300 m-0 leading-relaxed">
+    <div class="flex items-start gap-3.5">
+      <span class="text-2xl shrink-0 mt-0.5">📦</span>
+      <p class="text-sm md:text-base text-slate-800 dark:text-slate-200 m-0 leading-relaxed">
         <b>3. Alice Locks the Message:</b> Alice writes a private note, places it inside a metal briefcase, grabs one of Bob's open padlocks, snaps it shut (<i>Click!</i> 🔒), and sends it through the mail. Once snapped shut, even Alice cannot re-open the briefcase.
       </p>
     </div>
-    <div class="flex items-start gap-3">
-      <span class="text-xl shrink-0">🔓</span>
-      <p class="text-xs text-slate-700 dark:text-slate-300 m-0 leading-relaxed">
+    <div class="flex items-start gap-3.5">
+      <span class="text-2xl shrink-0 mt-0.5">🔓</span>
+      <p class="text-sm md:text-base text-slate-800 dark:text-slate-200 m-0 leading-relaxed">
         <b>4. Bob Unlocks It:</b> The postal workers and eavesdroppers cannot open the briefcase. Only Bob, using his private physical key, can unlock the padlock and read Alice's message.
       </p>
     </div>
@@ -109,7 +109,7 @@ Through this padlock mechanism, TLS guarantees three ironclad security pillars:
         🛡️
       </div>
       <h4 class="text-base font-bold text-sky-950 dark:text-sky-100 mb-2">1. Confidentiality</h4>
-      <p class="text-sm text-sky-900/80 dark:text-sky-200/80 leading-relaxed m-0">
+      <p class="text-sm text-sky-900/90 dark:text-sky-200/90 leading-relaxed m-0">
         <b>Encryption:</b> Eavesdroppers sniffing Wi-Fi packets only see scrambled ciphertext, just like postmen only see a locked briefcase.
       </p>
     </div>
@@ -121,7 +121,7 @@ Through this padlock mechanism, TLS guarantees three ironclad security pillars:
         🧩
       </div>
       <h4 class="text-base font-bold text-emerald-950 dark:text-emerald-100 mb-2">2. Integrity</h4>
-      <p class="text-sm text-emerald-900/80 dark:text-emerald-200/80 leading-relaxed m-0">
+      <p class="text-sm text-emerald-900/90 dark:text-emerald-200/90 leading-relaxed m-0">
         <b>Tamper Detection:</b> If someone modifies even a single byte in transit, the cryptographic checksum fails and the connection drops immediately.
       </p>
     </div>
@@ -133,7 +133,7 @@ Through this padlock mechanism, TLS guarantees three ironclad security pillars:
         🪪
       </div>
       <h4 class="text-base font-bold text-indigo-950 dark:text-indigo-100 mb-2">3. Authentication</h4>
-      <p class="text-sm text-indigo-900/80 dark:text-indigo-200/80 leading-relaxed m-0">
+      <p class="text-sm text-indigo-900/90 dark:text-indigo-200/90 leading-relaxed m-0">
         <b>Identity Proof:</b> Proves that the open padlock Alice picked up genuinely belongs to Bob, and not an imposter.
       </p>
     </div>
@@ -160,7 +160,7 @@ To solve this, Alice and Bob use a **hybrid approach**:
       <h4 class="text-base font-bold text-blue-950 dark:text-blue-100 m-0">Asymmetric Encryption</h4>
     </div>
     <span class="inline-block px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wide bg-blue-500/20 text-blue-700 dark:text-blue-300 mb-3">Handshake Phase Only</span>
-    <p class="text-sm text-slate-700 dark:text-slate-300 leading-relaxed m-0">
+    <p class="text-sm text-slate-800 dark:text-slate-200 leading-relaxed m-0">
       Uses a <b>Public & Private Key pair</b> (RSA or ECDSA). Computationally heavy; used exclusively during the first few milliseconds of connection setup to authenticate the server and securely exchange a session secret.
     </p>
   </div>
@@ -171,7 +171,7 @@ To solve this, Alice and Bob use a **hybrid approach**:
       <h4 class="text-base font-bold text-emerald-950 dark:text-emerald-100 m-0">Symmetric Encryption</h4>
     </div>
     <span class="inline-block px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wide bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 mb-3">Bulk Data Transfer</span>
-    <p class="text-sm text-slate-700 dark:text-slate-300 leading-relaxed m-0">
+    <p class="text-sm text-slate-800 dark:text-slate-200 leading-relaxed m-0">
       Uses a single, temporary <b>shared session key</b> (AES-256-GCM or ChaCha20). Hardware-accelerated directly on modern CPUs (Intel AES-NI, ARM Crypto), encrypting gigabits per second with practically zero overhead.
     </p>
   </div>
@@ -194,7 +194,7 @@ Here is how a server gets certified in real life:
     <div class="shrink-0 w-9 h-9 rounded-xl bg-rose-500 text-white font-bold flex items-center justify-center text-sm shadow-sm">1</div>
     <div>
       <h5 class="text-sm font-bold text-rose-950 dark:text-rose-200 m-0 mb-1">Private Key (<code>.key</code>) — Generated Locally</h5>
-      <p class="text-xs text-slate-700 dark:text-slate-300 leading-relaxed m-0">
+      <p class="text-sm text-slate-800 dark:text-slate-200 leading-relaxed m-0">
         Created on Bob's server and kept <b>strictly confidential</b>. Never emailed, never checked into Git, never sent to the CA.
       </p>
     </div>
@@ -204,7 +204,7 @@ Here is how a server gets certified in real life:
     <div class="shrink-0 w-9 h-9 rounded-xl bg-amber-500 text-white font-bold flex items-center justify-center text-sm shadow-sm">2</div>
     <div>
       <h5 class="text-sm font-bold text-amber-950 dark:text-amber-200 m-0 mb-1">Certificate Signing Request (<code>.csr</code>) — The Application Form</h5>
-      <p class="text-xs text-slate-700 dark:text-slate-300 leading-relaxed m-0">
+      <p class="text-sm text-slate-800 dark:text-slate-200 leading-relaxed m-0">
         Bob generates a CSR from his private key. It packages his <b>Public Key (Open Padlock)</b> with his domain name (<code>api.gcloudcafe.com</code>). Bob submits this CSR to a Certificate Authority.
       </p>
     </div>
@@ -214,7 +214,7 @@ Here is how a server gets certified in real life:
     <div class="shrink-0 w-9 h-9 rounded-xl bg-sky-500 text-white font-bold flex items-center justify-center text-sm shadow-sm">3</div>
     <div>
       <h5 class="text-sm font-bold text-sky-950 dark:text-sky-200 m-0 mb-1">Certificate Authority (CA) — The Trusted Notary</h5>
-      <p class="text-xs text-slate-700 dark:text-slate-300 leading-relaxed m-0">
+      <p class="text-sm text-slate-800 dark:text-slate-200 leading-relaxed m-0">
         A recognized authority (Let's Encrypt, DigiCert, HashiCorp Vault) verifies Bob actually owns the domain, then signs the CSR using its own private key.
       </p>
     </div>
@@ -224,7 +224,7 @@ Here is how a server gets certified in real life:
     <div class="shrink-0 w-9 h-9 rounded-xl bg-emerald-500 text-white font-bold flex items-center justify-center text-sm shadow-sm">4</div>
     <div>
       <h5 class="text-sm font-bold text-emerald-950 dark:text-emerald-200 m-0 mb-1">Digital Certificate (<code>.crt</code> / <code>.pem</code>) — The Notarized ID</h5>
-      <p class="text-xs text-slate-700 dark:text-slate-300 leading-relaxed m-0">
+      <p class="text-sm text-slate-800 dark:text-slate-200 leading-relaxed m-0">
         The official X.509 certificate. Bob installs this on his web server and presents it to Alice (the client) during the handshake so Alice knows the padlock is authentic.
       </p>
     </div>
@@ -249,9 +249,9 @@ Here is how a server gets certified in real life:
 A frequent point of confusion among engineers is the difference between cryptographic key strength and physical file size:
 
 <div class="grid grid-cols-1 md:grid-cols-2 gap-5 my-8">
-  <div class="p-5 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 shadow-sm">
-    <h5 class="text-sm font-bold text-primary m-0 mb-2">🔑 Cryptographic Key Strength (BITS)</h5>
-    <ul class="text-xs text-slate-700 dark:text-slate-300 space-y-2 m-0 pl-4">
+  <div class="p-6 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 shadow-sm">
+    <h5 class="text-base font-bold text-primary m-0 mb-3">🔑 Cryptographic Key Strength (BITS)</h5>
+    <ul class="text-sm text-slate-800 dark:text-slate-200 space-y-2.5 m-0 pl-4">
       <li><b>RSA 2048-bit:</b> 2,048 bits (= 256 bytes) — The current baseline web standard.</li>
       <li><b>RSA 4096-bit:</b> 4,096 bits (= 512 bytes) — Heavy security; typically used for Root CAs.</li>
       <li><b>ECDSA 256-bit (P-256):</b> 256 bits (= 32 bytes) — Modern elliptic curve; provides equivalent security to RSA-3072 with much faster handshakes.</li>
@@ -259,9 +259,9 @@ A frequent point of confusion among engineers is the difference between cryptogr
     </ul>
   </div>
 
-  <div class="p-5 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 shadow-sm">
-    <h5 class="text-sm font-bold text-emerald-600 dark:text-emerald-400 m-0 mb-2">📄 Certificate File Sizes on Disk (KILOBYTES)</h5>
-    <ul class="text-xs text-slate-700 dark:text-slate-300 space-y-2 m-0 pl-4">
+  <div class="p-6 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 shadow-sm">
+    <h5 class="text-base font-bold text-emerald-600 dark:text-emerald-400 m-0 mb-3">📄 Certificate File Sizes on Disk (KILOBYTES)</h5>
+    <ul class="text-sm text-slate-800 dark:text-slate-200 space-y-2.5 m-0 pl-4">
       <li><b>Single Leaf Certificate (<code>server.crt</code>):</b> <b>~1.2 KB to 2.5 KB</b> (~1,200 to 2,500 bytes).</li>
       <li><b>Full Chain Bundle (<code>fullchain.pem</code>):</b> <b>~3.5 KB to 5.5 KB</b> (~3,500 to 5,500 bytes).</li>
       <li><b>Why is the file a few KB?</b> The certificate contains the raw public key plus domain lists (SANs), CA issuer names, validity timestamps, and the CA's digital signature in Base64 PEM text.</li>
@@ -318,10 +318,10 @@ Operating systems and browsers cannot hardcode millions of individual website ce
   <div class="p-4 rounded-xl bg-sky-500/15 border border-sky-500/30">
     <div class="flex items-center justify-between mb-1">
       <span class="text-xs font-bold uppercase tracking-wider text-sky-600 dark:text-sky-400">Step 1 • Ultimate Trust Anchor</span>
-      <span class="text-xs px-2 py-0.5 rounded bg-sky-500/20 text-sky-700 dark:text-sky-300 font-mono font-bold">Offline Vault</span>
+      <span class="text-xs px-2.5 py-0.5 rounded bg-sky-500/20 text-sky-700 dark:text-sky-300 font-mono font-bold">Offline Vault</span>
     </div>
     <h5 class="text-sm font-bold text-slate-900 dark:text-white m-0">🏛️ Root Certificate Authority (e.g., DigiCert Global Root CA)</h5>
-    <p class="text-xs text-slate-600 dark:text-slate-400 m-0 mt-1">Pre-installed in OS / Browser / Java TrustStore. Kept strictly offline in physical security vaults.</p>
+    <p class="text-sm text-slate-700 dark:text-slate-300 m-0 mt-1 leading-relaxed">Pre-installed in OS / Browser / Java TrustStore. Kept strictly offline in physical security vaults.</p>
   </div>
 
   <div class="text-center text-sky-500 font-bold text-lg">↓ Signs & Endorses</div>
@@ -329,10 +329,10 @@ Operating systems and browsers cannot hardcode millions of individual website ce
   <div class="p-4 rounded-xl bg-blue-500/15 border border-blue-500/30">
     <div class="flex items-center justify-between mb-1">
       <span class="text-xs font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400">Step 2 • Daily Signing Authority</span>
-      <span class="text-xs px-2 py-0.5 rounded bg-blue-500/20 text-blue-700 dark:text-blue-300 font-mono font-bold">Online CA</span>
+      <span class="text-xs px-2.5 py-0.5 rounded bg-blue-500/20 text-blue-700 dark:text-blue-300 font-mono font-bold">Online CA</span>
     </div>
     <h5 class="text-sm font-bold text-slate-900 dark:text-white m-0">🏢 Intermediate CA (e.g., DigiCert TLS RSA SHA256)</h5>
-    <p class="text-xs text-slate-600 dark:text-slate-400 m-0 mt-1">Issued by Root CA. Actively signs day-to-day web and API certificates.</p>
+    <p class="text-sm text-slate-700 dark:text-slate-300 m-0 mt-1 leading-relaxed">Issued by Root CA. Actively signs day-to-day web and API certificates.</p>
   </div>
 
   <div class="text-center text-emerald-500 font-bold text-lg">↓ Issues & Signs</div>
@@ -340,10 +340,10 @@ Operating systems and browsers cannot hardcode millions of individual website ce
   <div class="p-4 rounded-xl bg-emerald-500/15 border border-emerald-500/30">
     <div class="flex items-center justify-between mb-1">
       <span class="text-xs font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">Step 3 • Your Website / API</span>
-      <span class="text-xs px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 font-mono font-bold">Server Cert</span>
+      <span class="text-xs px-2.5 py-0.5 rounded bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 font-mono font-bold">Server Cert</span>
     </div>
     <h5 class="text-sm font-bold text-slate-900 dark:text-white m-0">📄 Leaf / End-Entity Certificate (e.g., api.gcloudcafe.com)</h5>
-    <p class="text-xs text-slate-600 dark:text-slate-400 m-0 mt-1">Installed on your Nginx, Ingress controller, or cloud load balancer.</p>
+    <p class="text-sm text-slate-700 dark:text-slate-300 m-0 mt-1 leading-relaxed">Installed on your Nginx, Ingress controller, or cloud load balancer.</p>
   </div>
 </div>
 
@@ -359,10 +359,10 @@ Not all Certificate Authorities serve the public internet:
 
 <div class="grid grid-cols-1 md:grid-cols-2 gap-5 my-8">
   <div class="p-6 rounded-2xl bg-sky-50/70 dark:bg-sky-950/30 border border-sky-200 dark:border-sky-800/60 shadow-sm">
-    <div class="flex items-center gap-2 font-bold text-sky-950 dark:text-sky-100 text-sm mb-3">
+    <div class="flex items-center gap-2 font-bold text-sky-950 dark:text-sky-100 text-base mb-3">
       <span>🌐</span> Public Certificate Authorities
     </div>
-    <ul class="text-xs text-slate-700 dark:text-slate-300 space-y-2 m-0 pl-4">
+    <ul class="text-sm text-slate-800 dark:text-slate-200 space-y-2 m-0 pl-4 leading-relaxed">
       <li><b>Examples:</b> Let's Encrypt, DigiCert, Sectigo, Cloudflare.</li>
       <li><b>Trust:</b> Pre-trusted out-of-the-box by Windows, macOS, Linux, iOS, Android, and Java runtimes.</li>
       <li><b>Use Case:</b> Public websites, customer SaaS portals, public REST APIs.</li>
@@ -371,10 +371,10 @@ Not all Certificate Authorities serve the public internet:
   </div>
 
   <div class="p-6 rounded-2xl bg-indigo-50/70 dark:bg-indigo-950/30 border border-indigo-200 dark:border-indigo-800/60 shadow-sm">
-    <div class="flex items-center gap-2 font-bold text-indigo-950 dark:text-indigo-100 text-sm mb-3">
+    <div class="flex items-center gap-2 font-bold text-indigo-950 dark:text-indigo-100 text-base mb-3">
       <span>🏢</span> Private / Internal CAs
     </div>
-    <ul class="text-xs text-slate-700 dark:text-slate-300 space-y-2 m-0 pl-4">
+    <ul class="text-sm text-slate-800 dark:text-slate-200 space-y-2 m-0 pl-4 leading-relaxed">
       <li><b>Examples:</b> HashiCorp Vault, AWS Private CA, Google Cloud CAS, <code>cert-manager</code>, Smallstep.</li>
       <li><b>Trust:</b> Untrusted by default. The root certificate must be distributed to servers and JVM trust stores via MDM, Terraform, or Ansible.</li>
       <li><b>Use Case:</b> Internal microservices, Kubernetes service meshes (Istio/Linkerd), database connections, private mTLS.</li>
@@ -392,9 +392,9 @@ Not all Certificate Authorities serve the public internet:
 According to the official TLS specification ([RFC 5246 Section 7.4.2](https://datatracker.ietf.org/doc/html/rfc5246#section-7.4.2)), when combining multiple certificates into a single file (such as `fullchain.pem` or `bundle.crt` for Nginx, HAProxy, Envoy, or Kubernetes Secret), **they must be placed in strict top-down hierarchical order**:
 
 <div class="space-y-3 my-6 p-5 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 shadow-sm">
-  <div class="p-3.5 rounded-xl bg-emerald-500/15 border-2 border-emerald-500/40 flex items-center justify-between">
+  <div class="p-4 rounded-xl bg-emerald-500/15 border-2 border-emerald-500/40 flex items-center justify-between">
     <div class="flex items-center gap-3">
-      <span class="w-7 h-7 rounded-lg bg-emerald-500 text-white font-bold flex items-center justify-center text-xs">1</span>
+      <span class="w-8 h-8 rounded-lg bg-emerald-500 text-white font-bold flex items-center justify-center text-sm">1</span>
       <div>
         <span class="text-xs font-bold uppercase tracking-wider text-emerald-700 dark:text-emerald-300">Leaf / Server Certificate</span>
         <div class="font-mono text-sm font-semibold text-slate-900 dark:text-white">api.gcloudcafe.com</div>
@@ -403,26 +403,26 @@ According to the official TLS specification ([RFC 5246 Section 7.4.2](https://da
     <span class="text-xs font-bold px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-800 dark:text-emerald-200">MUST BE FIRST</span>
   </div>
 
-  <div class="p-3.5 rounded-xl bg-blue-500/15 border border-blue-500/30 flex items-center justify-between">
+  <div class="p-4 rounded-xl bg-blue-500/15 border border-blue-500/30 flex items-center justify-between">
     <div class="flex items-center gap-3">
-      <span class="w-7 h-7 rounded-lg bg-blue-500 text-white font-bold flex items-center justify-center text-xs">2</span>
+      <span class="w-8 h-8 rounded-lg bg-blue-500 text-white font-bold flex items-center justify-center text-sm">2</span>
       <div>
         <span class="text-xs font-bold uppercase tracking-wider text-blue-700 dark:text-blue-300">Intermediate CA 1</span>
         <div class="font-mono text-sm font-semibold text-slate-900 dark:text-white">DigiCert TLS RSA SHA256</div>
       </div>
     </div>
-    <span class="text-xs text-slate-600 dark:text-slate-400 font-medium">Certifies the Leaf</span>
+    <span class="text-sm text-slate-700 dark:text-slate-300 font-medium">Certifies the Leaf</span>
   </div>
 
-  <div class="p-3.5 rounded-xl bg-slate-200/50 dark:bg-slate-800/50 border border-slate-300 dark:border-slate-700 flex items-center justify-between">
+  <div class="p-4 rounded-xl bg-slate-200/50 dark:bg-slate-800/50 border border-slate-300 dark:border-slate-700 flex items-center justify-between">
     <div class="flex items-center gap-3">
-      <span class="w-7 h-7 rounded-lg bg-slate-400 text-white font-bold flex items-center justify-center text-xs">3</span>
+      <span class="w-8 h-8 rounded-lg bg-slate-400 text-white font-bold flex items-center justify-center text-sm">3</span>
       <div>
         <span class="text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">Intermediate CA 2 (Optional)</span>
         <div class="font-mono text-sm font-semibold text-slate-700 dark:text-slate-300">Higher Intermediate CA</div>
       </div>
     </div>
-    <span class="text-xs text-slate-500 font-medium">If using multi-tier</span>
+    <span class="text-sm text-slate-600 dark:text-slate-400 font-medium">If using multi-tier</span>
   </div>
 </div>
 
@@ -461,7 +461,7 @@ A **Self-Signed Certificate** is a certificate where **the Issuer is identical t
     <div class="flex items-center gap-2 font-bold text-emerald-900 dark:text-emerald-200 text-sm mb-2">
       <span>✅</span> CA-Signed Certificate
     </div>
-    <ul class="text-xs text-slate-700 dark:text-slate-300 space-y-1.5 m-0 pl-4">
+    <ul class="text-sm text-slate-800 dark:text-slate-200 space-y-1.5 m-0 pl-4">
       <li><b>Subject:</b> <code>api.gcloudcafe.com</code></li>
       <li><b>Issuer:</b> <code>Let's Encrypt / DigiCert</code></li>
       <li><b>Trusted By:</b> Automatically trusted by all OS / Browsers.</li>
@@ -472,7 +472,7 @@ A **Self-Signed Certificate** is a certificate where **the Issuer is identical t
     <div class="flex items-center gap-2 font-bold text-amber-900 dark:text-amber-200 text-sm mb-2">
       <span>⚠️</span> Self-Signed Certificate
     </div>
-    <ul class="text-xs text-slate-700 dark:text-slate-300 space-y-1.5 m-0 pl-4">
+    <ul class="text-sm text-slate-800 dark:text-slate-200 space-y-1.5 m-0 pl-4">
       <li><b>Subject:</b> <code>localhost</code></li>
       <li><b>Issuer:</b> <code>localhost</code> (Self)</li>
       <li><b>Trusted By:</b> Untrusted by default (requires manual import).</li>
@@ -509,28 +509,28 @@ openssl req -x509 -newkey rsa:2048 -nodes \
 Once issued, an X.509 certificate contains several critical fields:
 
 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 my-8">
-  <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800">
+  <div class="p-5 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800">
     <span class="text-xs font-bold uppercase tracking-wider text-primary">Field 1</span>
-    <h5 class="text-sm font-bold text-slate-900 dark:text-white m-0 mb-1">📅 Validity Timestamps</h5>
-    <p class="text-xs text-slate-600 dark:text-slate-400 m-0"><code>Not Before</code> and <code>Not After</code> dates defining the exact window the certificate is valid.</p>
+    <h5 class="text-base font-bold text-slate-900 dark:text-white m-0 mb-1">📅 Validity Timestamps</h5>
+    <p class="text-sm text-slate-700 dark:text-slate-300 m-0 leading-relaxed"><code>Not Before</code> and <code>Not After</code> dates defining the exact window the certificate is valid.</p>
   </div>
 
-  <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800">
+  <div class="p-5 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800">
     <span class="text-xs font-bold uppercase tracking-wider text-primary">Field 2</span>
-    <h5 class="text-sm font-bold text-slate-900 dark:text-white m-0 mb-1">🌐 Subject & SANs</h5>
-    <p class="text-xs text-slate-600 dark:text-slate-400 m-0">Common Name (CN) and Subject Alternative Names listing all authorized domains and IP addresses.</p>
+    <h5 class="text-base font-bold text-slate-900 dark:text-white m-0 mb-1">🌐 Subject & SANs</h5>
+    <p class="text-sm text-slate-700 dark:text-slate-300 m-0 leading-relaxed">Common Name (CN) and Subject Alternative Names listing all authorized domains and IP addresses.</p>
   </div>
 
-  <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800">
+  <div class="p-5 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800">
     <span class="text-xs font-bold uppercase tracking-wider text-primary">Field 3</span>
-    <h5 class="text-sm font-bold text-slate-900 dark:text-white m-0 mb-1">🏢 Issuer</h5>
-    <p class="text-xs text-slate-600 dark:text-slate-400 m-0">The identity of the Certificate Authority that signed this certificate.</p>
+    <h5 class="text-base font-bold text-slate-900 dark:text-white m-0 mb-1">🏢 Issuer</h5>
+    <p class="text-sm text-slate-700 dark:text-slate-300 m-0 leading-relaxed">The identity of the Certificate Authority that signed this certificate.</p>
   </div>
 
-  <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800">
+  <div class="p-5 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800">
     <span class="text-xs font-bold uppercase tracking-wider text-primary">Field 4</span>
-    <h5 class="text-sm font-bold text-slate-900 dark:text-white m-0 mb-1">✍️ Digital Signature</h5>
-    <p class="text-xs text-slate-600 dark:text-slate-400 m-0">The cryptographic signature created by the CA's private key, proving tamper-proof validity.</p>
+    <h5 class="text-base font-bold text-slate-900 dark:text-white m-0 mb-1">✍️ Digital Signature</h5>
+    <p class="text-sm text-slate-700 dark:text-slate-300 m-0 leading-relaxed">The cryptographic signature created by the CA's private key, proving tamper-proof validity.</p>
   </div>
 </div>
 
