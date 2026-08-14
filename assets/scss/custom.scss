@@ -22,7 +22,7 @@
 
 /* Glassmorphism Header */
 .header {
-  @apply sticky top-0 z-40 transition-all duration-300 py-3 lg:py-3.5;
+  @apply sticky top-0 z-40 transition-all duration-300;
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   background-color: rgba(255, 255, 255, 0.85);
@@ -108,7 +108,7 @@
 }
 
 .blog-card-copy {
-  @apply text-dark/90 dark:text-darkmode-text/95 mb-5 text-sm sm:text-base leading-relaxed line-clamp-3 font-normal;
+  @apply text-text dark:text-darkmode-text mb-5 text-sm leading-relaxed line-clamp-3;
 }
 
 .blog-meta-list {
@@ -152,10 +152,7 @@
     @apply bg-theme-light dark:bg-darkmode-body rounded-full px-2 py-0.5 text-[10px] font-bold text-text/70 dark:text-darkmode-text/70;
   }
 
-  &.is-active {
-    @apply bg-primary text-white border-primary dark:bg-darkmode-primary dark:text-darkmode-body dark:border-darkmode-primary;
-  }
-
+  &.is-active,
   &:hover {
     @apply border-primary bg-primary/10 text-primary dark:border-darkmode-primary dark:bg-darkmode-primary/20 dark:text-darkmode-primary;
   }
@@ -436,96 +433,58 @@ kbd {
    CLOUD PULSE UPVOTE & DOWNVOTE STYLING
    ========================================================================== */
 
-/* ==========================================================================
-   CLOUD PULSE UPVOTE & DOWNVOTE STYLING
-   ========================================================================== */
-
-.pulse-vote-pill {
-  display: inline-flex;
-  align-items: center;
-  border-radius: 0.75rem;
-  background-color: rgba(241, 245, 249, 0.95);
-  border: 1px solid rgba(226, 232, 240, 0.9);
-  padding: 2px;
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.04);
-  transition: all 0.2s ease;
-
-  .dark & {
-    background-color: rgba(30, 41, 59, 0.85);
-    border-color: rgba(51, 65, 85, 0.8);
-  }
-}
-
 .pulse-vote-btn {
   display: inline-flex;
   align-items: center;
   gap: 0.25rem;
-  padding: 0.25rem 0.5rem;
-  border-radius: 0.55rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: 0.6rem;
   font-size: 0.75rem;
   font-weight: 800 !important;
-  border: none;
-  background: transparent;
+  border: 1px solid rgba(226, 232, 240, 0.8);
   cursor: pointer;
-  transition: all 0.15s ease;
-  color: #334155 !important;
+  transition: all 0.2s ease;
+  background-color: rgba(241, 245, 249, 0.9);
+  color: #1e293b !important;
 
   .dark & {
-    color: #e2e8f0 !important;
-  }
-
-  svg {
-    width: 0.85rem;
-    height: 0.85rem;
-    fill: currentColor;
-    flex-shrink: 0;
+    background-color: rgba(30, 41, 59, 0.9);
+    color: #f8fafc !important;
+    border-color: rgba(51, 65, 85, 0.8);
   }
 
   &:hover {
-    background-color: rgba(16, 185, 129, 0.12);
+    background-color: rgba(16, 185, 129, 0.15);
     color: #059669 !important;
   }
 }
 
 .pulse-vote-btn-down {
-  padding: 0.25rem 0.4rem;
-
   &:hover {
-    background-color: rgba(244, 63, 94, 0.12) !important;
+    background-color: rgba(244, 63, 94, 0.15) !important;
     color: #e11d48 !important;
-  }
-}
-
-.pulse-vote-divider {
-  width: 1px;
-  height: 0.85rem;
-  background-color: rgba(203, 213, 225, 0.8);
-  margin: 0 1px;
-
-  .dark & {
-    background-color: rgba(71, 85, 105, 0.8);
   }
 }
 
 .pulse-vote-btn.is-upvoted {
   background-color: #059669 !important;
   color: #ffffff !important;
-  box-shadow: 0 1px 4px rgba(5, 150, 105, 0.3);
+  border-color: #047857 !important;
+  box-shadow: 0 2px 8px rgba(5, 150, 105, 0.35);
 
-  svg, span {
+  i, span {
     color: #ffffff !important;
-    fill: #ffffff !important;
   }
 }
 
 .pulse-vote-btn.is-downvoted {
   background-color: #e11d48 !important;
   color: #ffffff !important;
-  box-shadow: 0 1px 4px rgba(225, 29, 72, 0.3);
+  border-color: #be123c !important;
+  box-shadow: 0 2px 8px rgba(225, 29, 72, 0.35);
 
-  svg, span {
+  i, span {
     color: #ffffff !important;
-    fill: #ffffff !important;
   }
 }
 
@@ -580,282 +539,3 @@ kbd {
   border-radius: 4px;
   padding: 0 4px;
 }
-
-/* ==========================================================================
-   STITCH MCP — TECHNICAL PRECISION DESIGN ENHANCEMENTS
-   Generated from Stitch design system: " Technical Precision
-
-/* ==========================================================================
-   STITCH MCP — TECHNICAL PRECISION DESIGN ENHANCEMENTS
-   Generated from Stitch design system: "Technical Precision"
-   Primary: #4F8EF7 (Electric Blue) | Secondary: #F59E0B (Amber/Gold)
-   ========================================================================== */
-
-/* ── Glassmorphism card surface ── */
-.stitch-glass-card {
-  background-color: rgba(30, 41, 59, 0.8);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-/* ── Lift + Electric-Blue glow hover ── */
-.stitch-glow-hover {
-  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease, border-color 0.3s ease;
-
-  &:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 0 20px rgba(79, 142, 247, 0.15), 0 20px 40px -12px rgba(0, 0, 0, 0.4);
-    border-color: rgba(79, 142, 247, 0.5);
-  }
-}
-
-/* ── Category badge — Electric Blue (default) ── */
-.stitch-badge {
-  @apply inline-flex items-center gap-1 rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-widest border transition-colors duration-200;
-  background-color: rgba(79, 142, 247, 0.1);
-  color: #026aa2;
-  border-color: rgba(79, 142, 247, 0.2);
-
-  .dark & {
-    background-color: rgba(79, 142, 247, 0.12);
-    color: #7EB3FF;
-    border-color: rgba(79, 142, 247, 0.25);
-  }
-}
-
-/* ── Category badge — Amber variant (Certification / Premium) ── */
-.stitch-badge-amber {
-  @apply inline-flex items-center gap-1 rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-widest border transition-colors duration-200;
-  background-color: rgba(245, 158, 11, 0.1);
-  color: #92400e;
-  border-color: rgba(245, 158, 11, 0.2);
-
-  .dark & {
-    background-color: rgba(245, 158, 11, 0.12);
-    color: #FBBF24;
-    border-color: rgba(245, 158, 11, 0.25);
-  }
-}
-
-/* ── Gradient CTA button (Electric Blue → Indigo) ── */
-.btn-gradient-primary {
-  @apply inline-flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-bold text-white no-underline transition-all duration-200;
-  background: linear-gradient(135deg, #4F8EF7, #6366F1);
-  box-shadow: 0 0 16px rgba(79, 142, 247, 0.25);
-
-  &:hover {
-    box-shadow: 0 0 24px rgba(79, 142, 247, 0.45);
-    transform: translateY(-1px);
-    filter: brightness(1.08);
-    color: #fff;
-  }
-
-  i {
-    transition: transform 0.2s ease;
-  }
-
-  &:hover i {
-    transform: translateX(3px);
-  }
-}
-
-/* ── Blog card: enhanced Stitch-style lift + glow ── */
-.blog-card {
-  &:hover {
-    box-shadow: 0 0 20px rgba(79, 142, 247, 0.12), 0 16px 32px -8px rgba(0, 0, 0, 0.3);
-  }
-}
-
-/* ── Hero section: glassmorphic featured post panel ── */
-.blog-hero-glass {
-  background-color: rgba(30, 41, 59, 0.75);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 1.5rem;
-}
-
-/* ── Sidebar: glass panel variant ── */
-.blog-sidebar-glass {
-  background-color: rgba(30, 41, 59, 0.6);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.07);
-  border-radius: 1rem;
-  @apply dark:border-darkmode-border/30;
-}
-
-/* ── Newsletter widget: amber glow accent ── */
-.blog-newsletter-stitch {
-  position: relative;
-  overflow: hidden;
-  @apply bg-body dark:bg-darkmode-theme-light rounded-2xl border border-border/80 dark:border-darkmode-border/40 p-6;
-}
-
-.blog-newsletter-stitch::before {
-  content: '';
-  position: absolute;
-  top: -3rem;
-  right: -3rem;
-  width: 10rem;
-  height: 10rem;
-  background: radial-gradient(circle, rgba(245, 158, 11, 0.15), transparent 70%);
-  pointer-events: none;
-}
-
-/* ── Stitch-enhanced sidebar block accent line ── */
-.blog-sidebar-block-enhanced {
-  @apply blog-sidebar-block;
-  position: relative;
-  overflow: hidden;
-}
-
-.blog-sidebar-block-enhanced::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: linear-gradient(90deg, #4F8EF7, #6366F1, transparent);
-  border-radius: 1.5rem 1.5rem 0 0;
-  opacity: 0.6;
-}
-
-/* Reduced motion: disable Stitch hover transforms */
-@media (prefers-reduced-motion: reduce) {
-  .stitch-glow-hover:hover,
-  .btn-gradient-primary:hover {
-    transform: none !important;
-    box-shadow: none !important;
-  }
-}
-
-/* ── Modern Typography Wrapping (Google Guidance) ── */
-h1, h2, h3, h4, h5, h6 {
-  text-wrap: balance;
-}
-
-p, li, blockquote, .blog-card-copy {
-  text-wrap: pretty;
-}
-
-/* ── Scrollability Affordance Hints (Google Guidance) ── */
-.scroll-indicator-wrapper {
-  position: relative;
-}
-
-.scroll-switcher-scroller {
-  overflow-x: auto;
-  container-type: scroll-state;
-  scroll-behavior: smooth;
-  scrollbar-width: none;
-  &::-webkit-scrollbar {
-    display: none;
-  }
-}
-
-.indicator-left, .indicator-right {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 48px;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  z-index: 10;
-}
-
-.indicator-left {
-  left: 0;
-  background: linear-gradient(to right, #ffffff 10%, rgba(255, 255, 255, 0));
-  .dark & {
-    background: linear-gradient(to right, #11131a 10%, rgba(17, 19, 26, 0));
-  }
-}
-
-.indicator-right {
-  right: 0;
-  background: linear-gradient(to left, #ffffff 10%, rgba(255, 255, 255, 0));
-  .dark & {
-    background: linear-gradient(to left, #11131a 10%, rgba(17, 19, 26, 0));
-  }
-}
-
-@container scroll-state(scrollable: left) {
-  .indicator-left {
-    opacity: 1;
-  }
-}
-
-@container scroll-state(scrollable: right) {
-  .indicator-right {
-    opacity: 1;
-  }
-}
-
-/* ── Deferred Rendering below-the-fold (Google Guidance) ── */
-.heavy-section-deferred {
-  content-visibility: auto;
-  contain-intrinsic-size: auto 350px;
-}
-
-/* ── Global High-Contrast Opacity Overrides for Accessibility ── */
-.text-text\/60 {
-  color: rgba(51, 65, 85, 0.85) !important;
-  .dark & {
-    color: rgba(148, 163, 184, 0.85) !important;
-  }
-}
-
-.text-text\/70 {
-  color: rgba(51, 65, 85, 0.90) !important;
-  .dark & {
-    color: rgba(148, 163, 184, 0.90) !important;
-  }
-}
-
-.dark .dark\:text-darkmode-text\/60 {
-  color: rgba(148, 163, 184, 0.85) !important;
-}
-
-.dark .dark\:text-darkmode-text\/70 {
-  color: rgba(148, 163, 184, 0.90) !important;
-}
-
-/* ── Local High-Performance Font Awesome Webfonts with font-display: swap ── */
-@font-face {
-  font-family: 'Font Awesome 6 Free';
-  font-style: normal;
-  font-weight: 900;
-  font-display: swap;
-  src: url("/fonts/fa-solid-900.woff2") format("woff2");
-}
-
-@font-face {
-  font-family: 'Font Awesome 6 Brands';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url("/fonts/fa-brands-400.woff2") format("woff2");
-}
-
-.fa-regular {
-  font-family: 'Font Awesome 6 Free' !important;
-  font-weight: 900 !important;
-}
-
-/* ── Modern Performance: content-visibility for Offscreen Sections ── */
-.cv-auto {
-  content-visibility: auto;
-  contain-intrinsic-size: 1px 400px;
-}
-
-.footer {
-  content-visibility: auto;
-  contain-intrinsic-size: 1px 250px;
-}
-
-
-
