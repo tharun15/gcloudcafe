@@ -38,22 +38,32 @@
 {{ $styles = $styles | resources.PostCSS }}
 
 {{ if hugo.IsProduction }}
-  {{ $styles = $styles | resources.ExecuteAsTemplate "css/style.css" . | minify }}
+  {{ $styles = $styles | resources.ExecuteAsTemplate "css/style.css" . | minify | fingerprint | resources.PostProcess }}
 {{ else }}
   {{ $styles = $styles | resources.ExecuteAsTemplate "css/style.css" . }}
 {{ end }}
 
-{{/* Inlined Production Stylesheet for Instant 0ms CSS Paint and 0.000 CLS */}}
-<style>{{ $styles.Content | safeCSS }}</style>
+{{/* Main Stylesheet */}}
+<link
+  href="{{ $styles.RelPermalink }}"
+  integrity="{{ $styles.Data.Integrity }}"
+  rel="stylesheet" />
 
 {{/* Lazy Stylesheet (if any) */}}
 {{ if gt (len $stylesLazy) 0 }}
   {{ $stylesLazy = $stylesLazy | resources.Concat "css/style-lazy.css" }}
   {{ $stylesLazy = $stylesLazy | resources.PostCSS }}
   {{ if hugo.IsProduction }}
-    {{ $stylesLazy = $stylesLazy | resources.ExecuteAsTemplate "css/style-lazy.css" . | minify }}
+    {{ $stylesLazy = $stylesLazy | resources.ExecuteAsTemplate "css/style-lazy.css" . | minify | fingerprint | resources.PostProcess }}
   {{ else }}
     {{ $stylesLazy = $stylesLazy | resources.ExecuteAsTemplate "css/style-lazy.css" . }}
   {{ end }}
-  <style>{{ $stylesLazy.Content | safeCSS }}</style>
+  <link
+    defer
+    async
+    rel="stylesheet"
+    href="{{ $stylesLazy.RelPermalink }}"
+    integrity="{{ $stylesLazy.Data.Integrity }}"
+    media="print"
+    onload="this.media='all'; this.onload=null;" />
 {{ end }}
