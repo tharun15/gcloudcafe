@@ -2338,12 +2338,15 @@
 
     var titleInput = document.getElementById("article-title-input");
     var categorySelect = document.getElementById("article-category-select");
+    var draftSelect = document.getElementById("article-draft-select");
+    var draftStatusPill = document.getElementById("draft-status-pill");
     var tagsInput = document.getElementById("article-tags-input");
     var authorInput = document.getElementById("article-author-input");
     var descInput = document.getElementById("article-desc-input");
     var imageUrlInput = document.getElementById("article-image-url-input");
     var markdownInput = document.getElementById("article-markdown-input");
     var livePreview = document.getElementById("article-live-preview");
+
 
     var wordCountElem = document.getElementById("article-word-count");
     var readTimeElem = document.getElementById("article-read-time");
@@ -2424,16 +2427,18 @@
       lockDashboard();
     }
 
+
     var seriesInput = document.getElementById("article-series-input");
     var seriesOrderInput = document.getElementById("article-series-order-input");
 
-    var inputs = [titleInput, categorySelect, tagsInput, authorInput, descInput, imageUrlInput, seriesInput, seriesOrderInput, markdownInput];
+    var inputs = [titleInput, categorySelect, draftSelect, tagsInput, authorInput, descInput, imageUrlInput, seriesInput, seriesOrderInput, markdownInput];
     inputs.forEach(function (inp) {
       if (inp) {
         inp.addEventListener("input", updateLivePreview);
         inp.addEventListener("change", updateLivePreview);
       }
     });
+
 
     var toolbarButtons = document.querySelectorAll("[data-format]");
     toolbarButtons.forEach(function (btn) {
@@ -2461,7 +2466,7 @@
         case "list": replacement = "\n- " + (selected || "List item 1") + "\n- List item 2\n"; break;
         case "callout": replacement = "\n> [!NOTE]\n> " + (selected || "Important technical note here.") + "\n"; break;
         case "link": replacement = "[" + (selected || "Link Text") + "](https://cloud.google.com)"; break;
-        case "image": replacement = "![" + (selected || "Image Alt") + "](/images/posts/banner.webp)"; break;
+        case "image": replacement = "![" + (selected || "Image Alt") + "](/images/posts/default-banner.webp)"; break;
       }
 
       markdownInput.value = text.substring(0, start) + replacement + text.substring(end);
@@ -2475,12 +2480,32 @@
       if (!livePreview) return;
       var title = titleInput ? titleInput.value.trim() : "";
       var category = categorySelect ? categorySelect.value : "Google Cloud";
+      var isDraft = (draftSelect ? draftSelect.value === "true" : false);
       var author = authorInput ? authorInput.value.trim() : "Tharun Vempati";
       var desc = descInput ? descInput.value.trim() : "";
       var imageUrl = imageUrlInput ? imageUrlInput.value.trim() : "";
       var seriesName = seriesInput ? seriesInput.value.trim() : "";
       var seriesOrder = seriesOrderInput ? (parseInt(seriesOrderInput.value, 10) || 1) : 1;
       var rawMd = markdownInput ? markdownInput.value : "";
+
+      if (draftStatusPill) {
+        if (isDraft) {
+          draftStatusPill.textContent = "Draft";
+          draftStatusPill.className = "text-[10px] font-bold px-2 py-0.5 rounded-md bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30";
+        } else {
+          draftStatusPill.textContent = "Live";
+          draftStatusPill.className = "text-[10px] font-bold px-2 py-0.5 rounded-md bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30";
+        }
+      }
+
+      var btnPublishGithub = document.getElementById("btn-publish-github");
+      if (btnPublishGithub && !btnPublishGithub.disabled) {
+        if (isDraft) {
+          btnPublishGithub.innerHTML = '<i class="fa-brands fa-github text-sm"></i> Push Draft to GitHub';
+        } else {
+          btnPublishGithub.innerHTML = '<i class="fa-brands fa-github text-sm"></i> Publish Live to GitHub';
+        }
+      }
 
       if (imgPreviewImg && imgPreviewEmpty) {
         if (imageUrl) {
@@ -2498,7 +2523,6 @@
         }
       }
 
-
       var cleanMdText = rawMd.replace(/<[^>]+>/g, "").replace(/[#*`>-]/g, " ").trim();
       var words = cleanMdText ? cleanMdText.split(/\s+/).filter(Boolean).length : 0;
       var readTime = Math.max(1, Math.ceil(words / 200));
@@ -2507,10 +2531,11 @@
       if (readTimeElem) readTimeElem.textContent = String(readTime);
 
       var categoryBadgeClass = (category === "Certifications") ? "stitch-badge-amber" : "stitch-badge";
+      var draftBadgeHtml = isDraft ? '<span class="stitch-badge-amber text-xs py-0.5 px-2.5 mb-2 mr-2 inline-block"><i class="fa-solid fa-file-pen mr-1"></i> Draft Mode</span>' : '';
       var renderedHtml = "";
 
       if (title) {
-        renderedHtml += '<div class="mb-4"><span class="' + categoryBadgeClass + ' text-xs py-0.5 px-2.5 mb-2 inline-block">' + escapeHtml(category) + '</span>' +
+        renderedHtml += '<div class="mb-4">' + draftBadgeHtml + '<span class="' + categoryBadgeClass + ' text-xs py-0.5 px-2.5 mb-2 inline-block">' + escapeHtml(category) + '</span>' +
           '<h1 class="text-2xl sm:text-3xl font-extrabold text-dark dark:text-darkmode-dark leading-snug mb-2">' + escapeHtml(title) + '</h1>' +
           (desc ? '<p class="text-sm text-text/80 dark:text-darkmode-text/80 leading-relaxed mb-3 italic">' + escapeHtml(desc) + '</p>' : '') +
           '<div class="flex items-center gap-3 text-xs font-semibold text-text/60 dark:text-darkmode-text/60 mb-4"><span class="text-primary font-bold"><i class="fa-solid fa-user-ninja mr-1"></i>' + escapeHtml(author) + '</span> <span><i class="fa-regular fa-clock mr-1"></i>' + readTime + ' min read</span></div></div>';
@@ -2573,6 +2598,7 @@
       btnExportMd.addEventListener("click", function () {
         var title = titleInput ? titleInput.value.trim() : "Untitled Article";
         var category = categorySelect ? categorySelect.value : "Google Cloud";
+        var isDraft = (draftSelect ? draftSelect.value === "true" : false);
         var desc = descInput ? descInput.value.trim() : "";
         var author = authorInput ? authorInput.value.trim() : "Tharun Vempati";
         var tags = tagsInput ? tagsInput.value.split(",").map(function (t) { return t.trim(); }).filter(Boolean) : [];
@@ -2595,7 +2621,7 @@
           'tags: ' + JSON.stringify(tags) + '\n' +
           'author: "' + author + '"\n' +
           (seriesName ? ('series: "' + seriesName.replace(/"/g, '\\"') + '"\nseries_order: ' + seriesOrder + '\n') : '') +
-          'draft: false\n' +
+          'draft: ' + isDraft + '\n' +
           "---\n\n" + rawMd;
 
         var blob = new Blob([frontMatter], { type: "text/markdown;charset=utf-8;" });
@@ -2614,6 +2640,7 @@
       btnCopyMd.addEventListener("click", function () {
         var title = titleInput ? titleInput.value.trim() : "Untitled Article";
         var category = categorySelect ? categorySelect.value : "Google Cloud";
+        var isDraft = (draftSelect ? draftSelect.value === "true" : false);
         var desc = descInput ? descInput.value.trim() : "";
         var author = authorInput ? authorInput.value.trim() : "Tharun Vempati";
         var tags = tagsInput ? tagsInput.value.split(",").map(function (t) { return t.trim(); }).filter(Boolean) : [];
@@ -2632,7 +2659,7 @@
           'tags: ' + JSON.stringify(tags) + '\n' +
           'author: "' + author + '"\n' +
           (seriesName ? ('series: "' + seriesName.replace(/"/g, '\\"') + '"\nseries_order: ' + seriesOrder + '\n') : '') +
-          'draft: false\n' +
+          'draft: ' + isDraft + '\n' +
           "---\n\n" + rawMd;
 
         navigator.clipboard.writeText(frontMatter).then(function () {
@@ -2642,6 +2669,7 @@
         });
       });
     }
+
 
     if (btnPublishSupabase) {
       btnPublishSupabase.addEventListener("click", function () {
@@ -3455,6 +3483,7 @@
         var filename = new Date().toISOString().split("T")[0] + "-" + slug + ".md";
         var targetPath = "content/english/blog/" + filename;
 
+        var isDraft = (draftSelect ? draftSelect.value === "true" : false);
         var frontMatter = "---\n" +
           'title: "' + title.replace(/"/g, '\\"') + '"\n' +
           'meta_title: "' + title.replace(/"/g, '\\"') + ' | GCloud Cafe"\n' +
@@ -3465,22 +3494,24 @@
           'tags: ' + JSON.stringify(tags) + '\n' +
           'author: "' + author + '"\n' +
           (seriesName ? ('series: "' + seriesName.replace(/"/g, '\\"') + '"\nseries_order: ' + seriesOrder + '\n') : '') +
-          'draft: false\n' +
+          'draft: ' + isDraft + '\n' +
           "---\n\n" + rawMd;
 
         var base64Md = btoa(unescape(encodeURIComponent(frontMatter)));
+        var commitMsg = isDraft ? ("feat(blog): add draft article: " + title) : ("feat(blog): publish article: " + title);
 
-        uploadFileToGithub(targetPath, base64Md, "feat(blog): publish article: " + title, patToken)
+        uploadFileToGithub(targetPath, base64Md, commitMsg, patToken)
           .then(function () {
             btnPublishGithub.disabled = false;
-            btnPublishGithub.innerHTML = '<i class="fa-solid fa-circle-check text-emerald-400 mr-1.5"></i> Published Live to GitHub!';
-            setTimeout(function () { btnPublishGithub.innerHTML = originalHtml; }, 4000);
+            btnPublishGithub.innerHTML = isDraft ? '<i class="fa-solid fa-circle-check text-amber-400 mr-1.5"></i> Draft Pushed to GitHub!' : '<i class="fa-solid fa-circle-check text-emerald-400 mr-1.5"></i> Published Live to GitHub!';
+            setTimeout(function () { updateLivePreview(); }, 4000);
           })
           .catch(function (err) {
             btnPublishGithub.disabled = false;
             alert("GitHub publishing error: " + err.message);
             btnPublishGithub.innerHTML = originalHtml;
           });
+
       });
     }
   }
