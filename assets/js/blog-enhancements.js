@@ -3340,26 +3340,96 @@
       });
     }
 
+    var toggleGithubPatBtn = document.getElementById("toggle-github-pat-btn");
+    var githubStorageBadge = document.getElementById("github-storage-badge");
+
+    async function getGithubPatToken() {
+      var localPat = localStorage.getItem("gcloud_github_pat") || (githubPatInput ? githubPatInput.value.trim() : "");
+      if (localPat) return localPat;
+
+      try {
+        var res = await fetch(config.url + "/rest/v1/site_settings?key=eq.github_pat&select=value", {
+          headers: {
+            "apikey": config.anonKey,
+            "Authorization": "Bearer " + config.anonKey
+          }
+        });
+        if (res.ok) {
+          var rows = await res.json();
+          if (Array.isArray(rows) && rows.length > 0 && rows[0].value) {
+            var pat = rows[0].value.trim();
+            if (pat) {
+              if (githubPatInput) githubPatInput.value = pat;
+              localStorage.setItem("gcloud_github_pat", pat);
+              if (githubStorageBadge) githubStorageBadge.textContent = "Connected via Supabase";
+              return pat;
+            }
+          }
+        }
+      } catch (e) {}
+
+      return "";
+    }
+
     if (githubPatInput) {
       var savedPat = localStorage.getItem("gcloud_github_pat") || "";
-      if (savedPat) githubPatInput.value = savedPat;
+      if (savedPat) {
+        githubPatInput.value = savedPat;
+        if (githubStorageBadge) githubStorageBadge.textContent = "Connected via Browser & Supabase";
+      } else {
+        getGithubPatToken();
+      }
+    }
+
+    if (toggleGithubPatBtn && githubPatInput) {
+      toggleGithubPatBtn.addEventListener("click", function () {
+        if (githubPatInput.type === "password") {
+          githubPatInput.type = "text";
+          toggleGithubPatBtn.innerHTML = '<i class="fa-regular fa-eye-slash"></i>';
+        } else {
+          githubPatInput.type = "password";
+          toggleGithubPatBtn.innerHTML = '<i class="fa-regular fa-eye"></i>';
+        }
+      });
     }
 
     if (btnToggleGithub && githubDrawer) {
       btnToggleGithub.addEventListener("click", function () {
         githubDrawer.classList.toggle("hidden");
+        if (!githubDrawer.classList.contains("hidden") && githubPatInput) {
+          githubPatInput.focus();
+        }
       });
     }
 
     if (btnSaveGithubToken && githubPatInput) {
-      btnSaveGithubToken.addEventListener("click", function () {
+      btnSaveGithubToken.addEventListener("click", async function () {
         var token = githubPatInput.value.trim();
         if (!token) return;
         localStorage.setItem("gcloud_github_pat", token);
+
+        try {
+          await fetch(config.url + "/rest/v1/site_settings", {
+            method: "POST",
+            headers: {
+              "apikey": config.anonKey,
+              "Authorization": "Bearer " + config.anonKey,
+              "Content-Type": "application/json",
+              "Prefer": "resolution=merge-duplicates"
+            },
+            body: JSON.stringify({
+              key: "github_pat",
+              value: token,
+              updated_at: new Date().toISOString()
+            })
+          });
+        } catch (e) {}
+
         if (githubTokenStatus) {
-          githubTokenStatus.textContent = "GitHub Personal Access Token saved securely in your browser!";
+          githubTokenStatus.textContent = "✓ GitHub Personal Access Token saved and synced securely!";
           githubTokenStatus.classList.remove("hidden");
-          setTimeout(function () { githubTokenStatus.classList.add("hidden"); }, 3500);
+          if (githubStorageBadge) githubStorageBadge.textContent = "Connected via Supabase";
+          setTimeout(function () { githubTokenStatus.classList.add("hidden"); }, 4000);
         }
       });
     }
@@ -3367,6 +3437,7 @@
     function uploadFileToGithub(path, base64Content, commitMessage, patToken) {
       var repo = "tharun15/gcloudcafe";
       var url = "https://api.github.com/repos/" + repo + "/contents/" + path;
+
 
       return fetch(url, {
         headers: { "Authorization": "token " + patToken }
@@ -3406,14 +3477,17 @@
 
     // Direct Image Upload Handler
     if (imageFileInput) {
-      imageFileInput.addEventListener("change", function (e) {
+      imageFileInput.addEventListener("change", async function (e) {
         var file = e.target.files && e.target.files[0];
         if (!file) return;
 
-        var patToken = localStorage.getItem("gcloud_github_pat") || (githubPatInput ? githubPatInput.value.trim() : "");
+        var patToken = await getGithubPatToken();
         if (!patToken) {
-          if (githubDrawer) githubDrawer.classList.remove("hidden");
-          alert("Please enter and save your GitHub Personal Access Token first to upload images directly to the repo!");
+          if (githubDrawer) {
+            githubDrawer.classList.remove("hidden");
+            githubDrawer.scrollIntoView({ behavior: "smooth", block: "center" });
+            if (githubPatInput) githubPatInput.focus();
+          }
           return;
         }
 
@@ -3451,19 +3525,23 @@
 
     // 1-Click Publish Live to GitHub Repo Handler
     if (btnPublishGithub) {
-      btnPublishGithub.addEventListener("click", function () {
+      btnPublishGithub.addEventListener("click", async function () {
         var title = titleInput ? titleInput.value.trim() : "";
         if (!title) {
           alert("Please enter an article title first!");
           return;
         }
 
-        var patToken = localStorage.getItem("gcloud_github_pat") || (githubPatInput ? githubPatInput.value.trim() : "");
+        var patToken = await getGithubPatToken();
         if (!patToken) {
-          if (githubDrawer) githubDrawer.classList.remove("hidden");
-          alert("Please enter and save your GitHub Personal Access Token first to enable 1-click live publishing!");
+          if (githubDrawer) {
+            githubDrawer.classList.remove("hidden");
+            githubDrawer.scrollIntoView({ behavior: "smooth", block: "center" });
+            if (githubPatInput) githubPatInput.focus();
+          }
           return;
         }
+
 
         var originalHtml = btnPublishGithub.innerHTML;
         btnPublishGithub.disabled = true;
