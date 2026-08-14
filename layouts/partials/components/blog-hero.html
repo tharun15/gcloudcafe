@@ -16,9 +16,9 @@
     {{ $heroBadgeClass = "stitch-badge-amber" }}
   {{ end }}
 
-  {{/* Next 3 recent posts for the Trending & Next Up side panel */}}
+  {{/* Next 3 recent posts for the Trending & Next Up side panel (excluding featured) */}}
   {{ $allBlog := where site.RegularPages "Section" "blog" }}
-  {{ $sidePosts := first 3 (after 1 $allBlog) }}
+  {{ $sidePosts := first 3 (where $allBlog "RelPermalink" "ne" $page.RelPermalink) }}
 
   <section class="section-sm py-6 sm:py-8" aria-labelledby="featured-post-title">
     <div class="container">
@@ -63,80 +63,71 @@
               </h1>
 
               <!-- Teaser -->
-              <p class="text-base sm:text-lg text-dark/90 dark:text-darkmode-text/95 mb-6 leading-relaxed font-normal">
+              <p class="text-text dark:text-darkmode-text text-sm sm:text-base leading-relaxed mb-6 line-clamp-3">
                 {{ $teaser }}
               </p>
             </div>
 
-            <!-- Bottom Metadata & Actions Bar -->
-            <div class="relative">
-              <div class="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs sm:text-sm font-semibold text-text/80 dark:text-darkmode-text/80 pt-4 border-t border-border/50 dark:border-darkmode-border/50 mb-5">
-                <span class="inline-flex items-center gap-1.5">
-                  <i class="fa-regular fa-circle-user text-primary"></i>
-                  <a href="{{ `authors/` | relLangURL }}{{ $authorSlug | urlize }}/" class="hover:text-primary font-bold text-dark dark:text-darkmode-dark">
-                    {{ $authorName }}
-                  </a>
-                </span>
-                <span class="inline-flex items-center gap-1.5">
-                  <i class="fa-regular fa-calendar text-primary"></i>
-                  {{ time.Format ":date_long" $page.PublishDate }}
-                </span>
-                <span class="inline-flex items-center gap-1.5">
-                  <i class="fa-regular fa-clock text-primary"></i>
-                  {{ $page.ReadingTime }} min read
-                </span>
+            <!-- Hero Image Preview -->
+            {{ with .Params.image }}
+              <div class="relative rounded-2xl overflow-hidden mb-6 aspect-video max-h-72 w-full bg-slate-100 dark:bg-slate-900 border border-border/40 dark:border-darkmode-border/40">
+                <img src="{{ . | relURL }}" alt="{{ $page.Title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out" />
+              </div>
+            {{ end }}
+
+            <!-- Hero Footer / Meta -->
+            <div class="relative flex items-center justify-between flex-wrap gap-4 pt-4 border-t border-border/40 dark:border-darkmode-border/40 text-xs text-text/75 dark:text-darkmode-text/75">
+              <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-full bg-primary/10 dark:bg-primary/20 flex items-center justify-center font-bold text-primary text-xs">
+                  {{ substr $authorName 0 1 }}
+                </div>
+                <div>
+                  <span class="font-bold text-dark dark:text-darkmode-dark block">{{ $authorName }}</span>
+                  <span>{{ $page.Date.Format "Jan 02, 2006" }} · {{ $page.ReadingTime }} min read</span>
+                </div>
               </div>
 
-              <!-- Hero CTA Buttons -->
-              <div class="flex items-center flex-wrap gap-2.5">
-                <a href="{{ $page.RelPermalink }}" class="btn-gradient-primary py-2.5 px-5 text-xs sm:text-sm w-full sm:w-auto text-center justify-center" aria-label="Read featured article: {{ $page.Title }}">
-                  Read Article <i class="fa-solid fa-arrow-right ml-1.5 text-xs"></i>
-                </a>
-                <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ $page.Permalink | safeURL }}" target="_blank" rel="noopener noreferrer" class="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-[#0a66c2]/15 hover:bg-[#0a66c2] text-[#0a66c2] hover:text-white text-xs font-bold transition-all no-underline shrink-0" title="Share on LinkedIn" aria-label="Share featured article: {{ $page.Title }} on LinkedIn">
-                  <i class="fa-brands fa-linkedin text-sm"></i> Share
-                </a>
-                {{ with $root.BrowseLink }}
-                  <a href="{{ . }}" class="hidden sm:inline-flex btn btn-outline-primary py-2.5 px-4 text-xs font-bold rounded-xl">
-                    {{ $root.BrowseLabel | default "All Articles" }}
-                  </a>
-                {{ end }}
-              </div>
+              <a href="{{ $page.RelPermalink }}" class="btn btn-primary py-2 px-5 text-xs font-bold rounded-xl shadow-md inline-flex items-center gap-2 group-hover:gap-3 transition-all">
+                Read Article <i class="fa-solid fa-arrow-right text-[10px]"></i>
+              </a>
             </div>
 
           </div>
         </div>
 
         <!-- Right Column: Trending & Next Up Side Panel -->
-        <div class="lg:col-span-5 xl:col-span-4 flex flex-col justify-between space-y-3">
-          <div class="flex items-center justify-between px-1">
-            <span class="text-xs font-extrabold uppercase tracking-wider text-dark dark:text-darkmode-dark flex items-center gap-1.5">
-              <i class="fa-solid fa-fire text-amber-500"></i> Trending &amp; Next Up
-            </span>
-            <a href="/blog/" class="text-xs font-bold text-primary hover:underline">
+        <div class="lg:col-span-5 xl:col-span-4 flex flex-col gap-4">
+          <div class="flex items-center justify-between px-2 mb-1">
+            <h2 class="text-xs font-extrabold uppercase tracking-widest text-text/60 dark:text-darkmode-text/60 flex items-center gap-2">
+              <i class="fa-solid fa-fire text-amber-500"></i> Next Up & Trending
+            </h2>
+            <a href="{{ `blog/` | relLangURL }}" class="text-xs font-bold text-primary hover:underline">
               View All <i class="fa-solid fa-chevron-right text-[9px]"></i>
             </a>
           </div>
 
-          <div class="flex flex-col gap-3 h-full justify-between">
+          <div class="flex flex-col gap-3 flex-1">
             {{ range $sidePosts }}
-              {{ $sideCategory := index (.Params.categories | default (slice "Tech")) 0 }}
-              {{ $sideBadgeClass := "stitch-badge" }}
-              {{ $sideCatLower := $sideCategory | lower }}
-              {{ if or (eq $sideCatLower "certification") (eq $sideCatLower "certifications") (eq $sideCatLower "exam prep") }}
-                {{ $sideBadgeClass = "stitch-badge-amber" }}
-              {{ end }}
-              <a href="{{ .RelPermalink }}" class="bg-body dark:bg-darkmode-body border border-border/80 dark:border-darkmode-border/80 rounded-2xl p-4 shadow-xs no-underline group block transition-all duration-300 hover:border-primary/50 hover:shadow-[0_0_16px_rgba(79,142,247,0.1)]">
-                <div class="flex items-center justify-between gap-2 mb-1.5">
-                  <span class="{{ $sideBadgeClass }} text-[10px] py-0.5 px-2">
-                    {{ $sideCategory | humanize }}
-                  </span>
-                  <span class="text-xs text-text/60 dark:text-darkmode-text/60">
-                    <i class="fa-regular fa-clock"></i> {{ .ReadingTime }} min read
-                  </span>
+              {{ $sideCat := index (.Params.categories | default (slice "")) 0 }}
+              <a href="{{ .RelPermalink }}" class="relative flex flex-col justify-between p-4 rounded-2xl bg-body dark:bg-darkmode-theme-light border border-border/70 dark:border-darkmode-border/60 hover:border-primary/40 dark:hover:border-primary/40 shadow-sm hover:shadow-md transition-all group no-underline">
+                <div>
+                  <div class="flex items-center gap-2 mb-1.5">
+                    {{ with $sideCat }}
+                      <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-theme-light dark:bg-darkmode-body text-text/80 dark:text-darkmode-text/80">
+                        {{ . }}
+                      </span>
+                    {{ end }}
+                    <span class="text-[11px] text-text/60 dark:text-darkmode-text/60">
+                      {{ .Date.Format "Jan 02" }} · {{ .ReadingTime }}m
+                    </span>
+                  </div>
+                  <h3 class="text-sm font-bold text-dark dark:text-darkmode-dark line-clamp-2 group-hover:text-primary dark:group-hover:text-darkmode-primary transition-colors leading-snug">
+                    {{ .Title }}
+                  </h3>
                 </div>
-                <h2 class="text-sm font-bold text-dark dark:text-darkmode-dark group-hover:text-primary dark:group-hover:text-darkmode-primary transition-colors leading-snug line-clamp-2">
-                  {{ .Title }}
-                </h2>
+                <div class="mt-2 text-xs font-bold text-primary flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                  Read <i class="fa-solid fa-arrow-right text-[9px]"></i>
+                </div>
               </a>
             {{ end }}
           </div>
