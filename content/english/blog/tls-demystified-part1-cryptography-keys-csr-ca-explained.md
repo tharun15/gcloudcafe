@@ -50,13 +50,17 @@ This open design created three fundamental security challenges:
 2. **Tampering:** Intermediate actors can modify data in transit without either party knowing.
 3. **Impersonation:** A rogue server can pretend to be your target bank or API, and you would have no native way to verify its true identity.
 
-To solve this, **TLS (Transport Layer Security)** was designed to provide three core properties: **Confidentiality** (bulk encryption), **Integrity** (AEAD tamper detection), and **Authentication** (digital identity verification).
+To solve this, **TLS (Transport Layer Security)** is designed to provide three fundamental security properties:
+
+- **Confidentiality:** Bulk symmetric encryption prevents passive eavesdroppers from reading traffic. *(Note: Metadata like packet sizes and destination IP/SNI may remain observable unless specific padding or Encrypted Client Hello is used.)*
+- **Integrity:** Authenticated encryption (AEAD) ensures that any in-transit modification or tampering causes the connection to terminate immediately.
+- **Authentication:** Digital signatures and X.509 certificates verify that the server (and optionally the client in mTLS) legitimately owns the identity it claims.
 
 ---
 
 ## 2. Public-Key Cryptography: The Alice, Bob, and Padlock Story
 
-Before exploring modern algorithms, let's look at how two parties—**Alice and Bob**—solve the problem of establishing trust and privacy across an open, untrusted postal route.
+Before exploring modern protocol mechanics, let's look at how two parties—**Alice and Bob**—solve the problem of establishing trust and privacy across an open, untrusted postal route.
 
 Bob wants *anyone in the world* (including Alice) to be able to send him confidential mail, even if Bob and Alice have never met in person before.
 
@@ -92,17 +96,17 @@ Bob wants *anyone in the world* (including Alice) to be able to send him confide
 </div>
 </div>
 
-This story provides the intuitive foundation of public-key cryptography. But how does modern TLS translate this into lightning-fast, secure internet protocols?
+This story provides the intuitive mental model for public-key cryptography. However, in modern internet protocols, asymmetric keys are not used to encrypt the entire conversation. Let's see how modern TLS separates these roles for speed and forward secrecy.
 
 ---
 
 ## 3. The 3 Cryptographic Jobs: Authentication vs. Key Exchange vs. Encryption
 
-In early TLS versions (like TLS 1.2 RSA handshakes), clients sent encrypted session keys directly using the server's public key. 
+In legacy TLS 1.2 handshakes, systems sometimes used *static RSA key transport*—where the client encrypted a secret directly using the server's public key. 
 
-However, **modern TLS 1.3 ([RFC 8446](https://datatracker.ietf.org/doc/html/rfc8446)) completely separated these roles** to guarantee **Forward Secrecy** (ensuring that a future private key compromise cannot retroactively decrypt past recorded traffic).
+However, **modern TLS 1.3 ([RFC 8446](https://datatracker.ietf.org/doc/html/rfc8446)) completely removed static RSA key exchange** because it lacked **Forward Secrecy** (if the server's private key was ever leaked in the future, all historically recorded encrypted traffic could be decrypted).
 
-Modern TLS divides responsibilities into three distinct engines:
+Modern TLS cleanly divides cryptographic work into three distinct roles:
 
 <div class="space-y-4 my-8">
 <div class="p-6 rounded-2xl bg-indigo-50/80 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800/70 shadow-sm">
@@ -114,7 +118,7 @@ Modern TLS divides responsibilities into three distinct engines:
 <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-indigo-500/20 text-indigo-700 dark:text-indigo-300 font-mono">RSA-PSS / ECDSA / Ed25519</span>
 </div>
 <p class="text-sm text-slate-800 dark:text-slate-200 leading-relaxed m-0">
-The server's certificate contains an asymmetric public key. The server signs the handshake transcript with its private key to prove it owns the certificate. <b>The certificate key authenticates the server's identity; it does NOT encrypt the session key.</b>
+The server's certificate contains an asymmetric public key. The server creates a digital signature over the handshake transcript using its private key (<code>CertificateVerify</code>) to prove it legitimately owns the certificate. <b>The certificate's asymmetric key authenticates identity; it is NOT used to encrypt the session secret.</b>
 </p>
 </div>
 
@@ -127,7 +131,7 @@ The server's certificate contains an asymmetric public key. The server signs the
 <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-blue-500/20 text-blue-700 dark:text-blue-300 font-mono">ECDHE (X25519 / P-256)</span>
 </div>
 <p class="text-sm text-slate-800 dark:text-slate-200 leading-relaxed m-0">
-Both parties generate temporary, one-time keys. Through Diffie-Hellman mathematical key agreement, they calculate the exact same shared secret over an open channel without ever transmitting that secret over the wire.
+Client and server each generate one-time, ephemeral key pairs. Through Diffie-Hellman mathematics, both sides independently calculate the exact same shared secret without transmitting it over the wire. This ensures <b>Forward Secrecy</b>.
 </p>
 </div>
 
@@ -135,19 +139,19 @@ Both parties generate temporary, one-time keys. Through Diffie-Hellman mathemati
 <div class="flex items-center justify-between flex-wrap gap-2 mb-2">
 <div class="flex items-center gap-3">
 <span class="text-2xl">⚡</span>
-<h4 class="text-base font-bold text-emerald-950 dark:text-emerald-100 m-0">3. Record Encryption (Symmetric AEAD)</h4>
+<h4 class="text-base font-bold text-emerald-950 dark:text-emerald-100 m-0">3. Record Encryption (Symmetric AEAD via HKDF)</h4>
 </div>
 <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 font-mono">AES-GCM / ChaCha20-Poly1305</span>
 </div>
 <p class="text-sm text-slate-800 dark:text-slate-200 leading-relaxed m-0">
-From the shared secret, both sides derive temporary symmetric keys for bulk data transfer using Authenticated Encryption with Associated Data (AEAD). Hardware-accelerated directly on CPUs (AES-NI / ARM Crypto) to encrypt gigabits per second with minimal latency.
+Using HKDF (HMAC-based Key Derivation Function), both endpoints derive temporary symmetric traffic keys from the shared secret. Authenticated Encryption with Associated Data (AEAD) encrypts application data at gigabits per second with native CPU acceleration (AES-NI / ARM Crypto).
 </p>
 </div>
 </div>
 
 ### 🗺️ The Complete TLS Mental Model Flowchart
 
-Here is how all these components connect during a connection:
+Here is the exact architectural pipeline from certificate verification to encrypted traffic:
 
 <div class="p-6 sm:p-8 rounded-3xl bg-slate-50 dark:bg-slate-900/90 border-2 border-slate-200 dark:border-slate-800 my-8 shadow-md">
 <div class="text-center font-extrabold text-lg sm:text-xl text-slate-900 dark:text-white mb-6 flex items-center justify-center gap-2">
@@ -170,7 +174,7 @@ Here is how all these components connect during a connection:
 </div>
 <div class="text-blue-600 dark:text-blue-400 font-black text-2xl">↓</div>
 <div class="w-full p-4 rounded-2xl bg-amber-50 dark:bg-amber-950/60 border-2 border-amber-300 dark:border-amber-600/70 text-center shadow-xs">
-<div class="text-xs font-bold uppercase tracking-wider text-amber-800 dark:text-amber-300 mb-1">Step 4 • Bulk Encryption Keys (AEAD)</div>
+<div class="text-xs font-bold uppercase tracking-wider text-amber-800 dark:text-amber-300 mb-1">Step 4 • HKDF Key Derivation (AEAD)</div>
 <div class="text-sm sm:text-base font-bold text-amber-950 dark:text-amber-100">Derive Symmetric Session Keys (AES-256-GCM / ChaCha20-Poly1305)</div>
 </div>
 <div class="text-emerald-600 dark:text-emerald-400 font-black text-2xl">↓</div>
@@ -199,6 +203,18 @@ A CSR (defined in <a href="https://datatracker.ietf.org/doc/html/rfc2986" target
 </p>
 </div>
 
+### Quick Comparison Cheat Sheet
+
+| Term | What It Is | Role in Modern TLS | Is It Secret? |
+| :--- | :--- | :--- | :--- |
+| **Private Key** (`.key`) | Secret cryptographic key kept strictly on the server. | Creates digital signatures during TLS authentication. | **YES (Strictly Confidential)** |
+| **Public Key** (`.pub`) | Public counterpart embedded in the X.509 certificate. | Used by clients to verify the server's digital signatures. | **No (Publicly Distributed)** |
+| **Key Exchange (ECDHE)** | Ephemeral key agreement protocol (X25519, P-256). | Both endpoints independently derive the shared session secret. | Temporary (Ephemeral) |
+| **CSR** (Certificate Signing Request) | Standardized request bundle with Public Key & SANs. | Submitted to CA to obtain a signed certificate. | **No** |
+| **CA** (Certificate Authority) | Accredited entity that verifies domain ownership. | Digitally signs certificates with its private key. | Public Root CAs are pre-trusted |
+| **Digital Certificate** (`.crt`, `.pem`) | X.509 document binding a Public Key to domain names. | Sent to clients during handshake for identity proof. | **No** |
+| **SAN** (Subject Alternative Name) | Domain names, wildcards, or IP addresses certified. | Defines exact hosts the certificate is valid for. | **No** |
+
 ---
 
 ## 5. Digital Certificates: The Notarized Identity
@@ -207,8 +223,10 @@ Once the CA verifies you control the domain, it produces an **X.509 Digital Cert
 
 Bob installs this certificate on his web server and presents it to clients during the TLS handshake.
 
-### Key Size vs. File Size on Disk (Key Size ≠ File Size)
+### Key Length vs. File Size on Disk (Key Size ≠ File Size)
 A frequent point of confusion is the difference between cryptographic key parameters and actual file sizes on disk:
+
+> **Important:** Key length refers to the mathematical bit-length of the underlying cryptographic key material, which is **not the same as the size of the encoded private-key file or certificate on disk**.
 
 <div class="grid grid-cols-1 md:grid-cols-2 gap-5 my-8">
 <div class="p-6 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 shadow-sm">
@@ -233,7 +251,7 @@ A frequent point of confusion is the difference between cryptographic key parame
 
 ---
 
-## 6. Certificate Authorities: Public CAs vs. Private PKI Tools
+## 6. Certificate Authorities: Public CAs vs. Private PKI & Certificate Management
 
 Who issues and validates these certificates?
 
@@ -244,7 +262,7 @@ Who issues and validates these certificates?
 </div>
 <ul class="text-sm text-slate-800 dark:text-slate-200 space-y-2 m-0 pl-4 leading-relaxed">
 <li><b>Examples:</b> Let's Encrypt, DigiCert, Sectigo, Google Trust Services.</li>
-<li><b>Trust Model:</b> For a publicly trusted certificate, the client is expected to already trust an appropriate Root CA through its trust store (pre-installed in OS, browser, or JVM).</li>
+<li><b>Trust Model:</b> For publicly trusted certificates, the client typically already has the required root trust anchor in its trust store (pre-installed in OS, browser, or JVM).</li>
 <li><b>Use Case:</b> Public internet websites, customer-facing SaaS apps, public REST APIs.</li>
 <li><b>Constraints:</b> Requires verifiable public domain control (ACME RFC 8555). Cannot issue certificates for internal private DNS.</li>
 </ul>
@@ -252,13 +270,13 @@ Who issues and validates these certificates?
 
 <div class="p-6 rounded-2xl bg-indigo-50/70 dark:bg-indigo-950/30 border border-indigo-200 dark:border-indigo-800/60 shadow-sm">
 <div class="flex items-center gap-2 font-bold text-indigo-950 dark:text-indigo-100 text-base mb-3">
-<span>🏢</span> Private PKI & Certificate Management Tools
+<span>🏢</span> Private PKI & Certificate Management
 </div>
 <ul class="text-sm text-slate-800 dark:text-slate-200 space-y-2 m-0 pl-4 leading-relaxed">
 <li><b>Managed Private CA Services:</b> AWS Private CA, Google Cloud Certificate Authority Service (CAS).</li>
 <li><b>PKI Engines & Tools:</b> HashiCorp Vault PKI secrets engine, Smallstep <code>step-ca</code>.</li>
-<li><b>Lifecycle Automation:</b> Kubernetes <code>cert-manager</code> (orchestrates issuance from Vault, ACME, or internal issuers).</li>
-<li><b>Trust Model:</b> Untrusted by default. The private Root CA certificate must be explicitly distributed and trusted across servers, JVM truststores, and containers.</li>
+<li><b>Certificate Management & Automation:</b> Kubernetes <code>cert-manager</code> (a controller that manages certificate lifecycles from Vault, ACME, or internal issuers).</li>
+<li><b>Trust Model:</b> Untrusted by default. Private PKI roots must be explicitly distributed and trusted across servers, JVM truststores, and containers.</li>
 <li><b>Use Case:</b> Internal microservices, Kubernetes service meshes (Istio/Linkerd), internal mTLS, database connections.</li>
 </ul>
 </div>
@@ -352,10 +370,10 @@ In your PEM bundle file, it must be structured as:
 
 ### Why Incomplete or Out-of-Order Chains Cause Production Outages
 
-Different clients and trust/path-building implementations (browsers, OS cryptographic libraries, JVMs, Python `urllib3`, Go `crypto/tls`, OpenSSL, and Kubernetes Ingress controllers) behave differently when intermediate certificates are missing or out of order.
+Different clients and certificate-validation implementations can build and validate certificate paths differently. This means a configuration that appears to work in one client may fail in another, particularly when intermediates are missing or incorrectly configured.
 
-- Some desktop browsers may attempt to fetch missing intermediates via **AIA (Authority Information Access)** or use cached intermediate certificates.
-- Programmatic HTTP clients, CLI tools (`curl`), and microservice runtimes require the complete, properly ordered chain directly from the TLS handshake. When the intermediate is missing or the order is inverted, they fail immediately with:
+- Some desktop browsers may attempt to dynamically fetch missing intermediates via **AIA (Authority Information Access)** or use locally cached intermediate certificates.
+- Programmatic HTTP clients, CLI tools (`curl`), Java JVMs, Python `urllib3`, Go runtimes, and microservice frameworks require the complete, properly ordered chain directly from the TLS handshake. When the intermediate is missing or the order is inverted, they fail immediately with:
   ```text
   javax.net.ssl.SSLHandshakeException: PKIX path building failed
   curl: (35) error:0A000086:SSL routines::certificate verify failed
