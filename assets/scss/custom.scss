@@ -436,58 +436,96 @@ kbd {
    CLOUD PULSE UPVOTE & DOWNVOTE STYLING
    ========================================================================== */
 
+/* ==========================================================================
+   CLOUD PULSE UPVOTE & DOWNVOTE STYLING
+   ========================================================================== */
+
+.pulse-vote-pill {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 0.75rem;
+  background-color: rgba(241, 245, 249, 0.95);
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  padding: 2px;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.04);
+  transition: all 0.2s ease;
+
+  .dark & {
+    background-color: rgba(30, 41, 59, 0.85);
+    border-color: rgba(51, 65, 85, 0.8);
+  }
+}
+
 .pulse-vote-btn {
   display: inline-flex;
   align-items: center;
   gap: 0.25rem;
-  padding: 0.25rem 0.6rem;
-  border-radius: 0.6rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.55rem;
   font-size: 0.75rem;
   font-weight: 800 !important;
-  border: 1px solid rgba(226, 232, 240, 0.8);
+  border: none;
+  background: transparent;
   cursor: pointer;
-  transition: all 0.2s ease;
-  background-color: rgba(241, 245, 249, 0.9);
-  color: #1e293b !important;
+  transition: all 0.15s ease;
+  color: #334155 !important;
 
   .dark & {
-    background-color: rgba(30, 41, 59, 0.9);
-    color: #f8fafc !important;
-    border-color: rgba(51, 65, 85, 0.8);
+    color: #e2e8f0 !important;
+  }
+
+  svg {
+    width: 0.85rem;
+    height: 0.85rem;
+    fill: currentColor;
+    flex-shrink: 0;
   }
 
   &:hover {
-    background-color: rgba(16, 185, 129, 0.15);
+    background-color: rgba(16, 185, 129, 0.12);
     color: #059669 !important;
   }
 }
 
 .pulse-vote-btn-down {
+  padding: 0.25rem 0.4rem;
+
   &:hover {
-    background-color: rgba(244, 63, 94, 0.15) !important;
+    background-color: rgba(244, 63, 94, 0.12) !important;
     color: #e11d48 !important;
+  }
+}
+
+.pulse-vote-divider {
+  width: 1px;
+  height: 0.85rem;
+  background-color: rgba(203, 213, 225, 0.8);
+  margin: 0 1px;
+
+  .dark & {
+    background-color: rgba(71, 85, 105, 0.8);
   }
 }
 
 .pulse-vote-btn.is-upvoted {
   background-color: #059669 !important;
   color: #ffffff !important;
-  border-color: #047857 !important;
-  box-shadow: 0 2px 8px rgba(5, 150, 105, 0.35);
+  box-shadow: 0 1px 4px rgba(5, 150, 105, 0.3);
 
-  i, span {
+  svg, span {
     color: #ffffff !important;
+    fill: #ffffff !important;
   }
 }
 
 .pulse-vote-btn.is-downvoted {
   background-color: #e11d48 !important;
   color: #ffffff !important;
-  border-color: #be123c !important;
-  box-shadow: 0 2px 8px rgba(225, 29, 72, 0.35);
+  box-shadow: 0 1px 4px rgba(225, 29, 72, 0.3);
 
-  i, span {
+  svg, span {
     color: #ffffff !important;
+    fill: #ffffff !important;
   }
 }
 
