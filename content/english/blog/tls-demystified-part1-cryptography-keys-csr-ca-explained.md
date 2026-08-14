@@ -33,20 +33,21 @@ Before digging into cryptographic math, let's understand the core problem: **The
 TLS solves this by enforcing three fundamental guarantees:
 
 ```mermaid
-graph TD
-    TLS["🔒 Transport Layer Security (TLS)"]
-    Conf["🛡️ 1. Confidentiality (Encryption)<br/><small>Eavesdroppers cannot read your data in transit.</small>"]
-    Integ["🧩 2. Integrity (Tamper Detection)<br/><small>Packets cannot be modified or injected without detection.</small>"]
-    Auth["🪪 3. Authentication (Identity Verification)<br/><small>Proves the server is truly who it claims to be.</small>"]
+flowchart TD
+    TLS["🔒 <b>Transport Layer Security (TLS)</b>"]
+
+    Conf["🛡️ <b>1. Confidentiality (Encryption)</b><br/>Eavesdroppers and packet sniffers cannot read your data in transit."]
+    Integ["🧩 <b>2. Integrity (Tamper Detection)</b><br/>Packets cannot be modified or forged in transit without immediate detection."]
+    Auth["🪪 <b>3. Authentication (Identity Verification)</b><br/>Cryptographically proves the server is genuinely who it claims to be."]
 
     TLS --> Conf
     TLS --> Integ
     TLS --> Auth
 
     style TLS fill:#0284c7,stroke:#0369a1,color:#ffffff,stroke-width:2px;
-    style Conf fill:#0ea5e9,stroke:#0284c7,color:#ffffff;
-    style Integ fill:#10b981,stroke:#059669,color:#ffffff;
-    style Auth fill:#6366f1,stroke:#4338ca,color:#ffffff;
+    style Conf fill:#0284c7,stroke:#0369a1,color:#ffffff,stroke-width:2px;
+    style Integ fill:#059669,stroke:#047857,color:#ffffff,stroke-width:2px;
+    style Auth fill:#4f46e5,stroke:#4338ca,color:#ffffff,stroke-width:2px;
 ```
 
 1. **Confidentiality:** If someone sniffs your WiFi traffic at a coffee shop, all they see is scrambled ciphertext.
@@ -64,11 +65,14 @@ In reality, **public-key (asymmetric) cryptography involves heavy mathematics (m
 To solve this, TLS employs a **hybrid architecture**:
 
 ```mermaid
-graph LR
-    A["🔐 Asymmetric Cryptography<br/>(RSA / ECDSA)<br/><b>Heavy Math • Used ONLY in Handshake</b>"] -->|Exchanges Temporary Secret| B["⚡ Symmetric Cryptography<br/>(AES-256-GCM / ChaCha20)<br/><b>Hardware Accelerated • Bulk Data Tunnel</b>"]
+flowchart TD
+    A["🔐 <b>Asymmetric Cryptography (RSA / ECDSA)</b><br/>Heavy Public/Private Key Math • Used ONLY during Handshake to exchange secret"]
+    B["⚡ <b>Symmetric Cryptography (AES-256-GCM / ChaCha20)</b><br/>Hardware-Accelerated Single Key • Encrypts all bulk application HTTP payloads"]
 
-    style A fill:#0284c7,stroke:#0369a1,color:#ffffff;
-    style B fill:#10b981,stroke:#059669,color:#ffffff;
+    A -->|Negotiates Shared Secret| B
+
+    style A fill:#0284c7,stroke:#0369a1,color:#ffffff,stroke-width:2px;
+    style B fill:#059669,stroke:#047857,color:#ffffff,stroke-width:2px;
 ```
 
 ### 2.1. Asymmetric Encryption (The Identity & Key Exchange Phase)
@@ -87,19 +91,19 @@ To understand how security is established, let's trace the lifecycle of how a se
 
 ```mermaid
 flowchart TD
-    K["1. Private Key (.key)<br/><small>Generated locally on server • Kept strictly secret</small>"]
-    CSR["2. Certificate Signing Request (.csr)<br/><small>Contains Public Key + Organization Metadata + SANs</small>"]
-    CA["3. Certificate Authority (CA)<br/><small>Verifies domain ownership and signs the CSR</small>"]
-    CERT["4. Digital Certificate (.crt / .pem)<br/><small>Signed X.509 Certificate installed on Web Server</small>"]
+    K["🔑 <b>1. Private Key (.key)</b><br/>Generated locally on server • Kept strictly confidential"]
+    CSR["📋 <b>2. Certificate Signing Request (.csr)</b><br/>Contains Public Key + Domain Metadata (Common Name, SANs)"]
+    CA["🏛️ <b>3. Certificate Authority (CA)</b><br/>Verifies domain ownership and digitally signs the request"]
+    CERT["📄 <b>4. Digital Certificate (.crt / .pem)</b><br/>Official signed X.509 Certificate installed on Web Server"]
 
-    K -->|Extracts Public Key + Identity info| CSR
+    K -->|Extracts Public Key + Metadata| CSR
     CSR -->|Submitted for signing| CA
     CA -->|Issues signed certificate| CERT
 
-    style K fill:#e11d48,stroke:#be123c,color:#ffffff;
-    style CSR fill:#f59e0b,stroke:#d97706,color:#ffffff;
-    style CA fill:#0284c7,stroke:#0369a1,color:#ffffff;
-    style CERT fill:#10b981,stroke:#059669,color:#ffffff;
+    style K fill:#e11d48,stroke:#be123c,color:#ffffff,stroke-width:2px;
+    style CSR fill:#d97706,stroke:#b45309,color:#ffffff,stroke-width:2px;
+    style CA fill:#0284c7,stroke:#0369a1,color:#ffffff,stroke-width:2px;
+    style CERT fill:#059669,stroke:#047857,color:#ffffff,stroke-width:2px;
 ```
 
 Let's break down each component in detail:
@@ -111,7 +115,7 @@ Let's break down each component in detail:
 | **CSR** (Certificate Signing Request) | A standardized application file containing your Public Key, Organization details, and domain names. | A passport application form | **No (Sent to CA)** |
 | **CA** (Certificate Authority) | An accredited entity that signs CSRs to certify domain ownership (e.g., Let's Encrypt, DigiCert). | The official Government Passport Agency | Public Root CAs are pre-trusted |
 | **Digital Certificate** (`.crt`, `.pem`) | An official X.509 document binding your Public Key to your domain, signed by a CA. | An official, tamper-proof Passport | **No (Sent during handshake)** |
-| **SAN** (Subject Alternative Name) | The exact domain names, wildcards, or IP addresses the certificate is valid for. | Aliases and legal names on your ID | **No** |
+| **SAN** (Subject Alternative Name) | The exact domain names, wildcards, or IP addresses the certificate is authorized to protect. | Aliases and legal names on your ID | **No** |
 
 ---
 
@@ -159,17 +163,17 @@ When your browser connects to `https://api.gcloudcafe.com`, how does it know the
 Operating systems and browsers cannot hardcode millions of individual website certificates. Instead, trust is established through a **hierarchical Chain of Trust**:
 
 ```mermaid
-graph TD
-    Root["🏛️ Root CA (e.g., DigiCert Global Root CA)<br/><small>Stored in OS / Browser / Java TrustStore</small>"]
-    Inter["🏢 Intermediate CA (e.g., DigiCert TLS RSA SHA256 CA1)<br/><small>Issued by Root CA; signs day-to-day web certificates</small>"]
-    Leaf["📄 Leaf / End-Entity Certificate (e.g., api.gcloudcafe.com)<br/><small>Installed on your Web Server / Load Balancer</small>"]
+flowchart TD
+    Root["🏛️ <b>Root CA (e.g., DigiCert Global Root CA)</b><br/>Stored in OS / Browser / Java TrustStore • Kept Offline in High-Security Vaults"]
+    Inter["🏢 <b>Intermediate CA (e.g., DigiCert TLS RSA SHA256)</b><br/>Issued by Root CA • Online signing authority for daily web certificates"]
+    Leaf["📄 <b>Leaf / End-Entity Certificate (e.g., api.gcloudcafe.com)</b><br/>Installed on your Web Server / API Gateway / Kubernetes Ingress"]
 
     Root -->|Signs & Endorses| Inter
     Inter -->|Signs & Issues| Leaf
 
     style Root fill:#0284c7,stroke:#0369a1,color:#ffffff,stroke-width:2px;
     style Inter fill:#0ea5e9,stroke:#0284c7,color:#ffffff,stroke-width:2px;
-    style Leaf fill:#10b981,stroke:#059669,color:#ffffff,stroke-width:2px;
+    style Leaf fill:#059669,stroke:#047857,color:#ffffff,stroke-width:2px;
 ```
 
 ### 5.1. Why Do Intermediate CAs Exist?
@@ -192,18 +196,26 @@ When your application or browser connects to a server:
 Once issued, an X.509 certificate contains several critical fields:
 
 ```mermaid
-graph LR
-    Cert["📄 X.509 Digital Certificate"] --> V["📅 Validity Dates (Not Before / Not After)"]
-    Cert --> S["🌐 Subject & SANs (Hostnames / IPs)"]
-    Cert --> I["🏢 Issuer (The Signing CA)"]
-    Cert --> P["🔑 Subject Public Key Info"]
-    Cert --> SIG["✍️ CA Digital Signature"]
+flowchart TD
+    Cert["📄 <b>X.509 Digital Certificate</b>"]
+    
+    V["📅 <b>Validity Dates</b>: Not Before / Not After"]
+    S["🌐 <b>Subject & SANs</b>: Authorized Domain Names / IP Addresses"]
+    I["🏢 <b>Issuer</b>: The Signing Certificate Authority"]
+    P["🔑 <b>Subject Public Key</b>: Public Key Algorithm & Key Material"]
+    SIG["✍️ <b>Digital Signature</b>: Cryptographic Signature from CA"]
 
-    style Cert fill:#1e293b,stroke:#334155,color:#ffffff;
+    Cert --> V
+    Cert --> S
+    Cert --> I
+    Cert --> P
+    Cert --> SIG
+
+    style Cert fill:#1e293b,stroke:#334155,color:#ffffff,stroke-width:2px;
     style V fill:#0284c7,stroke:#0369a1,color:#ffffff;
     style S fill:#0ea5e9,stroke:#0284c7,color:#ffffff;
-    style I fill:#6366f1,stroke:#4338ca,color:#ffffff;
-    style P fill:#10b981,stroke:#059669,color:#ffffff;
+    style I fill:#4f46e5,stroke:#4338ca,color:#ffffff;
+    style P fill:#059669,stroke:#047857,color:#ffffff;
     style SIG fill:#e11d48,stroke:#be123c,color:#ffffff;
 ```
 
@@ -242,7 +254,7 @@ openssl rsa -noout -modulus -in server.key | openssl md5
 
 Now that you have a rock-solid foundation on keys, CSRs, and CA chains, we are ready to explore how clients and servers talk to each other in real-time.
 
-👉 **In [Part 2: The Standard TLS Handshake, Cipher Suites & SSL Troubleshooting](/blog/tls-handshake-part2-one-way-tls-and-diagnostics/)**, we break down:
+👉 **In Part 2: The Standard TLS Handshake, Cipher Suites & SSL Troubleshooting**, we will break down:
 - The step-by-step TLS 1.2 vs 1.3 handshake sequence.
 - Why missing Intermediate CA bundles break Java/curl while browsers appear to work.
 - Practical diagnostic tools including [SSL Shopper](https://www.sslshopper.com/ssl-checker.html), [Qualys SSL Labs](https://www.ssllabs.com/ssltest/), [BadSSL](https://badssl.com), and OpenSSL.

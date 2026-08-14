@@ -283,6 +283,32 @@
   }
 }
 
+/* Mermaid Diagram Typography & Readability Enhancements */
+.mermaid {
+  svg {
+    max-width: 100% !important;
+    min-width: 320px;
+    height: auto !important;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
+
+    .node {
+      font-size: 15px !important;
+      font-weight: 600 !important;
+
+      rect, circle, polygon {
+        stroke-width: 2px !important;
+        rx: 10px !important;
+        ry: 10px !important;
+      }
+    }
+
+    .edgeLabel {
+      font-size: 13.5px !important;
+      font-weight: 600 !important;
+    }
+  }
+}
+
 /* Notice Shortcode Callouts */
 .notice {
   @apply my-6 rounded-2xl border-l-4 p-5 shadow-sm transition-all duration-200;
