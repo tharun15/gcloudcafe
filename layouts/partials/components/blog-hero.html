@@ -71,7 +71,7 @@
             <!-- Hero Image Preview -->
             {{ with .Params.image }}
               <div class="relative rounded-2xl overflow-hidden mb-6 aspect-video max-h-72 w-full bg-slate-100 dark:bg-slate-900 border border-border/40 dark:border-darkmode-border/40">
-                <img src="{{ . | relURL }}" alt="{{ $page.Title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out" />
+                {{ partial "image" (dict "Src" . "Context" $page "Alt" $page.Title "Class" "w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out" "Loading" "eager") }}
               </div>
             {{ end }}
 
