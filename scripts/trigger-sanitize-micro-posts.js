@@ -123,10 +123,13 @@ Context: ${rawSummary}`;
 
       const res = await fetch(url, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "Referer": "https://gcloudcafe.com/"
+        },
         body: JSON.stringify({
           contents: [{ parts: [{ text: prompt }] }],
-          generationConfig: { maxOutputTokens: 160, temperature: 0.25 }
+          generationConfig: { maxOutputTokens: 600, temperature: 0.25 }
         })
       });
 
