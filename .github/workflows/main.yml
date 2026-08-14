@@ -15,8 +15,8 @@ concurrency:
 
 permissions:
   contents: read
-pages: write
-id-token: write
+  pages: write
+  id-token: write
 
 env:
   HUGO_ENV: production
