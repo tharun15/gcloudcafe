@@ -1,8 +1,15 @@
 {{ define "main" }}
   {{ $posts := sort (where site.RegularPages "Section" "blog") "Date" "desc" }}
   {{ $featured := false }}
-  {{ if gt (len $posts) 0 }}
-    {{ $featured = index $posts 0 }}
+  {{ range $posts }}
+    {{ if and (not $featured) .Params.featured }}
+      {{ $featured = . }}
+    {{ end }}
+  {{ end }}
+  {{ if not $featured }}
+    {{ if gt (len $posts) 0 }}
+      {{ $featured = index $posts 0 }}
+    {{ end }}
   {{ end }}
 
   <!-- Top Adaptable Tab Switcher Bar (Mobile & Webview Navigation Friction Removal) -->
