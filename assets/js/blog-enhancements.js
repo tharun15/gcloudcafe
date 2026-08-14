@@ -1376,11 +1376,6 @@
 
     async function fetchGeminiApiKeyFromSupabase() {
       if (cachedGeminiApiKey) return cachedGeminiApiKey;
-      var stored = (localStorage.getItem("gcloudcafe_gemini_api_key") || "").trim();
-      if (stored) {
-        cachedGeminiApiKey = stored;
-        return stored;
-      }
       try {
         var res = await fetch(config.url + "/rest/v1/site_settings?key=eq.gemini_api_key&select=value", {
           headers: {
@@ -1395,10 +1390,9 @@
           localStorage.setItem("gcloudcafe_gemini_api_key", val);
           return val;
         }
-      } catch (err) {
-        console.warn("Could not fetch Gemini key from Supabase site_settings:", err);
-      }
-      return (cachedGeminiApiKey || localStorage.getItem("gcloudcafe_gemini_api_key") || "").trim();
+      } catch (err) {}
+      var stored = (localStorage.getItem("gcloudcafe_gemini_api_key") || "").trim();
+      return (cachedGeminiApiKey || stored).trim();
     }
 
     // Call Gemini API to generate crisp TL;DR Hook with automatic fallback on rate limit / quota exhaustion
