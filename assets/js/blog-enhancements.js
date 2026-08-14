@@ -2484,6 +2484,10 @@
 
       if (imgPreviewImg && imgPreviewEmpty) {
         if (imageUrl) {
+          imgPreviewImg.onerror = function () {
+            this.onerror = null;
+            this.src = "/images/og-image.png";
+          };
           imgPreviewImg.src = imageUrl;
           imgPreviewImg.classList.remove("hidden");
           imgPreviewEmpty.classList.add("hidden");
@@ -2493,6 +2497,7 @@
           imgPreviewEmpty.classList.remove("hidden");
         }
       }
+
 
       var cleanMdText = rawMd.replace(/<[^>]+>/g, "").replace(/[#*`>-]/g, " ").trim();
       var words = cleanMdText ? cleanMdText.split(/\s+/).filter(Boolean).length : 0;

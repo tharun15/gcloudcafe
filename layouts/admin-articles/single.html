@@ -218,9 +218,11 @@
               <span id="article-image-preview-empty" class="text-[11px] font-semibold text-text/60 dark:text-darkmode-text/60">
                 <i class="fa-regular fa-image text-lg block text-center mb-1"></i> No image set
               </span>
-              <img id="article-image-preview-img" src="" alt="Banner Preview" class="w-full h-full object-cover hidden" />
+              <img id="article-image-preview-img" src="" alt="Banner Preview" onerror="this.onerror=null; this.src='/images/og-image.png';" class="w-full h-full object-cover hidden" />
+
             </div>
           </div>
+
 
           <!-- Series Metadata (Optional) -->
           <div class="md:col-span-3 pt-3 border-t border-border/40 dark:border-darkmode-border/40">

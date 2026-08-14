@@ -7,10 +7,11 @@
 <!-- Google Fonts Non-Blocking Optimization -->
 {{ $pf:= site.Data.theme.fonts.font_family.primary | replaceRE " " "+" }}
 {{ $sf:= site.Data.theme.fonts.font_family.secondary | replaceRE " " "+" }}
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family={{$pf}}{{with $sf}}&family={{.}}{{end}}&display=swap" media="print" onload="this.media='all'" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family={{$pf | safeURL}}{{with $sf}}&family={{. | safeURL}}{{end}}&display=swap" media="print" onload="this.media='all'" />
 <noscript>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family={{$pf}}{{with $sf}}&family={{.}}{{end}}&display=swap" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family={{$pf | safeURL}}{{with $sf}}&family={{. | safeURL}}{{end}}&display=swap" />
 </noscript>
+
 
 <!-- plugins + stylesheet -->
 {{ $styles := slice }}
