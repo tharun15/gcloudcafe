@@ -5,6 +5,8 @@ on:
   # Runs on pushes targeting the default branch
   push:
     branches: ["main"]
+  pull_request:
+    branches: ["main"]
 
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 concurrency:
@@ -13,10 +15,9 @@ concurrency:
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
+pages: write
+id-token: write
 
-# Environment variables available to all jobs and steps in this workflow
 env:
   HUGO_ENV: production
   HUGO_VERSION: "0.139.2"
@@ -48,7 +49,6 @@ jobs:
           hugo-version: "0.139.2"
           extended: true
 
-
       - name: Install dependencies
         run: npm install
 
@@ -65,6 +65,7 @@ jobs:
 
   # Deployment job
   deploy:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -74,4 +75,3 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-

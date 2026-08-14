@@ -836,43 +836,61 @@
     var commentsElem = document.querySelector("[data-stat-comments]");
     if (!statElem && !commentsElem) return;
 
-    var supabase = null;
-    if (window.SUPABASE_CONFIG && window.supabase) {
-      supabase = window.supabase.createClient(window.SUPABASE_CONFIG.url, window.SUPABASE_CONFIG.anonKey);
-    }
-    if (!supabase) return;
+    var config = window.SUPABASE_CONFIG || {
+      url: "https://axiijcsxtiukloarbfor.supabase.co",
+      anonKey: "sb_publishable_cRcwg02R3nXTykDrxalL6w_-kc9Wesc"
+    };
+
+    var headers = {
+      "apikey": config.anonKey,
+      "Authorization": "Bearer " + config.anonKey
+    };
 
     // 1. Fetch total real reactions from Supabase database
-    supabase
-      .from("post_reactions")
-      .select("helpful_count, insightful_count, awesome_count, brewtiful_count")
-      .then(function (res) {
-        if (res && res.data && res.data.length > 0) {
+    fetch(config.url + "/rest/v1/post_reactions?select=helpful_count,insightful_count,awesome_count,brewtiful_count", {
+      headers: headers
+    })
+      .then(function (res) { return res.ok ? res.json() : []; })
+      .then(function (data) {
+        if (Array.isArray(data) && data.length > 0) {
           var total = 0;
-          res.data.forEach(function (row) {
-            total += (parseInt(row.helpful_count) || 0) + 
-                     (parseInt(row.insightful_count) || 0) + 
-                     (parseInt(row.awesome_count) || 0) + 
+          data.forEach(function (row) {
+            total += (parseInt(row.helpful_count) || 0) +
+                     (parseInt(row.insightful_count) || 0) +
+                     (parseInt(row.awesome_count) || 0) +
                      (parseInt(row.brewtiful_count) || 0);
           });
           if (statElem) statElem.textContent = total + (total === 1 ? " VOTE" : " VOTES");
           if (posElem) posElem.textContent = total > 0 ? "● LIVE FEEDBACK" : "● NO VOTES YET";
         } else {
           if (statElem) statElem.textContent = "0 VOTES";
-          if (posElem) posElem.textContent = "● NO VOTES YET";
+          if (posElem) posElem.textContent = "● LIVE FEEDBACK";
         }
       })
-      .catch(function () {});
+      .catch(function () {
+        if (statElem) statElem.textContent = "0 VOTES";
+        if (posElem) posElem.textContent = "● LIVE FEEDBACK";
+      });
 
     // 2. Fetch total real comments from Supabase database
-    supabase
-      .from("post_comments")
-      .select("id", { count: 'exact', head: true })
+    fetch(config.url + "/rest/v1/post_comments?select=id", {
+      headers: Object.assign({}, headers, { "Range-Unit": "items", "Range": "0-0", "Prefer": "count=exact" })
+    })
       .then(function (res) {
-        var count = res && typeof res.count === "number" ? res.count : 0;
-        if (commentsElem) commentsElem.textContent = count + (count === 1 ? " COMMENT" : " COMMENTS");
+        var contentRange = res.headers.get("content-range") || "";
+        var totalMatch = contentRange.match(/\/(\d+)/);
+        if (totalMatch && totalMatch[1]) {
+          return parseInt(totalMatch[1], 10);
+        }
+        return res.ok ? res.json().then(function(d) { return Array.isArray(d) ? d.length : 0; }) : 0;
       })
-      .catch(function () {});
+      .then(function (count) {
+        var c = typeof count === "number" ? count : 0;
+        if (commentsElem) commentsElem.textContent = c + (c === 1 ? " COMMENT" : " COMMENTS");
+      })
+      .catch(function () {
+        if (commentsElem) commentsElem.textContent = "0 COMMENTS";
+      });
   }
 
   /* ── Init ── */
@@ -1350,8 +1368,8 @@
     // Smart extractive fallback generator (used during rate limits, quota limits, or network errors)
     function createSmartFallbackHook(title, rawContent) {
       var clean = (rawContent || "")
-        .replace(/<[^>]+>/g, "")
-        .replace(/&lt;[^&]+&gt;/gi, "")
+        .replace(/<[^>]+>/g, " ")
+        .replace(/&lt;[^&]+&gt;/gi, " ")
         .replace(/&amp;/g, "&")
         .replace(/&quot;/g, '"')
         .replace(/&#39;/g, "'")
@@ -1360,17 +1378,31 @@
 
       if (!clean) return (title || "Cloud Release Update").trim();
 
-      var sentences = clean.match(/[^.!?]+[.!?]+/g) || [clean];
-      var firstSentence = (sentences[0] || "").trim();
-      var secondSentence = (sentences[1] || "").trim();
+      // Split into complete sentences
+      var sentenceMatches = clean.match(/[^.!?]+[.!?]+/g) || [];
+      var completeSentences = sentenceMatches
+        .map(function(s) { return s.trim(); })
+        .filter(function(s) { return s.length > 20; });
 
-      var combined = firstSentence;
-      if (combined.length < 90 && secondSentence) {
-        combined += " " + secondSentence;
+      var combined = "";
+      if (completeSentences.length > 0) {
+        combined = completeSentences[0];
+        if (combined.length < 120 && completeSentences.length > 1) {
+          combined += " " + completeSentences[1];
+        }
+      } else {
+        combined = clean;
       }
-      if (combined.length > 210) {
-        combined = combined.substring(0, 207).trim() + "...";
+
+      // Strip any dangling prepositions/conjunctions at the end
+      combined = combined
+        .replace(/\s+(?:that|which|who|a|an|the|and|or|but|with|to|for|in|on|at|by|from|as|into|require|requires|requiring|is|are|was|were)\s*$/i, "")
+        .trim();
+
+      if (!/[.!?]$/.test(combined)) {
+        combined += ".";
       }
+
       return combined || title;
     }
 
@@ -1431,7 +1463,7 @@
         + "Article Title: " + title + "\n"
         + "Article Context: " + content;
 
-      var models = ["gemini-3.7-flash", "gemini-flash-latest", "gemini-3.5-flash", "gemini-3-flash-preview"];
+      var models = ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-1.5-flash", "gemini-1.5-pro"];
       var lastError = null;
 
       for (var i = 0; i < models.length; i++) {
@@ -1439,7 +1471,7 @@
         try {
           var url = "https://generativelanguage.googleapis.com/v1beta/models/" + model + ":generateContent?key=" + encodeURIComponent(keyToUse);
           var controller = new AbortController();
-          var timeoutId = setTimeout(function() { controller.abort(); }, 8000); // 8s timeout
+          var timeoutId = setTimeout(function() { controller.abort(); }, 10000); // 10s timeout
 
           var res = await fetch(url, {
             method: "POST",
@@ -1449,11 +1481,12 @@
               contents: [{ parts: [{ text: prompt }] }],
               generationConfig: {
                 temperature: 0.3,
-                maxOutputTokens: 600
+                maxOutputTokens: 800
               }
             })
           });
           clearTimeout(timeoutId);
+
 
           if (res.ok) {
             var data = await res.json();
