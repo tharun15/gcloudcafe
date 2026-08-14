@@ -10,23 +10,29 @@ author: tharun-vempati
 draft: false
 ---
 
-Look at the top of your web browser right now. Next to the website address, you will see a small lock icon. 
+When you enter a password, submit credit card details, or simply browse a website right now, how do you know someone isn't silently sniffing every byte you send?
 
-If you click that lock, your browser will tell you something comforting: *"Connection is secure."*
+Look at the top of your web browser. Right next to the address bar, you will see a small padlock icon. If you click it, your browser displays a reassuring message: *"Connection is secure."*
 
-It is a tiny visual detail we see hundreds of times a day without giving it a second thought. But why does that lock exist in the first place? What dangerous problem is it solving behind the scenes?
+We rely on that tiny lock hundreds of times a day. But what is actually happening behind that symbol? Why is the internet so vulnerable to eavesdropping by default, and how does your browser prove you are talking to the real website rather than an imposter?
 
-To understand **Transport Layer Security (TLS)**, we first have to understand a surprising truth about how the internet was built: **by design, the internet is completely insecure.**
+Welcome to **Part 1 of our 3-Part Deep Dive into TLS & mTLS Architecture**:
+
+- **Part 1 (You Are Here):** The Alice & Bob Foundation: Keys, CSRs, Public vs. Private CAs, and the Chain of Trust.
+- **Part 2:** The Standard TLS Handshake, Cipher Suites, and Real-World SSL Debugging.
+- **Part 3:** Mutual TLS (mTLS), Java KeyStores vs. TrustStores, and Surviving Production Certificate Expirations.
+
+To understand how modern security works, forget complex mathematical formulas for a moment. Let's start with a surprising truth about how the internet was designed.
 
 ---
 
 ## 1. The Postcard Internet: Why We Need Protection
 
-When you send a traditional letter inside a sealed envelope, you expect some degree of privacy. But the original internet wasn't built with envelopes—it was built with **postcards**.
+When you send a traditional letter inside a sealed envelope, you expect privacy. But the original internet wasn't built with envelopes—it was built with **postcards**.
 
-Whenever you browse an unprotected website (`http://`), your computer sends plain text messages across an open network. Your data hops through dozens of intermediate machines:
+Whenever you browse an unprotected website (`http://`), your computer transmits plain text messages across an open network. Your data hops through dozens of intermediate machines:
 
-- The Wi-Fi router at your local coffee shop.
+- The public Wi-Fi router at your local coffee shop.
 - Your Internet Service Provider (ISP).
 - Commercial backbone routers and switches across continents.
 
@@ -51,7 +57,7 @@ To transform this open postcard system into a tamper-proof digital armored truck
 
 ## 2. The Foundation: The Alice, Bob, and Padlock Story
 
-Before diving into cryptographic math, let's look at how two people—**Alice and Bob**—solve the problem of sending private messages through an untrusted postal route.
+Before diving into cryptographic algorithms, let's look at how two people—**Alice and Bob**—solve the problem of sending private messages through an untrusted postal route.
 
 Bob wants *anyone in the world* (including Alice) to be able to send him confidential mail, even if Bob and Alice have never met in person before.
 
