@@ -32,27 +32,43 @@ Before digging into cryptographic math, let's understand the core problem: **The
 
 TLS solves this by enforcing three fundamental guarantees:
 
-```mermaid
-flowchart TD
-    TLS["🔒 <b>Transport Layer Security (TLS)</b>"]
+<div class="grid grid-cols-1 md:grid-cols-3 gap-5 my-8">
+  <div class="p-6 rounded-2xl bg-sky-50 dark:bg-sky-950/40 border-2 border-sky-200 dark:border-sky-800/80 shadow-sm flex flex-col justify-between">
+    <div>
+      <div class="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-sky-500/15 text-sky-600 dark:text-sky-400 text-2xl mb-4">
+        🛡️
+      </div>
+      <h4 class="text-base font-bold text-sky-950 dark:text-sky-100 mb-2">1. Confidentiality</h4>
+      <p class="text-sm text-sky-900/80 dark:text-sky-200/80 leading-relaxed m-0">
+        <b>Encryption:</b> Eavesdroppers and packet sniffers cannot read your data in transit.
+      </p>
+    </div>
+  </div>
 
-    Conf["🛡️ <b>1. Confidentiality (Encryption)</b><br/>Eavesdroppers and packet sniffers cannot read your data in transit."]
-    Integ["🧩 <b>2. Integrity (Tamper Detection)</b><br/>Packets cannot be modified or forged in transit without immediate detection."]
-    Auth["🪪 <b>3. Authentication (Identity Verification)</b><br/>Cryptographically proves the server is genuinely who it claims to be."]
+  <div class="p-6 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border-2 border-emerald-200 dark:border-emerald-800/80 shadow-sm flex flex-col justify-between">
+    <div>
+      <div class="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 text-2xl mb-4">
+        🧩
+      </div>
+      <h4 class="text-base font-bold text-emerald-950 dark:text-emerald-100 mb-2">2. Integrity</h4>
+      <p class="text-sm text-emerald-900/80 dark:text-emerald-200/80 leading-relaxed m-0">
+        <b>Tamper Detection:</b> Packets cannot be modified or forged in transit without immediate detection.
+      </p>
+    </div>
+  </div>
 
-    TLS --> Conf
-    TLS --> Integ
-    TLS --> Auth
-
-    style TLS fill:#0284c7,stroke:#0369a1,color:#ffffff,stroke-width:2px;
-    style Conf fill:#0284c7,stroke:#0369a1,color:#ffffff,stroke-width:2px;
-    style Integ fill:#059669,stroke:#047857,color:#ffffff,stroke-width:2px;
-    style Auth fill:#4f46e5,stroke:#4338ca,color:#ffffff,stroke-width:2px;
-```
-
-1. **Confidentiality:** If someone sniffs your WiFi traffic at a coffee shop, all they see is scrambled ciphertext.
-2. **Integrity:** If an attacker tries to alter a bank account number in a POST request payload, the cryptographic checksum fails and the connection is terminated.
-3. **Authentication:** When you connect to `https://mybank.com`, you have cryptographic proof that you are talking to the bank's genuine server, not a phishing proxy.
+  <div class="p-6 rounded-2xl bg-indigo-50 dark:bg-indigo-950/40 border-2 border-indigo-200 dark:border-indigo-800/80 shadow-sm flex flex-col justify-between">
+    <div>
+      <div class="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-indigo-500/15 text-indigo-600 dark:text-indigo-400 text-2xl mb-4">
+        🪪
+      </div>
+      <h4 class="text-base font-bold text-indigo-950 dark:text-indigo-100 mb-2">3. Authentication</h4>
+      <p class="text-sm text-indigo-900/80 dark:text-indigo-200/80 leading-relaxed m-0">
+        <b>Identity Verification:</b> Cryptographically proves the server is genuinely who it claims to be.
+      </p>
+    </div>
+  </div>
+</div>
 
 ---
 
@@ -64,24 +80,29 @@ In reality, **public-key (asymmetric) cryptography involves heavy mathematics (m
 
 To solve this, TLS employs a **hybrid architecture**:
 
-```mermaid
-flowchart TD
-    A["🔐 <b>Asymmetric Cryptography (RSA / ECDSA)</b><br/>Heavy Public/Private Key Math • Used ONLY during Handshake to exchange secret"]
-    B["⚡ <b>Symmetric Cryptography (AES-256-GCM / ChaCha20)</b><br/>Hardware-Accelerated Single Key • Encrypts all bulk application HTTP payloads"]
+<div class="grid grid-cols-1 md:grid-cols-2 gap-5 my-8">
+  <div class="p-6 rounded-2xl bg-blue-50/80 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800/70 shadow-sm">
+    <div class="flex items-center gap-3 mb-3">
+      <span class="text-2xl">🔐</span>
+      <h4 class="text-base font-bold text-blue-950 dark:text-blue-100 m-0">Asymmetric Cryptography</h4>
+    </div>
+    <span class="inline-block px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wide bg-blue-500/20 text-blue-700 dark:text-blue-300 mb-3">Used Only in Handshake</span>
+    <p class="text-sm text-slate-700 dark:text-slate-300 leading-relaxed m-0">
+      Uses a linked <b>Public / Private Key pair</b> (RSA or ECDSA). Heavy math, used exclusively during the first few milliseconds to verify identity and negotiate a temporary shared secret.
+    </p>
+  </div>
 
-    A -->|Negotiates Shared Secret| B
-
-    style A fill:#0284c7,stroke:#0369a1,color:#ffffff,stroke-width:2px;
-    style B fill:#059669,stroke:#047857,color:#ffffff,stroke-width:2px;
-```
-
-### 2.1. Asymmetric Encryption (The Identity & Key Exchange Phase)
-- **How it works:** Uses a mathematically linked pair: a **Private Key** (kept secret by the server) and a **Public Key** (distributed to the world).
-- **Purpose:** Used *only* during the first few milliseconds of the TLS handshake to authenticate the server's identity and negotiate a temporary shared session secret.
-
-### 2.2. Symmetric Encryption (The Data Transmission Phase)
-- **How it works:** Uses a single, shared secret key generated specifically for that single session.
-- **Purpose:** Once the handshake finishes, both client and server encrypt all HTTP request/response payloads using this shared symmetric key (like AES-GCM), which modern processors can encrypt at tens of gigabits per second using native CPU hardware instructions (AES-NI).
+  <div class="p-6 rounded-2xl bg-emerald-50/80 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/70 shadow-sm">
+    <div class="flex items-center gap-3 mb-3">
+      <span class="text-2xl">⚡</span>
+      <h4 class="text-base font-bold text-emerald-950 dark:text-emerald-100 m-0">Symmetric Cryptography</h4>
+    </div>
+    <span class="inline-block px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wide bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 mb-3">Bulk Data Transmission</span>
+    <p class="text-sm text-slate-700 dark:text-slate-300 leading-relaxed m-0">
+      Uses a <b>single shared session key</b> (AES-256-GCM / ChaCha20). Hardware-accelerated (AES-NI), encrypting gigabits of HTTP traffic per second with virtually zero CPU overhead.
+    </p>
+  </div>
+</div>
 
 ---
 
@@ -89,24 +110,49 @@ flowchart TD
 
 To understand how security is established, let's trace the lifecycle of how a server acquires its identity:
 
-```mermaid
-flowchart TD
-    K["🔑 <b>1. Private Key (.key)</b><br/>Generated locally on server • Kept strictly confidential"]
-    CSR["📋 <b>2. Certificate Signing Request (.csr)</b><br/>Contains Public Key + Domain Metadata (Common Name, SANs)"]
-    CA["🏛️ <b>3. Certificate Authority (CA)</b><br/>Verifies domain ownership and digitally signs the request"]
-    CERT["📄 <b>4. Digital Certificate (.crt / .pem)</b><br/>Official signed X.509 Certificate installed on Web Server"]
+<div class="space-y-4 my-8">
+  <div class="flex items-start gap-4 p-5 rounded-2xl bg-rose-50/70 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-800/60">
+    <div class="shrink-0 w-9 h-9 rounded-xl bg-rose-500 text-white font-bold flex items-center justify-center text-sm shadow-sm">1</div>
+    <div>
+      <h5 class="text-sm font-bold text-rose-950 dark:text-rose-200 m-0 mb-1">Private Key (<code>.key</code>) — Generated Locally</h5>
+      <p class="text-xs text-slate-700 dark:text-slate-300 leading-relaxed m-0">
+        Created on the server and kept <b>strictly secret</b>. Used to decrypt session keys and create digital signatures.
+      </p>
+    </div>
+  </div>
 
-    K -->|Extracts Public Key + Metadata| CSR
-    CSR -->|Submitted for signing| CA
-    CA -->|Issues signed certificate| CERT
+  <div class="flex items-start gap-4 p-5 rounded-2xl bg-amber-50/70 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/60">
+    <div class="shrink-0 w-9 h-9 rounded-xl bg-amber-500 text-white font-bold flex items-center justify-center text-sm shadow-sm">2</div>
+    <div>
+      <h5 class="text-sm font-bold text-amber-950 dark:text-amber-200 m-0 mb-1">Certificate Signing Request (<code>.csr</code>) — Application Form</h5>
+      <p class="text-xs text-slate-700 dark:text-slate-300 leading-relaxed m-0">
+        Created from the Private Key. Packages your <b>Public Key</b>, Common Name (domain), and SANs. Sent to a Certificate Authority for signing.
+      </p>
+    </div>
+  </div>
 
-    style K fill:#e11d48,stroke:#be123c,color:#ffffff,stroke-width:2px;
-    style CSR fill:#d97706,stroke:#b45309,color:#ffffff,stroke-width:2px;
-    style CA fill:#0284c7,stroke:#0369a1,color:#ffffff,stroke-width:2px;
-    style CERT fill:#059669,stroke:#047857,color:#ffffff,stroke-width:2px;
-```
+  <div class="flex items-start gap-4 p-5 rounded-2xl bg-sky-50/70 dark:bg-sky-950/30 border border-sky-200 dark:border-sky-800/60">
+    <div class="shrink-0 w-9 h-9 rounded-xl bg-sky-500 text-white font-bold flex items-center justify-center text-sm shadow-sm">3</div>
+    <div>
+      <h5 class="text-sm font-bold text-sky-950 dark:text-sky-200 m-0 mb-1">Certificate Authority (CA) — Verification & Endorsement</h5>
+      <p class="text-xs text-slate-700 dark:text-slate-300 leading-relaxed m-0">
+        A trusted entity (Let's Encrypt, DigiCert, HashiCorp Vault) verifies your domain control and digitally signs your CSR with its private key.
+      </p>
+    </div>
+  </div>
 
-Let's break down each component in detail:
+  <div class="flex items-start gap-4 p-5 rounded-2xl bg-emerald-50/70 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800/60">
+    <div class="shrink-0 w-9 h-9 rounded-xl bg-emerald-500 text-white font-bold flex items-center justify-center text-sm shadow-sm">4</div>
+    <div>
+      <h5 class="text-sm font-bold text-emerald-950 dark:text-emerald-200 m-0 mb-1">Digital Certificate (<code>.crt</code> / <code>.pem</code>) — Issued ID</h5>
+      <p class="text-xs text-slate-700 dark:text-slate-300 leading-relaxed m-0">
+        The official X.509 certificate installed on your web server / API gateway. Presented to clients during the TLS handshake.
+      </p>
+    </div>
+  </div>
+</div>
+
+### Quick Comparison Table
 
 | Term | What It Is | Real-World Analogy | Is It Secret? |
 | :--- | :--- | :--- | :--- |
@@ -162,19 +208,38 @@ When your browser connects to `https://api.gcloudcafe.com`, how does it know the
 
 Operating systems and browsers cannot hardcode millions of individual website certificates. Instead, trust is established through a **hierarchical Chain of Trust**:
 
-```mermaid
-flowchart TD
-    Root["🏛️ <b>Root CA (e.g., DigiCert Global Root CA)</b><br/>Stored in OS / Browser / Java TrustStore • Kept Offline in High-Security Vaults"]
-    Inter["🏢 <b>Intermediate CA (e.g., DigiCert TLS RSA SHA256)</b><br/>Issued by Root CA • Online signing authority for daily web certificates"]
-    Leaf["📄 <b>Leaf / End-Entity Certificate (e.g., api.gcloudcafe.com)</b><br/>Installed on your Web Server / API Gateway / Kubernetes Ingress"]
+<div class="p-6 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 my-8 shadow-sm space-y-4">
+  <div class="p-4 rounded-xl bg-sky-500/15 border border-sky-500/30">
+    <div class="flex items-center justify-between mb-1">
+      <span class="text-xs font-bold uppercase tracking-wider text-sky-600 dark:text-sky-400">Step 1 • Ultimate Trust Anchor</span>
+      <span class="text-xs px-2 py-0.5 rounded bg-sky-500/20 text-sky-700 dark:text-sky-300 font-mono font-bold">Offline Vault</span>
+    </div>
+    <h5 class="text-sm font-bold text-slate-900 dark:text-white m-0">🏛️ Root Certificate Authority (e.g., DigiCert Global Root CA)</h5>
+    <p class="text-xs text-slate-600 dark:text-slate-400 m-0 mt-1">Pre-installed in OS / Browser / Java TrustStore. Highly guarded offline key.</p>
+  </div>
 
-    Root -->|Signs & Endorses| Inter
-    Inter -->|Signs & Issues| Leaf
+  <div class="text-center text-sky-500 font-bold text-lg">↓ Signs & Endorses</div>
 
-    style Root fill:#0284c7,stroke:#0369a1,color:#ffffff,stroke-width:2px;
-    style Inter fill:#0ea5e9,stroke:#0284c7,color:#ffffff,stroke-width:2px;
-    style Leaf fill:#059669,stroke:#047857,color:#ffffff,stroke-width:2px;
-```
+  <div class="p-4 rounded-xl bg-blue-500/15 border border-blue-500/30">
+    <div class="flex items-center justify-between mb-1">
+      <span class="text-xs font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400">Step 2 • Daily Signing Authority</span>
+      <span class="text-xs px-2 py-0.5 rounded bg-blue-500/20 text-blue-700 dark:text-blue-300 font-mono font-bold">Online CA</span>
+    </div>
+    <h5 class="text-sm font-bold text-slate-900 dark:text-white m-0">🏢 Intermediate CA (e.g., DigiCert TLS RSA SHA256)</h5>
+    <p class="text-xs text-slate-600 dark:text-slate-400 m-0 mt-1">Issued by Root CA. Actively signs day-to-day web and API certificates.</p>
+  </div>
+
+  <div class="text-center text-emerald-500 font-bold text-lg">↓ Issues & Signs</div>
+
+  <div class="p-4 rounded-xl bg-emerald-500/15 border border-emerald-500/30">
+    <div class="flex items-center justify-between mb-1">
+      <span class="text-xs font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">Step 3 • Your Website / API</span>
+      <span class="text-xs px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 font-mono font-bold">Server Cert</span>
+    </div>
+    <h5 class="text-sm font-bold text-slate-900 dark:text-white m-0">📄 Leaf / End-Entity Certificate (e.g., api.gcloudcafe.com)</h5>
+    <p class="text-xs text-slate-600 dark:text-slate-400 m-0 mt-1">Installed on your Nginx, Ingress controller, or cloud load balancer.</p>
+  </div>
+</div>
 
 ### 5.1. Why Do Intermediate CAs Exist?
 Why doesn't the Root CA sign your website certificate directly?
@@ -195,29 +260,31 @@ When your application or browser connects to a server:
 
 Once issued, an X.509 certificate contains several critical fields:
 
-```mermaid
-flowchart TD
-    Cert["📄 <b>X.509 Digital Certificate</b>"]
-    
-    V["📅 <b>Validity Dates</b>: Not Before / Not After"]
-    S["🌐 <b>Subject & SANs</b>: Authorized Domain Names / IP Addresses"]
-    I["🏢 <b>Issuer</b>: The Signing Certificate Authority"]
-    P["🔑 <b>Subject Public Key</b>: Public Key Algorithm & Key Material"]
-    SIG["✍️ <b>Digital Signature</b>: Cryptographic Signature from CA"]
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-4 my-8">
+  <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800">
+    <span class="text-xs font-bold uppercase tracking-wider text-primary">Field 1</span>
+    <h5 class="text-sm font-bold text-slate-900 dark:text-white m-0 mb-1">📅 Validity Timestamps</h5>
+    <p class="text-xs text-slate-600 dark:text-slate-400 m-0"><code>Not Before</code> and <code>Not After</code> dates defining the exact window the certificate is valid.</p>
+  </div>
 
-    Cert --> V
-    Cert --> S
-    Cert --> I
-    Cert --> P
-    Cert --> SIG
+  <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800">
+    <span class="text-xs font-bold uppercase tracking-wider text-primary">Field 2</span>
+    <h5 class="text-sm font-bold text-slate-900 dark:text-white m-0 mb-1">🌐 Subject & SANs</h5>
+    <p class="text-xs text-slate-600 dark:text-slate-400 m-0">Common Name (CN) and Subject Alternative Names listing all authorized domains and IP addresses.</p>
+  </div>
 
-    style Cert fill:#1e293b,stroke:#334155,color:#ffffff,stroke-width:2px;
-    style V fill:#0284c7,stroke:#0369a1,color:#ffffff;
-    style S fill:#0ea5e9,stroke:#0284c7,color:#ffffff;
-    style I fill:#4f46e5,stroke:#4338ca,color:#ffffff;
-    style P fill:#059669,stroke:#047857,color:#ffffff;
-    style SIG fill:#e11d48,stroke:#be123c,color:#ffffff;
-```
+  <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800">
+    <span class="text-xs font-bold uppercase tracking-wider text-primary">Field 3</span>
+    <h5 class="text-sm font-bold text-slate-900 dark:text-white m-0 mb-1">🏢 Issuer</h5>
+    <p class="text-xs text-slate-600 dark:text-slate-400 m-0">The identity of the Certificate Authority that signed this certificate.</p>
+  </div>
+
+  <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800">
+    <span class="text-xs font-bold uppercase tracking-wider text-primary">Field 4</span>
+    <h5 class="text-sm font-bold text-slate-900 dark:text-white m-0 mb-1">✍️ Digital Signature</h5>
+    <p class="text-xs text-slate-600 dark:text-slate-400 m-0">The cryptographic signature created by the CA's private key, proving tamper-proof validity.</p>
+  </div>
+</div>
 
 ### Inspecting a Live Certificate via OpenSSL
 You can inspect any local certificate file with a single command:
