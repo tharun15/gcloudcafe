@@ -32,16 +32,18 @@ Transport Layer Security (TLS) provides three fundamental guarantees across untr
 2. **Integrity (Tamper-proofing):** Data cannot be altered or forged without detection.
 3. **Authentication (Identity Verification):** You are guaranteed to be communicating with the exact server (or client) you intended.
 
-```
-       [Client]                                              [Server]
-          │                                                     │
-          │ ─── 1. ClientHello (Cipher suites, SNI) ─────────>  │
-          │                                                     │
-          │ <── 2. ServerHello (Selected cipher, Certificate) ──│
-          │                                                     │
-          │ ─── 3. Key Exchange & Verification ──────────────>  │
-          │                                                     │
-          │ <══ 4. Encrypted Symmetric Tunnel (AES/ChaCha) ═══> │
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Client as 💻 Client (Browser / App)
+    participant Server as 🔒 Server (API Gateway)
+
+    Client->>Server: 1. ClientHello (Cipher suites, TLS version, SNI)
+    Server-->>Client: 2. ServerHello (Selected cipher, Server Certificate)
+    Note over Client: Client verifies Server Certificate against trusted Root CAs
+    Client->>Server: 3. Key Exchange & Verification (Pre-Master Secret)
+    Note over Client,Server: Both derive symmetric session keys (AES-GCM / ChaCha20)
+    Client<<-->>Server: 4. Secure Encrypted Symmetric Tunnel Established
 ```
 
 ### 1.1. Why TLS Uses Two Kinds of Cryptography
@@ -68,14 +70,18 @@ Understanding TLS requires mastering its foundational building blocks:
 
 A browser or client cannot hardcode millions of individual server certificates. Instead, it relies on a hierarchical **Chain of Trust**:
 
-```
-[ Root CA (e.g., DigiCert Global Root CA) ]  <-- Pre-installed in OS / JVM TrustStore
-               │
-               ▼ (Signs)
-[ Intermediate CA (e.g., DigiCert TLS RSA SHA256 2020 CA1) ]  <-- Sent by server
-               │
-               ▼ (Signs)
-[ Leaf / End-Entity Certificate (e.g., api.gcloudcafe.com) ]  <-- Sent by server
+```mermaid
+graph TD
+    Root["🏛️ Root CA (e.g., DigiCert Global Root CA)<br/><small>Pre-installed in OS / JVM TrustStore</small>"]
+    Inter["🏢 Intermediate CA (e.g., DigiCert TLS RSA SHA256)<br/><small>Sent by Web Server in Bundle</small>"]
+    Leaf["📄 Leaf / End-Entity Certificate (e.g., api.gcloudcafe.com)<br/><small>Bound to Domain & Public Key</small>"]
+
+    Root -->|Signs| Inter
+    Inter -->|Signs| Leaf
+
+    style Root fill:#0284c7,stroke:#0369a1,color:#ffffff,stroke-width:2px;
+    style Inter fill:#0ea5e9,stroke:#0284c7,color:#ffffff,stroke-width:2px;
+    style Leaf fill:#10b981,stroke:#059669,color:#ffffff,stroke-width:2px;
 ```
 
 1. The **Leaf Certificate** is signed by an **Intermediate CA**.
@@ -98,19 +104,19 @@ Most web traffic uses **Standard (One-Way) TLS**:
 
 In **mTLS**, **both** parties must present and validate certificates before a single byte of application data is exchanged:
 
-```
-[ Microservice A (Client) ]                             [ Microservice B (Server) ]
-             │                                                        │
-             │ ─── 1. ClientHello ──────────────────────────────────> │
-             │                                                        │
-             │ <── 2. ServerHello + Server Certificate ────────────── │
-             │ <── 3. CertificateRequest (Server asks for Client ID) ─ │
-             │                                                        │
-             │ ─── 4. Client Certificate + CertificateVerify ───────> │
-             │                                                        │
-             │ [Both sides verify each other's CA Chain & Expiry]     │
-             │                                                        │
-             │ <══════════ 5. Mutual Encrypted Tunnel ══════════════> │
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Client as 📦 Microservice A (Client)
+    participant Server as 🛡️ Microservice B (Server)
+
+    Client->>Server: 1. ClientHello
+    Server-->>Client: 2. ServerHello + Server Certificate
+    Server-->>Client: 3. CertificateRequest (Server asks Client for its Certificate)
+    Note over Client: Client verifies Server Certificate against TrustStore
+    Client->>Server: 4. Client Certificate + CertificateVerify (Digital Signature)
+    Note over Server: Server verifies Client Certificate against its TrustStore
+    Client<<-->>Server: 5. Mutual Encrypted Tunnel Established (Both Authenticated)
 ```
 
 ### Why is mTLS Used?
@@ -147,23 +153,10 @@ In one-way TLS, you only check the server’s URL in your browser. In mTLS:
 
 In environments like Java (Spring Boot, Quarkus, Tomcat), TLS configuration is cleanly separated into two distinct stores:
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                        KEYSTORE                             │
-│                  "Who I Am" (Identity)                      │
-│  • My Private Key (.key)                                    │
-│  • My Public Certificate (.crt) signed by CA                │
-│  (Used to present identity to the other party)              │
-└─────────────────────────────────────────────────────────────┘
-
-┌─────────────────────────────────────────────────────────────┐
-│                       TRUSTSTORE                            │
-│                 "Who I Trust" (Verification)                │
-│  • Root CA Certificates (DigiCert, Let's Encrypt, etc.)     │
-│  • Internal Enterprise CA Certificates                      │
-│  (Used to validate the certificates presented by others)    │
-└─────────────────────────────────────────────────────────────┘
-```
+| Store Type | Purpose | Contents | Typical Files |
+| :--- | :--- | :--- | :--- |
+| **KeyStore** | **"Who I Am" (Identity)**<br/>Used to prove your identity to the other party during handshake. | • My Private Key (`.key`)<br/>• My Public Certificate (`.crt`) signed by CA | `keystore.jks`, `keystore.p12` |
+| **TrustStore** | **"Who I Trust" (Verification)**<br/>Used to validate and trust certificates presented by others. | • Trusted Root CAs<br/>• Trusted Intermediate CAs | `cacerts`, `truststore.jks` |
 
 ### 5.1. Java Default TrustStore Location
 When a Java application makes an HTTPS request without custom SSL properties, it looks up trusted CAs in the JDK default truststore:
