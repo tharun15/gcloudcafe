@@ -1437,7 +1437,7 @@
         + "Article Title: " + title + "\n"
         + "Article Context: " + content;
 
-      var models = ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-1.5-flash"];
+      var models = ["gemini-3.7-flash", "gemini-flash-latest", "gemini-3.5-flash", "gemini-3-flash-preview"];
       var lastError = null;
 
       for (var i = 0; i < models.length; i++) {
@@ -2775,7 +2775,7 @@
         throw new Error("No Gemini API key found in Supabase site_settings.");
       }
 
-      var models = ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-1.5-flash"];
+      var models = ["gemini-3.7-flash", "gemini-flash-latest", "gemini-3.5-flash", "gemini-3-flash-preview"];
       var lastErr = null;
 
       for (var i = 0; i < models.length; i++) {
