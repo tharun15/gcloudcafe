@@ -262,15 +262,40 @@ When your application or browser connects to a server:
 
 According to the official TLS specification ([RFC 5246 Section 7.4.2](https://datatracker.ietf.org/doc/html/rfc5246#section-7.4.2)), when bundling multiple certificates into a single file (such as `fullchain.pem` or `bundle.crt` for Nginx, HAProxy, Envoy, or Kubernetes Secret), **they must be placed in strict top-down hierarchical order**:
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│ 1. Leaf / Server Certificate  (api.gcloudcafe.com)         │  <-- MUST BE FIRST!
-├─────────────────────────────────────────────────────────────┤
-│ 2. Intermediate CA 1          (DigiCert TLS RSA SHA256)     │  <-- Certifies the Leaf
-├─────────────────────────────────────────────────────────────┤
-│ 3. Intermediate CA 2          (If using multi-tier chain)   │  <-- Certifies Intermediate 1
-└─────────────────────────────────────────────────────────────┘
-```
+<div class="space-y-3 my-6 p-5 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 shadow-sm">
+  <div class="p-3.5 rounded-xl bg-emerald-500/15 border-2 border-emerald-500/40 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <span class="w-7 h-7 rounded-lg bg-emerald-500 text-white font-bold flex items-center justify-center text-xs">1</span>
+      <div>
+        <span class="text-xs font-bold uppercase tracking-wider text-emerald-700 dark:text-emerald-300">Leaf / Server Certificate</span>
+        <div class="font-mono text-sm font-semibold text-slate-900 dark:text-white">api.gcloudcafe.com</div>
+      </div>
+    </div>
+    <span class="text-xs font-bold px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-800 dark:text-emerald-200">MUST BE FIRST</span>
+  </div>
+
+  <div class="p-3.5 rounded-xl bg-blue-500/15 border border-blue-500/30 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <span class="w-7 h-7 rounded-lg bg-blue-500 text-white font-bold flex items-center justify-center text-xs">2</span>
+      <div>
+        <span class="text-xs font-bold uppercase tracking-wider text-blue-700 dark:text-blue-300">Intermediate CA 1</span>
+        <div class="font-mono text-sm font-semibold text-slate-900 dark:text-white">DigiCert TLS RSA SHA256</div>
+      </div>
+    </div>
+    <span class="text-xs text-slate-600 dark:text-slate-400 font-medium">Certifies the Leaf</span>
+  </div>
+
+  <div class="p-3.5 rounded-xl bg-slate-200/50 dark:bg-slate-800/50 border border-slate-300 dark:border-slate-700 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <span class="w-7 h-7 rounded-lg bg-slate-400 text-white font-bold flex items-center justify-center text-xs">3</span>
+      <div>
+        <span class="text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">Intermediate CA 2 (Optional)</span>
+        <div class="font-mono text-sm font-semibold text-slate-700 dark:text-slate-300">Higher Intermediate CA</div>
+      </div>
+    </div>
+    <span class="text-xs text-slate-500 font-medium">If using multi-tier</span>
+  </div>
+</div>
 
 In your PEM bundle file, it should look exactly like this:
 
