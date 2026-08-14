@@ -1406,8 +1406,8 @@
       return combined || title;
     }
 
-    async function fetchGeminiApiKeyFromSupabase() {
-      if (cachedGeminiApiKey) return cachedGeminiApiKey;
+    async function fetchGeminiApiKeyFromSupabase(forceRefresh) {
+      if (cachedGeminiApiKey && !forceRefresh) return cachedGeminiApiKey;
       try {
         var res = await fetch(config.url + "/rest/v1/site_settings?key=eq.gemini_api_key&select=value", {
           headers: {
@@ -1419,11 +1419,19 @@
         if (Array.isArray(data) && data.length > 0 && data[0].value) {
           var val = data[0].value.trim();
           cachedGeminiApiKey = val;
-          localStorage.setItem("gcloudcafe_gemini_api_key", val);
+          try { localStorage.setItem("gcloudcafe_gemini_api_key", val); } catch (e) {}
+          if (geminiKeyInput) {
+            geminiKeyInput.value = val;
+            if (geminiStatusBadge) {
+              geminiStatusBadge.textContent = "AI Key Active ✨";
+              geminiStatusBadge.classList.remove("hidden");
+            }
+          }
           return val;
         }
       } catch (err) {}
-      var stored = (localStorage.getItem("gcloudcafe_gemini_api_key") || "").trim();
+      var stored = "";
+      try { stored = (localStorage.getItem("gcloudcafe_gemini_api_key") || "").trim(); } catch (e) {}
       return (cachedGeminiApiKey || stored).trim();
     }
 
@@ -1441,7 +1449,10 @@
         };
       }
 
-      var keyToUse = (apiKey || "").trim() || (await fetchGeminiApiKeyFromSupabase());
+      var keyToUse = (apiKey || "").trim();
+      if (!keyToUse || keyToUse.length < 20) {
+        keyToUse = await fetchGeminiApiKeyFromSupabase(true);
+      }
       if (!keyToUse) {
         return {
           text: fallbackText,
@@ -1464,7 +1475,7 @@
         + "RULES:\n"
         + "1. Write thorough, complete paragraphs (aim for 400-500 words). Do NOT cut off or summarize prematurely.\n"
         + "2. Professional, authoritative, active technical voice. No introductory filler like 'Here is the summary'.\n"
-        + "3. Return ONLY clean, beautifully formatted plain text.\n\n"
+        + "3. Return ONLY clean, beautifully formatted plain text with proper paragraph spacing.\n\n"
         + "Article Title: " + title + "\n"
         + "Article Context: " + content;
 
@@ -1476,7 +1487,7 @@
         try {
           var url = "https://generativelanguage.googleapis.com/v1beta/models/" + model + ":generateContent?key=" + encodeURIComponent(keyToUse);
           var controller = new AbortController();
-          var timeoutId = setTimeout(function() { controller.abort(); }, 12000); // 12s timeout
+          var timeoutId = setTimeout(function() { controller.abort(); }, 15000); // 15s timeout
 
           var res = await fetch(url, {
             method: "POST",
@@ -1492,11 +1503,10 @@
           });
           clearTimeout(timeoutId);
 
-
           if (res.ok) {
             var data = await res.json();
             var candidateText = data?.candidates?.[0]?.content?.parts?.[0]?.text || "";
-            var cleaned = candidateText.replace(/^[\s"'\`]+|[\s"'\`]+$/g, "").replace(/\n+/g, " ").trim();
+            var cleaned = candidateText.replace(/^[\s"'\`]+|[\s"'\`]+$/g, "").replace(/\r\n/g, "\n").trim();
             if (cleaned) {
               return { text: cleaned, isFallback: false };
             }
@@ -1504,6 +1514,18 @@
             var status = res.status;
             var errData = await res.json().catch(function () { return {}; });
             var errMsg = (errData?.error?.message || "").toLowerCase();
+
+            // If 400 or 404 with invalid key, force refresh key from Supabase and retry
+            if (status === 400 || status === 404 || errMsg.includes("api_key_invalid") || errMsg.includes("not found")) {
+              cachedGeminiApiKey = null;
+              try { localStorage.removeItem("gcloudcafe_gemini_api_key"); } catch (e) {}
+              var freshKey = await fetchGeminiApiKeyFromSupabase(true);
+              if (freshKey && freshKey !== keyToUse) {
+                keyToUse = freshKey;
+                i--; // retry with fresh key
+                continue;
+              }
+            }
 
             // Detect Rate Limit or Quota Exhaustion
             if (status === 429 || errMsg.includes("quota") || errMsg.includes("resource_exhausted") || errMsg.includes("rate limit") || errMsg.includes("too many requests")) {
@@ -1533,6 +1555,8 @@
       if (dashboardContainer) dashboardContainer.classList.remove("hidden");
       if (authPrompt) authPrompt.classList.add("hidden");
       if (passcodeStatus) passcodeStatus.classList.add("hidden");
+
+      fetchGeminiApiKeyFromSupabase(true);
 
       if (geminiKeyInput) {
         var existingKey = localStorage.getItem("gcloudcafe_gemini_api_key") || "";
