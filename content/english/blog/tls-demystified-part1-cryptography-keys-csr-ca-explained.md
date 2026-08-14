@@ -149,33 +149,33 @@ From the shared secret, both sides derive temporary symmetric keys for bulk data
 
 Here is how all these components connect during a connection:
 
-<div class="p-6 sm:p-8 rounded-3xl bg-slate-900 border border-slate-800 my-8 shadow-xl text-slate-100">
-<div class="text-center font-bold text-base sm:text-lg text-white mb-6 flex items-center justify-center gap-2">
+<div class="p-6 sm:p-8 rounded-3xl bg-slate-950 border border-slate-800 my-8 shadow-2xl">
+<div class="text-center font-extrabold text-lg sm:text-xl text-white mb-6 flex items-center justify-center gap-2">
 <span>🧭</span> The Modern TLS Architecture Mental Model
 </div>
-<div class="flex flex-col items-center space-y-3 max-w-xl mx-auto">
-<div class="w-full p-4 rounded-2xl bg-slate-800/90 border border-slate-700 text-center shadow-md">
+<div class="flex flex-col items-center space-y-3.5 max-w-xl mx-auto">
+<div class="w-full p-4 rounded-2xl bg-slate-900 border-2 border-sky-500/50 text-center shadow-lg">
 <div class="text-xs font-bold uppercase tracking-wider text-sky-400 mb-1">Step 1 • X.509 Certificate (RFC 5280)</div>
-<div class="text-sm font-semibold text-white">Server Public Key · Domain / SANs · Issuer · CA Signature</div>
+<div class="text-sm sm:text-base font-bold text-white">Server Public Key · Domain / SANs · Issuer · CA Signature</div>
 </div>
-<div class="text-sky-400 font-bold text-lg">↓</div>
-<div class="w-full p-4 rounded-2xl bg-indigo-950/60 border border-indigo-700/60 text-center shadow-md">
+<div class="text-sky-400 font-black text-2xl drop-shadow">↓</div>
+<div class="w-full p-4 rounded-2xl bg-indigo-950/80 border-2 border-indigo-500/50 text-center shadow-lg">
 <div class="text-xs font-bold uppercase tracking-wider text-indigo-300 mb-1">Step 2 • Identity Proof (RFC 8446)</div>
-<div class="text-sm font-semibold text-indigo-100">Client Trusts CA ➔ Server Identity <span class="text-emerald-400 font-bold">AUTHENTICATED</span> via Signature</div>
+<div class="text-sm sm:text-base font-bold text-white">Client Trusts CA ➔ Server Identity <span class="text-emerald-400 underline decoration-2">AUTHENTICATED</span> via Signature</div>
 </div>
-<div class="text-indigo-400 font-bold text-lg">↓</div>
-<div class="w-full p-4 rounded-2xl bg-blue-950/60 border border-blue-700/60 text-center shadow-md">
+<div class="text-indigo-400 font-black text-2xl drop-shadow">↓</div>
+<div class="w-full p-4 rounded-2xl bg-blue-950/80 border-2 border-blue-500/50 text-center shadow-lg">
 <div class="text-xs font-bold uppercase tracking-wider text-blue-300 mb-1">Step 3 • Ephemeral Key Agreement (ECDHE)</div>
-<div class="text-sm font-semibold text-blue-100">ECDHE (X25519 / P-256) ➔ Independent Computation of <span class="text-amber-300 font-bold">Shared Secret</span></div>
+<div class="text-sm sm:text-base font-bold text-white">ECDHE (X25519 / P-256) ➔ Independent Computation of <span class="text-amber-300 font-black">Shared Secret</span></div>
 </div>
-<div class="text-blue-400 font-bold text-lg">↓</div>
-<div class="w-full p-4 rounded-2xl bg-emerald-950/60 border border-emerald-700/60 text-center shadow-md">
-<div class="text-xs font-bold uppercase tracking-wider text-emerald-300 mb-1">Step 4 • Bulk Encryption Keys (AEAD)</div>
-<div class="text-sm font-semibold text-emerald-100">Derive Symmetric Session Keys (AES-256-GCM / ChaCha20-Poly1305)</div>
+<div class="text-blue-400 font-black text-2xl drop-shadow">↓</div>
+<div class="w-full p-4 rounded-2xl bg-amber-950/70 border-2 border-amber-500/50 text-center shadow-lg">
+<div class="text-xs font-bold uppercase tracking-wider text-amber-300 mb-1">Step 4 • Bulk Encryption Keys (AEAD)</div>
+<div class="text-sm sm:text-base font-bold text-white">Derive Symmetric Session Keys (AES-256-GCM / ChaCha20-Poly1305)</div>
 </div>
-<div class="text-emerald-400 font-bold text-lg">↓</div>
-<div class="w-full p-4 rounded-2xl bg-emerald-500/20 border-2 border-emerald-500/80 text-center shadow-lg">
-<div class="text-sm sm:text-base font-extrabold text-emerald-300 flex items-center justify-center gap-2">
+<div class="text-emerald-400 font-black text-2xl drop-shadow">↓</div>
+<div class="w-full p-4 rounded-2xl bg-emerald-950/90 border-2 border-emerald-400 text-center shadow-xl">
+<div class="text-sm sm:text-base font-black text-emerald-300 flex items-center justify-center gap-2">
 <span>🔒</span> Fast, Tamper-Proof Application Data Flow
 </div>
 </div>
