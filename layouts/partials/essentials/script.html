@@ -47,23 +47,43 @@
 
 <!-- Non-Critical Plugins & Idle Loaders (Zero Main-Thread Block) -->
 <script>
-  window.addEventListener('load', function () {
-    var lazyScript = document.createElement('script');
-    lazyScript.src = "{{ $scriptsLazy.RelPermalink }}";
-    lazyScript.defer = true;
-    document.body.appendChild(lazyScript);
+  (function () {
+    var loaded = false;
+    function loadDeferredScripts() {
+      if (loaded) return;
+      loaded = true;
 
-    {{ if site.Params.supabase.enable }}
-      var supaScript = document.createElement('script');
-      supaScript.src = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2";
-      supaScript.defer = true;
-      document.body.appendChild(supaScript);
-    {{ end }}
+      var lazyScript = document.createElement('script');
+      lazyScript.src = "{{ $scriptsLazy.RelPermalink }}";
+      lazyScript.defer = true;
+      document.body.appendChild(lazyScript);
 
-    if ('serviceWorker' in navigator && (window.location.protocol === 'https:' || window.location.hostname === 'localhost')) {
-      navigator.serviceWorker.register('/sw.js').catch(function () {});
+      {{ if site.Params.supabase.enable }}
+        var supaScript = document.createElement('script');
+        supaScript.src = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2";
+        supaScript.defer = true;
+        document.body.appendChild(supaScript);
+      {{ end }}
+
+      if ('serviceWorker' in navigator && (window.location.protocol === 'https:' || window.location.hostname === 'localhost')) {
+        navigator.serviceWorker.register('/sw.js').catch(function () {});
+      }
     }
-  });
+
+    ['scroll', 'touchstart', 'mousemove', 'keydown', 'click'].forEach(function (evt) {
+      window.addEventListener(evt, loadDeferredScripts, { once: true, passive: true });
+    });
+
+    window.addEventListener('load', function () {
+      if ('requestIdleCallback' in window) {
+        requestIdleCallback(function () {
+          setTimeout(loadDeferredScripts, 2500);
+        }, { timeout: 4000 });
+      } else {
+        setTimeout(loadDeferredScripts, 2500);
+      }
+    });
+  })();
 </script>
 
 <!-- progressive web app -->

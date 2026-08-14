@@ -81,7 +81,7 @@ home = ["HTML", "RSS", "WebAppManifest", "SearchIndex"]
 [imaging]
 # See https://github.com/disintegration/imaging
 # Default JPEG or WebP quality setting. Default is 75.
-quality = 80
+quality = 75
 resampleFilter = "Lanczos"
 
 ############################ Caches ##############################
@@ -131,12 +131,6 @@ notAlternative = true
 ############################# Plugins ##############################
 
 # CSS Plugins
-[[params.plugins.css]]
-link = "plugins/swiper/swiper-bundle.css"
-lazy = true
-[[params.plugins.css]]
-link = "plugins/glightbox/glightbox.css"
-lazy = true
 
 
 # JS Plugins
@@ -144,16 +138,7 @@ lazy = true
 link = "js/search.js"
 lazy = false
 [[params.plugins.js]]
-link = "plugins/swiper/swiper-bundle.js"
-lazy = true
-[[params.plugins.js]]
 link = "plugins/cookie.js"
-lazy = true
-[[params.plugins.js]]
-link = "plugins/glightbox/glightbox.js"
-lazy = true
-[[params.plugins.js]]
-link = "js/gallery-slider.js"
 lazy = true
 [[params.plugins.js]]
 link = "js/accordion.js"
@@ -163,9 +148,6 @@ link = "js/tab.js"
 lazy = true
 [[params.plugins.js]]
 link = "js/modal.js"
-lazy = true
-[[params.plugins.js]]
-link = "plugins/youtube-lite.js"
 lazy = true
 [[params.plugins.js]]
 link = "js/blog-enhancements.js"
