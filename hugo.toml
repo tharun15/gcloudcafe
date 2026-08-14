@@ -151,7 +151,8 @@ link = "js/modal.js"
 lazy = true
 [[params.plugins.js]]
 link = "js/blog-enhancements.js"
-lazy = true
+lazy = false
 [[params.plugins.js]]
 link = "js/dynamic-enhancements.js"
-lazy = true
+lazy = false
+
