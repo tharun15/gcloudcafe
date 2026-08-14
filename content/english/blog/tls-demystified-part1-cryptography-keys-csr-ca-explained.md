@@ -84,7 +84,7 @@ Instead, TLS uses a **hybrid design**:
 
 <div class="p-6 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 my-8 shadow-sm space-y-3">
   <div class="flex items-center gap-2 font-bold text-slate-900 dark:text-white text-base">
-    <span>💡</span> The Padlock & Suitcase Story
+    <span>💡</span> The Alice The Padlock & Suitcase Story Bob Padlock Story (How Public-Key Crypto Works)
   </div>
   <p class="text-xs text-slate-700 dark:text-slate-300 leading-relaxed m-0">
     Imagine Bob wants anyone in the world to be able to send him confidential letters.
