@@ -2,7 +2,7 @@
 {{ $imagePath:= .Src }}
 {{ $class:= .Class }}
 {{ $size:= .Size }}
-{{ $alt:= .Alt }}
+{{ $alt:= .Alt | default (path.BaseName $imagePath | humanize) | default "GCloud Cafe cloud engineering architecture" }}
 {{ $displayXL:= .DisplayXL | default "1110x" }}
 {{ $displayLG:= .DisplayLG | default "700x" }}
 {{ $displayMD:= .DisplayMD | default "600x" }}
@@ -40,7 +40,7 @@
     decoding="async"
     {{ with $fetchPriority }}fetchpriority="{{ . }}"{{ end }}
     src="{{ $imagePath | absURL }}"
-    alt="{{ .Alt }}"
+    alt="{{ $alt }}"
     class="{{ $class }} img"
     height="{{ $height }}"
     width="{{ $width }}" />
@@ -76,7 +76,7 @@
         loading="{{ $loading }}"
         decoding="async"
         {{ with $fetchPriority }}fetchpriority="{{ . }}"{{ end }}
-        alt="{{ .Alt }}"
+        alt="{{ $alt }}"
         class="{{ $class }} img"
         width="{{ $width }}"
         height="{{ $height }}" />
@@ -124,7 +124,7 @@
             decoding="async"
           {{ end }}
           {{ with $fetchPriority }}fetchpriority="{{ . }}"{{ end }}
-          alt="{{ .Alt }}"
+          alt="{{ $alt }}"
           class="{{ if $placeholder }}lazy{{ end }} {{ $class }} img"
           width="{{- with $width -}}
             {{- . -}}
@@ -167,33 +167,18 @@
           {{ end }}
         {{ end }}
 
-        <!-- placeholder -->
-        {{ $placeholderImage := ($imageWebp.Resize $placeholderQuality) | images.Filter (images.GaussianBlur 5) }}
-
         <img
-          {{ if $placeholder }}
-            src="data:image/jpeg;base64,{{ $placeholderImage.Content | base64Encode }}"
-            data-src={{ $imageWebp.RelPermalink }} alt="placeholder"
-          {{ else }}
-            src="{{ $imageWebp.RelPermalink }}" loading="{{ $loading }}"
-            decoding="async" alt="{{ .Alt }}"
-          {{ end }}
+          src="{{ $imageWebp.RelPermalink }}"
+          loading="{{ $loading }}"
+          decoding="async"
           {{ with $fetchPriority }}fetchpriority="{{ . }}"{{ end }}
-          class="{{ if $placeholder }}lazy{{ end }} {{ $class }} img"
-          width="{{- with $width -}}
-            {{- . -}}
-          {{- else -}}
-            {{- $imageWebp.Width -}}
-          {{- end -}}"
-          height="{{- with $height -}}
-            {{- . -}}
-          {{- else -}}
-            {{- $imageWebp.Height -}}
-          {{- end -}}"
+          alt="{{ $alt }}"
+          class="{{ $class }} img"
+          width="{{ $image.Width }}"
+          height="{{ $image.Height }}"
           onerror="this.onerror='null';this.src='{{ $image.RelPermalink }}';" />
-      {{ else }}
-        <!-- /if image size less then 500x and size not defined -->
 
+      {{ else }}
         <!-- image processing for multiple device -->
         {{ $imageFallback:= $image.Resize $displayXL }}
         {{ $imageXL:= $image.Resize (add $displayXL " webp") }}
@@ -254,7 +239,7 @@
             class="{{ if $placeholder }}
               lazy
             {{ end }} {{ $class }} img"
-            alt="{{ .Alt }}"
+            alt="{{ $alt }}"
             width="{{ $image.Width }}"
             height="{{ $image.Height }}" />
         </picture>

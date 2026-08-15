@@ -12,37 +12,69 @@
     {{ $imageURL = "images/og-share.png" | absURL }}
   {{ end }}
 
+  {{ $section := .Section | default "blog" }}
+  {{ $sectionTitle := $section | humanize | title }}
+
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
-    "@type": "TechArticle",
-    "mainEntityOfPage": {
-      "@type": "WebPage",
-      "@id": "{{ .Permalink }}"
-    },
-    "headline": {{ .Title | jsonify }},
-    "description": {{ (.Params.description | default .Summary | plainify) | jsonify }},
-    "image": [
-      {{ $imageURL | jsonify }}
-    ],
-    "datePublished": "{{ .PublishDate.Format "2006-01-02T15:04:05Z07:00" }}",
-    "dateModified": "{{ .Lastmod.Format "2006-01-02T15:04:05Z07:00" }}",
-    "wordCount": {{ .WordCount }},
-    "inLanguage": "{{ site.LanguageCode | default "en-us" }}",
-    "author": {
-      "@type": "Person",
-      "name": {{ $authorName | jsonify }},
-      "url": "{{ `authors/` | absLangURL }}{{ $authorSlug | urlize }}/"
-    },
-    "publisher": {
-      "@type": "Organization",
-      "name": "GCloud Cafe",
-      "url": "{{ site.BaseURL }}",
-      "logo": {
-        "@type": "ImageObject",
-        "url": "{{ "images/og-share.png" | absURL }}"
+    "@graph": [
+      {
+        "@type": "TechArticle",
+        "@id": "{{ .Permalink }}#article",
+        "isPartOf": {
+          "@type": "WebPage",
+          "@id": "{{ .Permalink }}"
+        },
+        "headline": {{ .Title | jsonify }},
+        "description": {{ (.Params.description | default .Summary | plainify) | jsonify }},
+        "image": [
+          {{ $imageURL | jsonify }}
+        ],
+        "datePublished": "{{ .PublishDate.Format "2006-01-02T15:04:05Z07:00" }}",
+        "dateModified": "{{ .Lastmod.Format "2006-01-02T15:04:05Z07:00" }}",
+        "wordCount": {{ .WordCount }},
+        "inLanguage": "{{ site.LanguageCode | default "en-us" }}",
+        "author": {
+          "@type": "Person",
+          "name": {{ $authorName | jsonify }},
+          "url": "{{ `authors/` | absLangURL }}{{ $authorSlug | urlize }}/"
+        },
+        "publisher": {
+          "@type": "Organization",
+          "name": "GCloud Cafe",
+          "url": "{{ site.BaseURL }}",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "{{ "images/og-share.png" | absURL }}"
+          }
+        }
+      },
+      {
+        "@type": "BreadcrumbList",
+        "@id": "{{ .Permalink }}#breadcrumb",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "{{ site.BaseURL }}"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": {{ $sectionTitle | jsonify }},
+            "item": "{{ $section | absLangURL }}/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "name": {{ .Title | jsonify }},
+            "item": "{{ .Permalink }}"
+          }
+        ]
       }
-    }
+    ]
   }
   </script>
 {{ else }}
