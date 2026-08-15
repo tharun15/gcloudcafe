@@ -7,6 +7,8 @@ image: "/images/tls-part2-handshake.jpg"
 categories: ["Security", "DevOps", "Architecture"]
 tags: ["TLS", "SSL", "Networking", "Cryptography", "OpenSSL", "Kubernetes", "DevOps"]
 author: tharun-vempati
+series: "TLS & mTLS Architecture for DevOps Engineers"
+series_order: 2
 featured: true
 draft: false
 ---
