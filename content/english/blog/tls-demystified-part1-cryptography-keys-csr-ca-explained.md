@@ -7,6 +7,8 @@ image: "/images/tls-part1-foundations.jpg"
 categories: ["Security", "DevOps", "Architecture"]
 tags: ["TLS", "SSL", "Cryptography", "Certificates", "OpenSSL", "DevOps", "Security"]
 author: tharun-vempati
+series: "TLS & mTLS Architecture for DevOps Engineers"
+series_order: 1
 featured: false
 draft: false
 ---
