@@ -420,7 +420,7 @@ To explore the underlying IETF specifications:
 
 Now that you have a firm grasp on how the TLS handshake negotiates cryptographic engines over the wire, you're ready to dive into internal enterprise security.
 
-👉 **In Part 3: Production TLS, mTLS, KeyStores & Incident Management**, we will explore:
+👉 **[Read Part 3: Mutual TLS (mTLS), Java KeyStores vs. TrustStores & Incident Playbooks](/blog/tls-demystified-part3-mtls-keystores-and-incident-management/)**, where we explore:
 - **Mutual TLS (mTLS):** Enforcing bidirectional client certificate authentication in zero-trust architectures.
 - **Java KeyStores (`.jks`) vs. TrustStores (`cacerts`):** Solving `PKIX path building failed` once and for all.
 - **Automating Certificate Lifecycles:** Kubernetes `cert-manager`, Vault PKI, and automated zero-downtime rotation.
