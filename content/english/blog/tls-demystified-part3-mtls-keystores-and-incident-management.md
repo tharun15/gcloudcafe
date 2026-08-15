@@ -63,7 +63,7 @@ Now imagine entering a biometric nuclear cleanroom. The guard shows you their ID
 </div>
 
 <div class="p-4 rounded-xl bg-blue-500/10 border border-blue-500/30 text-xs sm:text-sm text-slate-800 dark:text-slate-200 mt-2">
-<b>💡 In Plain English:</b> Standard TLS authenticates the <b>Server</b> to the Client. Mutual TLS (mTLS) authenticates <b>both endpoints to each other</b> using cryptographic certificates, eliminating passwords or API keys between microservices.
+<b>💡 In Plain English:</b> Standard TLS authenticates the <b>Server</b> to the Client. Mutual TLS (mTLS) authenticates <b>both endpoints to each other</b> using cryptographic certificates, removing the need to rely on static shared secrets or cleartext API tokens for service-to-service transport authentication.
 </div>
 </div>
 
@@ -175,7 +175,7 @@ Transport Authentication: <b>Bidirectional (Server + Client)</b>
 <div class="p-5 rounded-2xl bg-rose-50/70 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-800/60">
 <h5 class="text-sm font-bold text-rose-950 dark:text-rose-200 m-0 mb-1.5">❌ Myth 3: "Updating /etc/ssl/certs updates running Java apps."</h5>
 <p class="text-xs text-slate-700 dark:text-slate-300 m-0 leading-relaxed">
-<b>Reality:</b> The JVM reads its own keystore (`$JAVA_HOME/lib/security/cacerts`) at startup. Modifying OS certificates or running `update-ca-certificates` will not fix Java apps unless certificates are imported into the JVM truststore and the JVM is restarted (or uses dynamic reloaders).
+<b>Reality:</b> The JVM reads its default truststore (`$JAVA_HOME/lib/security/cacerts`) at startup. Modifying OS certificates or running `update-ca-certificates` will not update Java apps unless certificates are imported into the JVM truststore and the JVM is restarted (or uses dynamic reloaders).
 </p>
 </div>
 
@@ -209,7 +209,7 @@ In the Java and JVM world (Spring Boot, Kafka, Quarkus, Elasticsearch), TLS conf
 <ul class="text-sm text-slate-800 dark:text-slate-200 space-y-2 m-0 pl-4 leading-relaxed">
 <li><b>What it stores:</b> Your private key (`PrivateKeyEntry`) and your corresponding X.509 certificate chain.</li>
 <li><b>Purpose:</b> Presented to remote parties during the TLS handshake to prove your identity.</li>
-<li><b>Modern Format:</b> <b>PKCS#12 (`.p12`)</b> is the modern industry standard (replaces legacy `.jks` since Java 9).</li>
+<li><b>Modern Format:</b> <b>PKCS#12 (`.p12`)</b> became the default keystore format starting in Java 9, while legacy <code>.jks</code> remains supported for backwards compatibility.</li>
 <li><b>JVM Flags:</b><br>
 <code class="text-xs bg-slate-200 dark:bg-slate-800 p-1 rounded block mt-1">-Djavax.net.ssl.keyStore=keystore.p12</code>
 <code class="text-xs bg-slate-200 dark:bg-slate-800 p-1 rounded block mt-0.5">-Djavax.net.ssl.keyStorePassword=changeit</code>
@@ -223,7 +223,7 @@ In the Java and JVM world (Spring Boot, Kafka, Quarkus, Elasticsearch), TLS conf
 <h5 class="text-base font-bold text-emerald-600 dark:text-emerald-400 m-0">Java TrustStore (Trust Anchor)</h5>
 </div>
 <ul class="text-sm text-slate-800 dark:text-slate-200 space-y-2 m-0 pl-4 leading-relaxed">
-<li><b>What it stores:</b> Public Root CA and Intermediate CA certificates (`trustedCertEntry`). Contains <b>zero private keys</b>.</li>
+<li><b>What it stores:</b> Root CA trust anchors (and optionally trusted intermediates or self-signed peer certificates). Contains <b>zero private keys</b>. In standard PKI, servers provide their intermediate chains during handshakes, so clients only need the root CA trust anchor.</li>
 <li><b>Purpose:</b> Used by Java to decide whether remote servers (or clients) should be trusted.</li>
 <li><b>Default File:</b> `$JAVA_HOME/lib/security/cacerts`</li>
 <li><b>JVM Flags:</b><br>
@@ -282,8 +282,8 @@ Enable Java's detailed SSL debug logger to see the exact missing certificate ali
 <div><b>Phase 1:</b> Generate New Root CA B.</div>
 <div><b>Phase 2:</b> Append Root CA B to the TrustStore of all clients and proxies (TrustStore now contains Root A + Root B).</div>
 <div><b>Phase 3:</b> Roll out updated TrustStores across the cluster.</div>
-<div><b>Phase 4:</b> Switch certificate issuers to sign leaf certificates with Root B.</div>
-<div><b>Phase 5:</b> After all old leaf certificates expire, remove Root A from trust stores.</div>
+<div><b>Phase 4:</b> Switch certificate issuance to an intermediate CA chain anchored at Root B.</div>
+<div><b>Phase 5:</b> After all old leaf certificates expire and are replaced, safely remove Root A from trust stores.</div>
 </div>
 </div>
 </div>
