@@ -4,6 +4,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
 <meta http-equiv="X-Content-Type-Options" content="nosniff" />
 <meta name="referrer" content="strict-origin-when-cross-origin" />
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+
+<!-- Canonical URL (Fixes Semrush Duplicate/Indexation Errors) -->
+<link rel="canonical" href="{{ .Permalink }}" />
 
 <!-- Critical Self-Hosted Font Preload (Eliminates Chain Delay) -->
 <link rel="preload" href="/fonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin />
@@ -11,52 +15,81 @@
 <!-- theme meta -->
 <meta name="theme-name" content="gcloudcafe" />
 
-<!-- Title & Description -->
-<title>{{ if .Title }}{{ .Title }} | GCloud Cafe{{ else }}GCloud Cafe | Practical Cloud Architecture & Certifications{{ end }}</title>
-<meta name="description" content="{{ .Params.description | default .Summary | plainify | truncate 160 }}" />
+<!-- Title & Description (Guaranteed Fallback for Taxonomies and List Pages) -->
+{{ $pageTitle := "" }}
+{{ if .Title }}
+  {{ $pageTitle = printf "%s | GCloud Cafe" .Title }}
+{{ else }}
+  {{ $pageTitle = "GCloud Cafe | Practical Cloud Architecture, DevOps & Certifications" }}
+{{ end }}
+<title>{{ $pageTitle }}</title>
+
+{{ $siteDesc := site.Params.metadata.description | default "Practical Cloud Architecture guides, OpenShift tips, Kubernetes deep dives, and exam strategies." }}
+{{ $metaDesc := .Params.description | default .Summary | default (printf "Explore %s on GCloud Cafe - Practical Cloud Architecture, DevOps & Engineering Guides." .Title) | default $siteDesc | plainify | htmlUnescape | truncate 160 }}
+<meta name="description" content="{{ $metaDesc }}" />
 
 <!-- Favicon -->
 {{ partialCached "favicon" . }}
 
-<!-- LinkedIn & Open Graph Meta Tags -->
+<!-- Open Graph / Facebook / LinkedIn Meta Tags -->
 <meta property="og:site_name" content="GCloud Cafe" />
-<meta property="og:title" content="{{ if .Title }}{{ .Title }}{{ else }}GCloud Cafe | Cloud Architecture & Certifications{{ end }}" />
-<meta property="og:description" content="{{ .Params.description | default .Summary | plainify | truncate 200 }}" />
+<meta property="og:title" content="{{ .Title | default "GCloud Cafe | Cloud Architecture & Certifications" }}" />
+<meta property="og:description" content="{{ $metaDesc | truncate 200 }}" />
 <meta property="og:url" content="{{ .Permalink }}" />
 <meta property="og:type" content="{{ if .IsPage }}article{{ else }}website{{ end }}" />
+<meta property="og:locale" content="{{ site.LanguageCode | default "en_US" }}" />
 
 {{ $imageURL := "" }}
+{{ $imageExt := "png" }}
 {{ with .Params.image }}
   {{ $imageURL = . | absURL }}
+  {{ $imageExt = path.Ext . | strings.TrimPrefix "." }}
 {{ else }}
   {{ $imageURL = "images/og-share.png" | absURL }}
 {{ end }}
+
 <meta property="og:image" content="{{ $imageURL }}" />
 <meta property="og:image:url" content="{{ $imageURL }}" />
 <meta property="og:image:secure_url" content="{{ $imageURL }}" />
-<meta property="og:image:type" content="image/png" />
+{{ if or (eq $imageExt "jpg") (eq $imageExt "jpeg") }}
+  <meta property="og:image:type" content="image/jpeg" />
+{{ else if eq $imageExt "webp" }}
+  <meta property="og:image:type" content="image/webp" />
+{{ else }}
+  <meta property="og:image:type" content="image/png" />
+{{ end }}
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
 <meta property="og:image:alt" content="{{ .Title | default "GCloud Cafe" }}" />
+
+<!-- Twitter Cards -->
 <meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:site" content="@gcloudcafe" />
+<meta name="twitter:creator" content="@tharun_vempati" />
+<meta name="twitter:title" content="{{ .Title | default "GCloud Cafe | Cloud Architecture & Certifications" }}" />
+<meta name="twitter:description" content="{{ $metaDesc | truncate 200 }}" />
 <meta name="twitter:image" content="{{ $imageURL }}" />
 
 {{ if .IsPage }}
   <meta property="article:published_time" content="{{ .PublishDate.Format "2006-01-02T15:04:05Z07:00" }}" />
+  <meta property="article:modified_time" content="{{ .Lastmod.Format "2006-01-02T15:04:05Z07:00" }}" />
   <meta property="article:author" content="Tharun Vempati" />
   {{ range .Params.tags }}
     <meta property="article:tag" content="{{ . }}" />
   {{ end }}
+  {{ range .Params.categories }}
+    <meta property="article:section" content="{{ . }}" />
+  {{ end }}
 {{ end }}
 
-<!-- Agentic Browsing & AI Agent Directives (3/3 Score) -->
+<!-- Agentic Browsing & AI Agent Directives -->
 <link rel="agent" type="text/markdown" href="{{ `llms.txt` | absURL }}" title="LLM Agent Summary" />
 <link rel="alternate" type="text/markdown" href="{{ `llms-full.txt` | absURL }}" title="LLM Agent Full Context" />
 <link rel="alternate" type="application/rss+xml" href="{{ `index.xml` | absURL }}" title="GCloud Cafe Feed" />
 <meta name="agent-readiness" content="full" />
 <meta name="ai-site-verification" content="gcloudcafe-llm-ready" />
 
-<!-- Google TechArticle & WebSite JSON-LD Schema -->
+<!-- Google TechArticle, WebSite & BreadcrumbList JSON-LD Schema -->
 {{ partial "seo-schema.html" . }}
 
 <!-- custom script -->
