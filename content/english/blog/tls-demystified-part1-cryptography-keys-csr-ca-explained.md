@@ -7,7 +7,7 @@ image: "/images/tls-part1-foundations.jpg"
 categories: ["Security", "DevOps", "Architecture"]
 tags: ["TLS", "SSL", "Cryptography", "Certificates", "OpenSSL", "DevOps", "Security"]
 author: tharun-vempati
-featured: true
+featured: false
 draft: false
 ---
 
@@ -602,7 +602,7 @@ To explore the underlying cryptographic specifications and RFC standards:
 
 Now that you have a rock-solid foundation on cryptographic roles, keys, CSRs, public/private PKI, and chain ordering, you are ready to explore the protocol handshake itself.
 
-👉 **In Part 2: The Standard TLS Handshake, Cipher Suites & SSL Troubleshooting**, we will break down:
+👉 **[Read Part 2: The Modern TLS Handshake (TLS 1.2 vs 1.3), Cipher Suites & SSL Troubleshooting](/blog/tls-demystified-part2-handshake-ciphers-and-troubleshooting/)**, where we break down:
 - The step-by-step TLS 1.2 vs 1.3 handshake packet exchange (0-RTT, ServerHello, `CertificateVerify`, Encrypted Extensions).
 - Real-world diagnostic tools including [SSL Shopper](https://www.sslshopper.com/ssl-checker.html), [Qualys SSL Labs](https://www.ssllabs.com/ssltest/), and OpenSSL `s_client`.
 - Connecting TLS termination strategies to Kubernetes Ingress and [OpenShift Edge Routes](/blog/ex280-tips-part2/).
