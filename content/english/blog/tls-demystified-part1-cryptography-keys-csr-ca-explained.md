@@ -7,7 +7,7 @@ image: "/images/tls-part1-foundations.jpg"
 categories: ["Security", "DevOps", "Architecture"]
 tags: ["TLS", "SSL", "Cryptography", "Certificates", "OpenSSL", "DevOps", "Security"]
 author: tharun-vempati
-featured: true
+featured: false
 draft: false
 ---
 

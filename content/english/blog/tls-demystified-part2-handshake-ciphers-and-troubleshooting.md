@@ -7,7 +7,7 @@ image: "/images/tls-part2-handshake.jpg"
 categories: ["Security", "DevOps", "Architecture"]
 tags: ["TLS", "SSL", "Networking", "Cryptography", "OpenSSL", "Kubernetes", "DevOps"]
 author: tharun-vempati
-featured: false
+featured: true
 draft: false
 ---
 
