@@ -17,7 +17,7 @@ Now comes the pivotal operational question: **What happens over the physical net
 
 How do client and server agree on cryptographic ciphers over an untrusted network? Why did **TLS 1.3 cut connection latency by 50%**, and how does an out-of-sync session ticket or missing Server Name Indication (SNI) trigger sudden connection resets (`SSL_ERROR_ZERO_RETURN` / `wrong version number`) in your Kubernetes Ingress or Envoy proxies?
 
-Welcome to **Part 2 of our 3-Part Deep Dive into TLS & mTLS Architecture**:
+Welcome to **Part 2 of our 3-Part Deep Dive into TLS & mTLS Architecture for DevOps Engineers**:
 
 - **Part 1:** [The Alice & Bob Foundation: Keys, CSRs, Public vs. Private PKI, and the Chain of Trust](/blog/tls-demystified-part1-cryptography-keys-csr-ca-explained/).
 - **Part 2 (You Are Here):** The Modern TLS Handshake (TLS 1.2 vs 1.3), Cipher Suites, Session Resumption, and Production Debugging.
@@ -71,7 +71,7 @@ Reducing round trips during connection establishment is the single most impactfu
 
 ### The Legacy TLS 1.2 Handshake (2 Full Round Trips)
 
-In TLS 1.2 ([RFC 5246](https://datatracker.ietf.org/doc/html/rfc5246)), setting up a secure channel requires **two complete round trips (2-RTT)** before any application data (HTTP request) can be sent:
+In TLS 1.2 ([RFC 5246](https://datatracker.ietf.org/doc/html/rfc5246)), setting up a secure channel requires **two complete round trips (2-RTT)** for the TLS handshake, after which the client can begin transmitting application data:
 
 ```text
 CLIENT                                               SERVER
@@ -85,16 +85,15 @@ CLIENT                                               SERVER
   │ ─── 6. ClientKeyExchange (Client ECDHE Share) ───> │  [RTT 2: Key Confirm]
   │ ─── 7. ChangeCipherSpec ─────────────────────────> │
   │ ─── 8. Finished (Encrypted Verify Hash) ─────────> │
-  │ <── 9. ChangeCipherSpec ────────────────────────── │
-  │ <── 10. Finished (Encrypted Verify Hash) ───────── │
-  │                                                    │
-  │ ─── 11. Encrypted Application Data (HTTP GET) ───> │  [RTT 3: First HTTP Data]
+  │ ─── 9. Encrypted Application Data (HTTP GET) ────> │  (Sent in second client flight)
+  │ <── 10. ChangeCipherSpec ───────────────────────── │
+  │ <── 11. Finished (Encrypted Verify Hash) ───────── │
 ```
 
-#### Why TLS 1.2 Was Slow & Vulnerable:
-1. **High Latency (2 RTT):** Together with the 1-RTT TCP 3-way handshake (`SYN` ➔ `SYN-ACK` ➔ `ACK`), the user waits **3 full round trips** before their first byte of HTTP payload leaves their browser.
-2. **Cleartext Metadata:** The server's certificate was sent unencrypted over the wire, allowing eavesdroppers to inspect which organization and domain was being accessed.
-3. **Static RSA Key Transport Weakness:** TLS 1.2 allowed RSA key exchange, where the client encrypted the premaster secret using the server's public key. If the server's private key was ever stolen years later, attackers could decrypt all historical traffic recorded from network taps.
+#### Why TLS 1.3 Improved on TLS 1.2:
+1. **Fewer Round Trips (1-RTT vs 2-RTT):** In TLS 1.2, the cryptographic handshake requires two full round trips before the server verifies keys and responds to application data. TLS 1.3 cuts this down to a single round trip.
+2. **Encrypted Handshake Records:** In TLS 1.2, the server's certificate was sent unencrypted over the wire, allowing passive network observers to inspect the certificate and extensions. TLS 1.3 encrypts everything following `ServerHello`.
+3. **Mandatory Ephemeral Key Exchange:** While TLS 1.2 supported ECDHE, it also permitted legacy static RSA key transport (which lacked forward secrecy). TLS 1.3 completely removed static RSA key exchange, mandating ephemeral Diffie-Hellman by design.
 
 ---
 
@@ -104,7 +103,7 @@ Published in 2018, **TLS 1.3 ([RFC 8446](https://datatracker.ietf.org/doc/html/r
 
 - It cut the standard handshake to **1-RTT**.
 - It encrypted the entire handshake after `ServerHello` (protecting certificates and extensions).
-- It completely abolished insecure legacy algorithms (RSA key transport, CBC ciphers, SHA-1, MD5).
+- It completely abolished insecure legacy algorithms (static RSA key transport, CBC ciphers, SHA-1, MD5).
 
 ```text
 CLIENT                                               SERVER
@@ -150,12 +149,12 @@ CLIENT                                               SERVER
 <b>RTT 2:</b> ClientKeyExchange, ChangeCipherSpec, Finished
 </div>
 <div class="p-3 rounded-xl bg-emerald-500/15 text-emerald-800 dark:text-emerald-300 border border-emerald-500/30">
-<b>RTT 3:</b> Application Data (HTTP GET/POST) starts flowing.
+<b>Flight 2:</b> Client Application Data follows Finished message.
 </div>
 </div>
 </div>
 <div class="mt-4 pt-3 border-t border-slate-200 dark:border-slate-800 text-xs text-slate-600 dark:text-slate-400">
-Total handshake delay: <b>2 RTTs (~200-400ms on mobile)</b>
+Handshake negotiation overhead: <b>2 RTTs</b>
 </div>
 </div>
 
@@ -170,18 +169,18 @@ Total handshake delay: <b>2 RTTs (~200-400ms on mobile)</b>
 <div class="space-y-2.5 font-mono text-xs">
 <div class="p-3 rounded-xl bg-sky-50 dark:bg-sky-950/60 text-sky-950 dark:text-sky-100 border border-sky-300 dark:border-sky-700">
 <b>RTT 1:</b> Client sends <code>KeyShare</code> (ECDHE guess) + Ciphers.
-<div class="text-sky-700 dark:text-sky-300 text-[11px] mt-1">Server responds with matching KeyShare + Certificate.</div>
+<div class="text-sky-700 dark:text-sky-300 text-[11px] mt-1">Server responds with matching KeyShare + Encrypted Certificate.</div>
 </div>
 <div class="p-3 rounded-xl bg-emerald-500/20 text-emerald-900 dark:text-emerald-200 border-2 border-emerald-500/60 font-bold">
 <b>RTT 1 (End):</b> Handshake completes! Everything after ServerHello is encrypted.
 </div>
 <div class="p-3 rounded-xl bg-emerald-500/15 text-emerald-800 dark:text-emerald-300 border border-emerald-500/30">
-<b>RTT 2:</b> Application Data (HTTP GET/POST) flows immediately!
+<b>Data Flow:</b> Application Data flows immediately in 1 RTT!
 </div>
 </div>
 </div>
 <div class="mt-4 pt-3 border-t border-slate-200 dark:border-slate-800 text-xs text-emerald-700 dark:text-emerald-300 font-bold">
-Total handshake delay: <b>1 RTT (50% latency reduction!)</b>
+Handshake negotiation overhead: <b>1 RTT (50% latency reduction!)</b>
 </div>
 </div>
 </div>
@@ -194,28 +193,28 @@ Total handshake delay: <b>1 RTT (50% latency reduction!)</b>
 <div class="p-5 rounded-2xl bg-rose-50/70 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-800/60">
 <h5 class="text-sm font-bold text-rose-950 dark:text-rose-200 m-0 mb-1.5">❌ Myth 1: "TLS 1.3 0-RTT Early Data is safe for all APIs."</h5>
 <p class="text-xs text-slate-700 dark:text-slate-300 m-0 leading-relaxed">
-<b>Reality:</b> 0-RTT Early Data has <b>no forward secrecy and no native replay protection</b>. An attacker intercepting a 0-RTT packet can replay it multiple times. 0-RTT must <b>only</b> be enabled for idempotent GET requests, never for POST, payment, or state-mutating endpoints.
+<b>Reality:</b> 0-RTT application data <b>does not provide the same forward-secrecy properties as the 1-RTT handshake</b> and is vulnerable to <b>Replay Attacks</b>. 0-RTT should only be accepted for operations that are safe to replay (idempotent GET queries). State-mutating actions (payments, POST mutations) must reject Early Data unless the application implements anti-replay tokens.
 </p>
 </div>
 
 <div class="p-5 rounded-2xl bg-rose-50/70 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-800/60">
 <h5 class="text-sm font-bold text-rose-950 dark:text-rose-200 m-0 mb-1.5">❌ Myth 2: "Cipher suites dictate the server's certificate key type."</h5>
 <p class="text-xs text-slate-700 dark:text-slate-300 m-0 leading-relaxed">
-<b>Reality:</b> In TLS 1.3, cipher suites are strictly symmetric. They define only the bulk AEAD cipher and hash algorithm (e.g., <code>TLS_AES_256_GCM_SHA384</code>). Key exchange and certificate signatures are negotiated completely independently in extension fields.
+<b>Reality:</b> In TLS 1.3, cipher suites are strictly symmetric. They define only the bulk AEAD cipher and hash algorithm (e.g., <code>TLS_AES_256_GCM_SHA384</code>). Key exchange (ECDHE groups) and certificate signatures (RSA-PSS/ECDSA) are negotiated completely independently in extension fields.
 </p>
 </div>
 
 <div class="p-5 rounded-2xl bg-rose-50/70 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-800/60">
 <h5 class="text-sm font-bold text-rose-950 dark:text-rose-200 m-0 mb-1.5">❌ Myth 3: "SNI (Server Name Indication) is encrypted by default."</h5>
 <p class="text-xs text-slate-700 dark:text-slate-300 m-0 leading-relaxed">
-<b>Reality:</b> The SNI header is sent in the initial unencrypted <code>ClientHello</code>. Anyone on the local network (ISPs, public Wi-Fi) can see which domain you are visiting. Encrypted Client Hello (ECH) is required to encrypt SNI metadata.
+<b>Reality:</b> In standard TLS, the SNI header is sent in plaintext inside the initial <code>ClientHello</code>. Anyone on the network path can observe the target hostname. <b>Encrypted Client Hello (ECH)</b> is specifically designed to protect SNI and sensitive extension metadata from network observers.
 </p>
 </div>
 
 <div class="p-5 rounded-2xl bg-rose-50/70 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-800/60">
 <h5 class="text-sm font-bold text-rose-950 dark:text-rose-200 m-0 mb-1.5">❌ Myth 4: "Session Tickets store state on the server."</h5>
 <p class="text-xs text-slate-700 dark:text-slate-300 m-0 leading-relaxed">
-<b>Reality:</b> In RFC 5077 / TLS 1.3 PSK, the server encrypts the session state with a secret key (STEK) and sends the ticket to the <b>client</b>. The client returns the ticket on resumption. The server keeps zero state in memory.
+<b>Reality:</b> In RFC 5077 / TLS 1.3 PSK, the server does not need to maintain per-session state for the ticket itself. It encrypts the session parameters using a secret key (STEK) and sends the ticket to the client. When the client returns, the server validates and decrypts the ticket.
 </p>
 </div>
 
@@ -257,8 +256,8 @@ TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 <b>AES_256_GCM</b> (AEAD)
 </div>
 <div class="p-2.5 rounded-lg bg-amber-500/10 border border-amber-500/20">
-<span class="text-[10px] uppercase font-bold text-amber-600 dark:text-amber-400 block">Integrity / PRF</span>
-<b>SHA384</b> (MAC Hash)
+<span class="text-[10px] uppercase font-bold text-amber-600 dark:text-amber-400 block">PRF Hash</span>
+<b>SHA384</b> (Key Derivation)
 </div>
 </div>
 </div>
@@ -283,7 +282,7 @@ TLS_AES_256_GCM_SHA384
 </div>
 </div>
 <p class="text-xs text-slate-700 dark:text-slate-300 m-0 mt-3 leading-relaxed">
-<b>Why the difference?</b> In TLS 1.3, Key Exchange (<code>supported_groups</code>: X25519, P-256) and Authentication (<code>signature_algorithms</code>: RSA-PSS, ECDSA) are negotiated separately. There are only <b>5 standardized cipher suites in TLS 1.3</b>, eliminating dangerous misconfigurations.
+<b>Why the difference?</b> TLS 1.3 defines a small, curated set of standardized AEAD cipher suites (such as <code>TLS_AES_256_GCM_SHA384</code>, <code>TLS_CHACHA20_POLY1305_SHA256</code>, <code>TLS_AES_128_GCM_SHA256</code>). Key Exchange (<code>supported_groups</code>: X25519, P-256) and Authentication (<code>signature_algorithms</code>: RSA-PSS, ECDSA) are negotiated separately, eliminating dangerous legacy cipher configurations.
 </p>
 </div>
 </div>
@@ -306,9 +305,9 @@ Client sends Pre-Shared Key ticket + 0-RTT Application Data in the very first Cl
 ```
 
 ### Production Gotcha: Session Ticket Encryption Keys (STEK) in Load-Balanced Clusters
-In Kubernetes, if a client sends a Session Ticket to Pod A, and subsequent requests hit Pod B:
-- If Pod A and Pod B do not share the exact same **Session Ticket Encryption Key (STEK)**, Pod B cannot decrypt the ticket and forces a full 1-RTT fallback handshake.
-- Cloud Ingress controllers (Nginx Ingress, Traefik, Envoy, AWS ALB) synchronize STEKs across all proxy replicas to maintain high resumption cache hit rates.
+In multi-replica architectures (such as Kubernetes Ingress or reverse proxy tiers), if a client receives a Session Ticket from Proxy A and returns to Proxy B:
+- If Proxy A and Proxy B do not share the exact same **Session Ticket Encryption Key (STEK)**, Proxy B cannot decrypt the ticket and forces a full 1-RTT fallback handshake.
+- Production ingress setups often configure synchronized STEKs or rely on sticky routing to maintain optimal resumption cache rates.
 
 ---
 
