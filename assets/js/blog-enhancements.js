@@ -2165,7 +2165,7 @@
             .replace(/&lt;\/a&gt;/gi, "")
             .trim();
 
-          var formattedContentHtml = '<div class="text-xs text-text/85 dark:text-darkmode-text/85 mb-3 leading-relaxed space-y-1.5">' + 
+          var formattedContentHtml = '<div class="text-sm text-text/90 dark:text-darkmode-text/90 mb-3.5 leading-relaxed space-y-2">' + 
             formattedCandidateContent
               .replace(/(?:🎯\s*(?:\*\*)?What Changed(?:\*\*)?:?)/gi, '<div class="font-semibold text-slate-900 dark:text-slate-100"><span class="text-emerald-500 font-bold mr-1">🎯 What Changed:</span>')
               .replace(/(?:💡\s*(?:\*\*)?(?:Engineering Impact|Impact)(?:\*\*)?:?)/gi, '</div><div class="font-normal text-text/80 dark:text-darkmode-text/80"><span class="text-amber-500 font-bold mr-1">💡 Impact:</span>')
@@ -2186,7 +2186,7 @@
                 '<span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-amber-500/20 text-amber-600 border border-amber-500/30">PENDING REVIEW</span>' +
                 '<span class="text-[10px] font-medium text-text/60 dark:text-darkmode-text/60">' + formatDate(c.created_at) + '</span>' +
               '</div>' +
-              '<h4 class="text-sm font-bold text-dark dark:text-darkmode-dark mb-2 leading-snug">' + escapeHtml(c.title) + '</h4>' +
+              '<h4 class="text-base sm:text-lg font-extrabold text-dark dark:text-darkmode-dark mb-2.5 leading-snug">' + escapeHtml(c.title) + '</h4>' +
               formattedContentHtml +
               linkHtml +
               reasonHtml +
