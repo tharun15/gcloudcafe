@@ -106,9 +106,11 @@ An armored courier arrives at the federal gold vault. Before the blast doors unl
 
 ## 2. How Mutual TLS (mTLS) Works on the Wire
 
-In TLS 1.3 ([RFC 8446 Section 4.4.2](https://datatracker.ietf.org/doc/html/rfc8446#section-4.4.2)), Mutual TLS adds a **client-authentication exchange** to the standard handshake:
+In TLS 1.3 ([RFC 8446 Section 4.4.2](https://datatracker.ietf.org/doc/html/rfc8446#section-4.4.2)), Mutual TLS incorporates a **client-authentication exchange** into the encrypted handshake flight:
 
 ```text
+Simplified TLS 1.3 mTLS Handshake (Logical Message Flow)
+
 Client (e.g., Order Pod)                                               Server (e.g., Payment Gateway)
   │                                                                                  │
   │─── 1. ClientHello (Supported Ciphers, Key Share, SNI) ──────────────────────────>│
@@ -165,7 +167,7 @@ Client (e.g., Order Pod)                                               Server (e
 <span>❌</span> Misconception 3: "Public CAs can issue internal mTLS certificates"
 </div>
 <p class="text-xs text-rose-800 dark:text-rose-300 leading-relaxed m-0 font-medium">
-<strong>Fact:</strong> In enterprise zero-trust architectures, internal mTLS is almost universally powered by private PKI (HashiCorp Vault, cert-manager CA, AWS Private CA) because public CAs cannot validate ownership of non-routable internal domains (e.g., <code>payment.prod.svc.cluster.local</code>).
+<strong>Fact:</strong> Publicly trusted CAs generally cannot issue certificates for internal-only names (e.g. <code>payment.prod.svc.cluster.local</code>) because non-routable private names cannot satisfy public CA domain validation rules (such as CA/Browser Forum Baseline Requirements). Internal mTLS is managed via private PKI (HashiCorp Vault, cert-manager Private CA, or AWS Private CA).
 </p>
 </div>
 
@@ -228,6 +230,10 @@ unable to find valid certification path to requested target
 6. **SNI Hostname Mismatch:** The server returns a fallback certificate chain because the client's Server Name Indication (SNI) header was missing or unrecognized.
 
 #### Resolving a Missing Root CA in the Java TrustStore:
+
+> [!WARNING]
+> **Lab Password Notice:** `changeit` is used throughout these examples solely as Java's standard default demonstration password. Never use default or hardcoded passwords for production KeyStores or TrustStores.
+
 ```bash
 # 1. Fetch and inspect the remote server's certificate chain
 openssl s_client -connect api.internal.gcloudcafe.com:443 -showcerts < /dev/null
@@ -296,6 +302,9 @@ In Kubernetes production environments, manually creating and rotating TLS secret
 
 ### Production `ClusterIssuer` & `Certificate` Manifests:
 
+> [!NOTE]
+> **Public Ingress vs. Internal Workload PKI:** The example below demonstrates automated public-facing Ingress TLS with Let's Encrypt (ACME HTTP-01). For internal workload mTLS, Kubernetes environments configure private issuers—such as cert-manager's `CA` issuer, HashiCorp Vault PKI, or service mesh control planes.
+
 ```yaml
 apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
@@ -343,7 +352,7 @@ spec:
 <strong>1. JVM In-Memory SSLContext Caching:</strong> Many enterprise Java runtimes initialize and cache SSL contexts in memory upon startup. Even if you update <code>cacerts</code> or <code>/etc/ssl/certs</code> on disk, running JVM processes may not detect new certificates until the process is restarted or the SSLContext is reloaded programmatically.
 </p>
 <p>
-<strong>2. Missing <code>extendedKeyUsage = clientAuth</code>:</strong> Client certificates used for mTLS should contain the <code>clientAuth</code> (OID <code>1.3.6.1.5.5.7.3.2</code>) extended key usage attribute. If signed with only <code>serverAuth</code>, strict TLS implementations (OpenSSL 3.x, Go <code>crypto/tls</code>, Rustls) will reject the handshake with <code>certificate verify failed: unsupported certificate purpose</code>.
+<strong>2. Missing <code>extendedKeyUsage = clientAuth</code>:</strong> Client certificates used for mTLS should contain the <code>clientAuth</code> (OID <code>1.3.6.1.5.5.7.3.2</code>) extended key usage attribute. Implementations that enforce Extended Key Usage may reject a certificate containing only <code>serverAuth</code> when it is presented for client authentication (e.g. throwing <code>certificate verify failed: unsupported certificate purpose</code>).
 </p>
 <p>
 <strong>3. Incomplete Intermediate Certificate Bundling:</strong> If your server sends only its leaf certificate without the intermediate CA certificate, clients without cached intermediate certificates will fail path validation even if they possess the valid Root CA. Always configure the full chain (<code>fullchain.pem</code> / <code>tls.crt</code>).
@@ -473,6 +482,9 @@ print("🔒 mTLS Server running on https://localhost:8443 (CERT_REQUIRED enabled
 httpd.serve_forever()
 ```
 
+> [!NOTE]
+> **Identity Authentication vs. Authorization:** This lab enforces cryptographic authentication against the trusted CA. In production, systems should additionally evaluate authorization rules on the authenticated client identity (e.g., validating the certificate's SAN, SPIFFE ID, or using OPA / RBAC policies).
+
 Now test both request paths using `curl`:
 
 ```bash
@@ -524,12 +536,14 @@ If `cert-manager` is failing an automated ACME challenge:
 # Check status of certificate orders and challenges
 kubectl get certificate,certificaterequest,order,challenge -A
 
-# Trigger immediate re-issuance
+# Trigger immediate re-issuance via CLI plugin (cmctl)
 kubectl cert-manager renew gcloudcafe-production-tls -n production
+# Or trigger declaratively via annotation (version-agnostic):
+# kubectl annotate certificate gcloudcafe-production-tls -n production cert-manager.io/reissue-at="$(date -u +"%Y-%m-%dT%H:%M:%SZ")" --overwrite
 ```
 
 ### Step 3: Zero-Downtime Ingress & Proxy Reconciliation
-Modern Kubernetes ingress controllers (e.g. `ingress-nginx`, Envoy, Traefik) continuously watch Secret resources and dynamically update TLS certificates in memory without dropping active TCP connections.
+Many modern Kubernetes ingress controllers (e.g. `ingress-nginx`, Envoy, Traefik) can watch Secret changes and dynamically reload TLS certificates without requiring a controller pod restart. Exact connection behavior and zero-interruption guarantees depend on the controller implementation and configuration.
 
 > [!TIP]
 > **Operational Best Practice:** Rely on your ingress controller's native secret-watching reconciliation loop rather than restarting controller pods. Manual configuration reload signals (such as `nginx -s reload`) or rolling pod restarts should only be used as emergency fallbacks if controller secret synchronization is demonstrably stalled.
