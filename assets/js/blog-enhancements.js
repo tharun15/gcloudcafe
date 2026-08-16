@@ -1011,7 +1011,7 @@
 
 function renderPulses(pulses) {
       if (!pulses || pulses.length === 0) {
-        feedContainer.innerHTML = '<div class="col-span-full text-center py-8 text-xs text-text/60 dark:text-darkmode-text/60">No cloud pulses yet. Be the first to post!</div>';
+        feedContainer.innerHTML = '<div class="col-span-full text-center py-12 px-4 rounded-3xl bg-body dark:bg-darkmode-body border border-border/70 dark:border-darkmode-border/70 text-xs sm:text-sm font-semibold text-text/70 dark:text-darkmode-text/70 shadow-xs"><i class="fa-solid fa-cloud-bolt text-primary text-2xl mb-2.5 block"></i>No cloud updates found for this topic yet. Check back soon for fresh releases!</div>';
         return;
       }
 
