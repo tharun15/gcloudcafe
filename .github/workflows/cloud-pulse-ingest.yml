@@ -2,8 +2,8 @@ name: Cloud Pulse Newsroom Ingestion
 
 on:
   schedule:
-    # Run every 6 hours (00:00, 06:00, 12:00, 18:00 UTC)
-    - cron: '0 */6 * * *'
+    # Run once daily in the morning at 05:00 UTC
+    - cron: '0 5 * * *'
   workflow_dispatch: # Allows 1-click manual trigger from /pulse-admin/ UI
 
 jobs:
