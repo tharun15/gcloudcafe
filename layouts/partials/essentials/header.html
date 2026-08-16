@@ -1,150 +1,83 @@
-<header
-  class="header {{ if site.Params.navbar_fixed }}sticky top-0{{ end }} z-30">
-  <nav class="navbar container">
-    <!-- logo -->
-    <div class="order-0">
-      <!-- navbar brand/logo -->
-      <a class="navbar-brand block" href="{{ site.Home.RelPermalink }}" style="min-width: 54px; min-height: 54px; display: inline-block;">
-        {{ partial "logo" }}
-      </a>
-    </div>
-    <!-- navbar toggler -->
-    <input id="nav-toggle" type="checkbox" class="hidden" />
-    <label
-      for="nav-toggle"
-      class="order-3 cursor-pointer flex items-center lg:hidden text-dark dark:text-white lg:order-1">
-      <svg id="show-button" class="h-6 w-6 fill-current block" width="24" height="24" viewBox="0 0 20 20">
-        <title>Menu Open</title>
-        <path d="M0 3h20v2H0V3z m0 6h20v2H0V9z m0 6h20v2H0V0z"></path>
-      </svg>
-      <svg id="hide-button" class="h-6 w-6 fill-current hidden" width="24" height="24" viewBox="0 0 20 20">
-        <title>Menu Close</title>
-        <polygon
-          points="11 9 22 9 22 11 11 11 11 22 9 22 9 11 -2 11 -2 9 9 9 9 -2 11 -2"
-          transform="rotate(45 10 10)"></polygon>
-      </svg>
-    </label>
-    <!-- /navbar toggler -->
-
-    <!-- main navbar -->
-    <ul
-      id="nav-menu"
-      class="navbar-nav order-3 hidden lg:flex w-full pb-6 lg:order-1 lg:w-auto lg:space-x-2 lg:pb-0 xl:space-x-8">
-      {{ $currentPage := . }}
-      {{ range site.Menus.main }}
-        {{ $menuURL := .URL | absLangURL }}
-        {{ $pageURL:= $currentPage.Permalink | absLangURL }}
-        {{ $active := eq $menuURL $pageURL }}
-        {{ if .HasChildren }}
-          <li class="nav-item nav-dropdown group relative">
-            <span
-              class="nav-link {{ range .Children }}
-                {{ $childURL := .URL | absLangURL }}
-                {{ $active := eq $childURL $pageURL }}
-                {{ if $active }}active{{ end }}
-              {{ end }} inline-flex items-center">
-              {{ .Name }}
-              <svg class="h-4 w-4 fill-current" viewBox="0 0 20 20">
-                <path
-                  d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
-              </svg>
+<header class="header sticky top-0 z-40 py-3 transition-all duration-300">
+  <div class="container">
+    <div class="flex items-center justify-between px-4 sm:px-6 py-2.5 rounded-2xl bg-body/80 dark:bg-[#0b101d]/85 backdrop-blur-xl border border-border/80 dark:border-slate-800 shadow-md transition-all duration-300">
+      
+      <!-- Brand Logo -->
+      <div class="flex items-center gap-3">
+        <a class="navbar-brand flex items-center gap-2.5 no-underline group" href="{{ site.Home.RelPermalink }}" aria-label="Gcloudcafe Home">
+          <div class="relative flex items-center justify-center">
+            {{ partial "logo" }}
+          </div>
+          <div class="hidden sm:flex flex-col">
+            <span class="font-extrabold text-base tracking-tight text-dark dark:text-white group-hover:text-primary transition-colors leading-none">
+              GCloud<span class="text-primary font-black">Cafe</span>
             </span>
-            <ul
-              class="nav-dropdown-list lg:group-hover:visible lg:group-hover:opacity-100">
-              {{ range .Children }}
-                {{ $childURL := .URL | absLangURL }}
-                {{ $active := eq $childURL $pageURL }}
-                <li class="nav-dropdown-item">
-                  <a
-                    class="nav-dropdown-link {{ if $active }}
-                      active
-                    {{- end -}}"
-                    {{ if findRE `^http` .URL }}
-                      target="_blank" rel="noopener"
-                    {{ end }}
-                    href="{{- if findRE `^#` .URL -}}
-                      {{- if not $.IsHome -}}
-                        {{- site.Home.RelPermalink -}}
-                      {{- end }}
-                      {{- .URL -}}
-                    {{- else -}}
-                      {{- .URL | relLangURL -}}
-                    {{- end -}}">
-                    {{ .Name }}
-                  </a>
-                </li>
-              {{ end }}
-            </ul>
-          </li>
-        {{ else }}
-          <li class="nav-item">
-            <a
-              class="nav-link {{ if $active }}active{{- end -}}"
-              {{ if findRE `^http` .URL }}
-                target="_blank" rel="noopener"
-              {{ end }}
-              href="{{- if findRE `^#` .URL -}}
-                {{- if not $.IsHome -}}
-                  {{- site.Home.RelPermalink -}}
-                {{- end }}{{- .URL -}}
-              {{- else -}}
-                {{- .URL | relLangURL -}}
-              {{- end -}}"
-              >{{ .Name }}</a
-            >
-          </li>
-        {{ end }}
-      {{ end }}
-      {{ if site.Params.navigation_button.enable }}
-        <li class="mt-4 inline-block lg:hidden">
-          <a
-            class="btn btn-outline-primary btn-sm"
-            href="{{ site.Params.navigation_button.link | relLangURL }}">
-            {{ site.Params.navigation_button.label }}
+            <span class="text-[10px] font-bold text-text/60 dark:text-slate-400 uppercase tracking-widest leading-tight mt-0.5">
+              Cloud · DevOps · Security
+            </span>
+          </div>
+        </a>
+      </div>
+
+      <!-- Center Nav Links -->
+      <nav class="hidden md:flex items-center gap-1.5 lg:gap-2">
+        {{ $currentPage := . }}
+        {{ range site.Menus.main }}
+          {{ $menuURL := .URL | absLangURL }}
+          {{ $pageURL := $currentPage.Permalink | absLangURL }}
+          {{ $active := eq $menuURL $pageURL }}
+          <a href="{{ .URL | relLangURL }}"
+             class="px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all no-underline
+                    {{ if $active }}
+                      bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary
+                    {{ else }}
+                      text-text/80 dark:text-slate-300 hover:text-primary dark:hover:text-primary hover:bg-slate-100 dark:hover:bg-slate-800/60
+                    {{ end }}">
+            {{ .Name }}
           </a>
-        </li>
-      {{ end }}
-    </ul>
-
-    <div class="order-1 ml-auto flex items-center md:order-2 lg:ml-0">
-      <a
-        href="{{ `pulse/` | relLangURL }}"
-        class="inline-flex items-center gap-1.5 px-3.5 py-1.5 mr-2 rounded-full bg-primary/10 hover:bg-primary/20 text-primary dark:text-primary text-xs sm:text-sm font-extrabold transition-all border border-primary/30 hover:border-primary/60 shrink-0 no-underline shadow-2xs"
-        title="Cloud Pulse Live Micro-News">
-        <span class="relative flex h-2 w-2">
-          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-          <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-        </span>
-        <i class="fa-solid fa-tower-broadcast text-xs"></i> Pulse
-      </a>
-
-      {{ with site.Params.search }}
-        {{ if .enable }}
-          <button
-            aria-label="search"
-            {{ if and (not site.Params.navigation_button.enable) (not site.Params.theme_switcher)}}
-            class="border-border text-dark hover:text-primary dark:border-darkmode-border mr-5 inline-block border-r lg:border-r-0 pr-5 lg:pr-0 text-xl dark:text-white dark:hover:text-darkmode-primary"
-            {{ else }}
-            class="border-border text-dark hover:text-primary dark:border-darkmode-border mr-5 inline-block border-r pr-5 text-xl dark:text-white dark:hover:text-darkmode-primary"
-            {{ end }}
-            data-target="search-modal">
-            <i class="fa-solid fa-search"></i>
-          </button>
         {{ end }}
-      {{ end }}
+      </nav>
 
-      {{ partial "components/language-switcher" (dict "Context" . "Class" "mr-5 pl-2 py-1 dark:bg-darkmode-theme-light rounded") }}
-      {{ partial "components/theme-switcher" (dict "Class" "mr-5") }}
+      <!-- Right Action Utilities: Search Shortcut + Theme Toggle -->
+      <div class="flex items-center gap-2 sm:gap-3">
+        
+        <!-- Quick Search Pill (Ctrl+K) -->
+        <button
+          type="button"
+          data-target="search-modal"
+          class="search-trigger flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-semibold text-text/70 dark:text-slate-400 bg-slate-100 dark:bg-slate-800/80 border border-border/80 dark:border-slate-700 hover:border-primary/50 transition-all cursor-pointer"
+          aria-label="Search articles (Ctrl+K)">
+          <i class="fa-solid fa-magnifying-glass text-primary text-[11px]"></i>
+          <span class="hidden sm:inline">Search</span>
+          <kbd class="hidden sm:inline-block px-1.5 py-0.5 text-[10px] font-mono font-bold rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400">Ctrl K</kbd>
+        </button>
 
+        <!-- Theme Toggle Button -->
+        {{ partial "components/theme-switcher" (dict "Class" "flex items-center") }}
 
-      <!-- navigation btn -->
-      {{ if site.Params.navigation_button.enable }}
-        <a
-          href="{{ site.Params.navigation_button.link | relLangURL }}"
-          class="btn btn-outline-primary btn-sm hidden lg:inline-block">
-          {{ site.Params.navigation_button.label }}
+        <!-- Mobile Menu Toggle Button -->
+        <button
+          type="button"
+          class="md:hidden p-2 rounded-xl text-dark dark:text-white hover:bg-slate-100 dark:hover:bg-slate-800 border-none bg-transparent cursor-pointer"
+          onclick="document.getElementById('mobile-nav-drawer')?.classList.toggle('hidden')"
+          aria-label="Toggle Navigation Menu">
+          <i class="fa-solid fa-bars text-base"></i>
+        </button>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Mobile Drawer Menu -->
+  <div id="mobile-nav-drawer" class="hidden md:hidden container mt-2">
+    <div class="p-4 rounded-2xl bg-body/95 dark:bg-[#0b101d]/95 backdrop-blur-xl border border-border/80 dark:border-slate-800 shadow-xl space-y-2">
+      {{ range site.Menus.main }}
+        <a href="{{ .URL | relLangURL }}"
+           class="block px-4 py-2.5 rounded-xl text-sm font-bold text-text dark:text-slate-200 hover:bg-primary/10 hover:text-primary transition-all no-underline">
+          {{ .Name }}
         </a>
       {{ end }}
     </div>
-  </nav>
+  </div>
 </header>
