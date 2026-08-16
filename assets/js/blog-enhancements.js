@@ -892,8 +892,45 @@
       supabase = window.supabase.createClient(config.url, config.anonKey);
     }
 
+    var allLoadedPulses = [];
+    var activeFilter = "all";
+
+    function filterAndRenderPulses() {
+      var filtered = allLoadedPulses;
+      if (activeFilter !== "all") {
+        filtered = allLoadedPulses.filter(function(p) {
+          var tagsStr = (Array.isArray(p.tags) ? p.tags.join(" ") : "") + " " + (p.title || "") + " " + (p.content || "");
+          var lower = tagsStr.toLowerCase();
+          if (activeFilter === "kubernetes") return lower.includes("k8s") || lower.includes("kube") || lower.includes("cncf") || lower.includes("gateway") || lower.includes("kyaml");
+          if (activeFilter === "gcp") return lower.includes("gcp") || lower.includes("google") || lower.includes("bigquery");
+          if (activeFilter === "aws") return lower.includes("aws") || lower.includes("amazon") || lower.includes("rosa");
+          if (activeFilter === "openshift") return lower.includes("openshift") || lower.includes("redhat") || lower.includes("red hat") || lower.includes("rosa") || lower.includes("odc");
+          return true;
+        });
+      }
+      renderPulses(filtered);
+    }
+
+    function setupFilterChips() {
+      var chips = document.querySelectorAll("[data-pulse-filter]");
+      chips.forEach(function(chip) {
+        chip.addEventListener("click", function(e) {
+          e.preventDefault();
+          chips.forEach(function(c) {
+            c.classList.remove("is-active", "bg-primary", "text-white");
+            c.classList.add("bg-theme-light", "dark:bg-darkmode-theme-light", "text-text/80", "dark:text-darkmode-text/80");
+          });
+          chip.classList.add("is-active", "bg-primary", "text-white");
+          chip.classList.remove("bg-theme-light", "dark:bg-darkmode-theme-light", "text-text/80", "dark:text-darkmode-text/80");
+          activeFilter = chip.getAttribute("data-pulse-filter") || "all";
+          filterAndRenderPulses();
+        });
+      });
+    }
+
     function fetchPulses() {
-      var queryUrl = config.url + "/rest/v1/cloud_pulses_trending?select=*&limit=6";
+      setupFilterChips();
+      var queryUrl = config.url + "/rest/v1/cloud_pulses_trending?select=*&limit=12";
       
       fetch(queryUrl, {
         headers: {
@@ -904,11 +941,13 @@
       .then(function (res) { return res.json(); })
       .then(function (data) {
         if (Array.isArray(data)) {
-          renderPulses(data);
+          allLoadedPulses = data;
+          filterAndRenderPulses();
         } else if (supabase) {
-          supabase.from("cloud_pulses_trending").select("*").limit(6).then(function(sRes) {
+          supabase.from("cloud_pulses_trending").select("*").limit(12).then(function(sRes) {
             if (sRes && Array.isArray(sRes.data)) {
-              renderPulses(sRes.data);
+              allLoadedPulses = sRes.data;
+              filterAndRenderPulses();
             }
           });
         }
@@ -916,14 +955,57 @@
       .catch(function (err) {
         console.error("Cloud Pulse fetch error:", err);
         if (supabase) {
-          supabase.from("cloud_pulses_trending").select("*").limit(6).then(function(sRes) {
-            if (sRes && sRes.data) renderPulses(sRes.data);
+          supabase.from("cloud_pulses_trending").select("*").limit(12).then(function(sRes) {
+            if (sRes && sRes.data) {
+              allLoadedPulses = sRes.data;
+              filterAndRenderPulses();
+            }
           });
         }
       });
     }
 
-    function renderPulses(pulses) {
+    
+    function formatPulseContentToHtml(rawText) {
+      var text = (rawText || "").trim();
+      if (!text) return "";
+      
+      var whatChanged = "";
+      var impact = "";
+      
+      var impactMatch = text.match(/(?:💡\s*(?:\*\*)?Engineering Impact(?:\*\*)?:?|💡\s*(?:\*\*)?Impact(?:\*\*)?:?)([\s\S]+)$/i);
+      if (impactMatch) {
+        impact = impactMatch[1].trim();
+        var beforeImpact = text.substring(0, impactMatch.index).trim();
+        var whatChangedMatch = beforeImpact.match(/(?:🎯\s*(?:\*\*)?What Changed(?:\*\*)?:?)([\s\S]+)$/i);
+        if (whatChangedMatch) {
+          whatChanged = whatChangedMatch[1].trim();
+        } else {
+          whatChanged = beforeImpact;
+        }
+      } else {
+        var whatChangedMatch = text.match(/(?:🎯\s*(?:\*\*)?What Changed(?:\*\*)?:?)([\s\S]+)$/i);
+        if (whatChangedMatch) {
+          whatChanged = whatChangedMatch[1].trim();
+        } else {
+          whatChanged = text;
+        }
+      }
+
+      var out = "";
+      if (whatChanged) {
+        out += '<div class="mb-2"><span class="text-emerald-600 dark:text-emerald-400 font-extrabold text-xs sm:text-sm mr-1">🎯 What Changed:</span><span class="font-semibold text-slate-800 dark:text-slate-100 text-xs sm:text-sm leading-relaxed">' + escapeHtml(whatChanged) + '</span></div>';
+      }
+      if (impact) {
+        out += '<div><span class="text-amber-600 dark:text-amber-400 font-extrabold text-xs sm:text-sm mr-1">💡 Impact:</span><span class="font-normal text-text/85 dark:text-darkmode-text/85 text-xs sm:text-sm leading-relaxed">' + escapeHtml(impact) + '</span></div>';
+      }
+      if (!whatChanged && !impact) {
+        out = '<p class="text-xs sm:text-sm text-text/85 dark:text-darkmode-text/85 leading-relaxed">' + escapeHtml(text) + '</p>';
+      }
+      return out;
+    }
+
+function renderPulses(pulses) {
       if (!pulses || pulses.length === 0) {
         feedContainer.innerHTML = '<div class="col-span-full text-center py-8 text-xs text-text/60 dark:text-darkmode-text/60">No cloud pulses yet. Be the first to post!</div>';
         return;
@@ -995,11 +1077,8 @@
               '<span class="text-xs font-semibold text-text/70 dark:text-darkmode-text/70">' + formatDate(p.created_at) + '</span>' +
             '</div>' +
             '<h4 class="text-lg sm:text-xl font-extrabold text-dark dark:text-darkmode-dark mb-3 leading-snug group-hover:text-primary transition-colors">' + titleHtml + '</h4>' +
-            '<div class="text-sm sm:text-base text-text/90 dark:text-darkmode-text/90 mb-4 leading-relaxed space-y-2">' + 
-              escapeHtml(cleanContentText)
-                .replace(/(?:🎯\s*(?:\*\*)?What Changed(?:\*\*)?:?)/gi, '<div class="font-semibold text-slate-800 dark:text-slate-100"><span class="text-emerald-500 font-bold mr-1">🎯 What Changed:</span>')
-                .replace(/(?:💡\s*(?:\*\*)?Engineering Impact(?:\*\*)?:?)/gi, '</div><div class="font-normal text-text/80 dark:text-darkmode-text/80 text-xs sm:text-sm"><span class="text-amber-500 font-bold mr-1">💡 Impact:</span>')
-                .replace(/\n+/g, '<br/>') + 
+            '<div class="mb-4 space-y-2">' + 
+              formatPulseContentToHtml(cleanContentText) + 
             '</div>' +
             eventLinkHtml +
           '</div>' +
