@@ -52,12 +52,17 @@
                   <i class="fa-solid fa-star text-[10px]"></i> Featured Architecture
                 </span>
                 {{ with index $categories 0 }}
-                  <a href="{{ `categories/` | relLangURL }}{{ . | urlize | lower }}/" class="{{ $heroBadgeClass }} text-xs py-1 px-3 font-bold no-underline">
-                    {{ . | humanize }}
+                  <a href="{{ `categories/` | relLangURL }}{{ . | urlize | lower }}/" 
+                     class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-extrabold uppercase tracking-wider bg-sky-500/10 dark:bg-sky-500/20 text-sky-700 dark:text-sky-300 border border-sky-500/30 no-underline shrink-0 hover:scale-105 transition-transform">
+                    <i class="fa-solid fa-tag text-[10px]"></i> {{ . | humanize }}
                   </a>
                 {{ end }}
-                <span class="pulse-live-indicator text-[11px] font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-500/10 dark:bg-emerald-500/20 border border-emerald-500/30 px-2.5 py-0.5 rounded-full">
-                  <span class="pulse-dot-glow"></span> Latest Release
+                <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-extrabold bg-emerald-500/10 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30 shrink-0">
+                  <span class="relative flex h-2 w-2">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                  </span>
+                  Latest
                 </span>
               </div>
 
