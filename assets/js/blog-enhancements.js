@@ -1938,14 +1938,7 @@
       updateLinkedInPreviewBox();
       editModal.classList.remove("hidden");
 
-      // Auto-trigger AI TL;DR Hook if content appears raw or un-summarized
-      if (editGenerateAiBtn && (!candidate.content || candidate.content.length > 180 || candidate.content.endsWith("..."))) {
-        setTimeout(function() {
-          if (!editModal.classList.contains("hidden")) {
-            editGenerateAiBtn.click();
-          }
-        }, 100);
-      }
+      // Do NOT auto-trigger AI — wait for explicit admin button click or manual edit
     }
 
     function closeCandidateEditModal() {
