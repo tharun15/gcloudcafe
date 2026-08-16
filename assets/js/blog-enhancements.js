@@ -1004,13 +1004,13 @@
 
       var out = "";
       if (whatChanged) {
-        out += '<div class="mb-2"><span class="text-emerald-600 dark:text-emerald-400 font-extrabold text-xs sm:text-sm mr-1">🎯 What Changed:</span><span class="font-semibold text-slate-800 dark:text-slate-100 text-xs sm:text-sm leading-relaxed">' + escapeHtml(whatChanged) + '</span></div>';
+        out += '<div class="mb-2.5 pulse-summary-item"><span class="text-emerald-700 dark:text-emerald-400 font-extrabold mr-1.5 inline-block">🎯 What Changed:</span><span class="font-semibold text-slate-900 dark:text-slate-100">' + escapeHtml(whatChanged) + '</span></div>';
       }
       if (impact) {
-        out += '<div><span class="text-amber-600 dark:text-amber-400 font-extrabold text-xs sm:text-sm mr-1">💡 Impact:</span><span class="font-normal text-text/85 dark:text-darkmode-text/85 text-xs sm:text-sm leading-relaxed">' + escapeHtml(impact) + '</span></div>';
+        out += '<div class="pulse-summary-item"><span class="text-amber-700 dark:text-amber-400 font-extrabold mr-1.5 inline-block">💡 Impact:</span><span class="font-normal text-slate-800 dark:text-slate-200">' + escapeHtml(impact) + '</span></div>';
       }
       if (!whatChanged && !impact) {
-        out = '<p class="text-xs sm:text-sm text-text/85 dark:text-darkmode-text/85 leading-relaxed">' + escapeHtml(text) + '</p>';
+        out = '<p class="pulse-summary-item text-slate-800 dark:text-slate-200 font-normal">' + escapeHtml(text) + '</p>';
       }
       return out;
     }
