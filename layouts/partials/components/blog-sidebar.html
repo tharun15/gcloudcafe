@@ -5,8 +5,7 @@
   {{ $recommended = where $recommended ".RelPermalink" "!=" .RelPermalink }}
 {{ end }}
 
-
-<aside class="space-y-6" aria-label="Blog discovery and subscribe">
+<aside class="space-y-6" aria-label="Blog discovery">
   <!-- Top Posts / High Volume Guides -->
   <section
     class="blog-sidebar-block-enhanced"
@@ -55,33 +54,5 @@
         </article>
       {{ end }}
     </div>
-  </section>
-
-  <!-- Community & Social Connect Block -->
-  <section
-    class="blog-newsletter-stitch"
-    aria-labelledby="community-heading">
-    <p class="blog-eyebrow"><i class="fa-solid fa-share-nodes text-primary"></i> Connect & Share</p>
-    <h2 id="community-heading" class="h4 mb-2">
-      Join the Community
-    </h2>
-    <p class="mb-5 text-sm text-text dark:text-darkmode-text leading-relaxed">
-      Follow Gcloudcafe across developer communities for real-time cloud architectures and discussion.
-    </p>
-
-    <ul class="social-icons flex flex-wrap gap-2.5">
-      {{ range site.Data.social.main }}
-        <li>
-          <a
-            class="blog-focus-ring inline-flex items-center justify-center w-9 h-9 rounded-xl bg-theme-light dark:bg-darkmode-theme-light text-text/80 dark:text-darkmode-text/80 hover:bg-primary hover:text-white transition-all shadow-xs"
-            target="_blank"
-            aria-label="Follow on {{ .name }}"
-            rel="nofollow noopener"
-            href="{{ .link | safeURL }}">
-            <i class="{{ .icon }}"></i>
-          </a>
-        </li>
-      {{ end }}
-    </ul>
   </section>
 </aside>
