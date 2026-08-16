@@ -1,0 +1,5 @@
+{{ $name := .Get "name" | default (.Get 0) | default "Code" }}
+{{ $icon := .Get "icon" | default "fa-solid fa-terminal" }}
+<div class="code-tab-panel" data-tab-name="{{ $name }}" data-tab-icon="{{ $icon }}" role="tabpanel" tabindex="0">
+  {{ .Inner | markdownify }}
+</div>

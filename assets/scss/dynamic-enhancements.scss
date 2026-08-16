@@ -1,7 +1,50 @@
 /* ==========================================================================
-   DYNAMIC ACCESSIBILITY ENHANCEMENTS — dynamicEdit branch
-   All animations respect prefers-reduced-motion
+   DYNAMIC ACCESSIBILITY & APP-LIKE UX ENHANCEMENTS
+   All animations GPU-accelerated and respect prefers-reduced-motion
    ========================================================================== */
+
+/* ── View Transitions API (Cross-Document MPA Navigation) ── */
+@view-transition {
+  navigation: auto;
+}
+
+::view-transition-old(root) {
+  animation: vt-fade-out 0.2s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+::view-transition-new(root) {
+  animation: vt-fade-in 0.2s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+@keyframes vt-fade-out {
+  from { opacity: 1; transform: scale(1); }
+  to { opacity: 0; transform: scale(0.995); }
+}
+
+@keyframes vt-fade-in {
+  from { opacity: 0; transform: scale(1.005); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+main {
+  animation: page-enter 0.22s ease-out both;
+}
+
+@keyframes page-enter {
+  from { opacity: 0.9; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  main {
+    animation: none !important;
+    transform: none !important;
+  }
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}
 
 /* ── Skip to Content ── */
 .skip-to-content {
@@ -39,60 +82,6 @@
   }
 }
 
-/* ── Reading Ring (SVG progress indicator) ── */
-#reading-ring-wrapper {
-  position: fixed;
-  bottom: 5.5rem;
-  right: 2rem;
-  width: 2.75rem;
-  height: 2.75rem;
-  z-index: 998;
-  opacity: 0;
-  transform: translateY(10px);
-  transition: opacity 0.3s ease, transform 0.3s ease;
-  pointer-events: none;
-
-  &.visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  svg {
-    transform: rotate(-90deg);
-    width: 100%;
-    height: 100%;
-  }
-
-  .ring-track {
-    @apply stroke-border dark:stroke-darkmode-border;
-    fill: none;
-    stroke-width: 3;
-  }
-
-  .ring-fill {
-    @apply stroke-primary dark:stroke-darkmode-primary;
-    fill: none;
-    stroke-width: 3;
-    stroke-linecap: round;
-    stroke-dasharray: 72;
-    stroke-dashoffset: 72;
-    transition: stroke-dashoffset 0.1s linear;
-  }
-
-  .ring-pct {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 9px;
-    font-weight: 800;
-    line-height: 1;
-    @apply text-primary dark:text-darkmode-primary;
-    transform: rotate(0deg);
-  }
-}
-
 /* ── aria-live theme announcement ── */
 .a11y-announce {
   position: absolute;
@@ -117,9 +106,13 @@
   }
 }
 
-/* ── Focused code-block highlights ── */
-.code-block-wrapper:focus-within .code-block-header {
-  border-bottom-color: rgba(56, 189, 248, 0.5);
+/* ── Code Tabs Shortcode Styling ── */
+.code-tabs-wrapper {
+  pre {
+    margin: 0 !important;
+    border-radius: 0 !important;
+    border: none !important;
+  }
 }
 
 /* ── Toast notification for copy feedback ── */

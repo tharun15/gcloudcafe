@@ -1,4 +1,18 @@
 {{ define "main" }}
+  {{/* Floating Reading Depth Island */}}
+  <div id="reading-island" class="fixed bottom-6 right-6 z-50 opacity-0 translate-y-4 transition-all duration-300 pointer-events-none" aria-label="Reading Depth">
+    <div class="flex items-center gap-3 px-4 py-2.5 rounded-full bg-slate-900/95 dark:bg-darkmode-body/95 text-white backdrop-blur-xl border border-white/20 dark:border-darkmode-border shadow-2xl">
+      <div class="flex items-center gap-2 text-xs font-extrabold text-sky-400">
+        <i class="fa-solid fa-book-open text-xs"></i>
+        <span id="island-pct">0%</span>
+      </div>
+      <div class="w-[1px] h-4 bg-white/20"></div>
+      <button type="button" id="island-scroll-top" class="flex items-center justify-center w-6 h-6 rounded-full bg-white/10 hover:bg-white/25 text-white text-xs transition-all cursor-pointer border-0" aria-label="Scroll to top" title="Scroll to top">
+        <i class="fa-solid fa-arrow-up text-[10px]"></i>
+      </button>
+    </div>
+  </div>
+
   {{/* Reading progress bar – fixed at top */}}
   <div id="reading-progress-bar" aria-hidden="true"></div>
 

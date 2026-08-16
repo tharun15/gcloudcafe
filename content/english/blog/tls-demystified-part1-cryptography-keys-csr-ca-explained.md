@@ -479,14 +479,39 @@ A **Self-Signed Certificate** is a certificate where **the Subject and the Issue
 ### Generating a Self-Signed Certificate in 1 Command
 For local development, Docker environments, or testing, you can generate a self-signed certificate in one step:
 
+{{< code-tabs >}}
+{{< code-tab name="OpenSSL 3.0 (Recommended)" icon="fa-solid fa-terminal" >}}
 ```bash
-# Generate a 2048-bit RSA Key and a Self-Signed Certificate valid for 365 days
+# Modern OpenSSL 3.x with Subject Alternative Name (SAN) in 1 command
+openssl req -x509 -newkey rsa:2048 -nodes \
+  -keyout dev.key \
+  -out dev.crt \
+  -days 365 \
+  -subj "/CN=localhost" \
+  -addext "subjectAltName=DNS:localhost,IP:127.0.0.1"
+```
+{{< /code-tab >}}
+{{< code-tab name="OpenSSL 1.1.1 (Legacy)" icon="fa-solid fa-terminal" >}}
+```bash
+# Legacy OpenSSL 1.1.1 syntax without addext
 openssl req -x509 -newkey rsa:2048 -nodes \
   -keyout dev.key \
   -out dev.crt \
   -days 365 \
   -subj "/CN=localhost"
 ```
+{{< /code-tab >}}
+{{< code-tab name="Go crypto/tls" icon="fa-brands fa-golang" >}}
+```go
+// Loading and using certs in Go server
+cert, err := tls.LoadX509KeyPair("dev.crt", "dev.key")
+tlsConfig := &tls.Config{
+    Certificates: []tls.Certificate{cert},
+    MinVersion:   tls.VersionTLS13,
+}
+```
+{{< /code-tab >}}
+{{< /code-tabs >}}
 
 ### Self-Signed Leaf vs. Self-Signed Root CAs (The Crucial Difference)
 - **Self-Signed Leaf (End-Entity) Certificates:** Useful for local Docker compose environments, isolated testbeds, and bootstrapping initial control planes before provisioning `cert-manager`. However, using self-signed leaf certificates in production is dangerous when it leads developers to disable certificate verification (`curl -k`, `InsecureSkipVerify: true`, `NODE_TLS_REJECT_UNAUTHORIZED=0`), leaving connections vulnerable to Man-in-the-Middle attacks.
