@@ -222,6 +222,34 @@ keytool -importcert   -alias "gcloudcafe-internal-ca"   -file /path/to/internal-
 keytool -list -keystore $JAVA_HOME/lib/security/cacerts -storepass changeit -alias "gcloudcafe-internal-ca"
 ```
 
+### Visual & Diagnostic Tools to Verify the Complete Chain
+
+While `keytool` is available on every JVM, verifying complex multi-tier certificate chains on the command line can be error-prone. Two powerful alternatives streamline chain validation:
+
+#### 1. KeyStore Explorer (Open-Source GUI)
+[KeyStore Explorer (KSE)](https://keystore-explorer.org/) is the open-source visual tool for managing Java KeyStores, PKCS#12 bundles, and truststores:
+- **Visual Certificate Hierarchy:** Double-click any certificate alias or KeyStore entry to render the full X.509 chain tree from Leaf ➔ Intermediate ➔ Root CA.
+- **Path Validation Engine:** Right-click an entry and select **Validate Certificate Path** to test whether your active system or JVM trust anchors can construct a complete validation path before running in production.
+- **SAN & Extension Inspector:** Instantly displays Subject Alternative Names (SAN), Extended Key Usage (`serverAuth` vs `clientAuth`), and Basic Constraints without decoding ASN.1 via OpenSSL.
+
+#### 2. CLI Verbose Chain Inspection (`keytool -list -v`)
+To verify that an identity KeyStore contains the complete certificate chain rather than just the leaf certificate:
+```bash
+keytool -list -v -keystore client-keystore.jks -storepass changeit -alias "client-identity"
+
+# Look for this critical line in the output:
+# Certificate chain length: 2 (or 3 for multi-tier PKI)
+# Certificate[1]: Subject: CN=client-payment-worker, OU=PaymentService...
+# Certificate[2]: Subject: CN=GCloudCafe Internal Root CA...
+```
+
+#### 3. JVM Runtime Handshake Diagnostics (`-Djavax.net.debug`)
+If a Java application still fails to connect after updating the truststore, launch the JVM with SSL handshake debugging:
+```bash
+java -Djavax.net.debug=ssl:handshake:verbose -jar payment-service.jar
+```
+This logs every peer certificate presented on the wire, the active TrustStore path, and the exact certificate where PKIX chain construction aborted.
+
 ---
 
 ## 5. Kubernetes PKI Automation: Cert-Manager & Ingress Architecture
