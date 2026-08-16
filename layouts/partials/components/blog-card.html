@@ -6,90 +6,92 @@
 {{ end }}
 {{ $categories := $page.Params.categories }}
 {{ $tags := $page.Params.tags }}
-{{ $teaser := $page.Params.description | default $page.Summary | plainify | truncate 200 }}
+{{ $teaser := $page.Params.description | default $page.Summary | plainify | truncate 180 }}
 
-{{/* Stitch badge variant: amber for certification posts, blue otherwise */}}
-{{ $badgeClass := "stitch-badge" }}
+{{/* Dynamic Category Color Theme */}}
+{{ $badgeBg := "bg-sky-500/10 dark:bg-sky-500/15 text-sky-700 dark:text-sky-300 border-sky-500/30" }}
+{{ $cardHoverGlow := "hover:border-sky-500/50 hover:shadow-[0_10px_30px_-10px_rgba(14,165,233,0.18)]" }}
 {{ $firstCat := index ($categories | default (slice "")) 0 | lower }}
+
 {{ if or (eq $firstCat "certification") (eq $firstCat "certifications") (eq $firstCat "exam prep") }}
-  {{ $badgeClass = "stitch-badge-amber" }}
+  {{ $badgeBg = "bg-amber-500/10 dark:bg-amber-500/15 text-amber-800 dark:text-amber-300 border-amber-500/30" }}
+  {{ $cardHoverGlow = "hover:border-amber-500/50 hover:shadow-[0_10px_30px_-10px_rgba(245,158,11,0.18)]" }}
+{{ else if or (eq $firstCat "security") (eq $firstCat "tls") }}
+  {{ $badgeBg = "bg-indigo-500/10 dark:bg-indigo-500/15 text-indigo-700 dark:text-indigo-300 border-indigo-500/30" }}
+  {{ $cardHoverGlow = "hover:border-indigo-500/50 hover:shadow-[0_10px_30px_-10px_rgba(99,102,241,0.18)]" }}
+{{ else if or (eq $firstCat "kubernetes") (eq $firstCat "openshift") }}
+  {{ $badgeBg = "bg-cyan-500/10 dark:bg-cyan-500/15 text-cyan-700 dark:text-cyan-300 border-cyan-500/30" }}
+  {{ $cardHoverGlow = "hover:border-cyan-500/50 hover:shadow-[0_10px_30px_-10px_rgba(6,182,212,0.18)]" }}
 {{ end }}
 
-<article class="blog-card stitch-glow-hover group">
-  <a
-    class="blog-card-media blog-focus-ring"
-    href="{{ $page.RelPermalink }}"
-    aria-label="Read post: {{ $page.Title }}">
-    {{ with $page.Params.image }}
-      {{ partial "image" (dict "Src" . "Context" $page "Alt" $page.Title "Class" "blog-card-image-cover" "DisplaySM" "350x" "DisplayMD" "420x" "DisplayLG" "500x" "DisplayXL" "500x") }}
-    {{ else }}
-      <div class="blog-fallback-media blog-card-fallback">
-        <span class="{{ $badgeClass }}"
-          >{{ index ($categories | default (slice "Fresh post")) 0 | humanize }}</span
-        >
-        <h3>{{ $page.Title }}</h3>
-      </div>
-    {{ end }}
-  </a>
+<article class="relative flex flex-col justify-between h-full rounded-3xl p-5 sm:p-6 transition-all duration-300
+                bg-body dark:bg-[#0c1220] border border-border/80 dark:border-slate-800/80
+                {{ $cardHoverGlow }} group overflow-hidden">
+  
+  <div>
+    <!-- Card Media with Zoom Hover -->
+    <a class="block relative rounded-2xl overflow-hidden mb-5 aspect-video w-full bg-slate-100 dark:bg-slate-900/60 border border-border/50 dark:border-slate-800 no-underline group-hover:border-primary/30 transition-colors"
+       href="{{ $page.RelPermalink }}"
+       aria-label="Read post: {{ $page.Title }}">
+      {{ with $page.Params.image }}
+        {{ partial "image" (dict "Src" . "Context" $page "Alt" $page.Title "Class" "w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out" "DisplaySM" "350x" "DisplayMD" "420x" "DisplayLG" "500x" "DisplayXL" "500x") }}
+      {{ else }}
+        <div class="flex items-center justify-center h-full bg-gradient-to-br from-primary/10 to-indigo-500/10 p-6 text-center">
+          <span class="text-sm font-extrabold text-primary uppercase tracking-wider">{{ index ($categories | default (slice "Architecture")) 0 }}</span>
+        </div>
+      {{ end }}
+    </a>
 
-  <div class="blog-card-body">
-
-    <div class="mb-4 flex flex-wrap items-center gap-2">
+    <!-- Category Tag & Reading Time Badge -->
+    <div class="flex items-center justify-between gap-2 mb-3">
       {{ with index $categories 0 }}
-        <a
-          class="{{ $badgeClass }} blog-focus-ring"
-          href="{{ `categories/` | relLangURL }}{{ . | urlize | lower }}/">
-          {{ . | humanize }}
+        <a href="{{ `categories/` | relLangURL }}{{ . | urlize | lower }}/"
+           class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider border {{ $badgeBg }} no-underline transition-transform hover:scale-105">
+          <i class="fa-solid fa-tag text-[10px]"></i> {{ . | humanize }}
         </a>
       {{ else }}
-        {{ with index $tags 0 }}
-          <span class="{{ $badgeClass }}">{{ . | humanize }}</span>
-        {{ end }}
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider border {{ $badgeBg }}">
+          Article
+        </span>
       {{ end }}
-      <span class="blog-reading-time">
-        <i class="fa-regular fa-clock"></i>
-        {{ $page.ReadingTime }} min read
+
+      <span class="inline-flex items-center gap-1 text-[11px] font-semibold text-text/80 dark:text-slate-400">
+        <i class="fa-regular fa-clock text-primary text-[10px]"></i> {{ $page.ReadingTime }} min read
       </span>
     </div>
 
-    <h3 class="blog-card-title">
-      <a class="blog-focus-ring" href="{{ $page.RelPermalink }}"
-        >{{ $page.Title }}</a
-      >
+    <!-- Article Title -->
+    <h3 class="text-lg sm:text-xl font-extrabold text-dark dark:text-white group-hover:text-primary dark:group-hover:text-primary transition-colors line-clamp-2 leading-snug mb-3">
+      <a href="{{ $page.RelPermalink }}" class="no-underline text-current hover:text-primary">
+        {{ $page.Title }}
+      </a>
     </h3>
 
-    <p class="blog-card-copy">{{ $teaser }}</p>
-
-    <ul class="blog-meta-list mt-auto mb-4">
-      <li>
-        <i class="fa-regular fa-circle-user"></i>
-        <a
-          class="blog-focus-ring"
-          href="{{ `authors/` | relLangURL }}{{ $authorSlug | urlize }}/">
-          {{ $authorName }}
-        </a>
-      </li>
-      <li>
-        <i class="fa-regular fa-calendar"></i>
-        {{ time.Format ":date_long" $page.PublishDate }}
-      </li>
-    </ul>
-
-    <div class="flex items-center justify-between border-t border-border/40 dark:border-darkmode-border/40 pt-3">
-      <a class="btn-gradient-primary blog-focus-ring text-xs px-4 py-2" href="{{ $page.RelPermalink }}" aria-label="Read article: {{ $page.Title }}">
-        Read Article
-        <i class="fa-solid fa-arrow-right text-xs"></i>
-      </a>
-
-      <a
-        class="text-xs font-bold text-[#0a66c2] dark:text-[#70b5f9] hover:text-[#004182] dark:hover:text-white transition-colors flex items-center gap-1.5 cursor-pointer no-underline"
-        target="_blank"
-        rel="noopener noreferrer"
-        href="https://www.linkedin.com/sharing/share-offsite/?url={{ $page.Permalink | safeURL }}"
-        aria-label="Share article: {{ $page.Title }} on LinkedIn"
-        title="Share on LinkedIn">
-        <i class="fa-brands fa-linkedin text-sm"></i> Share
-      </a>
-    </div>
+    <!-- Teaser Copy -->
+    <p class="text-xs sm:text-sm text-text dark:text-slate-300 line-clamp-3 leading-relaxed mb-6 font-normal">
+      {{ $teaser }}
+    </p>
   </div>
+
+  <!-- Card Footer -->
+  <div class="pt-4 border-t border-border/50 dark:border-slate-800/80 flex items-center justify-between gap-3">
+    
+    <div class="flex items-center gap-2.5">
+      <div class="w-7 h-7 rounded-lg bg-primary/10 dark:bg-primary/20 border border-primary/25 flex items-center justify-center font-bold text-primary text-xs">
+        {{ substr $authorName 0 1 }}
+      </div>
+      <div class="text-[11px]">
+        <span class="font-bold text-dark dark:text-slate-200 block leading-tight">{{ $authorName }}</span>
+        <span class="text-text/70 dark:text-slate-400">{{ time.Format ":date_medium" $page.PublishDate }}</span>
+      </div>
+    </div>
+
+    <a href="{{ $page.RelPermalink }}"
+       class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold bg-primary/10 hover:bg-primary text-primary hover:text-white dark:bg-primary/20 dark:hover:bg-primary dark:text-primary dark:hover:text-white border border-primary/30 transition-all no-underline group-hover:shadow-sm"
+       aria-label="Read article: {{ $page.Title }}">
+      Read <i class="fa-solid fa-arrow-right text-[10px] group-hover:translate-x-0.5 transition-transform"></i>
+    </a>
+
+  </div>
+
 </article>

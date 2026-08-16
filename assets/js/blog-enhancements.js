@@ -3798,3 +3798,55 @@ function renderPulses(pulses) {
   }
 })();
 
+
+
+  /* ── Modern Developer Terminal Decorator for Code Blocks ── */
+  function initDevTerminalBlocks() {
+    var codeBlocks = document.querySelectorAll('.content pre > code');
+    if (!codeBlocks.length) return;
+
+    codeBlocks.forEach(function (codeEl) {
+      var pre = codeEl.parentElement;
+      if (!pre || pre.closest('.dev-terminal-wrapper')) return;
+
+      // Extract language class e.g. language-bash, language-yaml
+      var lang = 'terminal';
+      var classes = codeEl.className.split(' ');
+      for (var i = 0; i < classes.length; i++) {
+        if (classes[i].startsWith('language-')) {
+          lang = classes[i].replace('language-', '').toUpperCase();
+          break;
+        }
+      }
+
+      var wrapper = document.createElement('div');
+      wrapper.className = 'dev-terminal-wrapper';
+
+      var bar = document.createElement('div');
+      bar.className = 'dev-terminal-bar';
+      bar.innerHTML = '<div class="dev-terminal-dots"><span class="dot-red"></span><span class="dot-yellow"></span><span class="dot-green"></span></div>' +
+                      '<span class="dev-terminal-lang">' + escapeHtml(lang) + '</span>' +
+                      '<button class="dev-copy-btn" aria-label="Copy code to clipboard"><i class="fa-regular fa-copy"></i> Copy</button>';
+
+      pre.parentNode.insertBefore(wrapper, pre);
+      wrapper.appendChild(bar);
+      wrapper.appendChild(pre);
+
+      var copyBtn = bar.querySelector('.dev-copy-btn');
+      if (copyBtn) {
+        copyBtn.addEventListener('click', function () {
+          var codeText = codeEl.innerText || codeEl.textContent;
+          navigator.clipboard.writeText(codeText).then(function () {
+            copyBtn.innerHTML = '<i class="fa-solid fa-check text-emerald-400"></i> Copied!';
+            copyBtn.style.color = '#34d399';
+            setTimeout(function () {
+              copyBtn.innerHTML = '<i class="fa-regular fa-copy"></i> Copy';
+              copyBtn.style.color = '';
+            }, 2000);
+          });
+        });
+      }
+    });
+  }
+
+document.addEventListener('DOMContentLoaded', initDevTerminalBlocks);
