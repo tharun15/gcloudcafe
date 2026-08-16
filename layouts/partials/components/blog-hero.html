@@ -1,58 +1,64 @@
 {{ $root := . }}
 {{ with $root.Featured }}
   {{ $page := . }}
-  {{ $authorSlug := .Params.author }}
+  {{ $categories := $page.Params.categories }}
+  {{ $authorSlug := $page.Params.author }}
   {{ $authorName := $authorSlug | humanize | title }}
   {{ with site.GetPage (printf "/authors/%s" $authorSlug) }}
     {{ $authorName = .Title }}
   {{ end }}
-  {{ $teaser := .Params.description | default .Summary | plainify | truncate 220 }}
-  {{ $categories := .Params.categories }}
+  {{ $teaser := $page.Params.description | default $page.Summary | plainify | truncate 240 }}
 
-  {{/* Stitch badge variant for hero */}}
+  {{/* Category badge theme */}}
   {{ $heroBadgeClass := "stitch-badge" }}
   {{ $firstCat := index ($categories | default (slice "")) 0 | lower }}
   {{ if or (eq $firstCat "certification") (eq $firstCat "certifications") (eq $firstCat "exam prep") }}
     {{ $heroBadgeClass = "stitch-badge-amber" }}
   {{ end }}
 
-  {{/* Next 3 recent posts for the Trending & Next Up side panel (excluding featured) */}}
-  {{ $allBlog := where site.RegularPages "Section" "blog" }}
-  {{ $sidePosts := first 3 (where $allBlog "RelPermalink" "ne" $page.RelPermalink) }}
+  {{/* Next 3 recent posts for the Trending & Next Up side panel */}}
+  {{ $allPosts := $root.Posts | default (where site.RegularPages "Section" "blog") }}
+  {{ $sidePosts := slice }}
+  {{ range where $allPosts ".RelPermalink" "!=" $page.RelPermalink | first 3 }}
+    {{ $sidePosts = $sidePosts | append . }}
+  {{ end }}
 
   <section class="section-sm py-6 sm:py-8" aria-labelledby="featured-post-title">
     <div class="container">
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
         
-        <!-- Left Column: Featured Hero Post (Stitch Glassmorphism) -->
+        <!-- Left Column: Featured Hero Post (Cyber-Glassmorphism) -->
         <div class="lg:col-span-7 xl:col-span-8 flex flex-col">
           <div class="relative flex flex-col justify-between h-full rounded-3xl p-6 sm:p-8 shadow-xl overflow-hidden group transition-all duration-300
-                      bg-body dark:bg-darkmode-theme-light border border-primary/20 dark:border-darkmode-border/60
-                      hover:border-primary/50 dark:hover:border-primary/40
-                      hover:shadow-[0_0_30px_rgba(79,142,247,0.12),0_20px_40px_-12px_rgba(0,0,0,0.3)]">
+                      bg-body dark:bg-darkmode-theme-light border border-primary/25 dark:border-darkmode-border/80
+                      hover:border-primary/60 dark:hover:border-primary/50
+                      hover:shadow-[0_0_35px_rgba(56,189,248,0.15),0_20px_40px_-12px_rgba(0,0,0,0.4)]">
             
-            <!-- Ambient background gradient: Electric Blue -->
-            <div class="absolute -top-24 -right-24 w-72 h-72 rounded-full pointer-events-none"
-                 style="background: radial-gradient(circle, rgba(79,142,247,0.1) 0%, transparent 70%);"></div>
-            <!-- Secondary ambient: Indigo bottom-left -->
-            <div class="absolute -bottom-16 -left-16 w-56 h-56 rounded-full pointer-events-none"
-                 style="background: radial-gradient(circle, rgba(99,102,241,0.07) 0%, transparent 70%);"></div>
+            <!-- Cyber Ambient Glow Top-Right -->
+            <div class="absolute -top-24 -right-24 w-80 h-80 rounded-full pointer-events-none"
+                 style="background: radial-gradient(circle, rgba(56,189,248,0.12) 0%, transparent 70%);"></div>
+            <!-- Secondary Ambient Indigo Bottom-Left -->
+            <div class="absolute -bottom-20 -left-20 w-64 h-64 rounded-full pointer-events-none"
+                 style="background: radial-gradient(circle, rgba(129,140,248,0.09) 0%, transparent 70%);"></div>
 
-            <!-- Subtle top gradient accent line -->
+            <!-- Top Neon Accent Gradient Line -->
             <div class="absolute top-0 left-6 right-6 h-px pointer-events-none"
-                 style="background: linear-gradient(90deg, transparent, rgba(79,142,247,0.4), rgba(99,102,241,0.3), transparent);"></div>
+                 style="background: linear-gradient(90deg, transparent, rgba(56,189,248,0.6), rgba(129,140,248,0.5), transparent);"></div>
 
             <div class="relative">
-              <!-- Hero Header Badges -->
-              <div class="flex items-center flex-wrap gap-2 mb-3">
-                <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-extrabold uppercase tracking-wider bg-amber-500/15 text-amber-800 dark:text-amber-400 border border-amber-500/30 shrink-0">
-                  <i class="fa-solid fa-star text-[10px]"></i> Featured
+              <!-- Hero Header Telemetry Badges -->
+              <div class="flex items-center flex-wrap gap-2 mb-3.5">
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-extrabold uppercase tracking-wider bg-amber-500/15 text-amber-800 dark:text-amber-300 border border-amber-500/30 shrink-0">
+                  <i class="fa-solid fa-star text-[10px]"></i> Featured Architecture
                 </span>
                 {{ with index $categories 0 }}
-                  <a href="{{ `categories/` | relLangURL }}{{ . | urlize | lower }}/" class="{{ $heroBadgeClass }} text-xs py-0.5 px-2.5">
+                  <a href="{{ `categories/` | relLangURL }}{{ . | urlize | lower }}/" class="{{ $heroBadgeClass }} text-xs py-1 px-3 font-bold no-underline">
                     {{ . | humanize }}
                   </a>
                 {{ end }}
+                <span class="pulse-live-indicator text-[11px] font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-500/10 dark:bg-emerald-500/20 border border-emerald-500/30 px-2.5 py-0.5 rounded-full">
+                  <span class="pulse-dot-glow"></span> Production Verified
+                </span>
               </div>
 
               <!-- Main Hero Title -->
@@ -63,70 +69,72 @@
               </h1>
 
               <!-- Teaser -->
-              <p class="text-text dark:text-darkmode-text text-sm sm:text-base leading-relaxed mb-6 line-clamp-3">
+              <p class="text-text dark:text-darkmode-text text-sm sm:text-base leading-relaxed mb-6 line-clamp-3 font-normal">
                 {{ $teaser }}
               </p>
             </div>
 
-            <!-- Hero Image Preview -->
+            <!-- Hero Image Preview with Responsive Breakpoints -->
             {{ with .Params.image }}
-              <div class="relative rounded-2xl overflow-hidden mb-6 aspect-video max-h-72 w-full bg-slate-100 dark:bg-slate-900 border border-border/40 dark:border-darkmode-border/40">
+              <div class="relative rounded-2xl overflow-hidden mb-6 aspect-video max-h-72 w-full bg-slate-950/40 border border-border/60 dark:border-darkmode-border/60 group-hover:border-primary/30 transition-colors">
                 {{ partial "image" (dict "Src" . "Context" $page "Alt" $page.Title "Class" "w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out" "Loading" "eager" "FetchPriority" "high") }}
               </div>
             {{ end }}
 
-            <!-- Hero Footer / Meta -->
-            <div class="relative flex items-center justify-between flex-wrap gap-4 pt-4 border-t border-border/40 dark:border-darkmode-border/40 text-xs text-text dark:text-darkmode-text font-medium">
+            <!-- Hero Footer / Meta Info -->
+            <div class="relative flex items-center justify-between flex-wrap gap-4 pt-4 border-t border-border/50 dark:border-darkmode-border/50 text-xs text-text dark:text-darkmode-text font-medium">
               <div class="flex items-center gap-3">
-                <div class="w-8 h-8 rounded-full bg-primary/10 dark:bg-primary/20 flex items-center justify-center font-bold text-primary text-xs">
+                <div class="w-9 h-9 rounded-xl bg-primary/15 dark:bg-primary/25 border border-primary/30 flex items-center justify-center font-extrabold text-primary text-xs shadow-xs">
                   {{ substr $authorName 0 1 }}
                 </div>
                 <div>
-                  <span class="font-bold text-dark dark:text-darkmode-dark block">{{ $authorName }}</span>
-                  <span>{{ $page.Date.Format "Jan 02, 2006" }} · {{ $page.ReadingTime }} min read</span>
+                  <span class="font-bold text-dark dark:text-darkmode-dark block text-xs">{{ $authorName }}</span>
+                  <span class="text-[11px] text-text/80 dark:text-darkmode-text/80">{{ $page.Date.Format "Jan 02, 2006" }} · {{ $page.ReadingTime }} min read</span>
                 </div>
               </div>
 
-              <a href="{{ $page.RelPermalink }}" class="btn btn-primary py-2 px-5 text-xs font-bold rounded-xl shadow-md inline-flex items-center gap-2 group-hover:gap-3 transition-all">
-                Read Article <i class="fa-solid fa-arrow-right text-[10px]"></i>
+              <a href="{{ $page.RelPermalink }}" class="btn btn-primary py-2.5 px-5 text-xs font-bold rounded-xl shadow-md inline-flex items-center gap-2 group-hover:gap-3 transition-all no-underline">
+                Read Guide <i class="fa-solid fa-arrow-right text-[11px]"></i>
               </a>
             </div>
 
           </div>
         </div>
 
-        <!-- Right Column: Trending & Next Up Side Panel -->
+        <!-- Right Column: Trending & Next Up Stream -->
         <div class="lg:col-span-5 xl:col-span-4 flex flex-col gap-4">
           <div class="flex items-center justify-between px-2 mb-1">
-            <h2 class="text-xs font-extrabold uppercase tracking-widest text-text dark:text-darkmode-text font-extrabold flex items-center gap-2">
+            <h2 class="text-xs font-extrabold uppercase tracking-widest text-text dark:text-darkmode-text flex items-center gap-2">
               <i class="fa-solid fa-fire text-amber-500"></i> Next Up & Trending
             </h2>
-            <a href="{{ `blog/` | relLangURL }}" class="text-xs font-bold text-primary hover:underline">
+            <a href="{{ `blog/` | relLangURL }}" class="text-xs font-bold text-primary hover:underline no-underline">
               View All <i class="fa-solid fa-chevron-right text-[9px]"></i>
             </a>
           </div>
 
           <div class="flex flex-col gap-3 flex-1">
             {{ range $sidePosts }}
-              {{ $sideCat := index (.Params.categories | default (slice "")) 0 }}
-              <a href="{{ .RelPermalink }}" class="relative flex flex-col justify-between p-4 rounded-2xl bg-body dark:bg-darkmode-theme-light border border-border/70 dark:border-darkmode-border/60 hover:border-primary/40 dark:hover:border-primary/40 shadow-sm hover:shadow-md transition-all group no-underline">
+              {{ $sideCat := index (.Params.categories | default (slice "Cloud")) 0 }}
+              <a href="{{ .RelPermalink }}"
+                 class="p-4 rounded-2xl bg-body dark:bg-darkmode-theme-light border border-border/70 dark:border-darkmode-border/70 hover:border-primary/50 dark:hover:border-primary/40 transition-all duration-200 group flex flex-col justify-between flex-1 no-underline hover:shadow-md">
                 <div>
-                  <div class="flex items-center gap-2 mb-1.5">
-                    {{ with $sideCat }}
-                      <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-theme-light dark:bg-darkmode-body text-text/80 dark:text-darkmode-text/80">
-                        {{ . }}
-                      </span>
-                    {{ end }}
-                    <span class="text-[11px] text-text/80 dark:text-darkmode-text/80">
-                      {{ .Date.Format "Jan 02" }} · {{ .ReadingTime }}m
+                  <div class="flex items-center justify-between gap-2 mb-2">
+                    <span class="text-[10px] font-extrabold uppercase tracking-wider text-primary bg-primary/10 dark:bg-primary/20 px-2 py-0.5 rounded-md border border-primary/20">
+                      {{ $sideCat }}
+                    </span>
+                    <span class="text-[11px] font-semibold text-text/70 dark:text-darkmode-text/70 flex items-center gap-1">
+                      <i class="fa-regular fa-clock text-[10px]"></i> {{ .ReadingTime }}m
                     </span>
                   </div>
-                  <h3 class="text-sm font-bold text-dark dark:text-darkmode-dark line-clamp-2 group-hover:text-primary dark:group-hover:text-darkmode-primary transition-colors leading-snug">
+                  <h3 class="text-sm font-bold text-dark dark:text-darkmode-dark group-hover:text-primary dark:group-hover:text-darkmode-primary transition-colors line-clamp-2 leading-snug mb-1">
                     {{ .Title }}
                   </h3>
                 </div>
-                <div class="mt-2 text-xs font-bold text-primary flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                  Read <i class="fa-solid fa-arrow-right text-[9px]"></i>
+                <div class="flex items-center justify-between pt-2 border-t border-border/40 dark:border-darkmode-border/40 text-[11px] text-text/80 dark:text-darkmode-text/80">
+                  <span>{{ .Date.Format "Jan 02" }}</span>
+                  <span class="text-primary font-bold inline-flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+                    Explore <i class="fa-solid fa-arrow-right text-[9px]"></i>
+                  </span>
                 </div>
               </a>
             {{ end }}
