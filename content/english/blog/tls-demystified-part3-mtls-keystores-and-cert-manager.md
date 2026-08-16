@@ -4,7 +4,7 @@ meta_title: "mTLS & KeyStores Guide: Java, cert-manager, Zero Trust"
 description: "Master enterprise mTLS, Java KeyStores vs TrustStores, Kubernetes cert-manager automation, PKIX path building troubleshooting, and 3 AM certificate incident recovery."
 date: 2026-08-16
 image: "/images/tls-part3-mtls-keystores-certmanager.jpg"
-categories: ["Security", "DevOps", "Architecture"]
+categories: ["Security & PKI"]
 tags: ["TLS", "mTLS", "Kubernetes", "cert-manager", "Java", "KeyStore", "DevOps", "Security"]
 author: tharun-vempati
 series: "TLS & mTLS Architecture for DevOps Engineers"

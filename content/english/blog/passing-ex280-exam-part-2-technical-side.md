@@ -4,8 +4,8 @@ meta_title: "A Hands-On Guide to the EX280 Exam's Technical Domains"
 date: 2025-11-02
 image: "/images/post4-dp.png"
 description: "Deep-dive into the technical side of the EX280 exam — connecting to the cluster, understanding tasks, and mastering key topics through real-world practice."
-categories: ["Certifications", "DevOps", "Red Hat", "Openshift", "Administrator"]
-tags: ["Red Hat", "OpenShift", "EX280", "Certification", "DevOps", "Technical"]
+categories: ["OpenShift & Linux", "Certifications"]
+tags: ["Red Hat", "OpenShift", "EX280", "Certification", "DevOps", "Technical", "Administrator"]
 author: tharun-vempati
 series: "Passing the OpenShift Administrator Exam"
 series_order: 2

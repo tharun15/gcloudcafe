@@ -4,8 +4,8 @@ meta_title: "OpenShift EX280 Tips – Developer Self Service"
 date: 2025-11-09
 image: "/images/post9-dp-tips5.png"
 description: "Kickstarting the EX280 – OpenShift Administrator Tips & Tricks mini-series with a deep dive into Developer Self Service."
-categories: ["Certifications", "DevOps", "Red Hat", "OpenShift", "Administrator"]
-tags: ["Red Hat", "OpenShift", "EX280", "Tips", "HTPasswd", "Authentication"]
+categories: ["OpenShift & Linux"]
+tags: ["Red Hat", "OpenShift", "EX280", "Tips", "HTPasswd", "Authentication", "Administrator", "Certifications", "DevOps"]
 author: tharun-vempati
 series: "EX280 – OpenShift Administrator Tips & Tricks"
 series_order: 5

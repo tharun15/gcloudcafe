@@ -4,9 +4,9 @@ meta_title: "Google Cloud Generative AI Leader Certification – A Reflective Jo
 description: "A storytelling reflection on the concepts behind the Google Cloud Generative AI Leader certification — from learning paradigms to prompt techniques, Gemini, and real-world business transformation."
 date: 2025-10-07
 image: "/images/generative-ai-leader.png"
-categories: ["Google Cloud", "AI"]
+categories: ["Google Cloud"]
 author: "tharun-vempati"
-tags: ["generative-ai", "google-cloud", "certification", "prompt-engineering", "gemini", "vertex-ai", "ai-leadership"]
+tags: ["generative-ai", "google-cloud", "certification", "prompt-engineering", "gemini", "vertex-ai", "ai-leadership", "AI"]
 draft: false
 ---
 

@@ -2,12 +2,12 @@
 
 # main menu
 [[main]]
-name = "Home"
-url = "/"
+name = "Field Manuals"
+url = "/blog"
 weight = 1
 
 [[main]]
-name = "Series"
+name = "Learning Tracks"
 url = "/series"
 weight = 2
 
@@ -21,6 +21,11 @@ name = "About"
 url = "/about"
 weight = 4
 
+[[main]]
+name = "Contact"
+url = "/contact"
+weight = 5
+
 
 # footer menu
 [[footer]]
@@ -29,26 +34,36 @@ url = "/"
 weight = 1
 
 [[footer]]
-name = "Blog"
+name = "Field Manuals"
 url = "/blog"
 weight = 2
 
 [[footer]]
+name = "Learning Tracks"
+url = "/series"
+weight = 3
+
+[[footer]]
 name = "About"
 url = "/about"
-weight = 3
+weight = 4
+
+[[footer]]
+name = "Contact"
+url = "/contact"
+weight = 5
 
 [[footer]]
 name = "Privacy Policy"
 url = "/privacy-policy"
-weight = 4
+weight = 6
 
 [[footer]]
 name = "Terms of Service"
 url = "/terms-of-service"
-weight = 5
+weight = 7
 
 [[footer]]
 name = "Cookie Policy"
 url = "/cookie-policy"
-weight = 6
+weight = 8

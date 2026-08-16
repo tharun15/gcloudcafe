@@ -1,0 +1,113 @@
+{{ define "main" }}
+  {{ partial "page-header" . }}
+
+  <section class="section-sm">
+    <div class="container">
+      <div class="row justify-center">
+        <div class="md:col-10 lg:col-8 mx-auto">
+          
+          <!-- Errata & Peer Review Callout -->
+          <div class="mb-10 p-6 rounded-3xl bg-slate-50 dark:bg-slate-900/60 border border-border/80 dark:border-slate-800 shadow-xs space-y-3">
+            <div class="flex items-center gap-2 font-bold text-dark dark:text-white text-base">
+              <span>🛠️</span>
+              <span>Technical Errata & Editorial Inquiries</span>
+            </div>
+            <p class="text-sm text-text/80 dark:text-slate-300 leading-relaxed m-0 font-medium">
+              Spotted an outdated command, edge-case nuance, or technical mistake in one of our field manuals? We treat errata with high priority. Submit a correction below, or open an issue directly on <a href="https://github.com/tharun15/gcloudcafe/issues" target="_blank" rel="noopener" class="text-primary hover:underline font-bold">GitHub</a>.
+            </p>
+          </div>
+
+          <form action="{{ site.Params.contact_form_action }}" method="POST" class="p-8 sm:p-10 rounded-3xl bg-body dark:bg-[#0c1220] border border-border/80 dark:border-slate-800 shadow-xl">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
+              <div>
+                <label for="name" class="form-label font-bold text-dark dark:text-white text-sm mb-2 block">
+                  Full Name <span class="text-red-500">*</span>
+                </label>
+                <input
+                  id="name"
+                  name="name"
+                  class="form-input w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-900/80 border border-border/80 dark:border-slate-700 text-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none transition"
+                  placeholder="Your Name"
+                  type="text"
+                  required />
+              </div>
+              <div>
+                <label for="email" class="form-label font-bold text-dark dark:text-white text-sm mb-2 block">
+                  Email Address <span class="text-red-500">*</span>
+                </label>
+                <input
+                  id="email"
+                  name="email"
+                  class="form-input w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-900/80 border border-border/80 dark:border-slate-700 text-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none transition"
+                  placeholder="you@example.com"
+                  type="email"
+                  required />
+              </div>
+            </div>
+
+            <div class="mb-6">
+              <label for="subject" class="form-label font-bold text-dark dark:text-white text-sm mb-2 block">
+                Inquiry Type <span class="text-red-500">*</span>
+              </label>
+              <select
+                id="subject"
+                name="subject"
+                class="form-input w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-900/80 border border-border/80 dark:border-slate-700 text-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none transition text-dark dark:text-white"
+                required>
+                <option value="errata">Technical Correction / Errata Report</option>
+                <option value="topic_request">Field Manual / Topic Request</option>
+                <option value="collaboration">Collaboration / Writing Inquiry</option>
+                <option value="general">General Feedback</option>
+              </select>
+            </div>
+
+            <div class="mb-8">
+              <label for="message" class="form-label font-bold text-dark dark:text-white text-sm mb-2 block">
+                Message <span class="text-red-500">*</span>
+              </label>
+              <textarea
+                id="message"
+                name="message"
+                class="form-input w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-900/80 border border-border/80 dark:border-slate-700 text-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none transition"
+                placeholder="Provide specific details, article link, error log, or topic suggestions..."
+                rows="6"
+                required></textarea>
+            </div>
+
+            <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-2">
+              <button type="submit" class="w-full sm:w-auto px-8 py-3.5 rounded-xl font-bold text-sm bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/20 transition-all hover:scale-[1.02]">
+                Send Message
+              </button>
+              <span class="text-xs text-text/60 dark:text-slate-400 font-mono">
+                Direct: <a href="mailto:contact@gcloudcafe.com" class="text-primary hover:underline">contact@gcloudcafe.com</a>
+              </span>
+            </div>
+          </form>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {{ with site.Params.subscription }}
+    {{ if .enable }}
+      <form
+        action="{{ .mailchimp_form_action | safeURL }}"
+        method="post"
+        id="mc-embedded-subscribe-form"
+        novalidate="novalidate">
+        <div class="input-group">
+          <input
+            type="email"
+            name="EMAIL"
+            placeholder="{{ i18n `email` }}"
+            aria-label="Subscription Email"
+            required />
+          <button type="submit" name="subscribe">
+            <span class="sr-only">Submit</span>
+          </button>
+        </div>
+      </form>
+    {{ end }}
+  {{ end }}
+{{ end }}

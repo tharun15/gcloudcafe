@@ -4,7 +4,7 @@ meta_title: "TLS for DevOps (Part 1): Keys, CSRs, CAs & Chain of Trust"
 description: "Master modern TLS fundamentals for DevOps & Kubernetes: The postcard internet, Alice & Bob's padlock model, Key-to-Cert pipeline, 5 common misconceptions, and OpenSSL commands."
 date: 2026-08-14
 image: "/images/tls-part1-foundations.jpg"
-categories: ["Security", "DevOps", "Architecture"]
+categories: ["Security & PKI"]
 tags: ["TLS", "SSL", "Cryptography", "Certificates", "OpenSSL", "DevOps", "Security"]
 author: tharun-vempati
 series: "TLS & mTLS Architecture for DevOps Engineers"

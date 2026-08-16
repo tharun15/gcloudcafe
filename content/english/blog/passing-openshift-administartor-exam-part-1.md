@@ -4,8 +4,8 @@ meta_title: "The Preparation Perspective That's Often Undervalued"
 date: 2025-10-25
 image: "/images/post3-dp.png"
 description: "My journey of passing the Red Hat OpenShift Administrator EX280 exam — non-technical setup, last-minute lessons, and preparation tips you shouldn’t overlook."
-categories: ["Certifications", "DevOps", "Red Hat", "Openshift", "Administrator"]
-tags: ["Red Hat", "OpenShift", "EX280", "Certification", "Remote Exam"]
+categories: ["OpenShift & Linux", "Certifications"]
+tags: ["Red Hat", "OpenShift", "EX280", "Certification", "Remote Exam", "Administrator", "DevOps"]
 author: tharun-vempati
 series: "Passing the OpenShift Administrator Exam"
 series_order: 1
