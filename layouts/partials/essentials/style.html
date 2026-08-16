@@ -2,6 +2,8 @@
 <meta http-equiv="x-dns-prefetch-control" content="on" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
+<link rel="dns-prefetch" href="https://cdnjs.cloudflare.com" />
 <link rel="dns-prefetch" href="https://axiijcsxtiukloarbfor.supabase.co" />
 
 <!-- Google Fonts Non-Blocking Optimization -->
@@ -19,11 +21,18 @@
 {{ range site.Params.plugins.css }}
   {{ if findRE "^http" .link }}
     <link
-      crossorigin="anonymous"
-      media="all"
-      rel="stylesheet"
+      rel="preload"
       href="{{ .link | relURL }}"
+      as="style"
+      crossorigin="anonymous"
+      onload="this.onload=null;this.rel='stylesheet'"
       {{ .attributes | safeHTMLAttr }} />
+    <noscript>
+      <link
+        rel="stylesheet"
+        href="{{ .link | relURL }}"
+        crossorigin="anonymous" />
+    </noscript>
   {{ else }}
     {{ if not .lazy }}
       {{ $styles = $styles | append (resources.Get .link) }}

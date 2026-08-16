@@ -1221,8 +1221,9 @@ function renderPulses(pulses) {
           scoreSpan.textContent = (newScore >= 0 ? '+' + newScore : newScore);
           var animClass = clickedType === "up" ? "stock-ticker-up" : "stock-ticker-down";
           scoreSpan.classList.remove("stock-ticker-up", "stock-ticker-down");
-          void scoreSpan.offsetWidth; // Trigger reflow
-          scoreSpan.classList.add(animClass);
+          requestAnimationFrame(function() {
+            scoreSpan.classList.add(animClass);
+          });
           setTimeout(function() {
             scoreSpan.classList.remove(animClass);
           }, 450);

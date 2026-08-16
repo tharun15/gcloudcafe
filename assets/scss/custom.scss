@@ -608,3 +608,13 @@ kbd {
   border-radius: 4px;
   padding: 0 4px;
 }
+
+/* ── FontAwesome Font-Display Swap (Eliminates Render Blocking & Layout Delay) ── */
+@font-face {
+  font-family: 'Font Awesome 6 Free';
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Font Awesome 6 Brands';
+  font-display: swap;
+}
