@@ -1932,8 +1932,14 @@
         }
       }
 
-      if (editAiStatus) editAiStatus.textContent = "";
-      if (editModalStatus) editModalStatus.textContent = "";
+      if (editAiStatus) {
+        editAiStatus.textContent = "";
+        editAiStatus.className = "";
+      }
+      if (editModalStatus) {
+        editModalStatus.textContent = "";
+        editModalStatus.className = "";
+      }
 
       updateLinkedInPreviewBox();
       editModal.classList.remove("hidden");
