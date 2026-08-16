@@ -89,7 +89,7 @@ An armored courier arrives at the federal gold vault. Before the blast doors unl
 
 ## 2. How Mutual TLS (mTLS) Works on the Wire
 
-In TLS 1.3 ([RFC 8446 Section 4.4.2](https://datatracker.ietf.org/doc/html/rfc8446#section-4.4.2)), Mutual TLS incorporates client certificate validation into the standard handshake:
+In TLS 1.3 ([RFC 8446 Section 4.4.2](https://datatracker.ietf.org/doc/html/rfc8446#section-4.4.2)), Mutual TLS adds a **client-authentication exchange** to the standard handshake:
 
 ```text
 Client (e.g., Order Pod)                                               Server (e.g., Payment Gateway)
@@ -97,15 +97,15 @@ Client (e.g., Order Pod)                                               Server (e
   │─── 1. ClientHello (Supported Ciphers, Key Share, SNI) ──────────────────────────>│
   │                                                                                  │
   │<── 2. ServerHello + EncryptedExtensions ─────────────────────────────────────────│
-  │<── 3. CertificateRequest (Trusted CA Subject DNs) ────────── [mTLS Step 1] ──────│
+  │<── 3. CertificateRequest (Trusted CA Subject DNs) ────────── [mTLS Request] ─────│
   │<── 4. Certificate (Server Public Cert + Chain) ──────────────────────────────────│
   │<── 5. CertificateVerify (Server ECDSA/RSA Signature) ────────────────────────────│
   │<── 6. Finished (Server Handshake Complete MAC) ──────────────────────────────────│
   │                                                                                  │
   │    [Client verifies Server Certificate against its Local TrustStore]             │
   │                                                                                  │
-  │─── 7. Certificate (Client Public Cert + Chain) ───────────── [mTLS Step 2] ─────>│
-  │─── 8. CertificateVerify (Client Digital Signature over Handshake Transcript) ───>│
+  │─── 7. Certificate (Client Public Cert + Chain) ───────────── [mTLS Identity] ────>│
+  │─── 8. CertificateVerify (Client Signature over Handshake Transcript) ───────────>│
   │─── 9. Finished (Client Handshake Complete MAC) ─────────────────────────────────>│
   │                                                                                  │
   │    [Server verifies Client Certificate against its Local TrustStore]             │
@@ -114,9 +114,10 @@ Client (e.g., Order Pod)                                               Server (e
   │                        (Forward-Secret AES-GCM / ChaCha20)                       │
 ```
 
-### The 2 Crucial mTLS Packets:
-1. **`CertificateRequest` (Server ➔ Client):** The server presents a list of acceptable Certificate Authorities (CAs). It explicitly indicates: *"Send a certificate issued by one of these designated CAs."*
-2. **`CertificateVerify` (Client ➔ Server):** The client sends its X.509 certificate and computes a cryptographic signature using its **private key** over the handshake transcript. The server uses the client certificate's public key to verify that the client possesses the matching private key without exposing it.
+### The 3 Core Elements of the Client-Authentication Exchange:
+1. **`CertificateRequest` (Server ➔ Client):** The server presents a list of acceptable Certificate Authorities (CAs), signaling that client authentication is required.
+2. **`Certificate` (Client ➔ Server):** The client provides its X.509 certificate chain asserting its identity (such as a SPIFFE ID or microservice SAN).
+3. **`CertificateVerify` (Client ➔ Server):** The client computes a digital signature over the entire accumulated handshake transcript using its private key, proving ownership of the corresponding public key without transmitting the private key.
 
 ---
 
@@ -138,7 +139,7 @@ Client (e.g., Order Pod)                                               Server (e
 <span>❌</span> Misconception 2: "KeyStore and TrustStore are interchangeable"
 </div>
 <p class="text-xs text-rose-800 dark:text-rose-300 leading-relaxed m-0 font-medium">
-<strong>Fact:</strong> A <strong>KeyStore</strong> holds <em>your own secret identity</em> (private key + public certificate). A <strong>TrustStore</strong> holds <em>public CA certificates you trust</em> to validate remote systems. Placing private keys in a TrustStore or distributing a KeyStore to external clients introduces severe security risks.
+<strong>Fact:</strong> A <strong>KeyStore</strong> holds <em>your own secret identity</em> (private key + public certificate). A <strong>TrustStore</strong> contains trusted certificates—typically CA root/intermediate certificates, but also specific trusted peer certificates. Placing private keys in a TrustStore or distributing a KeyStore to external clients introduces severe security risks.
 </p>
 </div>
 
@@ -156,7 +157,7 @@ Client (e.g., Order Pod)                                               Server (e
 <span>❌</span> Misconception 4: "1-year certificate validity is appropriate for microservices"
 </div>
 <p class="text-xs text-rose-800 dark:text-rose-300 leading-relaxed m-0 font-medium">
-<strong>Fact:</strong> Long certificate lifespans increase exposure windows for compromised keys and rely on manual renewal tracking. Modern zero-trust service meshes (Istio, Linkerd) favor short-lived certificates (such as 24-hour validity) combined with automated background rotation.
+<strong>Fact:</strong> Long certificate lifespans increase exposure windows for compromised keys and rely on manual renewal tracking. Modern zero-trust service meshes commonly use short-lived workload certificates (often measured in hours or days rather than years) and automatically rotate them well before expiration.
 </p>
 </div>
 
@@ -165,7 +166,7 @@ Client (e.g., Order Pod)                                               Server (e
 <span>❌</span> Misconception 5: "mTLS causes prohibitive latency and CPU overhead"
 </div>
 <p class="text-xs text-rose-800 dark:text-rose-300 leading-relaxed m-0 font-medium">
-<strong>Fact:</strong> With modern CPUs featuring hardware acceleration (AES-NI instructions), TLS 1.3, connection reuse, and session resumption, the incremental cost of mTLS can often be kept minimal, though actual latency and CPU overhead depend on workload patterns, sidecar proxies, and infrastructure topology.
+<strong>Fact:</strong> Modern CPUs perform symmetric TLS encryption very efficiently using dedicated hardware acceleration (AES-NI). In production, the performance impact of mTLS is usually more sensitive to handshake frequency, connection reuse (HTTP/2 or HTTP/3 keep-alive pooling), cryptographic algorithm choice, and proxy sidecar topology than to the encryption of established data streams itself.
 </p>
 </div>
 
@@ -309,7 +310,28 @@ spec:
 
 ## 7. Hands-On Terminal Lab: Building an End-to-End mTLS Architecture
 
-Let's build a reproducible mTLS testing environment using OpenSSL 3.x and Python.
+### What You'll Build in This Lab:
+
+```text
+                     Private Root CA (ca.crt)
+                                │
+                 ┌──────────────┴──────────────┐
+                 │                             │
+         Server Certificate            Client Certificate
+         (server.crt + key)            (client.crt + key)
+                 │                             │
+                 ▼                             ▼
+          ┌─────────────┐               ┌─────────────┐
+          │   Payment   │◄──── mTLS ───►│    Order    │
+          │   Gateway   │ (Mutual Auth) │   Service   │
+          └─────────────┘               └─────────────┘
+                 ▲
+                 │ HTTPS / cURL
+                 │
+          [Test Client]
+```
+
+By the end of this lab, you will have a working TLS 1.3 mTLS connection where the server authenticates the client and the client authenticates the server, complete with Java KeyStore (`.jks` / `.p12`) exports.
 
 ### Step 1: Create a Private Root Certificate Authority (CA)
 ```bash
@@ -393,7 +415,7 @@ import http.server
 import ssl
 
 server_address = ('localhost', 8443)
-httpd = http.server.HTTPServer(server_address, http.server.SimpleHTTPResponseHandler)
+httpd = http.server.HTTPServer(server_address, http.server.SimpleHTTPRequestHandler)
 
 # Configure mTLS SSL Context
 ctx = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
@@ -492,4 +514,4 @@ kubectl exec -it -n ingress-nginx $(kubectl get pods -n ingress-nginx -l app.kub
 - **[NIST SP 800-52 Rev. 2](https://csrc.nist.gov/publications/detail/sp/800-52/rev-2/final):** *Guidelines for the Selection, Configuration, and Use of TLS Implementations*.
 - **[cert-manager Documentation](https://cert-manager.io/docs/):** *Cloud-Native Certificate Management for Kubernetes*.
 - **[Gcloudcafe TLS Series (Part 1)](/blog/tls-demystified-part1-cryptography-keys-csr-ca-explained/):** *Keys, CSRs & Chain of Trust Explained*.
-- **[Gcloudcafe TLS Series (Part 2)](/blog/tls-demystified-part2-handshake-ciphers-and-troubleshooting/):** *The Modern Handshake (TLS 1.2 vs 1.3), Ciphers & Troubleshooting*.\n
+- **[Gcloudcafe TLS Series (Part 2)](/blog/tls-demystified-part2-handshake-ciphers-and-troubleshooting/):** *The Modern Handshake (TLS 1.2 vs 1.3), Ciphers & Troubleshooting*.
