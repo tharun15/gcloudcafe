@@ -149,7 +149,7 @@
 
 .blog-chip {
   span {
-    @apply bg-theme-light dark:bg-darkmode-body rounded-full px-2 py-0.5 text-[10px] font-bold text-text/70 dark:text-darkmode-text/70;
+    @apply bg-theme-light dark:bg-darkmode-body rounded-full px-2 py-0.5 text-[10px] font-bold text-text/90 dark:text-darkmode-text/90;
   }
 
   &.is-active,
@@ -321,7 +321,7 @@ pre code,
 }
 
 .toc-title {
-  @apply mb-3 text-xs font-bold uppercase tracking-wider text-text/70 dark:text-darkmode-text/70;
+  @apply mb-3 text-xs font-bold uppercase tracking-wider text-text/90 dark:text-darkmode-text/90;
 }
 
 .toc-link {

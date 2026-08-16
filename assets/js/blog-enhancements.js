@@ -366,21 +366,7 @@
           .catch(function () {});
       }
 
-      // 2. Global Cloud Counter Fetch (Ensures Brave, Mobile, and all fresh browsers get live totals!)
-      Object.keys(defaultCounts).forEach(function (type) {
-        var key = slug + "_" + type;
-        fetch("https://api.counterapi.dev/v1/" + counterNamespace + "/" + key)
-          .then(function (r) { return r.json(); })
-          .then(function (data) {
-            if (data && typeof data.count === "number") {
-              var obj = {};
-              obj[type] = data.count;
-              mergeIncomingCounts(obj, false);
-              saveAndBroadcastCounts(false);
-            }
-          })
-          .catch(function () {});
-      });
+      // Cloud counts managed primarily via Supabase tables and realtime channels
     }
 
     function setupRealtime() {
@@ -408,19 +394,7 @@
     }
 
     function sendIncrement(type) {
-      // 1. Cloud Counter API Increment (100% RLS-free, works across all browsers including Brave!)
-      var key = slug + "_" + type;
-      fetch("https://api.counterapi.dev/v1/" + counterNamespace + "/" + key + "/up")
-        .then(function (r) { return r.json(); })
-        .then(function (data) {
-          if (data && typeof data.count === "number") {
-            var obj = {};
-            obj[type] = data.count;
-            mergeIncomingCounts(obj, false);
-            saveAndBroadcastCounts(false);
-          }
-        })
-        .catch(function () {});
+      // Increment handled via Supabase RPC
 
       // 2. Supabase Increment
       var client = getSupabase();
@@ -433,19 +407,7 @@
     }
 
     function sendDecrement(type) {
-      // 1. Cloud Counter API Decrement
-      var key = slug + "_" + type;
-      fetch("https://api.counterapi.dev/v1/" + counterNamespace + "/" + key + "/down")
-        .then(function (r) { return r.json(); })
-        .then(function (data) {
-          if (data && typeof data.count === "number") {
-            var obj = {};
-            obj[type] = Math.max(0, data.count);
-            mergeIncomingCounts(obj, true);
-            saveAndBroadcastCounts(true);
-          }
-        })
-        .catch(function () {});
+      // Decrement handled via Supabase RPC
 
       // 2. Supabase Decrement
       var client = getSupabase();
