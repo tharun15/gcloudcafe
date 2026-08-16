@@ -11,6 +11,12 @@ const SUPABASE_KEY = process.env.SUPABASE_ANON_KEY || "sb_publishable_cRcwg02R3n
 
 const FEEDS = [
   { 
+    provider: "Kubernetes", 
+    name: "Kubernetes CNCF Updates", 
+    url: "https://kubernetes.io/feed.xml", 
+    defaultTags: ["#Kubernetes", "#CNCF", "#CloudNative"] 
+  },
+  { 
     provider: "GCP", 
     name: "Google Cloud Release Notes", 
     url: "https://cloud.google.com/feeds/gcp-release-notes.xml", 
@@ -21,12 +27,6 @@ const FEEDS = [
     name: "AWS What's New", 
     url: "https://aws.amazon.com/about-aws/whats-new/recent/feed/", 
     defaultTags: ["#AWS", "#CloudArchitecture", "#CloudNews"] 
-  },
-  { 
-    provider: "Kubernetes", 
-    name: "Kubernetes CNCF Updates", 
-    url: "https://kubernetes.io/feed.xml", 
-    defaultTags: ["#Kubernetes", "#CNCF", "#CloudNative"] 
   },
   { 
     provider: "OpenShift", 
@@ -68,9 +68,8 @@ function extractSmartHeadline(rawTitle, rawSummary, provider) {
   let title = cleanText(rawTitle);
   let summary = cleanText(rawSummary);
 
-  // If title is just a date (e.g. "August 15, 2026"), extract feature name from summary
   if (/^(?:January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{1,2},\s+\d{4}$/i.test(title)) {
-    const featureMatch = summary.match(/^([A-Z0-9\s\-_.:]{5,70}?)(?:Feature|Announcement|Deprecated|Changed|Fixed|Preview|GA|\sis now|\sintroduces)/i);
+    const featureMatch = summary.match(/^([A-Z0-9\s\-_.:]{5,70}?)(?:Feature|Announcement|Deprecated|Changed|Fixed|Preview|GA|\sis now|\sintroduces)\b/i);
     if (featureMatch) {
       title = `${provider}: ${featureMatch[1].trim()}`;
     } else {
@@ -157,15 +156,17 @@ async function generateAiPulse(apiKey, item) {
   }
 
   const prompt = `You are the lead cloud architect and news editor for GCloud Cafe (https://gcloudcafe.com).
-Transform this official ${item.provider} cloud announcement into a structured, high-impact Cloud Pulse candidate for admin approval.
+Transform this official ${item.provider} cloud announcement into a structured, high-impact Cloud Pulse candidate for newsroom admin approval.
 
 STRICT FORMAT:
 Title: [A punchy, clear headline under 75 characters. If the original title was a date, give a real descriptive headline.]
-Summary: 🎯 What Changed: [1 crisp sentence on what was released/changed]\n\n💡 Engineering Impact: [1-2 sentences on architectural benefit, DevOps impact, or migration guidance]
+Summary:
+🎯 What Changed: [1 crisp sentence on what was released/changed]
+💡 Engineering Impact: [1-2 sentences on architectural benefit, DevOps impact, or migration guidance]
 
 RULES:
 - Maximum 90 words total.
-- No meta text, no markdown codeblocks. Output directly in the Title: / Summary: format.
+- Output ONLY the Title and Summary. Do not wrap in markdown code blocks.
 
 Original Title: ${item.title}
 Context: ${item.summary}`;
@@ -178,7 +179,7 @@ Context: ${item.summary}`;
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           contents: [{ parts: [{ text: prompt }] }],
-          generationConfig: { temperature: 0.2, maxOutputTokens: 300 }
+          generationConfig: { temperature: 0.2, maxOutputTokens: 1500 }
         })
       });
       if (res.ok) {
@@ -186,16 +187,22 @@ Context: ${item.summary}`;
         const text = data?.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
         if (text) {
           let title = item.title;
-          let content = text;
+          let content = "";
 
-          const titleMatch = text.match(/^Title:\s*(.+)$/im);
-          const summaryMatch = text.match(/^Summary:\s*([\s\S]+)$/im);
-
+          const titleMatch = text.match(/^(?:\*{0,2}Title\*{0,2}:?\s*)(.+)$/im);
           if (titleMatch && titleMatch[1]) {
-            title = titleMatch[1].trim();
+            title = titleMatch[1].replace(/^\*\*|\*\*$/g, "").trim();
           }
+
+          const summaryMatch = text.match(/(?:\*{0,2}Summary\*{0,2}:?\s*)([\s\S]+)$/im);
           if (summaryMatch && summaryMatch[1]) {
             content = summaryMatch[1].trim();
+          } else {
+            content = text.replace(/^(?:\*{0,2}Title\*{0,2}:?\s*)[^\n]+/im, "").trim();
+          }
+
+          if (!content || content.length < 20) {
+            content = text;
           }
 
           return { title, content };
@@ -279,7 +286,7 @@ async function runScraper() {
         upvotes: 1,
         downvotes: 0,
         score: 1,
-        status: "pending_approval", // STRICT: All automated newsroom pulls require admin approval before live publishing
+        status: "pending_approval",
         eligibility_reason: `Official ${item.provider} Release: Ingested & AI synthesized for Admin Approval Queue.`
       };
 

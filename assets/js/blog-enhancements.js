@@ -2159,12 +2159,20 @@
             });
           }
 
-          var cleanContent = escapeHtml(c.content || "")
+          var formattedCandidateContent = escapeHtml(c.content || "")
             .replace(/^&lt;p&gt;/i, "")
             .replace(/&lt;\/p&gt;$/i, "")
             .replace(/&lt;a[\s\S]*?&gt;/gi, "")
             .replace(/&lt;\/a&gt;/gi, "")
             .trim();
+
+          var formattedContentHtml = '<div class="text-xs text-text/85 dark:text-darkmode-text/85 mb-3 leading-relaxed space-y-1.5">' + 
+            formattedCandidateContent
+              .replace(/(?:🎯\s*(?:\*\*)?What Changed(?:\*\*)?:?)/gi, '<div class="font-semibold text-slate-900 dark:text-slate-100"><span class="text-emerald-500 font-bold mr-1">🎯 What Changed:</span>')
+              .replace(/(?:💡\s*(?:\*\*)?(?:Engineering Impact|Impact)(?:\*\*)?:?)/gi, '</div><div class="font-normal text-text/80 dark:text-darkmode-text/80"><span class="text-amber-500 font-bold mr-1">💡 Impact:</span>')
+              .replace(/\n\n+/g, '</div><div class="mt-1">')
+              .replace(/\n/g, '<br/>') + 
+          '</div>';
 
           var linkHtml = "";
           if (c.link_url) {
@@ -2180,7 +2188,7 @@
                 '<span class="text-[10px] font-medium text-text/60 dark:text-darkmode-text/60">' + formatDate(c.created_at) + '</span>' +
               '</div>' +
               '<h4 class="text-sm font-bold text-dark dark:text-darkmode-dark mb-2 leading-snug">' + escapeHtml(c.title) + '</h4>' +
-              '<p class="text-xs text-text/80 dark:text-darkmode-text/80 mb-3 leading-relaxed">' + cleanContent + '</p>' +
+              formattedContentHtml +
               linkHtml +
               reasonHtml +
               '<div class="flex flex-wrap gap-1 mb-4">' + tagsHtml + '</div>' +
