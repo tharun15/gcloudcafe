@@ -76,7 +76,7 @@
             {{ end }}
 
             <!-- Hero Footer / Meta -->
-            <div class="relative flex items-center justify-between flex-wrap gap-4 pt-4 border-t border-border/40 dark:border-darkmode-border/40 text-xs text-text/75 dark:text-darkmode-text/75">
+            <div class="relative flex items-center justify-between flex-wrap gap-4 pt-4 border-t border-border/40 dark:border-darkmode-border/40 text-xs text-text dark:text-darkmode-text font-medium">
               <div class="flex items-center gap-3">
                 <div class="w-8 h-8 rounded-full bg-primary/10 dark:bg-primary/20 flex items-center justify-center font-bold text-primary text-xs">
                   {{ substr $authorName 0 1 }}
@@ -98,7 +98,7 @@
         <!-- Right Column: Trending & Next Up Side Panel -->
         <div class="lg:col-span-5 xl:col-span-4 flex flex-col gap-4">
           <div class="flex items-center justify-between px-2 mb-1">
-            <h2 class="text-xs font-extrabold uppercase tracking-widest text-text/80 dark:text-darkmode-text/80 flex items-center gap-2">
+            <h2 class="text-xs font-extrabold uppercase tracking-widest text-text dark:text-darkmode-text font-extrabold flex items-center gap-2">
               <i class="fa-solid fa-fire text-amber-500"></i> Next Up & Trending
             </h2>
             <a href="{{ `blog/` | relLangURL }}" class="text-xs font-bold text-primary hover:underline">

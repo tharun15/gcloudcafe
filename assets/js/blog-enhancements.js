@@ -626,7 +626,7 @@
           '<div class="flex-1 min-w-0">' +
             '<div class="flex items-center justify-between mb-1">' +
               '<h4 class="text-sm font-bold text-dark dark:text-darkmode-dark">' + escapeHtml(c.author || "Cloud Practitioner") + '</h4>' +
-              '<span class="text-[11px] text-text/60 dark:text-darkmode-text/60">' + escapeHtml(c.date || "Just now") + '</span>' +
+              '<span class="text-[11px] text-text/90 dark:text-darkmode-text/90">' + escapeHtml(c.date || "Just now") + '</span>' +
             '</div>' +
             '<p class="text-sm text-text/90 dark:text-darkmode-text/90 leading-relaxed mb-3">' + escapeHtml(c.text) + '</p>' +
             '<button type="button" data-like-comment="' + idx + '" class="inline-flex items-center gap-1.5 text-xs font-semibold text-text/70 dark:text-darkmode-text/70 hover:text-primary transition-colors cursor-pointer">' +
@@ -2181,7 +2181,7 @@ function renderPulses(pulses) {
 
     function fetchPendingCandidates() {
       if (!pendingGrid) return;
-      pendingGrid.innerHTML = '<div class="col-span-full text-center py-12 text-xs font-semibold text-text/60 dark:text-darkmode-text/60"><i class="fa-solid fa-spinner fa-spin text-lg text-primary block mb-2"></i>Loading candidate approval queue...</div>';
+      pendingGrid.innerHTML = '<div class="col-span-full text-center py-12 text-xs font-semibold text-text/90 dark:text-darkmode-text/90"><i class="fa-solid fa-spinner fa-spin text-lg text-primary block mb-2"></i>Loading candidate approval queue...</div>';
 
       fetch(config.url + "/rest/v1/cloud_pulses?status=eq.pending_approval&order=created_at.desc", {
         headers: {
@@ -2193,7 +2193,7 @@ function renderPulses(pulses) {
       .then(function (candidates) {
         if (!Array.isArray(candidates) || candidates.length === 0) {
           cachedCandidates = [];
-          pendingGrid.innerHTML = '<div class="col-span-full text-center py-12 bg-body dark:bg-darkmode-body border border-border/80 rounded-3xl text-xs text-text/60 dark:text-darkmode-text/60 font-semibold"><i class="fa-solid fa-circle-check text-emerald-500 text-xl block mb-2"></i>All candidate posts reviewed! No pending approvals in queue.</div>';
+          pendingGrid.innerHTML = '<div class="col-span-full text-center py-12 bg-body dark:bg-darkmode-body border border-border/80 rounded-3xl text-xs text-text/90 dark:text-darkmode-text/90 font-semibold"><i class="fa-solid fa-circle-check text-emerald-500 text-xl block mb-2"></i>All candidate posts reviewed! No pending approvals in queue.</div>';
           if (pendingCountBadge) pendingCountBadge.textContent = "0";
           return;
         }
@@ -2236,7 +2236,7 @@ function renderPulses(pulses) {
             '<div>' +
               '<div class="flex items-center justify-between gap-2 mb-2">' +
                 '<span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-amber-500/20 text-amber-600 border border-amber-500/30">PENDING REVIEW</span>' +
-                '<span class="text-[10px] font-medium text-text/60 dark:text-darkmode-text/60">' + formatDate(c.created_at) + '</span>' +
+                '<span class="text-[10px] font-medium text-text/90 dark:text-darkmode-text/90">' + formatDate(c.created_at) + '</span>' +
               '</div>' +
               '<h4 class="text-base sm:text-lg font-extrabold text-dark dark:text-darkmode-dark mb-2.5 leading-snug">' + escapeHtml(c.title) + '</h4>' +
               formattedContentHtml +
@@ -2727,7 +2727,7 @@ function renderPulses(pulses) {
         renderedHtml += '<div class="mb-4">' + draftBadgeHtml + '<span class="' + categoryBadgeClass + ' text-xs py-0.5 px-2.5 mb-2 inline-block">' + escapeHtml(category) + '</span>' +
           '<h1 class="text-2xl sm:text-3xl font-extrabold text-dark dark:text-darkmode-dark leading-snug mb-2">' + escapeHtml(title) + '</h1>' +
           (desc ? '<p class="text-sm text-text/80 dark:text-darkmode-text/80 leading-relaxed mb-3 italic">' + escapeHtml(desc) + '</p>' : '') +
-          '<div class="flex items-center gap-3 text-xs font-semibold text-text/60 dark:text-darkmode-text/60 mb-4"><span class="text-primary font-bold"><i class="fa-solid fa-user-ninja mr-1"></i>' + escapeHtml(author) + '</span> <span><i class="fa-regular fa-clock mr-1"></i>' + readTime + ' min read</span></div></div>';
+          '<div class="flex items-center gap-3 text-xs font-semibold text-text/90 dark:text-darkmode-text/90 mb-4"><span class="text-primary font-bold"><i class="fa-solid fa-user-ninja mr-1"></i>' + escapeHtml(author) + '</span> <span><i class="fa-regular fa-clock mr-1"></i>' + readTime + ' min read</span></div></div>';
       }
 
       if (imageUrl) {
@@ -2755,7 +2755,7 @@ function renderPulses(pulses) {
       }
 
       renderedHtml += renderMarkdownToHtml(rawMd);
-      livePreview.innerHTML = renderedHtml || '<div class="text-center py-12 text-xs font-semibold text-text/60 dark:text-darkmode-text/60"><i class="fa-solid fa-pen-fancy text-2xl text-primary block mb-2"></i>Start typing in the editor on the left to view live rendered Hugo article styling!</div>';
+      livePreview.innerHTML = renderedHtml || '<div class="text-center py-12 text-xs font-semibold text-text/90 dark:text-darkmode-text/90"><i class="fa-solid fa-pen-fancy text-2xl text-primary block mb-2"></i>Start typing in the editor on the left to view live rendered Hugo article styling!</div>';
     }
 
     function renderMarkdownToHtml(md) {
