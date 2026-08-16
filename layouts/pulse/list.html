@@ -152,36 +152,43 @@
               </div>
             </div>
 
-            <!-- Active RSS Sources Tracker -->
+                        <!-- Trending Topics & Tag Cloud -->
             <div class="rounded-3xl p-7 bg-body dark:bg-darkmode-body border border-border/80 dark:border-darkmode-border/80 shadow-xs">
               <div class="flex items-center gap-2 mb-4">
-                <i class="fa-solid fa-rss text-primary text-sm"></i>
+                <i class="fa-solid fa-fire text-amber-500 text-sm"></i>
                 <h3 class="text-sm font-extrabold uppercase tracking-wider text-dark dark:text-darkmode-dark">
-                  Monitored Cloud Feeds
+                  Trending Topics
                 </h3>
               </div>
-              <ul class="space-y-3 text-xs">
-                <li class="flex items-center justify-between py-1 border-b border-border/40 dark:border-darkmode-border/40">
-                  <span class="font-bold flex items-center gap-1.5"><i class="fa-solid fa-circle text-[8px] text-emerald-500"></i> Kubernetes & CNCF</span>
-                  <span class="text-text/60 dark:text-darkmode-text/60">Release Notes</span>
-                </li>
-                <li class="flex items-center justify-between py-1 border-b border-border/40 dark:border-darkmode-border/40">
-                  <span class="font-bold flex items-center gap-1.5"><i class="fa-solid fa-circle text-[8px] text-emerald-500"></i> Google Cloud Platform</span>
-                  <span class="text-text/60 dark:text-darkmode-text/60">What's New</span>
-                </li>
-                <li class="flex items-center justify-between py-1 border-b border-border/40 dark:border-darkmode-border/40">
-                  <span class="font-bold flex items-center gap-1.5"><i class="fa-solid fa-circle text-[8px] text-emerald-500"></i> Amazon Web Services</span>
-                  <span class="text-text/60 dark:text-darkmode-text/60">What's New</span>
-                </li>
-                <li class="flex items-center justify-between py-1 border-b border-border/40 dark:border-darkmode-border/40">
-                  <span class="font-bold flex items-center gap-1.5"><i class="fa-solid fa-circle text-[8px] text-emerald-500"></i> Microsoft Azure</span>
-                  <span class="text-text/60 dark:text-darkmode-text/60">Blog & Updates</span>
-                </li>
-                <li class="flex items-center justify-between py-1">
-                  <span class="font-bold flex items-center gap-1.5"><i class="fa-solid fa-circle text-[8px] text-emerald-500"></i> Red Hat & OpenShift</span>
-                  <span class="text-text/60 dark:text-darkmode-text/60">Blogs & CVEs</span>
-                </li>
-              </ul>
+              <p class="text-xs text-text/70 dark:text-darkmode-text/70 mb-4">
+                Click any topic to quickly filter the newsroom feed:
+              </p>
+              <div class="flex flex-wrap gap-2">
+                <button data-pulse-filter="kubernetes" class="pulse-topic-pill px-3 py-1.5 rounded-xl text-xs font-bold bg-theme-light dark:bg-darkmode-theme-light text-text/80 dark:text-darkmode-text/80 hover:bg-primary/10 hover:text-primary border border-border/60 dark:border-darkmode-border/60 cursor-pointer transition-all">
+                  #Kubernetes
+                </button>
+                <button data-pulse-filter="gcp" class="pulse-topic-pill px-3 py-1.5 rounded-xl text-xs font-bold bg-theme-light dark:bg-darkmode-theme-light text-text/80 dark:text-darkmode-text/80 hover:bg-primary/10 hover:text-primary border border-border/60 dark:border-darkmode-border/60 cursor-pointer transition-all">
+                  #GoogleCloud
+                </button>
+                <button data-pulse-filter="aws" class="pulse-topic-pill px-3 py-1.5 rounded-xl text-xs font-bold bg-theme-light dark:bg-darkmode-theme-light text-text/80 dark:text-darkmode-text/80 hover:bg-primary/10 hover:text-primary border border-border/60 dark:border-darkmode-border/60 cursor-pointer transition-all">
+                  #AWS
+                </button>
+                <button data-pulse-filter="azure" class="pulse-topic-pill px-3 py-1.5 rounded-xl text-xs font-bold bg-theme-light dark:bg-darkmode-theme-light text-text/80 dark:text-darkmode-text/80 hover:bg-primary/10 hover:text-primary border border-border/60 dark:border-darkmode-border/60 cursor-pointer transition-all">
+                  #Azure
+                </button>
+                <button data-pulse-filter="openshift" class="pulse-topic-pill px-3 py-1.5 rounded-xl text-xs font-bold bg-theme-light dark:bg-darkmode-theme-light text-text/80 dark:text-darkmode-text/80 hover:bg-primary/10 hover:text-primary border border-border/60 dark:border-darkmode-border/60 cursor-pointer transition-all">
+                  #OpenShift
+                </button>
+                <button data-pulse-filter="devops" class="pulse-topic-pill px-3 py-1.5 rounded-xl text-xs font-bold bg-theme-light dark:bg-darkmode-theme-light text-text/80 dark:text-darkmode-text/80 hover:bg-primary/10 hover:text-primary border border-border/60 dark:border-darkmode-border/60 cursor-pointer transition-all">
+                  #DevOps
+                </button>
+                <button data-pulse-filter="security" class="pulse-topic-pill px-3 py-1.5 rounded-xl text-xs font-bold bg-theme-light dark:bg-darkmode-theme-light text-text/80 dark:text-darkmode-text/80 hover:bg-primary/10 hover:text-primary border border-border/60 dark:border-darkmode-border/60 cursor-pointer transition-all">
+                  #Security
+                </button>
+                <button data-pulse-filter="ai" class="pulse-topic-pill px-3 py-1.5 rounded-xl text-xs font-bold bg-theme-light dark:bg-darkmode-theme-light text-text/80 dark:text-darkmode-text/80 hover:bg-primary/10 hover:text-primary border border-border/60 dark:border-darkmode-border/60 cursor-pointer transition-all">
+                  #AI & GenAI
+                </button>
+              </div>
             </div>
 
           </div>

@@ -906,6 +906,9 @@
           if (activeFilter === "aws") return lower.includes("aws") || lower.includes("amazon") || lower.includes("rosa");
           if (activeFilter === "azure") return lower.includes("azure") || lower.includes("microsoft");
           if (activeFilter === "openshift") return lower.includes("openshift") || lower.includes("redhat") || lower.includes("red hat") || lower.includes("rosa") || lower.includes("odc");
+          if (activeFilter === "devops") return lower.includes("devops") || lower.includes("ci/cd") || lower.includes("gitops") || lower.includes("terraform");
+          if (activeFilter === "security") return lower.includes("security") || lower.includes("tls") || lower.includes("cve") || lower.includes("cert");
+          if (activeFilter === "ai") return lower.includes("ai") || lower.includes("llm") || lower.includes("genai") || lower.includes("model");
           return true;
         });
       }
