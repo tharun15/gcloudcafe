@@ -35,8 +35,13 @@ const FEEDS = [
     defaultTags: ["#OpenShift", "#RedHat", "#DevOps"] 
   },
   {
+    provider: "Azure",
+    name: "Microsoft Azure Blog & Updates",
+    url: "https://azure.microsoft.com/en-us/blog/feed/",
+    defaultTags: ["#Azure", "#CloudArchitecture", "#CloudNews"]
+  },
+  {
     provider: "GCP",
-    name: "Google Cloud Blog",
     url: "https://cloudblog.withgoogle.com/rss/",
     defaultTags: ["#GoogleCloud", "#Architecture", "#DevOps"]
   }

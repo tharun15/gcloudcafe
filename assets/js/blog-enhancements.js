@@ -904,6 +904,7 @@
           if (activeFilter === "kubernetes") return lower.includes("k8s") || lower.includes("kube") || lower.includes("cncf") || lower.includes("gateway") || lower.includes("kyaml");
           if (activeFilter === "gcp") return lower.includes("gcp") || lower.includes("google") || lower.includes("bigquery");
           if (activeFilter === "aws") return lower.includes("aws") || lower.includes("amazon") || lower.includes("rosa");
+          if (activeFilter === "azure") return lower.includes("azure") || lower.includes("microsoft");
           if (activeFilter === "openshift") return lower.includes("openshift") || lower.includes("redhat") || lower.includes("red hat") || lower.includes("rosa") || lower.includes("odc");
           return true;
         });
