@@ -12,8 +12,8 @@ url = "/pulse"
 weight = 2
 
 [[main]]
-name = "Categories"
-url = "/categories"
+name = "Series"
+url = "/series"
 weight = 3
 
 [[main]]

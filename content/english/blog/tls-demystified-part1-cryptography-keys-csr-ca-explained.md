@@ -9,6 +9,8 @@ tags: ["TLS", "SSL", "Cryptography", "Certificates", "OpenSSL", "DevOps", "Secur
 author: tharun-vempati
 series: "TLS & mTLS Architecture for DevOps Engineers"
 series_order: 1
+series_image: "/images/series-images/tls-series-poster.jpg"
+series_description: "Master modern TLS & mTLS architecture for DevOps & Kubernetes: Key generation, CSRs, PKI trust chains, 1-RTT vs 0-RTT handshakes, cipher suites, Java Keystores, and production incident recovery."
 featured: false
 draft: false
 ---
