@@ -18,12 +18,13 @@ describe('Social Icons & Fonts Regression Suite', () => {
     });
   });
 
-  it('validates hugo.toml includes FontAwesome 6 CSS plugin', () => {
-    const hugoPath = path.resolve(process.cwd(), 'hugo.toml');
-    const content = fs.readFileSync(hugoPath, 'utf-8');
+  it('validates FontAwesome 6 is self-hosted with font-display swap', () => {
+    const scssPath = path.resolve(process.cwd(), 'assets', 'scss', 'fontawesome.scss');
+    expect(fs.existsSync(scssPath)).toBe(true);
 
-    expect(content).toContain('font-awesome');
-    expect(content.toLowerCase()).toContain('params.plugins.css');
+    const content = fs.readFileSync(scssPath, 'utf-8');
+    expect(content).toContain('font-display:swap');
+    expect(content).toContain('/fonts/fa-');
   });
 
   it('validates style.html does not percent-encode Google Fonts family params', () => {
