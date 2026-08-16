@@ -932,10 +932,19 @@
       });
     }
 
+    function sortCohortByScore(list) {
+      return (list || []).slice(0, 6).sort(function(a, b) {
+        var scoreA = typeof a.score === "number" ? a.score : ((a.upvotes || 0) - (a.downvotes || 0));
+        var scoreB = typeof b.score === "number" ? b.score : ((b.upvotes || 0) - (b.downvotes || 0));
+        if (scoreB !== scoreA) return scoreB - scoreA;
+        return new Date(b.created_at || 0) - new Date(a.created_at || 0);
+      });
+    }
+
     function fetchPulses() {
       setupFilterChips();
-      // Strictly 6 articles in the active competing cohort
-      var queryUrl = config.url + "/rest/v1/cloud_pulses_trending?select=*&limit=6";
+      // Fetch latest 6 approved articles (the active competing cohort)
+      var queryUrl = config.url + "/rest/v1/cloud_pulses?status=eq.approved&order=created_at.desc&limit=6";
       
       fetch(queryUrl, {
         headers: {
@@ -945,13 +954,13 @@
       })
       .then(function (res) { return res.json(); })
       .then(function (data) {
-        if (Array.isArray(data)) {
-          allLoadedPulses = data.slice(0, 6);
+        if (Array.isArray(data) && data.length > 0) {
+          allLoadedPulses = sortCohortByScore(data);
           filterAndRenderPulses();
         } else if (supabase) {
-          supabase.from("cloud_pulses_trending").select("*").limit(6).then(function(sRes) {
+          supabase.from("cloud_pulses").select("*").eq("status", "approved").order("created_at", { ascending: false }).limit(6).then(function(sRes) {
             if (sRes && Array.isArray(sRes.data)) {
-              allLoadedPulses = sRes.data.slice(0, 6);
+              allLoadedPulses = sortCohortByScore(sRes.data);
               filterAndRenderPulses();
             }
           });
@@ -960,9 +969,9 @@
       .catch(function (err) {
         console.error("Cloud Pulse fetch error:", err);
         if (supabase) {
-          supabase.from("cloud_pulses_trending").select("*").limit(6).then(function(sRes) {
+          supabase.from("cloud_pulses").select("*").eq("status", "approved").order("created_at", { ascending: false }).limit(6).then(function(sRes) {
             if (sRes && sRes.data) {
-              allLoadedPulses = sRes.data.slice(0, 6);
+              allLoadedPulses = sortCohortByScore(sRes.data);
               filterAndRenderPulses();
             }
           });
