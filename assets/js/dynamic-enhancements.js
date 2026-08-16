@@ -67,7 +67,11 @@
     }
 
     window.addEventListener("scroll", updateRing, { passive: true });
-    updateRing();
+    if ('requestIdleCallback' in window) {
+      requestIdleCallback(updateRing);
+    } else {
+      setTimeout(updateRing, 200);
+    }
   }
 
   /* ── 3. ACCESSIBLE KEYBOARD CHIPS ── */
