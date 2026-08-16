@@ -36,6 +36,23 @@ Welcome to **Part 3: Production mTLS, KeyStores & Automated PKI**. In this guide
 3. **Kubernetes `cert-manager` & Vault PKI:** Automating ingress certificates and zero-downtime microservice rotation.
 4. **Production Gotchas & 3 AM Incident Playbook:** Diagnosing JVM truststore caching, missing client SANs, and resolving certificate outages without unnecessary service restarts.
 
+<div class="p-6 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 my-8 shadow-xs space-y-3">
+<div class="flex items-center gap-2 font-bold text-slate-900 dark:text-white text-sm">
+<span>📑</span> Quick Navigation & Architectural Roadmap
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2 text-xs sm:text-sm text-slate-700 dark:text-slate-300">
+<div><a href="#1-the-core-dilemma-why-one-way-tls-fails-in-zero-trust" class="hover:text-primary underline">1. Why One-Way TLS Fails in Zero-Trust</a></div>
+<div><a href="#2-how-mutual-tls-mtls-works-on-the-wire" class="hover:text-primary underline">2. How mTLS Works on the Wire (TLS 1.3)</a></div>
+<div><a href="#3-5-mtls-misconceptions-that-cause-production-incidents" class="hover:text-primary underline">3. 5 Misconceptions Causing Outages</a></div>
+<div><a href="#4-keystores-vs-truststores-the-devops-reference-model" class="hover:text-primary underline">4. KeyStores vs. TrustStores & PKIX Triage</a></div>
+<div><a href="#5-kubernetes-pki-automation-cert-manager--ingress-architecture" class="hover:text-primary underline">5. Kubernetes cert-manager Automation</a></div>
+<div><a href="#6--3-critical-production-gotchas-in-mtls--pki" class="hover:text-primary underline">6. 3 Critical Production Gotchas</a></div>
+<div><a href="#7-hands-on-terminal-lab-building-an-end-to-end-mtls-architecture" class="hover:text-primary underline">7. Hands-On Terminal Lab & Python Server</a></div>
+<div><a href="#8-the-3-am-incident-playbook-production-certificate-outage" class="hover:text-primary underline">8. 3 AM Production Incident Playbook</a></div>
+<div class="md:col-span-2"><a href="#9-summary-the-complete-tls--mtls-architecture-matrix" class="hover:text-primary underline">9. Complete TLS & mTLS Architecture Matrix</a></div>
+</div>
+</div>
+
 ---
 
 ## 1. The Core Dilemma: Why One-Way TLS Fails in Zero-Trust
@@ -81,7 +98,7 @@ An armored courier arrives at the federal gold vault. Before the blast doors unl
 
 <div class="p-4 rounded-xl bg-amber-50/70 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/60 my-6">
 <p class="text-xs text-amber-900 dark:text-amber-200 m-0 font-medium">
-💡 <strong>In Plain English:</strong> One-way TLS proves <em>"I am talking to the genuine server."</em> Mutual TLS (mTLS) proves <em>"I am talking to the genuine server, AND the server verifies I am an authentic authenticated client before transmitting application payload bytes."</em>
+💡 <strong>In Plain English:</strong> One-way TLS proves <em>"I am talking to the genuine server."</em> Mutual TLS (mTLS) proves <em>"I am talking to the genuine server, AND the server verifies I am an authenticated client before transmitting application payload bytes."</em>
 </p>
 </div>
 
@@ -97,7 +114,7 @@ Client (e.g., Order Pod)                                               Server (e
   │─── 1. ClientHello (Supported Ciphers, Key Share, SNI) ──────────────────────────>│
   │                                                                                  │
   │<── 2. ServerHello + EncryptedExtensions ─────────────────────────────────────────│
-  │<── 3. CertificateRequest (Acceptable CA Authorities/Constraints) ─── [mTLS Req] ─│
+  │<── 3. CertificateRequest (Acceptable CA Identities / Constraints) ── [mTLS Req] ─│
   │<── 4. Certificate (Server Public Cert + Chain) ──────────────────────────────────│
   │<── 5. CertificateVerify (Server ECDSA/RSA Signature) ────────────────────────────│
   │<── 6. Finished (Server Handshake Complete MAC) ──────────────────────────────────│
@@ -188,7 +205,7 @@ One of the most common causes of Java and microservice TLS configuration failure
 ├────────────────────────────────────────────────────────┤     ├────────────────────────────────────────────────────────┤
 │ Purpose: Proving who I AM to remote servers/clients    │     │ Purpose: Deciding whether to TRUST incoming remote cert│
 │ Java Property: -Djavax.net.ssl.keyStore                │     │ Java Property: -Djavax.net.ssl.trustStore              │
-│ Default: None (must be configured by application)      │     │ Default: $JAVA_HOME/lib/security/cacerts               │
+│ Default: No app identity KeyStore unless configured    │     │ Default: $JAVA_HOME/lib/security/cacerts               │
 └────────────────────────────────────────────────────────┘     └────────────────────────────────────────────────────────┘
 ```
 
