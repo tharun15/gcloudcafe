@@ -1033,7 +1033,12 @@
               '<span class="text-xs font-semibold text-text/70 dark:text-darkmode-text/70">' + formatDate(p.created_at) + '</span>' +
             '</div>' +
             '<h4 class="text-lg sm:text-xl font-extrabold text-dark dark:text-darkmode-dark mb-3 leading-snug group-hover:text-primary transition-colors">' + titleHtml + '</h4>' +
-            '<p class="text-base sm:text-lg text-text/95 dark:text-darkmode-text/95 mb-4 leading-relaxed font-normal">' + escapeHtml(cleanContentText) + '</p>' +
+            '<div class="text-sm sm:text-base text-text/90 dark:text-darkmode-text/90 mb-4 leading-relaxed space-y-2">' + 
+              escapeHtml(cleanContentText)
+                .replace(/(?:🎯\s*(?:\*\*)?What Changed(?:\*\*)?:?)/gi, '<div class="font-semibold text-slate-800 dark:text-slate-100"><span class="text-emerald-500 font-bold mr-1">🎯 What Changed:</span>')
+                .replace(/(?:💡\s*(?:\*\*)?Engineering Impact(?:\*\*)?:?)/gi, '</div><div class="font-normal text-text/80 dark:text-darkmode-text/80 text-xs sm:text-sm"><span class="text-amber-500 font-bold mr-1">💡 Impact:</span>')
+                .replace(/\n+/g, '<br/>') + 
+            '</div>' +
             eventLinkHtml +
           '</div>' +
 
@@ -1927,20 +1932,19 @@
         }
       }
 
-      if (editAiStatus) editAiStatus.textContent = "";
-      if (editModalStatus) editModalStatus.textContent = "";
+      if (editAiStatus) {
+        editAiStatus.textContent = "";
+        editAiStatus.className = "";
+      }
+      if (editModalStatus) {
+        editModalStatus.textContent = "";
+        editModalStatus.className = "";
+      }
 
       updateLinkedInPreviewBox();
       editModal.classList.remove("hidden");
 
-      // Auto-trigger AI TL;DR Hook if content appears raw or un-summarized
-      if (editGenerateAiBtn && (!candidate.content || candidate.content.length > 180 || candidate.content.endsWith("..."))) {
-        setTimeout(function() {
-          if (!editModal.classList.contains("hidden")) {
-            editGenerateAiBtn.click();
-          }
-        }, 100);
-      }
+      // Do NOT auto-trigger AI — wait for explicit admin button click or manual edit
     }
 
     function closeCandidateEditModal() {
@@ -2154,12 +2158,20 @@
             });
           }
 
-          var cleanContent = escapeHtml(c.content || "")
+          var formattedCandidateContent = escapeHtml(c.content || "")
             .replace(/^&lt;p&gt;/i, "")
             .replace(/&lt;\/p&gt;$/i, "")
             .replace(/&lt;a[\s\S]*?&gt;/gi, "")
             .replace(/&lt;\/a&gt;/gi, "")
             .trim();
+
+          var formattedContentHtml = '<div class="text-sm text-text/90 dark:text-darkmode-text/90 mb-3.5 leading-relaxed space-y-2">' + 
+            formattedCandidateContent
+              .replace(/(?:🎯\s*(?:\*\*)?What Changed(?:\*\*)?:?)/gi, '<div class="font-semibold text-slate-900 dark:text-slate-100"><span class="text-emerald-500 font-bold mr-1">🎯 What Changed:</span>')
+              .replace(/(?:💡\s*(?:\*\*)?(?:Engineering Impact|Impact)(?:\*\*)?:?)/gi, '</div><div class="font-normal text-text/80 dark:text-darkmode-text/80"><span class="text-amber-500 font-bold mr-1">💡 Impact:</span>')
+              .replace(/\n\n+/g, '</div><div class="mt-1">')
+              .replace(/\n/g, '<br/>') + 
+          '</div>';
 
           var linkHtml = "";
           if (c.link_url) {
@@ -2174,8 +2186,8 @@
                 '<span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-amber-500/20 text-amber-600 border border-amber-500/30">PENDING REVIEW</span>' +
                 '<span class="text-[10px] font-medium text-text/60 dark:text-darkmode-text/60">' + formatDate(c.created_at) + '</span>' +
               '</div>' +
-              '<h4 class="text-sm font-bold text-dark dark:text-darkmode-dark mb-2 leading-snug">' + escapeHtml(c.title) + '</h4>' +
-              '<p class="text-xs text-text/80 dark:text-darkmode-text/80 mb-3 leading-relaxed">' + cleanContent + '</p>' +
+              '<h4 class="text-base sm:text-lg font-extrabold text-dark dark:text-darkmode-dark mb-2.5 leading-snug">' + escapeHtml(c.title) + '</h4>' +
+              formattedContentHtml +
               linkHtml +
               reasonHtml +
               '<div class="flex flex-wrap gap-1 mb-4">' + tagsHtml + '</div>' +

@@ -7,13 +7,13 @@ url = "/"
 weight = 1
 
 [[main]]
-name = "Pulse"
-url = "/pulse"
+name = "Series"
+url = "/series"
 weight = 2
 
 [[main]]
-name = "Series"
-url = "/series"
+name = "Pulse"
+url = "/pulse"
 weight = 3
 
 [[main]]

@@ -18,7 +18,8 @@
     "update-theme": "node ./scripts/themeUpdate.js",
     "format": "prettier -w .",
     "test": "vitest run",
-    "trigger-sanitize-micro-posts": "node ./scripts/trigger-sanitize-micro-posts.js"
+    "trigger-sanitize-micro-posts": "node ./scripts/trigger-sanitize-micro-posts.js",
+    "pulse:generate": "node scripts/daily-cloud-pulse-scraper.js"
   },
   "devDependencies": {
     "@tailwindcss/forms": "^0.5.9",
