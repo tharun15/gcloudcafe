@@ -1,0 +1,33 @@
+{{ $logo := site.Params.logo }}
+{{ $logo_darkmode := site.Params.logo_darkmode }}
+{{ $logo_width := replace site.Params.logo_width "px" "" | default "54" }}
+{{ $logo_height := replace site.Params.logo_height "px" "" | default "54" }}
+{{ $logo_text := site.Params.logo_text | default site.Title }}
+
+<!-- Light Mode Logo -->
+<picture class="inline-block {{ if $logo_darkmode }}dark:hidden{{ end }}">
+  <source srcset="{{ `images/logo.webp` | absURL }}" type="image/webp">
+  <img
+    fetchpriority="high"
+    decoding="async"
+    src="{{ `images/logo.png` | absURL }}"
+    alt="{{ $logo_text }}"
+    class="img img-light"
+    width="{{ $logo_width }}"
+    height="{{ $logo_height }}" />
+</picture>
+
+<!-- Dark Mode Logo -->
+{{ if $logo_darkmode }}
+<picture class="hidden dark:inline-block">
+  <source srcset="{{ `images/logo-darkmode.webp` | absURL }}" type="image/webp">
+  <img
+    fetchpriority="high"
+    decoding="async"
+    src="{{ `images/logo-darkmode.png` | absURL }}"
+    alt="{{ $logo_text }}"
+    class="img img-dark"
+    width="{{ $logo_width }}"
+    height="{{ $logo_height }}" />
+</picture>
+{{ end }}
