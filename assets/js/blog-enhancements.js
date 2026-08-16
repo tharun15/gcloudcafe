@@ -1036,7 +1036,7 @@ function renderPulses(pulses) {
         var eventLinkHtml = "";
         if (p.link_url) {
           titleHtml = '<a href="' + escapeHtml(p.link_url) + '" target="_blank" rel="noopener noreferrer" class="hover:underline flex items-center gap-1.5 no-underline hover:text-primary">' + titleHtml + ' <i class="fa-solid fa-arrow-up-right-from-square text-xs text-primary"></i></a>';
-          eventLinkHtml = '<div class="mb-4"><a href="' + escapeHtml(p.link_url) + '" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-primary/10 hover:bg-primary/20 text-primary text-xs sm:text-sm font-bold no-underline transition-all"><i class="fa-solid fa-link text-xs"></i> Official Event / Page <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i></a></div>';
+          eventLinkHtml = '<div class="mb-5"><a href="' + escapeHtml(p.link_url) + '" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-primary/10 hover:bg-primary/20 text-primary text-xs sm:text-sm font-bold no-underline transition-all"><i class="fa-solid fa-link text-xs"></i> Official Event / Page <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i></a></div>';
         }
 
         var hashtagsText = Array.isArray(p.tags) ? p.tags.map(function(t){ return t.startsWith('#') ? t : '#' + t; }).join(" ") : "";
@@ -1070,7 +1070,7 @@ function renderPulses(pulses) {
           '<i class="fa-brands fa-linkedin text-sm"></i> Share' +
         '</a>';
 
-        html += '<div class="cloud-pulse-card bg-body dark:bg-darkmode-body border border-border/80 dark:border-darkmode-border/80 rounded-3xl p-5 shadow-xs flex flex-col justify-between transition-all hover:border-primary/50 group">' +
+        html += '<div class="cloud-pulse-card bg-body dark:bg-darkmode-body border border-border/80 dark:border-darkmode-border/80 rounded-3xl p-6 sm:p-7 shadow-xs hover:shadow-md flex flex-col justify-between transition-all hover:border-primary/50 group">' +
           '<div>' +
             '<div class="flex items-center justify-between gap-2 mb-3">' +
               rankBadge +
@@ -1083,7 +1083,7 @@ function renderPulses(pulses) {
             eventLinkHtml +
           '</div>' +
 
-          '<div class="pt-3 border-t border-border/40 dark:border-darkmode-border/40 flex items-center justify-between gap-2 flex-wrap sm:flex-nowrap">' +
+          '<div class="pt-4 mt-2 border-t border-border/50 dark:border-darkmode-border/50 flex items-center justify-between gap-3 flex-wrap sm:flex-nowrap">' +
             '<div class="flex flex-wrap gap-1">' + tagsHtml + '</div>' +
 
             '<div class="flex items-center gap-2 shrink-0">' +

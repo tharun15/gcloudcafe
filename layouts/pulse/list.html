@@ -1,61 +1,58 @@
 {{ define "main" }}
-  <!-- Sleek Newsroom Hero Banner -->
-  <div class="py-8 sm:py-10 bg-gradient-to-b from-theme-light/80 via-theme-light/40 to-body dark:from-darkmode-theme-light/40 dark:via-darkmode-theme-light/20 dark:to-darkmode-body border-b border-border/60 dark:border-darkmode-border/60">
+  <!-- Spacious & Elegant Newsroom Hero Banner -->
+  <div class="py-12 sm:py-16 bg-gradient-to-b from-theme-light/80 via-theme-light/40 to-body dark:from-darkmode-theme-light/40 dark:via-darkmode-theme-light/20 dark:to-darkmode-body border-b border-border/60 dark:border-darkmode-border/60">
     <div class="container">
       <div class="max-w-3xl">
-        <div class="flex items-center flex-wrap gap-2.5 mb-3">
-          <span class="inline-flex items-center gap-1.5 text-xs font-extrabold uppercase tracking-wider text-primary px-3 py-1 rounded-full bg-primary/10 border border-primary/20">
-            <i class="fa-solid fa-tower-broadcast text-emerald-500 animate-pulse"></i> Live Newsroom
-          </span>
-          <span class="inline-flex items-center gap-1.5 text-xs font-bold text-slate-700 dark:text-slate-300 px-3 py-1 rounded-full bg-body dark:bg-darkmode-theme-light border border-border/80 dark:border-darkmode-border/80">
-            <i class="fa-solid fa-bolt text-amber-500"></i> Daily 05:00 UTC Ingest
+        <div class="flex items-center gap-2.5 mb-4">
+          <span class="inline-flex items-center gap-1.5 text-xs font-extrabold uppercase tracking-wider text-primary px-3.5 py-1.5 rounded-full bg-primary/10 border border-primary/20">
+            <i class="fa-solid fa-tower-broadcast text-emerald-500 animate-pulse"></i> Live Newsroom Feed
           </span>
         </div>
-        <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-dark dark:text-darkmode-dark mb-3">
+        <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-dark dark:text-darkmode-dark mb-4">
           Cloud Pulse <span class="text-primary text-2xl sm:text-3xl lg:text-4xl font-semibold">| Micro-News & Trends</span>
         </h1>
-        <p class="text-sm sm:text-base text-text/85 dark:text-darkmode-text/85 leading-relaxed">
+        <p class="text-sm sm:text-base text-text/85 dark:text-darkmode-text/85 leading-relaxed max-w-2xl">
           Daily curated cloud release notes, architectural shifts, and DevOps updates synthesized into crisp 2-bullet engineering insights. Upvote what matters most to your team.
         </p>
       </div>
     </div>
   </div>
 
-  <!-- Main Newsroom Dashboard Section -->
-  <section id="cloud-pulse-section" class="section pt-8 pb-16">
+  <!-- Main Newsroom Dashboard Section with Generous Padding -->
+  <section id="cloud-pulse-section" class="section pt-10 pb-20">
     <div class="container">
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      <div class="row gx-5 gy-5">
         
         <!-- Left Main News Feed (8 Cols on Desktop) -->
-        <div class="lg:col-span-8 flex flex-col gap-6">
+        <div class="lg:col-8">
           
-          <!-- Topic Filter Bar -->
-          <div class="flex items-center justify-between gap-3 pb-2 border-b border-border/60 dark:border-darkmode-border/60 flex-wrap">
-            <div class="flex items-center gap-2 overflow-x-auto no-scrollbar py-1" id="pulse-filter-chips">
-              <button data-pulse-filter="all" class="pulse-filter-chip is-active px-3.5 py-1.5 rounded-full text-xs font-bold bg-primary text-white shadow-xs cursor-pointer border-none transition-all">
+          <!-- Topic Filter Bar with Breathing Room -->
+          <div class="flex items-center justify-between gap-3 pb-4 mb-8 border-b border-border/60 dark:border-darkmode-border/60 flex-wrap">
+            <div class="flex items-center gap-2.5 overflow-x-auto no-scrollbar py-1" id="pulse-filter-chips">
+              <button data-pulse-filter="all" class="pulse-filter-chip is-active px-4 py-2 rounded-full text-xs font-bold bg-primary text-white shadow-xs cursor-pointer border-none transition-all">
                 All Updates
               </button>
-              <button data-pulse-filter="kubernetes" class="pulse-filter-chip px-3.5 py-1.5 rounded-full text-xs font-bold bg-theme-light dark:bg-darkmode-theme-light text-text/80 dark:text-darkmode-text/80 hover:text-primary cursor-pointer border border-border/60 dark:border-darkmode-border/60 transition-all">
+              <button data-pulse-filter="kubernetes" class="pulse-filter-chip px-4 py-2 rounded-full text-xs font-bold bg-theme-light dark:bg-darkmode-theme-light text-text/80 dark:text-darkmode-text/80 hover:text-primary cursor-pointer border border-border/60 dark:border-darkmode-border/60 transition-all">
                 ☸️ Kubernetes
               </button>
-              <button data-pulse-filter="gcp" class="pulse-filter-chip px-3.5 py-1.5 rounded-full text-xs font-bold bg-theme-light dark:bg-darkmode-theme-light text-text/80 dark:text-darkmode-text/80 hover:text-primary cursor-pointer border border-border/60 dark:border-darkmode-border/60 transition-all">
+              <button data-pulse-filter="gcp" class="pulse-filter-chip px-4 py-2 rounded-full text-xs font-bold bg-theme-light dark:bg-darkmode-theme-light text-text/80 dark:text-darkmode-text/80 hover:text-primary cursor-pointer border border-border/60 dark:border-darkmode-border/60 transition-all">
                 ☁️ Google Cloud
               </button>
-              <button data-pulse-filter="aws" class="pulse-filter-chip px-3.5 py-1.5 rounded-full text-xs font-bold bg-theme-light dark:bg-darkmode-theme-light text-text/80 dark:text-darkmode-text/80 hover:text-primary cursor-pointer border border-border/60 dark:border-darkmode-border/60 transition-all">
+              <button data-pulse-filter="aws" class="pulse-filter-chip px-4 py-2 rounded-full text-xs font-bold bg-theme-light dark:bg-darkmode-theme-light text-text/80 dark:text-darkmode-text/80 hover:text-primary cursor-pointer border border-border/60 dark:border-darkmode-border/60 transition-all">
                 🔶 AWS
               </button>
-              <button data-pulse-filter="openshift" class="pulse-filter-chip px-3.5 py-1.5 rounded-full text-xs font-bold bg-theme-light dark:bg-darkmode-theme-light text-text/80 dark:text-darkmode-text/80 hover:text-primary cursor-pointer border border-border/60 dark:border-darkmode-border/60 transition-all">
+              <button data-pulse-filter="openshift" class="pulse-filter-chip px-4 py-2 rounded-full text-xs font-bold bg-theme-light dark:bg-darkmode-theme-light text-text/80 dark:text-darkmode-text/80 hover:text-primary cursor-pointer border border-border/60 dark:border-darkmode-border/60 transition-all">
                 🎩 Red Hat & OpenShift
               </button>
             </div>
             
-            <a href="{{ `pulse-admin/` | relLangURL }}" class="inline-flex items-center gap-1.5 text-xs font-bold text-text/70 dark:text-darkmode-text/70 hover:text-primary transition-colors no-underline">
+            <a href="{{ `pulse-admin/` | relLangURL }}" class="inline-flex items-center gap-1.5 text-xs font-bold text-text/70 dark:text-darkmode-text/70 hover:text-primary transition-colors no-underline px-2 py-1">
               <i class="fa-solid fa-lock text-[10px]"></i> Newsroom Studio
             </a>
           </div>
 
-          <!-- Dynamic Live Cards Grid -->
-          <div data-cloud-pulse-feed class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+          <!-- Dynamic Live Cards Grid (Comfortable Gaps) -->
+          <div data-cloud-pulse-feed class="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-7">
             <div class="col-span-full text-center py-16 text-xs font-bold text-text/60 dark:text-darkmode-text/60">
               <i class="fa-solid fa-spinner fa-spin text-xl text-primary mb-3 block"></i>
               Loading Live Cloud Pulse...
@@ -64,124 +61,134 @@
         </div>
 
         <!-- Right Newsroom Sidebar (4 Cols on Desktop) -->
-        <div class="lg:col-span-4 flex flex-col gap-6">
-          
-          <!-- Quarterly Cloud Battle Widget -->
-          <div class="rounded-3xl p-6 bg-body dark:bg-darkmode-body border border-border/80 dark:border-darkmode-border/80 shadow-xs">
-            <div class="flex items-center justify-between gap-2 mb-3">
-              <span class="inline-flex items-center gap-1.5 text-[11px] font-extrabold uppercase tracking-wider text-amber-600 dark:text-amber-400">
-                <i class="fa-solid fa-trophy"></i> Quarterly Battle (<span data-poll-quarter-label>Q3 2026</span>)
-              </span>
-              <span data-poll-reset-badge class="text-[10px] font-bold text-text/70 dark:text-darkmode-text/70">
-                Resets quarterly
-              </span>
-            </div>
+        <div class="lg:col-4">
+          <div class="space-y-8">
             
-            <h3 class="text-base font-extrabold text-dark dark:text-darkmode-dark mb-1">
-              Which Cloud Will Win Q3?
-            </h3>
-            <p class="text-xs text-text/70 dark:text-darkmode-text/70 mb-4">
-              Community benchmark for cloud architects.
-            </p>
-
-            <div data-cloud-poll-container class="space-y-3 mb-4">
-              <!-- GCP Row -->
-              <div class="p-3 rounded-2xl bg-theme-light/60 dark:bg-darkmode-theme-light/40 border border-border/60 dark:border-darkmode-border/60" data-provider-card="GCP">
-                <div class="flex items-center justify-between text-xs font-bold mb-1.5">
-                  <span class="text-blue-600 dark:text-blue-400 flex items-center gap-1.5"><i class="fa-brands fa-google"></i> GCP</span>
-                  <span data-provider-percent="GCP">0%</span>
-                </div>
-                <div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2 mb-2 overflow-hidden">
-                  <div data-provider-bar="GCP" class="bg-blue-500 h-full rounded-full transition-all duration-500" style="width: 0%;"></div>
-                </div>
-                <div class="flex items-center justify-between text-[10px]">
-                  <span class="text-text/70 dark:text-darkmode-text/70" data-provider-votes="GCP">0 votes</span>
-                  <button data-poll-vote="GCP" class="px-2.5 py-0.5 rounded-lg text-[11px] font-bold bg-blue-500 hover:bg-blue-600 text-white border-none cursor-pointer">Vote</button>
-                </div>
+            <!-- Quarterly Cloud Battle Widget -->
+            <div class="rounded-3xl p-7 bg-body dark:bg-darkmode-body border border-border/80 dark:border-darkmode-border/80 shadow-xs">
+              <div class="flex items-center justify-between gap-2 mb-3">
+                <span class="inline-flex items-center gap-1.5 text-[11px] font-extrabold uppercase tracking-wider text-amber-600 dark:text-amber-400">
+                  <i class="fa-solid fa-trophy"></i> Cloud Battle (<span data-poll-quarter-label>Q3 2026</span>)
+                </span>
+                <span data-poll-reset-badge class="text-[10px] font-bold text-text/70 dark:text-darkmode-text/70">
+                  Resets quarterly
+                </span>
               </div>
-
-              <!-- AWS Row -->
-              <div class="p-3 rounded-2xl bg-theme-light/60 dark:bg-darkmode-theme-light/40 border border-border/60 dark:border-darkmode-border/60" data-provider-card="AWS">
-                <div class="flex items-center justify-between text-xs font-bold mb-1.5">
-                  <span class="text-amber-600 dark:text-amber-400 flex items-center gap-1.5"><i class="fa-brands fa-aws"></i> AWS</span>
-                  <span data-provider-percent="AWS">0%</span>
-                </div>
-                <div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2 mb-2 overflow-hidden">
-                  <div data-provider-bar="AWS" class="bg-amber-500 h-full rounded-full transition-all duration-500" style="width: 0%;"></div>
-                </div>
-                <div class="flex items-center justify-between text-[10px]">
-                  <span class="text-text/70 dark:text-darkmode-text/70" data-provider-votes="AWS">0 votes</span>
-                  <button data-poll-vote="AWS" class="px-2.5 py-0.5 rounded-lg text-[11px] font-bold bg-amber-500 hover:bg-amber-600 text-white border-none cursor-pointer">Vote</button>
-                </div>
-              </div>
-
-              <!-- Azure Row -->
-              <div class="p-3 rounded-2xl bg-theme-light/60 dark:bg-darkmode-theme-light/40 border border-border/60 dark:border-darkmode-border/60" data-provider-card="AZURE">
-                <div class="flex items-center justify-between text-xs font-bold mb-1.5">
-                  <span class="text-sky-600 dark:text-sky-400 flex items-center gap-1.5"><i class="fa-brands fa-microsoft"></i> Azure</span>
-                  <span data-provider-percent="AZURE">0%</span>
-                </div>
-                <div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2 mb-2 overflow-hidden">
-                  <div data-provider-bar="AZURE" class="bg-sky-500 h-full rounded-full transition-all duration-500" style="width: 0%;"></div>
-                </div>
-                <div class="flex items-center justify-between text-[10px]">
-                  <span class="text-text/70 dark:text-darkmode-text/70" data-provider-votes="AZURE">0 votes</span>
-                  <button data-poll-vote="AZURE" class="px-2.5 py-0.5 rounded-lg text-[11px] font-bold bg-sky-500 hover:bg-sky-600 text-white border-none cursor-pointer">Vote</button>
-                </div>
-              </div>
-
-              <!-- Others Row -->
-              <div class="p-3 rounded-2xl bg-theme-light/60 dark:bg-darkmode-theme-light/40 border border-border/60 dark:border-darkmode-border/60" data-provider-card="OTHERS">
-                <div class="flex items-center justify-between text-xs font-bold mb-1.5">
-                  <span class="text-indigo-600 dark:text-indigo-400 flex items-center gap-1.5"><i class="fa-solid fa-cloud"></i> Others</span>
-                  <span data-provider-percent="OTHERS">0%</span>
-                </div>
-                <div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2 mb-2 overflow-hidden">
-                  <div data-provider-bar="OTHERS" class="bg-indigo-500 h-full rounded-full transition-all duration-500" style="width: 0%;"></div>
-                </div>
-                <div class="flex items-center justify-between text-[10px]">
-                  <span class="text-text/70 dark:text-darkmode-text/70" data-provider-votes="OTHERS">0 votes</span>
-                  <button data-poll-vote="OTHERS" class="px-2.5 py-0.5 rounded-lg text-[11px] font-bold bg-indigo-500 hover:bg-indigo-600 text-white border-none cursor-pointer">Vote</button>
-                </div>
-              </div>
-            </div>
-
-            <div data-poll-trend-badge class="text-[11px] font-semibold text-text/80 dark:text-darkmode-text/80 text-center py-2 px-3 rounded-xl bg-theme-light/50 dark:bg-darkmode-theme-light/30">
-              <i class="fa-solid fa-chart-line text-primary mr-1"></i> Live votes synced with database
-            </div>
-          </div>
-
-          <!-- Active RSS Sources Tracker -->
-          <div class="rounded-3xl p-6 bg-body dark:bg-darkmode-body border border-border/80 dark:border-darkmode-border/80 shadow-xs">
-            <div class="flex items-center gap-2 mb-3">
-              <i class="fa-solid fa-rss text-primary text-sm"></i>
-              <h3 class="text-sm font-extrabold uppercase tracking-wider text-dark dark:text-darkmode-dark">
-                Monitored Cloud Feeds
+              
+              <h3 class="text-base font-extrabold text-dark dark:text-darkmode-dark mb-1">
+                Which Cloud Will Win Q3?
               </h3>
-            </div>
-            <ul class="space-y-2.5 text-xs">
-              <li class="flex items-center justify-between py-1 border-b border-border/40 dark:border-darkmode-border/40">
-                <span class="font-bold flex items-center gap-1.5"><i class="fa-solid fa-circle text-[8px] text-emerald-500"></i> Kubernetes & CNCF</span>
-                <span class="text-text/60 dark:text-darkmode-text/60">Release Notes</span>
-              </li>
-              <li class="flex items-center justify-between py-1 border-b border-border/40 dark:border-darkmode-border/40">
-                <span class="font-bold flex items-center gap-1.5"><i class="fa-solid fa-circle text-[8px] text-emerald-500"></i> Google Cloud Platform</span>
-                <span class="text-text/60 dark:text-darkmode-text/60">What's New</span>
-              </li>
-              <li class="flex items-center justify-between py-1 border-b border-border/40 dark:border-darkmode-border/40">
-                <span class="font-bold flex items-center gap-1.5"><i class="fa-solid fa-circle text-[8px] text-emerald-500"></i> Amazon Web Services</span>
-                <span class="text-text/60 dark:text-darkmode-text/60">What's New</span>
-              </li>
-              <li class="flex items-center justify-between py-1">
-                <span class="font-bold flex items-center gap-1.5"><i class="fa-solid fa-circle text-[8px] text-emerald-500"></i> Red Hat & OpenShift</span>
-                <span class="text-text/60 dark:text-darkmode-text/60">Blogs & CVEs</span>
-              </li>
-            </ul>
-          </div>
+              <p class="text-xs text-text/70 dark:text-darkmode-text/70 mb-5">
+                Community benchmark for cloud architects.
+              </p>
 
+              <div data-cloud-poll-container class="space-y-3.5 mb-5">
+                <!-- GCP Row -->
+                <div class="p-3.5 rounded-2xl bg-theme-light/60 dark:bg-darkmode-theme-light/40 border border-border/60 dark:border-darkmode-border/60" data-provider-card="GCP">
+                  <div class="flex items-center justify-between text-xs font-bold mb-1.5">
+                    <span class="text-blue-600 dark:text-blue-400 flex items-center gap-1.5"><i class="fa-brands fa-google"></i> GCP</span>
+                    <span data-provider-percent="GCP">0%</span>
+                  </div>
+                  <div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2 mb-2 overflow-hidden">
+                    <div data-provider-bar="GCP" class="bg-blue-500 h-full rounded-full transition-all duration-500" style="width: 0%;"></div>
+                  </div>
+                  <div class="flex items-center justify-between text-[10px]">
+                    <span class="text-text/70 dark:text-darkmode-text/70" data-provider-votes="GCP">0 votes</span>
+                    <button data-poll-vote="GCP" class="px-2.5 py-0.5 rounded-lg text-[11px] font-bold bg-blue-500 hover:bg-blue-600 text-white border-none cursor-pointer">Vote</button>
+                  </div>
+                </div>
+
+                <!-- AWS Row -->
+                <div class="p-3.5 rounded-2xl bg-theme-light/60 dark:bg-darkmode-theme-light/40 border border-border/60 dark:border-darkmode-border/60" data-provider-card="AWS">
+                  <div class="flex items-center justify-between text-xs font-bold mb-1.5">
+                    <span class="text-amber-600 dark:text-amber-400 flex items-center gap-1.5"><i class="fa-brands fa-aws"></i> AWS</span>
+                    <span data-provider-percent="AWS">0%</span>
+                  </div>
+                  <div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2 mb-2 overflow-hidden">
+                    <div data-provider-bar="AWS" class="bg-amber-500 h-full rounded-full transition-all duration-500" style="width: 0%;"></div>
+                  </div>
+                  <div class="flex items-center justify-between text-[10px]">
+                    <span class="text-text/70 dark:text-darkmode-text/70" data-provider-votes="AWS">0 votes</span>
+                    <button data-poll-vote="AWS" class="px-2.5 py-0.5 rounded-lg text-[11px] font-bold bg-amber-500 hover:bg-amber-600 text-white border-none cursor-pointer">Vote</button>
+                  </div>
+                </div>
+
+                <!-- Azure Row -->
+                <div class="p-3.5 rounded-2xl bg-theme-light/60 dark:bg-darkmode-theme-light/40 border border-border/60 dark:border-darkmode-border/60" data-provider-card="AZURE">
+                  <div class="flex items-center justify-between text-xs font-bold mb-1.5">
+                    <span class="text-sky-600 dark:text-sky-400 flex items-center gap-1.5"><i class="fa-brands fa-microsoft"></i> Azure</span>
+                    <span data-provider-percent="AZURE">0%</span>
+                  </div>
+                  <div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2 mb-2 overflow-hidden">
+                    <div data-provider-bar="AZURE" class="bg-sky-500 h-full rounded-full transition-all duration-500" style="width: 0%;"></div>
+                  </div>
+                  <div class="flex items-center justify-between text-[10px]">
+                    <span class="text-text/70 dark:text-darkmode-text/70" data-provider-votes="AZURE">0 votes</span>
+                    <button data-poll-vote="AZURE" class="px-2.5 py-0.5 rounded-lg text-[11px] font-bold bg-sky-500 hover:bg-sky-600 text-white border-none cursor-pointer">Vote</button>
+                  </div>
+                </div>
+
+                <!-- Others Row -->
+                <div class="p-3.5 rounded-2xl bg-theme-light/60 dark:bg-darkmode-theme-light/40 border border-border/60 dark:border-darkmode-border/60" data-provider-card="OTHERS">
+                  <div class="flex items-center justify-between text-xs font-bold mb-1.5">
+                    <span class="text-indigo-600 dark:text-indigo-400 flex items-center gap-1.5"><i class="fa-solid fa-cloud"></i> Others</span>
+                    <span data-provider-percent="OTHERS">0%</span>
+                  </div>
+                  <div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2 mb-2 overflow-hidden">
+                    <div data-provider-bar="OTHERS" class="bg-indigo-500 h-full rounded-full transition-all duration-500" style="width: 0%;"></div>
+                  </div>
+                  <div class="flex items-center justify-between text-[10px]">
+                    <span class="text-text/70 dark:text-darkmode-text/70" data-provider-votes="OTHERS">0 votes</span>
+                    <button data-poll-vote="OTHERS" class="px-2.5 py-0.5 rounded-lg text-[11px] font-bold bg-indigo-500 hover:bg-indigo-600 text-white border-none cursor-pointer">Vote</button>
+                  </div>
+                </div>
+              </div>
+
+              <div data-poll-trend-badge class="text-[11px] font-semibold text-text/80 dark:text-darkmode-text/80 text-center py-2.5 px-3.5 rounded-xl bg-theme-light/50 dark:bg-darkmode-theme-light/30">
+                <i class="fa-solid fa-chart-line text-primary mr-1"></i> Live votes synced with database
+              </div>
+            </div>
+
+            <!-- Active RSS Sources Tracker -->
+            <div class="rounded-3xl p-7 bg-body dark:bg-darkmode-body border border-border/80 dark:border-darkmode-border/80 shadow-xs">
+              <div class="flex items-center gap-2 mb-4">
+                <i class="fa-solid fa-rss text-primary text-sm"></i>
+                <h3 class="text-sm font-extrabold uppercase tracking-wider text-dark dark:text-darkmode-dark">
+                  Monitored Cloud Feeds
+                </h3>
+              </div>
+              <ul class="space-y-3 text-xs">
+                <li class="flex items-center justify-between py-1 border-b border-border/40 dark:border-darkmode-border/40">
+                  <span class="font-bold flex items-center gap-1.5"><i class="fa-solid fa-circle text-[8px] text-emerald-500"></i> Kubernetes & CNCF</span>
+                  <span class="text-text/60 dark:text-darkmode-text/60">Release Notes</span>
+                </li>
+                <li class="flex items-center justify-between py-1 border-b border-border/40 dark:border-darkmode-border/40">
+                  <span class="font-bold flex items-center gap-1.5"><i class="fa-solid fa-circle text-[8px] text-emerald-500"></i> Google Cloud Platform</span>
+                  <span class="text-text/60 dark:text-darkmode-text/60">What's New</span>
+                </li>
+                <li class="flex items-center justify-between py-1 border-b border-border/40 dark:border-darkmode-border/40">
+                  <span class="font-bold flex items-center gap-1.5"><i class="fa-solid fa-circle text-[8px] text-emerald-500"></i> Amazon Web Services</span>
+                  <span class="text-text/60 dark:text-darkmode-text/60">What's New</span>
+                </li>
+                <li class="flex items-center justify-between py-1">
+                  <span class="font-bold flex items-center gap-1.5"><i class="fa-solid fa-circle text-[8px] text-emerald-500"></i> Red Hat & OpenShift</span>
+                  <span class="text-text/60 dark:text-darkmode-text/60">Blogs & CVEs</span>
+                </li>
+              </ul>
+            </div>
+
+          </div>
         </div>
 
       </div>
+
+      <!-- Legal Attribution Notice -->
+      <div class="mt-14 bg-body dark:bg-darkmode-body border border-border/60 dark:border-darkmode-border/60 rounded-2xl p-5 text-center shadow-xs">
+        <p class="text-[11px] text-text/60 dark:text-darkmode-text/60 leading-relaxed">
+          <i class="fa-solid fa-scale-balanced mr-1 text-primary"></i> <strong>Attribution & Syndication Notice:</strong> Cloud Pulse aggregates publicly available release notes from official vendor channels (Google Cloud, AWS, CNCF Kubernetes, Red Hat) for news curation and educational purposes under Fair Use. All product names, trademarks, and source links belong to their respective owners.
+        </p>
+      </div>
+
     </div>
   </section>
 {{ end }}
