@@ -934,7 +934,8 @@
 
     function fetchPulses() {
       setupFilterChips();
-      var queryUrl = config.url + "/rest/v1/cloud_pulses_trending?select=*&limit=12";
+      // Strictly 6 articles in the active competing cohort
+      var queryUrl = config.url + "/rest/v1/cloud_pulses_trending?select=*&limit=6";
       
       fetch(queryUrl, {
         headers: {
@@ -945,12 +946,12 @@
       .then(function (res) { return res.json(); })
       .then(function (data) {
         if (Array.isArray(data)) {
-          allLoadedPulses = data;
+          allLoadedPulses = data.slice(0, 6);
           filterAndRenderPulses();
         } else if (supabase) {
-          supabase.from("cloud_pulses_trending").select("*").limit(12).then(function(sRes) {
+          supabase.from("cloud_pulses_trending").select("*").limit(6).then(function(sRes) {
             if (sRes && Array.isArray(sRes.data)) {
-              allLoadedPulses = sRes.data;
+              allLoadedPulses = sRes.data.slice(0, 6);
               filterAndRenderPulses();
             }
           });
@@ -959,9 +960,9 @@
       .catch(function (err) {
         console.error("Cloud Pulse fetch error:", err);
         if (supabase) {
-          supabase.from("cloud_pulses_trending").select("*").limit(12).then(function(sRes) {
+          supabase.from("cloud_pulses_trending").select("*").limit(6).then(function(sRes) {
             if (sRes && sRes.data) {
-              allLoadedPulses = sRes.data;
+              allLoadedPulses = sRes.data.slice(0, 6);
               filterAndRenderPulses();
             }
           });
