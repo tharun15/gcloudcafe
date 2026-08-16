@@ -3,12 +3,11 @@
  * 
  * Aggregates official release feeds (GCP, AWS, Kubernetes, CNCF, OpenShift),
  * deduplicates against Supabase, enriches with Gemini AI into crisp 2-bullet engineer insights,
- * and publishes to the Cloud Pulse micro-news feed.
+ * and saves them with status='pending_approval' for newsroom admin curation.
  */
 
 const SUPABASE_URL = process.env.SUPABASE_URL || "https://axiijcsxtiukloarbfor.supabase.co";
 const SUPABASE_KEY = process.env.SUPABASE_ANON_KEY || "sb_publishable_cRcwg02R3nXTykDrxalL6w_-kc9Wesc";
-const AUTO_APPROVE = process.env.AUTO_APPROVE_PULSES === "true" || true; // Default to auto-approving official vendor notes
 
 const FEEDS = [
   { 
@@ -65,6 +64,24 @@ function isHighRelevanceCandidate(title, summary) {
   return true;
 }
 
+function extractSmartHeadline(rawTitle, rawSummary, provider) {
+  let title = cleanText(rawTitle);
+  let summary = cleanText(rawSummary);
+
+  // If title is just a date (e.g. "August 15, 2026"), extract feature name from summary
+  if (/^(?:January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{1,2},\s+\d{4}$/i.test(title)) {
+    const featureMatch = summary.match(/^([A-Z0-9\s\-_.:]{5,70}?)(?:Feature|Announcement|Deprecated|Changed|Fixed|Preview|GA|\sis now|\sintroduces)/i);
+    if (featureMatch) {
+      title = `${provider}: ${featureMatch[1].trim()}`;
+    } else {
+      const firstSentence = summary.split(".")[0];
+      title = (firstSentence && firstSentence.length > 10 && firstSentence.length < 80) ? firstSentence.trim() : `${provider} Feature Release`;
+    }
+  }
+
+  return { title, summary };
+}
+
 function parseItems(xmlText, feed) {
   const items = [];
   const itemRegex = /<(?:item|entry)[\s\S]*?<\/(?:item|entry)>/gi;
@@ -75,15 +92,17 @@ function parseItems(xmlText, feed) {
     const linkMatch = match.match(/<link[^>]*href=["']([^"']+)["'][^>]*>|<link[^>]*>(?:<!\[CDATA\[)?([\s\S]*?)(?:\]\]>)?<\/link>/i);
     const summaryMatch = match.match(/<(?:description|summary|content)[^>]*>(?:<!\[CDATA\[)?([\s\S]*?)(?:\]\]>)?<\/(?:description|summary|content)>/i);
 
-    const rawTitle = cleanText(titleMatch ? titleMatch[1] : "");
+    const rawTitle = titleMatch ? titleMatch[1] : "";
     const rawLink = linkMatch ? (linkMatch[1] || cleanText(linkMatch[2])) : "";
-    const rawSummary = cleanText(summaryMatch ? summaryMatch[1] : "");
+    const rawSummary = summaryMatch ? summaryMatch[1] : "";
 
-    if (rawTitle && isHighRelevanceCandidate(rawTitle, rawSummary)) {
+    const { title, summary } = extractSmartHeadline(rawTitle, rawSummary, feed.provider);
+
+    if (title && isHighRelevanceCandidate(title, summary)) {
       items.push({
         provider: feed.provider,
-        title: rawTitle,
-        summary: rawSummary,
+        title: title,
+        summary: summary,
         link: rawLink,
         tags: feed.defaultTags
       });
@@ -138,20 +157,17 @@ async function generateAiPulse(apiKey, item) {
   }
 
   const prompt = `You are the lead cloud architect and news editor for GCloud Cafe (https://gcloudcafe.com).
-Transform this official ${item.provider} cloud announcement into an ultra-concise, high-impact Cloud Pulse update for engineers.
+Transform this official ${item.provider} cloud announcement into a structured, high-impact Cloud Pulse candidate for admin approval.
 
-STRICT FORMAT REQUIREMENTS:
-1. Headline (Line 1): Start with an emoji. Punchy, clear, under 70 characters.
-2. Blank Line
-3. Bullet 1: 🎯 **What Changed**: 1 crisp sentence explaining the new capability or release.
-4. Bullet 2: 💡 **Engineering Impact**: 1-2 sentences explaining why it matters for DevOps/Cloud/SRE teams (performance, cost, security, or migration note).
+STRICT FORMAT:
+Title: [A punchy, clear headline under 75 characters. If the original title was a date, give a real descriptive headline.]
+Summary: 🎯 What Changed: [1 crisp sentence on what was released/changed]\n\n💡 Engineering Impact: [1-2 sentences on architectural benefit, DevOps impact, or migration guidance]
 
 RULES:
 - Maximum 90 words total.
-- No fluff, no introductory words ("In this update...", "Google announced...").
-- Output ONLY the formatted text.
+- No meta text, no markdown codeblocks. Output directly in the Title: / Summary: format.
 
-Title: ${item.title}
+Original Title: ${item.title}
 Context: ${item.summary}`;
 
   const models = ["gemini-2.5-flash", "gemini-flash-latest", "gemini-1.5-flash"];
@@ -162,20 +178,27 @@ Context: ${item.summary}`;
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           contents: [{ parts: [{ text: prompt }] }],
-          generationConfig: { temperature: 0.2, maxOutputTokens: 250 }
+          generationConfig: { temperature: 0.2, maxOutputTokens: 300 }
         })
       });
       if (res.ok) {
         const data = await res.json();
         const text = data?.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
         if (text) {
-          const lines = text.split("\n").filter(l => l.trim().length > 0);
-          if (lines.length >= 2) {
-            const headline = lines[0].replace(/^#+\s*/, "").replace(/^\*\*|\*\*$/g, "").trim();
-            const content = lines.slice(1).join("\n\n").trim();
-            return { title: headline, content: content };
+          let title = item.title;
+          let content = text;
+
+          const titleMatch = text.match(/^Title:\s*(.+)$/im);
+          const summaryMatch = text.match(/^Summary:\s*([\s\S]+)$/im);
+
+          if (titleMatch && titleMatch[1]) {
+            title = titleMatch[1].trim();
           }
-          return { title: item.title, content: text };
+          if (summaryMatch && summaryMatch[1]) {
+            content = summaryMatch[1].trim();
+          }
+
+          return { title, content };
         }
       }
     } catch (e) {}
@@ -188,7 +211,7 @@ Context: ${item.summary}`;
 }
 
 async function runScraper() {
-  console.log("🚀 Starting Gcloudcafe Cloud Pulse Newsroom Automation...");
+  console.log("🚀 Starting Gcloudcafe Daily Cloud Pulse Newsroom Scraper...");
   const apiKey = await getGeminiApiKey();
   if (apiKey) {
     console.log("✓ Gemini AI active for smart news synthesis.");
@@ -238,14 +261,13 @@ async function runScraper() {
 
   console.log(`\n✨ ${toProcess.length} fresh, unique candidates to process.`);
 
-  // Limit to top 6 freshest updates per run to avoid flooding
+  // Limit to top 6 freshest candidates for the Admin queue
   const finalBatch = toProcess.slice(0, 6);
-
   let insertedCount = 0;
 
   for (const item of finalBatch) {
     try {
-      console.log(`\n⚡ Processing: ${item.title}`);
+      console.log(`\n⚡ Processing candidate: ${item.title}`);
       const enriched = await generateAiPulse(apiKey, item);
 
       const payload = {
@@ -257,8 +279,8 @@ async function runScraper() {
         upvotes: 1,
         downvotes: 0,
         score: 1,
-        status: AUTO_APPROVE ? "approved" : "pending_approval",
-        eligibility_reason: `Official ${item.provider} Release: Verified newsroom automated ingestion.`
+        status: "pending_approval", // STRICT: All automated newsroom pulls require admin approval before live publishing
+        eligibility_reason: `Official ${item.provider} Release: Ingested & AI synthesized for Admin Approval Queue.`
       };
 
       const insertRes = await fetch(`${SUPABASE_URL}/rest/v1/cloud_pulses`, {
@@ -274,7 +296,7 @@ async function runScraper() {
 
       if (insertRes.ok) {
         insertedCount++;
-        console.log(`  ✓ Inserted successfully (${payload.status})!`);
+        console.log(`  ✓ Successfully added to /pulse-admin/ Approval Queue (status: pending_approval)!`);
       } else {
         const errText = await insertRes.text();
         console.warn(`  ⚠ Insert failed: ${errText}`);
@@ -284,7 +306,7 @@ async function runScraper() {
     }
   }
 
-  console.log(`\n🎉 Pulse Ingestion Complete! Successfully added ${insertedCount} new micro-pulses.`);
+  console.log(`\n🎉 Newsroom Ingestion Complete! Added ${insertedCount} candidates to the Admin Approval Queue.`);
 }
 
 runScraper().catch(console.error);

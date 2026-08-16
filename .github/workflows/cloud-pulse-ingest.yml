@@ -24,4 +24,3 @@ jobs:
           SUPABASE_URL: "https://axiijcsxtiukloarbfor.supabase.co"
           SUPABASE_ANON_KEY: "sb_publishable_cRcwg02R3nXTykDrxalL6w_-kc9Wesc"
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          AUTO_APPROVE_PULSES: "true"

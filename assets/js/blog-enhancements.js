@@ -1033,7 +1033,12 @@
               '<span class="text-xs font-semibold text-text/70 dark:text-darkmode-text/70">' + formatDate(p.created_at) + '</span>' +
             '</div>' +
             '<h4 class="text-lg sm:text-xl font-extrabold text-dark dark:text-darkmode-dark mb-3 leading-snug group-hover:text-primary transition-colors">' + titleHtml + '</h4>' +
-            '<p class="text-base sm:text-lg text-text/95 dark:text-darkmode-text/95 mb-4 leading-relaxed font-normal">' + escapeHtml(cleanContentText) + '</p>' +
+            '<div class="text-sm sm:text-base text-text/90 dark:text-darkmode-text/90 mb-4 leading-relaxed space-y-2">' + 
+              escapeHtml(cleanContentText)
+                .replace(/(?:🎯\s*(?:\*\*)?What Changed(?:\*\*)?:?)/gi, '<div class="font-semibold text-slate-800 dark:text-slate-100"><span class="text-emerald-500 font-bold mr-1">🎯 What Changed:</span>')
+                .replace(/(?:💡\s*(?:\*\*)?Engineering Impact(?:\*\*)?:?)/gi, '</div><div class="font-normal text-text/80 dark:text-darkmode-text/80 text-xs sm:text-sm"><span class="text-amber-500 font-bold mr-1">💡 Impact:</span>')
+                .replace(/\n+/g, '<br/>') + 
+            '</div>' +
             eventLinkHtml +
           '</div>' +
 
