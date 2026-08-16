@@ -21,20 +21,28 @@
 {{ $placeholderQuality:= "40x q20" }}
 {{ $fetchPriority:= .FetchPriority }}
 
+{{ $cleanPath := strings.TrimPrefix "/" (string $imagePath) }}
+
 <!-- check content image  -->
 {{ with $context.Resources.GetMatch $imagePath }}
   {{ $contentImage = true }}
+{{ else }}
+  {{ with $context.Resources.GetMatch $cleanPath }}
+    {{ $contentImage = true }}
+    {{ $imagePath = $cleanPath }}
+  {{ end }}
 {{ end }}
 <!-- /check content image -->
 
 <!-- check asset image -->
-{{ if and (not (strings.HasPrefix $imagePath "http")) (fileExists (add `assets/` (string $imagePath))) }}
+{{ if and (not (strings.HasPrefix $imagePath "http")) (fileExists (add `assets/` $cleanPath)) }}
   {{ $assetImage = true }}
+  {{ $imagePath = $cleanPath }}
 {{ end }}
 <!-- /check asset image -->
 
 <!-- image static/CDN -->
-{{ if or (hasPrefix $imagePath "http") (fileExists (add `static/` (string $imagePath))) }}
+{{ if and (not $assetImage) (not $contentImage) (or (hasPrefix $imagePath "http") (fileExists (add `static/` $cleanPath)) (fileExists (add `static/` (string $imagePath)))) }}
   <img
     loading="{{ .Loading }}"
     decoding="async"
