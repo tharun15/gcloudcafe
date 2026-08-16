@@ -1087,18 +1087,18 @@ function renderPulses(pulses) {
             eventLinkHtml +
           '</div>' +
 
-          '<div class="pt-4 mt-2 border-t border-border/50 dark:border-darkmode-border/50 flex items-center justify-between gap-3 flex-wrap sm:flex-nowrap">' +
-            '<div class="flex flex-wrap gap-1">' + tagsHtml + '</div>' +
+          '<div class="pt-4 mt-2 border-t border-border/50 dark:border-darkmode-border/50 flex items-center justify-between gap-3 flex-wrap">' +
+            '<div class="flex flex-wrap gap-1.5 min-w-0">' + tagsHtml + '</div>' +
 
-            '<div class="flex items-center gap-2 shrink-0">' +
+            '<div class="flex items-center gap-2 shrink-0 ml-auto">' +
               linkedinBtnHtml +
-              '<div class="pulse-vote-pill">' +
-                '<button data-pulse-upvote="' + p.id + '" data-upvotes="' + (p.upvotes || 0) + '" data-downvotes="' + (p.downvotes || 0) + '" class="' + upActiveClass + '" title="Upvote pulse">' +
-                  '<svg viewBox="0 0 24 24"><path d="M12 4l-6.5 8h4.5v8h4v-8h4.5z"/></svg><span>' + (p.score >= 0 ? '+' + p.score : p.score) + '</span>' +
+              '<div class="pulse-vote-pill inline-flex items-center flex-row flex-nowrap shrink-0 rounded-full bg-slate-100 dark:bg-slate-800/90 border border-slate-200/90 dark:border-slate-700/90 p-1 gap-1 shadow-xs">' +
+                '<button data-pulse-upvote="' + p.id + '" data-upvotes="' + (p.upvotes || 0) + '" data-downvotes="' + (p.downvotes || 0) + '" class="' + upActiveClass + ' inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold transition-all border-none bg-transparent cursor-pointer" title="Upvote pulse" aria-label="Upvote this cloud pulse">' +
+                  '<i class="fa-solid fa-arrow-up text-[11px]"></i> <span>' + (p.score >= 0 ? '+' + p.score : p.score) + '</span>' +
                 '</button>' +
-                '<div class="pulse-vote-divider"></div>' +
-                '<button data-pulse-downvote="' + p.id + '" data-upvotes="' + (p.upvotes || 0) + '" data-downvotes="' + (p.downvotes || 0) + '" class="' + downActiveClass + '" title="Downvote pulse">' +
-                  '<svg viewBox="0 0 24 24"><path d="M12 20l6.5-8h-4.5V4h-4v8H5.5z"/></svg>' +
+                '<div class="pulse-vote-divider w-[1px] h-3.5 bg-slate-300 dark:bg-slate-600 shrink-0"></div>' +
+                '<button data-pulse-downvote="' + p.id + '" data-upvotes="' + (p.upvotes || 0) + '" data-downvotes="' + (p.downvotes || 0) + '" class="' + downActiveClass + ' inline-flex items-center justify-center w-6 h-6 rounded-full text-xs font-bold transition-all border-none bg-transparent cursor-pointer shrink-0" title="Downvote pulse" aria-label="Downvote this cloud pulse">' +
+                  '<i class="fa-solid fa-arrow-down text-[11px]"></i>' +
                 '</button>' +
               '</div>' +
             '</div>' +
