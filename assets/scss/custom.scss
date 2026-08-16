@@ -795,3 +795,27 @@ kbd {
     linear-gradient(to right, rgba(56, 189, 248, 0.03) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(56, 189, 248, 0.03) 1px, transparent 1px);
 }
+
+/* ── Mobile Typography & Readability (WCAG AAA & Mobile Standards) ── */
+.blog-card-teaser {
+  font-size: 0.9375rem !important; /* 15px */
+  line-height: 1.65 !important;
+  color: #334155;
+}
+:root.dark .blog-card-teaser {
+  color: #cbd5e1 !important;
+}
+
+.hero-lead-teaser {
+  font-size: 1.0625rem !important; /* 17px */
+  line-height: 1.7 !important;
+  color: #1e293b;
+}
+:root.dark .hero-lead-teaser {
+  color: #e2e8f0 !important;
+}
+
+.pulse-summary-item {
+  font-size: 0.9375rem !important; /* 15px */
+  line-height: 1.65 !important;
+}
