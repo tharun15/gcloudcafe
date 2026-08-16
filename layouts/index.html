@@ -86,7 +86,7 @@
           {{ $categories := site.Taxonomies.categories }}
           {{ if gt (len $categories) 0 }}
             <div class="mb-8 flex flex-wrap items-center gap-2">
-              <span class="text-xs font-bold uppercase tracking-wider text-text/60 dark:text-darkmode-text/60 mr-2">Topics:</span>
+              <span class="text-xs font-bold uppercase tracking-wider text-text/85 dark:text-darkmode-text/85 mr-2">Topics:</span>
               <a href="{{ `blog/` | relLangURL }}" class="blog-chip is-active">
                 All <span>{{ len $posts }}</span>
               </a>
@@ -142,22 +142,22 @@
       {{ end }}
       <div class="mt-12 grid grid-cols-2 md:grid-cols-4 gap-4 text-left font-mono" data-telemetry-grid="true">
         <div class="bg-body dark:bg-darkmode-theme-light border border-border/80 dark:border-darkmode-border/80 rounded-2xl p-4">
-          <div class="text-[11px] text-text/70 dark:text-darkmode-text/70 uppercase">Published Content</div>
+          <div class="text-[11px] text-text/90 dark:text-darkmode-text/90 font-medium uppercase">Published Content</div>
           <div class="text-lg font-bold text-cyan-700 dark:text-cyan-400">{{ len $allPosts }} GUIDES</div>
           <div class="text-xs text-emerald-700 dark:text-emerald-400 font-semibold">● LIVE INDEX</div>
         </div>
         <div class="bg-body dark:bg-darkmode-theme-light border border-border/80 dark:border-darkmode-border/80 rounded-2xl p-4">
-          <div class="text-[11px] text-text/70 dark:text-darkmode-text/70 uppercase">Content Volume</div>
+          <div class="text-[11px] text-text/90 dark:text-darkmode-text/90 font-medium uppercase">Content Volume</div>
           <div class="text-lg font-bold text-primary dark:text-darkmode-primary">{{ $totalWords }} WORDS</div>
           <div class="text-xs text-emerald-700 dark:text-emerald-400 font-semibold">● FULL ACCESS</div>
         </div>
         <div class="bg-body dark:bg-darkmode-theme-light border border-border/80 dark:border-darkmode-border/80 rounded-2xl p-4">
-          <div class="text-[11px] text-text/70 dark:text-darkmode-text/70 uppercase">Reader Feedback</div>
+          <div class="text-[11px] text-text/90 dark:text-darkmode-text/90 font-medium uppercase">Reader Feedback</div>
           <div class="text-lg font-bold text-emerald-700 dark:text-emerald-400" data-stat-feedback="true">CONNECTING...</div>
           <div class="text-xs text-emerald-700 dark:text-emerald-400 font-semibold" data-stat-positive="true">● LIVE VOTES</div>
         </div>
         <div class="bg-body dark:bg-darkmode-theme-light border border-border/80 dark:border-darkmode-border/80 rounded-2xl p-4">
-          <div class="text-[11px] text-text/70 dark:text-darkmode-text/70 uppercase">Community Discussion</div>
+          <div class="text-[11px] text-text/90 dark:text-darkmode-text/90 font-medium uppercase">Community Discussion</div>
           <div class="text-lg font-bold text-cyan-700 dark:text-cyan-400" data-stat-comments="true">CONNECTING...</div>
           <div class="text-xs text-emerald-700 dark:text-emerald-400 font-semibold">● DATABASE SYNC</div>
         </div>
@@ -165,30 +165,4 @@
     </div>
   </section>
 
-  <!-- Newsletter / Community Section -->
-  <section class="section py-16 bg-theme-light dark:bg-darkmode-theme-light/40 border-t border-b border-border/60 dark:border-darkmode-border/60">
-    <div class="container max-w-4xl text-center">
-      <span class="blog-badge mb-4"><i class="fa-regular fa-paper-plane mr-1.5"></i> Stay Connected</span>
-      <h2 class="mb-4 text-2xl font-bold tracking-tight sm:text-3xl">
-        Level Up Your Cloud Architecture Skills
-      </h2>
-      <p class="text-text dark:text-darkmode-text mb-8 mx-auto max-w-2xl text-base leading-relaxed">
-        Get practical Cloud & DevOps tutorials, exam walkthroughs, and architecture patterns delivered straight to your inbox.
-      </p>
-
-      <form data-supabase-subscribe class="mx-auto max-w-md flex flex-col sm:flex-row gap-3">
-        <input 
-          type="email" 
-          placeholder="Enter your email address..." 
-          required 
-          class="blog-newsletter-input" 
-          aria-label="Email address for newsletter"
-        />
-        <button type="submit" class="btn btn-primary rounded-2xl px-6 py-3 text-sm font-semibold whitespace-nowrap shadow-md">
-          Subscribe Free
-        </button>
-      </form>
-      <p data-newsletter-status class="text-xs mt-3 font-semibold text-text/80 dark:text-darkmode-text/80 transition-all"></p>
-    </div>
-  </section>
 {{ end }}

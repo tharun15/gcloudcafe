@@ -71,7 +71,7 @@
             <!-- Hero Image Preview -->
             {{ with .Params.image }}
               <div class="relative rounded-2xl overflow-hidden mb-6 aspect-video max-h-72 w-full bg-slate-100 dark:bg-slate-900 border border-border/40 dark:border-darkmode-border/40">
-                {{ partial "image" (dict "Src" . "Context" $page "Alt" $page.Title "Class" "w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out" "Loading" "eager") }}
+                {{ partial "image" (dict "Src" . "Context" $page "Alt" $page.Title "Class" "w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out" "Loading" "eager" "FetchPriority" "high") }}
               </div>
             {{ end }}
 
@@ -98,7 +98,7 @@
         <!-- Right Column: Trending & Next Up Side Panel -->
         <div class="lg:col-span-5 xl:col-span-4 flex flex-col gap-4">
           <div class="flex items-center justify-between px-2 mb-1">
-            <h2 class="text-xs font-extrabold uppercase tracking-widest text-text/60 dark:text-darkmode-text/60 flex items-center gap-2">
+            <h2 class="text-xs font-extrabold uppercase tracking-widest text-text/80 dark:text-darkmode-text/80 flex items-center gap-2">
               <i class="fa-solid fa-fire text-amber-500"></i> Next Up & Trending
             </h2>
             <a href="{{ `blog/` | relLangURL }}" class="text-xs font-bold text-primary hover:underline">
@@ -117,7 +117,7 @@
                         {{ . }}
                       </span>
                     {{ end }}
-                    <span class="text-[11px] text-text/60 dark:text-darkmode-text/60">
+                    <span class="text-[11px] text-text/80 dark:text-darkmode-text/80">
                       {{ .Date.Format "Jan 02" }} · {{ .ReadingTime }}m
                     </span>
                   </div>

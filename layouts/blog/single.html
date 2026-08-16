@@ -12,7 +12,7 @@
     <div class="container">
       <!-- Breadcrumbs -->
       <nav aria-label="breadcrumb" class="mb-6">
-        <ol class="flex items-center gap-2 text-xs font-medium text-text/70 dark:text-darkmode-text/70">
+        <ol class="flex items-center gap-2 text-xs font-medium text-text/90 dark:text-darkmode-text/90">
           <li>
             <a href="{{ `/` | relLangURL }}" class="hover:text-primary transition-colors">Home</a>
           </li>
@@ -85,7 +85,7 @@
               type="button"
               data-copy-permalink="{{ .Permalink }}"
               class="inline-flex items-center gap-1.5 rounded-xl border border-border/80 dark:border-darkmode-border/80 hover:border-primary text-text/95 dark:text-darkmode-text/95 px-3 py-1.5 text-[11px] font-semibold transition-all hover:scale-105 active:scale-95 whitespace-nowrap cursor-pointer"
-              aria-label="Copy direct article link">
+              aria-label="Copy Link">
               <i class="fa-regular fa-copy"></i> Copy Link
             </button>
           </div>
@@ -127,7 +127,7 @@
             {{ $tags:= .Params.tags }}
             {{ if $tags }}
               <div class="flex flex-wrap items-center gap-2">
-                <span class="text-xs font-bold uppercase tracking-wider text-text/70 dark:text-darkmode-text/70 mr-1">Tags:</span>
+                <span class="text-xs font-bold uppercase tracking-wider text-text/90 dark:text-darkmode-text/90 mr-1">Tags:</span>
                 {{ range $tags }}
                   <a
                     class="blog-chip text-xs"
@@ -139,7 +139,7 @@
             {{ end }}
 
             <div class="flex items-center gap-3 shrink-0">
-              <span class="text-xs font-bold uppercase tracking-wider text-text/70 dark:text-darkmode-text/70">Share:</span>
+              <span class="text-xs font-bold uppercase tracking-wider text-text/90 dark:text-darkmode-text/90">Share:</span>
               <a
                 href="https://www.linkedin.com/sharing/share-offsite/?url={{ .Permalink | safeURL }}"
                 target="_blank"
