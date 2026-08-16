@@ -851,7 +851,9 @@
         if (commentsElem) commentsElem.textContent = c + (c === 1 ? " COMMENT" : " COMMENTS");
       })
       .catch(function () {
-        if (commentsElem) commentsElem.textContent = "0 COMMENTS";
+        if (commentsElem && commentsElem.textContent === "ACTIVE") {
+          // Keep clean SSR fallback
+        }
       });
   }
 
