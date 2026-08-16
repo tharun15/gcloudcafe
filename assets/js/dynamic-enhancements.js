@@ -26,23 +26,8 @@
 
   /* ── 2. FLOATING READING ISLAND (Progress & Navigation) ── */
   function initReadingIsland() {
-    var bar = document.getElementById("reading-progress-bar");
-    if (!bar) return; // only on article pages
-
-    var island = document.createElement("div");
-    island.id = "reading-island";
-    island.setAttribute("aria-label", "Reading Depth");
-    island.innerHTML =
-      '<div class="island-container">' +
-      '  <div class="island-progress">' +
-      '    <i class="fa-solid fa-book-open text-xs text-primary dark:text-darkmode-primary"></i>' +
-      '    <span id="island-pct">0%</span>' +
-      '  </div>' +
-      '  <button type="button" class="island-btn" id="island-scroll-top" aria-label="Jump to top" title="Jump to top">' +
-      '    <i class="fa-solid fa-arrow-up"></i>' +
-      '  </button>' +
-      '</div>';
-    document.body.appendChild(island);
+    var island = document.getElementById("reading-island");
+    if (!island) return; // only on article pages
 
     var pctEl = document.getElementById("island-pct");
     var topBtn = document.getElementById("island-scroll-top");
@@ -63,10 +48,12 @@
 
       if (pctEl) pctEl.textContent = pct + "%";
 
-      if (scrollTop > 350) {
-        island.classList.add("visible");
+      if (scrollTop > 250) {
+        island.classList.remove("opacity-0", "translate-y-4", "pointer-events-none");
+        island.classList.add("opacity-100", "translate-y-0", "pointer-events-auto");
       } else {
-        island.classList.remove("visible");
+        island.classList.add("opacity-0", "translate-y-4", "pointer-events-none");
+        island.classList.remove("opacity-100", "translate-y-0", "pointer-events-auto");
       }
     }
 
@@ -92,7 +79,10 @@
 
         var btn = document.createElement("button");
         btn.type = "button";
-        btn.className = "code-tab-btn" + (idx === 0 ? " active" : "");
+        btn.className = "code-tab-btn px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 border " + 
+          (idx === 0 
+            ? "bg-primary/20 text-primary border-primary/40 shadow-xs active" 
+            : "bg-transparent text-slate-400 border-transparent hover:text-white hover:bg-white/5");
         btn.setAttribute("role", "tab");
         btn.setAttribute("aria-selected", idx === 0 ? "true" : "false");
         btn.setAttribute("tabindex", idx === 0 ? "0" : "-1");
@@ -100,26 +90,30 @@
 
         btn.addEventListener("click", function () {
           nav.querySelectorAll(".code-tab-btn").forEach(function (b) {
-            b.classList.remove("active");
+            b.className = "code-tab-btn px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 border bg-transparent text-slate-400 border-transparent hover:text-white hover:bg-white/5";
             b.setAttribute("aria-selected", "false");
             b.setAttribute("tabindex", "-1");
           });
           panels.forEach(function (p) {
-            p.classList.remove("active");
+            p.classList.add("hidden");
+            p.classList.remove("block");
           });
 
-          btn.classList.add("active");
+          btn.className = "code-tab-btn px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 border bg-primary/20 text-primary border-primary/40 shadow-xs active";
           btn.setAttribute("aria-selected", "true");
           btn.setAttribute("tabindex", "0");
-          panel.classList.add("active");
+          panel.classList.remove("hidden");
+          panel.classList.add("block");
         });
 
         nav.appendChild(btn);
 
         if (idx === 0) {
-          panel.classList.add("active");
+          panel.classList.remove("hidden");
+          panel.classList.add("block");
         } else {
-          panel.classList.remove("active");
+          panel.classList.add("hidden");
+          panel.classList.remove("block");
         }
       });
     });
