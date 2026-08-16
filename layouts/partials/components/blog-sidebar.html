@@ -57,53 +57,23 @@
     </div>
   </section>
 
-  <!-- Newsletter subscribe block with Amber glow accent -->
+  <!-- Community & Social Connect Block -->
   <section
     class="blog-newsletter-stitch"
-    aria-labelledby="newsletter-heading">
-    <p class="blog-eyebrow">Stay in the loop</p>
-    <h2 id="newsletter-heading" class="h4 mb-3">
-      Join readers following Gcloudcafe
+    aria-labelledby="community-heading">
+    <p class="blog-eyebrow"><i class="fa-solid fa-share-nodes text-primary"></i> Connect & Share</p>
+    <h2 id="community-heading" class="h4 mb-2">
+      Join the Community
     </h2>
-    <p class="mb-5 text-text dark:text-darkmode-text">
-      Get cloud certification notes, platform tips, and new post alerts.
+    <p class="mb-5 text-sm text-text dark:text-darkmode-text leading-relaxed">
+      Follow Gcloudcafe across developer communities for real-time cloud architectures and discussion.
     </p>
 
-    <form class="mb-5 space-y-3" data-supabase-subscribe>
-      <label class="sr-only" for="newsletter-email">Email address</label>
-      <input
-        id="newsletter-email"
-        class="blog-focus-ring blog-newsletter-input"
-        type="email"
-        name="email"
-        autocomplete="email"
-        required
-        placeholder="Enter your email" />
-      <button
-        class="blog-focus-ring w-full justify-center transition-all duration-200"
-        style="background: linear-gradient(135deg, #4F8EF7, #6366F1); color: white; font-weight: 700; font-size: 0.875rem; padding: 0.625rem 1.25rem; border-radius: 0.75rem; border: none; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; box-shadow: 0 0 16px rgba(79,142,247,0.2);"
-        type="submit"
-        aria-describedby="newsletter-note">
-        <i class="fa-regular fa-envelope text-xs"></i>
-        Subscribe
-      </button>
-      <p
-        id="newsletter-note"
-        class="text-sm text-text dark:text-darkmode-text"
-        data-newsletter-status
-        aria-live="polite">
-        Get the latest updates delivered directly to your inbox.
-      </p>
-    </form>
-
-    <div class="flex items-center justify-between gap-3">
-      <h3 class="text-base font-semibold">Follow along</h3>
-    </div>
-    <ul class="social-icons mt-4">
+    <ul class="social-icons flex flex-wrap gap-2.5">
       {{ range site.Data.social.main }}
         <li>
           <a
-            class="blog-focus-ring"
+            class="blog-focus-ring inline-flex items-center justify-center w-9 h-9 rounded-xl bg-theme-light dark:bg-darkmode-theme-light text-text/80 dark:text-darkmode-text/80 hover:bg-primary hover:text-white transition-all shadow-xs"
             target="_blank"
             aria-label="Follow on {{ .name }}"
             rel="nofollow noopener"
