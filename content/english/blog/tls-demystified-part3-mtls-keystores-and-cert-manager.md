@@ -81,7 +81,7 @@ An armored courier arrives at the federal gold vault. Before the blast doors unl
 
 <div class="p-4 rounded-xl bg-amber-50/70 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/60 my-6">
 <p class="text-xs text-amber-900 dark:text-amber-200 m-0 font-medium">
-💡 <strong>In Plain English:</strong> One-way TLS proves <em>"I am talking to the genuine server."</em> Mutual TLS (mTLS) proves <em>"I am talking to the genuine server, AND the server verifies I am an authentic authorized client before transmitting application payload bytes."</em>
+💡 <strong>In Plain English:</strong> One-way TLS proves <em>"I am talking to the genuine server."</em> Mutual TLS (mTLS) proves <em>"I am talking to the genuine server, AND the server verifies I am an authentic authenticated client before transmitting application payload bytes."</em>
 </p>
 </div>
 
@@ -97,7 +97,7 @@ Client (e.g., Order Pod)                                               Server (e
   │─── 1. ClientHello (Supported Ciphers, Key Share, SNI) ──────────────────────────>│
   │                                                                                  │
   │<── 2. ServerHello + EncryptedExtensions ─────────────────────────────────────────│
-  │<── 3. CertificateRequest (Trusted CA Subject DNs) ────────── [mTLS Request] ─────│
+  │<── 3. CertificateRequest (Acceptable CA Authorities/Constraints) ─── [mTLS Req] ─│
   │<── 4. Certificate (Server Public Cert + Chain) ──────────────────────────────────│
   │<── 5. CertificateVerify (Server ECDSA/RSA Signature) ────────────────────────────│
   │<── 6. Finished (Server Handshake Complete MAC) ──────────────────────────────────│
@@ -115,9 +115,9 @@ Client (e.g., Order Pod)                                               Server (e
 ```
 
 ### The 3 Core Elements of the Client-Authentication Exchange:
-1. **`CertificateRequest` (Server ➔ Client):** The server presents a list of acceptable Certificate Authorities (CAs), signaling that client authentication is required.
+1. **`CertificateRequest` (Server ➔ Client):** The server signals that client authentication is required, optionally providing a `certificate_authorities` extension specifying acceptable CA root subjects.
 2. **`Certificate` (Client ➔ Server):** The client provides its X.509 certificate chain asserting its identity (such as a SPIFFE ID or microservice SAN).
-3. **`CertificateVerify` (Client ➔ Server):** The client computes a digital signature over the entire accumulated handshake transcript using its private key, proving ownership of the corresponding public key without transmitting the private key.
+3. **`CertificateVerify` (Client ➔ Server):** The client computes a digital signature over the entire accumulated handshake transcript using its private key, proving possession of the corresponding private key without exposing it.
 
 ---
 
@@ -240,7 +240,7 @@ In Kubernetes production environments, manually creating and rotating TLS secret
                   │ Issues & Writes
                   ▼
 ┌────────────────────────────────────┐
-│       Kubernetes Secret (TLS)      │ ──── Automatically maintained: tls.crt, tls.key, ca.crt
+│       Kubernetes Secret (TLS)      │ ──── Maintained: tls.crt, tls.key (and optionally ca.crt)
 └─────────────────┬──────────────────┘
                   │ Projected / Mounted
                   ▼
@@ -483,12 +483,11 @@ kubectl get certificate,certificaterequest,order,challenge -A
 kubectl cert-manager renew gcloudcafe-production-tls -n production
 ```
 
-### Step 3: Zero-Downtime Ingress & Proxy Reload
-Prefer the controller's supported hot-reload or dynamic reconciliation mechanism before executing disruptive pod restarts:
-```bash
-# Example: Trigger NGINX Ingress configuration reload without dropping active connections
-kubectl exec -it -n ingress-nginx $(kubectl get pods -n ingress-nginx -l app.kubernetes.io/name=ingress-nginx -o jsonpath='{.items[0].metadata.name}') -- nginx -s reload
-```
+### Step 3: Zero-Downtime Ingress & Proxy Reconciliation
+Modern Kubernetes ingress controllers (e.g. `ingress-nginx`, Envoy, Traefik) continuously watch Secret resources and dynamically update TLS certificates in memory without dropping active TCP connections.
+
+> [!TIP]
+> **Operational Best Practice:** Rely on your ingress controller's native secret-watching reconciliation loop rather than restarting controller pods. Manual configuration reload signals (such as `nginx -s reload`) or rolling pod restarts should only be used as emergency fallbacks if controller secret synchronization is demonstrably stalled.
 
 ---
 
@@ -496,7 +495,7 @@ kubectl exec -it -n ingress-nginx $(kubectl get pods -n ingress-nginx -l app.kub
 
 | Layer | Component | Who Holds It? | Confidentiality | Primary Role | Common Failure Symptom |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **Identity** | Private Key (`.key`) | Service Owner | 🔒 **Strictly Secret** | Signs handshakes, decrypts ephemeral key exchange | Key/cert mismatch error (`error:0B080074`), signature validation failure |
+| **Identity** | Private Key (`.key`) | Service Owner | 🔒 **Strictly Secret** | Signs handshake authentication data; proves possession of the service identity key | Key/cert mismatch error (`error:0B080074`), signature validation failure |
 | **Proof** | Public Certificate (`.crt`) | Public / Server / Client | 🌐 **Public** | Binds public key to DNS/SAN identity via CA signature | Hostname/SAN mismatch (`x509: certificate is valid for X, not Y`) |
 | **Intermediate CA** | Intermediate Cert (`inter.crt`) | Server / Ingress | 🌐 **Public Chain** | Bridges trust between leaf cert and Root CA | `PKIX path building failed: unable to find valid certification path` |
 | **Trust Root** | Root CA (`ca.crt`) | Client / TrustStore | 🌐 **Public Roots** | Validates cryptographic signatures across the trust chain | Unknown CA / `certificate signed by unknown authority` |
