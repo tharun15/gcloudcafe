@@ -23,11 +23,12 @@
 
 {{ $scriptsLazy = $scriptsLazy | resources.Concat "js/script-lazy.js" }}
 
-{{ $scripts = $scripts | fingerprint }}
-{{ $scriptsLazy = $scriptsLazy | fingerprint }}
 {{ if hugo.IsProduction }}
-  {{ $scripts = $scripts | minify }}
-  {{ $scriptsLazy = $scriptsLazy | minify }}
+  {{ $scripts = $scripts | minify | fingerprint }}
+  {{ $scriptsLazy = $scriptsLazy | minify | fingerprint }}
+{{ else }}
+  {{ $scripts = $scripts | fingerprint }}
+  {{ $scriptsLazy = $scriptsLazy | fingerprint }}
 {{ end }}
 
 <!-- Supabase Configuration -->
