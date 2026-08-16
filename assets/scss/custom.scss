@@ -101,7 +101,7 @@
 }
 
 .blog-reading-time {
-  @apply text-text/80 dark:text-darkmode-text/80 inline-flex items-center gap-1.5 text-xs font-medium;
+  @apply text-text dark:text-darkmode-text inline-flex items-center gap-1.5 text-xs font-semibold;
 }
 
 .blog-card-title {
@@ -113,7 +113,7 @@
 }
 
 .blog-meta-list {
-  @apply text-text/75 dark:text-darkmode-text/75 flex flex-wrap items-center gap-4 text-xs font-medium;
+  @apply text-text dark:text-darkmode-text flex flex-wrap items-center gap-4 text-xs font-semibold;
 
   li {
     @apply inline-flex items-center gap-1.5;
