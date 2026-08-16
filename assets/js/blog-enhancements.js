@@ -21,11 +21,14 @@
           if (currentScrollY > SCROLL_THRESHOLD) {
             if (currentScrollY > lastScrollY) {
               header.classList.add("header--hidden");
+              document.body.classList.add("header-hidden");
             } else {
               header.classList.remove("header--hidden");
+              document.body.classList.remove("header-hidden");
             }
           } else {
             header.classList.remove("header--hidden");
+            document.body.classList.remove("header-hidden");
           }
           lastScrollY = currentScrollY;
           ticking = false;
