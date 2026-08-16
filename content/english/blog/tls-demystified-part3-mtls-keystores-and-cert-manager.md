@@ -3,7 +3,7 @@ title: "TLS for DevOps Engineers (Part 3): Mutual TLS (mTLS), KeyStores, Cert-Ma
 meta_title: "TLS for DevOps (Part 3): mTLS, KeyStores, Cert-Manager & PKI"
 description: "Master enterprise mTLS, Java KeyStores vs TrustStores, Kubernetes cert-manager automation, PKIX path debugging, and 3 AM production certificate outage recovery."
 date: 2026-08-16
-image: "/images/tls-part1-foundations.jpg"
+image: "/images/tls-part3-mtls-keystores-certmanager.jpg"
 categories: ["Security", "DevOps", "Architecture"]
 tags: ["TLS", "mTLS", "Kubernetes", "cert-manager", "Java", "KeyStore", "DevOps", "Security"]
 author: tharun-vempati
