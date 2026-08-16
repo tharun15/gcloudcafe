@@ -1,7 +1,37 @@
 /* ==========================================================================
-   DYNAMIC ACCESSIBILITY ENHANCEMENTS — dynamicEdit branch
-   All animations respect prefers-reduced-motion
+   DYNAMIC ACCESSIBILITY & APP-LIKE UX ENHANCEMENTS
+   All animations GPU-accelerated and respect prefers-reduced-motion
    ========================================================================== */
+
+/* ── View Transitions API (Cross-Document MPA Navigation) ── */
+@view-transition {
+  navigation: auto;
+}
+
+::view-transition-old(root) {
+  animation: vt-fade-out 0.22s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+::view-transition-new(root) {
+  animation: vt-fade-in 0.22s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+@keyframes vt-fade-out {
+  from { opacity: 1; transform: scale(1); }
+  to { opacity: 0; transform: scale(0.992); }
+}
+
+@keyframes vt-fade-in {
+  from { opacity: 0; transform: scale(1.008); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}
 
 /* ── Skip to Content ── */
 .skip-to-content {
@@ -16,6 +46,41 @@
     top: 0;
     outline: 3px solid #fff;
     outline-offset: 2px;
+  }
+}
+
+/* ── Floating Reading Island (Progress & Controls) ── */
+#reading-island {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  z-index: 998;
+  opacity: 0;
+  transform: translateY(20px) scale(0.95);
+  transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+
+  &.visible {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    pointer-events: auto;
+  }
+
+  .island-container {
+    @apply flex items-center gap-3 px-4 py-2.5 rounded-full bg-slate-900/90 dark:bg-darkmode-body/95 text-white backdrop-blur-xl border border-white/20 dark:border-darkmode-border shadow-2xl;
+  }
+
+  .island-progress {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 800;
+    color: #38bdf8;
+  }
+
+  .island-btn {
+    @apply flex items-center justify-center w-7 h-7 rounded-full bg-white/10 hover:bg-white/25 text-white text-xs transition-all cursor-pointer border-0;
   }
 }
 
@@ -36,60 +101,6 @@
     opacity: 1;
     transform: none;
     transition: none;
-  }
-}
-
-/* ── Reading Ring (SVG progress indicator) ── */
-#reading-ring-wrapper {
-  position: fixed;
-  bottom: 5.5rem;
-  right: 2rem;
-  width: 2.75rem;
-  height: 2.75rem;
-  z-index: 998;
-  opacity: 0;
-  transform: translateY(10px);
-  transition: opacity 0.3s ease, transform 0.3s ease;
-  pointer-events: none;
-
-  &.visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  svg {
-    transform: rotate(-90deg);
-    width: 100%;
-    height: 100%;
-  }
-
-  .ring-track {
-    @apply stroke-border dark:stroke-darkmode-border;
-    fill: none;
-    stroke-width: 3;
-  }
-
-  .ring-fill {
-    @apply stroke-primary dark:stroke-darkmode-primary;
-    fill: none;
-    stroke-width: 3;
-    stroke-linecap: round;
-    stroke-dasharray: 72;
-    stroke-dashoffset: 72;
-    transition: stroke-dashoffset 0.1s linear;
-  }
-
-  .ring-pct {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 9px;
-    font-weight: 800;
-    line-height: 1;
-    @apply text-primary dark:text-darkmode-primary;
-    transform: rotate(0deg);
   }
 }
 
@@ -117,9 +128,55 @@
   }
 }
 
-/* ── Focused code-block highlights ── */
-.code-block-wrapper:focus-within .code-block-header {
-  border-bottom-color: rgba(56, 189, 248, 0.5);
+/* ── Code Tabs Styling ── */
+.code-tabs-wrapper {
+  margin: 1.75rem 0;
+  border-radius: 1rem;
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  background: #0f172a;
+  overflow: hidden;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+
+  .code-tab-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.4rem 0.85rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    border-radius: 0.6rem;
+    color: #94a3b8;
+    background: transparent;
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+      color: #f8fafc;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    &.active {
+      color: #38bdf8;
+      background: rgba(56, 189, 248, 0.14);
+      border-color: rgba(56, 189, 248, 0.35);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    }
+  }
+
+  .code-tab-panel {
+    display: none;
+
+    &.active {
+      display: block;
+    }
+
+    pre {
+      margin: 0 !important;
+      border-radius: 0 !important;
+      border: none !important;
+    }
+  }
 }
 
 /* ── Toast notification for copy feedback ── */

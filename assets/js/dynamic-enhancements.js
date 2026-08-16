@@ -1,5 +1,5 @@
 /* dynamic-enhancements.js
-   Accessibility & dynamic UX enhancements — dynamicEdit branch
+   Modern App-Like UX, View Transitions & Accessibility Enhancements
    Zero external dependencies. Respects prefers-reduced-motion.
    ---------------------------------------------------------------------- */
 (function () {
@@ -24,59 +24,113 @@
     // Avoid DOM mutations on initial load to prevent layout shifts
   }
 
-  /* ── 2. READING RING (SVG progress on article pages) ── */
-  function initReadingRing() {
+  /* ── 2. FLOATING READING ISLAND (Progress & Navigation) ── */
+  function initReadingIsland() {
     var bar = document.getElementById("reading-progress-bar");
     if (!bar) return; // only on article pages
 
-    // Inject ring HTML
-    var wrapper = document.createElement("div");
-    wrapper.id = "reading-ring-wrapper";
-    wrapper.setAttribute("aria-hidden", "true");
-    wrapper.innerHTML =
-      '<svg viewBox="0 0 26 26" xmlns="http://www.w3.org/2000/svg">' +
-      '<circle class="ring-track" cx="13" cy="13" r="11.5"/>' +
-      '<circle class="ring-fill" id="ring-fill" cx="13" cy="13" r="11.5"/>' +
-      "</svg>" +
-      '<span class="ring-pct" id="ring-pct">0%</span>';
-    document.body.appendChild(wrapper);
+    var island = document.createElement("div");
+    island.id = "reading-island";
+    island.setAttribute("aria-label", "Reading Depth");
+    island.innerHTML =
+      '<div class="island-container">' +
+      '  <div class="island-progress">' +
+      '    <i class="fa-solid fa-book-open text-xs text-primary dark:text-darkmode-primary"></i>' +
+      '    <span id="island-pct">0%</span>' +
+      '  </div>' +
+      '  <button type="button" class="island-btn" id="island-scroll-top" aria-label="Jump to top" title="Jump to top">' +
+      '    <i class="fa-solid fa-arrow-up"></i>' +
+      '  </button>' +
+      '</div>';
+    document.body.appendChild(island);
 
-    var fill = document.getElementById("ring-fill");
-    var pctEl = document.getElementById("ring-pct");
-    var circumference = 72; // 2π × r ≈ 2π × 11.5
+    var pctEl = document.getElementById("island-pct");
+    var topBtn = document.getElementById("island-scroll-top");
 
-    function updateRing() {
+    if (topBtn) {
+      topBtn.addEventListener("click", function () {
+        window.scrollTo({ top: 0, behavior: reducedMotion ? "auto" : "smooth" });
+      });
+    }
+
+    function updateIsland() {
       var scrollTop = window.scrollY || document.documentElement.scrollTop;
       var docH =
         document.documentElement.scrollHeight -
         document.documentElement.clientHeight;
       var pct = docH > 0 ? Math.round((scrollTop / docH) * 100) : 0;
-      pct = Math.min(100, pct);
+      pct = Math.min(100, Math.max(0, pct));
 
-      if (fill) {
-        fill.style.strokeDashoffset =
-          circumference - (circumference * pct) / 100;
-      }
       if (pctEl) pctEl.textContent = pct + "%";
 
-      if (scrollTop > 400) {
-        wrapper.classList.add("visible");
+      if (scrollTop > 350) {
+        island.classList.add("visible");
       } else {
-        wrapper.classList.remove("visible");
+        island.classList.remove("visible");
       }
     }
 
-    window.addEventListener("scroll", updateRing, { passive: true });
-    updateRing();
+    window.addEventListener("scroll", updateIsland, { passive: true });
+    updateIsland();
   }
 
-  /* ── 3. ACCESSIBLE KEYBOARD CHIPS ── */
+  /* ── 3. INTERACTIVE MULTI-TAB CODE BLOCKS ── */
+  function initCodeTabs() {
+    var tabContainers = document.querySelectorAll("[data-code-tabs]");
+    if (!tabContainers.length) return;
+
+    tabContainers.forEach(function (container) {
+      var nav = container.querySelector(".code-tabs-nav");
+      var panels = container.querySelectorAll(".code-tab-panel");
+      if (!nav || !panels.length) return;
+
+      nav.innerHTML = "";
+
+      panels.forEach(function (panel, idx) {
+        var tabName = panel.getAttribute("data-tab-name") || "Tab " + (idx + 1);
+        var tabIcon = panel.getAttribute("data-tab-icon") || "fa-solid fa-terminal";
+
+        var btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "code-tab-btn" + (idx === 0 ? " active" : "");
+        btn.setAttribute("role", "tab");
+        btn.setAttribute("aria-selected", idx === 0 ? "true" : "false");
+        btn.setAttribute("tabindex", idx === 0 ? "0" : "-1");
+        btn.innerHTML = '<i class="' + tabIcon + ' text-[10px]"></i> ' + tabName;
+
+        btn.addEventListener("click", function () {
+          nav.querySelectorAll(".code-tab-btn").forEach(function (b) {
+            b.classList.remove("active");
+            b.setAttribute("aria-selected", "false");
+            b.setAttribute("tabindex", "-1");
+          });
+          panels.forEach(function (p) {
+            p.classList.remove("active");
+          });
+
+          btn.classList.add("active");
+          btn.setAttribute("aria-selected", "true");
+          btn.setAttribute("tabindex", "0");
+          panel.classList.add("active");
+        });
+
+        nav.appendChild(btn);
+
+        if (idx === 0) {
+          panel.classList.add("active");
+        } else {
+          panel.classList.remove("active");
+        }
+      });
+    });
+  }
+
+  /* ── 4. ACCESSIBLE KEYBOARD CHIPS ── */
   function initAccessibleChips() {
     var chips = document.querySelectorAll(".blog-chip");
     if (!chips.length) return;
 
     chips.forEach(function (chip) {
-      // Only treat non-anchor chips as buttons
       if (chip.tagName.toLowerCase() === "a") return;
 
       chip.setAttribute("role", "button");
@@ -97,9 +151,8 @@
     });
   }
 
-  /* ── 4. THEME SWITCH ANNOUNCER ── */
+  /* ── 5. THEME SWITCH ANNOUNCER ── */
   function initThemeAnnouncer() {
-    // MutationObserver watches for class changes on <html>
     var html = document.documentElement;
     var prev = html.classList.contains("dark") ? "dark" : "light";
 
@@ -114,7 +167,7 @@
     mo.observe(html, { attributes: true, attributeFilter: ["class"] });
   }
 
-  /* ── 5. COPY TOAST (replace inline feedback with a global toast) ── */
+  /* ── 6. COPY TOAST ── */
   function initCopyToast() {
     var toast = document.createElement("div");
     toast.id = "copy-toast";
@@ -123,21 +176,15 @@
     toast.textContent = "Copied to clipboard!";
     document.body.appendChild(toast);
 
-    // Patch all copy buttons created by blog-enhancements.js
-    // We intercept via a custom event on the document
     document.addEventListener("gcloudcafe:code-copied", function () {
-      showToast(toast);
+      toast.classList.add("show");
+      setTimeout(function () {
+        toast.classList.remove("show");
+      }, 2200);
     });
   }
 
-  function showToast(toast) {
-    toast.classList.add("show");
-    setTimeout(function () {
-      toast.classList.remove("show");
-    }, 2200);
-  }
-
-  /* ── 6. CODE BLOCK: keyboard-triggered copy (Ctrl/Cmd+C on focus) ── */
+  /* ── 7. CODE BLOCK: keyboard-triggered copy (Ctrl/Cmd+C on focus) ── */
   function initKeyboardCopy() {
     document.addEventListener("keydown", function (e) {
       if (!(e.ctrlKey || e.metaKey) || e.key.toLowerCase() !== "c") return;
@@ -152,77 +199,30 @@
     });
   }
 
-  /* ── 7. BACK-TO-TOP FOCUS MANAGEMENT ── */
+  /* ── 8. BACK-TO-TOP FOCUS MANAGEMENT ── */
   function initScrollToTopFocus() {
     var btn = document.getElementById("scroll-to-top");
     if (!btn) return;
 
     btn.addEventListener("click", function () {
-      window.scrollTo({ top: 0, behavior: reducedMotion ? "auto" : "smooth" });
-      // After scrolling, move focus to the skip link or the first heading
-      var target =
-        document.querySelector(".skip-to-content") ||
-        document.querySelector("h1, [role='heading']");
-      if (target) {
-        target.setAttribute("tabindex", "-1");
-        target.focus({ preventScroll: true });
+      var heading = document.querySelector("h1");
+      if (heading) {
+        heading.setAttribute("tabindex", "-1");
+        heading.focus();
       }
     });
   }
 
-  /* ── 8. LANDMARK ROLE VERIFICATION (developer helper in dev mode) ── */
-  function initLandmarkCheck() {
-    // Only fires in dev — checks for missing nav labels
-    if (window.location.hostname !== "localhost") return;
-    var navs = document.querySelectorAll("nav");
-    navs.forEach(function (nav) {
-      if (!nav.getAttribute("aria-label") && !nav.getAttribute("aria-labelledby")) {
-        console.warn("[a11y] <nav> missing aria-label:", nav);
-      }
-    });
-  }
-
-  /* ── 9. SCROLL-PERCENTAGE in article header ── */
-  function initReadingPercentageInHeader() {
-    var bar = document.getElementById("reading-progress-bar");
-    if (!bar) return;
-
-    // Inject a visually hidden % counter into the article header meta list
-    var metaList = document.querySelector(".blog-meta-list");
-    if (!metaList) return;
-
-    var li = document.createElement("li");
-    li.id = "reading-pct-meta";
-    li.setAttribute("aria-label", "Reading progress");
-    li.innerHTML =
-      '<i class="fa-solid fa-gauge-simple-high text-primary"></i>' +
-      '<span id="reading-pct-value">0% read</span>';
-    metaList.appendChild(li);
-
-    function update() {
-      var scrollTop = window.scrollY || document.documentElement.scrollTop;
-      var docH =
-        document.documentElement.scrollHeight -
-        document.documentElement.clientHeight;
-      var pct = docH > 0 ? Math.round((scrollTop / docH) * 100) : 0;
-      var el = document.getElementById("reading-pct-value");
-      if (el) el.textContent = Math.min(100, pct) + "% read";
-    }
-
-    window.addEventListener("scroll", update, { passive: true });
-  }
-
-  /* ── Init ── */
+  /* ── BOOTSTRAP ── */
   function init() {
     initScrollReveal();
-    initReadingRing();
+    initReadingIsland();
+    initCodeTabs();
     initAccessibleChips();
     initThemeAnnouncer();
     initCopyToast();
     initKeyboardCopy();
     initScrollToTopFocus();
-    initLandmarkCheck();
-    initReadingPercentageInHeader();
   }
 
   if (document.readyState === "loading") {
