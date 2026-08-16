@@ -9,8 +9,39 @@
 <!-- Canonical URL (Fixes Semrush Duplicate/Indexation Errors) -->
 <link rel="canonical" href="{{ .Permalink }}" />
 
-<!-- Critical Self-Hosted Font Preload (Eliminates Chain Delay) -->
-<link rel="preload" href="/fonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin />
+<!-- LCP Hero Image Preload for Instant First Paint & 95+ Core Web Vitals -->
+{{ $lcpImage := false }}
+{{ if .IsHome }}
+  {{ $posts := sort (where site.RegularPages "Section" "blog") "Date" "desc" }}
+  {{ $featured := false }}
+  {{ range $posts }}
+    {{ if and (not $featured) .Params.featured }}
+      {{ $featured = . }}
+    {{ end }}
+  {{ end }}
+  {{ if not $featured }}
+    {{ if gt (len $posts) 0 }}
+      {{ $featured = index $posts 0 }}
+    {{ end }}
+  {{ end }}
+  {{ with $featured }}
+    {{ with .Params.image }}
+      {{ $lcpImage = . }}
+    {{ end }}
+  {{ end }}
+{{ else if .IsPage }}
+  {{ with .Params.image }}
+    {{ $lcpImage = . }}
+  {{ end }}
+{{ end }}
+
+{{ with $lcpImage }}
+  {{ $cleanImg := strings.TrimPrefix "/" . }}
+  {{ with resources.Get $cleanImg }}
+    {{ $lcpWebp := .Resize "545x webp" }}
+    <link rel="preload" as="image" type="image/webp" href="{{ $lcpWebp.RelPermalink }}" fetchpriority="high" />
+  {{ end }}
+{{ end }}
 
 <!-- theme meta -->
 <meta name="theme-name" content="gcloudcafe" />
