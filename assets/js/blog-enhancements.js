@@ -144,45 +144,39 @@
     toggle();
   }
 
-  /* ── Active Table of Contents Tracking ── */
+  /* ── Active Table of Contents Tracking (IntersectionObserver: Zero Forced Reflow) ── */
   function initActiveTocTracking() {
     var tocLinks = document.querySelectorAll(".toc-link");
     if (!tocLinks.length) return;
 
-    var headings = [];
+    var headingsMap = new Map();
     tocLinks.forEach(function (link) {
       var href = link.getAttribute("href");
       if (href && href.startsWith("#")) {
         var el = document.getElementById(href.substring(1));
-        if (el) headings.push({ el: el, link: link });
+        if (el) headingsMap.set(el, link);
       }
     });
 
-    if (!headings.length) return;
+    if (headingsMap.size === 0) return;
 
-    function onScroll() {
-      var scrollPos = (window.scrollY || document.documentElement.scrollTop) + 120;
-      var activeLink = null;
+    if ("IntersectionObserver" in window) {
+      var observer = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            var activeLink = headingsMap.get(entry.target);
+            if (activeLink) {
+              tocLinks.forEach(function (l) { l.classList.remove("is-active"); });
+              activeLink.classList.add("is-active");
+            }
+          }
+        });
+      }, { rootMargin: "0px 0px -70% 0px", threshold: 0 });
 
-      for (var i = 0; i < headings.length; i++) {
-        if (headings[i].el.offsetTop <= scrollPos) {
-          activeLink = headings[i].link;
-        } else {
-          break;
-        }
-      }
-
-      tocLinks.forEach(function (link) {
-        if (link === activeLink) {
-          link.classList.add("is-active");
-        } else {
-          link.classList.remove("is-active");
-        }
+      headingsMap.forEach(function (_, el) {
+        observer.observe(el);
       });
     }
-
-    window.addEventListener("scroll", onScroll, { passive: true });
-    onScroll();
   }
 
   /* ── Keyboard Search Shortcut (Ctrl+K / Cmd+K) ── */
