@@ -12,157 +12,177 @@
     {{ end }}
   {{ end }}
 
-  <!-- Top Adaptable Tab Switcher Bar (Mobile & Webview Navigation Friction Removal) -->
-  <div class="py-3 bg-body dark:bg-darkmode-body border-b border-border/40 dark:border-darkmode-border/40">
-    <div class="container relative scroll-indicator-wrapper">
-      <!-- Left indicator overlay -->
-      <div class="indicator-left" aria-hidden="true"></div>
-      
-      <div class="scroll-switcher-scroller flex items-center justify-between gap-3 overflow-x-auto no-scrollbar">
-        <div class="inline-flex items-center gap-1.5 p-1 rounded-2xl bg-theme-light dark:bg-darkmode-theme-light border border-border/60 dark:border-darkmode-border/60">
-          <a href="{{ site.Home.RelPermalink }}" class="px-4 sm:px-5 py-2 rounded-xl text-xs sm:text-sm font-bold bg-primary text-white shadow-xs no-underline flex items-center gap-2">
-            <i class="fa-solid fa-newspaper text-xs"></i> Articles
+  <!-- Top Navigation Ribbon / Fast Telemetry Bar -->
+  <section class="py-3.5 bg-body/60 dark:bg-[#070b14]/80 border-b border-border/60 dark:border-slate-800/80 backdrop-blur-md sticky top-[69px] z-30">
+    <div class="container">
+      <div class="flex items-center justify-between gap-4 overflow-x-auto no-scrollbar py-0.5">
+        
+        <!-- Quick Hub Switcher -->
+        <div class="flex items-center gap-1.5 p-1 rounded-2xl bg-slate-100 dark:bg-slate-900/90 border border-border/80 dark:border-slate-800 shrink-0">
+          <a href="{{ site.Home.RelPermalink }}" 
+             class="px-4 py-1.5 rounded-xl text-xs font-extrabold bg-primary text-white shadow-xs no-underline flex items-center gap-2">
+            <i class="fa-solid fa-layer-group text-xs"></i> Architecture Guides
           </a>
-          <a href="{{ `pulse/` | relLangURL }}" class="px-4 sm:px-5 py-2 rounded-xl text-xs sm:text-sm font-bold text-text/80 dark:text-darkmode-text/80 hover:text-primary transition-all no-underline flex items-center gap-2">
-            <i class="fa-solid fa-tower-broadcast text-emerald-500 animate-pulse"></i> Live Pulse
+          <a href="{{ `pulse/` | relLangURL }}" 
+             class="px-4 py-1.5 rounded-xl text-xs font-extrabold text-text/80 dark:text-slate-300 hover:text-primary hover:bg-slate-200/60 dark:hover:bg-slate-800 transition-all no-underline flex items-center gap-2">
+            <i class="fa-solid fa-tower-broadcast text-emerald-500 animate-pulse text-xs"></i> Live Pulse
           </a>
-          <a href="{{ `series/` | relLangURL }}" class="px-4 sm:px-5 py-2 rounded-xl text-xs sm:text-sm font-bold text-text/80 dark:text-darkmode-text/80 hover:text-primary transition-all no-underline flex items-center gap-2">
-            <i class="fa-solid fa-layer-group text-xs"></i> Series
+          <a href="{{ `series/` | relLangURL }}" 
+             class="px-4 py-1.5 rounded-xl text-xs font-extrabold text-text/80 dark:text-slate-300 hover:text-primary hover:bg-slate-200/60 dark:hover:bg-slate-800 transition-all no-underline flex items-center gap-2">
+            <i class="fa-solid fa-graduation-cap text-xs"></i> Learning Tracks
           </a>
         </div>
 
-        <a href="{{ `pulse/#cloud-pulse-section` | relLangURL }}" class="hidden sm:inline-flex items-center gap-1.5 text-xs font-bold text-primary hover:underline whitespace-nowrap">
-          <i class="fa-solid fa-arrow-down text-[10px]"></i> Jump to Live Micro-News
-        </a>
-      </div>
+        <!-- Live Metrics Telemetry Capsule -->
+        <div class="hidden lg:flex items-center gap-3 text-xs font-mono shrink-0">
+          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30 font-bold">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+            156+ Production Blueprints
+          </span>
+          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-sky-500/10 text-sky-700 dark:text-sky-300 border border-sky-500/30 font-bold">
+            <i class="fa-solid fa-bolt text-primary"></i> 100% Static Edge
+          </span>
+        </div>
 
-      <!-- Right indicator overlay -->
-      <div class="indicator-right" aria-hidden="true"></div>
+      </div>
     </div>
-  </div>
+  </section>
 
   <!-- Hero Section -->
   {{ partial "components/blog-hero" (dict
     "Featured" $featured
-    "Eyebrow" "Cloud Architecture & Certifications"
-    "Title" "Practical engineering guides, exam strategies & cloud insights"
+    "Posts" $posts
+    "Eyebrow" "Cloud Architecture & Security"
+    "Title" "Battle-tested engineering blueprints, zero-trust protocols & hands-on exam labs"
     "BrowseLink" (`blog/` | relLangURL)
-    "BrowseLabel" "Explore All Articles"
+    "BrowseLabel" "Explore All Blueprints"
     )
   }}
 
-  <!-- Main Content & Sidebar -->
-  <section class="section pt-8 pb-16" aria-labelledby="home-posts-heading">
-    <div class="container">
-      <div class="row gx-5 gy-5">
-        <!-- Main Feed -->
-        <div class="lg:col-8">
-          <!-- Feed Header & Filters -->
-          <div class="mb-8 flex flex-col gap-4 border-b border-border/60 dark:border-darkmode-border/60 pb-6 md:flex-row md:items-end md:justify-between">
-            <div>
-              <p class="blog-eyebrow">
-                <i class="fa-solid fa-layer-group text-primary"></i> Recent Articles
-              </p>
-              <h2 id="home-posts-heading" class="mb-2 text-2xl font-bold tracking-tight md:text-3xl">
-                Latest Field Notes & Exam Prep
-              </h2>
-              <p class="text-text/80 dark:text-darkmode-text/80 text-sm max-w-xl">
-                In-depth hands-on guides for Kubernetes, OpenShift, Cloud Platforms, and certification success.
-              </p>
-            </div>
+  <!-- Main Architecture Grid & Interactive Topics Feed -->
+  <section class="py-12 relative" aria-labelledby="home-posts-heading">
+    
+    <!-- Cyber Grid Ambient Background -->
+    <div class="absolute inset-0 pointer-events-none cyber-grid-ambient opacity-50 dark:opacity-30"></div>
 
-            <!-- Search Trigger & Shortcut -->
-            <button 
-              data-target="search-modal"
-              data-search-trigger
-              class="blog-focus-ring btn btn-outline-primary btn-sm inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs font-semibold cursor-pointer"
-              aria-label="Search articles">
-              <i class="fa-solid fa-magnifying-glass"></i> Search
-              <kbd class="ml-1 hidden sm:inline-block">Ctrl K</kbd>
-            </button>
+    <div class="container relative">
+      
+      <!-- Feed Header -->
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10 pb-6 border-b border-border/80 dark:border-slate-800">
+        <div>
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-extrabold uppercase tracking-widest bg-primary/10 text-primary border border-primary/20 mb-3">
+            <i class="fa-solid fa-cubes text-[11px]"></i> Engineering Index
           </div>
-
-          <!-- Category Chips -->
-          {{ $categories := site.Taxonomies.categories }}
-          {{ if gt (len $categories) 0 }}
-            <div class="mb-8 flex flex-wrap items-center gap-2">
-              <span class="text-xs font-bold uppercase tracking-wider text-text/85 dark:text-darkmode-text/85 mr-2">Topics:</span>
-              <a href="{{ `blog/` | relLangURL }}" class="blog-chip is-active">
-                All <span>{{ len $posts }}</span>
-              </a>
-              {{ range $name, $items := $categories }}
-                <a href="{{ $items.Page.RelPermalink }}" class="blog-chip">
-                  {{ $items.Page.Title }} <span>{{ len $items }}</span>
-                </a>
-              {{ end }}
-            </div>
-          {{ end }}
-
-          <!-- Articles Grid -->
-          <div class="row">
-            {{ $gridPosts := $posts }}
-            {{ with $featured }}
-              {{ $gridPosts = where $posts ".RelPermalink" "!=" .RelPermalink }}
-            {{ end }}
-
-            {{ if eq (len $gridPosts) 0 }}
-              <div class="col-12 text-center py-12">
-                <p class="text-text/70 dark:text-darkmode-text/70">No additional articles found.</p>
-              </div>
-            {{ else }}
-              {{ range first 6 $gridPosts }}
-                <div class="md:col-6 mb-8">
-                  {{ partial "components/blog-card" . }}
-                </div>
-              {{ end }}
-            {{ end }}
-          </div>
-
-          <!-- View All Button -->
-          {{ if gt (len $posts) 6 }}
-            <div class="mt-8 text-center">
-              <a class="blog-focus-ring btn btn-primary rounded-full px-8 py-3 text-sm font-semibold shadow-md transition-all hover:shadow-lg hover:scale-105" href="{{ `blog/` | relLangURL }}">
-                View All Articles <i class="fa-solid fa-arrow-right ml-2"></i>
-              </a>
-            </div>
-          {{ end }}
+          <h2 id="home-posts-heading" class="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-dark dark:text-white tracking-tight leading-tight mb-2">
+            Latest Field Manuals & Architecture
+          </h2>
+          <p class="text-sm sm:text-base text-text/80 dark:text-slate-300 max-w-2xl font-normal leading-relaxed m-0">
+            Comprehensive, zero-fluff technical deep-dives into Kubernetes internals, TLS cryptography, Linux systems, and cloud infrastructure.
+          </p>
         </div>
 
-        <!-- Sidebar Column -->
-        <div class="lg:col-4">
-          {{ partial "components/blog-sidebar" (dict "Posts" $posts "Featured" $featured) }}
-        </div>
+        <!-- Search Action Button -->
+        <button
+          type="button"
+          data-target="search-modal"
+          class="search-trigger flex items-center gap-2.5 px-4 py-2.5 rounded-2xl text-xs font-bold text-dark dark:text-white bg-slate-100 hover:bg-slate-200 dark:bg-slate-900/90 dark:hover:bg-slate-800 border border-border dark:border-slate-700 shadow-sm transition-all cursor-pointer shrink-0"
+          aria-label="Search all articles">
+          <i class="fa-solid fa-magnifying-glass text-primary"></i>
+          <span>Quick Find</span>
+          <kbd class="px-2 py-0.5 text-[10px] font-mono font-extrabold rounded bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-600 dark:text-slate-300 shadow-xs">Ctrl K</kbd>
+        </button>
       </div>
 
-      <!-- Real Site Telemetry & Database Metrics Grid -->
+      <!-- Interactive Topic Pills -->
+      {{ $categories := site.Taxonomies.categories }}
+      {{ if gt (len $categories) 0 }}
+        <div class="flex items-center gap-2 overflow-x-auto no-scrollbar pb-6 mb-8">
+          <span class="text-xs font-extrabold uppercase tracking-widest text-text/60 dark:text-slate-400 mr-2 shrink-0">Topics:</span>
+          <a href="{{ `blog/` | relLangURL }}" 
+             class="px-4 py-2 rounded-xl text-xs font-bold bg-primary text-white shadow-sm border border-primary no-underline shrink-0 flex items-center gap-2">
+            <span>All Manuals</span>
+            <span class="px-1.5 py-0.5 rounded-md bg-white/20 text-[10px] font-mono">{{ len $posts }}</span>
+          </a>
+          {{ range $name, $items := $categories }}
+            <a href="{{ $items.Page.RelPermalink }}" 
+               class="px-4 py-2 rounded-xl text-xs font-bold bg-body dark:bg-[#0c1220] hover:bg-primary/10 text-text/85 dark:text-slate-300 hover:text-primary border border-border/80 dark:border-slate-800 hover:border-primary/40 transition-all no-underline shrink-0 flex items-center gap-2">
+              <span>{{ $items.Page.Title }}</span>
+              <span class="px-1.5 py-0.5 rounded-md bg-slate-200/70 dark:bg-slate-800 text-[10px] font-mono text-text/70 dark:text-slate-400">{{ len $items }}</span>
+            </a>
+          {{ end }}
+        </div>
+      {{ end }}
+
+      <!-- Next-Gen 3-Column Card Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+        {{ $gridPosts := $posts }}
+        {{ with $featured }}
+          {{ $gridPosts = where $posts ".RelPermalink" "!=" .RelPermalink }}
+        {{ end }}
+
+        {{ if eq (len $gridPosts) 0 }}
+          <div class="col-span-full text-center py-16 bg-body dark:bg-slate-900/40 rounded-3xl border border-border/60">
+            <p class="text-text/70 dark:text-slate-400 font-semibold">No additional articles found.</p>
+          </div>
+        {{ else }}
+          {{ range first 9 $gridPosts }}
+            <div class="flex flex-col">
+              {{ partial "components/blog-card" . }}
+            </div>
+          {{ end }}
+        {{ end }}
+      </div>
+
+      <!-- View All Action Bar -->
+      {{ if gt (len $posts) 9 }}
+        <div class="mt-12 text-center">
+          <a class="inline-flex items-center gap-3 px-8 py-3.5 rounded-2xl text-sm font-extrabold bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/20 hover:scale-105 transition-all no-underline" 
+             href="{{ `blog/` | relLangURL }}">
+            <span>Browse All {{ len $posts }} Field Manuals</span>
+            <i class="fa-solid fa-arrow-right text-xs"></i>
+          </a>
+        </div>
+      {{ end }}
+
+      <!-- Real Telemetry Dashboard Bar -->
       {{ $allPosts := (where site.RegularPages "Section" "blog") }}
       {{ $totalWords := 0 }}
       {{ range $allPosts }}
         {{ $totalWords = add $totalWords .WordCount }}
       {{ end }}
-      <div class="mt-12 grid grid-cols-2 md:grid-cols-4 gap-4 text-left font-mono" data-telemetry-grid="true">
-        <div class="bg-body dark:bg-darkmode-theme-light border border-border/80 dark:border-darkmode-border/80 rounded-2xl p-4">
-          <div class="text-[11px] text-text/90 dark:text-darkmode-text/90 font-medium uppercase">Published Content</div>
-          <div class="text-lg font-bold text-cyan-700 dark:text-cyan-400">{{ len $allPosts }} GUIDES</div>
-          <div class="text-xs text-emerald-700 dark:text-emerald-400 font-semibold">● LIVE INDEX</div>
+      <div class="mt-16 p-6 sm:p-8 rounded-3xl bg-body dark:bg-[#0c1220] border border-border/80 dark:border-slate-800 shadow-xl">
+        <div class="flex items-center justify-between mb-6 pb-4 border-b border-border/60 dark:border-slate-800/80">
+          <div class="flex items-center gap-2.5">
+            <span class="w-3 h-3 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span class="text-xs font-mono font-extrabold uppercase tracking-wider text-dark dark:text-white">GCloud Cafe Platform Telemetry</span>
+          </div>
+          <span class="text-[11px] font-mono text-text/60 dark:text-slate-400">STATUS: ALL SYSTEMS NOMINAL</span>
         </div>
-        <div class="bg-body dark:bg-darkmode-theme-light border border-border/80 dark:border-darkmode-border/80 rounded-2xl p-4">
-          <div class="text-[11px] text-text/90 dark:text-darkmode-text/90 font-medium uppercase">Content Volume</div>
-          <div class="text-lg font-bold text-primary dark:text-darkmode-primary">{{ $totalWords }} WORDS</div>
-          <div class="text-xs text-emerald-700 dark:text-emerald-400 font-semibold">● FULL ACCESS</div>
-        </div>
-        <div class="bg-body dark:bg-darkmode-theme-light border border-border/80 dark:border-darkmode-border/80 rounded-2xl p-4">
-          <div class="text-[11px] text-text/90 dark:text-darkmode-text/90 font-medium uppercase">Reader Feedback</div>
-          <div class="text-lg font-bold text-emerald-700 dark:text-emerald-400" data-stat-feedback="true">40+ VOTES</div>
-          <div class="text-xs text-emerald-700 dark:text-emerald-400 font-semibold" data-stat-positive="true">● LIVE VOTES</div>
-        </div>
-        <div class="bg-body dark:bg-darkmode-theme-light border border-border/80 dark:border-darkmode-border/80 rounded-2xl p-4">
-          <div class="text-[11px] text-text/90 dark:text-darkmode-text/90 font-medium uppercase">Community Discussion</div>
-          <div class="text-lg font-bold text-cyan-700 dark:text-cyan-400" data-stat-comments="true">ACTIVE</div>
-          <div class="text-xs text-emerald-700 dark:text-emerald-400 font-semibold">● DATABASE SYNC</div>
+
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 font-mono">
+          <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-border/60 dark:border-slate-800">
+            <div class="text-[11px] font-bold text-text/70 dark:text-slate-400 uppercase mb-1">Architecture Blueprints</div>
+            <div class="text-xl sm:text-2xl font-black text-primary">{{ len $allPosts }}</div>
+            <div class="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold mt-1">● VERIFIED LABS</div>
+          </div>
+          <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-border/60 dark:border-slate-800">
+            <div class="text-[11px] font-bold text-text/70 dark:text-slate-400 uppercase mb-1">Technical Words</div>
+            <div class="text-xl sm:text-2xl font-black text-indigo-600 dark:text-indigo-400">{{ $totalWords }}</div>
+            <div class="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold mt-1">● OPEN ACCESS</div>
+          </div>
+          <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-border/60 dark:border-slate-800">
+            <div class="text-[11px] font-bold text-text/70 dark:text-slate-400 uppercase mb-1">Community Feedback</div>
+            <div class="text-xl sm:text-2xl font-black text-emerald-600 dark:text-emerald-400">100%</div>
+            <div class="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold mt-1">● REALTIME VOTES</div>
+          </div>
+          <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-border/60 dark:border-slate-800">
+            <div class="text-[11px] font-bold text-text/70 dark:text-slate-400 uppercase mb-1">AI Agent Readiness</div>
+            <div class="text-xl sm:text-2xl font-black text-amber-600 dark:text-amber-400">FULL</div>
+            <div class="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold mt-1">● /llms.txt ACTIVE</div>
+          </div>
         </div>
       </div>
+
     </div>
   </section>
-
 {{ end }}
