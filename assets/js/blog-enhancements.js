@@ -7,9 +7,18 @@
     var header = document.querySelector(".header");
     if (!header) return;
 
+    function updateHeaderHeight() {
+      if (header) {
+        var h = header.offsetHeight || 76;
+        document.documentElement.style.setProperty("--header-height", h + "px");
+      }
+    }
+    updateHeaderHeight();
+    window.addEventListener("resize", updateHeaderHeight, { passive: true });
+
     var lastScrollY = window.scrollY || window.pageYOffset;
     var ticking = false;
-    var SCROLL_THRESHOLD = 80;
+    var SCROLL_THRESHOLD = 20;
 
     function onScroll() {
       var navToggle = document.getElementById("nav-toggle");
@@ -21,11 +30,14 @@
           if (currentScrollY > SCROLL_THRESHOLD) {
             if (currentScrollY > lastScrollY) {
               header.classList.add("header--hidden");
+              document.body.classList.add("header-hidden");
             } else {
               header.classList.remove("header--hidden");
+              document.body.classList.remove("header-hidden");
             }
           } else {
             header.classList.remove("header--hidden");
+            document.body.classList.remove("header-hidden");
           }
           lastScrollY = currentScrollY;
           ticking = false;

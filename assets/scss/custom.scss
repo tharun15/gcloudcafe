@@ -819,3 +819,15 @@ kbd {
   font-size: 0.9375rem !important; /* 15px */
   line-height: 1.65 !important;
 }
+
+/* ── Dynamic Sticky Hub Ribbon Transition ── */
+.hub-nav-ribbon {
+  position: sticky !important;
+  top: var(--header-height, 76px) !important;
+  z-index: 30 !important;
+  transition: top 0.35s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+body.header-hidden .hub-nav-ribbon {
+  top: 0px !important;
+}
