@@ -80,24 +80,24 @@ In modern cloud-native environments, application-level bearer tokens introduce o
 <div class="flex items-center gap-2 font-bold text-slate-900 dark:text-white text-base">
 <span>🏦</span> The High-Security Airport Vault Analogy
 </div>
-<div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs sm:text-sm">
-<div class="p-4 rounded-xl bg-blue-50 dark:bg-blue-950/50 border border-blue-200 dark:border-blue-800/60 space-y-2">
-<strong class="text-blue-900 dark:text-blue-200 block text-sm">One-Way TLS (Standard Storefront)</strong>
-<p class="text-slate-700 dark:text-slate-300 m-0">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+<div class="p-4 sm:p-5 rounded-xl bg-blue-50 dark:bg-blue-950/50 border border-blue-200 dark:border-blue-800/60 space-y-2">
+<strong class="text-blue-900 dark:text-blue-200 block text-sm font-bold">One-Way TLS (Standard Storefront)</strong>
+<p class="text-slate-700 dark:text-slate-300 m-0 text-xs sm:text-sm leading-relaxed">
 A customer walks into a jewelry store. The customer inspects the business license on the wall to verify it is an authentic licensed store. The store clerk lets the customer enter, but has no idea who the customer is until they present an ID card at checkout.
 </p>
 </div>
-<div class="p-4 rounded-xl bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-200 dark:border-emerald-800/60 space-y-2">
-<strong class="text-emerald-900 dark:text-emerald-200 block text-sm">Mutual TLS (Bank Bullion Vault)</strong>
-<p class="text-slate-700 dark:text-slate-300 m-0">
+<div class="p-4 sm:p-5 rounded-xl bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-200 dark:border-emerald-800/60 space-y-2">
+<strong class="text-emerald-900 dark:text-emerald-200 block text-sm font-bold">Mutual TLS (Bank Bullion Vault)</strong>
+<p class="text-slate-700 dark:text-slate-300 m-0 text-xs sm:text-sm leading-relaxed">
 An armored courier arrives at the federal gold vault. Before the blast doors unlock, <strong>both parties inspect each other</strong>: The courier verifies the vault guard's cryptographic badge, and the vault guard cryptographically verifies the courier's badge against the central authority. If either badge fails verification, the connection is closed immediately.
 </p>
 </div>
 </div>
 </div>
 
-<div class="p-4 rounded-xl bg-amber-50/70 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/60 my-6">
-<p class="text-xs text-amber-900 dark:text-amber-200 m-0 font-medium">
+<div class="p-4 sm:p-5 rounded-xl bg-amber-50/70 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/60 my-6">
+<p class="text-xs sm:text-sm text-amber-900 dark:text-amber-200 m-0 font-medium leading-relaxed">
 💡 <strong>In Plain English:</strong> One-way TLS proves <em>"I am talking to the genuine server."</em> Mutual TLS (mTLS) proves <em>"I am talking to the genuine server, AND the server verifies I am an authenticated client before transmitting application payload bytes."</em>
 </p>
 </div>
@@ -342,19 +342,19 @@ spec:
 
 ## 6. ⚠️ 3 Critical Production Gotchas in mTLS & PKI
 
-<div class="p-6 rounded-2xl bg-amber-50/70 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/60 my-8 space-y-4">
+<div class="p-5 sm:p-6 rounded-2xl bg-amber-50/70 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/60 my-8 space-y-4 shadow-xs">
 <div class="flex items-center gap-2 font-bold text-amber-900 dark:text-amber-200 text-base">
 <span>⚠️</span> Real-World Traps That Cause Production Incidents
 </div>
 
-<div class="space-y-3 text-xs sm:text-sm text-slate-800 dark:text-slate-200">
-<p>
+<div class="space-y-4 text-xs sm:text-sm text-slate-800 dark:text-slate-200 leading-relaxed">
+<p class="m-0 text-xs sm:text-sm leading-relaxed">
 <strong>1. JVM In-Memory SSLContext Caching:</strong> Many enterprise Java runtimes initialize and cache SSL contexts in memory upon startup. Even if you update <code>cacerts</code> or <code>/etc/ssl/certs</code> on disk, running JVM processes may not detect new certificates until the process is restarted or the SSLContext is reloaded programmatically.
 </p>
-<p>
+<p class="m-0 text-xs sm:text-sm leading-relaxed">
 <strong>2. Missing <code>extendedKeyUsage = clientAuth</code>:</strong> Client certificates used for mTLS should contain the <code>clientAuth</code> (OID <code>1.3.6.1.5.5.7.3.2</code>) extended key usage attribute. Implementations that enforce Extended Key Usage may reject a certificate containing only <code>serverAuth</code> when it is presented for client authentication (e.g. throwing <code>certificate verify failed: unsupported certificate purpose</code>).
 </p>
-<p>
+<p class="m-0 text-xs sm:text-sm leading-relaxed">
 <strong>3. Incomplete Intermediate Certificate Bundling:</strong> If your server sends only its leaf certificate without the intermediate CA certificate, clients without cached intermediate certificates will fail path validation even if they possess the valid Root CA. Always configure the full chain (<code>fullchain.pem</code> / <code>tls.crt</code>).
 </p>
 </div>
