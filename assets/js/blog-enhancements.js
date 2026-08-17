@@ -1456,34 +1456,53 @@ function renderPulses(pulses) {
         .replace(/\s+/g, " ")
         .trim();
 
-      if (!clean) return (title || "Cloud Release Update").trim();
+      var cleanTitle = (title || "Cloud Platform Update").trim();
+      if (!clean) {
+        return "🎯 What Changed: " + cleanTitle + ".\n\n💡 Why It Matters: Enables cloud and DevOps teams to optimize workloads and modernize cloud infrastructure.";
+      }
 
-      // Split into complete sentences
+      // Split into complete sentences, filtering out generic RSS filler
       var sentenceMatches = clean.match(/[^.!?]+[.!?]+/g) || [];
-      var completeSentences = sentenceMatches
+      var sentences = sentenceMatches
         .map(function(s) { return s.trim(); })
-        .filter(function(s) { return s.length > 20; });
+        .filter(function(s) {
+          return s.length > 20 && !/want to know|check back|find it here|read more|latest from/i.test(s);
+        });
 
-      var combined = "";
-      if (completeSentences.length > 0) {
-        combined = completeSentences[0];
-        if (combined.length < 120 && completeSentences.length > 1) {
-          combined += " " + completeSentences[1];
+      var whatChanged = "";
+      var impact = "";
+
+      if (sentences.length > 0) {
+        whatChanged = sentences[0];
+        if (whatChanged.length < 100 && sentences.length > 2) {
+          whatChanged += " " + sentences[1];
+          impact = sentences[2];
+        } else if (sentences.length > 1) {
+          impact = sentences[1];
         }
       } else {
-        combined = clean;
+        whatChanged = clean;
       }
 
-      // Strip any dangling prepositions/conjunctions at the end
-      combined = combined
+      whatChanged = whatChanged
         .replace(/\s+(?:that|which|who|a|an|the|and|or|but|with|to|for|in|on|at|by|from|as|into|require|requires|requiring|is|are|was|were)\s*$/i, "")
         .trim();
-
-      if (!/[.!?]$/.test(combined)) {
-        combined += ".";
+      if (!/[.!?]$/.test(whatChanged)) {
+        whatChanged += ".";
       }
 
-      return combined || title;
+      if (!impact) {
+        impact = "Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.";
+      } else {
+        impact = impact
+          .replace(/\s+(?:that|which|who|a|an|the|and|or|but|with|to|for|in|on|at|by|from|as|into|require|requires|requiring|is|are|was|were)\s*$/i, "")
+          .trim();
+        if (!/[.!?]$/.test(impact)) {
+          impact += ".";
+        }
+      }
+
+      return "🎯 What Changed: " + whatChanged + "\n\n💡 Why It Matters: " + impact;
     }
 
     async function fetchGeminiApiKeyFromSupabase(forceRefresh) {
@@ -1542,21 +1561,15 @@ function renderPulses(pulses) {
       }
 
       var prompt = "You are the lead cloud architect and news editor for GCloud Cafe (https://gcloudcafe.com).\n"
-        + "Write a concise, punchy LinkedIn and Cloud Pulse insight analyzing this official cloud announcement.\n\n"
-        + "STRICT LENGTH REQUIREMENT:\n"
-        + "- Target 180 to 220 words total (Maximum 250 words).\n"
-        + "- Do NOT exceed 250 words under any circumstances.\n\n"
-        + "STRUCTURE (3 clean sections with spacing):\n"
-        + "1. Executive Hook (1 paragraph, ~50 words): What launched/changed and why it is significant for cloud engineering teams.\n"
-        + "2. Technical Impact (1 paragraph, ~70 words): Underlying infrastructure mechanics and architectural benefits.\n"
-        + "3. Strategic Takeaways (3 concise emoji bullet points, ~60 words):\n"
-        + "   👉 Core Shift: ...\n"
-        + "   💡 Impact: ...\n"
-        + "   🚀 Action: ...\n\n"
+        + "Transform this official cloud announcement into a structured, high-impact Cloud Pulse insight following this EXACT 2-part format.\n\n"
+        + "STRICT FORMAT:\n"
+        + "🎯 What Changed: [1-2 crisp sentences explaining what was launched, updated, or deprecated]\n\n"
+        + "💡 Why It Matters: [1-2 crisp sentences explaining the technical impact, architectural benefit, or action required for Cloud/DevOps engineers]\n\n"
         + "RULES:\n"
-        + "1. Do NOT use meta-section headers like '**Executive Summary**' or '**Deep Architectural Breakdown**'. Write seamless, engaging paragraphs.\n"
-        + "2. Maintain an authoritative, professional, active voice.\n"
-        + "3. Return ONLY clean plain text with paragraph line breaks.\n\n"
+        + "1. Always output BOTH '🎯 What Changed:' and '💡 Why It Matters:' sections.\n"
+        + "2. Total length between 50 and 90 words.\n"
+        + "3. Focus on concrete technical engineering takeaways (APIs, performance, security, architecture, cost, operations).\n"
+        + "4. Do NOT wrap in markdown code blocks. Output plain text with a blank line between the two points.\n\n"
         + "Article Title: " + title + "\n"
         + "Article Context: " + content;
 
@@ -1578,7 +1591,7 @@ function renderPulses(pulses) {
               contents: [{ parts: [{ text: prompt }] }],
               generationConfig: {
                 temperature: 0.2,
-                maxOutputTokens: 400
+                maxOutputTokens: 1024
               }
             })
           });
