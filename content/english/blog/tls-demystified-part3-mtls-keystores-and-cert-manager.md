@@ -342,19 +342,19 @@ spec:
 
 ## 6. ⚠️ 3 Critical Production Gotchas in mTLS & PKI
 
-<div class="p-6 rounded-2xl bg-amber-50/70 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/60 my-8 space-y-4">
+<div class="p-5 sm:p-6 rounded-2xl bg-amber-50/70 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/60 my-8 space-y-4 shadow-xs">
 <div class="flex items-center gap-2 font-bold text-amber-900 dark:text-amber-200 text-base">
 <span>⚠️</span> Real-World Traps That Cause Production Incidents
 </div>
 
-<div class="space-y-3 text-xs sm:text-sm text-slate-800 dark:text-slate-200">
-<p>
+<div class="space-y-4 text-xs sm:text-sm text-slate-800 dark:text-slate-200 leading-relaxed">
+<p class="m-0 text-xs sm:text-sm leading-relaxed">
 <strong>1. JVM In-Memory SSLContext Caching:</strong> Many enterprise Java runtimes initialize and cache SSL contexts in memory upon startup. Even if you update <code>cacerts</code> or <code>/etc/ssl/certs</code> on disk, running JVM processes may not detect new certificates until the process is restarted or the SSLContext is reloaded programmatically.
 </p>
-<p>
+<p class="m-0 text-xs sm:text-sm leading-relaxed">
 <strong>2. Missing <code>extendedKeyUsage = clientAuth</code>:</strong> Client certificates used for mTLS should contain the <code>clientAuth</code> (OID <code>1.3.6.1.5.5.7.3.2</code>) extended key usage attribute. Implementations that enforce Extended Key Usage may reject a certificate containing only <code>serverAuth</code> when it is presented for client authentication (e.g. throwing <code>certificate verify failed: unsupported certificate purpose</code>).
 </p>
-<p>
+<p class="m-0 text-xs sm:text-sm leading-relaxed">
 <strong>3. Incomplete Intermediate Certificate Bundling:</strong> If your server sends only its leaf certificate without the intermediate CA certificate, clients without cached intermediate certificates will fail path validation even if they possess the valid Root CA. Always configure the full chain (<code>fullchain.pem</code> / <code>tls.crt</code>).
 </p>
 </div>
