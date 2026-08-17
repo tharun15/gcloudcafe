@@ -923,17 +923,28 @@
       renderPulses(filtered);
     }
 
+            function updatePulseChipUI(chip, isActive) {
+      var activeClasses = ["is-active", "bg-primary", "text-white", "border-transparent", "shadow-xs"];
+      var inactiveClasses = ["bg-theme-light", "dark:bg-darkmode-theme-light", "text-text/80", "dark:text-darkmode-text/80", "border-border/60", "dark:border-darkmode-border/60"];
+      
+      if (isActive) {
+        inactiveClasses.forEach(function(cls) { chip.classList.remove(cls); });
+        activeClasses.forEach(function(cls) { chip.classList.add(cls); });
+      } else {
+        activeClasses.forEach(function(cls) { chip.classList.remove(cls); });
+        inactiveClasses.forEach(function(cls) { chip.classList.add(cls); });
+      }
+    }
+
     function setupFilterChips() {
       var chips = document.querySelectorAll("[data-pulse-filter]");
       chips.forEach(function(chip) {
         chip.addEventListener("click", function(e) {
           e.preventDefault();
           chips.forEach(function(c) {
-            c.classList.remove("is-active", "bg-primary", "text-white");
-            c.classList.add("bg-theme-light", "dark:bg-darkmode-theme-light", "text-text/80", "dark:text-darkmode-text/80");
+            updatePulseChipUI(c, false);
           });
-          chip.classList.add("is-active", "bg-primary", "text-white");
-          chip.classList.remove("bg-theme-light", "dark:bg-darkmode-theme-light", "text-text/80", "dark:text-darkmode-text/80");
+          updatePulseChipUI(chip, true);
           activeFilter = chip.getAttribute("data-pulse-filter") || "all";
           filterAndRenderPulses();
         });
