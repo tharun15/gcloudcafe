@@ -1,5 +1,5 @@
 {{ $tickerPosts := first 8 (where site.RegularPages "Section" "blog").ByDate.Reverse }}
-<div class="ticker-marquee-wrapper" aria-label="Live Tech Content Marquee">
+<div class="ticker-marquee-wrapper overflow-hidden max-w-full w-full relative" aria-label="Live Tech Content Marquee">
   <div class="ticker-marquee-content">
     {{/* First loop of dynamic post tickers */}}
     <a href="/about/" class="ticker-item">

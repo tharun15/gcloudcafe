@@ -107,9 +107,9 @@
       </header>
 
       <!-- Article Grid: Main Content + Sticky Table of Contents -->
-      <div class="row gx-5">
+      <div class="row gx-0 lg:gx-5 min-w-0 max-w-full">
         <!-- Main Article Content -->
-        <article class="single-post lg:col-8">
+        <article class="single-post lg:col-8 min-w-0 max-w-full overflow-hidden">
           <!-- Inline Table of Contents for Mobile -->
           <div class="block lg:hidden mb-8">
             {{ partial "toc.html" (dict "Class" "blog" "Collapsed" false "TableOfContents" .TableOfContents ) }}

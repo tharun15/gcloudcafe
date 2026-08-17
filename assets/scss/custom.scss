@@ -433,6 +433,9 @@ kbd {
 
 .ticker-marquee-wrapper {
   @apply bg-slate-900 text-slate-200 border-y border-slate-800/80 overflow-hidden relative py-2.5 text-xs font-mono select-none z-30;
+  max-width: 100vw;
+  width: 100%;
+  contain: paint;
 }
 
 .ticker-marquee-content {
@@ -830,4 +833,84 @@ kbd {
 
 body.header-hidden .hub-nav-ribbon {
   top: 0px !important;
+}
+
+
+/* ==========================================================================
+   MOBILE VIEWPORT CONTAINMENT & ZERO-OVERFLOW ENGINE
+   ========================================================================== */
+
+html,
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
+  position: relative;
+  width: 100%;
+}
+
+.container {
+  width: 100%;
+  max-width: 100%;
+}
+
+.row {
+  min-width: 0;
+  max-width: 100%;
+}
+
+/* Single Post & Article Content Isolation */
+.single-post,
+.content,
+.blog-article-content,
+article {
+  min-width: 0 !important;
+  max-width: 100% !important;
+  overflow-wrap: break-word !important;
+  word-break: break-word !important;
+}
+
+/* Code & Highlight Preformatted Blocks */
+.highlight,
+.code-block-wrapper,
+pre,
+.content pre,
+.blog-article-content pre {
+  max-width: 100% !important;
+  min-width: 0 !important;
+  overflow-x: auto !important;
+  -webkit-overflow-scrolling: touch !important;
+}
+
+/* Markdown Tables Responsive Scroll */
+.content table,
+.blog-article-content table,
+table {
+  display: block !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  overflow-x: auto !important;
+  -webkit-overflow-scrolling: touch !important;
+  border-collapse: collapse;
+}
+
+/* Ticker Marquee Mobile Containment */
+.ticker-marquee-wrapper {
+  max-width: 100vw !important;
+  width: 100% !important;
+  overflow: hidden !important;
+}
+
+/* Images & Embedded Media Containment */
+.single-post img,
+.blog-article-content img,
+.post-content img {
+  max-width: 100% !important;
+  height: auto !important;
+}
+
+/* Callout Cards & Grids on Mobile */
+@media (max-width: 768px) {
+  .blog-article-content .grid {
+    grid-template-columns: 1fr !important;
+  }
 }
