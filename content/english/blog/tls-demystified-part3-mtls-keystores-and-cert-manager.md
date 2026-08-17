@@ -80,24 +80,24 @@ In modern cloud-native environments, application-level bearer tokens introduce o
 <div class="flex items-center gap-2 font-bold text-slate-900 dark:text-white text-base">
 <span>🏦</span> The High-Security Airport Vault Analogy
 </div>
-<div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs sm:text-sm">
-<div class="p-4 rounded-xl bg-blue-50 dark:bg-blue-950/50 border border-blue-200 dark:border-blue-800/60 space-y-2">
-<strong class="text-blue-900 dark:text-blue-200 block text-sm">One-Way TLS (Standard Storefront)</strong>
-<p class="text-slate-700 dark:text-slate-300 m-0">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+<div class="p-4 sm:p-5 rounded-xl bg-blue-50 dark:bg-blue-950/50 border border-blue-200 dark:border-blue-800/60 space-y-2">
+<strong class="text-blue-900 dark:text-blue-200 block text-sm font-bold">One-Way TLS (Standard Storefront)</strong>
+<p class="text-slate-700 dark:text-slate-300 m-0 text-xs sm:text-sm leading-relaxed">
 A customer walks into a jewelry store. The customer inspects the business license on the wall to verify it is an authentic licensed store. The store clerk lets the customer enter, but has no idea who the customer is until they present an ID card at checkout.
 </p>
 </div>
-<div class="p-4 rounded-xl bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-200 dark:border-emerald-800/60 space-y-2">
-<strong class="text-emerald-900 dark:text-emerald-200 block text-sm">Mutual TLS (Bank Bullion Vault)</strong>
-<p class="text-slate-700 dark:text-slate-300 m-0">
+<div class="p-4 sm:p-5 rounded-xl bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-200 dark:border-emerald-800/60 space-y-2">
+<strong class="text-emerald-900 dark:text-emerald-200 block text-sm font-bold">Mutual TLS (Bank Bullion Vault)</strong>
+<p class="text-slate-700 dark:text-slate-300 m-0 text-xs sm:text-sm leading-relaxed">
 An armored courier arrives at the federal gold vault. Before the blast doors unlock, <strong>both parties inspect each other</strong>: The courier verifies the vault guard's cryptographic badge, and the vault guard cryptographically verifies the courier's badge against the central authority. If either badge fails verification, the connection is closed immediately.
 </p>
 </div>
 </div>
 </div>
 
-<div class="p-4 rounded-xl bg-amber-50/70 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/60 my-6">
-<p class="text-xs text-amber-900 dark:text-amber-200 m-0 font-medium">
+<div class="p-4 sm:p-5 rounded-xl bg-amber-50/70 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/60 my-6">
+<p class="text-xs sm:text-sm text-amber-900 dark:text-amber-200 m-0 font-medium leading-relaxed">
 💡 <strong>In Plain English:</strong> One-way TLS proves <em>"I am talking to the genuine server."</em> Mutual TLS (mTLS) proves <em>"I am talking to the genuine server, AND the server verifies I am an authenticated client before transmitting application payload bytes."</em>
 </p>
 </div>
