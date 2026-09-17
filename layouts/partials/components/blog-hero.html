@@ -9,7 +9,7 @@
   {{ end }}
   {{ $teaser := $page.Params.description | default $page.Summary | plainify | truncate 180 }}
 
-  <section class="pt-4 pb-2 sm:pt-6 sm:pb-3" aria-labelledby="featured-post-title">
+  <section class="pt-5 pb-5 sm:pt-7 sm:pb-7" aria-labelledby="featured-post-title">
     <div class="container max-w-6xl">
       <div class="rounded-3xl p-5 sm:p-6 lg:p-7 bg-body dark:bg-[#0c1220] border border-border/80 dark:border-slate-800 shadow-md hover:shadow-lg transition-all duration-300">
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-center">
