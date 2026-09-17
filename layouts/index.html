@@ -28,24 +28,48 @@
     <div class="container max-w-6xl relative">
       <h2 id="home-posts-heading" class="sr-only">Field Manuals & Architecture Blueprints</h2>
 
-      <!-- Centered Interactive Topic Filter Pills (Taking ~3/4 of the row space) -->
+      <!-- Interactive Topic Filter Pills Bar with Full Visibility & Desktop Chevrons -->
       {{ $categories := site.Taxonomies.categories }}
       {{ if gt (len $categories) 0 }}
-        <div class="w-full max-w-4xl mx-auto mb-8 sm:mb-10">
-          <div class="flex items-center gap-2 overflow-x-auto no-scrollbar py-1 px-2 w-full justify-start sm:justify-center">
-            <span class="text-xs font-bold uppercase tracking-wider text-text/60 dark:text-slate-400 mr-1 shrink-0 font-mono">Topics:</span>
-            <a href="{{ `blog/` | relLangURL }}" 
-               class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-primary text-white shadow-xs border border-primary no-underline shrink-0 flex items-center gap-1.5 hover:bg-primary/90 transition-all">
-              <span>All Manuals</span>
-              <span class="px-1.5 py-0.2 rounded-md bg-white/20 text-[10px] font-mono">{{ len $posts }}</span>
-            </a>
-            {{ range $name, $items := $categories }}
-              <a href="{{ $items.Page.RelPermalink }}" 
-                 class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-body dark:bg-[#0c1220] hover:bg-primary/10 text-text/85 dark:text-slate-300 hover:text-primary border border-border/80 dark:border-slate-800 hover:border-primary/40 transition-all no-underline shrink-0 flex items-center gap-1.5">
-                <span>{{ $items.Page.Title }}</span>
-                <span class="px-1.5 py-0.2 rounded-md bg-slate-200/70 dark:bg-slate-800 text-[10px] font-mono text-text/70 dark:text-slate-400">{{ len $items }}</span>
+        <div class="relative w-full mb-8 sm:mb-10">
+          <div class="flex items-center gap-2">
+            <!-- Topics Label -->
+            <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800/80 text-text/70 dark:text-slate-300 text-xs font-bold uppercase tracking-wider font-mono shrink-0 border border-border/60 dark:border-slate-700/60">
+              <i class="fa-solid fa-sliders text-primary text-[11px]"></i>
+              <span>Topics</span>
+            </div>
+
+            <!-- Scroll Left Arrow (Desktop) -->
+            <button type="button" 
+                    aria-label="Scroll topics left"
+                    onclick="document.getElementById('topics-scroller')?.scrollBy({left: -200, behavior: 'smooth'})"
+                    class="hidden sm:flex w-7 h-7 rounded-lg items-center justify-center bg-body dark:bg-slate-800 border border-border/80 dark:border-slate-700 text-text/60 dark:text-slate-400 hover:text-primary hover:border-primary/40 transition-all shrink-0 shadow-xs cursor-pointer">
+              <i class="fa-solid fa-chevron-left text-[10px]"></i>
+            </button>
+
+            <!-- Scrollable Pills Track (Always starts at 0, no clipped items) -->
+            <div id="topics-scroller" class="flex items-center gap-2 overflow-x-auto no-scrollbar scroll-smooth py-1 px-0.5 w-full">
+              <a href="{{ `blog/` | relLangURL }}" 
+                 class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-primary text-white shadow-xs border border-primary no-underline shrink-0 flex items-center gap-1.5 hover:bg-primary/90 transition-all">
+                <span>All Manuals</span>
+                <span class="px-1.5 py-0.2 rounded-md bg-white/20 text-[10px] font-mono">{{ len $posts }}</span>
               </a>
-            {{ end }}
+              {{ range $name, $items := $categories }}
+                <a href="{{ $items.Page.RelPermalink }}" 
+                   class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-body dark:bg-[#0c1220] hover:bg-primary/10 text-text/85 dark:text-slate-300 hover:text-primary border border-border/80 dark:border-slate-800 hover:border-primary/40 transition-all no-underline shrink-0 flex items-center gap-1.5">
+                  <span>{{ $items.Page.Title }}</span>
+                  <span class="px-1.5 py-0.2 rounded-md bg-slate-200/70 dark:bg-slate-800 text-[10px] font-mono text-text/70 dark:text-slate-400">{{ len $items }}</span>
+                </a>
+              {{ end }}
+            </div>
+
+            <!-- Scroll Right Arrow (Desktop) -->
+            <button type="button" 
+                    aria-label="Scroll topics right"
+                    onclick="document.getElementById('topics-scroller')?.scrollBy({left: 200, behavior: 'smooth'})"
+                    class="hidden sm:flex w-7 h-7 rounded-lg items-center justify-center bg-body dark:bg-slate-800 border border-border/80 dark:border-slate-700 text-text/60 dark:text-slate-400 hover:text-primary hover:border-primary/40 transition-all shrink-0 shadow-xs cursor-pointer">
+              <i class="fa-solid fa-chevron-right text-[10px]"></i>
+            </button>
           </div>
         </div>
       {{ end }}
