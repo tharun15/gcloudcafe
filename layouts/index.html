@@ -12,33 +12,6 @@
     {{ end }}
   {{ end }}
 
-  <!-- Top Navigation Ribbon / Fast Telemetry Bar -->
-  <section class="hub-nav-ribbon sticky top-[68px] z-30 py-3.5 bg-body/80 dark:bg-[#070b14]/90 border-b border-border/60 dark:border-slate-800/80 backdrop-blur-md transition-all duration-300">
-    <div class="container">
-      <div class="flex items-center justify-between gap-4 overflow-x-auto no-scrollbar py-0.5">
-        
-        <!-- Quick Hub Switcher -->
-        <div class="flex items-center gap-1.5 p-1 rounded-2xl bg-slate-100 dark:bg-slate-900/90 border border-border/80 dark:border-slate-800 shrink-0">
-          <a href="{{ site.Home.RelPermalink }}" 
-             class="px-4 py-1.5 rounded-xl text-xs font-extrabold bg-primary text-white shadow-xs no-underline flex items-center gap-2">
-            <i class="fa-solid fa-layer-group text-xs"></i> Architecture Guides
-          </a>
-          <a href="{{ `pulse/` | relLangURL }}" 
-             class="px-4 py-1.5 rounded-xl text-xs font-extrabold text-text/80 dark:text-slate-300 hover:text-primary hover:bg-slate-200/60 dark:hover:bg-slate-800 transition-all no-underline flex items-center gap-2">
-            <i class="fa-solid fa-tower-broadcast text-emerald-500 animate-pulse text-xs"></i> Live Pulse
-          </a>
-          <a href="{{ `series/` | relLangURL }}" 
-             class="px-4 py-1.5 rounded-xl text-xs font-extrabold text-text/80 dark:text-slate-300 hover:text-primary hover:bg-slate-200/60 dark:hover:bg-slate-800 transition-all no-underline flex items-center gap-2">
-            <i class="fa-solid fa-graduation-cap text-xs"></i> Learning Tracks
-          </a>
-        </div>
-
-
-
-      </div>
-    </div>
-  </section>
-
   <!-- Hero Section -->
   {{ partial "components/blog-hero" (dict
     "Featured" $featured
@@ -51,44 +24,36 @@
   }}
 
   <!-- Main Architecture Grid & Interactive Topics Feed -->
-  <section class="py-12 relative" aria-labelledby="home-posts-heading">
-    
-    <!-- Cyber Grid Ambient Background -->
-    <div class="absolute inset-0 pointer-events-none cyber-grid-ambient opacity-50 dark:opacity-30"></div>
-
-    <div class="container relative">
+  <section class="py-10 relative" aria-labelledby="home-posts-heading">
+    <div class="container max-w-6xl relative">
       
       <!-- Feed Header -->
-      <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10 pb-6 border-b border-border/80 dark:border-slate-800">
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8 pb-6 border-b border-border/80 dark:border-slate-800">
         <div>
           <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-extrabold uppercase tracking-widest bg-primary/10 text-primary border border-primary/20 mb-3">
-            <i class="fa-solid fa-cubes text-[11px]"></i> Engineering Index
+            <i class="fa-solid fa-layer-group text-[11px]"></i> Engineering Index
           </div>
           <h2 id="home-posts-heading" class="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-dark dark:text-white tracking-tight leading-tight mb-2">
-            Latest Field Manuals & Architecture
+            Field Manuals & Architecture Blueprints
           </h2>
           <p class="text-sm sm:text-base text-text/80 dark:text-slate-300 max-w-2xl font-normal leading-relaxed m-0">
             Comprehensive, zero-fluff technical deep-dives into Kubernetes internals, TLS cryptography, Linux systems, and cloud infrastructure.
           </p>
         </div>
 
-        <!-- Search Action Button -->
-        <button
-          type="button"
-          data-target="search-modal"
-          class="search-trigger flex items-center gap-2.5 px-4 py-2.5 rounded-2xl text-xs font-bold text-dark dark:text-white bg-slate-100 hover:bg-slate-200 dark:bg-slate-900/90 dark:hover:bg-slate-800 border border-border dark:border-slate-700 shadow-sm transition-all cursor-pointer shrink-0"
-          aria-label="Search all articles">
-          <i class="fa-solid fa-magnifying-glass text-primary"></i>
-          <span>Quick Find</span>
-          <kbd class="px-2 py-0.5 text-[10px] font-mono font-extrabold rounded bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-600 dark:text-slate-300 shadow-xs">Ctrl K</kbd>
-        </button>
+        <!-- Live Pulse Quick Shortcut -->
+        <a href="{{ `pulse/` | relLangURL }}" 
+           class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-extrabold bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30 hover:bg-emerald-500/20 transition-all no-underline shrink-0">
+          <i class="fa-solid fa-tower-broadcast text-emerald-500 animate-pulse text-xs"></i>
+          <span>Live Pulse</span>
+        </a>
       </div>
 
       <!-- Interactive Topic Pills -->
       {{ $categories := site.Taxonomies.categories }}
       {{ if gt (len $categories) 0 }}
         <div class="flex items-center gap-2 overflow-x-auto no-scrollbar pb-6 mb-8">
-          <span class="text-xs font-extrabold uppercase tracking-widest text-text/60 dark:text-slate-400 mr-2 shrink-0">Topics:</span>
+          <span class="text-xs font-extrabold uppercase tracking-widest text-text/60 dark:text-slate-400 mr-2 shrink-0 font-mono">Topics:</span>
           <a href="{{ `blog/` | relLangURL }}" 
              class="px-4 py-2 rounded-xl text-xs font-bold bg-primary text-white shadow-sm border border-primary no-underline shrink-0 flex items-center gap-2">
             <span>All Manuals</span>
@@ -135,42 +100,65 @@
         </div>
       {{ end }}
 
-      <!-- Real Telemetry Dashboard Bar -->
-      {{ $allPosts := (where site.RegularPages "Section" "blog") }}
-      {{ $totalWords := 0 }}
-      {{ range $allPosts }}
-        {{ $totalWords = add $totalWords .WordCount }}
-      {{ end }}
-      <div class="mt-16 p-6 sm:p-8 rounded-3xl bg-body dark:bg-[#0c1220] border border-border/80 dark:border-slate-800 shadow-xl">
-        <div class="flex items-center justify-between mb-6 pb-4 border-b border-border/60 dark:border-slate-800/80">
-          <div class="flex items-center gap-2.5">
-            <span class="w-3 h-3 rounded-full bg-emerald-500 animate-pulse"></span>
-            <span class="text-xs font-mono font-extrabold uppercase tracking-wider text-dark dark:text-white">GCloud Cafe Platform Telemetry</span>
-          </div>
-          <span class="text-[11px] font-mono text-text/60 dark:text-slate-400">STATUS: ALL SYSTEMS NOMINAL</span>
+      <!-- Curated Learning Pathways (Replacing Telemetry Clutter) -->
+      <div class="mt-16 p-8 sm:p-10 rounded-3xl bg-body dark:bg-[#0c1220] border border-border/80 dark:border-slate-800 shadow-xl">
+        <div class="max-w-2xl mb-8">
+          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-extrabold uppercase tracking-wider bg-primary/10 text-primary border border-primary/20 mb-2">
+            Structured Pathways
+          </span>
+          <h3 class="text-2xl font-black text-dark dark:text-white">
+            Curated Engineering Learning Tracks
+          </h3>
+          <p class="text-sm text-text/80 dark:text-slate-300 mt-1 leading-relaxed">
+            Step-by-step masterclasses designed to take you from foundational concepts to battle-tested production implementation.
+          </p>
         </div>
 
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 font-mono">
-          <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-border/60 dark:border-slate-800">
-            <div class="text-[11px] font-bold text-text/70 dark:text-slate-400 uppercase mb-1">Architecture Blueprints</div>
-            <div class="text-xl sm:text-2xl font-black text-primary">{{ len $allPosts }}</div>
-            <div class="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold mt-1">● VERIFIED LABS</div>
-          </div>
-          <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-border/60 dark:border-slate-800">
-            <div class="text-[11px] font-bold text-text/70 dark:text-slate-400 uppercase mb-1">Technical Words</div>
-            <div class="text-xl sm:text-2xl font-black text-indigo-600 dark:text-indigo-400">{{ $totalWords }}</div>
-            <div class="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold mt-1">● OPEN ACCESS</div>
-          </div>
-          <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-border/60 dark:border-slate-800">
-            <div class="text-[11px] font-bold text-text/70 dark:text-slate-400 uppercase mb-1">Community Feedback</div>
-            <div class="text-xl sm:text-2xl font-black text-emerald-600 dark:text-emerald-400">100%</div>
-            <div class="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold mt-1">● REALTIME VOTES</div>
-          </div>
-          <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-border/60 dark:border-slate-800">
-            <div class="text-[11px] font-bold text-text/70 dark:text-slate-400 uppercase mb-1">Focus Domains</div>
-            <div class="text-xl sm:text-2xl font-black text-amber-600 dark:text-amber-400">{{ len $categories }}</div>
-            <div class="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold mt-1">● K8s · TLS · Cloud · OS</div>
-          </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <a href="{{ `categories/kubernetes/` | relLangURL }}" class="p-6 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-border/70 dark:border-slate-800 hover:border-primary/50 transition-all no-underline group flex flex-col justify-between">
+            <div>
+              <span class="text-2xl mb-3 block">☸️</span>
+              <h4 class="font-bold text-base text-dark dark:text-white group-hover:text-primary transition-colors mb-1.5">
+                Kubernetes & CKA Labs
+              </h4>
+              <p class="text-xs text-text/80 dark:text-slate-400 leading-relaxed">
+                Pod lifecycles, ingress controllers, RBAC security, and speed tricks.
+              </p>
+            </div>
+            <span class="text-xs font-bold text-primary font-mono mt-4 inline-flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+              Start Track →
+            </span>
+          </a>
+
+          <a href="{{ `categories/security/` | relLangURL }}" class="p-6 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-border/70 dark:border-slate-800 hover:border-primary/50 transition-all no-underline group flex flex-col justify-between">
+            <div>
+              <span class="text-2xl mb-3 block">🔐</span>
+              <h4 class="font-bold text-base text-dark dark:text-white group-hover:text-primary transition-colors mb-1.5">
+                Zero-Trust TLS & mTLS
+              </h4>
+              <p class="text-xs text-text/80 dark:text-slate-400 leading-relaxed">
+                Wire protocol handshakes, keystore architecture, cert-manager & 3 AM incident response.
+              </p>
+            </div>
+            <span class="text-xs font-bold text-primary font-mono mt-4 inline-flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+              Start Track →
+            </span>
+          </a>
+
+          <a href="{{ `categories/google-cloud/` | relLangURL }}" class="p-6 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-border/70 dark:border-slate-800 hover:border-primary/50 transition-all no-underline group flex flex-col justify-between">
+            <div>
+              <span class="text-2xl mb-3 block">☁️</span>
+              <h4 class="font-bold text-base text-dark dark:text-white group-hover:text-primary transition-colors mb-1.5">
+                Google Cloud PCA Mastery
+              </h4>
+              <p class="text-xs text-text/80 dark:text-slate-400 leading-relaxed">
+                Case studies, multi-region failover, BigQuery analytics, and exam renewals.
+              </p>
+            </div>
+            <span class="text-xs font-bold text-primary font-mono mt-4 inline-flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+              Start Track →
+            </span>
+          </a>
         </div>
       </div>
 
