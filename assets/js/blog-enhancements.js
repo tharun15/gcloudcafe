@@ -887,6 +887,75 @@
   }
 
   /* ── 9. Cloud Pulse Micro-News & Upvote System ── */
+  function getAccurateProviderAttribution(tags, linkUrl, title) {
+    var tagsArr = Array.isArray(tags) ? tags : (typeof tags === "string" ? tags.split(",") : []);
+    var combined = (tagsArr.join(" ") + " " + (linkUrl || "") + " " + (title || "")).toLowerCase();
+    
+    if (combined.includes("openshift") || combined.includes("redhat") || combined.includes("red hat")) {
+      return "Red Hat / OpenShift";
+    }
+    if (combined.includes("google") || combined.includes("gcp") || combined.includes("googlecloud") || combined.includes("vertex")) {
+      return "Google Cloud";
+    }
+    if (combined.includes("aws") || combined.includes("amazon") || combined.includes("bedrock") || combined.includes("s3")) {
+      return "Amazon Web Services (AWS)";
+    }
+    if (combined.includes("azure") || combined.includes("microsoft")) {
+      return "Microsoft Azure";
+    }
+    if (combined.includes("kubernetes") || combined.includes("k8s") || combined.includes("cncf")) {
+      return "CNCF / Kubernetes";
+    }
+    if (tagsArr.length > 0) {
+      return tagsArr[0].replace(/^#/, "").trim().replace(/([a-z])([A-Z])/g, "$1 $2");
+    }
+    return "Official Vendor Release";
+  }
+
+  function formatPulseLinkedInPost(title, content, tags, linkUrl) {
+    var tagsArr = Array.isArray(tags) ? tags : (typeof tags === "string" ? tags.split(",") : []);
+    var cleanTags = tagsArr.map(function (t) {
+      var tr = t.trim();
+      return tr.startsWith("#") ? tr : "#" + tr;
+    }).filter(function (t) { return t.length > 1; });
+
+    var defaultTags = ["#CloudNews", "#DevOps", "#GCloudCafe"];
+    var uniqueTags = Array.from(new Set(cleanTags.concat(defaultTags)));
+    var hashtagsText = uniqueTags.join(" ");
+
+    var cleanContent = (content || "")
+      .replace(/<[^>]+>/g, "")
+      .replace(/&lt;[^&]+&gt;/g, "")
+      .trim();
+
+    var formattedBody = cleanContent;
+    if (cleanContent.includes("🎯") && cleanContent.includes("💡")) {
+      formattedBody = cleanContent;
+    } else if (cleanContent.toLowerCase().includes("why it matters:")) {
+      var parts = cleanContent.split(/Why it matters:\s*/i);
+      var tldrPart = parts[0].replace(/🎯\s*(?:What Changed:)?/i, "").trim();
+      var impactPart = (parts[1] || "").trim();
+      formattedBody = "🎯 What Changed:\n" + tldrPart + "\n\n💡 Why It Matters:\n" + impactPart;
+    } else if (cleanContent.includes(". ") && cleanContent.length > 50) {
+      var firstDot = cleanContent.indexOf(". ");
+      var sentence1 = cleanContent.substring(0, firstDot + 1).trim();
+      var sentence2 = cleanContent.substring(firstDot + 2).trim();
+      formattedBody = "🎯 What Changed:\n" + sentence1 + "\n\n💡 Why It Matters:\n" + sentence2;
+    }
+
+    var sourceLabel = getAccurateProviderAttribution(cleanTags, linkUrl, title);
+    var pulseTargetUrl = (typeof window !== "undefined" && window.location ? window.location.origin : "https://gcloudcafe.com") + "/pulse/";
+
+    return "☕ GCloud Cafe | Cloud Pulse (Independent Engineering Analysis)\n\n"
+      + "📌 " + (title || "[Headline]") + "\n\n"
+      + formattedBody + "\n\n"
+      + "📖 Source: " + sourceLabel + (linkUrl ? "\n🔗 " + linkUrl : "") + "\n\n"
+      + hashtagsText + "\n\n"
+      + "—\n"
+      + "💡 Daily Cloud & DevOps Engineering Insights 👇\n"
+      + "🌐 " + pulseTargetUrl;
+  }
+
   function initCloudPulseSystem() {
     var feedContainer = document.querySelector("[data-cloud-pulse-feed]");
     if (!feedContainer) return;
@@ -979,22 +1048,34 @@
           filterAndRenderPulses();
         } else if (supabase) {
           supabase.from("cloud_pulses").select("*").eq("status", "approved").order("created_at", { ascending: false }).limit(6).then(function(sRes) {
-            if (sRes && Array.isArray(sRes.data)) {
+            if (sRes && Array.isArray(sRes.data) && sRes.data.length > 0) {
               allLoadedPulses = sortCohortByScore(sRes.data);
               filterAndRenderPulses();
+            } else {
+              renderPulses([]);
             }
+          }).catch(function() {
+            renderPulses([]);
           });
+        } else {
+          renderPulses([]);
         }
       })
       .catch(function (err) {
         console.error("Cloud Pulse fetch error:", err);
         if (supabase) {
           supabase.from("cloud_pulses").select("*").eq("status", "approved").order("created_at", { ascending: false }).limit(6).then(function(sRes) {
-            if (sRes && sRes.data) {
+            if (sRes && sRes.data && sRes.data.length > 0) {
               allLoadedPulses = sortCohortByScore(sRes.data);
               filterAndRenderPulses();
+            } else {
+              renderPulses([]);
             }
+          }).catch(function() {
+            renderPulses([]);
           });
+        } else {
+          renderPulses([]);
         }
       });
     }
@@ -1999,74 +2080,7 @@ function renderPulses(pulses) {
       lockDashboard();
     }
 
-    
-    function getAccurateProviderAttribution(tags, linkUrl, title) {
-      var tagsArr = Array.isArray(tags) ? tags : (typeof tags === "string" ? tags.split(",") : []);
-      var combined = (tagsArr.join(" ") + " " + (linkUrl || "") + " " + (title || "")).toLowerCase();
-      
-      if (combined.includes("openshift") || combined.includes("redhat") || combined.includes("red hat")) {
-        return "Red Hat / OpenShift";
-      }
-      if (combined.includes("google") || combined.includes("gcp") || combined.includes("googlecloud") || combined.includes("vertex")) {
-        return "Google Cloud";
-      }
-      if (combined.includes("aws") || combined.includes("amazon") || combined.includes("bedrock") || combined.includes("s3")) {
-        return "Amazon Web Services (AWS)";
-      }
-      if (combined.includes("azure") || combined.includes("microsoft")) {
-        return "Microsoft Azure";
-      }
-      if (combined.includes("kubernetes") || combined.includes("k8s") || combined.includes("cncf")) {
-        return "CNCF / Kubernetes";
-      }
-      if (tagsArr.length > 0) {
-        return tagsArr[0].replace(/^#/, "").trim().replace(/([a-z])([A-Z])/g, "$1 $2");
-      }
-      return "Official Vendor Release";
-    }
 
-    function formatPulseLinkedInPost(title, content, tags, linkUrl) {
-      var tagsArr = Array.isArray(tags) ? tags : (typeof tags === "string" ? tags.split(",") : []);
-      var cleanTags = tagsArr.map(function (t) {
-        var tr = t.trim();
-        return tr.startsWith("#") ? tr : "#" + tr;
-      }).filter(function (t) { return t.length > 1; });
-
-      var defaultTags = ["#CloudNews", "#DevOps", "#GCloudCafe"];
-      var uniqueTags = Array.from(new Set(cleanTags.concat(defaultTags)));
-      var hashtagsText = uniqueTags.join(" ");
-
-      var cleanContent = (content || "")
-        .replace(/<[^>]+>/g, "")
-        .replace(/&lt;[^&]+&gt;/g, "")
-        .trim();
-
-      var formattedBody = cleanContent;
-      if (cleanContent.includes("🎯") && cleanContent.includes("💡")) {
-        formattedBody = cleanContent;
-      } else if (cleanContent.toLowerCase().includes("why it matters:")) {
-        var parts = cleanContent.split(/Why it matters:\s*/i);
-        var tldrPart = parts[0].replace(/🎯\s*(?:What Changed:)?/i, "").trim();
-        formattedBody = "🎯 What Changed:\n" + tldrPart + "\n\n💡 Why It Matters:\n" + impactPart;
-      } else if (cleanContent.includes(". ") && cleanContent.length > 50) {
-        var firstDot = cleanContent.indexOf(". ");
-        var sentence1 = cleanContent.substring(0, firstDot + 1).trim();
-        var sentence2 = cleanContent.substring(firstDot + 2).trim();
-        formattedBody = "🎯 What Changed:\n" + sentence1 + "\n\n💡 Why It Matters:\n" + sentence2;
-      }
-
-      var sourceLabel = getAccurateProviderAttribution(cleanTags, linkUrl, title);
-      var pulseTargetUrl = window.location.origin + "/pulse/";
-
-      return "☕ GCloud Cafe | Cloud Pulse (Independent Engineering Analysis)\n\n"
-        + "📌 " + (title || "[Headline]") + "\n\n"
-        + formattedBody + "\n\n"
-        + "📖 Source: " + sourceLabel + (linkUrl ? "\n🔗 " + linkUrl : "") + "\n\n"
-        + hashtagsText + "\n\n"
-        + "—\n"
-        + "💡 Daily Cloud & DevOps Engineering Insights 👇\n"
-        + "🌐 " + pulseTargetUrl;
-    }
 
     function updateLinkedInPreviewBox() {
       if (!editLinkedInPreview) return;
