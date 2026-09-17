@@ -22,9 +22,9 @@
     },
     {
       "parameters": {
-        "url": "https://cloud.google.com/feeds/gcp-release-notes.xml"
+        "url": "https://cloudblog.withgoogle.com/rss/"
       },
-      "name": "Fetch GCP Release RSS",
+      "name": "Fetch GCP Blog RSS",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.1,
       "position": [
