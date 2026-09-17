@@ -883,6 +883,7 @@
     initTelemetryStats();
     initCloudPulseSystem();
     initPulseAdminApprovalSystem();
+    initPulseTicker();
   }
 
   /* ── 9. Cloud Pulse Micro-News & Upvote System ── */
@@ -1381,6 +1382,56 @@ function renderPulses(pulses) {
 
     // Initial fetch
     fetchPulses();
+  }
+
+  /* ── 9b. Live Pulse Micro-Blog Marquee Ticker ── */
+  function initPulseTicker() {
+    var marquee = document.querySelector("[data-pulse-ticker-marquee]");
+    if (!marquee) return;
+
+    var config = window.SUPABASE_CONFIG || {
+      url: "https://axiijcsxtiukloarbfor.supabase.co",
+      anonKey: "sb_publishable_cRcwg02R3nXTykDrxalL6w_-kc9Wesc"
+    };
+
+    var queryUrl = config.url + "/rest/v1/cloud_pulses?status=eq.approved&order=created_at.desc&limit=10";
+    fetch(queryUrl, {
+      headers: {
+        "apikey": config.anonKey,
+        "Authorization": "Bearer " + config.anonKey
+      }
+    })
+    .then(function(res) { return res.json(); })
+    .then(function(data) {
+      if (!Array.isArray(data) || data.length === 0) return;
+
+      var leadHtml = '<a href="/pulse/" class="ticker-item">'
+        + '<span class="ticker-symbol">⚡ CLOUD PULSE</span>'
+        + '<span class="text-slate-400 font-medium">Live Newsroom</span>'
+        + '<span class="text-emerald-400 font-bold flex items-center gap-1.5">'
+        + '<span class="relative flex h-2 w-2">'
+        + '<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>'
+        + '<span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>'
+        + '</span>LIVE PULSE</span></a>';
+
+      var itemsHtml = "";
+      data.forEach(function(item) {
+        var rawTag = (Array.isArray(item.tags) && item.tags[0]) ? item.tags[0].replace(/^#/, "").toUpperCase() : "CLOUD";
+        var safeTitle = escapeHtml(item.title || "Cloud Pulse Update");
+        var link = escapeHtml(item.link_url || "/pulse/");
+        itemsHtml += '<a href="' + link + '" target="_blank" rel="noopener noreferrer" class="ticker-item flex items-center gap-2">'
+          + '<span class="ticker-symbol">$' + escapeHtml(rawTag) + '</span>'
+          + '<span class="text-slate-200 font-medium">' + safeTitle + '</span>'
+          + '<span class="ticker-bullish flex items-center gap-1"><i class="fa-solid fa-tower-broadcast text-[10px]"></i> MICRO-PULSE</span>'
+          + '</a>';
+      });
+
+      // Seamless duplicate loop for 60fps marquee
+      marquee.innerHTML = leadHtml + itemsHtml + leadHtml + itemsHtml;
+    })
+    .catch(function(err) {
+      // Fallback is already rendered in static HTML
+    });
   }
 
   /* ── Newsroom Candidate Approval Dashboard & Gemini AI Studio ── */
@@ -1996,21 +2047,12 @@ function renderPulses(pulses) {
       } else if (cleanContent.toLowerCase().includes("why it matters:")) {
         var parts = cleanContent.split(/Why it matters:\s*/i);
         var tldrPart = parts[0].replace(/🎯\s*(?:What Changed:)?/i, "").trim();
-        var impactPart = parts[1].trim();
-        formattedBody = "🎯 What Changed:
-" + tldrPart + "
-
-💡 Why It Matters:
-" + impactPart;
+        formattedBody = "🎯 What Changed:\n" + tldrPart + "\n\n💡 Why It Matters:\n" + impactPart;
       } else if (cleanContent.includes(". ") && cleanContent.length > 50) {
         var firstDot = cleanContent.indexOf(". ");
         var sentence1 = cleanContent.substring(0, firstDot + 1).trim();
         var sentence2 = cleanContent.substring(firstDot + 2).trim();
-        formattedBody = "🎯 What Changed:
-" + sentence1 + "
-
-💡 Why It Matters:
-" + sentence2;
+        formattedBody = "🎯 What Changed:\n" + sentence1 + "\n\n💡 Why It Matters:\n" + sentence2;
       }
 
       var sourceLabel = getAccurateProviderAttribution(cleanTags, linkUrl, title);
