@@ -41,6 +41,14 @@
       <!-- Right Action Utilities: Search Shortcut + Theme Toggle -->
       <div class="flex items-center gap-2 sm:gap-3">
         
+        <!-- Mobile Live Pulse Quick Pill (Visible only on mobile, desktop uses center nav) -->
+        <a href="{{ `pulse/` | relLangURL }}" 
+           class="flex md:hidden items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-extrabold bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30 hover:bg-emerald-500/20 transition-all no-underline shrink-0"
+           aria-label="Live Cloud Pulse">
+          <i class="fa-solid fa-tower-broadcast text-emerald-500 animate-pulse text-[10px]"></i>
+          <span>Live Pulse</span>
+        </a>
+
         <!-- Quick Search Pill (Ctrl+K) -->
         <button
           type="button"
@@ -69,14 +77,16 @@
     </div>
   </div>
 
-  <!-- Mobile Drawer Menu -->
+  <!-- Mobile Drawer Menu (Excludes Pulse since it has dedicated header button) -->
   <div id="mobile-nav-drawer" class="hidden md:hidden container mt-2">
     <div class="p-4 rounded-2xl bg-body/95 dark:bg-[#0b101d]/95 backdrop-blur-xl border border-border/80 dark:border-slate-800 shadow-xl space-y-2">
       {{ range site.Menus.main }}
-        <a href="{{ .URL | relLangURL }}"
-           class="block px-4 py-2.5 rounded-xl text-sm font-bold text-text dark:text-slate-200 hover:bg-primary/10 hover:text-primary transition-all no-underline">
-          {{ .Name }}
-        </a>
+        {{ if not (eq .Name "Pulse") }}
+          <a href="{{ .URL | relLangURL }}"
+             class="block px-4 py-2.5 rounded-xl text-sm font-bold text-text dark:text-slate-200 hover:bg-primary/10 hover:text-primary transition-all no-underline">
+            {{ .Name }}
+          </a>
+        {{ end }}
       {{ end }}
     </div>
   </div>

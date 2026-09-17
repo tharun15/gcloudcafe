@@ -51,6 +51,15 @@
   transition: width 0.1s ease-out;
 }
 
+/* Hide scrollbar for Chrome, Safari, Opera, Firefox, Edge */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
 /* Hero & Container Shells */
 .blog-hero,
 .blog-article-shell,

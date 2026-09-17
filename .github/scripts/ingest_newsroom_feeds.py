@@ -8,8 +8,8 @@ SUPABASE_KEY = os.environ.get('SUPABASE_KEY', 'sb_publishable_cRcwg02R3nXTykDrxa
 FEEDS = [
     {
         'provider': 'GCP',
-        'name': 'Google Cloud Release Notes',
-        'url': 'https://cloud.google.com/feeds/gcp-release-notes.xml',
+        'name': 'Google Cloud Blog',
+        'url': 'https://cloudblog.withgoogle.com/rss/',
         'tags': ['#GoogleCloud', '#GCP', '#CloudNews'],
         'reason': 'Official GCP Release: Evaluated for cloud architect relevance.'
     },
@@ -31,7 +31,7 @@ FEEDS = [
         'provider': 'OpenShift',
         'name': 'Red Hat & OpenShift Blog',
         'url': 'https://www.redhat.com/en/rss/blog',
-        'tags': [''#OpenShift'', ''#RedHat'', '''#DevOps''],[0].children if false else ['#OpenShift', '#RedHat', '#DevOps'],
+        'tags': ['#OpenShift', '#RedHat', '#DevOps'],
         'reason': 'Official Red Hat Release: Evaluated for enterprise hybrid cloud systems.'
     }
 ]

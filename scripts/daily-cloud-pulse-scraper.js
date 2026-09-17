@@ -18,8 +18,8 @@ const FEEDS = [
   },
   { 
     provider: "GCP", 
-    name: "Google Cloud Release Notes", 
-    url: "https://cloud.google.com/feeds/gcp-release-notes.xml", 
+    name: "Google Cloud Blog", 
+    url: "https://cloudblog.withgoogle.com/rss/", 
     defaultTags: ["#GoogleCloud", "#GCP", "#CloudNews"] 
   },
   { 
@@ -39,11 +39,6 @@ const FEEDS = [
     name: "Microsoft Azure Blog & Updates",
     url: "https://azure.microsoft.com/en-us/blog/feed/",
     defaultTags: ["#Azure", "#CloudArchitecture", "#CloudNews"]
-  },
-  {
-    provider: "GCP",
-    url: "https://cloudblog.withgoogle.com/rss/",
-    defaultTags: ["#GoogleCloud", "#Architecture", "#DevOps"]
   }
 ];
 

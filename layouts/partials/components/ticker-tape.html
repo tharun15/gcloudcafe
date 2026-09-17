@@ -10,7 +10,7 @@
           <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
           <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
         </span>
-        LIVE PULSE
+        Live Pulse
       </span>
     </a>
     
@@ -21,7 +21,7 @@
         {{ $rawTag := index .tags 0 }}
         {{ $tag = strings.TrimPrefix "#" $rawTag | upper }}
       {{ end }}
-      <a href="{{ .link_url | default `/pulse/` }}" target="_blank" rel="noopener noreferrer" class="ticker-item flex items-center gap-2">
+      <a href="{{ `/pulse/` | relLangURL }}{{ with .id }}#pulse-{{ . }}{{ end }}" class="ticker-item flex items-center gap-2">
         <span class="ticker-symbol">${{ $tag }}</span>
         <span class="text-slate-200 font-medium">{{ $cleanTitle }}</span>
         <span class="ticker-bullish flex items-center gap-1">
@@ -39,7 +39,7 @@
           <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
           <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
         </span>
-        LIVE PULSE
+        Live Pulse
       </span>
     </a>
 
@@ -50,7 +50,7 @@
         {{ $rawTag := index .tags 0 }}
         {{ $tag = strings.TrimPrefix "#" $rawTag | upper }}
       {{ end }}
-      <a href="{{ .link_url | default `/pulse/` }}" target="_blank" rel="noopener noreferrer" class="ticker-item flex items-center gap-2">
+      <a href="{{ `/pulse/` | relLangURL }}{{ with .id }}#pulse-{{ . }}{{ end }}" class="ticker-item flex items-center gap-2">
         <span class="ticker-symbol">${{ $tag }}</span>
         <span class="text-slate-200 font-medium">{{ $cleanTitle }}</span>
         <span class="ticker-bullish flex items-center gap-1">

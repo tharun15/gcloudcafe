@@ -887,6 +887,75 @@
   }
 
   /* ── 9. Cloud Pulse Micro-News & Upvote System ── */
+  function getAccurateProviderAttribution(tags, linkUrl, title) {
+    var tagsArr = Array.isArray(tags) ? tags : (typeof tags === "string" ? tags.split(",") : []);
+    var combined = (tagsArr.join(" ") + " " + (linkUrl || "") + " " + (title || "")).toLowerCase();
+    
+    if (combined.includes("openshift") || combined.includes("redhat") || combined.includes("red hat")) {
+      return "Red Hat / OpenShift";
+    }
+    if (combined.includes("google") || combined.includes("gcp") || combined.includes("googlecloud") || combined.includes("vertex")) {
+      return "Google Cloud";
+    }
+    if (combined.includes("aws") || combined.includes("amazon") || combined.includes("bedrock") || combined.includes("s3")) {
+      return "Amazon Web Services (AWS)";
+    }
+    if (combined.includes("azure") || combined.includes("microsoft")) {
+      return "Microsoft Azure";
+    }
+    if (combined.includes("kubernetes") || combined.includes("k8s") || combined.includes("cncf")) {
+      return "CNCF / Kubernetes";
+    }
+    if (tagsArr.length > 0) {
+      return tagsArr[0].replace(/^#/, "").trim().replace(/([a-z])([A-Z])/g, "$1 $2");
+    }
+    return "Official Vendor Release";
+  }
+
+  function formatPulseLinkedInPost(title, content, tags, linkUrl) {
+    var tagsArr = Array.isArray(tags) ? tags : (typeof tags === "string" ? tags.split(",") : []);
+    var cleanTags = tagsArr.map(function (t) {
+      var tr = t.trim();
+      return tr.startsWith("#") ? tr : "#" + tr;
+    }).filter(function (t) { return t.length > 1; });
+
+    var defaultTags = ["#CloudNews", "#DevOps", "#GCloudCafe"];
+    var uniqueTags = Array.from(new Set(cleanTags.concat(defaultTags)));
+    var hashtagsText = uniqueTags.join(" ");
+
+    var cleanContent = (content || "")
+      .replace(/<[^>]+>/g, "")
+      .replace(/&lt;[^&]+&gt;/g, "")
+      .trim();
+
+    var formattedBody = cleanContent;
+    if (cleanContent.includes("🎯") && cleanContent.includes("💡")) {
+      formattedBody = cleanContent;
+    } else if (cleanContent.toLowerCase().includes("why it matters:")) {
+      var parts = cleanContent.split(/Why it matters:\s*/i);
+      var tldrPart = parts[0].replace(/🎯\s*(?:What Changed:)?/i, "").trim();
+      var impactPart = (parts[1] || "").trim();
+      formattedBody = "🎯 What Changed:\n" + tldrPart + "\n\n💡 Why It Matters:\n" + impactPart;
+    } else if (cleanContent.includes(". ") && cleanContent.length > 50) {
+      var firstDot = cleanContent.indexOf(". ");
+      var sentence1 = cleanContent.substring(0, firstDot + 1).trim();
+      var sentence2 = cleanContent.substring(firstDot + 2).trim();
+      formattedBody = "🎯 What Changed:\n" + sentence1 + "\n\n💡 Why It Matters:\n" + sentence2;
+    }
+
+    var sourceLabel = getAccurateProviderAttribution(cleanTags, linkUrl, title);
+    var pulseTargetUrl = (typeof window !== "undefined" && window.location ? window.location.origin : "https://gcloudcafe.com") + "/pulse/";
+
+    return "☕ GCloud Cafe | Cloud Pulse (Independent Engineering Analysis)\n\n"
+      + "📌 " + (title || "[Headline]") + "\n\n"
+      + formattedBody + "\n\n"
+      + "📖 Source: " + sourceLabel + (linkUrl ? "\n🔗 " + linkUrl : "") + "\n\n"
+      + hashtagsText + "\n\n"
+      + "—\n"
+      + "💡 Daily Cloud & DevOps Engineering Insights 👇\n"
+      + "🌐 " + pulseTargetUrl;
+  }
+
   function initCloudPulseSystem() {
     var feedContainer = document.querySelector("[data-cloud-pulse-feed]");
     if (!feedContainer) return;
@@ -979,22 +1048,34 @@
           filterAndRenderPulses();
         } else if (supabase) {
           supabase.from("cloud_pulses").select("*").eq("status", "approved").order("created_at", { ascending: false }).limit(6).then(function(sRes) {
-            if (sRes && Array.isArray(sRes.data)) {
+            if (sRes && Array.isArray(sRes.data) && sRes.data.length > 0) {
               allLoadedPulses = sortCohortByScore(sRes.data);
               filterAndRenderPulses();
+            } else {
+              renderPulses([]);
             }
+          }).catch(function() {
+            renderPulses([]);
           });
+        } else {
+          renderPulses([]);
         }
       })
       .catch(function (err) {
         console.error("Cloud Pulse fetch error:", err);
         if (supabase) {
           supabase.from("cloud_pulses").select("*").eq("status", "approved").order("created_at", { ascending: false }).limit(6).then(function(sRes) {
-            if (sRes && sRes.data) {
+            if (sRes && sRes.data && sRes.data.length > 0) {
               allLoadedPulses = sortCohortByScore(sRes.data);
               filterAndRenderPulses();
+            } else {
+              renderPulses([]);
             }
+          }).catch(function() {
+            renderPulses([]);
           });
+        } else {
+          renderPulses([]);
         }
       });
     }
@@ -1096,7 +1177,7 @@ function renderPulses(pulses) {
           '<i class="fa-brands fa-linkedin text-sm"></i> Share' +
         '</a>';
 
-        html += '<div class="cloud-pulse-card bg-body dark:bg-darkmode-body border border-border/80 dark:border-darkmode-border/80 rounded-3xl p-6 sm:p-7 shadow-xs hover:shadow-md flex flex-col justify-between transition-all hover:border-primary/50 group">' +
+        html += '<div id="pulse-' + escapeHtml(p.id) + '" data-pulse-id="' + escapeHtml(p.id) + '" class="cloud-pulse-card scroll-mt-28 bg-body dark:bg-darkmode-body border border-border/80 dark:border-darkmode-border/80 rounded-3xl p-6 sm:p-7 shadow-xs hover:shadow-md flex flex-col justify-between transition-all hover:border-primary/50 group">' +
           '<div>' +
             '<div class="flex items-center justify-between gap-2 mb-3">' +
               rankBadge +
@@ -1130,6 +1211,21 @@ function renderPulses(pulses) {
 
       feedContainer.innerHTML = html;
       bindVoteEvents(topPulses);
+
+      function scrollToTargetPulse() {
+        if (window.location.hash && window.location.hash.startsWith("#pulse-")) {
+          var targetCard = document.querySelector(window.location.hash);
+          if (targetCard) {
+            targetCard.scrollIntoView({ behavior: "smooth", block: "center" });
+            targetCard.classList.add("ring-2", "ring-primary", "shadow-xl");
+            setTimeout(function() {
+              targetCard.classList.remove("ring-2", "ring-primary", "shadow-xl");
+            }, 3000);
+          }
+        }
+      }
+      setTimeout(scrollToTargetPulse, 200);
+      window.addEventListener("hashchange", scrollToTargetPulse);
     }
 
     var currentPulses = [];
@@ -1418,8 +1514,8 @@ function renderPulses(pulses) {
       data.forEach(function(item) {
         var rawTag = (Array.isArray(item.tags) && item.tags[0]) ? item.tags[0].replace(/^#/, "").toUpperCase() : "CLOUD";
         var safeTitle = escapeHtml(item.title || "Cloud Pulse Update");
-        var link = escapeHtml(item.link_url || "/pulse/");
-        itemsHtml += '<a href="' + link + '" target="_blank" rel="noopener noreferrer" class="ticker-item flex items-center gap-2">'
+        var pulsePostLink = "/pulse/#pulse-" + encodeURIComponent(item.id || "");
+        itemsHtml += '<a href="' + pulsePostLink + '" class="ticker-item flex items-center gap-2">'
           + '<span class="ticker-symbol">$' + escapeHtml(rawTag) + '</span>'
           + '<span class="text-slate-200 font-medium">' + safeTitle + '</span>'
           + '<span class="ticker-bullish flex items-center gap-1"><i class="fa-solid fa-tower-broadcast text-[10px]"></i> MICRO-PULSE</span>'
@@ -1877,7 +1973,7 @@ function renderPulses(pulses) {
 
       // 2. Client-Side Fallback via Multi-Proxy
       var feeds = [
-        { provider: "GCP", name: "Google Cloud Release Notes", url: "https://cloud.google.com/feeds/gcp-release-notes.xml", defaultTags: ["#GoogleCloud", "#GCP", "#CloudNews"] },
+        { provider: "GCP", name: "Google Cloud Blog", url: "https://cloudblog.withgoogle.com/rss/", defaultTags: ["#GoogleCloud", "#GCP", "#CloudNews"] },
         { provider: "AWS", name: "AWS What's New", url: "https://aws.amazon.com/about-aws/whats-new/recent/feed/", defaultTags: ["#AWS", "#CloudArchitecture", "#CloudNews"] },
         { provider: "Kubernetes", name: "Kubernetes CNCF Blog", url: "https://kubernetes.io/feed.xml", defaultTags: ["#Kubernetes", "#CNCF", "#CloudNative"] },
         { provider: "OpenShift", name: "Red Hat Blog & OpenShift Releases", url: "https://www.redhat.com/en/rss/blog", defaultTags: ["#OpenShift", "#RedHat", "#DevOps"] }
@@ -1999,74 +2095,7 @@ function renderPulses(pulses) {
       lockDashboard();
     }
 
-    
-    function getAccurateProviderAttribution(tags, linkUrl, title) {
-      var tagsArr = Array.isArray(tags) ? tags : (typeof tags === "string" ? tags.split(",") : []);
-      var combined = (tagsArr.join(" ") + " " + (linkUrl || "") + " " + (title || "")).toLowerCase();
-      
-      if (combined.includes("openshift") || combined.includes("redhat") || combined.includes("red hat")) {
-        return "Red Hat / OpenShift";
-      }
-      if (combined.includes("google") || combined.includes("gcp") || combined.includes("googlecloud") || combined.includes("vertex")) {
-        return "Google Cloud";
-      }
-      if (combined.includes("aws") || combined.includes("amazon") || combined.includes("bedrock") || combined.includes("s3")) {
-        return "Amazon Web Services (AWS)";
-      }
-      if (combined.includes("azure") || combined.includes("microsoft")) {
-        return "Microsoft Azure";
-      }
-      if (combined.includes("kubernetes") || combined.includes("k8s") || combined.includes("cncf")) {
-        return "CNCF / Kubernetes";
-      }
-      if (tagsArr.length > 0) {
-        return tagsArr[0].replace(/^#/, "").trim().replace(/([a-z])([A-Z])/g, "$1 $2");
-      }
-      return "Official Vendor Release";
-    }
 
-    function formatPulseLinkedInPost(title, content, tags, linkUrl) {
-      var tagsArr = Array.isArray(tags) ? tags : (typeof tags === "string" ? tags.split(",") : []);
-      var cleanTags = tagsArr.map(function (t) {
-        var tr = t.trim();
-        return tr.startsWith("#") ? tr : "#" + tr;
-      }).filter(function (t) { return t.length > 1; });
-
-      var defaultTags = ["#CloudNews", "#DevOps", "#GCloudCafe"];
-      var uniqueTags = Array.from(new Set(cleanTags.concat(defaultTags)));
-      var hashtagsText = uniqueTags.join(" ");
-
-      var cleanContent = (content || "")
-        .replace(/<[^>]+>/g, "")
-        .replace(/&lt;[^&]+&gt;/g, "")
-        .trim();
-
-      var formattedBody = cleanContent;
-      if (cleanContent.includes("🎯") && cleanContent.includes("💡")) {
-        formattedBody = cleanContent;
-      } else if (cleanContent.toLowerCase().includes("why it matters:")) {
-        var parts = cleanContent.split(/Why it matters:\s*/i);
-        var tldrPart = parts[0].replace(/🎯\s*(?:What Changed:)?/i, "").trim();
-        formattedBody = "🎯 What Changed:\n" + tldrPart + "\n\n💡 Why It Matters:\n" + impactPart;
-      } else if (cleanContent.includes(". ") && cleanContent.length > 50) {
-        var firstDot = cleanContent.indexOf(". ");
-        var sentence1 = cleanContent.substring(0, firstDot + 1).trim();
-        var sentence2 = cleanContent.substring(firstDot + 2).trim();
-        formattedBody = "🎯 What Changed:\n" + sentence1 + "\n\n💡 Why It Matters:\n" + sentence2;
-      }
-
-      var sourceLabel = getAccurateProviderAttribution(cleanTags, linkUrl, title);
-      var pulseTargetUrl = window.location.origin + "/pulse/";
-
-      return "☕ GCloud Cafe | Cloud Pulse (Independent Engineering Analysis)\n\n"
-        + "📌 " + (title || "[Headline]") + "\n\n"
-        + formattedBody + "\n\n"
-        + "📖 Source: " + sourceLabel + (linkUrl ? "\n🔗 " + linkUrl : "") + "\n\n"
-        + hashtagsText + "\n\n"
-        + "—\n"
-        + "💡 Daily Cloud & DevOps Engineering Insights 👇\n"
-        + "🌐 " + pulseTargetUrl;
-    }
 
     function updateLinkedInPreviewBox() {
       if (!editLinkedInPreview) return;
@@ -2298,6 +2327,195 @@ function renderPulses(pulses) {
       });
     }
 
+    var currentAdminFilter = "all";
+
+    function detectCandidateProvider(c) {
+      var text = ((Array.isArray(c.tags) ? c.tags.join(" ") : "") + " " + (c.title || "") + " " + (c.link_url || "")).toLowerCase();
+      if (text.includes("google") || text.includes("gcp") || text.includes("bigquery") || text.includes("vertex")) {
+        return { id: "gcp", name: "Google Cloud", icon: "fa-brands fa-google text-blue-500", badgeClass: "bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20" };
+      }
+      if (text.includes("aws") || text.includes("amazon") || text.includes("s3") || text.includes("ec2") || text.includes("sagemaker") || text.includes("corretto") || text.includes("workspaces")) {
+        return { id: "aws", name: "AWS", icon: "fa-brands fa-aws text-amber-500", badgeClass: "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20" };
+      }
+      if (text.includes("kubernetes") || text.includes("k8s") || text.includes("cncf")) {
+        return { id: "k8s", name: "Kubernetes", icon: "fa-solid fa-dharmachakra text-indigo-500", badgeClass: "bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border-indigo-500/20" };
+      }
+      if (text.includes("openshift") || text.includes("redhat") || text.includes("red hat")) {
+        return { id: "openshift", name: "OpenShift", icon: "fa-brands fa-redhat text-red-500", badgeClass: "bg-red-500/10 text-red-600 dark:text-red-400 border-red-500/20" };
+      }
+      return { id: "other", name: "Cloud Release", icon: "fa-solid fa-cloud text-primary", badgeClass: "bg-primary/10 text-primary border-primary/20" };
+    }
+
+    function formatCandidateContentToHtml(rawText) {
+      var text = (rawText || "").trim();
+      if (!text) return "";
+
+      text = text
+        .replace(/^&lt;p&gt;/i, "")
+        .replace(/&lt;\/p&gt;$/i, "")
+        .replace(/^<p>/i, "")
+        .replace(/<\/p>$/i, "")
+        .replace(/&lt;a[\s\S]*?&gt;/gi, "")
+        .replace(/&lt;\/a&gt;/gi, "")
+        .replace(/<a[\s\S]*?>/gi, "")
+        .replace(/<\/a>/gi, "")
+        .trim();
+
+      var impactMatch = text.match(/(?:💡\s*(?:\*\*)?Engineering Impact(?:\*\*)?:?|💡\s*(?:\*\*)?Impact(?:\*\*)?:?)([\s\S]+)$/i);
+      var whatChanged = "";
+      var impact = "";
+
+      if (impactMatch) {
+        impact = impactMatch[1].trim();
+        var beforeImpact = text.substring(0, impactMatch.index).trim();
+        var whatChangedMatch = beforeImpact.match(/(?:🎯\s*(?:\*\*)?What Changed(?:\*\*)?:?)([\s\S]+)$/i);
+        if (whatChangedMatch) {
+          whatChanged = whatChangedMatch[1].trim();
+        } else {
+          whatChanged = beforeImpact;
+        }
+      } else {
+        var whatChangedMatch = text.match(/(?:🎯\s*(?:\*\*)?What Changed(?:\*\*)?:?)([\s\S]+)$/i);
+        if (whatChangedMatch) {
+          whatChanged = whatChangedMatch[1].trim();
+        } else {
+          whatChanged = text;
+        }
+      }
+
+      var out = '<div class="text-xs sm:text-sm text-text/85 dark:text-darkmode-text/85 mb-3 leading-relaxed space-y-2">';
+      if (whatChanged) {
+        out += '<div class="p-2.5 rounded-xl bg-emerald-500/10 dark:bg-emerald-500/15 border border-emerald-500/20"><span class="text-emerald-600 dark:text-emerald-400 font-extrabold mr-1.5 inline-block">🎯 What Changed:</span><span class="font-medium text-dark dark:text-darkmode-dark">' + escapeHtml(whatChanged) + '</span></div>';
+      }
+      if (impact) {
+        out += '<div class="p-2.5 rounded-xl bg-amber-500/10 dark:bg-amber-500/15 border border-amber-500/20"><span class="text-amber-600 dark:text-amber-400 font-extrabold mr-1.5 inline-block">💡 Impact:</span><span class="font-normal text-text/80 dark:text-darkmode-text/80">' + escapeHtml(impact) + '</span></div>';
+      }
+      if (!whatChanged && !impact) {
+        out += '<div class="font-normal text-text/80 dark:text-darkmode-text/80 leading-relaxed p-2.5 rounded-xl bg-theme-light/60 dark:bg-darkmode-theme-light/40 border border-border/40">' + escapeHtml(text) + '</div>';
+      }
+      out += '</div>';
+      return out;
+    }
+
+    function renderCandidateCards(candidatesToRender) {
+      if (!pendingGrid) return;
+      if (!Array.isArray(candidatesToRender) || candidatesToRender.length === 0) {
+        var msg = currentAdminFilter === "all" 
+          ? "All candidate posts reviewed! No pending approvals in queue."
+          : "No pending candidate posts found for this cloud ecosystem.";
+        pendingGrid.innerHTML = '<div class="col-span-full text-center py-12 bg-body dark:bg-darkmode-body border border-border/80 rounded-3xl text-xs text-text/90 dark:text-darkmode-text/90 font-semibold"><i class="fa-solid fa-circle-check text-emerald-500 text-xl block mb-2"></i>' + escapeHtml(msg) + '</div>';
+        return;
+      }
+
+      var html = "";
+      candidatesToRender.forEach(function (c) {
+        var prov = detectCandidateProvider(c);
+        var tagsHtml = "";
+        if (Array.isArray(c.tags)) {
+          c.tags.forEach(function (tag) {
+            tagsHtml += '<span class="text-[10px] font-semibold text-primary/80 bg-primary/10 px-2 py-0.5 rounded-md">' + escapeHtml(tag) + '</span> ';
+          });
+        }
+
+        var formattedContentHtml = formatCandidateContentToHtml(c.content);
+
+        var linkHtml = "";
+        if (c.link_url) {
+          linkHtml = '<div class="mb-3"><a href="' + escapeHtml(c.link_url) + '" target="_blank" rel="noopener noreferrer" class="text-[11px] font-bold text-primary hover:underline inline-flex items-center gap-1.5"><i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i> View Official Source</a></div>';
+        }
+
+        var reasonHtml = c.eligibility_reason ? '<div class="mb-3.5 bg-amber-500/10 dark:bg-amber-500/15 border border-amber-500/30 rounded-2xl p-2.5 text-xs text-amber-800 dark:text-amber-300 font-medium"><i class="fa-solid fa-lightbulb text-amber-500 mr-1.5"></i> <strong>Grounding Reason:</strong> ' + escapeHtml(c.eligibility_reason) + '</div>' : '';
+
+        html += '<div class="bg-body dark:bg-darkmode-body border border-border/80 dark:border-darkmode-border/80 hover:border-primary/40 rounded-3xl p-6 shadow-xs flex flex-col justify-between transition-all" data-candidate-id="' + c.id + '">' +
+          '<div>' +
+            '<div class="flex items-center justify-between gap-2 mb-3">' +
+              '<div class="flex items-center gap-2">' +
+                '<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold border ' + prov.badgeClass + '">' +
+                  '<i class="' + prov.icon + '"></i> ' + escapeHtml(prov.name) +
+                '</span>' +
+                '<span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30 uppercase tracking-wider">PENDING REVIEW</span>' +
+              '</div>' +
+              '<span class="text-[10px] font-medium text-text/60 dark:text-darkmode-text/60 flex items-center gap-1">' +
+                '<i class="fa-regular fa-clock text-[9px]"></i> ' + formatDate(c.created_at) +
+              '</span>' +
+            '</div>' +
+            '<h4 class="text-base sm:text-lg font-bold text-dark dark:text-darkmode-dark mb-2.5 leading-snug">' + escapeHtml(c.title) + '</h4>' +
+            formattedContentHtml +
+            linkHtml +
+            reasonHtml +
+            '<div class="flex flex-wrap gap-1 mb-4">' + tagsHtml + '</div>' +
+          '</div>' +
+
+          '<div class="pt-3.5 border-t border-border/40 dark:border-darkmode-border/40 flex items-center justify-between gap-2 flex-wrap sm:flex-nowrap shrink-0">' +
+            '<button data-action-reject="' + c.id + '" class="px-3 py-2 rounded-xl text-xs font-bold transition-all border border-rose-500/20 bg-rose-500/10 hover:bg-rose-500/20 text-rose-600 dark:text-rose-400 cursor-pointer inline-flex items-center gap-1.5">' +
+              '<i class="fa-solid fa-trash-can text-[11px]"></i> Reject' +
+            '</button>' +
+            '<div class="flex items-center gap-2">' +
+              '<button data-action-edit="' + c.id + '" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-primary/10 hover:bg-primary/20 text-primary border border-primary/20 transition-all cursor-pointer inline-flex items-center gap-1.5">' +
+                '<i class="fa-solid fa-pen-nib text-[11px]"></i> Refine TL;DR' +
+              '</button>' +
+              '<button data-action-approve="' + c.id + '" class="px-4 py-2 rounded-xl text-xs font-extrabold shadow-sm transition-all border-none cursor-pointer bg-emerald-600 hover:bg-emerald-700 text-white inline-flex items-center gap-1.5">' +
+                '<i class="fa-solid fa-check"></i> Quick Approve' +
+              '</button>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
+      });
+
+      pendingGrid.innerHTML = html;
+      bindCandidateActions();
+    }
+
+    function updateAdminFilterCounts() {
+      var counts = { all: cachedCandidates.length, gcp: 0, aws: 0, k8s: 0, openshift: 0 };
+      cachedCandidates.forEach(function (c) {
+        var prov = detectCandidateProvider(c);
+        if (counts[prov.id] !== undefined) counts[prov.id]++;
+      });
+
+      var elAll = document.getElementById("filter-count-all");
+      if (elAll) elAll.textContent = String(counts.all);
+      var elGcp = document.getElementById("filter-count-gcp");
+      if (elGcp) elGcp.textContent = String(counts.gcp);
+      var elAws = document.getElementById("filter-count-aws");
+      if (elAws) elAws.textContent = String(counts.aws);
+      var elK8s = document.getElementById("filter-count-k8s");
+      if (elK8s) elK8s.textContent = String(counts.k8s);
+      var elOs = document.getElementById("filter-count-openshift");
+      if (elOs) elOs.textContent = String(counts.openshift);
+    }
+
+    function applyAdminFilter() {
+      if (currentAdminFilter === "all") {
+        renderCandidateCards(cachedCandidates);
+      } else {
+        var filtered = cachedCandidates.filter(function (c) {
+          return detectCandidateProvider(c).id === currentAdminFilter;
+        });
+        renderCandidateCards(filtered);
+      }
+    }
+
+    function initAdminFilterPills() {
+      var filterContainer = document.getElementById("admin-provider-filters");
+      if (!filterContainer) return;
+
+      filterContainer.querySelectorAll("[data-admin-filter]").forEach(function (btn) {
+        btn.addEventListener("click", function (e) {
+          e.preventDefault();
+          var filter = this.getAttribute("data-admin-filter") || "all";
+          currentAdminFilter = filter;
+
+          filterContainer.querySelectorAll("[data-admin-filter]").forEach(function (b) {
+            b.className = "px-3 py-1.5 rounded-xl text-xs font-bold transition-all bg-theme-light dark:bg-darkmode-theme-light text-text/80 dark:text-darkmode-text/80 hover:text-primary border border-border/70 dark:border-darkmode-border/70 cursor-pointer whitespace-nowrap";
+          });
+          this.className = "px-3 py-1.5 rounded-xl text-xs font-bold transition-all bg-primary text-white shadow-xs cursor-pointer border-none whitespace-nowrap";
+
+          applyAdminFilter();
+        });
+      });
+    }
+
     function fetchPendingCandidates() {
       if (!pendingGrid) return;
       pendingGrid.innerHTML = '<div class="col-span-full text-center py-12 text-xs font-semibold text-text/90 dark:text-darkmode-text/90"><i class="fa-solid fa-spinner fa-spin text-lg text-primary block mb-2"></i>Loading candidate approval queue...</div>';
@@ -2314,68 +2532,14 @@ function renderPulses(pulses) {
           cachedCandidates = [];
           pendingGrid.innerHTML = '<div class="col-span-full text-center py-12 bg-body dark:bg-darkmode-body border border-border/80 rounded-3xl text-xs text-text/90 dark:text-darkmode-text/90 font-semibold"><i class="fa-solid fa-circle-check text-emerald-500 text-xl block mb-2"></i>All candidate posts reviewed! No pending approvals in queue.</div>';
           if (pendingCountBadge) pendingCountBadge.textContent = "0";
+          updateAdminFilterCounts();
           return;
         }
 
         cachedCandidates = candidates;
         if (pendingCountBadge) pendingCountBadge.textContent = String(candidates.length);
-
-        var html = "";
-        candidates.forEach(function (c) {
-          var tagsHtml = "";
-          if (Array.isArray(c.tags)) {
-            c.tags.forEach(function (tag) {
-              tagsHtml += '<span class="text-[10px] font-semibold text-primary/80 bg-primary/10 px-2 py-0.5 rounded-md">' + escapeHtml(tag) + '</span> ';
-            });
-          }
-
-          var formattedCandidateContent = escapeHtml(c.content || "")
-            .replace(/^&lt;p&gt;/i, "")
-            .replace(/&lt;\/p&gt;$/i, "")
-            .replace(/&lt;a[\s\S]*?&gt;/gi, "")
-            .replace(/&lt;\/a&gt;/gi, "")
-            .trim();
-
-          var formattedContentHtml = '<div class="text-sm text-text/90 dark:text-darkmode-text/90 mb-3.5 leading-relaxed space-y-2">' + 
-            formattedCandidateContent
-              .replace(/(?:🎯\s*(?:\*\*)?What Changed(?:\*\*)?:?)/gi, '<div class="font-semibold text-slate-900 dark:text-slate-100"><span class="text-emerald-500 font-bold mr-1">🎯 What Changed:</span>')
-              .replace(/(?:💡\s*(?:\*\*)?(?:Engineering Impact|Impact)(?:\*\*)?:?)/gi, '</div><div class="font-normal text-text/80 dark:text-darkmode-text/80"><span class="text-amber-500 font-bold mr-1">💡 Impact:</span>')
-              .replace(/\n\n+/g, '</div><div class="mt-1">')
-              .replace(/\n/g, '<br/>') + 
-          '</div>';
-
-          var linkHtml = "";
-          if (c.link_url) {
-            linkHtml = '<div class="mb-2"><a href="' + escapeHtml(c.link_url) + '" target="_blank" rel="noopener noreferrer" class="text-[11px] font-bold text-primary hover:underline inline-flex items-center gap-1"><i class="fa-solid fa-link text-[10px]"></i> View Source <i class="fa-solid fa-arrow-up-right-from-square text-[9px]"></i></a></div>';
-          }
-
-          var reasonHtml = c.eligibility_reason ? '<div class="mb-4 bg-amber-500/10 dark:bg-amber-500/15 border border-amber-500/30 rounded-2xl p-3 text-xs text-amber-800 dark:text-amber-300 font-medium"><i class="fa-solid fa-lightbulb text-amber-500 mr-1.5"></i> <strong>Grounding Reason:</strong> ' + escapeHtml(c.eligibility_reason) + '</div>' : '';
-
-          html += '<div class="bg-body dark:bg-darkmode-body border border-border/80 dark:border-darkmode-border/80 rounded-3xl p-6 shadow-xs flex flex-col justify-between" data-candidate-id="' + c.id + '">' +
-            '<div>' +
-              '<div class="flex items-center justify-between gap-2 mb-2">' +
-                '<span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-amber-500/20 text-amber-600 border border-amber-500/30">PENDING REVIEW</span>' +
-                '<span class="text-[10px] font-medium text-text/90 dark:text-darkmode-text/90">' + formatDate(c.created_at) + '</span>' +
-              '</div>' +
-              '<h4 class="text-base sm:text-lg font-extrabold text-dark dark:text-darkmode-dark mb-2.5 leading-snug">' + escapeHtml(c.title) + '</h4>' +
-              formattedContentHtml +
-              linkHtml +
-              reasonHtml +
-              '<div class="flex flex-wrap gap-1 mb-4">' + tagsHtml + '</div>' +
-            '</div>' +
-
-            '<div class="pt-3 border-t border-border/40 dark:border-darkmode-border/40 flex items-center justify-between gap-2 flex-wrap sm:flex-nowrap shrink-0">' +
-              '<button data-action-reject="' + c.id + '" class="px-3 py-2 rounded-xl text-xs font-bold transition-all border-none cursor-pointer" style="background-color: rgba(244, 63, 94, 0.12); color: #f43f5e;"><i class="fa-solid fa-xmark mr-1"></i> Reject</button>' +
-              '<div class="flex items-center gap-2">' +
-                '<button data-action-edit="' + c.id + '" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-primary/10 hover:bg-primary/20 text-primary border border-primary/20 transition-all cursor-pointer inline-flex items-center gap-1"><i class="fa-solid fa-pen-nib text-[11px]"></i> Refine TL;DR</button>' +
-                '<button data-action-approve="' + c.id + '" class="px-4 py-2 rounded-xl text-xs font-extrabold shadow-sm transition-all border-none cursor-pointer" style="background-color: #059669; color: #ffffff;"><i class="fa-solid fa-check mr-1.5"></i> Quick Approve</button>' +
-              '</div>' +
-            '</div>' +
-          '</div>';
-        });
-
-        pendingGrid.innerHTML = html;
-        bindCandidateActions();
+        updateAdminFilterCounts();
+        applyAdminFilter();
       })
       .catch(function (err) {
         console.error("Error fetching candidates:", err);
@@ -2438,7 +2602,8 @@ function renderPulses(pulses) {
       });
     }
 
-    // Initial fetch - load candidate approval queue immediately
+    // Initial setup & fetch
+    initAdminFilterPills();
     fetchPendingCandidates();
   }
 

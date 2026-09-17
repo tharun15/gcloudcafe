@@ -77,4 +77,50 @@ describe('Newsroom Scraper & Feed Processing Engine', () => {
     expect(deduplicated[0].title).toBe('AWS DevOps Update');
     expect(deduplicated[1].title).toBe('OpenShift Service Mesh Guide');
   });
+
+  it('correctly maps cloud providers from tags, title, or url', () => {
+    function detectProvider(c) {
+      const text = ((Array.isArray(c.tags) ? c.tags.join(" ") : "") + " " + (c.title || "") + " " + (c.link_url || "")).toLowerCase();
+      if (text.includes("google") || text.includes("gcp") || text.includes("bigquery") || text.includes("vertex")) return "gcp";
+      if (text.includes("aws") || text.includes("amazon") || text.includes("s3") || text.includes("ec2")) return "aws";
+      if (text.includes("kubernetes") || text.includes("k8s") || text.includes("cncf")) return "k8s";
+      if (text.includes("openshift") || text.includes("redhat")) return "openshift";
+      return "other";
+    }
+
+    expect(detectProvider({ title: "Google Cloud Forrester Leader", tags: ["#GoogleCloud"] })).toBe("gcp");
+    expect(detectProvider({ title: "Amazon WorkSpaces Blackwell", tags: ["#AWS"] })).toBe("aws");
+    expect(detectProvider({ title: "K8s v1.37 Storage Beta", tags: ["#Kubernetes"] })).toBe("k8s");
+    expect(detectProvider({ title: "Red Hat OpenShift AI", tags: ["#OpenShift"] })).toBe("openshift");
+  });
+
+  it('guarantees balanced HTML output without dangling closing tags when What Changed is absent', () => {
+    function safeFormatCandidateHtml(text) {
+      const raw = (text || "").trim();
+      const impactMatch = raw.match(/(?:💡\s*(?:\*\*)?Impact(?:\*\*)?:?)([\s\S]+)$/i);
+      let whatChanged = "";
+      let impact = "";
+
+      if (impactMatch) {
+        impact = impactMatch[1].trim();
+        const before = raw.substring(0, impactMatch.index).trim();
+        const wcMatch = before.match(/(?:🎯\s*(?:\*\*)?What Changed(?:\*\*)?:?)([\s\S]+)$/i);
+        whatChanged = wcMatch ? wcMatch[1].trim() : before;
+      } else {
+        const wcMatch = raw.match(/(?:🎯\s*(?:\*\*)?What Changed(?:\*\*)?:?)([\s\S]+)$/i);
+        whatChanged = wcMatch ? wcMatch[1].trim() : raw;
+      }
+
+      let out = '<div>';
+      if (whatChanged) out += `<span>${whatChanged}</span>`;
+      if (impact) out += `<span>${impact}</span>`;
+      out += '</div>';
+      return out;
+    }
+
+    const unformatted = "A raw release note without standard emojis or sections.";
+    const result = safeFormatCandidateHtml(unformatted);
+    expect(result).toBe("<div><span>A raw release note without standard emojis or sections.</span></div>");
+    expect(result.startsWith("<div>") && result.endsWith("</div>")).toBe(true);
+  });
 });

@@ -12,34 +12,7 @@
     {{ end }}
   {{ end }}
 
-  <!-- Top Navigation Ribbon / Fast Telemetry Bar -->
-  <section class="hub-nav-ribbon sticky top-[68px] z-30 py-3.5 bg-body/80 dark:bg-[#070b14]/90 border-b border-border/60 dark:border-slate-800/80 backdrop-blur-md transition-all duration-300">
-    <div class="container">
-      <div class="flex items-center justify-between gap-4 overflow-x-auto no-scrollbar py-0.5">
-        
-        <!-- Quick Hub Switcher -->
-        <div class="flex items-center gap-1.5 p-1 rounded-2xl bg-slate-100 dark:bg-slate-900/90 border border-border/80 dark:border-slate-800 shrink-0">
-          <a href="{{ site.Home.RelPermalink }}" 
-             class="px-4 py-1.5 rounded-xl text-xs font-extrabold bg-primary text-white shadow-xs no-underline flex items-center gap-2">
-            <i class="fa-solid fa-layer-group text-xs"></i> Architecture Guides
-          </a>
-          <a href="{{ `pulse/` | relLangURL }}" 
-             class="px-4 py-1.5 rounded-xl text-xs font-extrabold text-text/80 dark:text-slate-300 hover:text-primary hover:bg-slate-200/60 dark:hover:bg-slate-800 transition-all no-underline flex items-center gap-2">
-            <i class="fa-solid fa-tower-broadcast text-emerald-500 animate-pulse text-xs"></i> Live Pulse
-          </a>
-          <a href="{{ `series/` | relLangURL }}" 
-             class="px-4 py-1.5 rounded-xl text-xs font-extrabold text-text/80 dark:text-slate-300 hover:text-primary hover:bg-slate-200/60 dark:hover:bg-slate-800 transition-all no-underline flex items-center gap-2">
-            <i class="fa-solid fa-graduation-cap text-xs"></i> Learning Tracks
-          </a>
-        </div>
-
-
-
-      </div>
-    </div>
-  </section>
-
-  <!-- Hero Section -->
+  <!-- Hero Section (Compact Above-the-Fold Proportions) -->
   {{ partial "components/blog-hero" (dict
     "Featured" $featured
     "Posts" $posts
@@ -51,61 +24,70 @@
   }}
 
   <!-- Main Architecture Grid & Interactive Topics Feed -->
-  <section class="py-12 relative" aria-labelledby="home-posts-heading">
-    
-    <!-- Cyber Grid Ambient Background -->
-    <div class="absolute inset-0 pointer-events-none cyber-grid-ambient opacity-50 dark:opacity-30"></div>
+  <section class="pt-8 pb-16 relative" aria-labelledby="home-posts-heading">
+    <div class="container max-w-6xl relative">
 
-    <div class="container relative">
-      
-      <!-- Feed Header -->
-      <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10 pb-6 border-b border-border/80 dark:border-slate-800">
-        <div>
-          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-extrabold uppercase tracking-widest bg-primary/10 text-primary border border-primary/20 mb-3">
-            <i class="fa-solid fa-cubes text-[11px]"></i> Engineering Index
-          </div>
-          <h2 id="home-posts-heading" class="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-dark dark:text-white tracking-tight leading-tight mb-2">
-            Latest Field Manuals & Architecture
+      <!-- Section Discovery Header -->
+      <div class="flex items-center justify-between gap-4 mb-4 pb-3 border-b border-border/60 dark:border-slate-800/80">
+        <div class="flex items-center gap-2.5">
+          <span class="w-2.5 h-2.5 rounded-full bg-primary"></span>
+          <h2 id="home-posts-heading" class="text-xl sm:text-2xl font-black text-dark dark:text-white tracking-tight">
+            Latest Articles
           </h2>
-          <p class="text-sm sm:text-base text-text/80 dark:text-slate-300 max-w-2xl font-normal leading-relaxed m-0">
-            Comprehensive, zero-fluff technical deep-dives into Kubernetes internals, TLS cryptography, Linux systems, and cloud infrastructure.
-          </p>
+          <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-primary/10 text-primary border border-primary/20 font-mono">
+            {{ len $posts }}
+          </span>
         </div>
-
-        <!-- Search Action Button -->
-        <button
-          type="button"
-          data-target="search-modal"
-          class="search-trigger flex items-center gap-2.5 px-4 py-2.5 rounded-2xl text-xs font-bold text-dark dark:text-white bg-slate-100 hover:bg-slate-200 dark:bg-slate-900/90 dark:hover:bg-slate-800 border border-border dark:border-slate-700 shadow-sm transition-all cursor-pointer shrink-0"
-          aria-label="Search all articles">
-          <i class="fa-solid fa-magnifying-glass text-primary"></i>
-          <span>Quick Find</span>
-          <kbd class="px-2 py-0.5 text-[10px] font-mono font-extrabold rounded bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-600 dark:text-slate-300 shadow-xs">Ctrl K</kbd>
-        </button>
       </div>
 
-      <!-- Interactive Topic Pills -->
+      <!-- Interactive Topic Filter Pills Bar with Full Visibility & Desktop Chevrons -->
       {{ $categories := site.Taxonomies.categories }}
       {{ if gt (len $categories) 0 }}
-        <div class="flex items-center gap-2 overflow-x-auto no-scrollbar pb-6 mb-8">
-          <span class="text-xs font-extrabold uppercase tracking-widest text-text/60 dark:text-slate-400 mr-2 shrink-0">Topics:</span>
-          <a href="{{ `blog/` | relLangURL }}" 
-             class="px-4 py-2 rounded-xl text-xs font-bold bg-primary text-white shadow-sm border border-primary no-underline shrink-0 flex items-center gap-2">
-            <span>All Manuals</span>
-            <span class="px-1.5 py-0.5 rounded-md bg-white/20 text-[10px] font-mono">{{ len $posts }}</span>
-          </a>
-          {{ range $name, $items := $categories }}
-            <a href="{{ $items.Page.RelPermalink }}" 
-               class="px-4 py-2 rounded-xl text-xs font-bold bg-body dark:bg-[#0c1220] hover:bg-primary/10 text-text/85 dark:text-slate-300 hover:text-primary border border-border/80 dark:border-slate-800 hover:border-primary/40 transition-all no-underline shrink-0 flex items-center gap-2">
-              <span>{{ $items.Page.Title }}</span>
-              <span class="px-1.5 py-0.5 rounded-md bg-slate-200/70 dark:bg-slate-800 text-[10px] font-mono text-text/70 dark:text-slate-400">{{ len $items }}</span>
-            </a>
-          {{ end }}
+        <div class="relative w-full mb-8 sm:mb-10">
+          <div class="flex items-center gap-2">
+            <!-- Topics Label -->
+            <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800/80 text-text/70 dark:text-slate-300 text-xs font-bold uppercase tracking-wider font-mono shrink-0 border border-border/60 dark:border-slate-700/60">
+              <i class="fa-solid fa-sliders text-primary text-[11px]"></i>
+              <span>Topics</span>
+            </div>
+
+            <!-- Scroll Left Arrow (Desktop) -->
+            <button type="button" 
+                    aria-label="Scroll topics left"
+                    onclick="document.getElementById('topics-scroller')?.scrollBy({left: -200, behavior: 'smooth'})"
+                    class="hidden sm:flex w-7 h-7 rounded-lg items-center justify-center bg-body dark:bg-slate-800 border border-border/80 dark:border-slate-700 text-text/60 dark:text-slate-400 hover:text-primary hover:border-primary/40 transition-all shrink-0 shadow-xs cursor-pointer">
+              <i class="fa-solid fa-chevron-left text-[10px]"></i>
+            </button>
+
+            <!-- Scrollable Pills Track (Always starts at 0, no clipped items) -->
+            <div id="topics-scroller" class="flex items-center gap-2 overflow-x-auto no-scrollbar scroll-smooth py-1 px-0.5 w-full">
+              <a href="{{ `blog/` | relLangURL }}" 
+                 class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-primary text-white shadow-xs border border-primary no-underline shrink-0 flex items-center gap-1.5 hover:bg-primary/90 transition-all">
+                <span>All Manuals</span>
+                <span class="px-1.5 py-0.2 rounded-md bg-white/20 text-[10px] font-mono">{{ len $posts }}</span>
+              </a>
+              {{ range $name, $items := $categories }}
+                <a href="{{ $items.Page.RelPermalink }}" 
+                   class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-body dark:bg-[#0c1220] hover:bg-primary/10 text-text/85 dark:text-slate-300 hover:text-primary border border-border/80 dark:border-slate-800 hover:border-primary/40 transition-all no-underline shrink-0 flex items-center gap-1.5">
+                  <span>{{ $items.Page.Title }}</span>
+                  <span class="px-1.5 py-0.2 rounded-md bg-slate-200/70 dark:bg-slate-800 text-[10px] font-mono text-text/70 dark:text-slate-400">{{ len $items }}</span>
+                </a>
+              {{ end }}
+            </div>
+
+            <!-- Scroll Right Arrow (Desktop) -->
+            <button type="button" 
+                    aria-label="Scroll topics right"
+                    onclick="document.getElementById('topics-scroller')?.scrollBy({left: 200, behavior: 'smooth'})"
+                    class="hidden sm:flex w-7 h-7 rounded-lg items-center justify-center bg-body dark:bg-slate-800 border border-border/80 dark:border-slate-700 text-text/60 dark:text-slate-400 hover:text-primary hover:border-primary/40 transition-all shrink-0 shadow-xs cursor-pointer">
+              <i class="fa-solid fa-chevron-right text-[10px]"></i>
+            </button>
+          </div>
         </div>
       {{ end }}
 
-      <!-- Next-Gen 3-Column Card Grid -->
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+      <!-- Next-Gen 3-Column Card Grid (Visible Above the Fold) -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-7 lg:gap-8">
         {{ $gridPosts := $posts }}
         {{ with $featured }}
           {{ $gridPosts = where $posts ".RelPermalink" "!=" .RelPermalink }}
@@ -126,51 +108,74 @@
 
       <!-- View All Action Bar -->
       {{ if gt (len $posts) 9 }}
-        <div class="mt-12 text-center">
+        <div class="mt-10 text-center">
           <a class="inline-flex items-center gap-3 px-8 py-3.5 rounded-2xl text-sm font-extrabold bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/20 hover:scale-105 transition-all no-underline" 
              href="{{ `blog/` | relLangURL }}">
-            <span>Browse All {{ len $posts }} Field Manuals</span>
+            <span>Browse all</span>
             <i class="fa-solid fa-arrow-right text-xs"></i>
           </a>
         </div>
       {{ end }}
 
-      <!-- Real Telemetry Dashboard Bar -->
-      {{ $allPosts := (where site.RegularPages "Section" "blog") }}
-      {{ $totalWords := 0 }}
-      {{ range $allPosts }}
-        {{ $totalWords = add $totalWords .WordCount }}
-      {{ end }}
-      <div class="mt-16 p-6 sm:p-8 rounded-3xl bg-body dark:bg-[#0c1220] border border-border/80 dark:border-slate-800 shadow-xl">
-        <div class="flex items-center justify-between mb-6 pb-4 border-b border-border/60 dark:border-slate-800/80">
-          <div class="flex items-center gap-2.5">
-            <span class="w-3 h-3 rounded-full bg-emerald-500 animate-pulse"></span>
-            <span class="text-xs font-mono font-extrabold uppercase tracking-wider text-dark dark:text-white">GCloud Cafe Platform Telemetry</span>
-          </div>
-          <span class="text-[11px] font-mono text-text/60 dark:text-slate-400">STATUS: ALL SYSTEMS NOMINAL</span>
+      <!-- Curated Learning Pathways -->
+      <div class="mt-14 p-8 sm:p-10 rounded-3xl bg-body dark:bg-[#0c1220] border border-border/80 dark:border-slate-800 shadow-xl">
+        <div class="max-w-2xl mb-8">
+          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-extrabold uppercase tracking-wider bg-primary/10 text-primary border border-primary/20 mb-2">
+            Structured Pathways
+          </span>
+          <h3 class="text-2xl font-black text-dark dark:text-white">
+            Curated Engineering Learning Tracks
+          </h3>
+          <p class="text-sm text-text/80 dark:text-slate-300 mt-1 leading-relaxed">
+            Step-by-step masterclasses designed to take you from foundational concepts to battle-tested production implementation.
+          </p>
         </div>
 
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 font-mono">
-          <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-border/60 dark:border-slate-800">
-            <div class="text-[11px] font-bold text-text/70 dark:text-slate-400 uppercase mb-1">Architecture Blueprints</div>
-            <div class="text-xl sm:text-2xl font-black text-primary">{{ len $allPosts }}</div>
-            <div class="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold mt-1">● VERIFIED LABS</div>
-          </div>
-          <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-border/60 dark:border-slate-800">
-            <div class="text-[11px] font-bold text-text/70 dark:text-slate-400 uppercase mb-1">Technical Words</div>
-            <div class="text-xl sm:text-2xl font-black text-indigo-600 dark:text-indigo-400">{{ $totalWords }}</div>
-            <div class="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold mt-1">● OPEN ACCESS</div>
-          </div>
-          <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-border/60 dark:border-slate-800">
-            <div class="text-[11px] font-bold text-text/70 dark:text-slate-400 uppercase mb-1">Community Feedback</div>
-            <div class="text-xl sm:text-2xl font-black text-emerald-600 dark:text-emerald-400">100%</div>
-            <div class="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold mt-1">● REALTIME VOTES</div>
-          </div>
-          <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-border/60 dark:border-slate-800">
-            <div class="text-[11px] font-bold text-text/70 dark:text-slate-400 uppercase mb-1">Focus Domains</div>
-            <div class="text-xl sm:text-2xl font-black text-amber-600 dark:text-amber-400">{{ len $categories }}</div>
-            <div class="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold mt-1">● K8s · TLS · Cloud · OS</div>
-          </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <a href="{{ `categories/kubernetes/` | relLangURL }}" class="p-6 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-border/70 dark:border-slate-800 hover:border-primary/50 transition-all no-underline group flex flex-col justify-between">
+            <div>
+              <span class="text-2xl mb-3 block">☸️</span>
+              <h4 class="font-bold text-base text-dark dark:text-white group-hover:text-primary transition-colors mb-1.5">
+                Kubernetes & CKA Labs
+              </h4>
+              <p class="text-xs text-text/80 dark:text-slate-400 leading-relaxed">
+                Pod lifecycles, ingress controllers, RBAC security, and speed tricks.
+              </p>
+            </div>
+            <span class="text-xs font-bold text-primary font-mono mt-4 inline-flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+              Start Track →
+            </span>
+          </a>
+
+          <a href="{{ `categories/security/` | relLangURL }}" class="p-6 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-border/70 dark:border-slate-800 hover:border-primary/50 transition-all no-underline group flex flex-col justify-between">
+            <div>
+              <span class="text-2xl mb-3 block">🔐</span>
+              <h4 class="font-bold text-base text-dark dark:text-white group-hover:text-primary transition-colors mb-1.5">
+                Zero-Trust TLS & mTLS
+              </h4>
+              <p class="text-xs text-text/80 dark:text-slate-400 leading-relaxed">
+                Wire protocol handshakes, keystore architecture, cert-manager & 3 AM incident response.
+              </p>
+            </div>
+            <span class="text-xs font-bold text-primary font-mono mt-4 inline-flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+              Start Track →
+            </span>
+          </a>
+
+          <a href="{{ `categories/google-cloud/` | relLangURL }}" class="p-6 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-border/70 dark:border-slate-800 hover:border-primary/50 transition-all no-underline group flex flex-col justify-between">
+            <div>
+              <span class="text-2xl mb-3 block">☁️</span>
+              <h4 class="font-bold text-base text-dark dark:text-white group-hover:text-primary transition-colors mb-1.5">
+                Google Cloud PCA Mastery
+              </h4>
+              <p class="text-xs text-text/80 dark:text-slate-400 leading-relaxed">
+                Case studies, multi-region failover, BigQuery analytics, and exam renewals.
+              </p>
+            </div>
+            <span class="text-xs font-bold text-primary font-mono mt-4 inline-flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+              Start Track →
+            </span>
+          </a>
         </div>
       </div>
 
