@@ -24,42 +24,29 @@
   }}
 
   <!-- Main Architecture Grid & Interactive Topics Feed -->
-  <section class="pt-3 pb-16 relative" aria-labelledby="home-posts-heading">
+  <section class="pt-2 pb-16 relative" aria-labelledby="home-posts-heading">
     <div class="container max-w-6xl relative">
-      
-      <!-- Streamlined Feed Header -->
-      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 pb-4 border-b border-border/70 dark:border-slate-800">
-        <div>
-          <h2 id="home-posts-heading" class="text-lg sm:text-xl font-extrabold text-dark dark:text-white tracking-tight leading-tight flex items-center gap-2">
-            <span class="w-2 h-2 rounded-full bg-primary"></span> Field Manuals & Architecture Blueprints
-          </h2>
-        </div>
+      <h2 id="home-posts-heading" class="sr-only">Field Manuals & Architecture Blueprints</h2>
 
-        <!-- Live Pulse Quick Shortcut -->
-        <a href="{{ `pulse/` | relLangURL }}" 
-           class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-extrabold bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30 hover:bg-emerald-500/20 transition-all no-underline shrink-0">
-          <i class="fa-solid fa-tower-broadcast text-emerald-500 animate-pulse text-xs"></i>
-          <span>Live Pulse</span>
-        </a>
-      </div>
-
-      <!-- Interactive Topic Pills -->
+      <!-- Centered Interactive Topic Filter Pills (Taking ~3/4 of the row space) -->
       {{ $categories := site.Taxonomies.categories }}
       {{ if gt (len $categories) 0 }}
-        <div class="flex items-center gap-2 overflow-x-auto no-scrollbar py-1 mb-6 sm:mb-8">
-          <span class="text-xs font-extrabold uppercase tracking-widest text-text/60 dark:text-slate-400 mr-2 shrink-0 font-mono">Topics:</span>
-          <a href="{{ `blog/` | relLangURL }}" 
-             class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-primary text-white shadow-xs border border-primary no-underline shrink-0 flex items-center gap-1.5">
-            <span>All Manuals</span>
-            <span class="px-1.5 py-0.2 rounded-md bg-white/20 text-[10px] font-mono">{{ len $posts }}</span>
-          </a>
-          {{ range $name, $items := $categories }}
-            <a href="{{ $items.Page.RelPermalink }}" 
-               class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-body dark:bg-[#0c1220] hover:bg-primary/10 text-text/85 dark:text-slate-300 hover:text-primary border border-border/80 dark:border-slate-800 hover:border-primary/40 transition-all no-underline shrink-0 flex items-center gap-1.5">
-              <span>{{ $items.Page.Title }}</span>
-              <span class="px-1.5 py-0.2 rounded-md bg-slate-200/70 dark:bg-slate-800 text-[10px] font-mono text-text/70 dark:text-slate-400">{{ len $items }}</span>
+        <div class="w-full max-w-4xl mx-auto mb-8 sm:mb-10">
+          <div class="flex items-center gap-2 overflow-x-auto no-scrollbar py-1 px-2 w-full justify-start sm:justify-center">
+            <span class="text-xs font-bold uppercase tracking-wider text-text/60 dark:text-slate-400 mr-1 shrink-0 font-mono">Topics:</span>
+            <a href="{{ `blog/` | relLangURL }}" 
+               class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-primary text-white shadow-xs border border-primary no-underline shrink-0 flex items-center gap-1.5 hover:bg-primary/90 transition-all">
+              <span>All Manuals</span>
+              <span class="px-1.5 py-0.2 rounded-md bg-white/20 text-[10px] font-mono">{{ len $posts }}</span>
             </a>
-          {{ end }}
+            {{ range $name, $items := $categories }}
+              <a href="{{ $items.Page.RelPermalink }}" 
+                 class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-body dark:bg-[#0c1220] hover:bg-primary/10 text-text/85 dark:text-slate-300 hover:text-primary border border-border/80 dark:border-slate-800 hover:border-primary/40 transition-all no-underline shrink-0 flex items-center gap-1.5">
+                <span>{{ $items.Page.Title }}</span>
+                <span class="px-1.5 py-0.2 rounded-md bg-slate-200/70 dark:bg-slate-800 text-[10px] font-mono text-text/70 dark:text-slate-400">{{ len $items }}</span>
+              </a>
+            {{ end }}
+          </div>
         </div>
       {{ end }}
 
