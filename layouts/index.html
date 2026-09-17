@@ -12,7 +12,7 @@
     {{ end }}
   {{ end }}
 
-  <!-- Hero Section -->
+  <!-- Hero Section (Compact Above-the-Fold Proportions) -->
   {{ partial "components/blog-hero" (dict
     "Featured" $featured
     "Posts" $posts
@@ -24,26 +24,20 @@
   }}
 
   <!-- Main Architecture Grid & Interactive Topics Feed -->
-  <section class="py-10 relative" aria-labelledby="home-posts-heading">
+  <section class="pt-2 pb-12 relative" aria-labelledby="home-posts-heading">
     <div class="container max-w-6xl relative">
       
-      <!-- Feed Header -->
-      <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8 pb-6 border-b border-border/80 dark:border-slate-800">
+      <!-- Streamlined Feed Header -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3 pb-3 border-b border-border/70 dark:border-slate-800">
         <div>
-          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-extrabold uppercase tracking-widest bg-primary/10 text-primary border border-primary/20 mb-3">
-            <i class="fa-solid fa-layer-group text-[11px]"></i> Engineering Index
-          </div>
-          <h2 id="home-posts-heading" class="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-dark dark:text-white tracking-tight leading-tight mb-2">
-            Field Manuals & Architecture Blueprints
+          <h2 id="home-posts-heading" class="text-lg sm:text-xl font-extrabold text-dark dark:text-white tracking-tight leading-tight flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-primary"></span> Field Manuals & Architecture Blueprints
           </h2>
-          <p class="text-sm sm:text-base text-text/80 dark:text-slate-300 max-w-2xl font-normal leading-relaxed m-0">
-            Comprehensive, zero-fluff technical deep-dives into Kubernetes internals, TLS cryptography, Linux systems, and cloud infrastructure.
-          </p>
         </div>
 
         <!-- Live Pulse Quick Shortcut -->
         <a href="{{ `pulse/` | relLangURL }}" 
-           class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-extrabold bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30 hover:bg-emerald-500/20 transition-all no-underline shrink-0">
+           class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-extrabold bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30 hover:bg-emerald-500/20 transition-all no-underline shrink-0">
           <i class="fa-solid fa-tower-broadcast text-emerald-500 animate-pulse text-xs"></i>
           <span>Live Pulse</span>
         </a>
@@ -52,25 +46,25 @@
       <!-- Interactive Topic Pills -->
       {{ $categories := site.Taxonomies.categories }}
       {{ if gt (len $categories) 0 }}
-        <div class="flex items-center gap-2 overflow-x-auto no-scrollbar pb-6 mb-8">
+        <div class="flex items-center gap-2 overflow-x-auto no-scrollbar pb-2 mb-5">
           <span class="text-xs font-extrabold uppercase tracking-widest text-text/60 dark:text-slate-400 mr-2 shrink-0 font-mono">Topics:</span>
           <a href="{{ `blog/` | relLangURL }}" 
-             class="px-4 py-2 rounded-xl text-xs font-bold bg-primary text-white shadow-sm border border-primary no-underline shrink-0 flex items-center gap-2">
+             class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-primary text-white shadow-xs border border-primary no-underline shrink-0 flex items-center gap-1.5">
             <span>All Manuals</span>
-            <span class="px-1.5 py-0.5 rounded-md bg-white/20 text-[10px] font-mono">{{ len $posts }}</span>
+            <span class="px-1.5 py-0.2 rounded-md bg-white/20 text-[10px] font-mono">{{ len $posts }}</span>
           </a>
           {{ range $name, $items := $categories }}
             <a href="{{ $items.Page.RelPermalink }}" 
-               class="px-4 py-2 rounded-xl text-xs font-bold bg-body dark:bg-[#0c1220] hover:bg-primary/10 text-text/85 dark:text-slate-300 hover:text-primary border border-border/80 dark:border-slate-800 hover:border-primary/40 transition-all no-underline shrink-0 flex items-center gap-2">
+               class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-body dark:bg-[#0c1220] hover:bg-primary/10 text-text/85 dark:text-slate-300 hover:text-primary border border-border/80 dark:border-slate-800 hover:border-primary/40 transition-all no-underline shrink-0 flex items-center gap-1.5">
               <span>{{ $items.Page.Title }}</span>
-              <span class="px-1.5 py-0.5 rounded-md bg-slate-200/70 dark:bg-slate-800 text-[10px] font-mono text-text/70 dark:text-slate-400">{{ len $items }}</span>
+              <span class="px-1.5 py-0.2 rounded-md bg-slate-200/70 dark:bg-slate-800 text-[10px] font-mono text-text/70 dark:text-slate-400">{{ len $items }}</span>
             </a>
           {{ end }}
         </div>
       {{ end }}
 
-      <!-- Next-Gen 3-Column Card Grid -->
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+      <!-- Next-Gen 3-Column Card Grid (Visible Above the Fold) -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-7">
         {{ $gridPosts := $posts }}
         {{ with $featured }}
           {{ $gridPosts = where $posts ".RelPermalink" "!=" .RelPermalink }}
@@ -91,7 +85,7 @@
 
       <!-- View All Action Bar -->
       {{ if gt (len $posts) 9 }}
-        <div class="mt-12 text-center">
+        <div class="mt-10 text-center">
           <a class="inline-flex items-center gap-3 px-8 py-3.5 rounded-2xl text-sm font-extrabold bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/20 hover:scale-105 transition-all no-underline" 
              href="{{ `blog/` | relLangURL }}">
             <span>Browse All {{ len $posts }} Field Manuals</span>
@@ -100,8 +94,8 @@
         </div>
       {{ end }}
 
-      <!-- Curated Learning Pathways (Replacing Telemetry Clutter) -->
-      <div class="mt-16 p-8 sm:p-10 rounded-3xl bg-body dark:bg-[#0c1220] border border-border/80 dark:border-slate-800 shadow-xl">
+      <!-- Curated Learning Pathways -->
+      <div class="mt-14 p-8 sm:p-10 rounded-3xl bg-body dark:bg-[#0c1220] border border-border/80 dark:border-slate-800 shadow-xl">
         <div class="max-w-2xl mb-8">
           <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-extrabold uppercase tracking-wider bg-primary/10 text-primary border border-primary/20 mb-2">
             Structured Pathways

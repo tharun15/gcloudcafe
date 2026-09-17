@@ -7,57 +7,57 @@
   {{ with site.GetPage (printf "/authors/%s" $authorSlug) }}
     {{ $authorName = .Title }}
   {{ end }}
-  {{ $teaser := $page.Params.description | default $page.Summary | plainify | truncate 220 }}
+  {{ $teaser := $page.Params.description | default $page.Summary | plainify | truncate 180 }}
 
-  <section class="py-8 sm:py-12" aria-labelledby="featured-post-title">
+  <section class="pt-4 pb-2 sm:pt-6 sm:pb-3" aria-labelledby="featured-post-title">
     <div class="container max-w-6xl">
-      <div class="rounded-3xl p-7 sm:p-10 lg:p-12 bg-body dark:bg-[#0c1220] border border-border/80 dark:border-slate-800 shadow-lg hover:shadow-xl transition-all duration-300">
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+      <div class="rounded-3xl p-5 sm:p-6 lg:p-7 bg-body dark:bg-[#0c1220] border border-border/80 dark:border-slate-800 shadow-md hover:shadow-lg transition-all duration-300">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-center">
           
           <!-- Left Column: Editorial Headline & Meta -->
           <div class="lg:col-span-7 flex flex-col justify-between">
             <div>
-              <div class="flex items-center flex-wrap gap-2.5 mb-4">
-                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-extrabold uppercase tracking-wider bg-amber-500/15 text-amber-800 dark:text-amber-300 border border-amber-500/30">
-                  <i class="fa-solid fa-star text-[10px]"></i> Featured Architecture
+              <div class="flex items-center flex-wrap gap-2 mb-2.5">
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-extrabold uppercase tracking-wider bg-amber-500/15 text-amber-800 dark:text-amber-300 border border-amber-500/30">
+                  <i class="fa-solid fa-star text-[9px]"></i> Featured Architecture
                 </span>
                 {{ with index $categories 0 }}
                   <a href="{{ `categories/` | relLangURL }}{{ . | urlize | lower }}/" 
-                     class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-extrabold uppercase tracking-wider bg-primary/10 text-primary border border-primary/25 no-underline hover:scale-105 transition-transform">
-                    <i class="fa-solid fa-tag text-[10px]"></i> {{ . | humanize }}
+                     class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-extrabold uppercase tracking-wider bg-primary/10 text-primary border border-primary/25 no-underline hover:scale-105 transition-transform">
+                    <i class="fa-solid fa-tag text-[9px]"></i> {{ . | humanize }}
                   </a>
                 {{ end }}
-                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-extrabold bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30">
-                  <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30">
+                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
                   Verified Lab
                 </span>
               </div>
 
-              <h1 id="featured-post-title" class="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-dark dark:text-white mb-4 leading-tight hover:text-primary transition-colors">
+              <h1 id="featured-post-title" class="text-xl sm:text-2xl lg:text-[26px] font-extrabold text-dark dark:text-white mb-2 leading-snug hover:text-primary transition-colors">
                 <a href="{{ $page.RelPermalink }}" class="no-underline text-current hover:text-primary">
                   {{ $page.Title }}
                 </a>
               </h1>
 
-              <p class="text-sm sm:text-base text-text/80 dark:text-slate-300 leading-relaxed font-normal mb-8 line-clamp-3">
+              <p class="text-xs sm:text-sm text-text/80 dark:text-slate-300 leading-relaxed font-normal mb-4 line-clamp-2">
                 {{ $teaser }}
               </p>
             </div>
 
             <!-- Author Strip & CTA Button -->
-            <div class="flex items-center justify-between flex-wrap gap-4 pt-6 border-t border-border/60 dark:border-slate-800">
-              <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-full bg-primary/15 dark:bg-primary/25 border border-primary/30 flex items-center justify-center font-bold text-sm text-primary">
+            <div class="flex items-center justify-between flex-wrap gap-3 pt-3.5 border-t border-border/60 dark:border-slate-800">
+              <div class="flex items-center gap-2.5">
+                <div class="w-8 h-8 rounded-full bg-primary/15 dark:bg-primary/25 border border-primary/30 flex items-center justify-center font-bold text-xs text-primary">
                   {{ substr $authorName 0 1 }}
                 </div>
                 <div>
-                  <span class="font-bold text-dark dark:text-white block text-xs">{{ $authorName }}</span>
-                  <span class="text-[11px] text-text/70 dark:text-slate-400 font-mono">{{ $page.Date.Format "Jan 02, 2006" }} · {{ $page.ReadingTime }} min read</span>
+                  <span class="font-bold text-dark dark:text-white block text-xs leading-tight">{{ $authorName }}</span>
+                  <span class="text-[10px] text-text/70 dark:text-slate-400 font-mono">{{ $page.Date.Format "Jan 02, 2006" }} · {{ $page.ReadingTime }} min read</span>
                 </div>
               </div>
 
-              <a href="{{ $page.RelPermalink }}" class="px-6 py-3 rounded-xl text-xs font-extrabold bg-primary hover:bg-primary/90 text-white shadow-md hover:shadow-lg inline-flex items-center gap-2 transition-all no-underline">
-                Read Blueprint <i class="fa-solid fa-arrow-right text-[10px]"></i>
+              <a href="{{ $page.RelPermalink }}" class="px-4 py-2 rounded-xl text-xs font-extrabold bg-primary hover:bg-primary/90 text-white shadow-sm hover:shadow-md inline-flex items-center gap-1.5 transition-all no-underline">
+                Read Blueprint <i class="fa-solid fa-arrow-right text-[9px]"></i>
               </a>
             </div>
           </div>
@@ -65,12 +65,12 @@
           <!-- Right Column: Visual Preview -->
           <div class="lg:col-span-5">
             {{ with .Params.image }}
-              <div class="relative rounded-2xl overflow-hidden aspect-video lg:aspect-[4/3] w-full bg-slate-100 dark:bg-slate-900 border border-border/60 dark:border-slate-800 shadow-sm">
+              <div class="relative rounded-2xl overflow-hidden aspect-video max-h-48 lg:max-h-56 w-full bg-slate-100 dark:bg-slate-900 border border-border/60 dark:border-slate-800 shadow-xs">
                 {{ partial "image" (dict "Src" . "Context" $page "Alt" $page.Title "Class" "w-full h-full object-cover hover:scale-105 transition-transform duration-500 ease-out" "Loading" "eager" "FetchPriority" "high") }}
               </div>
             {{ else }}
-              <div class="relative rounded-2xl aspect-video lg:aspect-[4/3] w-full bg-gradient-to-br from-primary/10 to-indigo-500/10 border border-primary/20 flex items-center justify-center p-8 text-center">
-                <span class="text-base font-extrabold text-primary uppercase tracking-wider">{{ index ($categories | default (slice "Architecture")) 0 }}</span>
+              <div class="relative rounded-2xl aspect-video max-h-48 lg:max-h-56 w-full bg-gradient-to-br from-primary/10 to-indigo-500/10 border border-primary/20 flex items-center justify-center p-6 text-center">
+                <span class="text-sm font-extrabold text-primary uppercase tracking-wider">{{ index ($categories | default (slice "Architecture")) 0 }}</span>
               </div>
             {{ end }}
           </div>
