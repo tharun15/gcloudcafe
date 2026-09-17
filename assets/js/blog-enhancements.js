@@ -1177,7 +1177,7 @@ function renderPulses(pulses) {
           '<i class="fa-brands fa-linkedin text-sm"></i> Share' +
         '</a>';
 
-        html += '<div class="cloud-pulse-card bg-body dark:bg-darkmode-body border border-border/80 dark:border-darkmode-border/80 rounded-3xl p-6 sm:p-7 shadow-xs hover:shadow-md flex flex-col justify-between transition-all hover:border-primary/50 group">' +
+        html += '<div id="pulse-' + escapeHtml(p.id) + '" data-pulse-id="' + escapeHtml(p.id) + '" class="cloud-pulse-card scroll-mt-28 bg-body dark:bg-darkmode-body border border-border/80 dark:border-darkmode-border/80 rounded-3xl p-6 sm:p-7 shadow-xs hover:shadow-md flex flex-col justify-between transition-all hover:border-primary/50 group">' +
           '<div>' +
             '<div class="flex items-center justify-between gap-2 mb-3">' +
               rankBadge +
@@ -1211,6 +1211,21 @@ function renderPulses(pulses) {
 
       feedContainer.innerHTML = html;
       bindVoteEvents(topPulses);
+
+      function scrollToTargetPulse() {
+        if (window.location.hash && window.location.hash.startsWith("#pulse-")) {
+          var targetCard = document.querySelector(window.location.hash);
+          if (targetCard) {
+            targetCard.scrollIntoView({ behavior: "smooth", block: "center" });
+            targetCard.classList.add("ring-2", "ring-primary", "shadow-xl");
+            setTimeout(function() {
+              targetCard.classList.remove("ring-2", "ring-primary", "shadow-xl");
+            }, 3000);
+          }
+        }
+      }
+      setTimeout(scrollToTargetPulse, 200);
+      window.addEventListener("hashchange", scrollToTargetPulse);
     }
 
     var currentPulses = [];
@@ -1499,8 +1514,8 @@ function renderPulses(pulses) {
       data.forEach(function(item) {
         var rawTag = (Array.isArray(item.tags) && item.tags[0]) ? item.tags[0].replace(/^#/, "").toUpperCase() : "CLOUD";
         var safeTitle = escapeHtml(item.title || "Cloud Pulse Update");
-        var link = escapeHtml(item.link_url || "/pulse/");
-        itemsHtml += '<a href="' + link + '" target="_blank" rel="noopener noreferrer" class="ticker-item flex items-center gap-2">'
+        var pulsePostLink = "/pulse/#pulse-" + encodeURIComponent(item.id || "");
+        itemsHtml += '<a href="' + pulsePostLink + '" class="ticker-item flex items-center gap-2">'
           + '<span class="ticker-symbol">$' + escapeHtml(rawTag) + '</span>'
           + '<span class="text-slate-200 font-medium">' + safeTitle + '</span>'
           + '<span class="ticker-bullish flex items-center gap-1"><i class="fa-solid fa-tower-broadcast text-[10px]"></i> MICRO-PULSE</span>'
