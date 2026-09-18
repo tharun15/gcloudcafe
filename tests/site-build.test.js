@@ -54,4 +54,18 @@ describe('Hugo Site Build & HTML Integrity Tests', () => {
       expect(html).toContain('TechArticle');
     }
   });
+
+  it('verifies subscribe / newsletter page renders live subscription form', () => {
+    const newsletterPath = path.join(publicDir, 'newsletter', 'index.html');
+    const subscribePath = path.join(publicDir, 'subscribe', 'index.html');
+
+    expect(fs.existsSync(newsletterPath)).toBe(true);
+    expect(fs.existsSync(subscribePath)).toBe(true);
+
+    const html = fs.readFileSync(newsletterPath, 'utf-8');
+    expect(html).toContain('data-supabase-subscribe');
+    expect(html).toContain('data-newsletter-status');
+    expect(html).toContain('Get the digest');
+    expect(html).toContain('Engineering insights, twice a month');
+  });
 });
