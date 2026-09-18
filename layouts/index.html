@@ -12,26 +12,6 @@
     {{ end }}
   {{ end }}
 
-  <!-- Top Meta Strip (ByteDepth Reference) -->
-  <div class="bg-slate-50/90 dark:bg-[#080d17] border-b border-slate-200 dark:border-slate-800 text-xs text-slate-600 dark:text-slate-400 py-2">
-    <div class="bytedepth-container flex items-center justify-between flex-wrap gap-2 text-[11px] font-mono">
-      <div class="flex items-center gap-3">
-        <span>Updated daily</span>
-        <span class="text-slate-300 dark:text-slate-700">|</span>
-        <span>{{ len $posts }} articles indexed</span>
-        <span class="text-slate-300 dark:text-slate-700">|</span>
-        <span class="hidden sm:inline">Open Graph + JSON-LD on every post</span>
-      </div>
-      <div class="flex items-center gap-4">
-        <a href="{{ `index.xml` | relLangURL }}" class="hover:text-primary no-underline text-inherit">RSS Feed</a>
-        <a href="{{ `sitemap.xml` | relLangURL }}" class="hover:text-primary no-underline text-inherit">Sitemap</a>
-        <a href="{{ `pulse/` | relLangURL }}" class="hover:text-emerald-500 no-underline text-inherit flex items-center gap-1">
-          <i class="fa-solid fa-tower-broadcast text-emerald-500 animate-pulse text-[10px]"></i>
-          <span>Live Pulse</span>
-        </a>
-      </div>
-    </div>
-  </div>
 
   <!-- Breadcrumbs -->
   <div class="bytedepth-container pt-5 pb-2">
