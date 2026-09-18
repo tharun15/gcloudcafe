@@ -857,9 +857,14 @@ body {
   width: 100%;
 }
 
-.container {
-  width: 100%;
-  max-width: 100%;
+.container,
+.bytedepth-container {
+  width: 100% !important;
+  max-width: 1080px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  padding-left: 1.5rem !important;
+  padding-right: 1.5rem !important;
 }
 
 .row {

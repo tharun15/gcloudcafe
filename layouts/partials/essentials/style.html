@@ -47,15 +47,16 @@
 
 {{ if hugo.IsProduction }}
   {{ $styles = $styles | resources.ExecuteAsTemplate "css/style.css" . | minify | fingerprint | resources.PostProcess }}
+  <link
+    href="{{ $styles.RelPermalink }}"
+    integrity="{{ $styles.Data.Integrity }}"
+    rel="stylesheet" />
 {{ else }}
-  {{ $styles = $styles | resources.ExecuteAsTemplate "css/style.css" . }}
+  {{ $styles = $styles | resources.ExecuteAsTemplate "css/style.css" . | fingerprint }}
+  <link
+    href="{{ $styles.RelPermalink }}"
+    rel="stylesheet" />
 {{ end }}
-
-{{/* Main Stylesheet */}}
-<link
-  href="{{ $styles.RelPermalink }}"
-  integrity="{{ $styles.Data.Integrity }}"
-  rel="stylesheet" />
 
 {{/* Lazy Stylesheet (if any) */}}
 {{ if gt (len $stylesLazy) 0 }}
