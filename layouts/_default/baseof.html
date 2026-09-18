@@ -39,7 +39,7 @@
     {{ partial "essentials/header.html" . }}
     
     <!-- Stock Trading Marquee Ticker -->
-    {{ partial "components/ticker-tape.html" . }}
+    {{ if not .IsHome }}{{ partial "components/ticker-tape.html" . }}{{ end }}
 
     {{ partial "search-modal.html" (dict "Context" . ) }}
 

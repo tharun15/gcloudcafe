@@ -62,6 +62,10 @@
 
         <!-- Theme Toggle Button -->
         {{ partial "components/theme-switcher" (dict "Class" "flex items-center") }}
+        <!-- Subscribe Button (ByteDepth Reference) -->
+        <a href="{{ `newsletter/` | relLangURL }}" class="hidden sm:inline-flex items-center px-4 py-1.5 rounded-lg bg-red-600 hover:bg-red-700 text-white font-bold text-xs shadow-sm transition-all no-underline">
+          Subscribe
+        </a>
 
         <!-- Mobile Menu Toggle Button -->
         <button
