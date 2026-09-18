@@ -1,114 +1,131 @@
-<footer class="mt-20 bg-slate-50 dark:bg-[#060913] border-t border-border/80 dark:border-slate-800">
-  <div class="container py-12 lg:py-16">
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
+<footer class="border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-[#070b14] pt-14 pb-12">
+  <div class="bytedepth-container">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12 pb-12 border-b border-slate-200 dark:border-slate-800">
       
-      <!-- Brand & Mission -->
-      <div class="space-y-4">
-        <a class="navbar-brand flex items-center gap-2.5 no-underline group" href="{{ site.Home.RelPermalink }}">
-          {{ partial "logo" }}
-          <span class="font-extrabold text-lg text-dark dark:text-white group-hover:text-primary transition-colors">
+      <!-- Brand Column -->
+      <div class="space-y-3">
+        <a class="navbar-brand flex items-center gap-2.5 no-underline group" href="{{ site.Home.RelPermalink }}" aria-label="Gcloudcafe Home">
+          <div class="relative flex items-center justify-center">
+            {{ partial "logo" }}
+          </div>
+          <span class="font-extrabold text-base tracking-tight text-slate-900 dark:text-white group-hover:text-primary transition-colors leading-none">
             GCloud<span class="text-primary font-black">Cafe</span>
           </span>
         </a>
-        <p class="text-xs sm:text-sm text-text/80 dark:text-slate-400 leading-relaxed font-normal">
-          High-authority, zero-fluff cloud architecture, Kubernetes internals, and security tutorials designed for modern SRE, DevOps, and Platform Engineers.
+        <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed max-w-xs">
+          Deep technical writing for engineers who build production systems.
         </p>
-        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-xl bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30 text-xs font-mono font-bold">
-          <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-          Edge Verified · 99.9% Uptime
-        </div>
       </div>
 
-      <!-- Architecture Tracks -->
+      <!-- TOPICS Column -->
       <div>
-        <h4 class="text-xs font-extrabold uppercase tracking-widest text-dark dark:text-white mb-4">
-          Learning Tracks
-        </h4>
-        <ul class="space-y-2.5 text-xs sm:text-sm font-semibold">
+        <h3 class="font-mono text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider mb-4">
+          TOPICS
+        </h3>
+        <ul class="space-y-2.5 text-xs font-medium list-none p-0 m-0">
           <li>
-            <a href="{{ `categories/kubernetes/` | relLangURL }}" class="text-text/80 dark:text-slate-400 hover:text-primary dark:hover:text-primary no-underline transition-colors flex items-center gap-2">
-              <i class="fa-solid fa-dharmachakra text-cyan-500 text-xs"></i> Kubernetes & CKA Labs
+            <a href="{{ `categories/ai/` | relLangURL }}" class="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white no-underline transition-colors">
+              AI & ML
             </a>
           </li>
           <li>
-            <a href="{{ `categories/security/` | relLangURL }}" class="text-text/80 dark:text-slate-400 hover:text-primary dark:hover:text-primary no-underline transition-colors flex items-center gap-2">
-              <i class="fa-solid fa-shield-halved text-indigo-500 text-xs"></i> TLS, mTLS & Zero-Trust
+            <a href="{{ `categories/google-cloud/` | relLangURL }}" class="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white no-underline transition-colors">
+              Web Dev & Cloud
             </a>
           </li>
           <li>
-            <a href="{{ `categories/openshift/` | relLangURL }}" class="text-text/80 dark:text-slate-400 hover:text-primary dark:hover:text-primary no-underline transition-colors flex items-center gap-2">
-              <i class="fa-solid fa-server text-red-500 text-xs"></i> OpenShift EX280 Manuals
+            <a href="{{ `categories/devops/` | relLangURL }}" class="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white no-underline transition-colors">
+              DevOps
             </a>
           </li>
           <li>
-            <a href="{{ `categories/google-cloud/` | relLangURL }}" class="text-text/80 dark:text-slate-400 hover:text-primary dark:hover:text-primary no-underline transition-colors flex items-center gap-2">
-              <i class="fa-brands fa-google text-blue-500 text-xs"></i> Google Cloud PCA Certs
+            <a href="{{ `categories/security/` | relLangURL }}" class="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white no-underline transition-colors">
+              Security
+            </a>
+          </li>
+          <li>
+            <a href="{{ `categories/kubernetes/` | relLangURL }}" class="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white no-underline transition-colors">
+              Open Source & K8s
             </a>
           </li>
         </ul>
       </div>
 
-      <!-- Developer Resources -->
+      <!-- COMPANY Column -->
       <div>
-        <h4 class="text-xs font-extrabold uppercase tracking-widest text-dark dark:text-white mb-4">
-          Explore & Resources
-        </h4>
-        <ul class="space-y-2.5 text-xs sm:text-sm font-semibold">
+        <h3 class="font-mono text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider mb-4">
+          COMPANY
+        </h3>
+        <ul class="space-y-2.5 text-xs font-medium list-none p-0 m-0">
           <li>
-            <a href="{{ `pulse/` | relLangURL }}" class="text-text/80 dark:text-slate-400 hover:text-primary dark:hover:text-primary no-underline transition-colors flex items-center gap-2">
-              <i class="fa-solid fa-tower-broadcast text-emerald-500 text-xs"></i> Live Cloud Newsroom
+            <a href="{{ `authors/` | relLangURL }}" class="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white no-underline transition-colors">
+              Authors
             </a>
           </li>
           <li>
-            <a href="{{ `series/` | relLangURL }}" class="text-text/80 dark:text-slate-400 hover:text-primary dark:hover:text-primary no-underline transition-colors flex items-center gap-2">
-              <i class="fa-solid fa-layer-group text-amber-500 text-xs"></i> Multi-Part Series Index
+            <a href="{{ `newsletter/` | relLangURL }}" class="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white no-underline transition-colors">
+              Newsletter
             </a>
           </li>
           <li>
-            <a href="{{ `index.xml` | absURL }}" target="_blank" rel="noopener noreferrer" class="text-text/80 dark:text-slate-400 hover:text-primary dark:hover:text-primary no-underline transition-colors flex items-center gap-2">
-              <i class="fa-solid fa-rss text-orange-500 text-xs"></i> RSS Feed
+            <a href="{{ `blog/` | relLangURL }}" class="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white no-underline transition-colors">
+              Articles
             </a>
           </li>
-
-
+          <li>
+            <a href="{{ `about/` | relLangURL }}" class="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white no-underline transition-colors">
+              About
+            </a>
+          </li>
         </ul>
       </div>
 
-      <!-- Social & Author Connect -->
+      <!-- RESOURCES Column -->
       <div>
-        <h4 class="text-xs font-extrabold uppercase tracking-widest text-dark dark:text-white mb-4">
-          Author & Social
-        </h4>
-        <p class="text-xs text-text/70 dark:text-slate-400 mb-4">
-          Authored by <strong>Tharun Vempati</strong>. Follow for daily cloud tips and live architecture updates.
-        </p>
-        <div class="flex items-center gap-3">
-          <a href="https://linkedin.com/in/tharunvempati" target="_blank" rel="noopener noreferrer" 
-             class="w-10 h-10 rounded-xl bg-blue-500/10 hover:bg-[#0a66c2] text-[#0a66c2] hover:text-white border border-blue-500/20 flex items-center justify-center transition-all"
-             aria-label="LinkedIn Profile">
-            <i class="fa-brands fa-linkedin text-base"></i>
-          </a>
-          <a href="https://github.com/tharun15" target="_blank" rel="noopener noreferrer" 
-             class="w-10 h-10 rounded-xl bg-slate-200/70 dark:bg-slate-800 hover:bg-slate-900 text-dark dark:text-white border border-slate-300 dark:border-slate-700 flex items-center justify-center transition-all"
-             aria-label="GitHub Profile">
-            <i class="fa-brands fa-github text-base"></i>
-          </a>
-
-        </div>
+        <h3 class="font-mono text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider mb-4">
+          RESOURCES
+        </h3>
+        <ul class="space-y-2.5 text-xs font-medium list-none p-0 m-0">
+          <li>
+            <a href="{{ `index.xml` | absURL }}" target="_blank" rel="noopener noreferrer" class="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white no-underline transition-colors">
+              RSS Feed
+            </a>
+          </li>
+          <li>
+            <a href="{{ `sitemap.xml` | relLangURL }}" class="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white no-underline transition-colors">
+              Sitemap
+            </a>
+          </li>
+          <li>
+            <a href="{{ `pulse/` | relLangURL }}" class="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white no-underline transition-colors flex items-center gap-1.5">
+              <i class="fa-solid fa-tower-broadcast text-emerald-500 animate-pulse text-[10px]"></i>
+              <span>Live Pulse</span>
+            </a>
+          </li>
+          <li>
+            <a href="{{ `series/` | relLangURL }}" class="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white no-underline transition-colors">
+              Series Index
+            </a>
+          </li>
+        </ul>
       </div>
 
     </div>
 
-    <!-- Bottom Copyright -->
-    <div class="mt-12 pt-6 border-t border-border/60 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-text/70 dark:text-slate-400">
+    <!-- Bottom Copyright & Legal Links -->
+    <div class="pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono text-slate-500 dark:text-slate-400">
       <p class="m-0">
-        {{ site.Params.copyright | markdownify }}
+        © 2026 GCloudCafe. All rights reserved.
       </p>
-      <div class="flex items-center gap-4">
-        <a href="{{ site.Home.RelPermalink }}" class="hover:text-primary no-underline text-current">Home</a>
-        <a href="{{ `about/` | relLangURL }}" class="hover:text-primary no-underline text-current">About</a>
-        <a href="{{ `blog/` | relLangURL }}" class="hover:text-primary no-underline text-current">All Posts</a>
+      <div class="flex items-center gap-6">
+        <a href="{{ `privacy-policy/` | relLangURL }}" class="hover:text-slate-900 dark:hover:text-white no-underline text-inherit transition-colors">
+          Privacy
+        </a>
+        <a href="{{ `terms-of-service/` | relLangURL }}" class="hover:text-slate-900 dark:hover:text-white no-underline text-inherit transition-colors">
+          Terms
+        </a>
       </div>
     </div>
+
   </div>
 </footer>

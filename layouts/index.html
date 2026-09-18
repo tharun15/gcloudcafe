@@ -105,76 +105,94 @@
         {{ end }}
       </div>
 
-      <!-- Browse All Action Button -->
-      {{ if gt (len $posts) 9 }}
-        <div class="mt-12 text-center">
-          <a class="inline-flex items-center gap-2 px-8 py-3 rounded-xl text-sm font-bold bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:bg-red-600 dark:hover:bg-red-500 dark:hover:text-white transition-all no-underline shadow-sm"
-             href="{{ `blog/` | relLangURL }}">
-            <span>Browse all {{ len $posts }} articles</span>
-            <i class="fa-solid fa-arrow-right text-xs"></i>
-          </a>
-        </div>
-      {{ end }}
+      <!-- View All Articles Button (ByteDepth Reference) -->
+      <div class="mt-12 mb-16 text-center">
+        <a class="inline-flex items-center gap-2 px-6 py-2.5 rounded-sm border border-slate-300 dark:border-slate-700 bg-white dark:bg-[#0c1220] text-slate-800 dark:text-slate-200 hover:border-slate-400 dark:hover:border-slate-600 text-sm font-semibold transition-all no-underline shadow-2xs"
+           href="{{ `blog/` | relLangURL }}">
+          <span>View all articles</span>
+          <span class="text-xs">→</span>
+        </a>
+      </div>
 
-      <!-- Curated Tracks (Clean Editorial Style) -->
-      <div class="mt-16 pt-10 border-t border-slate-200 dark:border-slate-800">
-        <div class="max-w-2xl mb-8">
-          <span class="font-mono text-xs font-bold text-red-600 dark:text-red-500 uppercase tracking-wider block mb-1">
-            Learning Pathways
-          </span>
-          <h3 class="text-2xl font-black text-slate-900 dark:text-white">
-            Curated Engineering Tracks
-          </h3>
-        </div>
+      <!-- BROWSE ALL TOPICS Section (ByteDepth Reference) -->
+      <div class="mt-14 mb-8">
+        <span class="font-mono text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest block mb-4">
+          BROWSE ALL TOPICS
+        </span>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <a href="{{ `categories/kubernetes/` | relLangURL }}" class="p-6 rounded-xl bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-slate-800 hover:border-slate-400 dark:hover:border-slate-700 transition-all no-underline group flex flex-col justify-between">
-            <div>
-              <span class="text-2xl mb-3 block">☸️</span>
-              <h4 class="font-bold text-base text-slate-900 dark:text-white group-hover:text-red-600 dark:group-hover:text-red-500 transition-colors mb-1.5">
-                Kubernetes & CKA Labs
-              </h4>
-              <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-                Pod lifecycles, ingress controllers, RBAC security, and speed tricks.
-              </p>
-            </div>
-            <span class="text-xs font-mono font-bold text-red-600 dark:text-red-500 mt-4 inline-flex items-center gap-1 group-hover:translate-x-1 transition-transform">
-              Explore Track →
-            </span>
-          </a>
+        <div class="border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0c1220] rounded-sm overflow-hidden" style="border: 1px solid #e2e8f0;">
+          <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5" style="display: grid;">
+            
+            <a href="{{ `categories/kubernetes/` | relLangURL }}" class="p-4 sm:p-5 text-xs sm:text-sm font-medium text-slate-800 dark:text-slate-200 hover:text-red-600 dark:hover:text-red-500 transition-colors no-underline block" style="border-right: 1px solid #e2e8f0; border-bottom: 1px solid #e2e8f0;">
+              Kubernetes
+            </a>
+            <a href="{{ `categories/security/` | relLangURL }}" class="p-4 sm:p-5 text-xs sm:text-sm font-medium text-slate-800 dark:text-slate-200 hover:text-red-600 dark:hover:text-red-500 transition-colors no-underline block" style="border-right: 1px solid #e2e8f0; border-bottom: 1px solid #e2e8f0;">
+              Security
+            </a>
+            <a href="{{ `categories/devops/` | relLangURL }}" class="p-4 sm:p-5 text-xs sm:text-sm font-medium text-slate-800 dark:text-slate-200 hover:text-red-600 dark:hover:text-red-500 transition-colors no-underline block" style="border-right: 1px solid #e2e8f0; border-bottom: 1px solid #e2e8f0;">
+              DevOps
+            </a>
+            <a href="{{ `categories/google-cloud/` | relLangURL }}" class="p-4 sm:p-5 text-xs sm:text-sm font-medium text-slate-800 dark:text-slate-200 hover:text-red-600 dark:hover:text-red-500 transition-colors no-underline block" style="border-right: 1px solid #e2e8f0; border-bottom: 1px solid #e2e8f0;">
+              Google Cloud
+            </a>
+            <a href="{{ `categories/openshift/` | relLangURL }}" class="p-4 sm:p-5 text-xs sm:text-sm font-medium text-slate-800 dark:text-slate-200 hover:text-red-600 dark:hover:text-red-500 transition-colors no-underline block" style="border-bottom: 1px solid #e2e8f0;">
+              OpenShift
+            </a>
 
-          <a href="{{ `categories/security/` | relLangURL }}" class="p-6 rounded-xl bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-slate-800 hover:border-slate-400 dark:hover:border-slate-700 transition-all no-underline group flex flex-col justify-between">
-            <div>
-              <span class="text-2xl mb-3 block">🔐</span>
-              <h4 class="font-bold text-base text-slate-900 dark:text-white group-hover:text-red-600 dark:group-hover:text-red-500 transition-colors mb-1.5">
-                Zero-Trust TLS & mTLS
-              </h4>
-              <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-                Wire protocol handshakes, keystore architecture, and cert-manager automation.
-              </p>
-            </div>
-            <span class="text-xs font-mono font-bold text-red-600 dark:text-red-500 mt-4 inline-flex items-center gap-1 group-hover:translate-x-1 transition-transform">
-              Explore Track →
-            </span>
-          </a>
+            <a href="{{ `categories/architecture/` | relLangURL }}" class="p-4 sm:p-5 text-xs sm:text-sm font-medium text-slate-800 dark:text-slate-200 hover:text-red-600 dark:hover:text-red-500 transition-colors no-underline block" style="border-right: 1px solid #e2e8f0;">
+              Architecture
+            </a>
+            <a href="{{ `categories/cka/` | relLangURL }}" class="p-4 sm:p-5 text-xs sm:text-sm font-medium text-slate-800 dark:text-slate-200 hover:text-red-600 dark:hover:text-red-500 transition-colors no-underline block" style="border-right: 1px solid #e2e8f0;">
+              CKA & Linux
+            </a>
+            <a href="{{ `categories/tls/` | relLangURL }}" class="p-4 sm:p-5 text-xs sm:text-sm font-medium text-slate-800 dark:text-slate-200 hover:text-red-600 dark:hover:text-red-500 transition-colors no-underline block" style="border-right: 1px solid #e2e8f0;">
+              TLS & Zero-Trust
+            </a>
+            <a href="{{ `categories/ai/` | relLangURL }}" class="p-4 sm:p-5 text-xs sm:text-sm font-medium text-slate-800 dark:text-slate-200 hover:text-red-600 dark:hover:text-red-500 transition-colors no-underline block" style="border-right: 1px solid #e2e8f0;">
+              AI & ML
+            </a>
+            <a href="{{ `categories/certifications/` | relLangURL }}" class="p-4 sm:p-5 text-xs sm:text-sm font-medium text-slate-800 dark:text-slate-200 hover:text-red-600 dark:hover:text-red-500 transition-colors no-underline block">
+              Certifications
+            </a>
 
-          <a href="{{ `categories/google-cloud/` | relLangURL }}" class="p-6 rounded-xl bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-slate-800 hover:border-slate-400 dark:hover:border-slate-700 transition-all no-underline group flex flex-col justify-between">
-            <div>
-              <span class="text-2xl mb-3 block">☁️</span>
-              <h4 class="font-bold text-base text-slate-900 dark:text-white group-hover:text-red-600 dark:group-hover:text-red-500 transition-colors mb-1.5">
-                Google Cloud PCA Mastery
-              </h4>
-              <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-                Case studies, multi-region failover, BigQuery analytics, and exam renewals.
-              </p>
-            </div>
-            <span class="text-xs font-mono font-bold text-red-600 dark:text-red-500 mt-4 inline-flex items-center gap-1 group-hover:translate-x-1 transition-transform">
-              Explore Track →
-            </span>
-          </a>
+          </div>
         </div>
       </div>
 
+    </div>
+  </section>
+
+  <!-- Newsletter Section (ByteDepth Reference) -->
+  <section class="border-t border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-[#070b14]/50 py-16 sm:py-20 text-center" aria-labelledby="newsletter-heading">
+    <div class="bytedepth-container">
+      <span class="font-mono text-xs font-bold uppercase tracking-widest text-red-600 dark:text-red-500 block mb-3">
+        NEWSLETTER
+      </span>
+      <h2 id="newsletter-heading" class="text-2xl sm:text-3xl lg:text-[34px] font-black text-slate-900 dark:text-white tracking-tight mb-3">
+        Engineering insights, twice a month
+      </h2>
+      <p class="text-slate-600 dark:text-slate-400 text-sm sm:text-base max-w-xl mx-auto mb-8 leading-relaxed">
+        Deep dives on cloud architecture, distributed systems, Kubernetes, and security — written by practitioners, not content teams.
+      </p>
+
+      <form action="{{ `newsletter/` | relLangURL }}" method="get" class="max-w-md mx-auto flex flex-col sm:flex-row items-stretch gap-2 sm:gap-0">
+        <input 
+          type="email" 
+          name="email" 
+          required 
+          placeholder="you@company.com" 
+          class="px-4 py-2.5 rounded-md sm:rounded-r-none border border-slate-300 dark:border-slate-700 bg-white dark:bg-[#0c1220] text-sm text-slate-900 dark:text-white flex-grow focus:outline-none focus:border-slate-500 placeholder:text-slate-400"
+          aria-label="Email address for engineering newsletter">
+        <button 
+          type="submit" 
+          class="px-6 py-2.5 rounded-md sm:rounded-l-none text-white font-bold text-sm transition-colors cursor-pointer shrink-0"
+          style="background-color: #dc2626 !important; color: #ffffff !important;">
+          Get the digest
+        </button>
+      </form>
+      <p class="text-xs font-mono text-slate-500 dark:text-slate-400 mt-3">
+        Join 18,400 engineers. No spam, ever.
+      </p>
     </div>
   </section>
 {{ end }}
