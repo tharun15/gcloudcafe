@@ -14,7 +14,7 @@
 
   <!-- Top Meta Strip (ByteDepth Reference) -->
   <div class="bg-slate-50/90 dark:bg-[#080d17] border-b border-slate-200 dark:border-slate-800 text-xs text-slate-600 dark:text-slate-400 py-2">
-    <div class="container max-w-6xl flex items-center justify-between flex-wrap gap-2 text-[11px] font-mono">
+    <div class="bytedepth-container flex items-center justify-between flex-wrap gap-2 text-[11px] font-mono">
       <div class="flex items-center gap-3">
         <span>Updated daily</span>
         <span class="text-slate-300 dark:text-slate-700">|</span>
@@ -34,7 +34,7 @@
   </div>
 
   <!-- Breadcrumbs -->
-  <div class="container max-w-6xl pt-5 pb-2">
+  <div class="bytedepth-container pt-5 pb-2">
     <nav class="text-xs font-mono text-slate-500 dark:text-slate-400" aria-label="Breadcrumb">
       <a href="{{ site.Home.RelPermalink }}" class="text-inherit hover:text-primary no-underline">Home</a>
       <span class="mx-1.5 text-slate-300 dark:text-slate-700">/</span>
@@ -47,7 +47,7 @@
 
   <!-- Main Articles & Topics Filter Tabs -->
   <section class="pb-16 pt-2" aria-labelledby="articles-heading">
-    <div class="container max-w-6xl">
+    <div class="bytedepth-container">
       <h2 id="articles-heading" class="sr-only">Articles & Topics</h2>
 
       <!-- Horizontal Category Tabs (ByteDepth Reference) -->
@@ -56,14 +56,19 @@
         <div class="flex items-center gap-6 sm:gap-8 overflow-x-auto no-scrollbar py-1">
           <span class="sr-only">Topics</span>
           <a href="{{ `blog/` | relLangURL }}"
-             class="category-tab-active pb-3 -mb-px shrink-0 text-sm no-underline flex items-center gap-1.5" style="color: #dc2626 !important; border-bottom: 2px solid #dc2626 !important; font-weight: 700 !important;">
+             class="category-tab-active pb-3 -mb-px shrink-0 text-sm no-underline flex items-center gap-1.5"
+             style="color: #dc2626 !important; border-bottom: 2px solid #dc2626 !important; font-weight: 700 !important;">
             <span>All</span>
           </a>
-          {{ range $name, $items := $categories }}
-            <a href="{{ $items.Page.RelPermalink }}"
-               class="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white font-medium pb-3 -mb-px shrink-0 text-sm no-underline transition-colors flex items-center gap-1.5">
-              <span>{{ $items.Page.Title }}</span>
-            </a>
+          {{/* Curate primary top categories matching ByteDepth tab density */}}
+          {{ $primaryCats := slice "kubernetes" "security" "google-cloud" "devops" "openshift" "certifications" }}
+          {{ range $catSlug := $primaryCats }}
+            {{ with site.GetPage (printf "/categories/%s" $catSlug) }}
+              <a href="{{ .RelPermalink }}"
+                 class="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white font-medium pb-3 -mb-px shrink-0 text-sm no-underline transition-colors flex items-center gap-1.5">
+                <span>{{ .Title }}</span>
+              </a>
+            {{ end }}
           {{ end }}
         </div>
       </div>

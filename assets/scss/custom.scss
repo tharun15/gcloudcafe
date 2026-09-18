@@ -1097,3 +1097,25 @@ table {
   border-bottom: 2px solid #dc2626 !important;
   font-weight: 700 !important;
 }
+
+/* ByteDepth Unified Grid Container (Perfect Ratio & Centering) */
+.bytedepth-container {
+  width: 100% !important;
+  max-width: 1080px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  padding-left: 1.5rem !important;
+  padding-right: 1.5rem !important;
+}
+
+.bytedepth-header {
+  border-bottom: 1px solid #e2e8f0;
+  background-color: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.dark .bytedepth-header {
+  border-bottom: 1px solid #1e293b;
+  background-color: rgba(11, 16, 29, 0.95);
+}
