@@ -354,17 +354,167 @@
     }
   }
 
-  /* ── Keyboard Search Shortcut (Ctrl+K / Cmd+K) ── */
-  function initSearchShortcut() {
+  /* ── Keyboard Search Shortcut & Supercharged Command Center (Ctrl+K / Cmd+K) ── */
+  function initCommandPalette() {
+    var searchModal = document.getElementById("search-modal") || document.querySelector(".search-modal");
+    var searchInput = document.querySelector("[data-search-input]");
+    var commandView = document.getElementById("command-palette-default");
+    var activeCommandIdx = 0;
+
+    function getCommandItems() {
+      if (!commandView) return [];
+      return Array.from(commandView.querySelectorAll("[data-command-item]"));
+    }
+
+    function updateActiveCommand(index) {
+      var items = getCommandItems();
+      if (!items.length) return;
+      if (index < 0) index = 0;
+      if (index >= items.length) index = items.length - 1;
+      activeCommandIdx = index;
+      items.forEach(function (el, idx) {
+        el.classList.toggle("is-selected", idx === activeCommandIdx);
+      });
+      if (items[activeCommandIdx]) {
+        items[activeCommandIdx].scrollIntoView({ behavior: "smooth", block: "nearest" });
+      }
+    }
+
+    // Toggle Modal on Ctrl+K / Cmd+K
     document.addEventListener("keydown", function (e) {
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
-        var searchTrigger = document.querySelector("[data-target='search-modal'], [data-search-trigger], .search-trigger, [data-target='#search-modal']");
-        if (searchTrigger) {
+        var isModalOpen = searchModal && searchModal.classList.contains("show");
+        if (isModalOpen) {
           e.preventDefault();
-          searchTrigger.click();
+          var closeBtn = document.querySelector("[data-target='close-search-modal']");
+          if (closeBtn) closeBtn.click();
+        } else {
+          var searchTrigger = document.querySelector("[data-target='search-modal'], [data-search-trigger], .search-trigger, [data-target='#search-modal']");
+          if (searchTrigger) {
+            e.preventDefault();
+            searchTrigger.click();
+            setTimeout(function () {
+              updateActiveCommand(0);
+              if (searchInput) searchInput.focus();
+            }, 120);
+          }
         }
       }
     });
+
+    if (!searchModal) return;
+
+    // Open event hook (when opened via header search button or hotkey)
+    var searchTriggers = document.querySelectorAll("[data-target='search-modal'], [data-search-trigger]");
+    searchTriggers.forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        setTimeout(function () {
+          updateActiveCommand(0);
+          if (commandView && (!searchInput || !searchInput.value.trim())) {
+            commandView.style.display = "";
+          }
+          if (searchInput) searchInput.focus();
+        }, 120);
+      });
+    });
+
+    // Command Action Execution
+    document.addEventListener("click", function (e) {
+      var actionBtn = e.target.closest("[data-command-action]");
+      if (!actionBtn) return;
+      var action = actionBtn.getAttribute("data-command-action");
+      if (action === "toggle-theme") {
+        e.preventDefault();
+        var htmlEl = document.documentElement;
+        var isDark = htmlEl.classList.toggle("dark");
+        try {
+          localStorage.setItem("theme", isDark ? "dark" : "light");
+        } catch (err) {}
+        var tsInputs = document.querySelectorAll("[data-theme-switcher], #theme-switcher");
+        tsInputs.forEach(function (inp) { inp.checked = isDark; });
+
+        // Update action title visually
+        var titleEl = actionBtn.querySelector(".command-item-title");
+        if (titleEl) {
+          titleEl.textContent = isDark ? "Switch to Light Mode" : "Switch to Dark Mode";
+        }
+        // Smoothly close command palette
+        setTimeout(function () {
+          var closeBtn = document.querySelector("[data-target='close-search-modal']");
+          if (closeBtn) closeBtn.click();
+        }, 220);
+      } else if (action === "open-proposal") {
+        e.preventDefault();
+        var closeBtn = document.querySelector("[data-target='close-search-modal']");
+        if (closeBtn) closeBtn.click();
+        var proposalModal = document.getElementById("author-proposal-modal");
+        if (proposalModal) {
+          var openBtn = document.getElementById("open-proposal-modal-btn");
+          if (openBtn) openBtn.click();
+        } else {
+          window.location.href = "/authors/#author-proposal-modal";
+        }
+      }
+    });
+
+    // Sync active state on mouse hover
+    if (commandView) {
+      commandView.addEventListener("mouseover", function (e) {
+        var item = e.target.closest("[data-command-item]");
+        if (!item) return;
+        var items = getCommandItems();
+        var idx = items.indexOf(item);
+        if (idx !== -1) {
+          activeCommandIdx = idx;
+          items.forEach(function (el, i) {
+            el.classList.toggle("is-selected", i === activeCommandIdx);
+          });
+        }
+      });
+    }
+
+    // Keyboard Arrow navigation & Enter execution inside command palette
+    if (searchInput) {
+      // Toggle command view visibility based on input value
+      searchInput.addEventListener("input", function () {
+        var val = searchInput.value.trim();
+        if (commandView) {
+          if (val.length > 0) {
+            commandView.style.display = "none";
+          } else {
+            commandView.style.display = "";
+            updateActiveCommand(0);
+          }
+        }
+      });
+
+      searchInput.addEventListener("keydown", function (e) {
+        var isModalOpen = searchModal.classList.contains("show");
+        if (!isModalOpen) return;
+
+        var val = searchInput.value.trim();
+        if (val === "" && commandView && commandView.style.display !== "none") {
+          var items = getCommandItems();
+          if (!items.length) return;
+
+          if (e.key === "ArrowDown") {
+            e.preventDefault();
+            var nextIdx = (activeCommandIdx + 1) % items.length;
+            updateActiveCommand(nextIdx);
+          } else if (e.key === "ArrowUp") {
+            e.preventDefault();
+            var prevIdx = (activeCommandIdx - 1 + items.length) % items.length;
+            updateActiveCommand(prevIdx);
+          } else if (e.key === "Enter") {
+            e.preventDefault();
+            var currentItem = items[activeCommandIdx];
+            if (currentItem) {
+              currentItem.click();
+            }
+          }
+        }
+      });
+    }
   }
   function initPostEngagement() {
     var widget = document.querySelector("[data-post-feedback]");
@@ -1197,7 +1347,7 @@
     initCopyCode();
     initScrollToTop();
     initActiveTocTracking();
-    initSearchShortcut();
+    initCommandPalette();
     initPostEngagement();
     initCommentsSystem();
     initNewsletterSignup();
