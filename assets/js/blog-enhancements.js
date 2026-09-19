@@ -1582,6 +1582,16 @@ function renderPulses(pulses) {
       anonKey: "sb_publishable_cRcwg02R3nXTykDrxalL6w_-kc9Wesc"
     };
 
+    function getTagMeta(tags) {
+      var raw = (Array.isArray(tags) && tags[0]) ? tags[0].replace(/^#/, "").toUpperCase() : "CLOUD";
+      if (raw === "GOOGLECLOUD" || raw === "GCP") return { label: "GCP", cls: "ticker-tag-gcp" };
+      if (raw === "KUBERNETES" || raw === "K8S" || raw === "CNCF") return { label: "K8S", cls: "ticker-tag-k8s" };
+      if (raw === "AWS") return { label: "AWS", cls: "ticker-tag-aws" };
+      if (raw === "OPENSHIFT" || raw === "REDHAT") return { label: "OPENSHIFT", cls: "ticker-tag-redhat" };
+      if (raw === "SECURITY" || raw === "TLS") return { label: "SECURITY", cls: "ticker-tag-security" };
+      return { label: raw, cls: "ticker-tag-default" };
+    }
+
     var queryUrl = config.url + "/rest/v1/cloud_pulses?status=eq.approved&order=created_at.desc&limit=10";
     fetch(queryUrl, {
       headers: {
@@ -1593,29 +1603,20 @@ function renderPulses(pulses) {
     .then(function(data) {
       if (!Array.isArray(data) || data.length === 0) return;
 
-      var leadHtml = '<a href="/pulse/" class="ticker-item">'
-        + '<span class="ticker-symbol">⚡ CLOUD PULSE</span>'
-        + '<span class="text-slate-400 font-medium">Live Newsroom</span>'
-        + '<span class="text-emerald-400 font-bold flex items-center gap-1.5">'
-        + '<span class="relative flex h-2 w-2">'
-        + '<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>'
-        + '<span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>'
-        + '</span>LIVE PULSE</span></a>';
-
       var itemsHtml = "";
       data.forEach(function(item) {
-        var rawTag = (Array.isArray(item.tags) && item.tags[0]) ? item.tags[0].replace(/^#/, "").toUpperCase() : "CLOUD";
+        var tagMeta = getTagMeta(item.tags);
         var safeTitle = escapeHtml(item.title || "Cloud Pulse Update");
         var pulsePostLink = "/pulse/#pulse-" + encodeURIComponent(item.id || "");
-        itemsHtml += '<a href="' + pulsePostLink + '" class="ticker-item flex items-center gap-2">'
-          + '<span class="ticker-symbol">$' + escapeHtml(rawTag) + '</span>'
-          + '<span class="text-slate-200 font-medium">' + safeTitle + '</span>'
-          + '<span class="ticker-bullish flex items-center gap-1"><i class="fa-solid fa-tower-broadcast text-[10px]"></i> MICRO-PULSE</span>'
+        itemsHtml += '<a href="' + pulsePostLink + '" class="ticker-item group/item inline-flex items-center gap-2 px-3.5 py-1 whitespace-nowrap transition-colors hover:bg-slate-800/60 no-underline">'
+          + '<span class="ticker-tag ' + tagMeta.cls + '">$' + escapeHtml(tagMeta.label) + '</span>'
+          + '<span class="ticker-title font-sans font-medium text-[12px] text-slate-200 group-hover/item:text-cyan-300 transition-colors">' + safeTitle + '</span>'
+          + '<span class="ticker-divider text-slate-700 select-none ml-2">/</span>'
           + '</a>';
       });
 
       // Seamless duplicate loop for 60fps marquee
-      marquee.innerHTML = leadHtml + itemsHtml + leadHtml + itemsHtml;
+      marquee.innerHTML = itemsHtml + itemsHtml;
     })
     .catch(function(err) {
       // Fallback is already rendered in static HTML

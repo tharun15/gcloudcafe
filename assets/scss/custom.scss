@@ -441,16 +441,30 @@ kbd {
    ========================================================================== */
 
 .ticker-marquee-wrapper {
-  @apply bg-slate-900 text-slate-200 border-y border-slate-800/80 overflow-hidden relative py-2.5 text-xs font-mono select-none z-30;
+  @apply flex items-stretch bg-[#080d19] text-slate-200 border-y border-slate-800/80 overflow-hidden relative text-xs font-mono select-none z-30;
   max-width: 100vw;
   width: 100%;
+  height: 38px;
   contain: paint;
+}
+
+.ticker-anchor {
+  @apply flex items-center gap-2 px-3 sm:px-4 py-1.5 bg-[#060a15] border-r border-slate-800/90 z-20 shrink-0 select-none shadow-[4px_0_12px_rgba(0,0,0,0.5)];
+}
+
+.ticker-track-container {
+  position: relative;
+  flex: 1;
+  overflow: hidden;
+  mask-image: linear-gradient(90deg, transparent 0%, #000 24px, #000 calc(100% - 24px), transparent 100%);
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 24px, #000 calc(100% - 24px), transparent 100%);
 }
 
 .ticker-marquee-content {
   display: flex;
+  align-items: center;
   width: max-content;
-  animation: stockTicker 65s linear infinite;
+  animation: stockTicker 60s linear infinite;
   will-change: transform;
 }
 
@@ -468,7 +482,47 @@ kbd {
 }
 
 .ticker-item {
-  @apply inline-flex items-center gap-2 px-5 whitespace-nowrap border-r border-slate-800/60 transition-colors hover:bg-slate-800/40 no-underline text-slate-300 hover:text-white;
+  @apply inline-flex items-center gap-2 px-3.5 py-1 whitespace-nowrap transition-colors hover:bg-slate-800/60 no-underline rounded;
+}
+
+.ticker-tag {
+  @apply font-mono text-[10px] font-bold px-1.5 py-0.5 rounded tracking-wide uppercase inline-flex items-center;
+}
+
+.ticker-tag-k8s {
+  @apply bg-cyan-500/15 text-cyan-300 border border-cyan-500/30;
+}
+
+.ticker-tag-gcp {
+  @apply bg-sky-500/15 text-sky-300 border border-sky-500/30;
+}
+
+.ticker-tag-aws {
+  @apply bg-amber-500/15 text-amber-300 border border-amber-500/30;
+}
+
+.ticker-tag-security {
+  @apply bg-purple-500/15 text-purple-300 border border-purple-500/30;
+}
+
+.ticker-tag-redhat {
+  @apply bg-rose-500/15 text-rose-300 border border-rose-500/30;
+}
+
+.ticker-tag-default {
+  @apply bg-emerald-500/15 text-emerald-300 border border-emerald-500/30;
+}
+
+.ticker-title {
+  @apply font-sans font-medium text-[12px] text-slate-200 transition-colors;
+}
+
+.ticker-divider {
+  @apply text-slate-700 font-mono text-xs select-none pl-2;
+}
+
+.ticker-archive-link {
+  @apply hidden md:flex items-center gap-1.5 px-3 py-1.5 bg-[#060a15] border-l border-slate-800/90 z-20 shrink-0 text-[11px] font-mono font-semibold text-slate-400 hover:text-cyan-400 transition-colors no-underline shadow-[-4px_0_12px_rgba(0,0,0,0.5)];
 }
 
 .ticker-symbol {
