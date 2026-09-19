@@ -1,62 +1,63 @@
 {{ $pulses := site.Data.cloud_pulse }}
-<div class="ticker-marquee-wrapper overflow-hidden max-w-full w-full relative" aria-label="Live Cloud Pulse Micro-News Marquee">
-  <div class="ticker-marquee-content" data-pulse-ticker-marquee>
-    {{/* First loop of pulse micro-blog tickers */}}
-    <a href="/pulse/" class="ticker-item">
-      <span class="ticker-symbol">⚡ CLOUD PULSE</span>
-      <span class="text-slate-400 font-medium">Live Newsroom</span>
-      <span class="text-emerald-400 font-bold flex items-center gap-1.5">
-        <span class="relative flex h-2 w-2">
-          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-          <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-        </span>
-        Live Pulse
-      </span>
+<div class="ticker-marquee-wrapper group relative flex items-stretch w-full overflow-hidden select-none border-y border-slate-800/80 bg-[#080d19] text-slate-200 text-xs font-mono z-30" aria-label="Live Cloud Pulse Micro-News Marquee">
+  
+  <!-- Pinned Lead Command Badge (Fixed on Left) -->
+  <div class="ticker-anchor flex items-center gap-2 px-3 sm:px-4 py-1.5 bg-[#060a15] border-r border-slate-800/90 z-20 shrink-0 select-none shadow-[4px_0_12px_rgba(0,0,0,0.5)]">
+    <span class="relative flex h-2 w-2">
+      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+      <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+    </span>
+    <a href="/pulse/" class="flex items-center gap-1.5 font-mono text-[11px] font-extrabold uppercase tracking-wider text-slate-100 hover:text-emerald-400 transition-colors no-underline">
+      <span class="text-emerald-400">⚡</span>
+      <span class="hidden sm:inline">PULSE</span>
+      <span class="text-[9px] px-1.5 py-0.5 rounded bg-emerald-500/15 text-emerald-400 font-bold border border-emerald-500/30">LIVE</span>
     </a>
-    
-    {{ range $pulses }}
-      {{ $cleanTitle := .title | htmlUnescape }}
-      {{ $tag := "CLOUD" }}
-      {{ if .tags }}
-        {{ $rawTag := index .tags 0 }}
-        {{ $tag = strings.TrimPrefix "#" $rawTag | upper }}
-      {{ end }}
-      <a href="{{ `/pulse/` | relLangURL }}{{ with .id }}#pulse-{{ . }}{{ end }}" class="ticker-item flex items-center gap-2">
-        <span class="ticker-symbol">${{ $tag }}</span>
-        <span class="text-slate-200 font-medium">{{ $cleanTitle }}</span>
-        <span class="ticker-bullish flex items-center gap-1">
-          <i class="fa-solid fa-tower-broadcast text-[10px]"></i> MICRO-PULSE
-        </span>
-      </a>
-    {{ end }}
-
-    {{/* Duplicate loop for seamless 60fps infinite marquee */}}
-    <a href="/pulse/" class="ticker-item">
-      <span class="ticker-symbol">⚡ CLOUD PULSE</span>
-      <span class="text-slate-400 font-medium">Live Newsroom</span>
-      <span class="text-emerald-400 font-bold flex items-center gap-1.5">
-        <span class="relative flex h-2 w-2">
-          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-          <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-        </span>
-        Live Pulse
-      </span>
-    </a>
-
-    {{ range $pulses }}
-      {{ $cleanTitle := .title | htmlUnescape }}
-      {{ $tag := "CLOUD" }}
-      {{ if .tags }}
-        {{ $rawTag := index .tags 0 }}
-        {{ $tag = strings.TrimPrefix "#" $rawTag | upper }}
-      {{ end }}
-      <a href="{{ `/pulse/` | relLangURL }}{{ with .id }}#pulse-{{ . }}{{ end }}" class="ticker-item flex items-center gap-2">
-        <span class="ticker-symbol">${{ $tag }}</span>
-        <span class="text-slate-200 font-medium">{{ $cleanTitle }}</span>
-        <span class="ticker-bullish flex items-center gap-1">
-          <i class="fa-solid fa-tower-broadcast text-[10px]"></i> MICRO-PULSE
-        </span>
-      </a>
-    {{ end }}
   </div>
+
+  <!-- Scrolling Marquee Track with gradient fade masks -->
+  <div class="ticker-track-container relative flex-1 overflow-hidden flex items-center">
+    <div class="ticker-marquee-content flex items-center will-change-transform" data-pulse-ticker-marquee>
+      {{ range $i := (slice 1 2) }}
+        {{ range $pulses }}
+          {{ $cleanTitle := .title | htmlUnescape }}
+          {{ $rawTag := "CLOUD" }}
+          {{ if .tags }}
+            {{ $rawTag = index .tags 0 | strings.TrimPrefix "#" }}
+          {{ end }}
+          {{ $upperTag := upper $rawTag }}
+          {{ $tagLabel := $upperTag }}
+          {{ $tagClass := "ticker-tag-default" }}
+
+          {{ if or (eq $upperTag "GOOGLECLOUD") (eq $upperTag "GCP") }}
+            {{ $tagLabel = "GCP" }}
+            {{ $tagClass = "ticker-tag-gcp" }}
+          {{ else if or (eq $upperTag "KUBERNETES") (eq $upperTag "CNCF") (eq $upperTag "K8S") }}
+            {{ $tagLabel = "K8S" }}
+            {{ $tagClass = "ticker-tag-k8s" }}
+          {{ else if (eq $upperTag "AWS") }}
+            {{ $tagLabel = "AWS" }}
+            {{ $tagClass = "ticker-tag-aws" }}
+          {{ else if or (eq $upperTag "OPENSHIFT") (eq $upperTag "REDHAT") }}
+            {{ $tagLabel = "OPENSHIFT" }}
+            {{ $tagClass = "ticker-tag-redhat" }}
+          {{ else if or (eq $upperTag "SECURITY") (eq $upperTag "TLS") }}
+            {{ $tagLabel = "SECURITY" }}
+            {{ $tagClass = "ticker-tag-security" }}
+          {{ end }}
+
+          <a href="{{ `/pulse/` | relLangURL }}{{ with .id }}#pulse-{{ . }}{{ end }}" class="ticker-item group/item inline-flex items-center gap-2 px-3.5 py-1 whitespace-nowrap transition-colors hover:bg-slate-800/60 no-underline">
+            <span class="ticker-tag {{ $tagClass }}">${{ $tagLabel }}</span>
+            <span class="ticker-title font-sans font-medium text-[12px] text-slate-200 group-hover/item:text-cyan-300 transition-colors">{{ $cleanTitle }}</span>
+            <span class="ticker-divider text-slate-700 select-none ml-2">/</span>
+          </a>
+        {{ end }}
+      {{ end }}
+    </div>
+  </div>
+
+  <!-- Pinned Right Action (Desktop) -->
+  <a href="/pulse/" class="ticker-archive-link hidden md:flex items-center gap-1.5 px-3 py-1.5 bg-[#060a15] border-l border-slate-800/90 z-20 shrink-0 text-[11px] font-mono font-semibold text-slate-400 hover:text-cyan-400 transition-colors no-underline shadow-[-4px_0_12px_rgba(0,0,0,0.5)]">
+    <span>DISPATCHES</span>
+    <i class="fa-solid fa-arrow-right text-[10px] text-slate-500"></i>
+  </a>
 </div>
