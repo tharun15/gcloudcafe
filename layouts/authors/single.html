@@ -14,10 +14,10 @@
   <section class="pt-4 pb-12">
     <div class="bytedepth-container">
       <div class="border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0c1220] rounded-xl sm:rounded-2xl p-6 sm:p-10 shadow-sm mb-12">
-        <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
           
           <!-- Avatar Column -->
-          <div class="md:col-span-4 lg:col-span-3 flex flex-col items-center text-center">
+          <div class="md:col-span-4 lg:col-span-3 flex flex-col items-center text-center md:sticky md:top-24">
             <div class="relative mb-4">
               {{ with .Params.image }}
                 <img src="{{ . | relURL }}" 
@@ -32,36 +32,50 @@
               <span class="absolute bottom-1 right-1 w-5 h-5 rounded-full bg-emerald-500 border-2 border-white dark:border-[#0c1220]" title="Active Contributor"></span>
             </div>
             <h1 class="text-xl font-black text-slate-900 dark:text-white tracking-tight mb-1">{{ .Title }}</h1>
-            <span class="text-xs font-mono text-slate-500 dark:text-slate-400">{{ .Params.role | default "Author" }}</span>
+            <span class="text-xs font-mono text-slate-500 dark:text-slate-400 mb-4">{{ .Params.role | default "Author" }}</span>
+
+            <!-- Social Links & Email -->
+            <div class="flex items-center justify-center gap-2 mb-4">
+              {{ range .Params.social }}
+                <a href="{{ .link | safeURL }}" target="_blank" rel="noopener noreferrer" 
+                   class="w-8 h-8 rounded-lg border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-700 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-500 hover:border-slate-400 transition-colors no-underline" 
+                   aria-label="{{ .name }}" title="{{ .name }}">
+                  <i class="{{ .icon }} text-xs"></i>
+                </a>
+              {{ end }}
+              {{ with .Params.email }}
+                <a href="mailto:{{ . }}" 
+                   class="w-8 h-8 rounded-lg border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-700 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-500 hover:border-slate-400 transition-colors no-underline" 
+                   aria-label="Email {{ $.Title }}" title="Email">
+                  <i class="fa-regular fa-envelope text-xs"></i>
+                </a>
+              {{ end }}
+            </div>
+
+            {{ with .Params.certifications }}
+              <div class="w-full pt-4 border-t border-slate-200 dark:border-slate-800 space-y-1.5 text-left">
+                <span class="font-mono text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 block text-center mb-2">
+                  CREDENTIALS
+                </span>
+                {{ range . }}
+                  <div class="px-2.5 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 text-[11px] font-mono flex items-center justify-between">
+                    <span class="font-bold text-slate-800 dark:text-slate-200">{{ .badge }}</span>
+                    <span class="text-[9px] text-emerald-600 dark:text-emerald-400 font-bold uppercase">{{ .status }} ✓</span>
+                  </div>
+                {{ end }}
+              </div>
+            {{ end }}
           </div>
 
           <!-- Bio & Details Column -->
           <div class="md:col-span-8 lg:col-span-9">
             <div class="mb-3">
               <span class="px-2.5 py-1 rounded font-mono text-[11px] font-bold uppercase tracking-wider" style="background-color: #ede9fe; color: #6b21a8;">
-                STAFF CONTRIBUTOR
+                AUTHOR &amp; FOUNDER
               </span>
             </div>
             <div class="prose dark:prose-invert max-w-none text-slate-600 dark:text-slate-400 text-sm sm:text-base leading-relaxed mb-6">
               {{ .Content }}
-            </div>
-
-            <!-- Social Links & Email -->
-            <div class="flex items-center gap-3 pt-4 border-t border-slate-200 dark:border-slate-800">
-              {{ range .Params.social }}
-                <a href="{{ .link | safeURL }}" target="_blank" rel="noopener noreferrer" 
-                   class="w-9 h-9 rounded-lg border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-700 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-500 hover:border-slate-400 transition-colors no-underline" 
-                   aria-label="{{ .name }}">
-                  <i class="{{ .icon }} text-sm"></i>
-                </a>
-              {{ end }}
-              {{ with .Params.email }}
-                <a href="mailto:{{ . }}" 
-                   class="w-9 h-9 rounded-lg border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-700 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-500 hover:border-slate-400 transition-colors no-underline" 
-                   aria-label="Email {{ $.Title }}">
-                  <i class="fa-regular fa-envelope text-sm"></i>
-                </a>
-              {{ end }}
             </div>
           </div>
 
