@@ -1245,6 +1245,145 @@
       });
     }
 
+    function fallbackPulseCopy(text, cb) {
+      var ta = document.createElement("textarea");
+      ta.value = text;
+      ta.style.position = "fixed";
+      ta.style.opacity = "0";
+      document.body.appendChild(ta);
+      ta.select();
+      try {
+        document.execCommand("copy");
+        if (cb) cb();
+      } catch (err) {
+        console.error("Clipboard copy failed", err);
+      }
+      document.body.removeChild(ta);
+    }
+
+    function copyPulseSlackMarkdown(text, btnEl) {
+      function showSuccess() {
+        if (!btnEl) return;
+        var origHtml = btnEl.innerHTML;
+        btnEl.innerHTML = '<i class="fa-solid fa-check text-emerald-400"></i> <span>Copied to Clipboard!</span>';
+        setTimeout(function() {
+          btnEl.innerHTML = origHtml;
+        }, 2200);
+      }
+
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(showSuccess).catch(function() {
+          fallbackPulseCopy(text, showSuccess);
+        });
+      } else {
+        fallbackPulseCopy(text, showSuccess);
+      }
+    }
+
+    function openPulseFocusModal(pulse, rankBadge) {
+      var modal = document.getElementById("pulse-focus-modal");
+      if (!modal) return;
+
+      var badgesContainer = document.getElementById("pulse-focus-badges");
+      var titleEl = document.getElementById("pulse-focus-title");
+      var contentEl = document.getElementById("pulse-focus-content");
+      var tagsContainer = document.getElementById("pulse-focus-tags");
+      var sourceLinkEl = document.getElementById("pulse-focus-sourcelink");
+      var copySlackBtn = document.getElementById("pulse-focus-copy-slack");
+      var shareLinkedinLink = document.getElementById("pulse-focus-share-linkedin");
+
+      if (badgesContainer) {
+        var dateHtml = '<span class="font-mono text-xs text-slate-500 dark:text-slate-400">' + formatDate(pulse.created_at) + '</span>';
+        badgesContainer.innerHTML = (rankBadge || "") + dateHtml;
+      }
+
+      if (titleEl) {
+        titleEl.textContent = pulse.title || "";
+      }
+
+      var cleanContent = (pulse.content || "")
+        .replace(/<[^>]+>/g, "")
+        .replace(/&lt;[^&]+&gt;/g, "")
+        .trim();
+
+      if (contentEl) {
+        contentEl.innerHTML = formatPulseContentToHtml(cleanContent);
+      }
+
+      if (tagsContainer) {
+        var tagsHtml = "";
+        if (Array.isArray(pulse.tags)) {
+          pulse.tags.forEach(function(tag) {
+            tagsHtml += '<span class="font-mono text-[10px] text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 px-2 py-0.5 rounded">' + escapeHtml(tag) + '</span> ';
+          });
+        }
+        tagsContainer.innerHTML = tagsHtml;
+      }
+
+      if (sourceLinkEl) {
+        if (pulse.link_url) {
+          sourceLinkEl.innerHTML = '<a href="' + escapeHtml(pulse.link_url) + '" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 text-xs font-mono font-bold text-red-600 dark:text-red-500 hover:underline"><i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i> Vendor Docs / Advisory</a>';
+        } else {
+          sourceLinkEl.innerHTML = "";
+        }
+      }
+
+      // Generate Slack/Teams formatted markdown
+      var whatChangedMatch = cleanContent.match(/(?:🎯\s*(?:\*\*)?What Changed(?:\*\*)?:?)([\s\S]*?)(?:💡|$)/i);
+      var impactMatch = cleanContent.match(/(?:💡\s*(?:\*\*)?(?:Why It Matters|Engineering Impact|Impact)(?:\*\*)?:?)([\s\S]+)$/i);
+      var whatChanged = whatChangedMatch ? whatChangedMatch[1].trim() : cleanContent;
+      var impact = impactMatch ? impactMatch[1].trim() : "";
+
+      var slackText = "*⚡ Cloud Pulse: " + (pulse.title || "") + "*\n\n" +
+        (whatChanged ? "*🎯 What Changed:*\n" + whatChanged + "\n\n" : "") +
+        (impact ? "*💡 Why It Matters:*\n" + impact + "\n\n" : "") +
+        (pulse.link_url ? "🔗 *Source:* " + pulse.link_url + "\n" : "") +
+        (Array.isArray(pulse.tags) ? "🏷️ " + pulse.tags.join(" ") : "");
+
+      if (copySlackBtn) {
+        copySlackBtn.onclick = function() {
+          copyPulseSlackMarkdown(slackText, copySlackBtn);
+        };
+      }
+
+      if (shareLinkedinLink) {
+        var liText = formatPulseLinkedInPost(pulse.title, cleanContent, pulse.tags, pulse.link_url);
+        shareLinkedinLink.href = "https://www.linkedin.com/feed/?shareActive=true&text=" + encodeURIComponent(liText);
+      }
+
+      modal.classList.remove("hidden");
+      document.body.style.overflow = "hidden";
+    }
+
+    function closePulseFocusModal() {
+      var modal = document.getElementById("pulse-focus-modal");
+      if (!modal) return;
+      modal.classList.add("hidden");
+      document.body.style.overflow = "";
+    }
+
+    function setupPulseFocusModal() {
+      var modal = document.getElementById("pulse-focus-modal");
+      if (!modal) return;
+
+      var closeBtn = document.getElementById("pulse-focus-close");
+      if (closeBtn) {
+        closeBtn.addEventListener("click", closePulseFocusModal);
+      }
+
+      modal.addEventListener("click", function(e) {
+        if (e.target === modal) {
+          closePulseFocusModal();
+        }
+      });
+
+      document.addEventListener("keydown", function(e) {
+        if (e.key === "Escape" && !modal.classList.contains("hidden")) {
+          closePulseFocusModal();
+        }
+      });
+    }
+
     function sortCohortByScore(list) {
       return (list || []).slice(0, 6).sort(function(a, b) {
         var scoreA = typeof a.score === "number" ? a.score : ((a.upvotes || 0) - (a.downvotes || 0));
@@ -1257,6 +1396,7 @@
     function fetchPulses() {
       setupFilterChips();
       setupPulseSearch();
+      setupPulseFocusModal();
       // Fetch latest 6 approved articles (the active competing cohort)
       var queryUrl = config.url + "/rest/v1/cloud_pulses?status=eq.approved&order=created_at.desc&limit=6";
       
@@ -1453,13 +1593,17 @@ function renderPulses(pulses) {
           '<i class="fa-brands fa-linkedin text-sm"></i> Share' +
         '</a>';
 
+        var inspectBtnHtml = '<button type="button" data-pulse-inspect="' + escapeHtml(p.id) + '" class="pulse-inspect-btn inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-xs font-bold font-mono bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition-all border-0 cursor-pointer shrink-0" title="Inspect full update & share">' +
+          '<i class="fa-solid fa-expand text-[10px]"></i> Inspect' +
+        '</button>';
+
         html += '<div id="pulse-' + escapeHtml(p.id) + '" data-pulse-id="' + escapeHtml(p.id) + '" class="cloud-pulse-card scroll-mt-28 bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-slate-800 rounded-xl p-6 shadow-sm hover:shadow-md flex flex-col justify-between transition-all hover:border-slate-300 dark:hover:border-slate-700 group">' +
           '<div>' +
             '<div class="flex items-center justify-between gap-2 mb-3">' +
               rankBadge +
               '<span class="font-mono text-xs text-slate-500 dark:text-slate-400">' + formatDate(p.created_at) + '</span>' +
             '</div>' +
-            '<h4 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white mb-3 leading-snug group-hover:text-red-600 dark:group-hover:text-red-500 transition-colors">' + titleHtml + '</h4>' +
+            '<h4 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white mb-3 leading-snug group-hover:text-red-600 dark:group-hover:text-red-500 transition-colors cursor-pointer" data-pulse-inspect="' + escapeHtml(p.id) + '">' + titleHtml + '</h4>' +
             '<div class="mb-4 space-y-2 text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed font-normal">' + 
               formatPulseContentToHtml(cleanContentText) + 
             '</div>' +
@@ -1470,6 +1614,7 @@ function renderPulses(pulses) {
             '<div class="flex flex-wrap gap-1.5 min-w-0">' + tagsHtml + '</div>' +
 
             '<div class="flex items-center gap-2 shrink-0 ml-auto">' +
+              inspectBtnHtml +
               linkedinBtnHtml +
               '<div class="pulse-vote-pill inline-flex items-center flex-row flex-nowrap shrink-0 rounded-lg bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 p-0.5 gap-0.5 shadow-xs">' +
                 '<button data-pulse-upvote="' + p.id + '" data-upvotes="' + (p.upvotes || 0) + '" data-downvotes="' + (p.downvotes || 0) + '" class="' + upActiveClass + ' inline-flex items-center gap-1.5 px-2 py-1 rounded font-mono text-xs font-bold transition-all border-none bg-transparent cursor-pointer" title="Upvote pulse" aria-label="Upvote this cloud pulse">' +
@@ -1512,6 +1657,22 @@ function renderPulses(pulses) {
       feedContainer.setAttribute("data-vote-bound", "true");
 
       feedContainer.addEventListener("click", function (e) {
+        var inspectTarget = e.target.closest("[data-pulse-inspect]");
+        if (inspectTarget) {
+          e.preventDefault();
+          var inspectId = inspectTarget.getAttribute("data-pulse-inspect");
+          var pulseItem = allLoadedPulses.find(function(item) { return String(item.id) === String(inspectId); });
+          if (pulseItem) {
+            var pulseIdx = allLoadedPulses.findIndex(function(item) { return String(item.id) === String(inspectId); });
+            var inspectRankBadge = pulseIdx === 0 ? '<span class="px-2 py-0.5 rounded font-mono text-[10px] font-bold uppercase tracking-wider bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/30">🔥 #1 TRENDING</span>'
+                                  : pulseIdx === 1 ? '<span class="px-2 py-0.5 rounded font-mono text-[10px] font-bold uppercase tracking-wider bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700">#2 TOP PULSE</span>'
+                                  : pulseIdx === 2 ? '<span class="px-2 py-0.5 rounded font-mono text-[10px] font-bold uppercase tracking-wider bg-amber-900/20 text-amber-700 dark:text-amber-300 border border-amber-800/30">#3 TOP PULSE</span>'
+                                  : '<span class="px-2 py-0.5 rounded font-mono text-[10px] font-bold uppercase tracking-wider bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">#' + (pulseIdx + 1) + '</span>';
+            openPulseFocusModal(pulseItem, inspectRankBadge);
+          }
+          return;
+        }
+
         var upTarget = e.target.closest("[data-pulse-upvote]");
         var downTarget = e.target.closest("[data-pulse-downvote]");
         var shareTarget = e.target.closest(".pulse-share-btn");
