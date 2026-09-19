@@ -891,6 +891,69 @@
       });
   }
 
+
+  /* ── 13. Brand Tagline Terminal Typewriter (Cloud -> DevOps -> Security -> Unified) ── */
+  function initTaglineTypewriter() {
+    var el = document.querySelector("[data-typewriter-tagline]");
+    if (!el) return;
+
+    var sequence = [
+      { text: "Cloud", hold: 1100 },
+      { text: "DevOps", hold: 1100 },
+      { text: "Security", hold: 1100 },
+      { text: "Cloud · DevOps · Security", hold: 10000 }
+    ];
+
+    var seqIndex = 0;
+    var displayed = el.textContent.trim();
+    var typingSpeed = 75;
+    var deletingSpeed = 40;
+
+    function typeForward(targetText, onComplete) {
+      if (displayed.length < targetText.length) {
+        displayed = targetText.slice(0, displayed.length + 1);
+        el.textContent = displayed;
+        setTimeout(function () {
+          typeForward(targetText, onComplete);
+        }, typingSpeed);
+      } else {
+        onComplete();
+      }
+    }
+
+    function backspace(onComplete) {
+      if (displayed.length > 0) {
+        displayed = displayed.slice(0, -1);
+        el.textContent = displayed;
+        setTimeout(function () {
+          backspace(onComplete);
+        }, deletingSpeed);
+      } else {
+        setTimeout(onComplete, 300);
+      }
+    }
+
+    function runStep() {
+      var item = sequence[seqIndex];
+      typeForward(item.text, function () {
+        setTimeout(function () {
+          backspace(function () {
+            seqIndex = (seqIndex + 1) % sequence.length;
+            runStep();
+          });
+        }, item.hold);
+      });
+    }
+
+    // Allow initial SSR text to be read for 1.8s, then begin cycle
+    setTimeout(function () {
+      backspace(function () {
+        seqIndex = 0;
+        runStep();
+      });
+    }, 1800);
+  }
+
   /* ── Init ── */
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", init);
@@ -912,6 +975,7 @@
     initCloudPulseSystem();
     initPulseAdminApprovalSystem();
     initPulseTicker();
+    initTaglineTypewriter();
   }
 
   /* ── 9. Cloud Pulse Micro-News & Upvote System ── */
