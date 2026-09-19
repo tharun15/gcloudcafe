@@ -67,7 +67,7 @@
     update();
   }
 
-  /* ── Copy-to-Clipboard for Code Blocks ── */
+  /* ── Developer-Grade Code Blocks with Icons, Tabs, and Glowing Copy ── */
   function initCopyCode() {
     var blocks = document.querySelectorAll("pre");
     if (!blocks.length) return;
@@ -80,6 +80,10 @@
       pre.parentNode.insertBefore(wrapper, pre);
 
       var code = pre.querySelector("code");
+      var rawText = (code || pre).innerText || (code || pre).textContent || "";
+      var lines = rawText.trim().split("\n");
+      var firstLine = (lines[0] || "").trim();
+
       var lang = "CODE";
       if (code) {
         var match = code.className.match(/(?:lang|language)-(\w+)/);
@@ -88,9 +92,75 @@
         }
       }
 
+      // Check for filename in first line comment: # file.ext, // file.ext, -- file.sql
+      var filename = "";
+      var fileMatch = firstLine.match(/^(?:#|\/\/|--|\/\*|<!--)\s*([a-zA-Z0-9_.\-\/]+\.[a-zA-Z0-9]+)\s*(?:\*\/|-->)?$/);
+      if (fileMatch && fileMatch[1]) {
+        filename = fileMatch[1];
+      }
+
+      // Tech Icons map
+      var iconClass = "fa-solid fa-code";
+      var iconColor = "text-sky-400";
+      var langLower = (lang + " " + filename).toLowerCase();
+      if (langLower.includes("bash") || langLower.includes("sh") || langLower.includes("shell") || langLower.includes("zsh")) {
+        iconClass = "fa-solid fa-terminal";
+        iconColor = "text-emerald-400";
+      } else if (langLower.includes("yaml") || langLower.includes("yml")) {
+        iconClass = "fa-solid fa-file-code";
+        iconColor = "text-amber-400";
+      } else if (langLower.includes("docker")) {
+        iconClass = "fa-brands fa-docker";
+        iconColor = "text-sky-400";
+      } else if (langLower.includes("python") || langLower.includes("py")) {
+        iconClass = "fa-brands fa-python";
+        iconColor = "text-amber-400";
+      } else if (langLower.includes("go")) {
+        iconClass = "fa-brands fa-golang";
+        iconColor = "text-cyan-400";
+      } else if (langLower.includes("terraform") || langLower.includes("hcl") || langLower.includes("tf")) {
+        iconClass = "fa-solid fa-cubes";
+        iconColor = "text-purple-400";
+      } else if (langLower.includes("sql")) {
+        iconClass = "fa-solid fa-database";
+        iconColor = "text-rose-400";
+      } else if (langLower.includes("json")) {
+        iconClass = "fa-solid fa-brackets-curly";
+        iconColor = "text-yellow-400";
+      }
+
+      // Multi-tab / Multi-CLI support inside code snippet
+      // Matches: # [kubectl] or # [gcloud] or # [AWS CLI] or # --- TabName ---
+      var tabDelimiterRegex = /^[ \t]*(?:#|\/\/|--)\s*(?:\[|---?\s*)([A-Za-z0-9_.\-\s/]+?)(?:\]|\s*---?)[ \t]*$/;
+      var tabs = [];
+      var currentTabName = "";
+      var currentTabLines = [];
+
+      for (var i = 0; i < lines.length; i++) {
+        var line = lines[i];
+        var tabMatch = line.match(tabDelimiterRegex);
+        if (tabMatch && tabMatch[1] && tabMatch[1].trim().length > 0 && !line.includes(".yaml") && !line.includes(".tf") && !line.includes(".json") && !line.includes(".sh")) {
+          if (currentTabName && currentTabLines.length > 0) {
+            tabs.push({ name: currentTabName, text: currentTabLines.join("\n") });
+            currentTabLines = [];
+          }
+          currentTabName = tabMatch[1].trim();
+        } else {
+          currentTabLines.push(line);
+        }
+      }
+      if (currentTabName && currentTabLines.length > 0) {
+        tabs.push({ name: currentTabName, text: currentTabLines.join("\n") });
+      }
+
       var header = document.createElement("div");
       header.className = "code-block-header";
-      header.innerHTML = '<span class="lang-tag">' + lang + '</span>';
+
+      var displayLabel = filename || lang;
+      var badgeHtml = '<span class="lang-tag"><i class="' + iconClass + ' ' + iconColor + ' mr-1 text-[11px]"></i> ' + escapeHtml(displayLabel) + '</span>';
+      var lineCountHtml = '<span class="line-count-tag ml-2 text-slate-500 dark:text-slate-400 font-mono text-[11px]">' + lines.length + (lines.length === 1 ? ' line' : ' lines') + '</span>';
+
+      header.innerHTML = '<div class="flex items-center">' + badgeHtml + lineCountHtml + '</div>';
 
       var btn = document.createElement("button");
       btn.className = "copy-code-btn blog-focus-ring";
@@ -99,16 +169,57 @@
       header.appendChild(btn);
 
       wrapper.appendChild(header);
+
+      var activeCopyText = rawText;
+      if (tabs.length >= 2) {
+        var tabBar = document.createElement("div");
+        tabBar.className = "code-block-tabs";
+        
+        tabs.forEach(function (tab, tIdx) {
+          var tabBtn = document.createElement("button");
+          tabBtn.type = "button";
+          tabBtn.className = "code-tab-btn" + (tIdx === 0 ? " is-active" : "");
+          tabBtn.textContent = tab.name;
+          tabBtn.addEventListener("click", function () {
+            tabBar.querySelectorAll(".code-tab-btn").forEach(function(b) { b.classList.remove("is-active"); });
+            tabBtn.classList.add("is-active");
+            if (code) {
+              code.textContent = tab.text;
+            } else {
+              pre.textContent = tab.text;
+            }
+            activeCopyText = tab.text;
+            var newLines = tab.text.trim().split("\n");
+            var lineTag = header.querySelector(".line-count-tag");
+            if (lineTag) lineTag.textContent = newLines.length + (newLines.length === 1 ? ' line' : ' lines');
+          });
+          tabBar.appendChild(tabBtn);
+        });
+
+        wrapper.appendChild(tabBar);
+        activeCopyText = tabs[0].text;
+        if (code) {
+          code.textContent = tabs[0].text;
+        } else {
+          pre.textContent = tabs[0].text;
+        }
+        var firstTabLines = tabs[0].text.trim().split("\n");
+        var lineTag = header.querySelector(".line-count-tag");
+        if (lineTag) lineTag.textContent = firstTabLines.length + (firstTabLines.length === 1 ? ' line' : ' lines');
+      }
+
       wrapper.appendChild(pre);
 
       btn.addEventListener("click", function () {
-        var text = (code || pre).innerText || (code || pre).textContent || "";
+        var text = activeCopyText;
         if (!navigator.clipboard) {
           fallbackCopy(text, btn);
           return;
         }
         navigator.clipboard.writeText(text).then(function () {
           showCopied(btn);
+        }).catch(function () {
+          fallbackCopy(text, btn);
         });
       });
     });
