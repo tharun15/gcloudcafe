@@ -55,12 +55,29 @@
     if (!bar) return;
 
     function update() {
-      var scrollTop = window.scrollY || document.documentElement.scrollTop;
-      var docHeight =
-        document.documentElement.scrollHeight -
-        document.documentElement.clientHeight;
-      var pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
-      bar.style.width = Math.min(100, pct) + "%";
+      var article = document.querySelector(".single-post, article, .content");
+      if (article) {
+        var articleRect = article.getBoundingClientRect();
+        var articleTop = articleRect.top + window.scrollY;
+        var articleHeight = article.offsetHeight;
+        var windowHeight = window.innerHeight;
+        var scrollTop = window.scrollY;
+
+        var start = articleTop - 100;
+        var end = articleTop + articleHeight - windowHeight;
+        if (end <= start) end = start + 1;
+
+        var progress = (scrollTop - start) / (end - start);
+        var pct = Math.max(0, Math.min(100, progress * 100));
+        bar.style.width = pct + "%";
+      } else {
+        var scrollTop = window.scrollY || document.documentElement.scrollTop;
+        var docHeight =
+          document.documentElement.scrollHeight -
+          document.documentElement.clientHeight;
+        var pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+        bar.style.width = Math.min(100, pct) + "%";
+      }
     }
 
     window.addEventListener("scroll", update, { passive: true });
@@ -267,18 +284,45 @@
     toggle();
   }
 
-  /* ── Active Table of Contents Tracking (IntersectionObserver: Zero Forced Reflow) ── */
+  /* ── Active Table of Contents Tracking (IntersectionObserver with Smooth Offset & Auto-Scroll) ── */
   function initActiveTocTracking() {
-    var tocLinks = document.querySelectorAll(".toc-link");
+    var tocLinks = document.querySelectorAll(".toc-container a, #TableOfContents a, .toc-link");
     if (!tocLinks.length) return;
 
     var headingsMap = new Map();
+    var container = document.querySelector(".toc-container");
+
     tocLinks.forEach(function (link) {
+      link.classList.add("toc-link");
       var href = link.getAttribute("href");
       if (href && href.startsWith("#")) {
-        var el = document.getElementById(href.substring(1));
-        if (el) headingsMap.set(el, link);
+        var targetId = decodeURIComponent(href.substring(1));
+        var el = document.getElementById(targetId);
+        if (el) {
+          headingsMap.set(el, link);
+        }
       }
+
+      // Smooth scroll with offset for fixed header
+      link.addEventListener("click", function (e) {
+        var targetHref = link.getAttribute("href");
+        if (targetHref && targetHref.startsWith("#")) {
+          var targetElem = document.getElementById(decodeURIComponent(targetHref.substring(1)));
+          if (targetElem) {
+            e.preventDefault();
+            var headerOffset = 95;
+            var elementPosition = targetElem.getBoundingClientRect().top;
+            var offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+            window.scrollTo({
+              top: offsetPosition,
+              behavior: "smooth"
+            });
+            if (history.pushState) {
+              history.pushState(null, null, targetHref);
+            }
+          }
+        }
+      });
     });
 
     if (headingsMap.size === 0) return;
@@ -291,10 +335,18 @@
             if (activeLink) {
               tocLinks.forEach(function (l) { l.classList.remove("is-active"); });
               activeLink.classList.add("is-active");
+              // Auto-scroll TOC container so active link is always visible
+              if (container) {
+                var containerRect = container.getBoundingClientRect();
+                var linkRect = activeLink.getBoundingClientRect();
+                if (linkRect.top < containerRect.top + 40 || linkRect.bottom > containerRect.bottom - 40) {
+                  activeLink.scrollIntoView({ behavior: "smooth", block: "nearest" });
+                }
+              }
             }
           }
         });
-      }, { rootMargin: "0px 0px -70% 0px", threshold: 0 });
+      }, { rootMargin: "0px 0px -65% 0px", threshold: 0 });
 
       headingsMap.forEach(function (_, el) {
         observer.observe(el);

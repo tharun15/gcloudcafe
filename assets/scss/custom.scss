@@ -43,12 +43,13 @@
   position: fixed;
   top: 0;
   left: 0;
-  height: 3px;
+  height: 3.5px;
   width: 0%;
   z-index: 9999;
   border-radius: 0 2px 2px 0;
-  background: linear-gradient(90deg, #0284c7, #38bdf8, #818cf8);
-  transition: width 0.1s ease-out;
+  background: linear-gradient(90deg, #ef4444, #f97316, #eab308);
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.6);
+  transition: width 0.08s ease-out;
 }
 
 /* Hide scrollbar for Chrome, Safari, Opera, Firefox, Edge */
@@ -398,18 +399,39 @@ pre code,
 
 /* Sticky Table of Contents */
 .toc-container {
-  @apply sticky top-28 max-h-[calc(100vh-8rem)] overflow-y-auto rounded-2xl border border-border/80 bg-body p-5 shadow-sm dark:border-darkmode-border/80 dark:bg-darkmode-theme-light;
+  @apply sticky top-28 max-h-[calc(100vh-8rem)] overflow-y-auto rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-[#0c1220] p-5 shadow-sm;
+
+  #TableOfContents,
+  ul {
+    list-style: none !important;
+    padding-left: 0 !important;
+    margin: 0 !important;
+
+    ul {
+      padding-left: 0.85rem !important;
+      border-left: 1px solid rgba(148, 163, 184, 0.2);
+      margin-left: 0.35rem !important;
+    }
+
+    li {
+      margin-bottom: 0.2rem;
+    }
+  }
 }
 
 .toc-title {
-  @apply mb-3 text-xs font-bold uppercase tracking-wider text-text/90 dark:text-darkmode-text/90;
+  @apply mb-3.5 text-xs font-mono font-bold uppercase tracking-wider text-slate-900 dark:text-slate-100 flex items-center gap-1.5 pb-2 border-b border-slate-100 dark:border-slate-800;
 }
 
 .toc-link {
-  @apply block border-l-2 border-transparent py-1.5 pl-3 text-xs font-medium text-text/80 transition-all duration-150 hover:border-primary hover:text-primary dark:text-darkmode-text/80 dark:hover:border-darkmode-primary dark:hover:text-darkmode-primary;
+  @apply block py-1.5 px-2.5 rounded-lg text-xs font-medium text-slate-600 dark:text-slate-400 no-underline transition-all duration-150 border-l-2 border-transparent;
+
+  &:hover {
+    @apply text-slate-900 dark:text-white bg-slate-100/70 dark:bg-slate-800/50;
+  }
 
   &.is-active {
-    @apply border-primary font-bold text-primary dark:border-darkmode-primary dark:text-darkmode-primary;
+    @apply font-bold text-red-600 dark:text-red-400 bg-red-500/10 border-l-2 border-red-500 dark:border-red-400 shadow-sm;
   }
 }
 
