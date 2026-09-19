@@ -1,13 +1,15 @@
 {{ define "main" }}
-<div class="py-12 sm:py-16">
-  <div class="bytedepth-container">
-
-    <!-- Top Breadcrumb & Tag -->
-    <div class="mb-6 flex items-center gap-2 font-mono text-xs text-slate-500 dark:text-slate-400">
+  <!-- Uniform Breadcrumb Bar -->
+  <div class="bytedepth-container pt-5 pb-2">
+    <div class="flex items-center gap-2 font-mono text-xs text-slate-500 dark:text-slate-400">
       <a href="{{ site.Home.RelPermalink }}" class="hover:text-slate-900 dark:hover:text-white no-underline text-inherit transition-colors">Home</a>
       <span>/</span>
       <span class="text-slate-900 dark:text-white font-semibold">Newsletter</span>
     </div>
+  </div>
+
+  <div class="pb-12 sm:pb-16 pt-3">
+    <div class="bytedepth-container">
 
     <!-- Hero Header -->
     <div class="text-center max-w-2xl mx-auto mb-12">
