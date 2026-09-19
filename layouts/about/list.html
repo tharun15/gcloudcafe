@@ -1,278 +1,446 @@
 {{ define "main" }}
-  {{/* ─── Hero ─── */}}
-  <section class="about-hero section-sm py-20 text-center">
-    <div class="container">
-      <div class="row justify-center">
-        <div class="lg:col-8">
-          <p class="blog-eyebrow justify-center">Cloud knowledge, brewed fresh</p>
-          <h1 class="mb-6 text-4xl font-extrabold md:text-5xl lg:text-6xl">
-            Welcome to <span class="text-primary dark:text-darkmode-primary">GCloud Cafe</span>
-          </h1>
-          <p class="mx-auto mb-10 max-w-2xl text-xl leading-9 text-text dark:text-darkmode-text">
-            Your go-to destination for practical cloud certification tips,
-            up-to-date cloud technology news, and clear explanations of key
-            cloud concepts — served with a developer-first mindset.
-          </p>
-          <div class="flex flex-wrap justify-center gap-4">
-            <a class="btn btn-primary" href="{{ `blog/` | relLangURL }}">
-              <i class="fa-solid fa-mug-hot mr-2"></i>Read the Blog
-            </a>
-            <a class="btn btn-outline-primary" href="{{ `contact/` | relLangURL }}">
-              <i class="fa-regular fa-envelope mr-2"></i>Get in Touch
-            </a>
+  <!-- Breadcrumbs (ByteDepth Container) -->
+  <div class="bytedepth-container pt-5 pb-2">
+    <nav class="text-xs font-mono text-slate-500 dark:text-slate-400" aria-label="Breadcrumb">
+      <a href="{{ site.Home.RelPermalink }}" class="text-inherit hover:text-red-600 dark:hover:text-red-500 no-underline">Home</a>
+      <span class="mx-1.5 text-slate-300 dark:text-slate-700">/</span>
+      <span class="text-slate-900 dark:text-slate-200 font-semibold">About</span>
+    </nav>
+  </div>
+
+  <!-- Hero Section -->
+  <section class="pt-6 pb-12" aria-labelledby="about-hero-title">
+    <div class="bytedepth-container">
+      <div class="max-w-3xl">
+        <span class="inline-block font-mono text-xs font-black uppercase tracking-widest text-red-600 dark:text-red-500 mb-3" style="color: #dc2626 !important;">
+          BEHIND THE PUBLICATION
+        </span>
+        <h1 id="about-hero-title" class="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 dark:text-white tracking-tight leading-[1.15] mb-5">
+          Deep Technical Writing for Engineers Who Run Production Systems.
+        </h1>
+        <p class="text-base sm:text-lg text-slate-600 dark:text-slate-400 leading-relaxed font-normal mb-8">
+          GCloud Cafe is an independent engineering publication built for Cloud Architects, DevOps practitioners, and SREs. We deliver production-grade architecture patterns, Kubernetes internals, zero-trust cryptography, and certification blueprints — written directly from real-world deployments without marketing spin.
+        </p>
+        <div class="flex flex-wrap items-center gap-3 font-mono text-xs">
+          <a href="{{ `blog/` | relLangURL }}" 
+             class="inline-flex items-center gap-2 px-4 py-2.5 bg-slate-900 dark:bg-white text-white dark:text-slate-950 font-bold rounded-lg hover:bg-slate-800 dark:hover:bg-slate-100 transition-colors no-underline">
+            <span>Explore Articles</span>
+            <i class="fa-solid fa-arrow-right text-[11px]"></i>
+          </a>
+          <a href="{{ `pulse/` | relLangURL }}" 
+             class="inline-flex items-center gap-2 px-4 py-2.5 border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0c1220] text-slate-800 dark:text-slate-200 font-bold rounded-lg hover:border-slate-300 dark:hover:border-slate-700 transition-colors no-underline">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span>Live Cloud Pulse</span>
+          </a>
+          <a href="{{ `newsletter/` | relLangURL }}" 
+             class="inline-flex items-center gap-2 px-4 py-2.5 border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50 text-slate-700 dark:text-slate-300 font-bold rounded-lg hover:border-slate-300 dark:hover:border-slate-700 transition-colors no-underline">
+            <i class="fa-regular fa-envelope text-[11px]"></i>
+            <span>Weekly Digest</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Architectural Metrics Grid -->
+  <section class="pb-12" aria-label="Key Publication Metrics">
+    <div class="bytedepth-container">
+      <div class="border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0c1220] rounded-xl overflow-hidden shadow-sm">
+        <div class="grid grid-cols-2 lg:grid-cols-4 divide-y lg:divide-y-0 divide-x-0 lg:divide-x divide-slate-200 dark:divide-slate-800">
+          
+          <div class="p-5 sm:p-6 text-center">
+            <div class="font-mono text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight mb-1">
+              {{ len (where site.RegularPages "Section" "blog") }}+
+            </div>
+            <div class="font-mono text-xs font-bold uppercase text-slate-800 dark:text-slate-200 mb-0.5">Articles Indexed</div>
+            <div class="text-xs text-slate-500 dark:text-slate-400">Architecture deep-dives &amp; labs</div>
+          </div>
+
+          <div class="p-5 sm:p-6 text-center">
+            <div class="font-mono text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight mb-1">
+              6+
+            </div>
+            <div class="font-mono text-xs font-bold uppercase text-slate-800 dark:text-slate-200 mb-0.5">Core Ecosystems</div>
+            <div class="text-xs text-slate-500 dark:text-slate-400">K8s, OpenShift, GCP, AWS, TLS, Linux</div>
+          </div>
+
+          <div class="p-5 sm:p-6 text-center">
+            <div class="font-mono text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight mb-1">
+              100%
+            </div>
+            <div class="font-mono text-xs font-bold uppercase text-slate-800 dark:text-slate-200 mb-0.5">Independent &amp; Free</div>
+            <div class="text-xs text-slate-500 dark:text-slate-400">Zero vendor paywalls, zero ads</div>
+          </div>
+
+          <div class="p-5 sm:p-6 text-center">
+            <div class="font-mono text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight mb-1">
+              &lt; 3 AM
+            </div>
+            <div class="font-mono text-xs font-bold uppercase text-slate-800 dark:text-slate-200 mb-0.5">Incident-Tested</div>
+            <div class="text-xs text-slate-500 dark:text-slate-400">Battle-tested on-call playbooks</div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Core Focus Areas (Bento Grid) -->
+  <section class="py-10" aria-labelledby="focus-areas-heading">
+    <div class="bytedepth-container">
+      <div class="mb-8">
+        <span class="inline-block font-mono text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">
+          WHAT WE COVER
+        </span>
+        <h2 id="focus-areas-heading" class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
+          Production-Grade Cloud Engineering
+        </h2>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        
+        <!-- Bento 1: Kubernetes & OpenShift -->
+        <div class="border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0c1220] rounded-xl p-6 hover:shadow-md transition-shadow flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <span class="px-2.5 py-1 rounded font-mono text-[11px] font-bold uppercase tracking-wider" style="background-color: #ede9fe; color: #6b21a8;">
+                CONTAINERS
+              </span>
+              <div class="w-8 h-8 rounded-lg bg-blue-50 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400 flex items-center justify-center text-sm">
+                <i class="fa-solid fa-dharmachakra"></i>
+              </div>
+            </div>
+            <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2 leading-snug">
+              Kubernetes &amp; OpenShift
+            </h3>
+            <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
+              Deep dives into CKA/CKAD/CKS exam tactics, container runtime internals, cluster upgrades, operator patterns, and enterprise Red Hat OpenShift deployment recipes.
+            </p>
+          </div>
+          <div class="flex flex-wrap gap-1.5 pt-4 border-t border-slate-100 dark:border-slate-800/80 font-mono text-[11px] text-slate-500 dark:text-slate-400">
+            <span>#CKA</span> <span>·</span> <span>#OpenShift</span> <span>·</span> <span>#Helm</span> <span>·</span> <span>#ArgoCD</span>
+          </div>
+        </div>
+
+        <!-- Bento 2: Zero-Trust & PKI Security -->
+        <div class="border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0c1220] rounded-xl p-6 hover:shadow-md transition-shadow flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <span class="px-2.5 py-1 rounded font-mono text-[11px] font-bold uppercase tracking-wider" style="background-color: #ede9fe; color: #6b21a8;">
+                SECURITY
+              </span>
+              <div class="w-8 h-8 rounded-lg bg-purple-50 dark:bg-purple-950/50 text-purple-600 dark:text-purple-400 flex items-center justify-center text-sm">
+                <i class="fa-solid fa-shield-halved"></i>
+              </div>
+            </div>
+            <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2 leading-snug">
+              TLS, mTLS &amp; Zero-Trust PKI
+            </h3>
+            <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
+              Cryptographic foundations, Java KeyStores vs TrustStores, 1-RTT vs 0-RTT handshakes, cert-manager automation, and recovering from expired certificate outages.
+            </p>
+          </div>
+          <div class="flex flex-wrap gap-1.5 pt-4 border-t border-slate-100 dark:border-slate-800/80 font-mono text-[11px] text-slate-500 dark:text-slate-400">
+            <span>#mTLS</span> <span>·</span> <span>#KeyStores</span> <span>·</span> <span>#CertManager</span> <span>·</span> <span>#PKI</span>
+          </div>
+        </div>
+
+        <!-- Bento 3: Google Cloud & Hyperscalers -->
+        <div class="border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0c1220] rounded-xl p-6 hover:shadow-md transition-shadow flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <span class="px-2.5 py-1 rounded font-mono text-[11px] font-bold uppercase tracking-wider" style="background-color: #ede9fe; color: #6b21a8;">
+                HYPERSCALERS
+              </span>
+              <div class="w-8 h-8 rounded-lg bg-amber-50 dark:bg-amber-950/50 text-amber-600 dark:text-amber-400 flex items-center justify-center text-sm">
+                <i class="fa-brands fa-google"></i>
+              </div>
+            </div>
+            <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2 leading-snug">
+              Google Cloud &amp; Multi-Cloud
+            </h3>
+            <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
+              GCP Professional Cloud Architect renewal frameworks, Vertex AI infrastructure, BigQuery performance tuning, VPC service controls, and AWS/Azure multi-cloud topologies.
+            </p>
+          </div>
+          <div class="flex flex-wrap gap-1.5 pt-4 border-t border-slate-100 dark:border-slate-800/80 font-mono text-[11px] text-slate-500 dark:text-slate-400">
+            <span>#GCP</span> <span>·</span> <span>#AWS</span> <span>·</span> <span>#BigQuery</span> <span>·</span> <span>#VertexAI</span>
+          </div>
+        </div>
+
+        <!-- Bento 4: Infrastructure as Code & GitOps -->
+        <div class="border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0c1220] rounded-xl p-6 hover:shadow-md transition-shadow flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <span class="px-2.5 py-1 rounded font-mono text-[11px] font-bold uppercase tracking-wider" style="background-color: #ede9fe; color: #6b21a8;">
+                DEVOPS
+              </span>
+              <div class="w-8 h-8 rounded-lg bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-sm">
+                <i class="fa-solid fa-terminal"></i>
+              </div>
+            </div>
+            <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2 leading-snug">
+              IaC, GitOps &amp; Automation
+            </h3>
+            <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
+              Modular Terraform codebases, state locking, Ansible configuration management, CI/CD pipeline hardening, and automated policy validation with OPA Gatekeeper.
+            </p>
+          </div>
+          <div class="flex flex-wrap gap-1.5 pt-4 border-t border-slate-100 dark:border-slate-800/80 font-mono text-[11px] text-slate-500 dark:text-slate-400">
+            <span>#Terraform</span> <span>·</span> <span>#GitOps</span> <span>·</span> <span>#Ansible</span> <span>·</span> <span>#CI/CD</span>
+          </div>
+        </div>
+
+        <!-- Bento 5: Certification Roadmaps -->
+        <div class="border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0c1220] rounded-xl p-6 hover:shadow-md transition-shadow flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <span class="px-2.5 py-1 rounded font-mono text-[11px] font-bold uppercase tracking-wider" style="background-color: #ede9fe; color: #6b21a8;">
+                CAREER
+              </span>
+              <div class="w-8 h-8 rounded-lg bg-rose-50 dark:bg-rose-950/50 text-rose-600 dark:text-rose-400 flex items-center justify-center text-sm">
+                <i class="fa-solid fa-certificate"></i>
+              </div>
+            </div>
+            <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2 leading-snug">
+              Tested Certification Roadmaps
+            </h3>
+            <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
+              Realistic, hands-on study guides that cut past memory dumps. Focused on command muscle-memory, speed cheat sheets, and passing scenario-based practical exams.
+            </p>
+          </div>
+          <div class="flex flex-wrap gap-1.5 pt-4 border-t border-slate-100 dark:border-slate-800/80 font-mono text-[11px] text-slate-500 dark:text-slate-400">
+            <span>#GCP PCA</span> <span>·</span> <span>#CKA</span> <span>·</span> <span>#RedHat EX280</span>
+          </div>
+        </div>
+
+        <!-- Bento 6: Live Cloud Pulse Newsroom -->
+        <div class="border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0c1220] rounded-xl p-6 hover:shadow-md transition-shadow flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <span class="px-2.5 py-1 rounded font-mono text-[11px] font-bold uppercase tracking-wider" style="background-color: #d1fae5; color: #065f46;">
+                NEWSROOM
+              </span>
+              <div class="w-8 h-8 rounded-lg bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-sm">
+                <i class="fa-solid fa-tower-broadcast"></i>
+              </div>
+            </div>
+            <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2 leading-snug">
+              Autonomous Cloud Pulse
+            </h3>
+            <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
+              Continuous scraping and AI-synthesized updates on breaking cloud announcements, deprecation alerts, and security patches across GCP, AWS, and Kubernetes.
+            </p>
+          </div>
+          <div class="flex flex-wrap gap-1.5 pt-4 border-t border-slate-100 dark:border-slate-800/80 font-mono text-[11px] text-slate-500 dark:text-slate-400">
+            <span>#Realtime</span> <span>·</span> <span>#Telemetry</span> <span>·</span> <span>#Security</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Editorial Principles -->
+  <section class="py-12" aria-labelledby="principles-heading">
+    <div class="bytedepth-container">
+      <div class="border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#080d17] rounded-xl p-8 sm:p-10">
+        <div class="mb-8">
+          <span class="inline-block font-mono text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">
+            HOW WE WRITE
+          </span>
+          <h2 id="principles-heading" class="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+            Our Architectural Principles
+          </h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div>
+            <div class="font-mono text-xs font-bold text-red-600 dark:text-red-500 mb-2" style="color: #dc2626 !important;">
+              01 / PRACTITIONER-FIRST
+            </div>
+            <h3 class="text-base font-bold text-slate-900 dark:text-white mb-2">
+              Verified in Real Labs
+            </h3>
+            <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+              Every command, manifest, and script is executed and validated in actual clusters and VPCs before publishing. No speculative theory.
+            </p>
+          </div>
+
+          <div>
+            <div class="font-mono text-xs font-bold text-red-600 dark:text-red-500 mb-2" style="color: #dc2626 !important;">
+              02 / ZERO VENDOR SPIN
+            </div>
+            <h3 class="text-base font-bold text-slate-900 dark:text-white mb-2">
+              Unbiased Technical Analysis
+            </h3>
+            <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+              We highlight failure modes, hidden billing traps, and configuration gotchas alongside platform benefits. 100% independent.
+            </p>
+          </div>
+
+          <div>
+            <div class="font-mono text-xs font-bold text-red-600 dark:text-red-500 mb-2" style="color: #dc2626 !important;">
+              03 / PRODUCTION READY
+            </div>
+            <h3 class="text-base font-bold text-slate-900 dark:text-white mb-2">
+              Production-Hardened Blueprints
+            </h3>
+            <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+              Battle-tested Kubernetes manifests, Terraform modules, and architecture patterns engineered with defensive security contexts, explicit resource quotas, and zero-trust mTLS defaults.
+            </p>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  {{/* ─── Stats ─── */}}
-  <section class="section-sm bg-theme-light dark:bg-darkmode-theme-light py-14">
-    <div class="container">
-      <div class="row justify-center gap-y-6 text-center">
-        <div class="md:col-3 sm:col-6">
-          <div class="about-stat-card">
-            <p class="text-primary dark:text-darkmode-primary mb-2 text-4xl font-extrabold">10+</p>
-            <p class="font-semibold">In-depth Articles</p>
-            <p class="text-sm text-text dark:text-darkmode-text">Practical guides &amp; deep dives</p>
-          </div>
+  <!-- Technologies Grid -->
+  <section class="py-10" aria-labelledby="technologies-heading">
+    <div class="bytedepth-container">
+      <div class="flex items-center justify-between flex-wrap gap-4 mb-6">
+        <div>
+          <span class="inline-block font-mono text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1">
+            STACK DIRECTORY
+          </span>
+          <h2 id="technologies-heading" class="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+            Technologies Covered
+          </h2>
         </div>
-        <div class="md:col-3 sm:col-6">
-          <div class="about-stat-card">
-            <p class="text-primary dark:text-darkmode-primary mb-2 text-4xl font-extrabold">5+</p>
-            <p class="font-semibold">Cloud Platforms</p>
-            <p class="text-sm text-text dark:text-darkmode-text">AWS, GCP, Azure, K8s, OpenShift</p>
-          </div>
-        </div>
-        <div class="md:col-3 sm:col-6">
-          <div class="about-stat-card">
-            <p class="text-primary dark:text-darkmode-primary mb-2 text-4xl font-extrabold">100%</p>
-            <p class="font-semibold">Free Content</p>
-            <p class="text-sm text-text dark:text-darkmode-text">No paywalls, ever</p>
-          </div>
-        </div>
-        <div class="md:col-3 sm:col-6">
-          <div class="about-stat-card">
-            <p class="text-primary dark:text-darkmode-primary mb-2 text-4xl font-extrabold">∞</p>
-            <p class="font-semibold">Community</p>
-            <p class="text-sm text-text dark:text-darkmode-text">Open to all skill levels</p>
-          </div>
-        </div>
+        <a href="{{ `categories/` | relLangURL }}" class="font-mono text-xs text-slate-600 dark:text-slate-400 hover:text-red-600 dark:hover:text-red-500 no-underline transition-colors">
+          View all taxonomies →
+        </a>
       </div>
-    </div>
-  </section>
 
-  {{/* ─── What We Offer ─── */}}
-  <section class="section">
-    <div class="container">
-      <div class="row justify-center text-center">
-        <div class="lg:col-7">
-          <p class="blog-eyebrow justify-center">What we cover</p>
-          <h2 class="mb-4">Everything Cloud, One Place</h2>
-          <p class="mb-14 text-lg leading-8 text-text dark:text-darkmode-text">
-            GCloud Cafe publishes no-fluff content crafted for cloud practitioners
-            at every stage — from first-timer to seasoned architect.
-          </p>
-        </div>
-      </div>
-      <div class="row gap-y-8">
-        <div class="md:col-4">
-          <div class="about-service-card h-full">
-            <div class="text-primary dark:text-darkmode-primary mb-4 text-4xl">
-              <i class="fa-solid fa-newspaper"></i>
-            </div>
-            <h3 class="h4 mb-3">Cloud Tech News</h3>
-            <p class="text-text dark:text-darkmode-text">
-              Stay ahead with curated updates on new services, platform changes,
-              and industry trends across all major cloud providers.
-            </p>
-          </div>
-        </div>
-        <div class="md:col-4">
-          <div class="about-service-card h-full">
-            <div class="text-primary dark:text-darkmode-primary mb-4 text-4xl">
-              <i class="fa-solid fa-certificate"></i>
-            </div>
-            <h3 class="h4 mb-3">Certification Guides</h3>
-            <p class="text-text dark:text-darkmode-text">
-              Proven study plans, real exam tips, and hands-on practice ideas
-              to help you pass your next cloud certification with confidence.
-            </p>
-          </div>
-        </div>
-        <div class="md:col-4">
-          <div class="about-service-card h-full">
-            <div class="text-primary dark:text-darkmode-primary mb-4 text-4xl">
-              <i class="fa-solid fa-book-open"></i>
-            </div>
-            <h3 class="h4 mb-3">Concepts Explained</h3>
-            <p class="text-text dark:text-darkmode-text">
-              IaaS vs PaaS vs SaaS, networking fundamentals, containers,
-              serverless, security — broken down in plain language.
-            </p>
-          </div>
-        </div>
-        <div class="md:col-4">
-          <div class="about-service-card h-full">
-            <div class="text-primary dark:text-darkmode-primary mb-4 text-4xl">
-              <i class="fa-brands fa-docker"></i>
-            </div>
-            <h3 class="h4 mb-3">Kubernetes &amp; Containers</h3>
-            <p class="text-text dark:text-darkmode-text">
-              Deep dives into Kubernetes, OpenShift, and container ecosystems
-              with real-world configuration examples and gotchas.
-            </p>
-          </div>
-        </div>
-        <div class="md:col-4">
-          <div class="about-service-card h-full">
-            <div class="text-primary dark:text-darkmode-primary mb-4 text-4xl">
-              <i class="fa-solid fa-shield-halved"></i>
-            </div>
-            <h3 class="h4 mb-3">Cloud Security</h3>
-            <p class="text-text dark:text-darkmode-text">
-              IAM policies, secrets management, network security groups, and
-              security best practices across AWS, GCP, and Azure.
-            </p>
-          </div>
-        </div>
-        <div class="md:col-4">
-          <div class="about-service-card h-full">
-            <div class="text-primary dark:text-darkmode-primary mb-4 text-4xl">
-              <i class="fa-solid fa-code"></i>
-            </div>
-            <h3 class="h4 mb-3">Hands-on Labs</h3>
-            <p class="text-text dark:text-darkmode-text">
-              Step-by-step tutorials you can follow in your own environment —
-              no vendor sandbox required.
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  {{/* ─── Technology Stack ─── */}}
-  <section class="section-sm bg-theme-light dark:bg-darkmode-theme-light py-16">
-    <div class="container">
-      <div class="row justify-center text-center">
-        <div class="lg:col-7">
-          <p class="blog-eyebrow justify-center">Our expertise</p>
-          <h2 class="mb-4">Technologies We Write About</h2>
-          <p class="mb-12 text-lg leading-8 text-text dark:text-darkmode-text">
-            From hyperscalers to container orchestrators — the full cloud spectrum.
-          </p>
-        </div>
-      </div>
-      <div class="flex flex-wrap justify-center gap-3">
+      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
         {{ $techs := slice
-          (dict "icon" "fa-brands fa-aws" "name" "AWS")
-          (dict "icon" "fa-brands fa-google" "name" "Google Cloud")
-          (dict "icon" "fa-brands fa-microsoft" "name" "Azure")
-          (dict "icon" "fa-brands fa-docker" "name" "Docker")
-          (dict "icon" "fa-solid fa-dharmachakra" "name" "Kubernetes")
-          (dict "icon" "fa-solid fa-server" "name" "OpenShift")
-          (dict "icon" "fa-solid fa-terminal" "name" "Terraform")
-          (dict "icon" "fa-solid fa-gear" "name" "CI/CD")
-          (dict "icon" "fa-solid fa-shield-halved" "name" "IAM & Security")
-          (dict "icon" "fa-solid fa-network-wired" "name" "Networking")
-          (dict "icon" "fa-solid fa-robot" "name" "Generative AI")
-          (dict "icon" "fa-solid fa-chart-line" "name" "FinOps")
+          (dict "icon" "fa-solid fa-dharmachakra" "name" "Kubernetes" "slug" "kubernetes")
+          (dict "icon" "fa-solid fa-server" "name" "OpenShift" "slug" "openshift")
+          (dict "icon" "fa-brands fa-google" "name" "Google Cloud" "slug" "google-cloud")
+          (dict "icon" "fa-brands fa-aws" "name" "AWS" "slug" "architecture")
+          (dict "icon" "fa-solid fa-shield-halved" "name" "TLS & Security" "slug" "security")
+          (dict "icon" "fa-solid fa-terminal" "name" "Terraform" "slug" "devops")
+          (dict "icon" "fa-brands fa-docker" "name" "Containers" "slug" "kubernetes")
+          (dict "icon" "fa-solid fa-certificate" "name" "Certifications" "slug" "certifications")
+          (dict "icon" "fa-solid fa-robot" "name" "Generative AI" "slug" "ai")
+          (dict "icon" "fa-solid fa-network-wired" "name" "Networking" "slug" "architecture")
+          (dict "icon" "fa-brands fa-linux" "name" "Linux / CKA" "slug" "cka")
+          (dict "icon" "fa-solid fa-chart-line" "name" "Cloud Pulse" "slug" "pulse")
         }}
         {{ range $techs }}
-          <span class="about-tech-badge">
-            <i class="{{ .icon }}"></i>
-            {{ .name }}
-          </span>
+          <a href="{{ if eq .slug "pulse" }}{{ `pulse/` | relLangURL }}{{ else }}{{ `categories/` | relLangURL }}{{ .slug }}/{{ end }}" 
+             class="border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0c1220] p-3.5 rounded-lg text-center hover:border-slate-400 dark:hover:border-slate-600 hover:shadow-sm transition-all no-underline block group">
+            <div class="text-slate-700 dark:text-slate-300 group-hover:text-red-600 dark:group-hover:text-red-500 transition-colors text-lg mb-1.5">
+              <i class="{{ .icon }}"></i>
+            </div>
+            <div class="font-mono text-xs font-bold text-slate-800 dark:text-slate-200 group-hover:text-red-600 dark:group-hover:text-red-500 transition-colors">
+              {{ .name }}
+            </div>
+          </a>
         {{ end }}
       </div>
     </div>
   </section>
 
-  {{/* ─── Content Section (from _index.md) ─── */}}
-  {{ with .Content }}
-    <section class="section">
-      <div class="container">
-        <div class="row justify-center">
-          <div class="md:col-10 lg:col-8">
-            <div class="content">{{ . }}</div>
+  <!-- Meet the Creator / Author Section -->
+  <section class="py-12" aria-labelledby="author-heading">
+    <div class="bytedepth-container">
+      <div class="border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0c1220] rounded-xl sm:rounded-2xl p-6 sm:p-10 shadow-sm">
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
+          
+          <!-- Avatar Column -->
+          <div class="md:col-span-4 lg:col-span-3 flex flex-col items-center text-center">
+            <div class="relative mb-4">
+              <img src="{{ `/images/authors/profilepic_tharun.png` | relURL }}" 
+                   alt="Tharun Vempati" 
+                   class="w-28 h-28 sm:w-32 sm:h-32 rounded-full object-cover border-2 border-slate-200 dark:border-slate-700 shadow-md ring-4 ring-slate-100 dark:ring-slate-800/80" 
+                   loading="lazy">
+              <span class="absolute bottom-1 right-1 w-5 h-5 rounded-full bg-emerald-500 border-2 border-white dark:border-[#0c1220]" title="Active Contributor"></span>
+            </div>
+            <h3 class="text-xl font-black text-slate-900 dark:text-white tracking-tight">Tharun Vempati</h3>
+            <span class="text-xs font-mono text-slate-500 dark:text-slate-400 mt-0.5">Cloud Engineer &amp; Creator</span>
           </div>
-        </div>
-      </div>
-    </section>
-  {{ end }}
 
-  {{/* ─── Meet the Author ─── */}}
-  <section class="section-sm bg-theme-light dark:bg-darkmode-theme-light py-16">
-    <div class="container">
-      <div class="row justify-center text-center">
-        <div class="lg:col-7">
-          <p class="blog-eyebrow justify-center">Behind the content</p>
-          <h2 class="mb-12">Meet the Author</h2>
-        </div>
-      </div>
-      <div class="row justify-center">
-        <div class="md:col-8 lg:col-6">
-          <div class="blog-article-shell text-center">
-            {{ partial "image" (dict "Src" "images/authors/profilepic_tharun.png" "Context" . "Alt" "Tharun Vempati" "Class" "mx-auto mb-6 h-28 w-28 rounded-full object-cover ring-4 ring-primary/20 dark:ring-darkmode-primary/20") }}
-            <h3 class="mb-2">Tharun Vempati</h3>
-            <p class="blog-eyebrow justify-center mb-4">Cloud Engineer &amp; Blogger</p>
-            <p class="mb-6 leading-7 text-text dark:text-darkmode-text">
-              Cloud practitioner passionate about Kubernetes, OpenShift, and
-              everything in between. Writing to make cloud tech accessible —
-              one article at a time.
+          <!-- Bio & Details Column -->
+          <div class="md:col-span-8 lg:col-span-9">
+            <div class="mb-4">
+              <span class="px-2.5 py-1 rounded font-mono text-[11px] font-bold uppercase tracking-wider" style="background-color: #ede9fe; color: #6b21a8;">
+                AUTHOR &amp; FOUNDER
+              </span>
+            </div>
+            <h2 id="author-heading" class="text-2xl font-black text-slate-900 dark:text-white tracking-tight mb-3">
+              Behind GCloudCafe
+            </h2>
+            <p class="text-slate-600 dark:text-slate-400 text-sm sm:text-base leading-relaxed mb-4">
+              I am Tharun Vempati, a Cloud practitioner and software engineer passionate about Kubernetes, Red Hat OpenShift, zero-trust cloud security, and cloud infrastructure management. Currently focused on Generative AI infrastructure and developer productivity.
             </p>
-            <ul class="social-icons justify-center">
-              {{ range site.Data.social.main }}
-                <li>
-                  <a
-                    class="blog-focus-ring"
-                    target="_blank"
-                    aria-label="Follow on {{ .name }}"
-                    rel="nofollow noopener"
-                    href="{{ .link | safeURL }}">
-                    <i class="{{ .icon }}"></i>
-                  </a>
-                </li>
-              {{ end }}
-            </ul>
+            <p class="text-slate-600 dark:text-slate-400 text-sm sm:text-base leading-relaxed mb-6">
+              I started GCloudCafe to bridge the gap between academic cloud documentation and real production operations — providing tested, reproducible blueprints that help engineers pass difficult certifications and resolve high-severity infrastructure incidents.
+            </p>
+
+            <div class="flex flex-wrap items-center justify-between gap-4 pt-5 border-t border-slate-200 dark:border-slate-800">
+              <div class="flex items-center gap-3">
+                <a href="https://github.com/tharun15" target="_blank" rel="noopener noreferrer" 
+                   class="w-9 h-9 rounded-lg border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-700 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-500 hover:border-slate-400 transition-colors no-underline" 
+                   aria-label="Tharun on GitHub">
+                  <i class="fa-brands fa-github text-sm"></i>
+                </a>
+                <a href="https://www.linkedin.com/in/tharunvempati" target="_blank" rel="noopener noreferrer" 
+                   class="w-9 h-9 rounded-lg border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-700 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-500 hover:border-slate-400 transition-colors no-underline" 
+                   aria-label="Tharun on LinkedIn">
+                  <i class="fa-brands fa-linkedin text-sm"></i>
+                </a>
+                <a href="mailto:tharunvempati268@gmail.com" 
+                   class="w-9 h-9 rounded-lg border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-700 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-500 hover:border-slate-400 transition-colors no-underline" 
+                   aria-label="Email Tharun">
+                  <i class="fa-regular fa-envelope text-sm"></i>
+                </a>
+              </div>
+
+              <a href="{{ `authors/tharun-vempati/` | relLangURL }}" 
+                 class="inline-flex items-center gap-2 font-mono text-xs font-bold text-slate-900 dark:text-white hover:text-red-600 dark:hover:text-red-500 transition-colors no-underline">
+                <span>View Author Profile &amp; Articles</span>
+                <i class="fa-solid fa-arrow-right text-[10px]"></i>
+              </a>
+            </div>
+
           </div>
+
         </div>
       </div>
     </div>
   </section>
 
-  {{/* ─── CTA ─── */}}
-  <section class="section text-center">
-    <div class="container">
-      <div class="row justify-center">
-        <div class="lg:col-7">
-          <p class="blog-eyebrow justify-center">Join the community</p>
-          <h2 class="mb-6">Ready to Level Up Your Cloud Skills?</h2>
-          <p class="mb-10 text-lg leading-8 text-text dark:text-darkmode-text">
-            Browse our latest articles, follow along on social, and be part of
-            the GCloud Cafe community — where cloud success begins.
-          </p>
-          <div class="flex flex-wrap justify-center gap-4">
-            <a class="btn btn-primary" href="{{ `blog/` | relLangURL }}">
-              <i class="fa-solid fa-arrow-right mr-2"></i>Start Reading
-            </a>
-            <ul class="social-icons">
-              {{ range site.Data.social.main }}
-                <li>
-                  <a
-                    class="blog-focus-ring"
-                    target="_blank"
-                    aria-label="{{ .name }}"
-                    rel="nofollow noopener"
-                    href="{{ .link | safeURL }}">
-                    <i class="{{ .icon }}"></i>
-                  </a>
-                </li>
-              {{ end }}
-            </ul>
-          </div>
-        </div>
+  <!-- Newsletter & Community CTA Section (ByteDepth Style) -->
+  <section class="py-12" aria-labelledby="about-newsletter-heading">
+    <div class="bytedepth-container">
+      <div class="border border-slate-800 bg-[#0c1220] text-white rounded-xl sm:rounded-2xl p-8 sm:p-12 shadow-xl text-center relative overflow-hidden">
+        <span class="inline-block font-mono text-xs font-black uppercase tracking-widest text-red-500 mb-3" style="color: #ef4444 !important;">
+          NEWSLETTER
+        </span>
+        <h2 id="about-newsletter-heading" class="text-2xl sm:text-3xl lg:text-4xl font-black text-white tracking-tight mb-4">
+          Engineering Insights, Twice a Month
+        </h2>
+        <p class="text-slate-400 text-sm sm:text-base max-w-2xl mx-auto mb-8 leading-relaxed">
+          Deep dives on cloud architecture, distributed systems, Kubernetes, and security — written by practitioners, not content teams.
+        </p>
+
+        <form action="{{ `newsletter/` | relLangURL }}" method="GET" data-supabase-subscribe class="max-w-md mx-auto flex flex-col sm:flex-row gap-2 mb-4">
+          <input type="email" 
+                 name="email" 
+                 placeholder="you@company.com" 
+                 required 
+                 class="px-4 py-2.5 rounded-lg bg-slate-900/90 border border-slate-700 text-white placeholder-slate-500 text-sm focus:outline-none focus:border-red-500 flex-1">
+          <button type="submit" 
+                  class="px-5 py-2.5 bg-red-600 hover:bg-red-500 text-white font-mono text-xs font-bold uppercase tracking-wider rounded-lg transition-colors shrink-0 cursor-pointer" 
+                  style="background-color: #dc2626 !important; color: #ffffff !important;">
+            Subscribe
+          </button>
+        </form>
+
+        <p data-newsletter-status class="text-xs font-mono text-slate-500">
+          Curated architecture &amp; DevOps insights. Zero spam, unsubscribe anytime.
+        </p>
       </div>
     </div>
   </section>

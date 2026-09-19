@@ -65,7 +65,7 @@ describe('Hugo Site Build & HTML Integrity Tests', () => {
     const html = fs.readFileSync(newsletterPath, 'utf-8');
     expect(html).toContain('data-supabase-subscribe');
     expect(html).toContain('data-newsletter-status');
-    expect(html).toContain('Get the digest');
+    expect(html).toContain('Subscribe');
     expect(html).toContain('Engineering insights, twice a month');
   });
 });

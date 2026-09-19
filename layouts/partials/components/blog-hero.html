@@ -6,15 +6,19 @@
   {{ $authorSlug := $page.Params.author }}
   {{ $authorName := $authorSlug | humanize | title }}
   {{ $authorImage := "" }}
-  {{ $authorRole := "Staff Engineer" }}
+  {{ $authorRole := "Cloud Engineer" }}
   {{ with site.GetPage (printf "/authors/%s" $authorSlug) }}
     {{ $authorName = .Title }}
     {{ with .Params.image }}
       {{ $authorImage = . }}
     {{ end }}
-    {{ with .Params.description }}
-      {{ if and (ne . $authorName) (lt (len .) 40) }}
-        {{ $authorRole = . }}
+    {{ with .Params.role }}
+      {{ $authorRole = . }}
+    {{ else }}
+      {{ with .Params.description }}
+        {{ if and (ne . $authorName) (lt (len .) 40) }}
+          {{ $authorRole = . }}
+        {{ end }}
       {{ end }}
     {{ end }}
   {{ end }}
@@ -55,11 +59,11 @@
           <!-- Right Column: Editorial Details -->
           <div class="p-6 sm:p-8 lg:p-10 flex flex-col justify-between">
             <div>
-              <!-- Category Pill Badge -->
+              <!-- Category Banner Tag (ByteDepth Figma Spec) -->
               <a href="{{ `categories/` | relLangURL }}{{ $firstCat | urlize | lower }}/" 
-                 class="inline-block px-3 py-1 rounded font-mono text-xs font-bold uppercase tracking-wider mb-4 no-underline hover:opacity-90 transition-opacity"
-                 style="background-color: #ede9fe; color: #6b21a8;">
-                {{ $firstCat | humanize }}
+                 class="hero-category-banner w-full flex items-center px-4 py-1.5 rounded-md font-mono text-xs font-bold uppercase tracking-wider mb-4 no-underline hover:opacity-95 transition-opacity"
+                 style="background-color: #ede9fe; color: #6b21a8; letter-spacing: 0.08em;">
+                {{ $firstCat | upper }}
               </a>
 
               <!-- Title -->
@@ -88,15 +92,15 @@
             <div class="pt-5 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between flex-wrap gap-3 mt-auto">
               <div class="flex items-center gap-3">
                 {{ if $authorImage }}
-                  <img src="{{ $authorImage | relURL }}" alt="{{ $authorName }}" class="w-10 h-10 rounded-full object-cover shrink-0 border border-slate-200 dark:border-slate-700" loading="lazy">
+                  <img src="{{ $authorImage | relURL }}" alt="{{ $authorName }}" class="w-11 h-11 sm:w-12 sm:h-12 rounded-full object-cover shrink-0 border border-slate-200 dark:border-slate-700 shadow-sm ring-2 ring-slate-100 dark:ring-slate-800/80" loading="lazy">
                 {{ else }}
-                  <div class="w-10 h-10 rounded-full bg-slate-200 dark:bg-slate-800 text-slate-900 dark:text-white font-bold text-sm flex items-center justify-center shrink-0 border border-slate-200 dark:border-slate-700">
+                  <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-slate-200 dark:bg-slate-800 text-slate-900 dark:text-white font-bold text-sm flex items-center justify-center shrink-0 border border-slate-200 dark:border-slate-700">
                     {{ substr $authorName 0 1 }}
                   </div>
                 {{ end }}
                 <div>
-                  <span class="font-bold text-slate-900 dark:text-white block text-sm leading-tight">{{ $authorName }}</span>
-                  <span class="text-xs text-slate-500 dark:text-slate-400 block mt-0.5">{{ $authorRole }}</span>
+                  <span class="font-bold text-slate-900 dark:text-white block text-sm sm:text-base leading-tight">{{ $authorName }}</span>
+                  <span class="text-xs text-slate-500 dark:text-slate-400 block mt-0.5 font-medium">{{ $authorRole }}</span>
                 </div>
               </div>
 
