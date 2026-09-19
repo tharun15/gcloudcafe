@@ -1,8 +1,8 @@
 {{ $pulses := site.Data.cloud_pulse }}
-<div class="ticker-marquee-wrapper group relative flex items-stretch w-full overflow-hidden select-none border-y border-slate-800/80 bg-[#080d19] text-slate-200 text-xs font-mono z-30" aria-label="Live Cloud Pulse Micro-News Marquee">
+<div class="ticker-marquee-wrapper group relative flex items-stretch w-full h-[36px] min-h-[36px] max-h-[36px] overflow-hidden select-none border-y border-slate-800/80 bg-[#080d19] text-slate-200 text-xs font-mono z-30" aria-label="Live Cloud Pulse Micro-News Marquee">
   
   <!-- Pinned Lead Command Badge (Fixed on Left) -->
-  <div class="ticker-anchor flex items-center gap-2 px-3 sm:px-4 py-1.5 bg-[#060a15] border-r border-slate-800/90 z-20 shrink-0 select-none shadow-[4px_0_12px_rgba(0,0,0,0.5)]">
+  <div class="ticker-anchor h-full flex items-center gap-2 px-3 sm:px-4 py-1 bg-[#060a15] border-r border-slate-800/90 z-20 shrink-0 select-none shadow-[4px_0_12px_rgba(0,0,0,0.5)]">
     <span class="relative flex h-2 w-2">
       <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
       <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
@@ -15,8 +15,8 @@
   </div>
 
   <!-- Scrolling Marquee Track with gradient fade masks -->
-  <div class="ticker-track-container relative flex-1 overflow-hidden flex items-center">
-    <div class="ticker-marquee-content flex items-center will-change-transform" data-pulse-ticker-marquee>
+  <div class="ticker-track-container h-full relative flex-1 overflow-hidden flex items-center">
+    <div class="ticker-marquee-content h-full flex items-center will-change-transform" data-pulse-ticker-marquee>
       {{ range $i := (slice 1 2) }}
         {{ range $pulses }}
           {{ $cleanTitle := .title | htmlUnescape }}
@@ -45,7 +45,7 @@
             {{ $tagClass = "ticker-tag-security" }}
           {{ end }}
 
-          <a href="{{ `/pulse/` | relLangURL }}{{ with .id }}#pulse-{{ . }}{{ end }}" class="ticker-item group/item inline-flex items-center gap-2 px-3.5 py-1 whitespace-nowrap transition-colors hover:bg-slate-800/60 no-underline">
+          <a href="{{ `/pulse/` | relLangURL }}{{ with .id }}#pulse-{{ . }}{{ end }}" class="ticker-item h-full group/item inline-flex items-center gap-2 px-3.5 py-0.5 whitespace-nowrap transition-colors hover:bg-slate-800/60 no-underline">
             <span class="ticker-tag {{ $tagClass }}">${{ $tagLabel }}</span>
             <span class="ticker-title font-sans font-medium text-[12px] text-slate-200 group-hover/item:text-cyan-300 transition-colors">{{ $cleanTitle }}</span>
             <span class="ticker-divider text-slate-700 select-none ml-2">/</span>
@@ -56,7 +56,7 @@
   </div>
 
   <!-- Pinned Right Action (Desktop) -->
-  <a href="/pulse/" class="ticker-archive-link hidden md:flex items-center gap-1.5 px-3 py-1.5 bg-[#060a15] border-l border-slate-800/90 z-20 shrink-0 text-[11px] font-mono font-semibold text-slate-400 hover:text-cyan-400 transition-colors no-underline shadow-[-4px_0_12px_rgba(0,0,0,0.5)]">
+  <a href="/pulse/" class="ticker-archive-link h-full hidden md:flex items-center gap-1.5 px-3 py-1 bg-[#060a15] border-l border-slate-800/90 z-20 shrink-0 text-[11px] font-mono font-semibold text-slate-400 hover:text-cyan-400 transition-colors no-underline shadow-[-4px_0_12px_rgba(0,0,0,0.5)]">
     <span>VIEW ALL</span>
     <i class="fa-solid fa-arrow-right text-[10px] text-slate-500"></i>
   </a>
