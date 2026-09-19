@@ -1447,6 +1447,14 @@
     var activeFilter = "all";
     var activeSearchQuery = "";
 
+    function applyViewTransition(updateFn) {
+      if (typeof document !== "undefined" && document.startViewTransition && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        document.startViewTransition(updateFn);
+      } else {
+        updateFn();
+      }
+    }
+
     function updateResultCounter(count) {
       var counterEl = document.getElementById("pulse-result-count");
       if (counterEl) {
@@ -1485,8 +1493,10 @@
         });
       }
 
-      updateResultCounter(filtered.length);
-      renderPulses(filtered);
+      applyViewTransition(function() {
+        updateResultCounter(filtered.length);
+        renderPulses(filtered);
+      });
     }
 
     function updatePulseChipUI(chip, isActive) {
@@ -1910,7 +1920,8 @@ function renderPulses(pulses) {
           '<i class="fa-solid fa-expand text-[10px]"></i> Inspect' +
         '</button>';
 
-        html += '<div id="pulse-' + escapeHtml(p.id) + '" data-pulse-id="' + escapeHtml(p.id) + '" class="cloud-pulse-card scroll-mt-28 bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-slate-800 rounded-xl p-6 shadow-sm hover:shadow-md flex flex-col justify-between transition-all hover:border-slate-300 dark:hover:border-slate-700 group">' +
+        var cardTransitionName = 'pulse-card-' + escapeHtml(String(p.id).replace(/[^a-zA-Z0-9_-]/g, ''));
+        html += '<div id="pulse-' + escapeHtml(p.id) + '" data-pulse-id="' + escapeHtml(p.id) + '" style="view-transition-name: ' + cardTransitionName + ';" class="cloud-pulse-card scroll-mt-28 bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-slate-800 rounded-xl p-6 shadow-sm hover:shadow-md flex flex-col justify-between transition-all hover:border-slate-300 dark:hover:border-slate-700 group">' +
           '<div>' +
             '<div class="flex items-center justify-between gap-2 mb-3">' +
               rankBadge +
