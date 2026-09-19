@@ -1,7 +1,7 @@
 ---
 title: "Data Engineering on GCP (Part 1): The Core Storage Building Blocks Demystified"
 meta_title: "GCP Data Engineering: External Tables, Partitioning & Clustering"
-description: "Master foundational Google Cloud Data Engineering: An intuitive, zero-fluff guide to GCS External Tables, BigQuery Partitioning, Clustering, Time Series, Materialized Views, and Time Travel."
+description: "Master foundational Google Cloud Data Engineering: An intuitive, practitioner-grade guide to GCS External Tables, BigQuery Partitioning, Clustering, Time Series, Materialized Views, and Time Travel."
 date: 2026-09-19
 image: "/images/gcp-storage-building-blocks.jpg"
 categories: ["Google Cloud", "Architecture"]
