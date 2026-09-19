@@ -12,23 +12,17 @@
     <div class="container">
       <!-- Breadcrumbs -->
       <nav aria-label="breadcrumb" class="mb-6">
-        <ol class="flex items-center gap-2 text-xs font-medium text-text/90 dark:text-darkmode-text/90">
-          <li>
-            <a href="{{ `/` | relLangURL }}" class="hover:text-primary transition-colors">Home</a>
-          </li>
-          <li><i class="fa-solid fa-chevron-right text-[10px] opacity-40"></i></li>
-          <li>
-            <a href="{{ `blog/` | relLangURL }}" class="hover:text-primary transition-colors">Blog</a>
-          </li>
+        <div class="flex items-center gap-1.5 text-xs font-mono text-slate-500 dark:text-slate-400">
+          <a href="{{ site.Home.RelPermalink }}" class="text-inherit hover:text-red-600 dark:hover:text-red-500 no-underline">Home</a>
+          <span class="mx-1 text-slate-300 dark:text-slate-700">/</span>
+          <a href="{{ `blog/` | relLangURL }}" class="text-inherit hover:text-red-600 dark:hover:text-red-500 no-underline">Articles</a>
           {{ if .Params.categories }}
-            <li><i class="fa-solid fa-chevron-right text-[10px] opacity-40"></i></li>
-            <li>
-              <a href="{{ `categories/` | relLangURL }}{{ index .Params.categories 0 | urlize | lower }}/" class="hover:text-primary transition-colors">
-                {{ index .Params.categories 0 | humanize }}
-              </a>
-            </li>
+            <span class="mx-1 text-slate-300 dark:text-slate-700">/</span>
+            <a href="{{ `categories/` | relLangURL }}{{ index .Params.categories 0 | urlize | lower }}/" class="text-inherit hover:text-red-600 dark:hover:text-red-500 no-underline">
+              {{ index .Params.categories 0 | humanize }}
+            </a>
           {{ end }}
-        </ol>
+        </div>
       </nav>
 
 
@@ -37,10 +31,10 @@
         {{ if $categories }}
           <div class="mb-4 flex flex-wrap gap-2">
             {{ range first 3 $categories }}
-              <a
-                class="blog-badge blog-focus-ring"
-                href="{{ `categories/` | relLangURL }}{{ . | urlize | lower }}/">
-                <i class="fa-solid fa-tag mr-1 text-[10px]"></i> {{ . | humanize }}
+              <a href="{{ `categories/` | relLangURL }}{{ . | urlize | lower }}/"
+                 class="px-2.5 py-1 rounded font-mono text-[11px] font-bold uppercase tracking-wider no-underline transition-opacity hover:opacity-90"
+                 style="background-color: #ede9fe; color: #6b21a8;">
+                {{ . | humanize }}
               </a>
             {{ end }}
           </div>

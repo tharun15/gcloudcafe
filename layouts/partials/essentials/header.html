@@ -1,92 +1,87 @@
-<header class="header sticky top-0 z-40 py-2 sm:py-2.5 transition-all duration-300">
-  <div class="container">
-    <div class="flex items-center justify-between px-4 sm:px-6 py-2.5 rounded-2xl bg-body/80 dark:bg-[#0b101d]/85 backdrop-blur-xl border border-border/80 dark:border-slate-800 shadow-md transition-all duration-300">
+<header class="bytedepth-header sticky top-0 z-40 transition-all duration-300">
+  <div class="bytedepth-container flex items-center justify-between py-3">
+    
+    <!-- Brand Logo -->
+    <div class="flex items-center gap-3">
+      <a class="navbar-brand flex items-center gap-2.5 no-underline group" href="{{ site.Home.RelPermalink }}" aria-label="Gcloudcafe Home">
+        <div class="relative flex items-center justify-center">
+          {{ partial "logo" }}
+        </div>
+        <div class="hidden sm:flex flex-col">
+          <span class="font-extrabold text-base tracking-tight text-slate-900 dark:text-white group-hover:text-primary transition-colors leading-none">
+            GCloud<span class="text-primary font-black">Cafe</span>
+          </span>
+          <span class="text-[10px] font-mono font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest leading-tight mt-0.5 inline-flex items-center min-w-[175px]">
+            <span data-typewriter-tagline>Cloud · DevOps · Security</span><span class="typewriter-cursor text-red-600 dark:text-red-500 font-bold ml-0.5">_</span>
+          </span>
+        </div>
+      </a>
+    </div>
+
+    <!-- Center Nav Links (ByteDepth Reference) -->
+    <nav class="hidden md:flex items-center gap-1 sm:gap-2">
+      {{ $currentPage := . }}
+      {{ range site.Menus.main }}
+        {{ $menuURL := .URL | absLangURL }}
+        {{ $pageURL := $currentPage.Permalink | absLangURL }}
+        {{ $active := eq $menuURL $pageURL }}
+        <a href="{{ .URL | relLangURL }}"
+           class="px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all no-underline
+                  {{ if $active }}
+                    text-slate-900 dark:text-white font-bold
+                  {{ else }}
+                    text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white
+                  {{ end }}">
+          {{ .Name }}
+        </a>
+      {{ end }}
+    </nav>
+
+    <!-- Right Action Utilities: Search + Theme + Subscribe -->
+    <div class="flex items-center gap-2.5 sm:gap-3">
       
-      <!-- Brand Logo -->
-      <div class="flex items-center gap-3">
-        <a class="navbar-brand flex items-center gap-2.5 no-underline group" href="{{ site.Home.RelPermalink }}" aria-label="Gcloudcafe Home">
-          <div class="relative flex items-center justify-center">
-            {{ partial "logo" }}
-          </div>
-          <div class="hidden sm:flex flex-col">
-            <span class="font-extrabold text-base tracking-tight text-dark dark:text-white group-hover:text-primary transition-colors leading-none">
-              GCloud<span class="text-primary font-black">Cafe</span>
-            </span>
-            <span class="text-[10px] font-bold text-text/60 dark:text-slate-400 uppercase tracking-widest leading-tight mt-0.5">
-              Cloud · DevOps · Security
-            </span>
-          </div>
-        </a>
-      </div>
+      <!-- Quick Search Pill (Ctrl+K) -->
+      <button
+        type="button"
+        data-target="search-modal"
+        class="search-trigger flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 hover:border-slate-400 transition-all cursor-pointer"
+        aria-label="Search articles (Ctrl+K)">
+        <i class="fa-solid fa-magnifying-glass text-[11px]"></i>
+        <span class="hidden sm:inline">Search</span>
+        <kbd class="hidden sm:inline-block px-1.5 py-0.5 text-[10px] font-mono font-bold rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-500">Ctrl K</kbd>
+      </button>
 
-      <!-- Center Nav Links -->
-      <nav class="hidden md:flex items-center gap-1.5 lg:gap-2">
-        {{ $currentPage := . }}
-        {{ range site.Menus.main }}
-          {{ $menuURL := .URL | absLangURL }}
-          {{ $pageURL := $currentPage.Permalink | absLangURL }}
-          {{ $active := eq $menuURL $pageURL }}
-          <a href="{{ .URL | relLangURL }}"
-             class="px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all no-underline
-                    {{ if $active }}
-                      bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary
-                    {{ else }}
-                      text-text/80 dark:text-slate-300 hover:text-primary dark:hover:text-primary hover:bg-slate-100 dark:hover:bg-slate-800/60
-                    {{ end }}">
-            {{ .Name }}
-          </a>
-        {{ end }}
-      </nav>
+      <!-- Theme Toggle Button -->
+      {{ partial "components/theme-switcher" (dict "Class" "flex items-center") }}
 
-      <!-- Right Action Utilities: Search Shortcut + Theme Toggle -->
-      <div class="flex items-center gap-2 sm:gap-3">
-        
-        <!-- Mobile Live Pulse Quick Pill (Visible only on mobile, desktop uses center nav) -->
-        <a href="{{ `pulse/` | relLangURL }}" 
-           class="flex md:hidden items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-extrabold bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30 hover:bg-emerald-500/20 transition-all no-underline shrink-0"
-           aria-label="Live Cloud Pulse">
-          <i class="fa-solid fa-tower-broadcast text-emerald-500 animate-pulse text-[10px]"></i>
-          <span>Live Pulse</span>
-        </a>
+      <!-- Subscribe Button (ByteDepth Reference) -->
+      <a href="{{ `newsletter/` | relLangURL }}" 
+         class="inline-flex items-center px-4 py-1.5 rounded-md text-white font-bold text-xs shadow-sm transition-all no-underline hover:opacity-95 cursor-pointer"
+         style="background-color: #dc2626 !important; color: #ffffff !important;">
+        Subscribe
+      </a>
 
-        <!-- Quick Search Pill (Ctrl+K) -->
-        <button
-          type="button"
-          data-target="search-modal"
-          class="search-trigger flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-semibold text-text/70 dark:text-slate-400 bg-slate-100 dark:bg-slate-800/80 border border-border/80 dark:border-slate-700 hover:border-primary/50 transition-all cursor-pointer"
-          aria-label="Search articles (Ctrl+K)">
-          <i class="fa-solid fa-magnifying-glass text-primary text-[11px]"></i>
-          <span class="hidden sm:inline">Search</span>
-          <kbd class="hidden sm:inline-block px-1.5 py-0.5 text-[10px] font-mono font-bold rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400">Ctrl K</kbd>
-        </button>
-
-        <!-- Theme Toggle Button -->
-        {{ partial "components/theme-switcher" (dict "Class" "flex items-center") }}
-
-        <!-- Mobile Menu Toggle Button -->
-        <button
-          type="button"
-          class="md:hidden p-2 rounded-xl text-dark dark:text-white hover:bg-slate-100 dark:hover:bg-slate-800 border-none bg-transparent cursor-pointer"
-          onclick="document.getElementById('mobile-nav-drawer')?.classList.toggle('hidden')"
-          aria-label="Toggle Navigation Menu">
-          <i class="fa-solid fa-bars text-base"></i>
-        </button>
-
-      </div>
+      <!-- Mobile Menu Toggle Button -->
+      <button
+        type="button"
+        class="md:hidden p-2 rounded-lg text-slate-900 dark:text-white hover:bg-slate-100 dark:hover:bg-slate-800 border-none bg-transparent cursor-pointer"
+        onclick="document.getElementById('mobile-nav-drawer')?.classList.toggle('hidden')"
+        aria-label="Toggle Navigation Menu">
+        <i class="fa-solid fa-bars text-base"></i>
+      </button>
 
     </div>
+
   </div>
 
-  <!-- Mobile Drawer Menu (Excludes Pulse since it has dedicated header button) -->
-  <div id="mobile-nav-drawer" class="hidden md:hidden container mt-2">
-    <div class="p-4 rounded-2xl bg-body/95 dark:bg-[#0b101d]/95 backdrop-blur-xl border border-border/80 dark:border-slate-800 shadow-xl space-y-2">
+  <!-- Mobile Drawer Menu -->
+  <div id="mobile-nav-drawer" class="hidden md:hidden bytedepth-container pb-4 pt-1">
+    <div class="p-4 rounded-xl bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-slate-800 shadow-xl space-y-2">
       {{ range site.Menus.main }}
-        {{ if not (eq .Name "Pulse") }}
-          <a href="{{ .URL | relLangURL }}"
-             class="block px-4 py-2.5 rounded-xl text-sm font-bold text-text dark:text-slate-200 hover:bg-primary/10 hover:text-primary transition-all no-underline">
-            {{ .Name }}
-          </a>
-        {{ end }}
+        <a href="{{ .URL | relLangURL }}"
+           class="block px-4 py-2.5 rounded-lg text-sm font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all no-underline">
+          {{ .Name }}
+        </a>
       {{ end }}
     </div>
   </div>

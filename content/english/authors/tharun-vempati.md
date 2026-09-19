@@ -2,7 +2,8 @@
 title: Tharun Vempati
 email: tharunvempati268@gmail.com
 image: "/images/authors/profilepic_tharun.png"
-description: Tharun Vempati
+description: Cloud Engineer
+role: Cloud Engineer
 social:
   - name: github
     icon: fa-brands fa-github

@@ -19,7 +19,9 @@
     "format": "prettier -w .",
     "test": "vitest run",
     "trigger-sanitize-micro-posts": "node ./scripts/trigger-sanitize-micro-posts.js",
-    "pulse:generate": "node scripts/daily-cloud-pulse-scraper.js"
+    "pulse:generate": "node scripts/daily-cloud-pulse-scraper.js",
+    "newsletter:digest": "node scripts/weekly-newsletter-digest.js",
+    "newsletter:preview": "node scripts/weekly-newsletter-digest.js --dry-run"
   },
   "devDependencies": {
     "@tailwindcss/forms": "^0.5.9",

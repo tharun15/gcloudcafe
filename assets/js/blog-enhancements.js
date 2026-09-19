@@ -739,15 +739,17 @@
 
   /* ── Supabase Newsletter Signup ── */
   function initNewsletterSignup() {
-    var supabase = null;
-    if (window.SUPABASE_CONFIG && window.supabase) {
-      supabase = window.supabase.createClient(window.SUPABASE_CONFIG.url, window.SUPABASE_CONFIG.anonKey);
-    }
-    if (!supabase) return;
+    var config = window.SUPABASE_CONFIG || {
+      url: "https://axiijcsxtiukloarbfor.supabase.co",
+      anonKey: "sb_publishable_cRcwg02R3nXTykDrxalL6w_-kc9Wesc"
+    };
 
     var forms = document.querySelectorAll("form[data-supabase-subscribe]");
 
     forms.forEach(function (form) {
+      if (form.getAttribute("data-newsletter-bound") === "true") return;
+      form.setAttribute("data-newsletter-bound", "true");
+
       var status = form.querySelector("[data-newsletter-status]");
       if (!status) {
         var note = form.nextElementSibling;
@@ -755,44 +757,70 @@
           status = note;
         } else {
           status = document.createElement("p");
-          status.className = "text-xs mt-2 font-medium transition-all text-text/80 dark:text-darkmode-text/80";
+          status.className = "text-xs mt-2 font-mono text-slate-500 dark:text-slate-400";
           form.appendChild(status);
         }
       }
 
       var input = form.querySelector("input[type='email']");
       var submitBtn = form.querySelector("button[type='submit']");
+      var originalBtnText = submitBtn ? submitBtn.innerText : "Subscribe";
 
       form.addEventListener("submit", function (e) {
         e.preventDefault();
         if (!input || !input.value.trim()) return;
 
-        var emailValue = input.value.trim();
-        status.textContent = "Connecting to database... ☕";
-        status.className = "text-xs mt-2 font-semibold text-primary animate-pulse";
-        if (submitBtn) submitBtn.disabled = true;
+        var emailValue = input.value.trim().toLowerCase();
+        status.innerHTML = '<span class="text-slate-600 dark:text-slate-400"><i class="fa-solid fa-spinner fa-spin mr-1.5"></i>Subscribing...</span>';
+        if (submitBtn) {
+          submitBtn.disabled = true;
+          submitBtn.innerText = "Subscribing...";
+        }
 
-        supabase
-          .from("newsletter_subscribers")
-          .insert([{ email: emailValue }])
-          .then(function (res) {
-            if (submitBtn) submitBtn.disabled = false;
-            
-            if (res.error) {
-              if (res.error.code === "23505") { // unique constraint violation
-                status.textContent = "You are already subscribed! ☕";
-                status.className = "text-xs mt-2 font-semibold text-green-600 dark:text-green-400";
-              } else {
-                console.error("Supabase subscription error:", res.error);
-                status.textContent = "Oops! Something went wrong. Please try again.";
-                status.className = "text-xs mt-2 font-semibold text-red-500";
-              }
-            } else {
-              status.textContent = "Subscribed successfully! Welcome to the club! 🎉";
-              status.className = "text-xs mt-2 font-semibold text-green-600 dark:text-green-400";
-              input.value = ""; // clear input
-            }
+        fetch(config.url + "/rest/v1/newsletter_subscribers", {
+          method: "POST",
+          headers: {
+            "apikey": config.anonKey,
+            "Authorization": "Bearer " + config.anonKey,
+            "Content-Type": "application/json",
+            "Prefer": "return=representation"
+          },
+          body: JSON.stringify({ email: emailValue })
+        })
+        .then(function (res) {
+          return res.json().then(function (data) {
+            return { status: res.status, ok: res.ok, data: data };
+          }).catch(function () {
+            return { status: res.status, ok: res.ok, data: null };
           });
+        })
+        .then(function (result) {
+          if (submitBtn) submitBtn.disabled = false;
+
+          if (result.ok || result.status === 201) {
+            status.innerHTML = '<span class="text-emerald-600 dark:text-emerald-400 font-semibold"><i class="fa-solid fa-circle-check mr-1.5"></i>Thank you for subscribing! Welcome aboard.</span>';
+            input.value = "";
+            if (submitBtn) {
+              submitBtn.innerText = "Subscribed ✓";
+              setTimeout(function () {
+                submitBtn.innerText = originalBtnText;
+              }, 4000);
+            }
+          } else if (result.status === 409 || (result.data && result.data.code === "23505")) {
+            status.innerHTML = '<span class="text-sky-600 dark:text-sky-400 font-semibold"><i class="fa-solid fa-circle-info mr-1.5"></i>You are already subscribed! Thank you.</span>';
+            if (submitBtn) submitBtn.innerText = originalBtnText;
+          } else {
+            status.innerHTML = '<span class="text-red-500 font-semibold"><i class="fa-solid fa-circle-exclamation mr-1.5"></i>Subscription failed. Please try again.</span>';
+            if (submitBtn) submitBtn.innerText = originalBtnText;
+          }
+        })
+        .catch(function (err) {
+          if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.innerText = originalBtnText;
+          }
+          status.innerHTML = '<span class="text-red-500 font-semibold"><i class="fa-solid fa-circle-exclamation mr-1.5"></i>Network error. Please try again later.</span>';
+        });
       });
     });
   }
@@ -863,6 +891,69 @@
       });
   }
 
+
+  /* ── 13. Brand Tagline Terminal Typewriter (Cloud -> DevOps -> Security -> Unified) ── */
+  function initTaglineTypewriter() {
+    var el = document.querySelector("[data-typewriter-tagline]");
+    if (!el) return;
+
+    var sequence = [
+      { text: "Cloud", hold: 1100 },
+      { text: "DevOps", hold: 1100 },
+      { text: "Security", hold: 1100 },
+      { text: "Cloud · DevOps · Security", hold: 10000 }
+    ];
+
+    var seqIndex = 0;
+    var displayed = el.textContent.trim();
+    var typingSpeed = 75;
+    var deletingSpeed = 40;
+
+    function typeForward(targetText, onComplete) {
+      if (displayed.length < targetText.length) {
+        displayed = targetText.slice(0, displayed.length + 1);
+        el.textContent = displayed;
+        setTimeout(function () {
+          typeForward(targetText, onComplete);
+        }, typingSpeed);
+      } else {
+        onComplete();
+      }
+    }
+
+    function backspace(onComplete) {
+      if (displayed.length > 0) {
+        displayed = displayed.slice(0, -1);
+        el.textContent = displayed;
+        setTimeout(function () {
+          backspace(onComplete);
+        }, deletingSpeed);
+      } else {
+        setTimeout(onComplete, 300);
+      }
+    }
+
+    function runStep() {
+      var item = sequence[seqIndex];
+      typeForward(item.text, function () {
+        setTimeout(function () {
+          backspace(function () {
+            seqIndex = (seqIndex + 1) % sequence.length;
+            runStep();
+          });
+        }, item.hold);
+      });
+    }
+
+    // Allow initial SSR text to be read for 1.8s, then begin cycle
+    setTimeout(function () {
+      backspace(function () {
+        seqIndex = 0;
+        runStep();
+      });
+    }, 1800);
+  }
+
   /* ── Init ── */
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", init);
@@ -884,6 +975,7 @@
     initCloudPulseSystem();
     initPulseAdminApprovalSystem();
     initPulseTicker();
+    initTaglineTypewriter();
   }
 
   /* ── 9. Cloud Pulse Micro-News & Upvote System ── */
@@ -1131,15 +1223,15 @@ function renderPulses(pulses) {
 
       var html = "";
       topPulses.forEach(function (p, idx) {
-        var rankBadge = idx === 0 ? '<span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-amber-500/20 text-amber-500 border border-amber-500/30">🔥 #1 TRENDING</span>'
-                      : idx === 1 ? '<span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-slate-400/20 text-slate-400 border border-slate-400/30">#2 TOP PULSE</span>'
-                      : idx === 2 ? '<span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-amber-700/20 text-amber-600 border border-amber-700/30">#3 TOP PULSE</span>'
-                      : '<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-primary/10 text-primary">#' + (idx + 1) + '</span>';
+        var rankBadge = idx === 0 ? '<span class="px-2 py-0.5 rounded font-mono text-[10px] font-bold uppercase tracking-wider bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/30">🔥 #1 TRENDING</span>'
+                      : idx === 1 ? '<span class="px-2 py-0.5 rounded font-mono text-[10px] font-bold uppercase tracking-wider bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700">#2 TOP PULSE</span>'
+                      : idx === 2 ? '<span class="px-2 py-0.5 rounded font-mono text-[10px] font-bold uppercase tracking-wider bg-amber-900/20 text-amber-700 dark:text-amber-300 border border-amber-800/30">#3 TOP PULSE</span>'
+                      : '<span class="px-2 py-0.5 rounded font-mono text-[10px] font-bold uppercase tracking-wider bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">#' + (idx + 1) + '</span>';
 
         var tagsHtml = "";
         if (Array.isArray(p.tags)) {
           p.tags.forEach(function (tag) {
-            tagsHtml += '<span class="text-xs font-bold text-primary/90 bg-primary/10 px-2.5 py-1 rounded-md">' + escapeHtml(tag) + '</span> ';
+            tagsHtml += '<span class="font-mono text-[10px] text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 px-2 py-0.5 rounded">' + escapeHtml(tag) + '</span> ';
           });
         }
 
@@ -1177,30 +1269,30 @@ function renderPulses(pulses) {
           '<i class="fa-brands fa-linkedin text-sm"></i> Share' +
         '</a>';
 
-        html += '<div id="pulse-' + escapeHtml(p.id) + '" data-pulse-id="' + escapeHtml(p.id) + '" class="cloud-pulse-card scroll-mt-28 bg-body dark:bg-darkmode-body border border-border/80 dark:border-darkmode-border/80 rounded-3xl p-6 sm:p-7 shadow-xs hover:shadow-md flex flex-col justify-between transition-all hover:border-primary/50 group">' +
+        html += '<div id="pulse-' + escapeHtml(p.id) + '" data-pulse-id="' + escapeHtml(p.id) + '" class="cloud-pulse-card scroll-mt-28 bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-slate-800 rounded-xl p-6 shadow-sm hover:shadow-md flex flex-col justify-between transition-all hover:border-slate-300 dark:hover:border-slate-700 group">' +
           '<div>' +
             '<div class="flex items-center justify-between gap-2 mb-3">' +
               rankBadge +
-              '<span class="text-xs font-semibold text-text/70 dark:text-darkmode-text/70">' + formatDate(p.created_at) + '</span>' +
+              '<span class="font-mono text-xs text-slate-500 dark:text-slate-400">' + formatDate(p.created_at) + '</span>' +
             '</div>' +
-            '<h4 class="text-lg sm:text-xl font-extrabold text-dark dark:text-darkmode-dark mb-3 leading-snug group-hover:text-primary transition-colors">' + titleHtml + '</h4>' +
-            '<div class="mb-4 space-y-2">' + 
+            '<h4 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white mb-3 leading-snug group-hover:text-red-600 dark:group-hover:text-red-500 transition-colors">' + titleHtml + '</h4>' +
+            '<div class="mb-4 space-y-2 text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed font-normal">' + 
               formatPulseContentToHtml(cleanContentText) + 
             '</div>' +
             eventLinkHtml +
           '</div>' +
 
-          '<div class="pt-4 mt-2 border-t border-border/50 dark:border-darkmode-border/50 flex items-center justify-between gap-3 flex-wrap">' +
+          '<div class="pt-4 mt-2 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between gap-3 flex-wrap">' +
             '<div class="flex flex-wrap gap-1.5 min-w-0">' + tagsHtml + '</div>' +
 
             '<div class="flex items-center gap-2 shrink-0 ml-auto">' +
               linkedinBtnHtml +
-              '<div class="pulse-vote-pill inline-flex items-center flex-row flex-nowrap shrink-0 rounded-full bg-slate-100 dark:bg-slate-800/90 border border-slate-200/90 dark:border-slate-700/90 p-1 gap-1 shadow-xs">' +
-                '<button data-pulse-upvote="' + p.id + '" data-upvotes="' + (p.upvotes || 0) + '" data-downvotes="' + (p.downvotes || 0) + '" class="' + upActiveClass + ' inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold transition-all border-none bg-transparent cursor-pointer" title="Upvote pulse" aria-label="Upvote this cloud pulse">' +
+              '<div class="pulse-vote-pill inline-flex items-center flex-row flex-nowrap shrink-0 rounded-lg bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 p-0.5 gap-0.5 shadow-xs">' +
+                '<button data-pulse-upvote="' + p.id + '" data-upvotes="' + (p.upvotes || 0) + '" data-downvotes="' + (p.downvotes || 0) + '" class="' + upActiveClass + ' inline-flex items-center gap-1.5 px-2 py-1 rounded font-mono text-xs font-bold transition-all border-none bg-transparent cursor-pointer" title="Upvote pulse" aria-label="Upvote this cloud pulse">' +
                   '<i class="fa-solid fa-arrow-up text-[11px]"></i> <span>' + (p.score >= 0 ? '+' + p.score : p.score) + '</span>' +
                 '</button>' +
                 '<div class="pulse-vote-divider w-[1px] h-3.5 bg-slate-300 dark:bg-slate-600 shrink-0"></div>' +
-                '<button data-pulse-downvote="' + p.id + '" data-upvotes="' + (p.upvotes || 0) + '" data-downvotes="' + (p.downvotes || 0) + '" class="' + downActiveClass + ' inline-flex items-center justify-center w-6 h-6 rounded-full text-xs font-bold transition-all border-none bg-transparent cursor-pointer shrink-0" title="Downvote pulse" aria-label="Downvote this cloud pulse">' +
+                '<button data-pulse-downvote="' + p.id + '" data-upvotes="' + (p.upvotes || 0) + '" data-downvotes="' + (p.downvotes || 0) + '" class="' + downActiveClass + ' inline-flex items-center justify-center w-6 h-6 rounded font-mono text-xs font-bold transition-all border-none bg-transparent cursor-pointer shrink-0" title="Downvote pulse" aria-label="Downvote this cloud pulse">' +
                   '<i class="fa-solid fa-arrow-down text-[11px]"></i>' +
                 '</button>' +
               '</div>' +
@@ -2725,11 +2817,11 @@ function renderPulses(pulses) {
         if (btnElem) {
           if (userVotedProvider === provider) {
             btnElem.innerHTML = '<i class="fa-solid fa-circle-check mr-1"></i> Voted';
-            btnElem.className = "px-3 py-1.5 rounded-xl text-xs font-bold border-none bg-emerald-600 text-white shadow-xs cursor-default";
+            btnElem.className = "px-2.5 py-1 rounded font-mono text-[11px] font-bold border-none bg-emerald-600 text-white shadow-xs cursor-default";
             btnElem.disabled = true;
           } else if (userVotedProvider) {
             btnElem.innerHTML = '<i class="fa-solid fa-thumbs-up mr-1"></i> Vote';
-            btnElem.className = "px-3 py-1.5 rounded-xl text-xs font-bold border-none bg-slate-300 dark:bg-slate-700 text-slate-600 dark:text-slate-400 opacity-60 cursor-not-allowed";
+            btnElem.className = "px-2.5 py-1 rounded font-mono text-[11px] font-bold border-none bg-slate-200 dark:bg-slate-800 text-slate-400 dark:text-slate-600 opacity-50 cursor-not-allowed";
             btnElem.disabled = true;
           }
         }
@@ -2798,7 +2890,9 @@ function renderPulses(pulses) {
       });
     }
 
-    setInterval(fetchPollData, 3000);
+    renderPollUI();
+    fetchPollData();
+    setInterval(fetchPollData, 30000);
   }
 
   /* ── 12. Article Admin Studio & Markdown Publisher System ── */

@@ -12,90 +12,69 @@
     {{ end }}
   {{ end }}
 
-  <!-- Hero Section (Compact Above-the-Fold Proportions) -->
-  {{ partial "components/blog-hero" (dict
-    "Featured" $featured
-    "Posts" $posts
-    "Eyebrow" "Cloud Architecture & Security"
-    "Title" "Battle-tested engineering blueprints, zero-trust protocols & hands-on exam labs"
-    "BrowseLink" (`blog/` | relLangURL)
-    "BrowseLabel" "Explore All Blueprints"
-    )
-  }}
 
-  <!-- Main Architecture Grid & Interactive Topics Feed -->
-  <section class="pt-8 pb-16 relative" aria-labelledby="home-posts-heading">
-    <div class="container max-w-6xl relative">
+  <!-- Breadcrumbs -->
+  <div class="bytedepth-container pt-5 pb-2">
+    <nav class="text-xs font-mono text-slate-500 dark:text-slate-400" aria-label="Breadcrumb">
+      <a href="{{ site.Home.RelPermalink }}" class="text-inherit hover:text-primary no-underline">Home</a>
+      <span class="mx-1.5 text-slate-300 dark:text-slate-700">/</span>
+      <span class="text-slate-900 dark:text-slate-200 font-semibold">Articles</span>
+    </nav>
+  </div>
 
-      <!-- Section Discovery Header -->
-      <div class="flex items-center justify-between gap-4 mb-4 pb-3 border-b border-border/60 dark:border-slate-800/80">
-        <div class="flex items-center gap-2.5">
-          <span class="w-2.5 h-2.5 rounded-full bg-primary"></span>
-          <h2 id="home-posts-heading" class="text-xl sm:text-2xl font-black text-dark dark:text-white tracking-tight">
-            Latest Articles
-          </h2>
-          <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-primary/10 text-primary border border-primary/20 font-mono">
-            {{ len $posts }}
-          </span>
+  <!-- Featured Hero Section -->
+  {{ partial "components/blog-hero" (dict "Featured" $featured "Posts" $posts) }}
+
+  <!-- Main Articles & Topics Filter Tabs -->
+  <section class="pb-16 pt-2" aria-labelledby="articles-heading">
+    <div class="bytedepth-container">
+      <h2 id="articles-heading" class="sr-only">Articles & Topics</h2>
+
+      <!-- Horizontal Category Tabs (ByteDepth Reference) -->
+      {{ $categories := site.Taxonomies.categories }}
+      <div class="border-b border-slate-200 dark:border-slate-800 mb-8 sm:mb-10">
+        <div class="flex items-center gap-6 sm:gap-8 overflow-x-auto no-scrollbar py-1">
+          <span class="sr-only">Topics</span>
+          <a href="{{ `blog/` | relLangURL }}"
+             class="category-tab-active pb-3 -mb-px shrink-0 text-sm no-underline flex items-center gap-1.5"
+             style="color: #dc2626 !important; border-bottom: 2px solid #dc2626 !important; font-weight: 700 !important;">
+            <span>All</span>
+          </a>
+          {{/* Curate primary top categories matching ByteDepth tab density */}}
+          {{ $primaryCats := slice "kubernetes" "security" "google-cloud" "devops" "openshift" "certifications" }}
+          {{ range $catSlug := $primaryCats }}
+            {{ with site.GetPage (printf "/categories/%s" $catSlug) }}
+              <a href="{{ .RelPermalink }}"
+                 class="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white font-medium pb-3 -mb-px shrink-0 text-sm no-underline transition-colors flex items-center gap-1.5">
+                <span>{{ .Title }}</span>
+              </a>
+            {{ end }}
+          {{ end }}
         </div>
       </div>
 
-      <!-- Interactive Topic Filter Pills Bar with Full Visibility & Desktop Chevrons -->
-      {{ $categories := site.Taxonomies.categories }}
-      {{ if gt (len $categories) 0 }}
-        <div class="relative w-full mb-8 sm:mb-10">
-          <div class="flex items-center gap-2">
-            <!-- Topics Label -->
-            <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800/80 text-text/70 dark:text-slate-300 text-xs font-bold uppercase tracking-wider font-mono shrink-0 border border-border/60 dark:border-slate-700/60">
-              <i class="fa-solid fa-sliders text-primary text-[11px]"></i>
-              <span>Topics</span>
-            </div>
-
-            <!-- Scroll Left Arrow (Desktop) -->
-            <button type="button" 
-                    aria-label="Scroll topics left"
-                    onclick="document.getElementById('topics-scroller')?.scrollBy({left: -200, behavior: 'smooth'})"
-                    class="hidden sm:flex w-7 h-7 rounded-lg items-center justify-center bg-body dark:bg-slate-800 border border-border/80 dark:border-slate-700 text-text/60 dark:text-slate-400 hover:text-primary hover:border-primary/40 transition-all shrink-0 shadow-xs cursor-pointer">
-              <i class="fa-solid fa-chevron-left text-[10px]"></i>
-            </button>
-
-            <!-- Scrollable Pills Track (Always starts at 0, no clipped items) -->
-            <div id="topics-scroller" class="flex items-center gap-2 overflow-x-auto no-scrollbar scroll-smooth py-1 px-0.5 w-full">
-              <a href="{{ `blog/` | relLangURL }}" 
-                 class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-primary text-white shadow-xs border border-primary no-underline shrink-0 flex items-center gap-1.5 hover:bg-primary/90 transition-all">
-                <span>All Manuals</span>
-                <span class="px-1.5 py-0.2 rounded-md bg-white/20 text-[10px] font-mono">{{ len $posts }}</span>
-              </a>
-              {{ range $name, $items := $categories }}
-                <a href="{{ $items.Page.RelPermalink }}" 
-                   class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-body dark:bg-[#0c1220] hover:bg-primary/10 text-text/85 dark:text-slate-300 hover:text-primary border border-border/80 dark:border-slate-800 hover:border-primary/40 transition-all no-underline shrink-0 flex items-center gap-1.5">
-                  <span>{{ $items.Page.Title }}</span>
-                  <span class="px-1.5 py-0.2 rounded-md bg-slate-200/70 dark:bg-slate-800 text-[10px] font-mono text-text/70 dark:text-slate-400">{{ len $items }}</span>
-                </a>
-              {{ end }}
-            </div>
-
-            <!-- Scroll Right Arrow (Desktop) -->
-            <button type="button" 
-                    aria-label="Scroll topics right"
-                    onclick="document.getElementById('topics-scroller')?.scrollBy({left: 200, behavior: 'smooth'})"
-                    class="hidden sm:flex w-7 h-7 rounded-lg items-center justify-center bg-body dark:bg-slate-800 border border-border/80 dark:border-slate-700 text-text/60 dark:text-slate-400 hover:text-primary hover:border-primary/40 transition-all shrink-0 shadow-xs cursor-pointer">
-              <i class="fa-solid fa-chevron-right text-[10px]"></i>
-            </button>
-          </div>
-        </div>
-      {{ end }}
-
-      <!-- Next-Gen 3-Column Card Grid (Visible Above the Fold) -->
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-7 lg:gap-8">
+      <!-- 3-Column Articles Grid (ByteDepth Reference) -->
+      <style>
+        @media (min-width: 1024px) {
+          .bytedepth-article-grid {
+            grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+          }
+        }
+        @media (min-width: 640px) and (max-width: 1023px) {
+          .bytedepth-article-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+          }
+        }
+      </style>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 bytedepth-article-grid">
         {{ $gridPosts := $posts }}
         {{ with $featured }}
           {{ $gridPosts = where $posts ".RelPermalink" "!=" .RelPermalink }}
         {{ end }}
 
         {{ if eq (len $gridPosts) 0 }}
-          <div class="col-span-full text-center py-16 bg-body dark:bg-slate-900/40 rounded-3xl border border-border/60">
-            <p class="text-text/70 dark:text-slate-400 font-semibold">No additional articles found.</p>
+          <div class="col-span-full text-center py-16 bg-white dark:bg-[#0c1220] rounded-xl border border-slate-200 dark:border-slate-800">
+            <p class="text-slate-600 dark:text-slate-400 font-semibold">No additional articles found.</p>
           </div>
         {{ else }}
           {{ range first 9 $gridPosts }}
@@ -106,79 +85,94 @@
         {{ end }}
       </div>
 
-      <!-- View All Action Bar -->
-      {{ if gt (len $posts) 9 }}
-        <div class="mt-10 text-center">
-          <a class="inline-flex items-center gap-3 px-8 py-3.5 rounded-2xl text-sm font-extrabold bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/20 hover:scale-105 transition-all no-underline" 
-             href="{{ `blog/` | relLangURL }}">
-            <span>Browse all</span>
-            <i class="fa-solid fa-arrow-right text-xs"></i>
-          </a>
-        </div>
-      {{ end }}
+      <!-- View All Articles Button (ByteDepth Reference) -->
+      <div class="mt-12 mb-16 text-center">
+        <a class="inline-flex items-center gap-2 px-6 py-2.5 rounded-sm border border-slate-300 dark:border-slate-700 bg-white dark:bg-[#0c1220] text-slate-800 dark:text-slate-200 hover:border-slate-400 dark:hover:border-slate-600 text-sm font-semibold transition-all no-underline shadow-2xs"
+           href="{{ `blog/` | relLangURL }}">
+          <span>View all articles</span>
+          <span class="text-xs">→</span>
+        </a>
+      </div>
 
-      <!-- Curated Learning Pathways -->
-      <div class="mt-14 p-8 sm:p-10 rounded-3xl bg-body dark:bg-[#0c1220] border border-border/80 dark:border-slate-800 shadow-xl">
-        <div class="max-w-2xl mb-8">
-          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-extrabold uppercase tracking-wider bg-primary/10 text-primary border border-primary/20 mb-2">
-            Structured Pathways
-          </span>
-          <h3 class="text-2xl font-black text-dark dark:text-white">
-            Curated Engineering Learning Tracks
-          </h3>
-          <p class="text-sm text-text/80 dark:text-slate-300 mt-1 leading-relaxed">
-            Step-by-step masterclasses designed to take you from foundational concepts to battle-tested production implementation.
-          </p>
-        </div>
+      <!-- BROWSE ALL TOPICS Section (ByteDepth Reference) -->
+      <div class="mt-14 mb-8">
+        <span class="font-mono text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest block mb-4">
+          BROWSE ALL TOPICS
+        </span>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <a href="{{ `categories/kubernetes/` | relLangURL }}" class="p-6 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-border/70 dark:border-slate-800 hover:border-primary/50 transition-all no-underline group flex flex-col justify-between">
-            <div>
-              <span class="text-2xl mb-3 block">☸️</span>
-              <h4 class="font-bold text-base text-dark dark:text-white group-hover:text-primary transition-colors mb-1.5">
-                Kubernetes & CKA Labs
-              </h4>
-              <p class="text-xs text-text/80 dark:text-slate-400 leading-relaxed">
-                Pod lifecycles, ingress controllers, RBAC security, and speed tricks.
-              </p>
-            </div>
-            <span class="text-xs font-bold text-primary font-mono mt-4 inline-flex items-center gap-1 group-hover:translate-x-1 transition-transform">
-              Start Track →
-            </span>
-          </a>
+        <div class="border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0c1220] rounded-sm overflow-hidden" style="border: 1px solid #e2e8f0;">
+          <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5" style="display: grid;">
+            
+            <a href="{{ `categories/kubernetes/` | relLangURL }}" class="p-4 sm:p-5 text-xs sm:text-sm font-medium text-slate-800 dark:text-slate-200 hover:text-red-600 dark:hover:text-red-500 transition-colors no-underline block" style="border-right: 1px solid #e2e8f0; border-bottom: 1px solid #e2e8f0;">
+              Kubernetes
+            </a>
+            <a href="{{ `categories/security/` | relLangURL }}" class="p-4 sm:p-5 text-xs sm:text-sm font-medium text-slate-800 dark:text-slate-200 hover:text-red-600 dark:hover:text-red-500 transition-colors no-underline block" style="border-right: 1px solid #e2e8f0; border-bottom: 1px solid #e2e8f0;">
+              Security
+            </a>
+            <a href="{{ `categories/devops/` | relLangURL }}" class="p-4 sm:p-5 text-xs sm:text-sm font-medium text-slate-800 dark:text-slate-200 hover:text-red-600 dark:hover:text-red-500 transition-colors no-underline block" style="border-right: 1px solid #e2e8f0; border-bottom: 1px solid #e2e8f0;">
+              DevOps
+            </a>
+            <a href="{{ `categories/google-cloud/` | relLangURL }}" class="p-4 sm:p-5 text-xs sm:text-sm font-medium text-slate-800 dark:text-slate-200 hover:text-red-600 dark:hover:text-red-500 transition-colors no-underline block" style="border-right: 1px solid #e2e8f0; border-bottom: 1px solid #e2e8f0;">
+              Google Cloud
+            </a>
+            <a href="{{ `categories/openshift/` | relLangURL }}" class="p-4 sm:p-5 text-xs sm:text-sm font-medium text-slate-800 dark:text-slate-200 hover:text-red-600 dark:hover:text-red-500 transition-colors no-underline block" style="border-bottom: 1px solid #e2e8f0;">
+              OpenShift
+            </a>
 
-          <a href="{{ `categories/security/` | relLangURL }}" class="p-6 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-border/70 dark:border-slate-800 hover:border-primary/50 transition-all no-underline group flex flex-col justify-between">
-            <div>
-              <span class="text-2xl mb-3 block">🔐</span>
-              <h4 class="font-bold text-base text-dark dark:text-white group-hover:text-primary transition-colors mb-1.5">
-                Zero-Trust TLS & mTLS
-              </h4>
-              <p class="text-xs text-text/80 dark:text-slate-400 leading-relaxed">
-                Wire protocol handshakes, keystore architecture, cert-manager & 3 AM incident response.
-              </p>
-            </div>
-            <span class="text-xs font-bold text-primary font-mono mt-4 inline-flex items-center gap-1 group-hover:translate-x-1 transition-transform">
-              Start Track →
-            </span>
-          </a>
+            <a href="{{ `categories/architecture/` | relLangURL }}" class="p-4 sm:p-5 text-xs sm:text-sm font-medium text-slate-800 dark:text-slate-200 hover:text-red-600 dark:hover:text-red-500 transition-colors no-underline block" style="border-right: 1px solid #e2e8f0;">
+              Architecture
+            </a>
+            <a href="{{ `categories/cka/` | relLangURL }}" class="p-4 sm:p-5 text-xs sm:text-sm font-medium text-slate-800 dark:text-slate-200 hover:text-red-600 dark:hover:text-red-500 transition-colors no-underline block" style="border-right: 1px solid #e2e8f0;">
+              CKA & Linux
+            </a>
+            <a href="{{ `categories/tls/` | relLangURL }}" class="p-4 sm:p-5 text-xs sm:text-sm font-medium text-slate-800 dark:text-slate-200 hover:text-red-600 dark:hover:text-red-500 transition-colors no-underline block" style="border-right: 1px solid #e2e8f0;">
+              TLS & Zero-Trust
+            </a>
+            <a href="{{ `categories/ai/` | relLangURL }}" class="p-4 sm:p-5 text-xs sm:text-sm font-medium text-slate-800 dark:text-slate-200 hover:text-red-600 dark:hover:text-red-500 transition-colors no-underline block" style="border-right: 1px solid #e2e8f0;">
+              AI & ML
+            </a>
+            <a href="{{ `categories/certifications/` | relLangURL }}" class="p-4 sm:p-5 text-xs sm:text-sm font-medium text-slate-800 dark:text-slate-200 hover:text-red-600 dark:hover:text-red-500 transition-colors no-underline block">
+              Certifications
+            </a>
 
-          <a href="{{ `categories/google-cloud/` | relLangURL }}" class="p-6 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-border/70 dark:border-slate-800 hover:border-primary/50 transition-all no-underline group flex flex-col justify-between">
-            <div>
-              <span class="text-2xl mb-3 block">☁️</span>
-              <h4 class="font-bold text-base text-dark dark:text-white group-hover:text-primary transition-colors mb-1.5">
-                Google Cloud PCA Mastery
-              </h4>
-              <p class="text-xs text-text/80 dark:text-slate-400 leading-relaxed">
-                Case studies, multi-region failover, BigQuery analytics, and exam renewals.
-              </p>
-            </div>
-            <span class="text-xs font-bold text-primary font-mono mt-4 inline-flex items-center gap-1 group-hover:translate-x-1 transition-transform">
-              Start Track →
-            </span>
-          </a>
+          </div>
         </div>
       </div>
 
+    </div>
+  </section>
+
+  <!-- Newsletter Section (ByteDepth Reference) -->
+  <section class="border-t border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-[#070b14]/50 py-16 sm:py-20 text-center" aria-labelledby="newsletter-heading">
+    <div class="bytedepth-container">
+      <span class="font-mono text-xs font-bold uppercase tracking-widest text-red-600 dark:text-red-500 block mb-3">
+        NEWSLETTER
+      </span>
+      <h2 id="newsletter-heading" class="text-2xl sm:text-3xl lg:text-[34px] font-black text-slate-900 dark:text-white tracking-tight mb-3">
+        Engineering insights, twice a month
+      </h2>
+      <p class="text-slate-600 dark:text-slate-400 text-sm sm:text-base max-w-xl mx-auto mb-8 leading-relaxed">
+        Deep dives on cloud architecture, distributed systems, Kubernetes, and security — written by practitioners, not content teams.
+      </p>
+
+      <form action="{{ `newsletter/` | relLangURL }}" method="get" data-supabase-subscribe class="max-w-md mx-auto flex flex-col sm:flex-row items-stretch gap-2 sm:gap-0">
+        <input 
+          type="email" 
+          name="email" 
+          required 
+          placeholder="you@company.com" 
+          class="px-4 py-2.5 rounded-md sm:rounded-r-none border border-slate-300 dark:border-slate-700 bg-white dark:bg-[#0c1220] text-sm text-slate-900 dark:text-white flex-grow focus:outline-none focus:border-slate-500 placeholder:text-slate-400"
+          aria-label="Email address for engineering newsletter">
+        <button 
+          type="submit" 
+          class="px-6 py-2.5 rounded-md sm:rounded-l-none text-white font-bold text-sm transition-colors cursor-pointer shrink-0 shadow-xs"
+          style="background-color: #dc2626 !important; color: #ffffff !important;">
+          Subscribe
+        </button>
+      </form>
+      <p data-newsletter-status class="text-xs font-mono text-slate-500 dark:text-slate-400 mt-3">
+        Curated architecture &amp; DevOps insights. Zero spam, unsubscribe anytime.
+      </p>
     </div>
   </section>
 {{ end }}

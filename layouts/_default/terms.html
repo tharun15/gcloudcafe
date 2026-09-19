@@ -1,0 +1,44 @@
+{{ define "main" }}
+  <!-- Breadcrumbs -->
+  <div class="bytedepth-container pt-5 pb-2">
+    <nav class="text-xs font-mono text-slate-500 dark:text-slate-400" aria-label="Breadcrumb">
+      <a href="{{ site.Home.RelPermalink }}" class="text-inherit hover:text-red-600 dark:hover:text-red-500 no-underline">Home</a>
+      <span class="mx-1.5 text-slate-300 dark:text-slate-700">/</span>
+      <span class="text-slate-900 dark:text-slate-200 font-semibold">{{ .Title }}</span>
+    </nav>
+  </div>
+
+  <!-- Header -->
+  <div class="bytedepth-container pt-4 pb-8 border-b border-slate-200 dark:border-slate-800 mb-10">
+    <div class="max-w-3xl">
+      <span class="font-mono text-xs font-black uppercase tracking-widest text-red-600 dark:text-red-500 block mb-2">
+        EXPLORE BY TOPIC
+      </span>
+      <h1 class="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-slate-900 dark:text-white mb-3">
+        {{ .Title }}
+      </h1>
+      <p class="font-mono text-xs text-slate-500 dark:text-slate-400 m-0">
+        Index of all technical categories and topics covered across GCloudCafe
+      </p>
+    </div>
+  </div>
+
+  <!-- Terms Grid -->
+  <section class="pb-20">
+    <div class="bytedepth-container">
+      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+        {{ range .Data.Terms.Alphabetical }}
+          <a href="{{ .Page.RelPermalink }}" 
+             class="border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0c1220] p-4 rounded-lg text-center hover:border-slate-400 dark:hover:border-slate-600 hover:shadow-xs transition-all no-underline block group">
+            <div class="font-mono text-xs font-bold text-slate-800 dark:text-slate-200 group-hover:text-red-600 dark:group-hover:text-red-500 transition-colors mb-1">
+              {{ .Page.Title }}
+            </div>
+            <div class="font-mono text-[10px] text-slate-400">
+              {{ .Count }} {{ if eq .Count 1 }}post{{ else }}posts{{ end }}
+            </div>
+          </a>
+        {{ end }}
+      </div>
+    </div>
+  </section>
+{{ end }}

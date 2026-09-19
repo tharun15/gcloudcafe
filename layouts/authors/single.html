@@ -1,0 +1,101 @@
+{{ define "main" }}
+  <!-- Breadcrumbs -->
+  <div class="bytedepth-container pt-5 pb-2">
+    <nav class="text-xs font-mono text-slate-500 dark:text-slate-400" aria-label="Breadcrumb">
+      <a href="{{ site.Home.RelPermalink }}" class="text-inherit hover:text-red-600 dark:hover:text-red-500 no-underline">Home</a>
+      <span class="mx-1.5 text-slate-300 dark:text-slate-700">/</span>
+      <a href="{{ `authors/` | relLangURL }}" class="text-inherit hover:text-red-600 dark:hover:text-red-500 no-underline">Authors</a>
+      <span class="mx-1.5 text-slate-300 dark:text-slate-700">/</span>
+      <span class="text-slate-900 dark:text-slate-200 font-semibold">{{ .Title }}</span>
+    </nav>
+  </div>
+
+  <!-- Author Hero Profile Card -->
+  <section class="pt-4 pb-12">
+    <div class="bytedepth-container">
+      <div class="border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0c1220] rounded-xl sm:rounded-2xl p-6 sm:p-10 shadow-sm mb-12">
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
+          
+          <!-- Avatar Column -->
+          <div class="md:col-span-4 lg:col-span-3 flex flex-col items-center text-center">
+            <div class="relative mb-4">
+              {{ with .Params.image }}
+                <img src="{{ . | relURL }}" 
+                     alt="{{ $.Title }}" 
+                     class="w-28 h-28 sm:w-32 sm:h-32 rounded-full object-cover border-2 border-slate-200 dark:border-slate-700 shadow-md ring-4 ring-slate-100 dark:ring-slate-800/80" 
+                     loading="lazy">
+              {{ else }}
+                <div class="w-28 h-28 sm:w-32 sm:h-32 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-white font-black text-2xl flex items-center justify-center">
+                  {{ substr .Title 0 1 }}
+                </div>
+              {{ end }}
+              <span class="absolute bottom-1 right-1 w-5 h-5 rounded-full bg-emerald-500 border-2 border-white dark:border-[#0c1220]" title="Active Contributor"></span>
+            </div>
+            <h1 class="text-xl font-black text-slate-900 dark:text-white tracking-tight mb-1">{{ .Title }}</h1>
+            <span class="text-xs font-mono text-slate-500 dark:text-slate-400">{{ .Params.role | default "Author" }}</span>
+          </div>
+
+          <!-- Bio & Details Column -->
+          <div class="md:col-span-8 lg:col-span-9">
+            <div class="mb-3">
+              <span class="px-2.5 py-1 rounded font-mono text-[11px] font-bold uppercase tracking-wider" style="background-color: #ede9fe; color: #6b21a8;">
+                STAFF CONTRIBUTOR
+              </span>
+            </div>
+            <div class="prose dark:prose-invert max-w-none text-slate-600 dark:text-slate-400 text-sm sm:text-base leading-relaxed mb-6">
+              {{ .Content }}
+            </div>
+
+            <!-- Social Links & Email -->
+            <div class="flex items-center gap-3 pt-4 border-t border-slate-200 dark:border-slate-800">
+              {{ range .Params.social }}
+                <a href="{{ .link | safeURL }}" target="_blank" rel="noopener noreferrer" 
+                   class="w-9 h-9 rounded-lg border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-700 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-500 hover:border-slate-400 transition-colors no-underline" 
+                   aria-label="{{ .name }}">
+                  <i class="{{ .icon }} text-sm"></i>
+                </a>
+              {{ end }}
+              {{ with .Params.email }}
+                <a href="mailto:{{ . }}" 
+                   class="w-9 h-9 rounded-lg border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-700 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-500 hover:border-slate-400 transition-colors no-underline" 
+                   aria-label="Email {{ $.Title }}">
+                  <i class="fa-regular fa-envelope text-sm"></i>
+                </a>
+              {{ end }}
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Articles by Author Section -->
+      {{ $slug := .File.TranslationBaseName }}
+      {{ $title := .Title }}
+      {{ $authorPosts := where site.RegularPages "Section" "blog" }}
+      {{ $filtered := slice }}
+      {{ range $authorPosts }}
+        {{ $a := .Params.author }}
+        {{ if or (eq $a $slug) (eq $a $title) (eq $a "tharun") (eq $a "tharun-vempati") }}
+          {{ $filtered = $filtered | append . }}
+        {{ end }}
+      {{ end }}
+
+      <div class="mb-6 flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
+        <h2 class="text-xl sm:text-2xl font-black tracking-tight text-slate-900 dark:text-white">
+          Articles by {{ .Title }}
+        </h2>
+        <span class="font-mono text-xs text-slate-500 dark:text-slate-400">
+          {{ len $filtered }} published
+        </span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 pb-12">
+        {{ range $filtered }}
+          <div>
+            {{ partial "components/blog-card" . }}
+          </div>
+        {{ end }}
+      </div>
+    </div>
+  </section>
+{{ end }}
