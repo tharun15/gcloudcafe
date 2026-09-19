@@ -428,7 +428,8 @@
               <img src="{{ `/images/authors/profilepic_tharun.png` | relURL }}" 
                    alt="Tharun Vempati" 
                    class="w-28 h-28 sm:w-32 sm:h-32 rounded-full object-cover border-2 border-slate-200 dark:border-slate-700 shadow-md ring-4 ring-slate-100 dark:ring-slate-800/80" 
-                   loading="lazy">
+                   loading="lazy"
+                   onerror="this.onerror=null; this.src='{{ `/images/avatar.png` | relURL }}';">
               <span class="absolute bottom-1 right-1 w-5 h-5 rounded-full bg-emerald-500 border-2 border-white dark:border-[#0c1220]" title="Active Contributor"></span>
             </div>
             <h3 class="text-xl font-black text-slate-900 dark:text-white tracking-tight">Tharun Vempati</h3>

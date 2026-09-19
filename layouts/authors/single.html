@@ -23,7 +23,8 @@
                 <img src="{{ . | relURL }}" 
                      alt="{{ $.Title }}" 
                      class="w-28 h-28 sm:w-32 sm:h-32 rounded-full object-cover border-2 border-slate-200 dark:border-slate-700 shadow-md ring-4 ring-slate-100 dark:ring-slate-800/80" 
-                     loading="lazy">
+                     loading="lazy"
+                     onerror="this.onerror=null; this.src='{{ `/images/avatar.png` | relURL }}';">
               {{ else }}
                 <div class="w-28 h-28 sm:w-32 sm:h-32 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-white font-black text-2xl flex items-center justify-center">
                   {{ substr .Title 0 1 }}

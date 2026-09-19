@@ -46,8 +46,9 @@
                 <img src="{{ . | relURL }}" 
                      alt="{{ $authorPage.Title }}" 
                      class="w-full h-full object-cover object-[center_12%] group-hover:scale-105 transition-transform duration-500 ease-out" 
-                     style="object-position: center 12%;"
-                     loading="lazy">
+                     style="object-position: center 12%;" 
+                     loading="lazy"
+                     onerror="this.onerror=null; this.src='{{ `/images/avatar.png` | relURL }}';">
               {{ else }}
                 <div class="w-full h-full flex items-center justify-center bg-slate-200 dark:bg-slate-800 text-slate-900 dark:text-white font-black text-4xl">
                   {{ substr $authorPage.Title 0 1 }}
