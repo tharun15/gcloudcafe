@@ -55,19 +55,36 @@
     if (!bar) return;
 
     function update() {
-      var scrollTop = window.scrollY || document.documentElement.scrollTop;
-      var docHeight =
-        document.documentElement.scrollHeight -
-        document.documentElement.clientHeight;
-      var pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
-      bar.style.width = Math.min(100, pct) + "%";
+      var article = document.querySelector(".single-post, article, .content");
+      if (article) {
+        var articleRect = article.getBoundingClientRect();
+        var articleTop = articleRect.top + window.scrollY;
+        var articleHeight = article.offsetHeight;
+        var windowHeight = window.innerHeight;
+        var scrollTop = window.scrollY;
+
+        var start = articleTop - 100;
+        var end = articleTop + articleHeight - windowHeight;
+        if (end <= start) end = start + 1;
+
+        var progress = (scrollTop - start) / (end - start);
+        var pct = Math.max(0, Math.min(100, progress * 100));
+        bar.style.width = pct + "%";
+      } else {
+        var scrollTop = window.scrollY || document.documentElement.scrollTop;
+        var docHeight =
+          document.documentElement.scrollHeight -
+          document.documentElement.clientHeight;
+        var pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+        bar.style.width = Math.min(100, pct) + "%";
+      }
     }
 
     window.addEventListener("scroll", update, { passive: true });
     update();
   }
 
-  /* ── Copy-to-Clipboard for Code Blocks ── */
+  /* ── Developer-Grade Code Blocks with Icons, Tabs, and Glowing Copy ── */
   function initCopyCode() {
     var blocks = document.querySelectorAll("pre");
     if (!blocks.length) return;
@@ -80,6 +97,10 @@
       pre.parentNode.insertBefore(wrapper, pre);
 
       var code = pre.querySelector("code");
+      var rawText = (code || pre).innerText || (code || pre).textContent || "";
+      var lines = rawText.trim().split("\n");
+      var firstLine = (lines[0] || "").trim();
+
       var lang = "CODE";
       if (code) {
         var match = code.className.match(/(?:lang|language)-(\w+)/);
@@ -88,9 +109,75 @@
         }
       }
 
+      // Check for filename in first line comment: # file.ext, // file.ext, -- file.sql
+      var filename = "";
+      var fileMatch = firstLine.match(/^(?:#|\/\/|--|\/\*|<!--)\s*([a-zA-Z0-9_.\-\/]+\.[a-zA-Z0-9]+)\s*(?:\*\/|-->)?$/);
+      if (fileMatch && fileMatch[1]) {
+        filename = fileMatch[1];
+      }
+
+      // Tech Icons map
+      var iconClass = "fa-solid fa-code";
+      var iconColor = "text-sky-400";
+      var langLower = (lang + " " + filename).toLowerCase();
+      if (langLower.includes("bash") || langLower.includes("sh") || langLower.includes("shell") || langLower.includes("zsh")) {
+        iconClass = "fa-solid fa-terminal";
+        iconColor = "text-emerald-400";
+      } else if (langLower.includes("yaml") || langLower.includes("yml")) {
+        iconClass = "fa-solid fa-file-code";
+        iconColor = "text-amber-400";
+      } else if (langLower.includes("docker")) {
+        iconClass = "fa-brands fa-docker";
+        iconColor = "text-sky-400";
+      } else if (langLower.includes("python") || langLower.includes("py")) {
+        iconClass = "fa-brands fa-python";
+        iconColor = "text-amber-400";
+      } else if (langLower.includes("go")) {
+        iconClass = "fa-brands fa-golang";
+        iconColor = "text-cyan-400";
+      } else if (langLower.includes("terraform") || langLower.includes("hcl") || langLower.includes("tf")) {
+        iconClass = "fa-solid fa-cubes";
+        iconColor = "text-purple-400";
+      } else if (langLower.includes("sql")) {
+        iconClass = "fa-solid fa-database";
+        iconColor = "text-rose-400";
+      } else if (langLower.includes("json")) {
+        iconClass = "fa-solid fa-brackets-curly";
+        iconColor = "text-yellow-400";
+      }
+
+      // Multi-tab / Multi-CLI support inside code snippet
+      // Matches: # [kubectl] or # [gcloud] or # [AWS CLI] or # --- TabName ---
+      var tabDelimiterRegex = /^[ \t]*(?:#|\/\/|--)\s*(?:\[|---?\s*)([A-Za-z0-9_.\-\s/]+?)(?:\]|\s*---?)[ \t]*$/;
+      var tabs = [];
+      var currentTabName = "";
+      var currentTabLines = [];
+
+      for (var i = 0; i < lines.length; i++) {
+        var line = lines[i];
+        var tabMatch = line.match(tabDelimiterRegex);
+        if (tabMatch && tabMatch[1] && tabMatch[1].trim().length > 0 && !line.includes(".yaml") && !line.includes(".tf") && !line.includes(".json") && !line.includes(".sh")) {
+          if (currentTabName && currentTabLines.length > 0) {
+            tabs.push({ name: currentTabName, text: currentTabLines.join("\n") });
+            currentTabLines = [];
+          }
+          currentTabName = tabMatch[1].trim();
+        } else {
+          currentTabLines.push(line);
+        }
+      }
+      if (currentTabName && currentTabLines.length > 0) {
+        tabs.push({ name: currentTabName, text: currentTabLines.join("\n") });
+      }
+
       var header = document.createElement("div");
       header.className = "code-block-header";
-      header.innerHTML = '<span class="lang-tag">' + lang + '</span>';
+
+      var displayLabel = filename || lang;
+      var badgeHtml = '<span class="lang-tag"><i class="' + iconClass + ' ' + iconColor + ' mr-1 text-[11px]"></i> ' + escapeHtml(displayLabel) + '</span>';
+      var lineCountHtml = '<span class="line-count-tag ml-2 text-slate-500 dark:text-slate-400 font-mono text-[11px]">' + lines.length + (lines.length === 1 ? ' line' : ' lines') + '</span>';
+
+      header.innerHTML = '<div class="flex items-center">' + badgeHtml + lineCountHtml + '</div>';
 
       var btn = document.createElement("button");
       btn.className = "copy-code-btn blog-focus-ring";
@@ -99,16 +186,57 @@
       header.appendChild(btn);
 
       wrapper.appendChild(header);
+
+      var activeCopyText = rawText;
+      if (tabs.length >= 2) {
+        var tabBar = document.createElement("div");
+        tabBar.className = "code-block-tabs";
+        
+        tabs.forEach(function (tab, tIdx) {
+          var tabBtn = document.createElement("button");
+          tabBtn.type = "button";
+          tabBtn.className = "code-tab-btn" + (tIdx === 0 ? " is-active" : "");
+          tabBtn.textContent = tab.name;
+          tabBtn.addEventListener("click", function () {
+            tabBar.querySelectorAll(".code-tab-btn").forEach(function(b) { b.classList.remove("is-active"); });
+            tabBtn.classList.add("is-active");
+            if (code) {
+              code.textContent = tab.text;
+            } else {
+              pre.textContent = tab.text;
+            }
+            activeCopyText = tab.text;
+            var newLines = tab.text.trim().split("\n");
+            var lineTag = header.querySelector(".line-count-tag");
+            if (lineTag) lineTag.textContent = newLines.length + (newLines.length === 1 ? ' line' : ' lines');
+          });
+          tabBar.appendChild(tabBtn);
+        });
+
+        wrapper.appendChild(tabBar);
+        activeCopyText = tabs[0].text;
+        if (code) {
+          code.textContent = tabs[0].text;
+        } else {
+          pre.textContent = tabs[0].text;
+        }
+        var firstTabLines = tabs[0].text.trim().split("\n");
+        var lineTag = header.querySelector(".line-count-tag");
+        if (lineTag) lineTag.textContent = firstTabLines.length + (firstTabLines.length === 1 ? ' line' : ' lines');
+      }
+
       wrapper.appendChild(pre);
 
       btn.addEventListener("click", function () {
-        var text = (code || pre).innerText || (code || pre).textContent || "";
+        var text = activeCopyText;
         if (!navigator.clipboard) {
           fallbackCopy(text, btn);
           return;
         }
         navigator.clipboard.writeText(text).then(function () {
           showCopied(btn);
+        }).catch(function () {
+          fallbackCopy(text, btn);
         });
       });
     });
@@ -156,18 +284,45 @@
     toggle();
   }
 
-  /* ── Active Table of Contents Tracking (IntersectionObserver: Zero Forced Reflow) ── */
+  /* ── Active Table of Contents Tracking (IntersectionObserver with Smooth Offset & Auto-Scroll) ── */
   function initActiveTocTracking() {
-    var tocLinks = document.querySelectorAll(".toc-link");
+    var tocLinks = document.querySelectorAll(".toc-container a, #TableOfContents a, .toc-link");
     if (!tocLinks.length) return;
 
     var headingsMap = new Map();
+    var container = document.querySelector(".toc-container");
+
     tocLinks.forEach(function (link) {
+      link.classList.add("toc-link");
       var href = link.getAttribute("href");
       if (href && href.startsWith("#")) {
-        var el = document.getElementById(href.substring(1));
-        if (el) headingsMap.set(el, link);
+        var targetId = decodeURIComponent(href.substring(1));
+        var el = document.getElementById(targetId);
+        if (el) {
+          headingsMap.set(el, link);
+        }
       }
+
+      // Smooth scroll with offset for fixed header
+      link.addEventListener("click", function (e) {
+        var targetHref = link.getAttribute("href");
+        if (targetHref && targetHref.startsWith("#")) {
+          var targetElem = document.getElementById(decodeURIComponent(targetHref.substring(1)));
+          if (targetElem) {
+            e.preventDefault();
+            var headerOffset = 95;
+            var elementPosition = targetElem.getBoundingClientRect().top;
+            var offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+            window.scrollTo({
+              top: offsetPosition,
+              behavior: "smooth"
+            });
+            if (history.pushState) {
+              history.pushState(null, null, targetHref);
+            }
+          }
+        }
+      });
     });
 
     if (headingsMap.size === 0) return;
@@ -180,10 +335,18 @@
             if (activeLink) {
               tocLinks.forEach(function (l) { l.classList.remove("is-active"); });
               activeLink.classList.add("is-active");
+              // Auto-scroll TOC container so active link is always visible
+              if (container) {
+                var containerRect = container.getBoundingClientRect();
+                var linkRect = activeLink.getBoundingClientRect();
+                if (linkRect.top < containerRect.top + 40 || linkRect.bottom > containerRect.bottom - 40) {
+                  activeLink.scrollIntoView({ behavior: "smooth", block: "nearest" });
+                }
+              }
             }
           }
         });
-      }, { rootMargin: "0px 0px -70% 0px", threshold: 0 });
+      }, { rootMargin: "0px 0px -65% 0px", threshold: 0 });
 
       headingsMap.forEach(function (_, el) {
         observer.observe(el);
@@ -191,17 +354,167 @@
     }
   }
 
-  /* ── Keyboard Search Shortcut (Ctrl+K / Cmd+K) ── */
-  function initSearchShortcut() {
+  /* ── Keyboard Search Shortcut & Supercharged Command Center (Ctrl+K / Cmd+K) ── */
+  function initCommandPalette() {
+    var searchModal = document.getElementById("search-modal") || document.querySelector(".search-modal");
+    var searchInput = document.querySelector("[data-search-input]");
+    var commandView = document.getElementById("command-palette-default");
+    var activeCommandIdx = 0;
+
+    function getCommandItems() {
+      if (!commandView) return [];
+      return Array.from(commandView.querySelectorAll("[data-command-item]"));
+    }
+
+    function updateActiveCommand(index) {
+      var items = getCommandItems();
+      if (!items.length) return;
+      if (index < 0) index = 0;
+      if (index >= items.length) index = items.length - 1;
+      activeCommandIdx = index;
+      items.forEach(function (el, idx) {
+        el.classList.toggle("is-selected", idx === activeCommandIdx);
+      });
+      if (items[activeCommandIdx]) {
+        items[activeCommandIdx].scrollIntoView({ behavior: "smooth", block: "nearest" });
+      }
+    }
+
+    // Toggle Modal on Ctrl+K / Cmd+K
     document.addEventListener("keydown", function (e) {
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
-        var searchTrigger = document.querySelector("[data-target='search-modal'], [data-search-trigger], .search-trigger, [data-target='#search-modal']");
-        if (searchTrigger) {
+        var isModalOpen = searchModal && searchModal.classList.contains("show");
+        if (isModalOpen) {
           e.preventDefault();
-          searchTrigger.click();
+          var closeBtn = document.querySelector("[data-target='close-search-modal']");
+          if (closeBtn) closeBtn.click();
+        } else {
+          var searchTrigger = document.querySelector("[data-target='search-modal'], [data-search-trigger], .search-trigger, [data-target='#search-modal']");
+          if (searchTrigger) {
+            e.preventDefault();
+            searchTrigger.click();
+            setTimeout(function () {
+              updateActiveCommand(0);
+              if (searchInput) searchInput.focus();
+            }, 120);
+          }
         }
       }
     });
+
+    if (!searchModal) return;
+
+    // Open event hook (when opened via header search button or hotkey)
+    var searchTriggers = document.querySelectorAll("[data-target='search-modal'], [data-search-trigger]");
+    searchTriggers.forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        setTimeout(function () {
+          updateActiveCommand(0);
+          if (commandView && (!searchInput || !searchInput.value.trim())) {
+            commandView.style.display = "";
+          }
+          if (searchInput) searchInput.focus();
+        }, 120);
+      });
+    });
+
+    // Command Action Execution
+    document.addEventListener("click", function (e) {
+      var actionBtn = e.target.closest("[data-command-action]");
+      if (!actionBtn) return;
+      var action = actionBtn.getAttribute("data-command-action");
+      if (action === "toggle-theme") {
+        e.preventDefault();
+        var htmlEl = document.documentElement;
+        var isDark = htmlEl.classList.toggle("dark");
+        try {
+          localStorage.setItem("theme", isDark ? "dark" : "light");
+        } catch (err) {}
+        var tsInputs = document.querySelectorAll("[data-theme-switcher], #theme-switcher");
+        tsInputs.forEach(function (inp) { inp.checked = isDark; });
+
+        // Update action title visually
+        var titleEl = actionBtn.querySelector(".command-item-title");
+        if (titleEl) {
+          titleEl.textContent = isDark ? "Switch to Light Mode" : "Switch to Dark Mode";
+        }
+        // Smoothly close command palette
+        setTimeout(function () {
+          var closeBtn = document.querySelector("[data-target='close-search-modal']");
+          if (closeBtn) closeBtn.click();
+        }, 220);
+      } else if (action === "open-proposal") {
+        e.preventDefault();
+        var closeBtn = document.querySelector("[data-target='close-search-modal']");
+        if (closeBtn) closeBtn.click();
+        var proposalModal = document.getElementById("author-proposal-modal");
+        if (proposalModal) {
+          var openBtn = document.getElementById("open-proposal-modal-btn");
+          if (openBtn) openBtn.click();
+        } else {
+          window.location.href = "/authors/#author-proposal-modal";
+        }
+      }
+    });
+
+    // Sync active state on mouse hover
+    if (commandView) {
+      commandView.addEventListener("mouseover", function (e) {
+        var item = e.target.closest("[data-command-item]");
+        if (!item) return;
+        var items = getCommandItems();
+        var idx = items.indexOf(item);
+        if (idx !== -1) {
+          activeCommandIdx = idx;
+          items.forEach(function (el, i) {
+            el.classList.toggle("is-selected", i === activeCommandIdx);
+          });
+        }
+      });
+    }
+
+    // Keyboard Arrow navigation & Enter execution inside command palette
+    if (searchInput) {
+      // Toggle command view visibility based on input value
+      searchInput.addEventListener("input", function () {
+        var val = searchInput.value.trim();
+        if (commandView) {
+          if (val.length > 0) {
+            commandView.style.display = "none";
+          } else {
+            commandView.style.display = "";
+            updateActiveCommand(0);
+          }
+        }
+      });
+
+      searchInput.addEventListener("keydown", function (e) {
+        var isModalOpen = searchModal.classList.contains("show");
+        if (!isModalOpen) return;
+
+        var val = searchInput.value.trim();
+        if (val === "" && commandView && commandView.style.display !== "none") {
+          var items = getCommandItems();
+          if (!items.length) return;
+
+          if (e.key === "ArrowDown") {
+            e.preventDefault();
+            var nextIdx = (activeCommandIdx + 1) % items.length;
+            updateActiveCommand(nextIdx);
+          } else if (e.key === "ArrowUp") {
+            e.preventDefault();
+            var prevIdx = (activeCommandIdx - 1 + items.length) % items.length;
+            updateActiveCommand(prevIdx);
+          } else if (e.key === "Enter") {
+            e.preventDefault();
+            var currentItem = items[activeCommandIdx];
+            if (currentItem) {
+              currentItem.click();
+            }
+          }
+        }
+      });
+    }
   }
   function initPostEngagement() {
     var widget = document.querySelector("[data-post-feedback]");
@@ -1034,7 +1347,7 @@
     initCopyCode();
     initScrollToTop();
     initActiveTocTracking();
-    initSearchShortcut();
+    initCommandPalette();
     initPostEngagement();
     initCommentsSystem();
     initNewsletterSignup();
@@ -1132,6 +1445,27 @@
 
     var allLoadedPulses = [];
     var activeFilter = "all";
+    var activeSearchQuery = "";
+
+    function applyViewTransition(updateFn) {
+      if (typeof document !== "undefined" && document.startViewTransition && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        document.startViewTransition(updateFn);
+      } else {
+        updateFn();
+      }
+    }
+
+    function updateResultCounter(count) {
+      var counterEl = document.getElementById("pulse-result-count");
+      if (counterEl) {
+        var total = allLoadedPulses.length;
+        if (count === total) {
+          counterEl.textContent = "Showing " + total + " updates";
+        } else {
+          counterEl.textContent = "Showing " + count + " of " + total + " updates";
+        }
+      }
+    }
 
     function filterAndRenderPulses() {
       var filtered = allLoadedPulses;
@@ -1150,10 +1484,22 @@
           return true;
         });
       }
-      renderPulses(filtered);
+
+      if (activeSearchQuery && activeSearchQuery.trim().length > 0) {
+        var q = activeSearchQuery.trim().toLowerCase();
+        filtered = filtered.filter(function(p) {
+          var corpus = ((p.title || "") + " " + (p.content || "") + " " + (Array.isArray(p.tags) ? p.tags.join(" ") : "")).toLowerCase();
+          return corpus.includes(q);
+        });
+      }
+
+      applyViewTransition(function() {
+        updateResultCounter(filtered.length);
+        renderPulses(filtered);
+      });
     }
 
-            function updatePulseChipUI(chip, isActive) {
+    function updatePulseChipUI(chip, isActive) {
       var activeClasses = ["is-active", "bg-primary", "text-white", "border-transparent", "shadow-xs"];
       var inactiveClasses = ["bg-theme-light", "dark:bg-darkmode-theme-light", "text-text/80", "dark:text-darkmode-text/80", "border-border/60", "dark:border-darkmode-border/60"];
       
@@ -1181,6 +1527,186 @@
       });
     }
 
+    function setupPulseSearch() {
+      var searchInput = document.getElementById("pulse-search-input");
+      var clearBtn = document.getElementById("pulse-search-clear");
+      if (!searchInput) return;
+
+      searchInput.addEventListener("input", function() {
+        activeSearchQuery = searchInput.value || "";
+        if (clearBtn) {
+          if (activeSearchQuery.trim().length > 0) {
+            clearBtn.classList.remove("hidden");
+          } else {
+            clearBtn.classList.add("hidden");
+          }
+        }
+        filterAndRenderPulses();
+      });
+
+      if (clearBtn) {
+        clearBtn.addEventListener("click", function() {
+          searchInput.value = "";
+          activeSearchQuery = "";
+          clearBtn.classList.add("hidden");
+          searchInput.focus();
+          filterAndRenderPulses();
+        });
+      }
+
+      // Keyboard shortcut: Ctrl+/ or Cmd+/ or '/'
+      document.addEventListener("keydown", function(e) {
+        if ((e.ctrlKey || e.metaKey) && e.key === "/") {
+          e.preventDefault();
+          searchInput.focus();
+          searchInput.select();
+        } else if (e.key === "/" && document.activeElement !== searchInput && !["INPUT", "TEXTAREA", "SELECT"].includes((document.activeElement || {}).tagName)) {
+          e.preventDefault();
+          searchInput.focus();
+          searchInput.select();
+        }
+      });
+    }
+
+    function fallbackPulseCopy(text, cb) {
+      var ta = document.createElement("textarea");
+      ta.value = text;
+      ta.style.position = "fixed";
+      ta.style.opacity = "0";
+      document.body.appendChild(ta);
+      ta.select();
+      try {
+        document.execCommand("copy");
+        if (cb) cb();
+      } catch (err) {
+        console.error("Clipboard copy failed", err);
+      }
+      document.body.removeChild(ta);
+    }
+
+    function copyPulseSlackMarkdown(text, btnEl) {
+      function showSuccess() {
+        if (!btnEl) return;
+        var origHtml = btnEl.innerHTML;
+        btnEl.innerHTML = '<i class="fa-solid fa-check text-emerald-400"></i> <span>Copied to Clipboard!</span>';
+        setTimeout(function() {
+          btnEl.innerHTML = origHtml;
+        }, 2200);
+      }
+
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(showSuccess).catch(function() {
+          fallbackPulseCopy(text, showSuccess);
+        });
+      } else {
+        fallbackPulseCopy(text, showSuccess);
+      }
+    }
+
+    function openPulseFocusModal(pulse, rankBadge) {
+      var modal = document.getElementById("pulse-focus-modal");
+      if (!modal) return;
+
+      var badgesContainer = document.getElementById("pulse-focus-badges");
+      var titleEl = document.getElementById("pulse-focus-title");
+      var contentEl = document.getElementById("pulse-focus-content");
+      var tagsContainer = document.getElementById("pulse-focus-tags");
+      var sourceLinkEl = document.getElementById("pulse-focus-sourcelink");
+      var copySlackBtn = document.getElementById("pulse-focus-copy-slack");
+      var shareLinkedinLink = document.getElementById("pulse-focus-share-linkedin");
+
+      if (badgesContainer) {
+        var dateHtml = '<span class="font-mono text-xs text-slate-500 dark:text-slate-400">' + formatDate(pulse.created_at) + '</span>';
+        badgesContainer.innerHTML = (rankBadge || "") + dateHtml;
+      }
+
+      if (titleEl) {
+        titleEl.textContent = pulse.title || "";
+      }
+
+      var cleanContent = (pulse.content || "")
+        .replace(/<[^>]+>/g, "")
+        .replace(/&lt;[^&]+&gt;/g, "")
+        .trim();
+
+      if (contentEl) {
+        contentEl.innerHTML = formatPulseContentToHtml(cleanContent);
+      }
+
+      if (tagsContainer) {
+        var tagsHtml = "";
+        if (Array.isArray(pulse.tags)) {
+          pulse.tags.forEach(function(tag) {
+            tagsHtml += '<span class="font-mono text-[10px] text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 px-2 py-0.5 rounded">' + escapeHtml(tag) + '</span> ';
+          });
+        }
+        tagsContainer.innerHTML = tagsHtml;
+      }
+
+      if (sourceLinkEl) {
+        if (pulse.link_url) {
+          sourceLinkEl.innerHTML = '<a href="' + escapeHtml(pulse.link_url) + '" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 text-xs font-mono font-bold text-red-600 dark:text-red-500 hover:underline"><i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i> Vendor Docs / Advisory</a>';
+        } else {
+          sourceLinkEl.innerHTML = "";
+        }
+      }
+
+      // Generate Slack/Teams formatted markdown
+      var whatChangedMatch = cleanContent.match(/(?:🎯\s*(?:\*\*)?What Changed(?:\*\*)?:?)([\s\S]*?)(?:💡|$)/i);
+      var impactMatch = cleanContent.match(/(?:💡\s*(?:\*\*)?(?:Why It Matters|Engineering Impact|Impact)(?:\*\*)?:?)([\s\S]+)$/i);
+      var whatChanged = whatChangedMatch ? whatChangedMatch[1].trim() : cleanContent;
+      var impact = impactMatch ? impactMatch[1].trim() : "";
+
+      var slackText = "*⚡ Cloud Pulse: " + (pulse.title || "") + "*\n\n" +
+        (whatChanged ? "*🎯 What Changed:*\n" + whatChanged + "\n\n" : "") +
+        (impact ? "*💡 Why It Matters:*\n" + impact + "\n\n" : "") +
+        (pulse.link_url ? "🔗 *Source:* " + pulse.link_url + "\n" : "") +
+        (Array.isArray(pulse.tags) ? "🏷️ " + pulse.tags.join(" ") : "");
+
+      if (copySlackBtn) {
+        copySlackBtn.onclick = function() {
+          copyPulseSlackMarkdown(slackText, copySlackBtn);
+        };
+      }
+
+      if (shareLinkedinLink) {
+        var liText = formatPulseLinkedInPost(pulse.title, cleanContent, pulse.tags, pulse.link_url);
+        shareLinkedinLink.href = "https://www.linkedin.com/feed/?shareActive=true&text=" + encodeURIComponent(liText);
+      }
+
+      modal.classList.remove("hidden");
+      document.body.style.overflow = "hidden";
+    }
+
+    function closePulseFocusModal() {
+      var modal = document.getElementById("pulse-focus-modal");
+      if (!modal) return;
+      modal.classList.add("hidden");
+      document.body.style.overflow = "";
+    }
+
+    function setupPulseFocusModal() {
+      var modal = document.getElementById("pulse-focus-modal");
+      if (!modal) return;
+
+      var closeBtn = document.getElementById("pulse-focus-close");
+      if (closeBtn) {
+        closeBtn.addEventListener("click", closePulseFocusModal);
+      }
+
+      modal.addEventListener("click", function(e) {
+        if (e.target === modal) {
+          closePulseFocusModal();
+        }
+      });
+
+      document.addEventListener("keydown", function(e) {
+        if (e.key === "Escape" && !modal.classList.contains("hidden")) {
+          closePulseFocusModal();
+        }
+      });
+    }
+
     function sortCohortByScore(list) {
       return (list || []).slice(0, 6).sort(function(a, b) {
         var scoreA = typeof a.score === "number" ? a.score : ((a.upvotes || 0) - (a.downvotes || 0));
@@ -1192,6 +1718,8 @@
 
     function fetchPulses() {
       setupFilterChips();
+      setupPulseSearch();
+      setupPulseFocusModal();
       // Fetch latest 6 approved articles (the active competing cohort)
       var queryUrl = config.url + "/rest/v1/cloud_pulses?status=eq.approved&order=created_at.desc&limit=6";
       
@@ -1305,7 +1833,35 @@
 
 function renderPulses(pulses) {
       if (!pulses || pulses.length === 0) {
-        feedContainer.innerHTML = '<div class="col-span-full text-center py-12 px-4 rounded-3xl bg-body dark:bg-darkmode-body border border-border/70 dark:border-darkmode-border/70 text-xs sm:text-sm font-semibold text-text/70 dark:text-darkmode-text/70 shadow-xs"><i class="fa-solid fa-cloud-bolt text-primary text-2xl mb-2.5 block"></i>No cloud updates found for this topic yet. Check back soon for fresh releases!</div>';
+        var queryText = activeSearchQuery ? ' matching "' + escapeHtml(activeSearchQuery) + '"' : '';
+        feedContainer.innerHTML = '<div class="col-span-full text-center py-12 px-6 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 shadow-xs">' +
+          '<div class="w-12 h-12 mx-auto mb-3 rounded-full bg-slate-200/70 dark:bg-slate-800 flex items-center justify-center text-slate-500 dark:text-slate-400">' +
+            '<i class="fa-solid fa-magnifying-glass text-base"></i>' +
+          '</div>' +
+          '<h3 class="text-sm font-bold text-slate-900 dark:text-white mb-1">No pulse updates found' + queryText + '</h3>' +
+          '<p class="text-xs text-slate-500 dark:text-slate-400 mb-4 max-w-sm mx-auto">Try clearing your search query or selecting "All Updates" to view the latest cloud intelligence.</p>' +
+          '<button id="pulse-reset-filters-btn" type="button" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono font-bold bg-red-600 hover:bg-red-700 text-white cursor-pointer transition-all border-0 shadow-xs">' +
+            '<i class="fa-solid fa-rotate-left text-[10px]"></i> Reset Filters' +
+          '</button>' +
+        '</div>';
+
+        var resetBtn = document.getElementById("pulse-reset-filters-btn");
+        if (resetBtn) {
+          resetBtn.addEventListener("click", function() {
+            var searchInput = document.getElementById("pulse-search-input");
+            if (searchInput) searchInput.value = "";
+            var clearBtn = document.getElementById("pulse-search-clear");
+            if (clearBtn) clearBtn.classList.add("hidden");
+            activeSearchQuery = "";
+            activeFilter = "all";
+            var chips = document.querySelectorAll("[data-pulse-filter]");
+            chips.forEach(function(c) {
+              updatePulseChipUI(c, c.getAttribute("data-pulse-filter") === "all");
+            });
+            filterAndRenderPulses();
+          });
+        }
+        updateResultCounter(0);
         return;
       }
 
@@ -1360,13 +1916,18 @@ function renderPulses(pulses) {
           '<i class="fa-brands fa-linkedin text-sm"></i> Share' +
         '</a>';
 
-        html += '<div id="pulse-' + escapeHtml(p.id) + '" data-pulse-id="' + escapeHtml(p.id) + '" class="cloud-pulse-card scroll-mt-28 bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-slate-800 rounded-xl p-6 shadow-sm hover:shadow-md flex flex-col justify-between transition-all hover:border-slate-300 dark:hover:border-slate-700 group">' +
+        var inspectBtnHtml = '<button type="button" data-pulse-inspect="' + escapeHtml(p.id) + '" class="pulse-inspect-btn inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-xs font-bold font-mono bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition-all border-0 cursor-pointer shrink-0" title="Inspect full update & share">' +
+          '<i class="fa-solid fa-expand text-[10px]"></i> Inspect' +
+        '</button>';
+
+        var cardTransitionName = 'pulse-card-' + escapeHtml(String(p.id).replace(/[^a-zA-Z0-9_-]/g, ''));
+        html += '<div id="pulse-' + escapeHtml(p.id) + '" data-pulse-id="' + escapeHtml(p.id) + '" style="view-transition-name: ' + cardTransitionName + ';" class="cloud-pulse-card scroll-mt-28 bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-slate-800 rounded-xl p-6 shadow-sm hover:shadow-md flex flex-col justify-between transition-all hover:border-slate-300 dark:hover:border-slate-700 group">' +
           '<div>' +
             '<div class="flex items-center justify-between gap-2 mb-3">' +
               rankBadge +
               '<span class="font-mono text-xs text-slate-500 dark:text-slate-400">' + formatDate(p.created_at) + '</span>' +
             '</div>' +
-            '<h4 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white mb-3 leading-snug group-hover:text-red-600 dark:group-hover:text-red-500 transition-colors">' + titleHtml + '</h4>' +
+            '<h4 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white mb-3 leading-snug group-hover:text-red-600 dark:group-hover:text-red-500 transition-colors cursor-pointer" data-pulse-inspect="' + escapeHtml(p.id) + '">' + titleHtml + '</h4>' +
             '<div class="mb-4 space-y-2 text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed font-normal">' + 
               formatPulseContentToHtml(cleanContentText) + 
             '</div>' +
@@ -1377,6 +1938,7 @@ function renderPulses(pulses) {
             '<div class="flex flex-wrap gap-1.5 min-w-0">' + tagsHtml + '</div>' +
 
             '<div class="flex items-center gap-2 shrink-0 ml-auto">' +
+              inspectBtnHtml +
               linkedinBtnHtml +
               '<div class="pulse-vote-pill inline-flex items-center flex-row flex-nowrap shrink-0 rounded-lg bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 p-0.5 gap-0.5 shadow-xs">' +
                 '<button data-pulse-upvote="' + p.id + '" data-upvotes="' + (p.upvotes || 0) + '" data-downvotes="' + (p.downvotes || 0) + '" class="' + upActiveClass + ' inline-flex items-center gap-1.5 px-2 py-1 rounded font-mono text-xs font-bold transition-all border-none bg-transparent cursor-pointer" title="Upvote pulse" aria-label="Upvote this cloud pulse">' +
@@ -1419,6 +1981,22 @@ function renderPulses(pulses) {
       feedContainer.setAttribute("data-vote-bound", "true");
 
       feedContainer.addEventListener("click", function (e) {
+        var inspectTarget = e.target.closest("[data-pulse-inspect]");
+        if (inspectTarget) {
+          e.preventDefault();
+          var inspectId = inspectTarget.getAttribute("data-pulse-inspect");
+          var pulseItem = allLoadedPulses.find(function(item) { return String(item.id) === String(inspectId); });
+          if (pulseItem) {
+            var pulseIdx = allLoadedPulses.findIndex(function(item) { return String(item.id) === String(inspectId); });
+            var inspectRankBadge = pulseIdx === 0 ? '<span class="px-2 py-0.5 rounded font-mono text-[10px] font-bold uppercase tracking-wider bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/30">🔥 #1 TRENDING</span>'
+                                  : pulseIdx === 1 ? '<span class="px-2 py-0.5 rounded font-mono text-[10px] font-bold uppercase tracking-wider bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700">#2 TOP PULSE</span>'
+                                  : pulseIdx === 2 ? '<span class="px-2 py-0.5 rounded font-mono text-[10px] font-bold uppercase tracking-wider bg-amber-900/20 text-amber-700 dark:text-amber-300 border border-amber-800/30">#3 TOP PULSE</span>'
+                                  : '<span class="px-2 py-0.5 rounded font-mono text-[10px] font-bold uppercase tracking-wider bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">#' + (pulseIdx + 1) + '</span>';
+            openPulseFocusModal(pulseItem, inspectRankBadge);
+          }
+          return;
+        }
+
         var upTarget = e.target.closest("[data-pulse-upvote]");
         var downTarget = e.target.closest("[data-pulse-downvote]");
         var shareTarget = e.target.closest(".pulse-share-btn");

@@ -32,8 +32,42 @@
         <!-- Left Main News Feed (8 Cols on Desktop) -->
         <div class="lg:col-span-8">
           
-          <!-- Topic Filter Bar -->
-          <div class="flex items-center justify-between gap-3 pb-4 mb-8 border-b border-slate-200 dark:border-slate-800 flex-wrap">
+          <!-- Topic Filter & Instant Search Bar -->
+          <div class="space-y-4 mb-8 pb-4 border-b border-slate-200 dark:border-slate-800">
+            <!-- Search & Quick Stats Row -->
+            <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+              <div class="relative flex-1 max-w-md">
+                <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400 dark:text-slate-500">
+                  <i class="fa-solid fa-magnifying-glass text-xs"></i>
+                </span>
+                <input 
+                  type="text" 
+                  id="pulse-search-input" 
+                  placeholder="Filter pulses (e.g. Lambda, v1.37, S3, GPU)..." 
+                  autocomplete="off"
+                  class="w-full pl-9 pr-8 py-2 text-xs font-mono rounded-xl bg-slate-50 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-hidden focus:ring-1 focus:ring-red-500 focus:border-red-500 transition-all shadow-xs"
+                />
+                <button 
+                  id="pulse-search-clear" 
+                  type="button" 
+                  class="hidden absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer text-xs border-0 bg-transparent"
+                  aria-label="Clear search">
+                  <i class="fa-solid fa-xmark"></i>
+                </button>
+              </div>
+
+              <!-- Live Counter & Shortcut badge -->
+              <div class="flex items-center justify-between sm:justify-end gap-3 text-xs font-mono text-slate-500 dark:text-slate-400">
+                <span id="pulse-result-count" class="font-semibold text-slate-700 dark:text-slate-300">
+                  Showing 6 updates
+                </span>
+                <span class="hidden md:inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-500">
+                  <kbd>Ctrl</kbd> + <kbd>/</kbd>
+                </span>
+              </div>
+            </div>
+
+            <!-- Topic Filter Bar -->
             <div class="flex items-center gap-2 overflow-x-auto no-scrollbar py-1" id="pulse-filter-chips">
               <button data-pulse-filter="all" class="pulse-filter-chip is-active">
                 All Updates
@@ -56,12 +90,40 @@
             </div>
           </div>
 
-          <!-- Dynamic Live Cards Grid -->
+          <!-- Dynamic Live Cards Grid (with Shimmer Skeleton Loading) -->
           <div data-cloud-pulse-feed class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div class="col-span-full text-center py-16 text-xs font-mono font-bold text-slate-500 dark:text-slate-400">
-              <i class="fa-solid fa-spinner fa-spin text-xl text-red-600 dark:text-red-500 mb-3 block"></i>
-              Loading Live Cloud Pulse...
+            {{ range seq 4 }}
+            <div class="pulse-skeleton-card bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-slate-800 rounded-xl p-6 shadow-sm flex flex-col justify-between">
+              <div>
+                <div class="flex items-center justify-between gap-2 mb-4">
+                  <div class="h-4 w-24 bg-slate-100 dark:bg-slate-800/80 rounded"></div>
+                  <div class="h-3 w-16 bg-slate-100 dark:bg-slate-800/80 rounded"></div>
+                </div>
+                <div class="space-y-2 mb-4">
+                  <div class="h-5 w-5/6 bg-slate-200 dark:bg-slate-800 rounded"></div>
+                  <div class="h-5 w-2/3 bg-slate-200 dark:bg-slate-800 rounded"></div>
+                </div>
+                <div class="space-y-3 mb-4">
+                  <div class="p-3 rounded-lg bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800/60 space-y-2">
+                    <div class="h-3 w-24 bg-slate-200 dark:bg-slate-800 rounded"></div>
+                    <div class="h-3 w-full bg-slate-100 dark:bg-slate-800/60 rounded"></div>
+                    <div class="h-3 w-4/5 bg-slate-100 dark:bg-slate-800/60 rounded"></div>
+                  </div>
+                  <div class="p-3 rounded-lg bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800/60 space-y-2">
+                    <div class="h-3 w-28 bg-slate-200 dark:bg-slate-800 rounded"></div>
+                    <div class="h-3 w-full bg-slate-100 dark:bg-slate-800/60 rounded"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="pt-4 mt-2 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between gap-3">
+                <div class="flex gap-2">
+                  <div class="h-5 w-14 bg-slate-100 dark:bg-slate-800 rounded-full"></div>
+                  <div class="h-5 w-14 bg-slate-100 dark:bg-slate-800 rounded-full"></div>
+                </div>
+                <div class="h-6 w-24 bg-slate-100 dark:bg-slate-800 rounded-lg"></div>
+              </div>
             </div>
+            {{ end }}
           </div>
         </div>
 
@@ -206,4 +268,63 @@
 
     </div>
   </section>
+
+  <!-- Pulse Focus Modal / Quick-Drawer -->
+  <div id="pulse-focus-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-xs p-4 sm:p-6 transition-all duration-200" role="dialog" aria-modal="true" aria-labelledby="pulse-focus-title">
+    <div class="pulse-focus-card bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-slate-800 rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl relative flex flex-col p-6 sm:p-8 transition-transform transform">
+      
+      <!-- Modal Header -->
+      <div class="flex items-start justify-between gap-4 pb-4 border-b border-slate-100 dark:border-slate-800 mb-5">
+        <div class="flex items-center gap-2 flex-wrap" id="pulse-focus-badges">
+          <!-- Badges injected dynamically -->
+        </div>
+        <button 
+          id="pulse-focus-close" 
+          type="button"
+          class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-500 hover:text-slate-900 dark:hover:text-white flex items-center justify-center border-none cursor-pointer shrink-0 transition-colors"
+          aria-label="Close modal">
+          <i class="fa-solid fa-xmark text-sm"></i>
+        </button>
+      </div>
+
+      <!-- Title -->
+      <h3 id="pulse-focus-title" class="text-lg sm:text-xl font-bold text-slate-900 dark:text-white mb-4 leading-snug"></h3>
+      
+      <!-- Callout Blocks: What Changed & Why It Matters -->
+      <div id="pulse-focus-content" class="space-y-3 mb-6"></div>
+
+      <!-- Tags & Source Link -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-4 border-t border-slate-100 dark:border-slate-800 mb-6 text-xs">
+        <div id="pulse-focus-tags" class="flex flex-wrap gap-1.5"></div>
+        <div id="pulse-focus-sourcelink"></div>
+      </div>
+
+      <!-- Action Bar: Copy for Slack/Teams & LinkedIn Share -->
+      <div class="flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-slate-100 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/40 -mx-6 sm:-mx-8 -mb-6 sm:-mb-8 p-4 sm:px-8 rounded-b-2xl">
+        <div class="text-[11px] font-mono text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
+          <i class="fa-solid fa-terminal text-[11px] text-emerald-500"></i>
+          <span>Share directly with your team</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <button 
+            id="pulse-focus-copy-slack" 
+            type="button" 
+            class="inline-flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-mono font-bold bg-slate-900 hover:bg-slate-800 text-white dark:bg-slate-100 dark:hover:bg-white dark:text-slate-900 transition-all border-0 cursor-pointer shadow-xs">
+            <i class="fa-brands fa-slack text-sm"></i>
+            <span>Copy for Slack / Teams</span>
+          </button>
+          <a 
+            id="pulse-focus-share-linkedin" 
+            href="#" 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            class="inline-flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold bg-[#0a66c2] hover:bg-[#0a66c2]/90 text-white transition-all no-underline shadow-xs">
+            <i class="fa-brands fa-linkedin text-sm"></i>
+            <span>Share</span>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
 {{ end }}
