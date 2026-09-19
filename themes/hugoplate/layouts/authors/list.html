@@ -41,11 +41,12 @@
 
           <div class="border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0c1220] rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all group flex flex-col justify-between">
             <!-- Author Image & Active Badge -->
-            <div class="relative bg-slate-100 dark:bg-slate-900 h-64 overflow-hidden flex items-center justify-center">
+            <div class="relative bg-slate-100 dark:bg-slate-900 h-72 sm:h-80 overflow-hidden flex items-center justify-center">
               {{ with $authorPage.Params.image }}
                 <img src="{{ . | relURL }}" 
                      alt="{{ $authorPage.Title }}" 
-                     class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out" 
+                     class="w-full h-full object-cover object-[center_12%] group-hover:scale-105 transition-transform duration-500 ease-out" 
+                     style="object-position: center 12%;"
                      loading="lazy">
               {{ else }}
                 <div class="w-full h-full flex items-center justify-center bg-slate-200 dark:bg-slate-800 text-slate-900 dark:text-white font-black text-4xl">
@@ -135,11 +136,11 @@
             </p>
           </div>
           <div class="lg:col-span-4 flex flex-col sm:flex-row lg:flex-col items-start lg:items-end justify-center gap-3">
-            <a href="mailto:tharunvempati268@gmail.com?subject=GCloudCafe%20Article%20Proposal" 
-               class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-sm bg-red-600 hover:bg-red-700 text-white font-bold text-sm transition-colors no-underline shadow-sm w-full sm:w-auto text-center">
+            <button type="button" id="open-proposal-modal-btn" 
+               class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-sm bg-red-600 hover:bg-red-700 active:scale-[0.98] text-white font-bold text-sm transition-all border-none cursor-pointer shadow-sm w-full sm:w-auto text-center">
               <span>Submit a Proposal</span>
-              <span>→</span>
-            </a>
+              <span>&rarr;</span>
+            </button>
             <span class="font-mono text-[11px] text-slate-400 dark:text-slate-500">
               Response within 48 hours
             </span>
@@ -148,5 +149,183 @@
       </div>
 
     </div>
+  
+  <!-- Author Proposal Submission Modal (ByteDepth Theme) -->
+  <div id="author-proposal-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-slate-950/80 backdrop-blur-sm transition-all duration-300 opacity-0 pointer-events-none" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="proposal-modal-title">
+    <div class="relative w-full max-w-2xl bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl overflow-hidden transform scale-95 transition-transform duration-300" id="author-proposal-modal-card">
+      
+      <!-- Modal Header -->
+      <div class="p-6 sm:p-7 border-b border-slate-200 dark:border-slate-800 flex items-start justify-between relative bg-slate-50/50 dark:bg-slate-900/30">
+        <div>
+          <div class="inline-flex items-center gap-2 px-2.5 py-0.5 rounded font-mono text-[10px] font-bold uppercase tracking-wider bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 mb-2">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span>COMMUNITY WRITERS PROGRAM</span>
+          </div>
+          <h3 id="proposal-modal-title" class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+            Submit an Article Proposal
+          </h3>
+          <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-1 mb-0">
+            Pitch your cloud architecture breakdown, Kubernetes drill, or DevOps post-mortem. We review and respond within 48 hours.
+          </p>
+        </div>
+        <button type="button" id="close-proposal-modal-btn" class="p-2 text-slate-400 hover:text-slate-700 dark:hover:text-white rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors border-none bg-transparent cursor-pointer" aria-label="Close modal">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <!-- Modal Body Form -->
+      <div id="proposal-form-container" class="p-6 sm:p-7 max-h-[70vh] overflow-y-auto">
+        <form id="author-proposal-form" class="space-y-5" novalidate>
+          
+          <!-- Name & Email -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label for="proposal-name" class="block text-xs font-mono font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+                Full Name <span class="text-red-500">*</span>
+              </label>
+              <input type="text" id="proposal-name" name="name" required placeholder="e.g. Alex Rivera"
+                class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white text-sm focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 transition-all">
+              <p id="proposal-name-error" class="text-xs text-red-500 font-medium mt-1 hidden"></p>
+            </div>
+            <div>
+              <label for="proposal-email" class="block text-xs font-mono font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+                Email Address <span class="text-red-500">*</span>
+              </label>
+              <input type="email" id="proposal-email" name="email" required placeholder="alex@engineering.io"
+                class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white text-sm focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 transition-all">
+              <p id="proposal-email-error" class="text-xs text-red-500 font-medium mt-1 hidden"></p>
+            </div>
+          </div>
+
+          <!-- Topic Category & Target Timeframe -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label for="proposal-category" class="block text-xs font-mono font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+                Primary Cloud Domain <span class="text-red-500">*</span>
+              </label>
+              <select id="proposal-category" name="category" required
+                class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white text-sm focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 transition-all">
+                <option value="Kubernetes">Kubernetes & Containers</option>
+                <option value="Google Cloud">Google Cloud (GCP)</option>
+                <option value="AWS">Amazon Web Services (AWS)</option>
+                <option value="DevOps & CI/CD">DevOps, GitOps & CI/CD</option>
+                <option value="Security & TLS">Security, IAM & Zero-Trust</option>
+                <option value="OpenShift">Red Hat OpenShift</option>
+                <option value="Architecture">System Architecture & Post-Mortems</option>
+              </select>
+            </div>
+            <div>
+              <label for="proposal-timeframe" class="block text-xs font-mono font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+                Draft Delivery Window
+              </label>
+              <select id="proposal-timeframe" name="timeframe"
+                class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white text-sm focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 transition-all">
+                <option value="1-2 Weeks">1 – 2 Weeks (Ready draft)</option>
+                <option value="2-3 Weeks">2 – 3 Weeks (Standard)</option>
+                <option value="1 Month">1 Month (In-depth research)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Working Title -->
+          <div>
+            <label for="proposal-title" class="block text-xs font-mono font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+              Working Article Title <span class="text-red-500">*</span>
+            </label>
+            <input type="text" id="proposal-title" name="title" required placeholder="e.g. Debugging Cilium eBPF Drop Metrics in Multi-Zone GKE"
+              class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white text-sm focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 transition-all">
+            <p id="proposal-title-error" class="text-xs text-red-500 font-medium mt-1 hidden"></p>
+          </div>
+
+          <!-- Pitch / Abstract / Outline -->
+          <div>
+            <div class="flex items-center justify-between mb-1.5">
+              <label for="proposal-outline" class="block text-xs font-mono font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                Proposal Abstract & Outline <span class="text-red-500">*</span>
+              </label>
+              <span id="proposal-char-count" class="font-mono text-[11px] text-slate-400 dark:text-slate-500">
+                0 / 30 min chars
+              </span>
+            </div>
+            <textarea id="proposal-outline" name="outline" rows="4" required
+              placeholder="Outline the core problem, engineering takeaways, hands-on manifests or code snippets you'll provide, and why practitioners need to read this..."
+              class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white text-sm focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 transition-all resize-y"></textarea>
+            <p id="proposal-outline-error" class="text-xs text-red-500 font-medium mt-1 hidden"></p>
+          </div>
+
+          <!-- Writing Sample / GitHub / LinkedIn URL -->
+          <div>
+            <label for="proposal-portfolio" class="block text-xs font-mono font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+              Prior Writing Sample / GitHub / LinkedIn <span class="text-slate-400 font-normal font-sans">(optional)</span>
+            </label>
+            <input type="url" id="proposal-portfolio" name="portfolio" placeholder="https://github.com/username or https://linkedin.com/in/..."
+              class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white text-sm focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 transition-all">
+          </div>
+
+          <!-- Feedback Status Banner (Errors/Warnings) -->
+          <div id="proposal-status-banner" class="hidden p-3 rounded-lg text-xs font-semibold"></div>
+
+          <!-- Footer Actions -->
+          <div class="pt-4 border-t border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-3">
+            <div class="flex items-center gap-1.5 text-[11px] text-slate-500 dark:text-slate-400">
+              <i class="fa-solid fa-shield-halved text-slate-400"></i>
+              <span>Your proposal is reviewed only by the editorial core.</span>
+            </div>
+            <div class="flex items-center gap-2 w-full sm:w-auto">
+              <button type="button" id="proposal-cancel-btn"
+                class="px-4 py-2.5 rounded-sm border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 text-xs font-bold transition-all cursor-pointer bg-transparent w-1/2 sm:w-auto">
+                Cancel
+              </button>
+              <button type="submit" id="proposal-submit-btn"
+                class="px-5 py-2.5 rounded-sm bg-red-600 hover:bg-red-700 active:scale-[0.98] text-white text-xs font-bold transition-all cursor-pointer border-none shadow-sm flex items-center justify-center gap-2 w-1/2 sm:w-auto">
+                <span>Submit Proposal</span>
+                <i class="fa-solid fa-paper-plane text-[11px]"></i>
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- Success Confirmation View (Hidden by default, shown after submit) -->
+      <div id="proposal-success-view" class="hidden p-8 sm:p-10 text-center">
+        <div class="w-16 h-16 rounded-full bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center mx-auto mb-5 text-emerald-500 text-2xl animate-bounce">
+          <i class="fa-solid fa-check"></i>
+        </div>
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full font-mono text-xs font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 mb-3" id="proposal-success-badge">
+          #PROP-RECEIVED
+        </div>
+        <h3 class="text-2xl font-black text-slate-900 dark:text-white tracking-tight mb-2">
+          Proposal Successfully Dispatched!
+        </h3>
+        <p class="text-sm text-slate-600 dark:text-slate-400 max-w-md mx-auto leading-relaxed mb-6" id="proposal-success-msg">
+          Thank you for pitching your work to GCloudCafe. Our lead editorial team will review your outline for technical rigor and respond to your email within 48 hours.
+        </p>
+        <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 text-left max-w-md mx-auto mb-6 space-y-2 text-xs">
+          <div class="flex justify-between">
+            <span class="text-slate-500 dark:text-slate-400 font-mono">Proposed Title:</span>
+            <span class="font-bold text-slate-900 dark:text-white truncate ml-2 max-w-[240px]" id="proposal-success-title"></span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-slate-500 dark:text-slate-400 font-mono">Author Contact:</span>
+            <span class="font-bold text-slate-900 dark:text-white" id="proposal-success-email"></span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-slate-500 dark:text-slate-400 font-mono">Status:</span>
+            <span class="font-bold text-amber-500">Under Editorial Queue</span>
+          </div>
+        </div>
+        <div class="flex items-center justify-center gap-3">
+          <button type="button" id="proposal-another-btn" class="px-4 py-2 rounded-sm border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 text-xs font-bold transition-all cursor-pointer bg-transparent">
+            Submit Another
+          </button>
+          <button type="button" id="proposal-done-btn" class="px-6 py-2 rounded-sm bg-red-600 hover:bg-red-700 text-white text-xs font-bold transition-all cursor-pointer border-none shadow-sm">
+            Done
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
   </section>
 {{ end }}

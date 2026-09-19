@@ -4213,12 +4213,818 @@ function renderPulses(pulses) {
     }
   }
 
+
+  /* ── 13. Author Proposal Submission System (Figma ByteDepth Community) ── */
+  function initAuthorProposalSystem() {
+    var modal = document.getElementById("author-proposal-modal");
+    var openBtn = document.getElementById("open-proposal-modal-btn");
+    var closeBtn = document.getElementById("close-proposal-modal-btn");
+    var cancelBtn = document.getElementById("proposal-cancel-btn");
+    var form = document.getElementById("author-proposal-form");
+    var modalCard = document.getElementById("author-proposal-modal-card");
+
+    var nameInput = document.getElementById("proposal-name");
+    var emailInput = document.getElementById("proposal-email");
+    var categorySelect = document.getElementById("proposal-category");
+    var timeframeSelect = document.getElementById("proposal-timeframe");
+    var titleInput = document.getElementById("proposal-title");
+    var outlineInput = document.getElementById("proposal-outline");
+    var portfolioInput = document.getElementById("proposal-portfolio");
+    var charCountEl = document.getElementById("proposal-char-count");
+    var statusBanner = document.getElementById("proposal-status-banner");
+    var submitBtn = document.getElementById("proposal-submit-btn");
+
+    var formContainer = document.getElementById("proposal-form-container");
+    var successView = document.getElementById("proposal-success-view");
+    var successBadge = document.getElementById("proposal-success-badge");
+    var successTitle = document.getElementById("proposal-success-title");
+    var successEmail = document.getElementById("proposal-success-email");
+    var anotherBtn = document.getElementById("proposal-another-btn");
+    var doneBtn = document.getElementById("proposal-done-btn");
+
+    if (!modal || !openBtn) return;
+
+    var config = window.SUPABASE_CONFIG || {
+      url: "https://axiijcsxtiukloarbfor.supabase.co",
+      anonKey: "sb_publishable_cRcwg02R3nXTykDrxalL6w_-kc9Wesc"
+    };
+
+    function openModal() {
+      modal.classList.remove("opacity-0", "pointer-events-none");
+      modal.classList.add("opacity-100", "pointer-events-auto");
+      if (modalCard) {
+        modalCard.classList.remove("scale-95");
+        modalCard.classList.add("scale-100");
+      }
+      document.body.style.overflow = "hidden";
+      if (nameInput) setTimeout(function () { nameInput.focus(); }, 100);
+    }
+
+    function closeModal() {
+      modal.classList.add("opacity-0", "pointer-events-none");
+      modal.classList.remove("opacity-100", "pointer-events-auto");
+      if (modalCard) {
+        modalCard.classList.add("scale-95");
+        modalCard.classList.remove("scale-100");
+      }
+      document.body.style.overflow = "";
+    }
+
+    openBtn.addEventListener("click", openModal);
+    if (closeBtn) closeBtn.addEventListener("click", closeModal);
+    if (cancelBtn) cancelBtn.addEventListener("click", closeModal);
+    if (doneBtn) doneBtn.addEventListener("click", closeModal);
+
+    // Close on backdrop click
+    modal.addEventListener("click", function (e) {
+      if (e.target === modal) closeModal();
+    });
+
+    // Close on Escape key
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && !modal.classList.contains("opacity-0")) {
+        closeModal();
+      }
+    });
+
+    // Character counter for outline
+    if (outlineInput && charCountEl) {
+      outlineInput.addEventListener("input", function () {
+        var len = outlineInput.value.trim().length;
+        charCountEl.textContent = len + " / 30 min chars";
+        if (len >= 30) {
+          charCountEl.className = "font-mono text-[11px] text-emerald-500 font-semibold";
+        } else {
+          charCountEl.className = "font-mono text-[11px] text-amber-500 font-semibold";
+        }
+      });
+    }
+
+    // Helper: show error
+    function setError(inputEl, errorId, msg) {
+      var errEl = document.getElementById(errorId);
+      if (errEl) {
+        if (msg) {
+          errEl.textContent = msg;
+          errEl.classList.remove("hidden");
+          inputEl.classList.add("border-red-500", "ring-1", "ring-red-500");
+        } else {
+          errEl.textContent = "";
+          errEl.classList.add("hidden");
+          inputEl.classList.remove("border-red-500", "ring-1", "ring-red-500");
+        }
+      }
+    }
+
+    // Clear error on input
+    if (nameInput) nameInput.addEventListener("input", function () { setError(nameInput, "proposal-name-error", ""); });
+    if (emailInput) emailInput.addEventListener("input", function () { setError(emailInput, "proposal-email-error", ""); });
+    if (titleInput) titleInput.addEventListener("input", function () { setError(titleInput, "proposal-title-error", ""); });
+    if (outlineInput) outlineInput.addEventListener("input", function () { setError(outlineInput, "proposal-outline-error", ""); });
+
+    // "Submit Another" button
+    if (anotherBtn) {
+      anotherBtn.addEventListener("click", function () {
+        if (form) form.reset();
+        if (charCountEl) {
+          charCountEl.textContent = "0 / 30 min chars";
+          charCountEl.className = "font-mono text-[11px] text-slate-400 dark:text-slate-500";
+        }
+        if (statusBanner) statusBanner.classList.add("hidden");
+        if (successView) successView.classList.add("hidden");
+        if (formContainer) formContainer.classList.remove("hidden");
+        if (nameInput) setTimeout(function () { nameInput.focus(); }, 50);
+      });
+    }
+
+    // Form Submission
+    if (form) {
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        var isValid = true;
+        var nameVal = nameInput ? nameInput.value.trim() : "";
+        var emailVal = emailInput ? emailInput.value.trim().toLowerCase() : "";
+        var categoryVal = categorySelect ? categorySelect.value : "Kubernetes";
+        var timeframeVal = timeframeSelect ? timeframeSelect.value : "2-3 Weeks";
+        var titleVal = titleInput ? titleInput.value.trim() : "";
+        var outlineVal = outlineInput ? outlineInput.value.trim() : "";
+        var portfolioVal = portfolioInput ? portfolioInput.value.trim() : "";
+
+        // Validate Name
+        if (!nameVal || nameVal.length < 2) {
+          setError(nameInput, "proposal-name-error", "Please provide your full name (minimum 2 characters).");
+          isValid = false;
+        } else {
+          setError(nameInput, "proposal-name-error", "");
+        }
+
+        // Validate Email (RFC regex)
+        var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailVal || !emailRegex.test(emailVal)) {
+          setError(emailInput, "proposal-email-error", "Please provide a valid email address for editorial feedback.");
+          isValid = false;
+        } else {
+          setError(emailInput, "proposal-email-error", "");
+        }
+
+        // Validate Title
+        if (!titleVal || titleVal.length < 5) {
+          setError(titleInput, "proposal-title-error", "Please provide a working title (at least 5 characters).");
+          isValid = false;
+        } else {
+          setError(titleInput, "proposal-title-error", "");
+        }
+
+        // Validate Outline
+        if (!outlineVal || outlineVal.length < 30) {
+          setError(outlineInput, "proposal-outline-error", "Please provide an outline or abstract of at least 30 characters.");
+          isValid = false;
+        } else {
+          setError(outlineInput, "proposal-outline-error", "");
+        }
+
+        if (!isValid) {
+          var firstErr = form.querySelector(".border-red-500");
+          if (firstErr) firstErr.focus();
+          return;
+        }
+
+        // Submission state
+        if (submitBtn) {
+          submitBtn.disabled = true;
+          submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1.5"></i> Submitting...';
+        }
+
+        var propId = "PROP-" + Math.floor(1000 + Math.random() * 9000);
+        var proposalData = {
+          id: propId,
+          created_at: new Date().toISOString(),
+          name: nameVal,
+          email: emailVal,
+          category: categoryVal,
+          delivery_timeframe: timeframeVal,
+          title: titleVal,
+          outline: outlineVal,
+          sample_url: portfolioVal,
+          status: "pending"
+        };
+
+        // Dual persistence: 1. Persistent Local Storage
+        try {
+          var existing = JSON.parse(localStorage.getItem("gcloudcafe_author_proposals") || "[]");
+          existing.unshift(proposalData);
+          localStorage.setItem("gcloudcafe_author_proposals", JSON.stringify(existing));
+        } catch (storageErr) {
+          console.warn("Local proposal storage note:", storageErr);
+        }
+
+        // Dual persistence: 2. Attempt Supabase REST POST (safe background sync)
+        fetch(config.url + "/rest/v1/author_proposals", {
+          method: "POST",
+          headers: {
+            "apikey": config.anonKey,
+            "Authorization": "Bearer " + config.anonKey,
+            "Content-Type": "application/json",
+            "Prefer": "return=minimal"
+          },
+          body: JSON.stringify(proposalData)
+        })
+        .then(function (res) {
+          if (!res.ok) console.log("Supabase author_proposals sync response:", res.status);
+        })
+        .catch(function (err) {
+          console.log("Supabase author_proposals note:", err);
+        })
+        .finally(function () {
+          // Complete submission UI transition
+          if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<span>Submit Proposal</span><i class="fa-solid fa-paper-plane text-[11px] ml-1.5"></i>';
+          }
+
+          if (successBadge) successBadge.textContent = "#" + propId;
+          if (successTitle) successTitle.textContent = titleVal;
+          if (successEmail) successEmail.textContent = emailVal;
+
+          if (formContainer) formContainer.classList.add("hidden");
+          if (successView) successView.classList.remove("hidden");
+        });
+
+      });
+    }
+  }
+
+  /* ── 14. Community & Author Editorial Admin Portal System ── */
+  function initCommunityAdminSystem() {
+    var dashboardContainer = document.getElementById("admin-dashboard-container");
+    var authPrompt = document.getElementById("admin-auth-prompt");
+    var passcodeBtn = document.getElementById("admin-login-btn");
+    var passcodeInput = document.getElementById("admin-passcode-input");
+    var passcodeStatus = document.getElementById("admin-passcode-status");
+    var unauthedControls = document.getElementById("admin-unauthed-controls");
+    var authedControls = document.getElementById("admin-authed-controls");
+    var logoutBtn = document.getElementById("admin-logout-btn");
+
+    // Tabs
+    var tabProposalsBtn = document.getElementById("tab-proposals-btn");
+    var tabSubscribersBtn = document.getElementById("tab-subscribers-btn");
+    var sectionProposals = document.getElementById("section-author-proposals");
+    var sectionSubscribers = document.getElementById("section-newsletter-subscribers");
+    var refreshBtn = document.getElementById("refresh-community-btn");
+
+    // Proposals Elements
+    var proposalsGrid = document.getElementById("proposals-list-grid");
+    var proposalsEmptyState = document.getElementById("proposals-empty-state");
+    var proposalsCountBadge = document.getElementById("proposals-count-badge");
+    var filterCountAll = document.getElementById("filter-prop-count-all");
+    var filterCountPending = document.getElementById("filter-prop-count-pending");
+    var filterCountApproved = document.getElementById("filter-prop-count-approved");
+    var filterCountRejected = document.getElementById("filter-prop-count-rejected");
+    var proposalsSearchInput = document.getElementById("proposals-search-input");
+    var seedDemoBtn = document.getElementById("seed-test-proposal-btn");
+    var emptyDemoBtn = document.getElementById("empty-add-demo-btn");
+
+    // Subscribers Elements
+    var subscribersCountBadge = document.getElementById("subscribers-count-badge");
+    var subscribersStatTotal = document.getElementById("subscribers-stat-total");
+    var subscribersStatLatest = document.getElementById("subscribers-stat-latest");
+    var subscribersTableBody = document.getElementById("subscribers-table-body");
+    var subscribersSearchInput = document.getElementById("subscribers-search-input");
+    var subscribersShowingCount = document.getElementById("subscribers-showing-count");
+    var copyAllSubscribersBtn = document.getElementById("copy-all-subscribers-btn");
+    var exportSubscribersCsvBtn = document.getElementById("export-subscribers-csv-btn");
+    var exportToastMsg = document.getElementById("export-toast-msg");
+
+    if (!dashboardContainer && !authPrompt) return;
+
+    var config = window.SUPABASE_CONFIG || {
+      url: "https://axiijcsxtiukloarbfor.supabase.co",
+      anonKey: "sb_publishable_cRcwg02R3nXTykDrxalL6w_-kc9Wesc"
+    };
+
+    var cachedProposals = [];
+    var currentProposalFilter = "all";
+    var cachedSubscribers = [];
+
+    function unlockDashboard() {
+      if (dashboardContainer) dashboardContainer.classList.remove("hidden");
+      if (authPrompt) authPrompt.classList.add("hidden");
+      if (unauthedControls) unauthedControls.classList.add("hidden");
+      if (authedControls) authedControls.classList.remove("hidden");
+      if (passcodeStatus) passcodeStatus.classList.add("hidden");
+
+      loadProposals();
+      loadSubscribers();
+    }
+
+    function lockDashboard() {
+      if (dashboardContainer) dashboardContainer.classList.add("hidden");
+      if (authPrompt) authPrompt.classList.remove("hidden");
+      if (unauthedControls) unauthedControls.classList.remove("hidden");
+      if (authedControls) authedControls.classList.add("hidden");
+      sessionStorage.removeItem("pulse_admin_authed");
+    }
+
+    // Check existing authentication
+    if (sessionStorage.getItem("pulse_admin_authed") === "true") {
+      unlockDashboard();
+    }
+
+    if (passcodeBtn && passcodeInput) {
+      passcodeBtn.addEventListener("click", function () {
+        var val = passcodeInput.value.trim();
+        if (!val) return;
+
+        if (passcodeStatus) {
+          passcodeStatus.textContent = "Verifying passcode...";
+          passcodeStatus.className = "mt-2 text-xs font-semibold text-primary";
+          passcodeStatus.classList.remove("hidden");
+        }
+
+        // Check against Supabase site_settings or fallback 1526
+        fetch(config.url + "/rest/v1/site_settings?key=eq.admin_passcode&select=value", {
+          headers: {
+            "apikey": config.anonKey,
+            "Authorization": "Bearer " + config.anonKey
+          }
+        })
+        .then(function (res) { return res.json(); })
+        .then(function (settings) {
+          var expected = (Array.isArray(settings) && settings.length > 0) ? settings[0].value : "1526";
+          if (val === expected) {
+            sessionStorage.setItem("pulse_admin_authed", "true");
+            unlockDashboard();
+          } else {
+            if (passcodeStatus) {
+              passcodeStatus.textContent = "Invalid passcode. Access denied.";
+              passcodeStatus.className = "mt-2 text-xs font-semibold text-rose-500";
+              passcodeStatus.classList.remove("hidden");
+            }
+          }
+        })
+        .catch(function () {
+          if (val === "1526") {
+            sessionStorage.setItem("pulse_admin_authed", "true");
+            unlockDashboard();
+          } else if (passcodeStatus) {
+            passcodeStatus.textContent = "Invalid passcode. Access denied.";
+            passcodeStatus.className = "mt-2 text-xs font-semibold text-rose-500";
+            passcodeStatus.classList.remove("hidden");
+          }
+        });
+      });
+
+      passcodeInput.addEventListener("keydown", function (e) {
+        if (e.key === "Enter") passcodeBtn.click();
+      });
+    }
+
+    if (logoutBtn) {
+      logoutBtn.addEventListener("click", lockDashboard);
+    }
+
+    // Tab Navigation
+    if (tabProposalsBtn && tabSubscribersBtn && sectionProposals && sectionSubscribers) {
+      tabProposalsBtn.addEventListener("click", function () {
+        tabProposalsBtn.className = "px-4 py-2 rounded-xl text-xs font-extrabold bg-primary text-white border-none cursor-pointer shadow-xs transition-all flex items-center gap-2";
+        tabSubscribersBtn.className = "px-4 py-2 rounded-xl text-xs font-bold bg-theme-light dark:bg-darkmode-theme-light text-text/80 dark:text-darkmode-text/80 hover:text-primary border border-border/60 dark:border-darkmode-border/60 cursor-pointer transition-all flex items-center gap-2";
+        sectionProposals.classList.remove("hidden");
+        sectionSubscribers.classList.add("hidden");
+      });
+
+      tabSubscribersBtn.addEventListener("click", function () {
+        tabSubscribersBtn.className = "px-4 py-2 rounded-xl text-xs font-extrabold bg-primary text-white border-none cursor-pointer shadow-xs transition-all flex items-center gap-2";
+        tabProposalsBtn.className = "px-4 py-2 rounded-xl text-xs font-bold bg-theme-light dark:bg-darkmode-theme-light text-text/80 dark:text-darkmode-text/80 hover:text-primary border border-border/60 dark:border-darkmode-border/60 cursor-pointer transition-all flex items-center gap-2";
+        sectionSubscribers.classList.remove("hidden");
+        sectionProposals.classList.add("hidden");
+      });
+    }
+
+    if (refreshBtn) {
+      refreshBtn.addEventListener("click", function () {
+        refreshBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-[11px]"></i> Refreshing...';
+        loadProposals();
+        loadSubscribers();
+        setTimeout(function () {
+          refreshBtn.innerHTML = '<i class="fa-solid fa-rotate-right text-[11px]"></i> Refresh';
+        }, 800);
+      });
+    }
+
+    /* ── Proposals Logic ── */
+    function loadProposals() {
+      // 1. Fetch from local storage
+      var localProposals = [];
+      try {
+        localProposals = JSON.parse(localStorage.getItem("gcloudcafe_author_proposals") || "[]");
+      } catch (e) { localProposals = []; }
+
+      // 2. Fetch from Supabase author_proposals if exists
+      fetch(config.url + "/rest/v1/author_proposals?select=*&order=created_at.desc", {
+        headers: {
+          "apikey": config.anonKey,
+          "Authorization": "Bearer " + config.anonKey
+        }
+      })
+      .then(function (res) {
+        if (!res.ok) return [];
+        return res.json();
+      })
+      .then(function (remoteProposals) {
+        // Merge by ID avoiding duplicates
+        var merged = [].concat(localProposals);
+        if (Array.isArray(remoteProposals)) {
+          remoteProposals.forEach(function (rp) {
+            var exists = merged.some(function (lp) { return lp.id === rp.id; });
+            if (!exists) merged.push(rp);
+          });
+        }
+        cachedProposals = merged;
+        renderProposals();
+      })
+      .catch(function () {
+        cachedProposals = localProposals;
+        renderProposals();
+      });
+    }
+
+    function saveProposalsState() {
+      try {
+        localStorage.setItem("gcloudcafe_author_proposals", JSON.stringify(cachedProposals));
+      } catch (e) {}
+    }
+
+    function renderProposals() {
+      var query = (proposalsSearchInput ? proposalsSearchInput.value : "").trim().toLowerCase();
+      var pendingCount = 0;
+      var approvedCount = 0;
+      var rejectedCount = 0;
+
+      cachedProposals.forEach(function (p) {
+        var st = p.status || "pending";
+        if (st === "approved") approvedCount++;
+        else if (st === "rejected") rejectedCount++;
+        else pendingCount++;
+      });
+
+      if (proposalsCountBadge) proposalsCountBadge.textContent = cachedProposals.length;
+      if (filterCountAll) filterCountAll.textContent = cachedProposals.length;
+      if (filterCountPending) filterCountPending.textContent = pendingCount;
+      if (filterCountApproved) filterCountApproved.textContent = approvedCount;
+      if (filterCountRejected) filterCountRejected.textContent = rejectedCount;
+
+      var filtered = cachedProposals.filter(function (p) {
+        var st = p.status || "pending";
+        if (currentProposalFilter !== "all" && st !== currentProposalFilter) return false;
+        if (query) {
+          var matchTitle = (p.title || "").toLowerCase().indexOf(query) !== -1;
+          var matchName = (p.name || "").toLowerCase().indexOf(query) !== -1;
+          var matchEmail = (p.email || "").toLowerCase().indexOf(query) !== -1;
+          var matchCat = (p.category || "").toLowerCase().indexOf(query) !== -1;
+          if (!matchTitle && !matchName && !matchEmail && !matchCat) return false;
+        }
+        return true;
+      });
+
+      if (!proposalsGrid) return;
+      proposalsGrid.innerHTML = "";
+
+      if (filtered.length === 0) {
+        if (proposalsEmptyState) proposalsEmptyState.classList.remove("hidden");
+        return;
+      } else {
+        if (proposalsEmptyState) proposalsEmptyState.classList.add("hidden");
+      }
+
+      filtered.forEach(function (item) {
+        var card = document.createElement("div");
+        card.className = "p-5 sm:p-6 rounded-2xl bg-body dark:bg-darkmode-body border border-border/80 dark:border-darkmode-border/80 shadow-xs space-y-4";
+
+        var statusPill = '';
+        var st = item.status || "pending";
+        if (st === "approved") {
+          statusPill = '<span class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 flex items-center gap-1.5"><i class="fa-solid fa-circle-check text-[10px]"></i> Approved</span>';
+        } else if (st === "rejected") {
+          statusPill = '<span class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-rose-500/15 text-rose-600 dark:text-rose-400 border border-rose-500/30 flex items-center gap-1.5"><i class="fa-solid fa-circle-xmark text-[10px]"></i> Rejected</span>';
+        } else {
+          statusPill = '<span class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30 flex items-center gap-1.5"><i class="fa-solid fa-clock text-[10px]"></i> Pending Review</span>';
+        }
+
+        var dateFormatted = "--";
+        try {
+          dateFormatted = new Date(item.created_at).toLocaleDateString("en-US", {
+            year: "numeric", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit"
+          });
+        } catch (e) {}
+
+        var sampleHtml = '';
+        if (item.sample_url) {
+          sampleHtml = '<div class="text-xs pt-1"><span class="text-text/50 dark:text-darkmode-text/50">Writing Sample / Profile:</span> <a href="' + escapeHtml(item.sample_url) + '" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline font-mono ml-1 inline-flex items-center gap-1">' + escapeHtml(item.sample_url) + ' <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i></a></div>';
+        }
+
+        card.innerHTML = 
+          '<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-border/60 dark:border-darkmode-border/60 pb-3">' +
+            '<div class="flex items-center gap-2 flex-wrap">' +
+              statusPill +
+              '<span class="px-2 py-0.5 rounded font-mono text-[11px] bg-theme-light dark:bg-darkmode-theme-light text-text/80 dark:text-darkmode-text/80 border border-border/70 dark:border-darkmode-border/70">' + escapeHtml(item.category || "Cloud") + '</span>' +
+              '<span class="font-mono text-[11px] text-text/50 dark:text-darkmode-text/50">#' + escapeHtml(item.id || "") + '</span>' +
+            '</div>' +
+            '<div class="text-xs font-mono text-text/60 dark:text-darkmode-text/60">' +
+              '<i class="fa-regular fa-clock mr-1"></i>' + dateFormatted +
+            '</div>' +
+          '</div>' +
+
+          '<div>' +
+            '<h3 class="text-base sm:text-lg font-bold text-dark dark:text-darkmode-dark mb-1 leading-snug">' +
+              escapeHtml(item.title || "Untitled Proposal") +
+            '</h3>' +
+            '<div class="flex items-center gap-2 text-xs text-text/70 dark:text-darkmode-text/70 mb-3">' +
+              '<span class="font-semibold text-dark dark:text-darkmode-dark"><i class="fa-regular fa-user mr-1 text-primary"></i>' + escapeHtml(item.name || "Anonymous") + '</span>' +
+              '<span>&bull;</span>' +
+              '<a href="mailto:' + escapeHtml(item.email || "") + '?subject=' + encodeURIComponent("Regarding your GCloudCafe Article Proposal: " + (item.title || "")) + '" class="text-primary hover:underline font-mono">' + escapeHtml(item.email || "") + '</a>' +
+              '<span class="px-2 py-0.5 rounded bg-primary/10 text-primary text-[10px] font-mono font-bold ml-auto">' + escapeHtml(item.delivery_timeframe || "2-3 Weeks") + '</span>' +
+            '</div>' +
+
+            '<div class="p-4 rounded-xl bg-theme-light/60 dark:bg-darkmode-theme-light/40 border border-border/70 dark:border-darkmode-border/70 text-xs text-text/80 dark:text-darkmode-text/80 leading-relaxed font-sans whitespace-pre-line">' +
+              escapeHtml(item.outline || "No outline provided.") +
+            '</div>' +
+            sampleHtml +
+          '</div>' +
+
+          '<div class="pt-3 border-t border-border/60 dark:border-darkmode-border/60 flex flex-wrap items-center justify-between gap-3">' +
+            '<div class="flex items-center gap-2">' +
+              '<button data-action="approve" data-id="' + escapeHtml(item.id) + '" class="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold border-none cursor-pointer transition-colors flex items-center gap-1.5 shadow-xs">' +
+                '<i class="fa-solid fa-check text-[11px]"></i> Approve' +
+              '</button>' +
+              '<button data-action="reject" data-id="' + escapeHtml(item.id) + '" class="px-3 py-1.5 rounded-lg bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold border-none cursor-pointer transition-colors flex items-center gap-1.5 shadow-xs">' +
+                '<i class="fa-solid fa-xmark text-[11px]"></i> Reject' +
+              '</button>' +
+              '<button data-action="pending" data-id="' + escapeHtml(item.id) + '" class="px-3 py-1.5 rounded-lg bg-theme-light dark:bg-darkmode-theme-light text-text/70 dark:text-darkmode-text/70 hover:text-dark dark:hover:text-white text-xs font-semibold border border-border/70 dark:border-darkmode-border/70 cursor-pointer transition-colors">' +
+                'Reset' +
+              '</button>' +
+            '</div>' +
+
+            '<div class="flex items-center gap-2 ml-auto">' +
+              '<button data-action="copy-email" data-email="' + escapeHtml(item.email || "") + '" class="px-2.5 py-1.5 rounded-lg bg-theme-light dark:bg-darkmode-theme-light text-text/70 dark:text-darkmode-text/70 hover:text-primary text-xs font-bold border border-border/70 dark:border-darkmode-border/70 cursor-pointer transition-colors flex items-center gap-1" title="Copy Author Email">' +
+                '<i class="fa-regular fa-copy text-[11px]"></i> Copy Email' +
+              '</button>' +
+              '<button data-action="delete" data-id="' + escapeHtml(item.id) + '" class="px-2.5 py-1.5 rounded-lg text-rose-500 hover:bg-rose-500/10 text-xs font-bold border-none bg-transparent cursor-pointer transition-colors" title="Delete Proposal">' +
+                '<i class="fa-regular fa-trash-can text-[11px]"></i>' +
+              '</button>' +
+            '</div>' +
+          '</div>';
+
+        proposalsGrid.appendChild(card);
+      });
+
+      // Attach card action listeners
+      proposalsGrid.querySelectorAll("[data-action]").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          var action = btn.getAttribute("data-action");
+          var id = btn.getAttribute("data-id");
+          var email = btn.getAttribute("data-email");
+
+          if (action === "approve" || action === "reject" || action === "pending") {
+            var target = cachedProposals.find(function (p) { return p.id === id; });
+            if (target) {
+              var newStatus = (action === "approve") ? "approved" : ((action === "reject") ? "rejected" : "pending");
+              target.status = newStatus;
+              saveProposalsState();
+              renderProposals();
+              // Try sync to Supabase
+              fetch(config.url + "/rest/v1/author_proposals?id=eq." + encodeURIComponent(id), {
+                method: "PATCH",
+                headers: {
+                  "apikey": config.anonKey,
+                  "Authorization": "Bearer " + config.anonKey,
+                  "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ status: newStatus })
+              }).catch(function () {});
+            }
+          } else if (action === "copy-email") {
+            if (email) {
+              navigator.clipboard.writeText(email).then(function () {
+                var orig = btn.innerHTML;
+                btn.innerHTML = '<i class="fa-solid fa-check text-emerald-500 text-[11px]"></i> Copied!';
+                setTimeout(function () { btn.innerHTML = orig; }, 1500);
+              });
+            }
+          } else if (action === "delete") {
+            if (confirm("Are you sure you want to delete this proposal?")) {
+              cachedProposals = cachedProposals.filter(function (p) { return p.id !== id; });
+              saveProposalsState();
+              renderProposals();
+              fetch(config.url + "/rest/v1/author_proposals?id=eq." + encodeURIComponent(id), {
+                method: "DELETE",
+                headers: {
+                  "apikey": config.anonKey,
+                  "Authorization": "Bearer " + config.anonKey
+                }
+              }).catch(function () {});
+            }
+          }
+        });
+      });
+    }
+
+    // Filter Buttons
+    document.querySelectorAll("[data-proposal-filter]").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        currentProposalFilter = btn.getAttribute("data-proposal-filter");
+        document.querySelectorAll("[data-proposal-filter]").forEach(function (b) {
+          b.className = "px-3 py-1.5 rounded-xl text-xs font-bold transition-all bg-theme-light dark:bg-darkmode-theme-light text-text/80 dark:text-darkmode-text/80 border border-border/70 dark:border-darkmode-border/70 cursor-pointer whitespace-nowrap";
+        });
+        btn.className = "px-3 py-1.5 rounded-xl text-xs font-bold transition-all bg-primary text-white shadow-xs cursor-pointer border-none whitespace-nowrap";
+        renderProposals();
+      });
+    });
+
+    if (proposalsSearchInput) {
+      proposalsSearchInput.addEventListener("input", renderProposals);
+    }
+
+    // Add Demo Proposal
+    function addDemoProposal() {
+      var sampleId = "PROP-" + Math.floor(1000 + Math.random() * 9000);
+      var sample = {
+        id: sampleId,
+        created_at: new Date().toISOString(),
+        name: "DevOps Engineer",
+        email: "practitioner." + Math.floor(Math.random() * 1000) + "@gcloudcafe.com",
+        category: "Kubernetes",
+        delivery_timeframe: "1-2 Weeks",
+        title: "Hands-on Zero Downtime GKE Cluster Upgrades with Gateway API Canary Routing",
+        outline: "1. Motivation: Why standard rolling kubelet upgrades drop TLS long-lived gRPC streams.\n2. Architecture: Envoy Gateway vs classic Ingress Controller.\n3. Step-by-step Terraform and YAML manifests for automated canary traffic shifting.\n4. Real production load test results and Prometheus metrics.",
+        sample_url: "https://github.com/gcloudcafe",
+        status: "pending"
+      };
+      cachedProposals.unshift(sample);
+      saveProposalsState();
+      renderProposals();
+    }
+
+    if (seedDemoBtn) seedDemoBtn.addEventListener("click", addDemoProposal);
+    if (emptyDemoBtn) emptyDemoBtn.addEventListener("click", addDemoProposal);
+
+    /* ── Subscribers Logic ── */
+    function loadSubscribers() {
+      if (!subscribersTableBody) return;
+      subscribersTableBody.innerHTML = '<tr><td colspan="5" class="py-8 text-center text-text/60 dark:text-darkmode-text/60 font-medium"><i class="fa-solid fa-spinner fa-spin text-primary mr-2"></i> Loading subscribers from database...</td></tr>';
+
+      fetch(config.url + "/rest/v1/newsletter_subscribers?select=*&order=created_at.desc", {
+        headers: {
+          "apikey": config.anonKey,
+          "Authorization": "Bearer " + config.anonKey
+        }
+      })
+      .then(function (res) { return res.json(); })
+      .then(function (data) {
+        cachedSubscribers = Array.isArray(data) ? data : [];
+        renderSubscribers();
+      })
+      .catch(function (err) {
+        subscribersTableBody.innerHTML = '<tr><td colspan="5" class="py-6 text-center text-rose-500 font-semibold"><i class="fa-solid fa-triangle-exclamation mr-2"></i> Failed to connect to subscribers database.</td></tr>';
+      });
+    }
+
+    function renderSubscribers() {
+      var query = (subscribersSearchInput ? subscribersSearchInput.value : "").trim().toLowerCase();
+
+      var filtered = cachedSubscribers.filter(function (s) {
+        if (!query) return true;
+        return (s.email || "").toLowerCase().indexOf(query) !== -1;
+      });
+
+      if (subscribersCountBadge) subscribersCountBadge.textContent = cachedSubscribers.length;
+      if (subscribersStatTotal) subscribersStatTotal.textContent = cachedSubscribers.length;
+
+      if (subscribersStatLatest) {
+        if (cachedSubscribers.length > 0 && cachedSubscribers[0].created_at) {
+          try {
+            subscribersStatLatest.textContent = new Date(cachedSubscribers[0].created_at).toLocaleDateString("en-US", {
+              month: "short", day: "numeric", hour: "2-digit", minute: "2-digit"
+            });
+          } catch (e) {
+            subscribersStatLatest.textContent = "Recently";
+          }
+        } else {
+          subscribersStatLatest.textContent = "None yet";
+        }
+      }
+
+      if (subscribersShowingCount) {
+        subscribersShowingCount.textContent = "Showing " + filtered.length + " of " + cachedSubscribers.length;
+      }
+
+      if (!subscribersTableBody) return;
+      subscribersTableBody.innerHTML = "";
+
+      if (filtered.length === 0) {
+        subscribersTableBody.innerHTML = '<tr><td colspan="5" class="py-8 text-center text-text/60 dark:text-darkmode-text/60 font-medium">No subscriber emails match your query.</td></tr>';
+        return;
+      }
+
+      filtered.forEach(function (sub, idx) {
+        var tr = document.createElement("tr");
+        tr.className = "hover:bg-theme-light/40 dark:hover:bg-darkmode-theme-light/20 transition-colors";
+
+        var dateStr = "--";
+        if (sub.created_at) {
+          try {
+            dateStr = new Date(sub.created_at).toLocaleDateString("en-US", {
+              year: "numeric", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit"
+            });
+          } catch (e) { dateStr = sub.created_at; }
+        }
+
+        tr.innerHTML = 
+          '<td class="py-3 px-4 text-center font-mono text-text/50 dark:text-darkmode-text/50">' + (idx + 1) + '</td>' +
+          '<td class="py-3 px-4 font-mono font-medium text-dark dark:text-darkmode-dark flex items-center gap-2">' +
+            '<i class="fa-regular fa-envelope text-primary/70 text-[11px]"></i>' +
+            '<span>' + escapeHtml(sub.email || "") + '</span>' +
+          '</td>' +
+          '<td class="py-3 px-4 font-mono text-text/60 dark:text-darkmode-text/60">' + dateStr + '</td>' +
+          '<td class="py-3 px-4 text-center">' +
+            '<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/25">Active</span>' +
+          '</td>' +
+          '<td class="py-3 px-4 text-right">' +
+            '<button data-sub-copy="' + escapeHtml(sub.email || "") + '" class="px-2.5 py-1 rounded bg-theme-light dark:bg-darkmode-theme-light text-text/70 dark:text-darkmode-text/70 hover:text-primary text-xs font-bold border border-border/70 dark:border-darkmode-border/70 cursor-pointer transition-colors" title="Copy email">' +
+              '<i class="fa-regular fa-copy text-[11px]"></i>' +
+            '</button>' +
+          '</td>';
+
+        subscribersTableBody.appendChild(tr);
+      });
+
+      // Individual copy buttons
+      subscribersTableBody.querySelectorAll("[data-sub-copy]").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          var em = btn.getAttribute("data-sub-copy");
+          if (em) {
+            navigator.clipboard.writeText(em).then(function () {
+              var orig = btn.innerHTML;
+              btn.innerHTML = '<i class="fa-solid fa-check text-emerald-500 text-[11px]"></i>';
+              setTimeout(function () { btn.innerHTML = orig; }, 1500);
+            });
+          }
+        });
+      });
+    }
+
+    if (subscribersSearchInput) {
+      subscribersSearchInput.addEventListener("input", renderSubscribers);
+    }
+
+    // Copy All Subscribers
+    if (copyAllSubscribersBtn) {
+      copyAllSubscribersBtn.addEventListener("click", function () {
+        if (!cachedSubscribers.length) return;
+        var emailsList = cachedSubscribers.map(function (s) { return s.email; }).filter(Boolean).join(", ");
+        navigator.clipboard.writeText(emailsList).then(function () {
+          if (exportToastMsg) {
+            exportToastMsg.textContent = "Copied " + cachedSubscribers.length + " emails to clipboard!";
+            exportToastMsg.classList.remove("hidden");
+            setTimeout(function () { exportToastMsg.classList.add("hidden"); }, 2500);
+          }
+        });
+      });
+    }
+
+    // Export Subscribers CSV
+    if (exportSubscribersCsvBtn) {
+      exportSubscribersCsvBtn.addEventListener("click", function () {
+        if (!cachedSubscribers.length) return;
+        var csvRows = ["id,email,created_at"];
+        cachedSubscribers.forEach(function (s) {
+          csvRows.push([
+            '"' + (s.id || "") + '"',
+            '"' + (s.email || "").replace(/"/g, '""') + '"',
+            '"' + (s.created_at || "") + '"'
+          ].join(","));
+        });
+        var csvContent = "data:text/csv;charset=utf-8," + encodeURIComponent(csvRows.join("\n"));
+        var link = document.createElement("a");
+        link.setAttribute("href", csvContent);
+        link.setAttribute("download", "gcloudcafe-newsletter-subscribers-" + new Date().toISOString().slice(0, 10) + ".csv");
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      });
+    }
+
+  }
+
+
   function initApp() {
     initCommentsSystem();
     initCloudPulseSystem();
     initCloudProviderPollSystem();
     initPulseAdminApprovalSystem();
     initArticleAdminSystem();
+    initAuthorProposalSystem();
+    initCommunityAdminSystem();
   }
 
   if (document.readyState === "loading") {
