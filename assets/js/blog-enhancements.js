@@ -961,6 +961,56 @@
     init();
   }
 
+  /* ── 14. Homepage In-Place Article Expansion (ByteDepth Seamless Loader) ── */
+  function initLoadMoreArticles() {
+    var btn = document.getElementById("btn-load-more-articles");
+    var container = document.getElementById("view-all-articles-container");
+    if (!btn || !container) return;
+
+    btn.addEventListener("click", function (e) {
+      e.preventDefault();
+      var textSpan = btn.querySelector(".btn-text");
+      var loadingSpan = btn.querySelector(".btn-loading");
+
+      // Enter loading state
+      if (textSpan) textSpan.classList.add("hidden");
+      if (loadingSpan) loadingSpan.classList.remove("hidden");
+      btn.classList.add("opacity-90", "cursor-wait");
+
+      // Smooth simulated loading effect matching Figma interactive prototype
+      setTimeout(function () {
+        var extraCards = document.querySelectorAll("[data-extra-article='true']");
+        var totalLoaded = extraCards.length;
+
+        extraCards.forEach(function (card, index) {
+          card.style.display = "flex";
+          // Staggered reveal for smooth entrance
+          setTimeout(function () {
+            card.classList.remove("opacity-0", "translate-y-4");
+            card.classList.add("opacity-100", "translate-y-0");
+          }, 30 + index * 60);
+        });
+
+        // After all cards animate in, show friendly completion indicator
+        setTimeout(function () {
+          btn.innerHTML = '<span class="inline-flex items-center gap-2 text-emerald-600 dark:text-emerald-400 font-mono text-xs font-bold"><span class="w-2 h-2 rounded-full bg-emerald-500 inline-block animate-pulse"></span>All ' + (9 + totalLoaded) + ' articles loaded</span>';
+          btn.classList.remove("cursor-wait", "hover:border-slate-400", "dark:hover:border-slate-600", "hover:bg-slate-50", "dark:hover:bg-slate-800/80");
+          btn.classList.add("border-emerald-500/30", "bg-emerald-500/10", "pointer-events-none");
+
+          // Gently fade out the button after a couple seconds
+          setTimeout(function () {
+            container.style.transition = "opacity 0.6s ease, transform 0.6s ease, height 0.6s ease, margin 0.6s ease";
+            container.style.opacity = "0";
+            container.style.transform = "scale(0.96)";
+            setTimeout(function () {
+              container.style.display = "none";
+            }, 600);
+          }, 2200);
+        }, totalLoaded * 60 + 200);
+      }, 350);
+    });
+  }
+
   function init() {
     initHeaderScroll();
     initReadingProgress();
@@ -976,6 +1026,7 @@
     initPulseAdminApprovalSystem();
     initPulseTicker();
     initTaglineTypewriter();
+    initLoadMoreArticles();
   }
 
   /* ── 9. Cloud Pulse Micro-News & Upvote System ── */
