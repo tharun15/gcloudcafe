@@ -1132,6 +1132,19 @@
 
     var allLoadedPulses = [];
     var activeFilter = "all";
+    var activeSearchQuery = "";
+
+    function updateResultCounter(count) {
+      var counterEl = document.getElementById("pulse-result-count");
+      if (counterEl) {
+        var total = allLoadedPulses.length;
+        if (count === total) {
+          counterEl.textContent = "Showing " + total + " updates";
+        } else {
+          counterEl.textContent = "Showing " + count + " of " + total + " updates";
+        }
+      }
+    }
 
     function filterAndRenderPulses() {
       var filtered = allLoadedPulses;
@@ -1150,10 +1163,20 @@
           return true;
         });
       }
+
+      if (activeSearchQuery && activeSearchQuery.trim().length > 0) {
+        var q = activeSearchQuery.trim().toLowerCase();
+        filtered = filtered.filter(function(p) {
+          var corpus = ((p.title || "") + " " + (p.content || "") + " " + (Array.isArray(p.tags) ? p.tags.join(" ") : "")).toLowerCase();
+          return corpus.includes(q);
+        });
+      }
+
+      updateResultCounter(filtered.length);
       renderPulses(filtered);
     }
 
-            function updatePulseChipUI(chip, isActive) {
+    function updatePulseChipUI(chip, isActive) {
       var activeClasses = ["is-active", "bg-primary", "text-white", "border-transparent", "shadow-xs"];
       var inactiveClasses = ["bg-theme-light", "dark:bg-darkmode-theme-light", "text-text/80", "dark:text-darkmode-text/80", "border-border/60", "dark:border-darkmode-border/60"];
       
@@ -1181,6 +1204,47 @@
       });
     }
 
+    function setupPulseSearch() {
+      var searchInput = document.getElementById("pulse-search-input");
+      var clearBtn = document.getElementById("pulse-search-clear");
+      if (!searchInput) return;
+
+      searchInput.addEventListener("input", function() {
+        activeSearchQuery = searchInput.value || "";
+        if (clearBtn) {
+          if (activeSearchQuery.trim().length > 0) {
+            clearBtn.classList.remove("hidden");
+          } else {
+            clearBtn.classList.add("hidden");
+          }
+        }
+        filterAndRenderPulses();
+      });
+
+      if (clearBtn) {
+        clearBtn.addEventListener("click", function() {
+          searchInput.value = "";
+          activeSearchQuery = "";
+          clearBtn.classList.add("hidden");
+          searchInput.focus();
+          filterAndRenderPulses();
+        });
+      }
+
+      // Keyboard shortcut: Ctrl+/ or Cmd+/ or '/'
+      document.addEventListener("keydown", function(e) {
+        if ((e.ctrlKey || e.metaKey) && e.key === "/") {
+          e.preventDefault();
+          searchInput.focus();
+          searchInput.select();
+        } else if (e.key === "/" && document.activeElement !== searchInput && !["INPUT", "TEXTAREA", "SELECT"].includes((document.activeElement || {}).tagName)) {
+          e.preventDefault();
+          searchInput.focus();
+          searchInput.select();
+        }
+      });
+    }
+
     function sortCohortByScore(list) {
       return (list || []).slice(0, 6).sort(function(a, b) {
         var scoreA = typeof a.score === "number" ? a.score : ((a.upvotes || 0) - (a.downvotes || 0));
@@ -1192,6 +1256,7 @@
 
     function fetchPulses() {
       setupFilterChips();
+      setupPulseSearch();
       // Fetch latest 6 approved articles (the active competing cohort)
       var queryUrl = config.url + "/rest/v1/cloud_pulses?status=eq.approved&order=created_at.desc&limit=6";
       
@@ -1305,7 +1370,35 @@
 
 function renderPulses(pulses) {
       if (!pulses || pulses.length === 0) {
-        feedContainer.innerHTML = '<div class="col-span-full text-center py-12 px-4 rounded-3xl bg-body dark:bg-darkmode-body border border-border/70 dark:border-darkmode-border/70 text-xs sm:text-sm font-semibold text-text/70 dark:text-darkmode-text/70 shadow-xs"><i class="fa-solid fa-cloud-bolt text-primary text-2xl mb-2.5 block"></i>No cloud updates found for this topic yet. Check back soon for fresh releases!</div>';
+        var queryText = activeSearchQuery ? ' matching "' + escapeHtml(activeSearchQuery) + '"' : '';
+        feedContainer.innerHTML = '<div class="col-span-full text-center py-12 px-6 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 shadow-xs">' +
+          '<div class="w-12 h-12 mx-auto mb-3 rounded-full bg-slate-200/70 dark:bg-slate-800 flex items-center justify-center text-slate-500 dark:text-slate-400">' +
+            '<i class="fa-solid fa-magnifying-glass text-base"></i>' +
+          '</div>' +
+          '<h3 class="text-sm font-bold text-slate-900 dark:text-white mb-1">No pulse updates found' + queryText + '</h3>' +
+          '<p class="text-xs text-slate-500 dark:text-slate-400 mb-4 max-w-sm mx-auto">Try clearing your search query or selecting "All Updates" to view the latest cloud intelligence.</p>' +
+          '<button id="pulse-reset-filters-btn" type="button" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono font-bold bg-red-600 hover:bg-red-700 text-white cursor-pointer transition-all border-0 shadow-xs">' +
+            '<i class="fa-solid fa-rotate-left text-[10px]"></i> Reset Filters' +
+          '</button>' +
+        '</div>';
+
+        var resetBtn = document.getElementById("pulse-reset-filters-btn");
+        if (resetBtn) {
+          resetBtn.addEventListener("click", function() {
+            var searchInput = document.getElementById("pulse-search-input");
+            if (searchInput) searchInput.value = "";
+            var clearBtn = document.getElementById("pulse-search-clear");
+            if (clearBtn) clearBtn.classList.add("hidden");
+            activeSearchQuery = "";
+            activeFilter = "all";
+            var chips = document.querySelectorAll("[data-pulse-filter]");
+            chips.forEach(function(c) {
+              updatePulseChipUI(c, c.getAttribute("data-pulse-filter") === "all");
+            });
+            filterAndRenderPulses();
+          });
+        }
+        updateResultCounter(0);
         return;
       }
 
