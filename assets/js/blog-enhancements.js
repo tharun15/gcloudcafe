@@ -1248,7 +1248,7 @@
       var whatChanged = "";
       var impact = "";
       
-      var impactMatch = text.match(/(?:💡\s*(?:\*\*)?Engineering Impact(?:\*\*)?:?|💡\s*(?:\*\*)?Impact(?:\*\*)?:?)([\s\S]+)$/i);
+      var impactMatch = text.match(/(?:💡\s*(?:\*\*)?(?:Why It Matters|Engineering Impact|Impact)(?:\*\*)?:?)([\s\S]+)$/i);
       if (impactMatch) {
         impact = impactMatch[1].trim();
         var beforeImpact = text.substring(0, impactMatch.index).trim();
@@ -1256,7 +1256,7 @@
         if (whatChangedMatch) {
           whatChanged = whatChangedMatch[1].trim();
         } else {
-          whatChanged = beforeImpact;
+          whatChanged = beforeImpact.replace(/^🎯\s*/, "").trim();
         }
       } else {
         var whatChangedMatch = text.match(/(?:🎯\s*(?:\*\*)?What Changed(?:\*\*)?:?)([\s\S]+)$/i);
@@ -1267,16 +1267,39 @@
         }
       }
 
-      var out = "";
+      var out = '<div class="space-y-3 my-1">';
       if (whatChanged) {
-        out += '<div class="mb-2.5 pulse-summary-item"><span class="text-emerald-700 dark:text-emerald-400 font-extrabold mr-1.5 inline-block">🎯 What Changed:</span><span class="font-semibold text-slate-900 dark:text-slate-100">' + escapeHtml(whatChanged) + '</span></div>';
+        out += '<div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 shadow-xs">' +
+                 '<div class="flex items-center gap-1.5 mb-2">' +
+                   '<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded font-mono text-[10px] font-bold uppercase tracking-wider bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">' +
+                     '<span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>' +
+                     '<span>What Changed</span>' +
+                   '</span>' +
+                 '</div>' +
+                 '<p class="text-xs sm:text-[13px] text-slate-700 dark:text-slate-200 leading-relaxed font-normal mb-0">' +
+                   escapeHtml(whatChanged) +
+                 '</p>' +
+               '</div>';
       }
       if (impact) {
-        out += '<div class="pulse-summary-item"><span class="text-amber-700 dark:text-amber-400 font-extrabold mr-1.5 inline-block">💡 Impact:</span><span class="font-normal text-slate-800 dark:text-slate-200">' + escapeHtml(impact) + '</span></div>';
+        out += '<div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 shadow-xs">' +
+                 '<div class="flex items-center gap-1.5 mb-2">' +
+                   '<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded font-mono text-[10px] font-bold uppercase tracking-wider bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">' +
+                     '<i class="fa-regular fa-lightbulb text-[10px] text-amber-500"></i>' +
+                     '<span>Why It Matters</span>' +
+                   '</span>' +
+                 '</div>' +
+                 '<p class="text-xs sm:text-[13px] text-slate-600 dark:text-slate-400 leading-relaxed font-normal mb-0">' +
+                   escapeHtml(impact) +
+                 '</p>' +
+               '</div>';
       }
       if (!whatChanged && !impact) {
-        out = '<p class="pulse-summary-item text-slate-800 dark:text-slate-200 font-normal">' + escapeHtml(text) + '</p>';
+        out += '<div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 text-xs sm:text-[13px] text-slate-700 dark:text-slate-300 font-normal leading-relaxed">' +
+                 escapeHtml(text) +
+               '</div>';
       }
+      out += '</div>';
       return out;
     }
 
@@ -2522,7 +2545,7 @@ function renderPulses(pulses) {
         .replace(/<\/a>/gi, "")
         .trim();
 
-      var impactMatch = text.match(/(?:💡\s*(?:\*\*)?Engineering Impact(?:\*\*)?:?|💡\s*(?:\*\*)?Impact(?:\*\*)?:?)([\s\S]+)$/i);
+      var impactMatch = text.match(/(?:💡\s*(?:\*\*)?(?:Why It Matters|Engineering Impact|Impact)(?:\*\*)?:?)([\s\S]+)$/i);
       var whatChanged = "";
       var impact = "";
 
@@ -2533,7 +2556,7 @@ function renderPulses(pulses) {
         if (whatChangedMatch) {
           whatChanged = whatChangedMatch[1].trim();
         } else {
-          whatChanged = beforeImpact;
+          whatChanged = beforeImpact.replace(/^🎯\s*/, "").trim();
         }
       } else {
         var whatChangedMatch = text.match(/(?:🎯\s*(?:\*\*)?What Changed(?:\*\*)?:?)([\s\S]+)$/i);
@@ -2544,15 +2567,35 @@ function renderPulses(pulses) {
         }
       }
 
-      var out = '<div class="text-xs sm:text-sm text-text/85 dark:text-darkmode-text/85 mb-3 leading-relaxed space-y-2">';
+      var out = '<div class="space-y-3 mb-3">';
       if (whatChanged) {
-        out += '<div class="p-2.5 rounded-xl bg-emerald-500/10 dark:bg-emerald-500/15 border border-emerald-500/20"><span class="text-emerald-600 dark:text-emerald-400 font-extrabold mr-1.5 inline-block">🎯 What Changed:</span><span class="font-medium text-dark dark:text-darkmode-dark">' + escapeHtml(whatChanged) + '</span></div>';
+        out += '<div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800">' +
+                 '<div class="flex items-center gap-1.5 mb-1.5">' +
+                   '<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded font-mono text-[10px] font-bold uppercase tracking-wider bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">' +
+                     '<span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>' +
+                     '<span>What Changed</span>' +
+                   '</span>' +
+                 '</div>' +
+                 '<p class="text-xs text-slate-700 dark:text-slate-200 leading-relaxed font-normal mb-0">' +
+                   escapeHtml(whatChanged) +
+                 '</p>' +
+               '</div>';
       }
       if (impact) {
-        out += '<div class="p-2.5 rounded-xl bg-amber-500/10 dark:bg-amber-500/15 border border-amber-500/20"><span class="text-amber-600 dark:text-amber-400 font-extrabold mr-1.5 inline-block">💡 Impact:</span><span class="font-normal text-text/80 dark:text-darkmode-text/80">' + escapeHtml(impact) + '</span></div>';
+        out += '<div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800">' +
+                 '<div class="flex items-center gap-1.5 mb-1.5">' +
+                   '<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded font-mono text-[10px] font-bold uppercase tracking-wider bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">' +
+                     '<i class="fa-regular fa-lightbulb text-[10px] text-amber-500"></i>' +
+                     '<span>Why It Matters</span>' +
+                   '</span>' +
+                 '</div>' +
+                 '<p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed font-normal mb-0">' +
+                   escapeHtml(impact) +
+                 '</p>' +
+               '</div>';
       }
       if (!whatChanged && !impact) {
-        out += '<div class="font-normal text-text/80 dark:text-darkmode-text/80 leading-relaxed p-2.5 rounded-xl bg-theme-light/60 dark:bg-darkmode-theme-light/40 border border-border/40">' + escapeHtml(text) + '</div>';
+        out += '<div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 text-xs text-slate-700 dark:text-slate-300 font-normal leading-relaxed">' + escapeHtml(text) + '</div>';
       }
       out += '</div>';
       return out;
