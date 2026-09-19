@@ -897,17 +897,33 @@
     var el = document.querySelector("[data-typewriter-tagline]");
     if (!el) return;
 
-    var sequence = [
-      { text: "Cloud", hold: 1100 },
-      { text: "DevOps", hold: 1100 },
-      { text: "Security", hold: 1100 },
-      { text: "Cloud · DevOps · Security", hold: 10000 }
-    ];
+    function getSequence() {
+      var isMobile = window.innerWidth < 640;
+      if (isMobile) {
+        return [
+          { text: "Cloud", hold: 1200 },
+          { text: "DevOps", hold: 1200 },
+          { text: "Security", hold: 1200 }
+        ];
+      }
+      return [
+        { text: "Cloud", hold: 1100 },
+        { text: "DevOps", hold: 1100 },
+        { text: "Security", hold: 1100 },
+        { text: "Cloud · DevOps · Security", hold: 10000 }
+      ];
+    }
 
+    var sequence = getSequence();
     var seqIndex = 0;
     var displayed = el.textContent.trim();
     var typingSpeed = 75;
     var deletingSpeed = 40;
+
+    window.addEventListener("resize", function () {
+      sequence = getSequence();
+      if (seqIndex >= sequence.length) seqIndex = 0;
+    });
 
     function typeForward(targetText, onComplete) {
       if (displayed.length < targetText.length) {
@@ -934,7 +950,8 @@
     }
 
     function runStep() {
-      var item = sequence[seqIndex];
+      sequence = getSequence();
+      var item = sequence[seqIndex % sequence.length];
       typeForward(item.text, function () {
         setTimeout(function () {
           backspace(function () {
