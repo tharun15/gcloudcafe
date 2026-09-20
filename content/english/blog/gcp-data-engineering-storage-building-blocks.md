@@ -1,7 +1,7 @@
 ---
-title: "Data Engineering on GCP (Part 1): The Core Storage Building Blocks Demystified"
-meta_title: "GCP Data Engineering: External Tables, Partitioning & Clustering"
-description: "Master foundational Google Cloud Data Engineering: An intuitive, practitioner-grade guide to GCS External Tables, BigQuery Partitioning, Clustering, Time Series, Materialized Views, and Time Travel."
+title: "Data Engineering on GCP (Part 1): The Core Storage & Access Building Blocks Demystified"
+meta_title: "GCP Data Engineering: External Tables, Partitioning, Clustering & Authorized Views"
+description: "Master foundational Google Cloud Data Engineering: An intuitive, practitioner-grade guide to GCS External Tables, BigQuery Partitioning, Clustering, Time Series, Materialized Views, Time Travel, and Authorized Views."
 date: 2026-09-19
 image: "/images/gcp-storage-building-blocks.jpg"
 categories: ["Google Cloud", "Architecture"]
@@ -27,11 +27,11 @@ Why did this happen? Because the underlying table was created as a flat, unparti
 
 Before we can build complex streaming pipelines, event-driven architectures, or enterprise Medallion Lakehouses, we must understand the fundamental storage primitives that govern Google Cloud's data ecosystem.
 
-In this first installment of our **Data Engineering on Google Cloud** series, we break down the **six core building blocks** that every cloud engineer, data practitioner, and architect must master from first principles.
+In this first installment of our **Data Engineering on Google Cloud** series, we break down the **seven core storage and access building blocks** that every cloud engineer, data practitioner, and architect must master from first principles.
 
 ---
 
-## 🧩 The 6 Core Storage Building Blocks: Intuitive Analogies
+## 🧩 The 7 Core Storage & Access Building Blocks: Intuitive Analogies
 
 Distributed cloud databases can feel overwhelming because terminology like *sharding*, *capacitors*, and *metadata layers* clouds the core mechanics. Let us strip away the jargon with real-world physical analogies.
 
@@ -75,6 +75,12 @@ If a recipe takes 4 hours to simmer, a chef pre-cooks the broth in the morning. 
 <strong>6. Table Snapshots & Time Travel:</strong>
 <em>The Video Game Save Point.</em><br>
 Before entering a hazardous dungeon, you hit "Save Game." If your character gets eliminated, you restore to that exact timestamp. <strong>Time Travel</strong> lets you query any table as it existed up to 7 days in the past. A <strong>Table Snapshot</strong> creates a permanent, zero-byte read-only copy of your table that only charges for storage when the original table modifies.
+</li>
+
+<li>
+<strong>7. Authorized Views:</strong>
+<em>The Bank Teller / Pharmacy Drive-Through Window.</em><br>
+You are never allowed to walk into the bank vault or roam the pharmacy stockroom where controlled medications and customer files sit on open shelves. Instead, you approach the secure, authorized window. The teller (the <strong>Authorized View</strong>) reaches into the restricted warehouse, validates your request, and hands you <strong>only</strong> the aggregated, non-sensitive data you are permitted to see. The underlying raw warehouse remains 100% locked and hidden from you.
 </li>
 </ul>
 </div>
@@ -180,6 +186,7 @@ Because compute and storage are decoupled, BigQuery can scale from 0 to 2,000 co
 | **Clustered Table** | BigQuery Capacitor | **Very High** (Prunes internal blocks) | Sub-second | High-cardinality filters (`user_id`, `status`) |
 | **Materialized View** | BigQuery Capacitor | **Maximum** (Pre-aggregated) | < 100ms | Real-time BI dashboards, executive KPIs |
 | **Table Snapshot** | BigQuery Metadata | N/A (Zero-copy until mutation) | Instant | Pre-migration backups, point-in-time audits |
+| **Authorized View** | BigQuery Query Logic | Inherited from base table | Standard view query | Secure data sharing without granting table IAM |
 
 ---
 
@@ -321,6 +328,69 @@ OPTIONS (
 
 ---
 
+### Lab 6: Creating an Authorized View to Protect Sensitive Data
+
+In enterprise security, the **Principle of Least Privilege** requires that analysts should never have read access to raw tables containing PII (Social Security numbers, credit card tokens, phone numbers, or raw salaries).
+
+If you create a standard SQL view in BigQuery, any user querying the view **must also have read access to the underlying table**. If they lack table access, BigQuery throws an `Access Denied` error. If you give them table access, they can query the raw PII!
+
+**Authorized Views solve this architectural dilemma completely:**
+
+```sql
+-- Step 1: Create the restricted raw dataset (Internal Data Engineers only)
+CREATE SCHEMA IF NOT EXISTS `company_secure_raw`
+OPTIONS (location = 'us-central1');
+
+-- Step 2: Create the table containing sensitive PII and financial metrics
+CREATE TABLE IF NOT EXISTS `company_secure_raw.employee_payroll` (
+  employee_id STRING NOT NULL,
+  ssn STRING NOT NULL,
+  department STRING NOT NULL,
+  annual_salary NUMERIC(12, 2) NOT NULL,
+  bonus NUMERIC(12, 2)
+);
+
+-- Step 3: Create the public analytics reporting dataset (Open to all Analysts)
+CREATE SCHEMA IF NOT EXISTS `company_analytics_marts`
+OPTIONS (location = 'us-central1');
+
+-- Step 4: Create the sanitized view that hides PII and exposes only aggregations
+CREATE OR REPLACE VIEW `company_analytics_marts.department_salary_summary` AS
+SELECT 
+  department,
+  COUNT(employee_id) as headcount,
+  ROUND(AVG(annual_salary), 2) as avg_salary,
+  ROUND(SUM(annual_salary + COALESCE(bonus, 0)), 2) as total_payroll_spend
+FROM `company_secure_raw.employee_payroll`
+GROUP BY department;
+```
+
+#### Authorizing the View to Access the Source Dataset
+
+Now, you authorize the view inside the source dataset (`company_secure_raw`). You can execute this directly via SQL:
+
+```sql
+-- Step 5: Authorize the view to access the restricted source dataset
+GRANT `roles/bigquery.dataViewer` ON SCHEMA `company_secure_raw`
+TO (
+  VIEW `company_analytics_marts.department_salary_summary`
+);
+```
+
+*(Alternatively, via the Google Cloud CLI:)*
+```bash
+# Add authorized view via bq CLI
+bq update --dataset   --add_authorized_view=my-project:company_analytics_marts.department_salary_summary   my-project:company_secure_raw
+```
+
+#### The Security Result:
+- Analysts are granted `roles/bigquery.dataViewer` **only** on `company_analytics_marts`.
+- Analysts have **zero IAM permissions** on `company_secure_raw`.
+- When an analyst queries `SELECT * FROM company_analytics_marts.department_salary_summary`, BigQuery verifies that the view itself has permission to read the underlying payroll table, executes the aggregation, and returns the result. 
+- If the analyst attempts to run `SELECT ssn FROM company_secure_raw.employee_payroll`, BigQuery blocks them immediately with `403 Forbidden`.
+
+---
+
 ## ⚠️ Critical Production Gotchas Every Architect Must Know
 
 <div class="p-6 rounded-2xl bg-amber-50 dark:bg-amber-950/60 border-2 border-amber-300 dark:border-amber-600/70 text-amber-950 dark:text-amber-100 my-8 shadow-sm space-y-3">
@@ -345,6 +415,7 @@ Mastering these core building blocks transforms you from a developer who just wr
 - **Clustered Tables:** Group high-cardinality values inside partitions for fine-grained query pruning.
 - **Materialized Views:** Pre-compute heavy aggregations with automatic, incremental refresh and smart query rewriting.
 - **Table Snapshots & Time Travel:** Provide instant, zero-byte disaster recovery and historical point-in-time auditing.
+- **Authorized Views:** Share curated, aggregated insights with external teams and analysts without granting read access to underlying raw tables or leaking PII.
 
 ---
 
