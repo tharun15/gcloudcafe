@@ -70,60 +70,113 @@ External tables are useful when you want to:
 
 > **Practical Rule:** Use external tables for exploration, interoperability, and colder lakehouse tiers. Use managed tables when the data is queried frequently, powers dashboards, or requires BigQuery's full optimization suite.
 
-```mermaid
-flowchart TB
-    Query["Incoming SQL Query"]
+<div class="my-8 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-900/40 space-y-6">
 
-    subgraph BQ["Google BigQuery (Data Warehouse Boundary)"]
-        direction TB
+  <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-4">
+    <div class="flex items-center gap-3">
+      <div class="p-2 bg-blue-100 dark:bg-blue-900/50 rounded-xl">
+        <img src="/images/icons/bigquery.png" alt="BigQuery" class="w-8 h-8 object-contain">
+      </div>
+      <div>
+        <h4 class="text-base font-bold text-slate-900 dark:text-slate-100 m-0">Managed Tables vs. External Tables: Physical Data Boundary</h4>
+        <p class="text-xs text-slate-500 dark:text-slate-400 m-0">Where does your data physically live, and how does your query reach it?</p>
+      </div>
+    </div>
+  </div>
 
-        subgraph M["Managed Table"]
-            M_Def["Table Definition & Metadata"]
-            M_Data["⚡ BigQuery Native Storage (Capacitor)<br/>• Data lives INSIDE BigQuery<br/>• Compressed columnar format<br/>• Fast pruning via min/max metadata"]
-            M_Def -->|"Direct local read"| M_Data
-        end
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
-        subgraph E["External Table"]
-            E_Def["Schema & URI Pointer Only<br/><i>(Zero data bytes stored in BigQuery)</i>"]
-        end
-    end
+    <!-- Path A: Managed Table -->
+    <div class="rounded-xl border-2 border-blue-500/40 bg-blue-50/40 dark:bg-blue-950/20 p-5 space-y-4">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2.5">
+          <img src="/images/icons/bigquery.png" alt="BigQuery" class="w-7 h-7 object-contain">
+          <span class="font-bold text-blue-900 dark:text-blue-200 text-sm">Path A: Managed BigQuery Table</span>
+        </div>
+        <span class="text-xs px-2.5 py-1 rounded-full bg-blue-600 text-white font-semibold">Data INSIDE BigQuery</span>
+      </div>
 
-    subgraph GCS["Google Cloud Storage (Data Lake Boundary)"]
-        GCS_Data["🗄️ Raw Lake Files (gs://my-bucket/*.parquet)<br/>• Data lives OUTSIDE in object storage<br/>• Network latency on every query<br/>• No BigQuery metadata acceleration"]
-    end
+      <div class="p-3.5 bg-white dark:bg-slate-900 rounded-lg border border-blue-200 dark:border-blue-900 space-y-2 text-xs">
+        <div class="flex items-center gap-2 text-slate-700 dark:text-slate-300">
+          <span class="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 font-mono font-bold text-blue-600">1</span>
+          <span>Analyst runs SQL query: <code>SELECT * FROM sales_managed</code></span>
+        </div>
+        <div class="flex items-center gap-2 text-slate-700 dark:text-slate-300">
+          <span class="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 font-mono font-bold text-blue-600">2</span>
+          <span>Optimizer checks min/max metadata & partition pruning</span>
+        </div>
+        <div class="flex items-center gap-2 text-emerald-600 dark:text-emerald-400 font-semibold">
+          <span class="px-2 py-0.5 rounded bg-emerald-100 dark:bg-emerald-950 font-mono font-bold">3</span>
+          <span>Reads local Capacitor columnar disk ➔ <strong>⚡ Sub-second execution</strong></span>
+        </div>
+      </div>
 
-    Query -->|"1. Query Managed Table"| M_Def
-    Query -->|"2. Query External Table"| E_Def
-    E_Def -->|"Network read across GCP"| GCS_Data
-```
+      <ul class="text-xs text-slate-700 dark:text-slate-300 space-y-2 list-none p-0 m-0">
+        <li class="flex items-start gap-2">
+          <span class="text-blue-500 font-bold">✔</span>
+          <span><strong>Physical Location:</strong> Stored locally in Google-managed Capacitor columnar blocks.</span>
+        </li>
+        <li class="flex items-start gap-2">
+          <span class="text-blue-500 font-bold">✔</span>
+          <span><strong>Performance:</strong> Full advantage of clustering, partition pruning, and column-level min/max caches.</span>
+        </li>
+        <li class="flex items-start gap-2">
+          <span class="text-blue-500 font-bold">✔</span>
+          <span><strong>Cost Model:</strong> Standard BigQuery active storage ($0.02/GB) + query slots.</span>
+        </li>
+        <li class="flex items-start gap-2">
+          <span class="text-blue-500 font-bold">✔</span>
+          <span><strong>Best For:</strong> Production dashboards, frequent analytical queries, reporting marts.</span>
+        </li>
+      </ul>
+    </div>
 
-<div class="grid grid-cols-1 md:grid-cols-2 gap-4 my-6">
+    <!-- Path B: External Table -->
+    <div class="rounded-xl border-2 border-amber-500/40 bg-amber-50/40 dark:bg-amber-950/20 p-5 space-y-4">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2.5">
+          <img src="/images/icons/cloud-storage.png" alt="Cloud Storage" class="w-7 h-7 object-contain">
+          <span class="font-bold text-amber-900 dark:text-amber-200 text-sm">Path B: External Table (Lake Tier)</span>
+        </div>
+        <span class="text-xs px-2.5 py-1 rounded-full bg-amber-600 text-white font-semibold">Data OUTSIDE in GCS</span>
+      </div>
 
-<div class="p-5 rounded-xl bg-blue-50/70 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-900 space-y-3">
-<div class="flex items-center justify-between">
-  <span class="font-bold text-blue-700 dark:text-blue-300 text-sm">📦 Managed Table</span>
-  <span class="text-xs px-2 py-0.5 rounded bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 font-semibold">Data INSIDE BigQuery</span>
-</div>
-<ul class="text-xs text-slate-700 dark:text-slate-300 space-y-1.5 list-disc list-inside m-0">
-  <li><strong>Where Data Lives:</strong> Fully ingested into BigQuery's proprietary Capacitor columnar storage.</li>
-  <li><strong>Performance:</strong> ⚡ Sub-second execution. Leverages clustering, partition pruning, and column-level min/max metadata.</li>
-  <li><strong>Cost Model:</strong> Billed for active/long-term storage ($0.02/GB) + query slots.</li>
-  <li><strong>Best For:</strong> Production dashboards, frequent analytical queries, high-throughput BI.</li>
-</ul>
-</div>
+      <div class="p-3.5 bg-white dark:bg-slate-900 rounded-lg border border-amber-200 dark:border-amber-900 space-y-2 text-xs">
+        <div class="flex items-center gap-2 text-slate-700 dark:text-slate-300">
+          <span class="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 font-mono font-bold text-amber-600">1</span>
+          <span>Analyst runs SQL query: <code>SELECT * FROM sales_external</code></span>
+        </div>
+        <div class="flex items-center gap-2 text-slate-700 dark:text-slate-300">
+          <span class="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 font-mono font-bold text-amber-600">2</span>
+          <span>BigQuery reads only table schema definition & GCS URI pointer</span>
+        </div>
+        <div class="flex items-center gap-2 text-amber-600 dark:text-amber-400 font-semibold">
+          <span class="px-2 py-0.5 rounded bg-amber-100 dark:bg-amber-950 font-mono font-bold">3</span>
+          <span>Reaches across network to read raw files ➔ <strong>🐢 Network bound</strong></span>
+        </div>
+      </div>
 
-<div class="p-5 rounded-xl bg-amber-50/70 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900 space-y-3">
-<div class="flex items-center justify-between">
-  <span class="font-bold text-amber-700 dark:text-amber-300 text-sm">🔗 External Table</span>
-  <span class="text-xs px-2 py-0.5 rounded bg-amber-100 dark:bg-amber-900 text-amber-800 dark:text-amber-200 font-semibold">Data OUTSIDE in GCS</span>
-</div>
-<ul class="text-xs text-slate-700 dark:text-slate-300 space-y-1.5 list-disc list-inside m-0">
-  <li><strong>Where Data Lives:</strong> Remains in Cloud Storage (Parquet, CSV, JSON). BigQuery stores only a schema definition and URI pointer.</li>
-  <li><strong>Performance:</strong> 🐢 Network-bound. Every query reads files over the wire without BigQuery block-level metadata caching.</li>
-  <li><strong>Cost Model:</strong> Billed for cheaper object storage in GCS ($0.010-$0.020/GB) + on-demand compute scan.</li>
-  <li><strong>Best For:</strong> Ad-hoc lake exploration, staging tables prior to ELT, rarely accessed archives.</li>
-</ul>
-</div>
+      <ul class="text-xs text-slate-700 dark:text-slate-300 space-y-2 list-none p-0 m-0">
+        <li class="flex items-start gap-2">
+          <span class="text-amber-500 font-bold">✔</span>
+          <span><strong>Physical Location:</strong> Remains in your Cloud Storage bucket (Parquet / ORC / CSV).</span>
+        </li>
+        <li class="flex items-start gap-2">
+          <span class="text-amber-500 font-bold">✔</span>
+          <span><strong>Performance:</strong> Slower network reads; no BigQuery Capacitor block-level metadata caching.</span>
+        </li>
+        <li class="flex items-start gap-2">
+          <span class="text-amber-500 font-bold">✔</span>
+          <span><strong>Cost Model:</strong> Billed for cheaper GCS object storage ($0.010-$0.020/GB) + on-demand compute scan.</span>
+        </li>
+        <li class="flex items-start gap-2">
+          <span class="text-amber-500 font-bold">✔</span>
+          <span><strong>Best For:</strong> Ad-hoc lake exploration, staging tables prior to ELT, cold archival datasets.</span>
+        </li>
+      </ul>
+    </div>
+
+  </div>
 
 </div>
 
@@ -214,33 +267,79 @@ There are two important nuances:
 
 Materialized views are ideal for stable, frequently queried aggregations—not as a universal replacement for scheduled ELT transformations.
 
-```mermaid
-flowchart TD
-    User["Analyst or BI Dashboard"]
-    Query["SELECT region, SUM(revenue)<br/>FROM orders_raw GROUP BY region"]
+<div class="my-8 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-900/40 space-y-6">
 
-    subgraph Optimizer["BigQuery Optimizer (Smart Tuning)"]
-        Check{"Materialized View<br/>matches query pattern?"}
-    end
+  <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-4">
+    <div class="flex items-center gap-3">
+      <div class="p-2 bg-purple-100 dark:bg-purple-900/50 rounded-xl">
+        <img src="/images/icons/bigquery.png" alt="BigQuery" class="w-8 h-8 object-contain">
+      </div>
+      <div>
+        <h4 class="text-base font-bold text-slate-900 dark:text-slate-100 m-0">Materialized Views: Smart Tuning & Automatic Query Rewrite</h4>
+        <p class="text-xs text-slate-500 dark:text-slate-400 m-0">How BigQuery accelerates repeated queries without requiring analysts to alter their SQL</p>
+      </div>
+    </div>
+  </div>
 
-    subgraph FastPath["⚡ Accelerated Execution (Sub-Second)"]
-        direction TB
-        MV["Materialized View Storage<br/>(Reads precomputed summary)"]
-        Delta["Base Table Delta Reader<br/>(Reads only fresh un-materialized rows)"]
-        Combine["Merge & Return Result"]
-        MV --> Combine
-        Delta --> Combine
-    end
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
-    subgraph SlowPath["⚠️ Fallback Execution"]
-        Raw["Full Scan on Raw Orders Table<br/>(Scans 2.84 TiB, burns slots)"]
-    end
+    <!-- Path 1: Accelerated with Materialized View -->
+    <div class="rounded-xl border-2 border-emerald-500/40 bg-emerald-50/30 dark:bg-emerald-950/20 p-5 space-y-3">
+      <div class="flex items-center justify-between">
+        <span class="font-bold text-emerald-800 dark:text-emerald-200 text-sm">⚡ Accelerated Path (With Materialized View)</span>
+        <span class="text-xs px-2.5 py-0.5 rounded-full bg-emerald-600 text-white font-semibold">Sub-Second</span>
+      </div>
 
-    User --> Query
-    Query --> Check
-    Check -->|"YES (Transparent Rewrite)"| FastPath
-    Check -->|"NO (No matching MV)"| SlowPath
-```
+      <div class="p-3.5 bg-white dark:bg-slate-900 rounded-lg border border-emerald-200 dark:border-emerald-900 space-y-2 text-xs">
+        <div class="flex items-center gap-2 text-slate-700 dark:text-slate-300">
+          <span class="font-bold text-emerald-600">1.</span>
+          <span>Analyst queries raw base table: <code>SELECT region, SUM(sales)...</code></span>
+        </div>
+        <div class="flex items-center gap-2 text-slate-700 dark:text-slate-300">
+          <span class="font-bold text-emerald-600">2.</span>
+          <span>Optimizer detects matching MV ➔ <strong>Transparently rewrites SQL</strong></span>
+        </div>
+        <div class="flex items-center gap-2 text-emerald-700 dark:text-emerald-300 font-semibold">
+          <span class="font-bold">3.</span>
+          <span>Reads precomputed summary + delta rows ➔ <strong>0 bytes raw scan</strong></span>
+        </div>
+      </div>
+
+      <p class="text-xs text-slate-600 dark:text-slate-300 m-0 leading-relaxed">
+        <strong>Cost & Slot Impact:</strong> Bypasses billions of raw rows. Dashboard refreshes consume a tiny fraction of a slot-second, delivering sub-second response times.
+      </p>
+    </div>
+
+    <!-- Path 2: Fallback without Materialized View -->
+    <div class="rounded-xl border-2 border-red-500/30 bg-red-50/30 dark:bg-red-950/20 p-5 space-y-3">
+      <div class="flex items-center justify-between">
+        <span class="font-bold text-red-800 dark:text-red-200 text-sm">⚠️ Standard Execution (Without Materialized View)</span>
+        <span class="text-xs px-2.5 py-0.5 rounded-full bg-red-600 text-white font-semibold">High Scan</span>
+      </div>
+
+      <div class="p-3.5 bg-white dark:bg-slate-900 rounded-lg border border-red-200 dark:border-red-900 space-y-2 text-xs">
+        <div class="flex items-center gap-2 text-slate-700 dark:text-slate-300">
+          <span class="font-bold text-red-600">1.</span>
+          <span>Analyst queries raw base table: <code>SELECT region, SUM(sales)...</code></span>
+        </div>
+        <div class="flex items-center gap-2 text-slate-700 dark:text-slate-300">
+          <span class="font-bold text-red-600">2.</span>
+          <span>No precomputed cache available in optimizer</span>
+        </div>
+        <div class="flex items-center gap-2 text-red-700 dark:text-red-300 font-semibold">
+          <span class="font-bold">3.</span>
+          <span>Full table scan required ➔ <strong>Scans 2.84 TiB ($17.75 per run)</strong></span>
+        </div>
+      </div>
+
+      <p class="text-xs text-slate-600 dark:text-slate-300 m-0 leading-relaxed">
+        <strong>Cost & Slot Impact:</strong> Recalculates identical aggregations every 10 minutes from raw storage, burning compute slots and driving high weekly cloud bills.
+      </p>
+    </div>
+
+  </div>
+
+</div>
 
 ---
 
@@ -298,27 +397,109 @@ Normally, if a user queries a view in BigQuery, they **must also have read permi
 - BigQuery grants the *view itself* permission to query the restricted tables.
 - End users are granted access **only** to the dataset containing the view. They have zero permissions on the raw source dataset, preventing any direct access to sensitive rows or columns.
 
-```mermaid
-flowchart LR
-    subgraph Users["End Users & BI Tools"]
-        Analyst["Data Analyst / Dashboard<br/><i>Role: bigquery.dataViewer on reporting_shared</i><br/><b>NO ACCESS to finance_raw (403 Forbidden)</b>"]
-    end
+<div class="my-8 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-900/40 space-y-6">
 
-    subgraph Reporting["Reporting Dataset (reporting_shared)"]
-        AuthView["Authorized View: monthly_sales_summary<br/><code>SELECT region, SUM(amount) FROM finance_raw.orders...</code>"]
-    end
+  <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-4">
+    <div class="flex items-center gap-3">
+      <div class="p-2 bg-indigo-100 dark:bg-indigo-900/50 rounded-xl">
+        <img src="/images/icons/iam.png" alt="IAM & Security" class="w-8 h-8 object-contain">
+      </div>
+      <div>
+        <h4 class="text-base font-bold text-slate-900 dark:text-slate-100 m-0">Authorized Views: The Secure Data Sharing Pipeline</h4>
+        <p class="text-xs text-slate-500 dark:text-slate-400 m-0">How end users query aggregated metrics without having read access to underlying PII tables</p>
+      </div>
+    </div>
+  </div>
 
-    subgraph Source["Restricted Dataset (finance_raw)"]
-        direction TB
-        Grant["View Authorized in Dataset Access List"]
-        RawTable["Base Table: orders_raw<br/>(Contains PII, Credit Cards, Balances)"]
-        Grant --> RawTable
-    end
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-5 items-stretch">
 
-    Analyst -->|"1. Queries view directly"| AuthView
-    AuthView -->|"2. BigQuery runs query with view's authorized identity"| Grant
-    AuthView -->|"3. Returns only safe, aggregated metrics"| Analyst
-```
+    <!-- Column 1: The End User -->
+    <div class="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 flex flex-col justify-between space-y-4">
+      <div>
+        <div class="flex items-center justify-between mb-3">
+          <span class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Step 1: The Consumer</span>
+          <span class="px-2 py-0.5 text-xs font-semibold rounded bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">End User</span>
+        </div>
+        <div class="font-bold text-slate-900 dark:text-slate-100 text-sm mb-1">Data Analyst / Dashboard</div>
+        <p class="text-xs text-slate-500 dark:text-slate-400 m-0 leading-relaxed">Needs monthly revenue by region for executive and stakeholder reporting.</p>
+      </div>
+
+      <div class="p-3 rounded-lg bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900 text-xs space-y-1">
+        <div class="font-bold text-red-700 dark:text-red-300 flex items-center gap-1.5">
+          <span>🚫</span> Access Denied on Raw Tables
+        </div>
+        <p class="text-red-600/90 dark:text-red-400 text-xs m-0 leading-relaxed">
+          Zero permissions on <code>finance_restricted</code> dataset. Direct table access returns <strong>403 Forbidden</strong>.
+        </p>
+      </div>
+
+      <div class="pt-2 border-t border-slate-100 dark:border-slate-800 text-xs text-blue-600 dark:text-blue-400 font-semibold flex items-center justify-between">
+        <span>Queries View Directly</span>
+        <span>➔</span>
+      </div>
+    </div>
+
+    <!-- Column 2: The Authorized View -->
+    <div class="rounded-xl border-2 border-indigo-500/50 bg-indigo-50/40 dark:bg-indigo-950/30 p-5 flex flex-col justify-between space-y-4 shadow-sm">
+      <div>
+        <div class="flex items-center justify-between mb-3">
+          <span class="text-xs font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">Step 2: The Security Window</span>
+          <span class="px-2 py-0.5 text-xs font-semibold rounded bg-indigo-600 text-white">Authorized View</span>
+        </div>
+        <div class="flex items-center gap-2 font-bold text-slate-900 dark:text-slate-100 text-sm mb-1">
+          <img src="/images/icons/bigquery.png" alt="BigQuery" class="w-5 h-5 object-contain">
+          <span>shared_reporting.monthly_revenue</span>
+        </div>
+        <p class="text-xs text-slate-600 dark:text-slate-300 m-0 leading-relaxed">
+          User is granted <code>bigquery.dataViewer</code> <strong>only</strong> on this view's public reporting dataset.
+        </p>
+      </div>
+
+      <div class="p-3 rounded-lg bg-white dark:bg-slate-900 border border-indigo-200 dark:border-indigo-900 text-xs space-y-1 font-mono text-slate-700 dark:text-slate-300 leading-tight">
+        <div class="text-[11px] text-slate-400">-- Predefined Aggregation</div>
+        <div>SELECT region,</div>
+        <div>&nbsp;&nbsp;SUM(order_total) AS rev</div>
+        <div>FROM finance_raw.orders</div>
+        <div>GROUP BY region;</div>
+      </div>
+
+      <div class="pt-2 border-t border-indigo-200 dark:border-indigo-900 text-xs text-indigo-700 dark:text-indigo-300 font-semibold flex items-center justify-between">
+        <span>Authorized in Source ACL</span>
+        <span>➔</span>
+      </div>
+    </div>
+
+    <!-- Column 3: The Restricted Vault -->
+    <div class="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 flex flex-col justify-between space-y-4">
+      <div>
+        <div class="flex items-center justify-between mb-3">
+          <span class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Step 3: The Vault</span>
+          <span class="px-2 py-0.5 text-xs font-semibold rounded bg-amber-100 dark:bg-amber-900 text-amber-800 dark:text-amber-200">Restricted Dataset</span>
+        </div>
+        <div class="flex items-center gap-2 font-bold text-slate-900 dark:text-slate-100 text-sm mb-1">
+          <img src="/images/icons/iam.png" alt="IAM" class="w-5 h-5 object-contain">
+          <span>finance_restricted.orders_raw</span>
+        </div>
+        <p class="text-xs text-slate-500 dark:text-slate-400 m-0 leading-relaxed">Contains PII, customer credit cards, tax IDs, and sensitive transaction rows.</p>
+      </div>
+
+      <div class="p-3 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-900 text-xs space-y-1">
+        <div class="font-bold text-emerald-700 dark:text-emerald-300 flex items-center gap-1.5">
+          <span>🔒</span> Delegated Query Execution
+        </div>
+        <p class="text-emerald-700/90 dark:text-emerald-400 text-xs m-0 leading-relaxed">
+          BigQuery checks source dataset ACL: The <strong>View itself</strong> is authorized. BigQuery executes query and returns safe aggregates.
+        </p>
+      </div>
+
+      <div class="pt-2 border-t border-slate-100 dark:border-slate-800 text-xs text-emerald-600 dark:text-emerald-400 font-semibold">
+        ✔ Zero PII Exposure to Analysts
+      </div>
+    </div>
+
+  </div>
+
+</div>
 
 ---
 
