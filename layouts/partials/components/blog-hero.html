@@ -43,8 +43,9 @@
           <!-- Left Column: Visual Media with Red FEATURED badge inside the link -->
           <div class="relative overflow-hidden bg-slate-900 flex items-stretch hero-bytedepth-img h-full min-h-[300px] lg:min-h-[440px]">
             <a href="{{ $page.RelPermalink }}" class="block w-full h-full relative group/img no-underline overflow-hidden" aria-label="Read featured: {{ $page.Title }}">
-              <span class="absolute top-4 left-4 z-30 px-2.5 py-1 bg-red-600 text-white font-mono text-[11px] font-black uppercase tracking-widest rounded-sm shadow-md pointer-events-none" >
-                FEATURED
+              <span class="absolute top-4 left-4 z-30 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-950/80 backdrop-blur-md border border-white/15 text-slate-100 font-mono text-xs font-bold uppercase tracking-wider shadow-lg pointer-events-none transition-transform group-hover/img:scale-105">
+                <span class="w-2 h-2 rounded-full bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.9)] animate-pulse" aria-hidden="true"></span>
+                <span>Featured</span>
               </span>
               {{ with $page.Params.image }}
                 {{ partial "image" (dict "Src" . "Context" $page "Alt" $page.Title "Class" "w-full h-full object-cover group-hover/img:scale-105 transition-transform duration-500 ease-out" "Loading" "eager" "FetchPriority" "high") }}
