@@ -175,15 +175,30 @@ You do not need to memorize internal Google infrastructure names, but one archit
 
 ```mermaid
 flowchart TD
-    Q[SQL Query] --> D[Dremel Execution Layer\nDynamic Compute Slots]
-    D --> S[Distributed Shuffle & Query Processing]
-    S --> M[BigQuery Managed Storage\nCapacitor Columnar Format]
-    S --> E[External Data in Cloud Storage\nParquet / ORC / Avro / CSV]
-    M --> P[Partitioned & Clustered Storage Blocks]
-    M --> V[Materialized View Aggregates]
-    M --> T[Time Travel & Table Snapshots]
-    M --> A[Authorized Views\nControlled Access Boundary]
-    E --> F[Raw Files in GCS Buckets]
+    Query["Incoming SQL Query"]
+
+    subgraph Lake["Cloud Storage (Lake Tier)"]
+        Ext["External Tables<br/>Query raw files directly in GCS"]
+    end
+
+    subgraph Native["BigQuery Native Storage"]
+        MV["Materialized Views<br/>Pre-aggregated results (Zero raw rows read)"]
+        Part["Partitioning<br/>Opens only matching date folders (Skips 99% of data)"]
+        Clust["Clustering<br/>Skips non-matching blocks inside each partition"]
+    end
+
+    subgraph Governance["Safety & Governance"]
+        Auth["Authorized Views<br/>Share metrics without exposing raw tables"]
+        Snap["Table Snapshots<br/>Zero-copy point-in-time backup"]
+    end
+
+    Query -->|"Lake scan"| Ext
+    Query -->|"Precomputed cache"| MV
+    Query -->|"Date filter"| Part
+    Part -->|"Sorted filter"| Clust
+
+    Native -.->|"Protected by"| Auth
+    Native -.->|"Point-in-time state"| Snap
 ```
 
 ### Storage
