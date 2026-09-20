@@ -1,11 +1,11 @@
 ---
 title: "Data Engineering on GCP (Part 1): The Core Storage & Access Building Blocks Demystified"
 meta_title: "GCP Data Engineering Architecture: Storage Primitives, Tables & Authorized Views"
-description: "A comprehensive architectural deep dive using Google Cloud's Cymbal Travel reference case. Learn how data flows from raw Cloud Storage files into high-performance BigQuery managed tables, partitioned and clustered storage, real-time materialized views, table snapshots, and zero-trust authorized views."
+description: "A comprehensive architectural deep dive for Offvia, a global travel platform. Learn how data flows from raw Cloud Storage files into high-performance BigQuery managed tables, partitioned and clustered storage, real-time materialized views, table snapshots, and zero-trust authorized views."
 date: 2026-09-19
 image: "/images/gcp-storage-building-blocks.jpg"
 categories: ["Google Cloud", "Architecture"]
-tags: ["Data Engineering", "GCP", "BigQuery", "Cloud Storage", "SQL", "Architecture", "Cymbal"]
+tags: ["Data Engineering", "GCP", "BigQuery", "Cloud Storage", "SQL", "Architecture", "Offvia"]
 author: tharun-vempati
 featured: false
 draft: true
@@ -15,17 +15,17 @@ series_order: 1
 
 When designing modern data platforms on Google Cloud, selecting the right storage and access primitives dictates both system performance and financial efficiency. Misconfigured tables can result in 100x query latency degradations and unexpected cloud billing spikes, while an optimal layout delivers sub-second analytical response times at minimal cost.
 
-To ground these concepts in a realistic production scenario, this guide references **Cymbal Travel**, Google Cloud's reference enterprise case study.
+To demonstrate how these storage building blocks operate in production, this guide examines the architecture of **Offvia**, a global travel and hospitality platform on Google Cloud—tracing its data pipeline evolution from a simple baseline file ingestion flow into an enterprise-grade, zero-trust lakehouse.
 
 ---
 
-## Enterprise Context: Cymbal Travel
+## Enterprise Context: Offvia
 
-**Cymbal Travel** is an international travel and hospitality platform operating a global flight booking, hotel reservation, and dynamic itinerary platform. 
+**Offvia** is an international travel and hospitality platform operating a global flight booking, hotel reservation, and dynamic itinerary platform. 
 
 ```
 ┌────────────────────────────────────────────────────────────────────────────┐
-│                        Cymbal Travel Data Ecosystem                        │
+│                        Offvia Data Ecosystem                        │
 ├────────────────────────────────────────────────────────────────────────────┤
 │  Ingestion Sources:                                                        │
 │  • Global Distribution Systems (GDS: Sabre, Amadeus)                       │
@@ -40,7 +40,7 @@ To ground these concepts in a realistic production scenario, this guide referenc
 └────────────────────────────────────────────────────────────────────────────┘
 ```
 
-As transaction volume scales from hundreds to millions of daily events, Cymbal Travel's data engineering team must evolve their data platform from a simple file-based data lake into an enterprise-grade lakehouse.
+As transaction volume scales from hundreds to millions of daily events, Offvia's data engineering team must evolve their data platform from a simple file-based data lake into an enterprise-grade lakehouse.
 
 ---
 
@@ -50,7 +50,7 @@ The transition from a simple data pipeline to an optimized enterprise architectu
 
 <div class="my-6 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/50 space-y-3">
 <div class="font-bold text-slate-900 dark:text-slate-100 text-sm border-b border-slate-200 dark:border-slate-800 pb-2">
-🗺️ Cymbal Travel: Data Storage & Access Architecture Progression
+🗺️ Offvia: Data Storage & Access Architecture Progression
 </div>
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
 <div class="p-3 rounded-xl bg-amber-50/60 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900">
@@ -101,14 +101,14 @@ The transition from a simple data pipeline to an optimized enterprise architectu
 ## 1. Phase 1: Baseline Ingestion with Cloud Storage & External Tables
 
 ### Architecture Scenario
-At inception, Cymbal Travel receives raw booking feeds and flight event logs exported by partner global distribution systems (GDS). These files land as raw Parquet objects in a Google Cloud Storage (GCS) bucket:
+At inception, Offvia receives raw booking feeds and flight event logs exported by partner global distribution systems (GDS). These files land as raw Parquet objects in a Google Cloud Storage (GCS) bucket:
 
-`gs://cymbal-travel-lake/bookings/2026/09/18/tickets_0900.parquet`
+`gs://offvia-travel-lake/bookings/2026/09/18/tickets_0900.parquet`
 
 The initial requirement is immediate ad-hoc exploration. Analysts need to inspect schema consistency, audit error codes, and validate partner payloads without waiting for the construction of a dedicated streaming ingestion pipeline (Dataflow or Pub/Sub).
 
 ### How the Data Flows Under the Hood
-To satisfy this requirement, Cymbal Travel creates a BigQuery **External Table**. 
+To satisfy this requirement, Offvia creates a BigQuery **External Table**. 
 
 <div class="my-6 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-900/40 space-y-4">
 <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
@@ -126,7 +126,7 @@ To satisfy this requirement, Cymbal Travel creates a BigQuery **External Table**
 <div class="p-3.5 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 space-y-2 text-xs">
 <div class="flex items-center gap-2 text-slate-700 dark:text-slate-300">
 <span class="px-2 py-0.5 rounded bg-amber-100 dark:bg-amber-950 font-mono font-bold text-amber-700 dark:text-amber-300">1</span>
-<span>Client submits SQL query targeting <code>cymbal_lake.bookings_raw</code>.</span>
+<span>Client submits SQL query targeting <code>offvia_lake.bookings_raw</code>.</span>
 </div>
 <div class="flex items-center gap-2 text-slate-700 dark:text-slate-300">
 <span class="px-2 py-0.5 rounded bg-amber-100 dark:bg-amber-950 font-mono font-bold text-amber-700 dark:text-amber-300">2</span>
@@ -163,10 +163,10 @@ To satisfy this requirement, Cymbal Travel creates a BigQuery **External Table**
 
 ### DDL Implementation
 ```sql
-CREATE OR REPLACE EXTERNAL TABLE `cymbal_lake.bookings_raw`
+CREATE OR REPLACE EXTERNAL TABLE `offvia_lake.bookings_raw`
 OPTIONS (
   format = 'PARQUET',
-  uris = ['gs://cymbal-travel-lake/bookings/*/*.parquet']
+  uris = ['gs://offvia-travel-lake/bookings/*/*.parquet']
 );
 ```
 
@@ -175,11 +175,11 @@ OPTIONS (
 ## 2. Phase 2: High-Performance Analytics with Native Managed Tables
 
 ### Architecture Scenario
-Within thirty days, Cymbal Travel reaches 300,000 bookings daily. Operational route dashboards and departure tracking consoles are deployed.
+Within thirty days, Offvia reaches 300,000 bookings daily. Operational route dashboards and departure tracking consoles are deployed.
 
 Queries that previously completed in seconds now require **45 to 60 seconds** because the external table references **42,000+ individual Parquet files**. BigQuery spend significant compute slot time simply listing bucket objects and reading data across the network fabric.
 
-To achieve enterprise-grade analytical performance, Cymbal Travel ingests data into **BigQuery Native Managed Tables**.
+To achieve enterprise-grade analytical performance, Offvia ingests data into **BigQuery Native Managed Tables**.
 
 ### How the Data Flows Under the Hood
 Native managed storage shifts the physical layout from unmanaged object files to Google's proprietary columnar storage format (**Capacitor**), persisted directly to Google's distributed cluster filesystem (**Colossus**).
@@ -201,7 +201,7 @@ Native managed storage shifts the physical layout from unmanaged object files to
 <div class="p-3.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-2">
 <strong class="text-slate-900 dark:text-slate-100 block text-sm">Capacitor Columnar Pruning:</strong>
 <p class="text-slate-600 dark:text-slate-400 m-0 leading-relaxed">
-Cymbal Travel's booking records contain 48 attributes (passenger details, fare codes, seat assignments, baggage fees). When an operational query requests <code>SELECT carrier_code, SUM(total_fare)</code>, Capacitor reads <strong>only the two referenced columns from disk</strong>. The remaining 46 columns are never transferred from storage to compute, cutting I/O by 90%+.
+Offvia's booking records contain 48 attributes (passenger details, fare codes, seat assignments, baggage fees). When an operational query requests <code>SELECT carrier_code, SUM(total_fare)</code>, Capacitor reads <strong>only the two referenced columns from disk</strong>. The remaining 46 columns are never transferred from storage to compute, cutting I/O by 90%+.
 </p>
 </div>
 <div class="p-3.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-2">
@@ -215,7 +215,7 @@ BigQuery active storage costs <strong>$0.020 per GB/month</strong>. If a table o
 
 ### DDL Implementation
 ```sql
-CREATE OR REPLACE TABLE `cymbal_dw.bookings_managed` AS
+CREATE OR REPLACE TABLE `offvia_dw.bookings_managed` AS
 SELECT 
   booking_id,
   carrier_code,
@@ -226,7 +226,7 @@ SELECT
   cabin_class,
   fare_amount,
   booking_status
-FROM `cymbal_lake.bookings_raw`;
+FROM `offvia_lake.bookings_raw`;
 ```
 
 **Outcome:** Route dashboard query latency drops from **45 seconds down to 820 milliseconds**.
@@ -247,7 +247,7 @@ SELECT
   destination_airport,
   COUNT(booking_id) AS total_passengers,
   SUM(fare_amount) AS route_revenue
-FROM `cymbal_dw.bookings_managed`
+FROM `offvia_dw.bookings_managed`
 WHERE flight_date = '2026-09-18'
 GROUP BY 1, 2, 3;
 ```
@@ -263,7 +263,7 @@ Cost Impact at On-Demand Pricing ($6.25 per TiB Scanned):
 Because the base table has no physical boundaries, the query execution engine must scan every storage block in Colossus to verify the `flight_date` predicate.
 
 ### How the Data Flows Under the Hood: Partition Pruning
-To resolve this, Cymbal Travel partitions the table by calendar date (`PARTITION BY DATE(departure_timestamp)`).
+To resolve this, Offvia partitions the table by calendar date (`PARTITION BY DATE(departure_timestamp)`).
 
 <div class="my-6 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-900/40 space-y-4">
 <div class="font-bold text-slate-900 dark:text-slate-100 text-sm">
@@ -299,13 +299,13 @@ By declaring <code>OPTIONS(require_partition_filter = true)</code>, BigQuery str
 
 ### DDL Implementation
 ```sql
-CREATE OR REPLACE TABLE `cymbal_dw.bookings_partitioned`
+CREATE OR REPLACE TABLE `offvia_dw.bookings_partitioned`
 PARTITION BY DATE(departure_timestamp)
 OPTIONS (
   require_partition_filter = true,
-  description = 'Cymbal Travel core flight bookings partitioned by departure date'
+  description = 'Offvia core flight bookings partitioned by departure date'
 ) AS
-SELECT * FROM `cymbal_dw.bookings_managed`;
+SELECT * FROM `offvia_dw.bookings_managed`;
 ```
 
 **Outcome:** Data scanned per query drops from **2.84 TiB to 2.8 GiB** (99.9% cost reduction).
@@ -315,13 +315,13 @@ SELECT * FROM `cymbal_dw.bookings_managed`;
 ## 4. Phase 4: High-Cardinality Filtering with Multi-Column Clustering
 
 ### Architectural Bottleneck: Intra-Partition Scanning
-Cymbal Travel deploys a partner self-service portal allowing individual commercial airlines (e.g., Delta, Lufthansa, Singapore Airlines) to inspect their booking numbers.
+Offvia deploys a partner self-service portal allowing individual commercial airlines (e.g., Delta, Lufthansa, Singapore Airlines) to inspect their booking numbers.
 
 When carrier `CARRIER-DELTA-801` queries the past 30 days of departures:
 
 ```sql
 SELECT booking_id, flight_number, origin_airport, destination_airport, fare_amount
-FROM `cymbal_dw.bookings_partitioned`
+FROM `offvia_dw.bookings_partitioned`
 WHERE departure_timestamp >= '2026-08-20'
   AND departure_timestamp < '2026-09-19'
   AND carrier_code = 'DL';
@@ -332,7 +332,7 @@ Partition pruning isolates the search to the 30 relevant daily partitions, reduc
 However, Delta's flights account for only **140 rows out of 150 million records** in that 30-day period. BigQuery still reads **84 GiB** off storage media because rows within each partition are stored in arbitrary arrival order.
 
 ### How the Data Flows Under the Hood: Block Metadata Skipping
-Cymbal Travel applies **Clustering** on `carrier_code` and `booking_status`.
+Offvia applies **Clustering** on `carrier_code` and `booking_status`.
 
 <div class="my-6 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-900/40 space-y-4">
 <div class="font-bold text-slate-900 dark:text-slate-100 text-sm">
@@ -362,13 +362,13 @@ Clustering sorting is strictly hierarchical. In <code>CLUSTER BY carrier_code, b
 
 ### DDL Implementation
 ```sql
-CREATE OR REPLACE TABLE `cymbal_dw.bookings_clustered`
+CREATE OR REPLACE TABLE `offvia_dw.bookings_clustered`
 PARTITION BY DATE(departure_timestamp)
 CLUSTER BY carrier_code, booking_status
 OPTIONS (
   require_partition_filter = true
 ) AS
-SELECT * FROM `cymbal_dw.bookings_partitioned`;
+SELECT * FROM `offvia_dw.bookings_partitioned`;
 ```
 
 **Outcome:** Partner lookup byte scans drop from **84 GiB down to 42 MB** (99.95% reduction), cutting latency from **3.8s to 310ms**.
@@ -378,7 +378,7 @@ SELECT * FROM `cymbal_dw.bookings_partitioned`;
 ## 5. Phase 5: Event Time vs. Ingestion Time in Distributed Travel Systems
 
 ### Architectural Challenge: Late-Arriving Event Discrepancies
-Cymbal Travel supports in-flight seat upgrades and reservations made on aircraft crossing the Pacific Ocean or international date lines.
+Offvia supports in-flight seat upgrades and reservations made on aircraft crossing the Pacific Ocean or international date lines.
 
 ```
 ┌────────────────────────────────────────────────────────────────────────────┐
@@ -403,14 +403,14 @@ Consequently:
 - Analytical reporting loses factual alignment with operational flight logs.
 
 ### How the Data Flows Under the Hood: Dual-Timestamp Modeling
-Cymbal Travel establishes a two-timestamp architectural contract separating **Event Time** from **Ingestion Time**.
+Offvia establishes a two-timestamp architectural contract separating **Event Time** from **Ingestion Time**.
 
 <div class="my-6 p-5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-900/40 space-y-3">
 <div class="font-bold text-slate-900 dark:text-slate-100 text-sm">
 ⏱️ The Dual-Timestamp Architectural Contract
 </div>
 <div class="p-3 bg-slate-900 rounded-lg text-slate-200 font-mono text-xs">
-CREATE TABLE cymbal_dw.bookings (<br>
+CREATE TABLE offvia_dw.bookings (<br>
 &nbsp;&nbsp;booking_id STRING NOT NULL,<br>
 &nbsp;&nbsp;carrier_code STRING NOT NULL,<br>
 &nbsp;&nbsp;<strong class="text-emerald-400">departure_timestamp TIMESTAMP NOT NULL</strong>,&nbsp;&nbsp;-- Flight Event Time (Business Reporting)<br>
@@ -450,7 +450,7 @@ SELECT
   SUM(fare_amount) AS total_gross_revenue,
   COUNT(booking_id) AS total_passengers,
   AVG(fare_amount) AS average_fare
-FROM `cymbal_dw.bookings`
+FROM `offvia_dw.bookings`
 GROUP BY 1, 2, 3;
 ```
 
@@ -459,7 +459,7 @@ Even with partitioning and clustering, this query scans all historical dates and
 Traditional scheduled batch tables (e.g. hourly Airflow summaries) introduce stale data windows, failing to reflect real-time ticket sales.
 
 ### How the Data Flows Under the Hood: Transparent Smart Tuning & Delta Readers
-Cymbal Travel creates a **BigQuery Materialized View (MV)**.
+Offvia creates a **BigQuery Materialized View (MV)**.
 
 <div class="my-6 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-900/40 space-y-4">
 <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
@@ -478,7 +478,7 @@ Cymbal Travel creates a **BigQuery Materialized View (MV)**.
 <div class="p-3.5 rounded-xl border border-emerald-300 dark:border-emerald-800 bg-emerald-50/40 dark:bg-emerald-950/20 space-y-1.5">
 <strong class="text-emerald-800 dark:text-emerald-300 block text-sm">Transparent Smart Tuning:</strong>
 <p class="text-slate-600 dark:text-slate-400 m-0 leading-relaxed">
-Users and BI dashboards do not modify their SQL. They continue querying the base table <code>cymbal_dw.bookings</code>. BigQuery's cost-based query optimizer detects the matching Materialized View definition and transparently rewrites the query plan to read the precomputed summary.
+Users and BI dashboards do not modify their SQL. They continue querying the base table <code>offvia_dw.bookings</code>. BigQuery's cost-based query optimizer detects the matching Materialized View definition and transparently rewrites the query plan to read the precomputed summary.
 </p>
 </div>
 <div class="p-3.5 rounded-xl border border-blue-300 dark:border-blue-800 bg-blue-50/40 dark:bg-blue-950/20 space-y-1.5">
@@ -492,7 +492,7 @@ When bookings land seconds before query execution, the delta reader combines the
 
 ### DDL Implementation
 ```sql
-CREATE MATERIALIZED VIEW `cymbal_dw.mv_monthly_route_metrics`
+CREATE MATERIALIZED VIEW `offvia_dw.mv_monthly_route_metrics`
 OPTIONS (
   enable_refresh = true,
   refresh_interval_minutes = 30
@@ -504,7 +504,7 @@ SELECT
   SUM(fare_amount) AS total_gross_revenue,
   COUNT(booking_id) AS total_passengers,
   AVG(fare_amount) AS average_fare
-FROM `cymbal_dw.bookings`
+FROM `offvia_dw.bookings`
 GROUP BY 1, 2, 3;
 ```
 
@@ -520,7 +520,7 @@ During off-peak maintenance at 2:15 AM, a database script intending to purge exp
 ```sql
 -- Intended: WHERE booking_status = 'EXPIRED' AND retry_count > 3
 -- Executed:
-UPDATE `cymbal_dw.bookings`
+UPDATE `offvia_dw.bookings`
 SET booking_status = 'CANCELLED'
 WHERE 1 = 1;
 ```
@@ -534,16 +534,16 @@ Because BigQuery storage is immutable and append-optimized, updates and deletes 
 BigQuery automatically retains a rolling 7-day history of changes. The engineering team executes a point-in-time recovery to restore the table to its state 20 minutes prior:
 
 ```sql
-CREATE OR REPLACE TABLE `cymbal_dw.bookings` AS
+CREATE OR REPLACE TABLE `offvia_dw.bookings` AS
 SELECT * 
-FROM `cymbal_dw.bookings`
+FROM `offvia_dw.bookings`
 FOR SYSTEM_TIME AS OF TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 20 MINUTE);
 ```
 
 The table is restored in under 90 seconds without requiring tape backups or multi-hour disk image restores.
 
 #### 2. Long-Term Protection via Zero-Copy Table Snapshots
-To protect data across multi-week architectural migrations beyond the 7-day Time Travel limit, Cymbal Travel creates a **Table Snapshot**.
+To protect data across multi-week architectural migrations beyond the 7-day Time Travel limit, Offvia creates a **Table Snapshot**.
 
 <div class="my-6 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-900/40 space-y-4">
 <div class="font-bold text-slate-900 dark:text-slate-100 text-sm">
@@ -567,8 +567,8 @@ As the production base table modifies or deletes rows, BigQuery allocates new bl
 
 ### DDL Implementation
 ```sql
-CREATE SNAPSHOT TABLE `cymbal_backups.bookings_pre_migration_2026_q3`
-CLONE `cymbal_dw.bookings`
+CREATE SNAPSHOT TABLE `offvia_backups.bookings_pre_migration_2026_q3`
+CLONE `offvia_dw.bookings`
 OPTIONS (
   expiration_timestamp = TIMESTAMP '2026-12-31 00:00:00 UTC',
   description = 'Pre-migration immutable snapshot for Q3 reservation architecture refactor'
@@ -580,19 +580,19 @@ OPTIONS (
 ## 8. Phase 8: Zero-Trust Partner Governance with Authorized Views
 
 ### Architectural Challenge: Regulatory Passenger Privacy Compliance
-Cymbal Travel partners with an international commercial aviation alliance. External auditors must inspect route load factors, booking volumes, and airport facility taxes for the past 36 months.
+Offvia partners with an international commercial aviation alliance. External auditors must inspect route load factors, booking volumes, and airport facility taxes for the past 36 months.
 
 However, the base `bookings` table contains sensitive **Passenger Name Record (PNR)** data:
 - Passport numbers and issuing authorities
 - Passenger birth dates and citizenship
 - Primary contact information and payment tokens
 
-Directly granting external auditors read permissions (`roles/bigquery.dataViewer`) on `cymbal_dw.bookings` violates TSA Secure Flight regulations and European GDPR data protection directives.
+Directly granting external auditors read permissions (`roles/bigquery.dataViewer`) on `offvia_dw.bookings` violates TSA Secure Flight regulations and European GDPR data protection directives.
 
-Creating a standard SQL view `cymbal_audit.route_occupancy` fails: in BigQuery's standard IAM model, querying a view requires read permissions on both the view *and* the underlying source tables. Granting source table access allows auditors to bypass the view and query raw passport records.
+Creating a standard SQL view `offvia_audit.route_occupancy` fails: in BigQuery's standard IAM model, querying a view requires read permissions on both the view *and* the underlying source tables. Granting source table access allows auditors to bypass the view and query raw passport records.
 
 ### How the Data Flows Under the Hood: Delegated Access Control
-Cymbal Travel implements **BigQuery Authorized Views**.
+Offvia implements **BigQuery Authorized Views**.
 
 <div class="my-6 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-900/40 space-y-4">
 <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
@@ -611,7 +611,7 @@ Cymbal Travel implements **BigQuery Authorized Views**.
 <div class="p-3.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-2">
 <strong class="text-slate-900 dark:text-slate-100 block text-sm">1. External Aviation Auditor</strong>
 <p class="text-slate-600 dark:text-slate-400 m-0">
-Granted <code>roles/bigquery.dataViewer</code> <strong>only</strong> on partner dataset <code>cymbal_audit</code>.
+Granted <code>roles/bigquery.dataViewer</code> <strong>only</strong> on partner dataset <code>offvia_audit</code>.
 </p>
 <div class="p-2 rounded bg-rose-50 dark:bg-rose-950/40 text-rose-700 dark:text-rose-400 font-semibold text-[11px]">
 🚫 Zero read access to underlying PNR tables
@@ -620,16 +620,16 @@ Granted <code>roles/bigquery.dataViewer</code> <strong>only</strong> on partner 
 <div class="p-3.5 rounded-xl bg-indigo-50/30 dark:bg-indigo-950/30 border-2 border-indigo-500/40 space-y-2">
 <strong class="text-indigo-900 dark:text-indigo-200 block text-sm">2. The Authorized View</strong>
 <p class="text-slate-600 dark:text-slate-400 m-0 font-mono text-[11px]">
-cymbal_audit.route_occupancy
+offvia_audit.route_occupancy
 </p>
 <div class="p-2 rounded bg-indigo-100 dark:bg-indigo-900/50 text-indigo-800 dark:text-indigo-200 font-semibold text-[11px]">
-✔ Authorized inside cymbal_dw dataset ACL
+✔ Authorized inside offvia_dw dataset ACL
 </div>
 </div>
 <div class="p-3.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-2">
 <strong class="text-slate-900 dark:text-slate-100 block text-sm">3. Restricted Passenger Vault</strong>
 <p class="text-slate-600 dark:text-slate-400 m-0">
-Dataset <code>cymbal_dw</code> holds raw passport numbers, passenger dates of birth, and contact info.
+Dataset <code>offvia_dw</code> holds raw passport numbers, passenger dates of birth, and contact info.
 </p>
 <div class="p-2 rounded bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 font-semibold text-[11px]">
 🔒 Vault remains completely locked
@@ -642,7 +642,7 @@ Dataset <code>cymbal_dw</code> holds raw passport numbers, passenger dates of bi
 1. Define the public view in the partner audit dataset:
 
 ```sql
-CREATE OR REPLACE VIEW `cymbal_audit.route_occupancy` AS
+CREATE OR REPLACE VIEW `offvia_audit.route_occupancy` AS
 SELECT 
   carrier_code, 
   origin_airport,
@@ -650,33 +650,33 @@ SELECT
   DATE(departure_timestamp) AS flight_date,
   COUNT(booking_id) AS total_passengers,
   SUM(fare_amount) AS total_fare_revenue
-FROM `cymbal_dw.bookings`
+FROM `offvia_dw.bookings`
 GROUP BY 1, 2, 3, 4;
 ```
 
 2. Authorize the view within the source dataset:
-- In the BigQuery console, navigate to dataset `cymbal_dw` ➔ **Share** ➔ **Authorize Views**.
-- Add view `cymbal_audit.route_occupancy` to the authorized view list and confirm.
-- Grant external auditor identities `roles/bigquery.dataViewer` exclusively on dataset `cymbal_audit`.
+- In the BigQuery console, navigate to dataset `offvia_dw` ➔ **Share** ➔ **Authorize Views**.
+- Add view `offvia_audit.route_occupancy` to the authorized view list and confirm.
+- Grant external auditor identities `roles/bigquery.dataViewer` exclusively on dataset `offvia_audit`.
 
-When auditors query `cymbal_audit.route_occupancy`, BigQuery executes the query utilizing the view's authorized privileges, completely shielding underlying PNR records.
+When auditors query `offvia_audit.route_occupancy`, BigQuery executes the query utilizing the view's authorized privileges, completely shielding underlying PNR records.
 
 ---
 
-## The Complete Cymbal Travel Lakehouse Architecture
+## The Complete Offvia Lakehouse Architecture
 
-Below is the consolidated architecture topology integrating all storage primitives across Cymbal Travel's production lakehouse:
+Below is the consolidated architecture topology integrating all storage primitives across Offvia's production lakehouse:
 
 ```
 ┌────────────────────────────────────────────────────────────────────────────────────────┐
-│                      Cymbal Travel End-to-End Lakehouse Architecture                    │
+│                      Offvia End-to-End Lakehouse Architecture                    │
 └────────────────────────────────────────────────────────────────────────────────────────┘
 
   [ INGESTION LAYER ]
-  GDS Feeds / Booking Services ──▶ Cloud Storage (gs://cymbal-travel-lake/)
+  GDS Feeds / Booking Services ──▶ Cloud Storage (gs://offvia-travel-lake/)
                                       │
                                       ▼
-                                [ External Tables ] (cymbal_lake.bookings_raw)
+                                [ External Tables ] (offvia_lake.bookings_raw)
                                 • Immediate ad-hoc log exploration
                                 • Zero ingestion compute fees
                                       │
@@ -695,7 +695,7 @@ Below is the consolidated architecture topology integrating all storage primitiv
                                  • Transparent Smart Tuning     • 7-day rolling Time Travel
                                       │
                                       ▼
-  [ GOVERNANCE & SECURITY ]      [ Authorized Views ] (cymbal_audit.route_occupancy)
+  [ GOVERNANCE & SECURITY ]      [ Authorized Views ] (offvia_audit.route_occupancy)
                                  • Zero-trust delegated IAM access
                                  • Full audit visibility without PNR passport leakage
 ```
@@ -734,9 +734,9 @@ Below is the consolidated architecture topology integrating all storage primitiv
 
 ## What's Next in the Series?
 
-In this foundational architecture guide, we traced how Cymbal Travel evolved its data platform from a simple file lake into a high-performance Google Cloud lakehouse.
+In this foundational architecture guide, we traced how Offvia evolved its data platform from a simple file lake into a high-performance Google Cloud lakehouse.
 
-In **Part 1.1 (Hands-On Implementation Lab)**, we deploy Cymbal Travel's complete architecture live in Google Cloud Shell:
+In **Part 1.1 (Hands-On Implementation Lab)**, we deploy Offvia's complete architecture live in Google Cloud Shell:
 - Provisioning GCS buckets and creating External BigLake tables.
 - Building partitioned, clustered reservation tables with enforced `require_partition_filter` constraints.
 - Deploying live Materialized Views and inspecting query execution plans in BigQuery Studio.
