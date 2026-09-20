@@ -31,16 +31,6 @@ A technical publication is only as valuable as its accuracy. To maintain absolut
 
 ---
 
-### 📅 Editorial Rhythm & Publishing Schedule
-
-We value consistent, reliable engineering content over sporadic article batches. Our committed publishing cadence:
-
-- **📘 Bi-Weekly (Every 2 Weeks):** 1 Comprehensive Deep-Dive Architecture Guide.
-- **⚡ Weekly:** 1 Shorter Troubleshooting Note & Cloud Pulse synthesized telemetry analysis.
-- **🎓 Monthly:** 1 Curated Certification Exam Blueprint or Learning Path update (CKA, PCA, EX280).
-
----
-
 ### 👥 Behind the Publication
 
 Gcloud Cafe was founded by **Tharun Vempati**, a GCP Professional Cloud Architect and DevOps Specialist with verified credentials across Google Cloud, Kubernetes (CKA), and Red Hat OpenShift (EX280). 
