@@ -71,26 +71,61 @@ External tables are useful when you want to:
 > **Practical Rule:** Use external tables for exploration, interoperability, and colder lakehouse tiers. Use managed tables when the data is queried frequently, powers dashboards, or requires BigQuery's full optimization suite.
 
 ```mermaid
-flowchart LR
+flowchart TB
     Query["Incoming SQL Query"]
 
-    subgraph Managed["BigQuery Managed Table"]
+    subgraph BQ["Google BigQuery (Data Warehouse Boundary)"]
         direction TB
-        Opt["Query Optimizer & Metadata Cache"]
-        Cap["Capacitor Columnar Storage<br/>(Compressed, sorted, fast micro-scans)"]
-        Opt --> Cap
+
+        subgraph M["Managed Table"]
+            M_Def["Table Definition & Metadata"]
+            M_Data["⚡ BigQuery Native Storage (Capacitor)<br/>• Data lives INSIDE BigQuery<br/>• Compressed columnar format<br/>• Fast pruning via min/max metadata"]
+            M_Def -->|"Direct local read"| M_Data
+        end
+
+        subgraph E["External Table"]
+            E_Def["Schema & URI Pointer Only<br/><i>(Zero data bytes stored in BigQuery)</i>"]
+        end
     end
 
-    subgraph External["External Table (Lake Tier)"]
-        direction TB
-        Meta["Schema Definition"]
-        GCS["Cloud Storage Bucket<br/>(Reads raw Parquet / ORC / CSV across network)"]
-        Meta --> GCS
+    subgraph GCS["Google Cloud Storage (Data Lake Boundary)"]
+        GCS_Data["🗄️ Raw Lake Files (gs://my-bucket/*.parquet)<br/>• Data lives OUTSIDE in object storage<br/>• Network latency on every query<br/>• No BigQuery metadata acceleration"]
     end
 
-    Query -->|"Native fast path"| Opt
-    Query -->|"Remote network read"| Meta
+    Query -->|"1. Query Managed Table"| M_Def
+    Query -->|"2. Query External Table"| E_Def
+    E_Def -->|"Network read across GCP"| GCS_Data
 ```
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4 my-6">
+
+<div class="p-5 rounded-xl bg-blue-50/70 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-900 space-y-3">
+<div class="flex items-center justify-between">
+  <span class="font-bold text-blue-700 dark:text-blue-300 text-sm">📦 Managed Table</span>
+  <span class="text-xs px-2 py-0.5 rounded bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 font-semibold">Data INSIDE BigQuery</span>
+</div>
+<ul class="text-xs text-slate-700 dark:text-slate-300 space-y-1.5 list-disc list-inside m-0">
+  <li><strong>Where Data Lives:</strong> Fully ingested into BigQuery's proprietary Capacitor columnar storage.</li>
+  <li><strong>Performance:</strong> ⚡ Sub-second execution. Leverages clustering, partition pruning, and column-level min/max metadata.</li>
+  <li><strong>Cost Model:</strong> Billed for active/long-term storage ($0.02/GB) + query slots.</li>
+  <li><strong>Best For:</strong> Production dashboards, frequent analytical queries, high-throughput BI.</li>
+</ul>
+</div>
+
+<div class="p-5 rounded-xl bg-amber-50/70 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900 space-y-3">
+<div class="flex items-center justify-between">
+  <span class="font-bold text-amber-700 dark:text-amber-300 text-sm">🔗 External Table</span>
+  <span class="text-xs px-2 py-0.5 rounded bg-amber-100 dark:bg-amber-900 text-amber-800 dark:text-amber-200 font-semibold">Data OUTSIDE in GCS</span>
+</div>
+<ul class="text-xs text-slate-700 dark:text-slate-300 space-y-1.5 list-disc list-inside m-0">
+  <li><strong>Where Data Lives:</strong> Remains in Cloud Storage (Parquet, CSV, JSON). BigQuery stores only a schema definition and URI pointer.</li>
+  <li><strong>Performance:</strong> 🐢 Network-bound. Every query reads files over the wire without BigQuery block-level metadata caching.</li>
+  <li><strong>Cost Model:</strong> Billed for cheaper object storage in GCS ($0.010-$0.020/GB) + on-demand compute scan.</li>
+  <li><strong>Best For:</strong> Ad-hoc lake exploration, staging tables prior to ELT, rarely accessed archives.</li>
+</ul>
+</div>
+
+</div>
 
 ---
 
