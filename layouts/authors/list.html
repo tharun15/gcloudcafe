@@ -1,10 +1,13 @@
 {{ define "main" }}
   <!-- Uniform Breadcrumb Bar -->
-  <div class="bytedepth-container pt-5 pb-2">
-    <nav class="flex items-center text-xs font-mono text-slate-500 dark:text-slate-400" aria-label="Breadcrumb">
-      <a href="{{ site.Home.RelPermalink }}" class="text-slate-700 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-500 no-underline transition-colors">Home</a>
-      <span class="mx-1.5 text-slate-300 dark:text-slate-700">/</span>
-      <span class="text-slate-900 dark:text-slate-200 font-semibold">Authors</span>
+  <div class="bytedepth-container pt-6 pb-4">
+    <nav class="flex items-center gap-2 text-sm font-medium text-slate-600 dark:text-slate-300" aria-label="Breadcrumb">
+      <a href="{{ site.Home.RelPermalink }}" class="text-slate-700 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-500 no-underline transition-colors flex items-center gap-1.5">
+        <i class="fa-solid fa-house text-xs text-slate-400 dark:text-slate-500" aria-hidden="true"></i>
+        <span>Home</span>
+      </a>
+      <span class="text-slate-300 dark:text-slate-700">/</span>
+      <span class="text-slate-900 dark:text-white font-semibold" aria-current="page">Authors</span>
     </nav>
   </div>
 
@@ -316,10 +319,10 @@
           </div>
         </div>
         <div class="flex items-center justify-center gap-3">
-          <button type="button" id="proposal-another-btn" class="px-4 py-2 rounded-sm border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 text-xs font-bold transition-all cursor-pointer bg-transparent">
+          <button type="button" id="proposal-another-btn" class="btn-secondary text-xs cursor-pointer">
             Submit Another
           </button>
-          <button type="button" id="proposal-done-btn" class="px-6 py-2 rounded-sm bg-red-600 hover:bg-red-700 text-white text-xs font-bold transition-all cursor-pointer border-none shadow-sm">
+          <button type="button" id="proposal-done-btn" class="btn-primary text-xs cursor-pointer">
             Done
           </button>
         </div>

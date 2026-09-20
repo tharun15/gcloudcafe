@@ -14,11 +14,11 @@
 
 
   <!-- Breadcrumbs -->
-  <div class="bytedepth-container pt-5 pb-2">
-    <nav class="text-xs font-mono text-slate-500 dark:text-slate-400" aria-label="Breadcrumb">
-      <a href="{{ site.Home.RelPermalink }}" class="text-inherit hover:text-primary no-underline">Home</a>
-      <span class="mx-1.5 text-slate-300 dark:text-slate-700">/</span>
-      <span class="text-slate-900 dark:text-slate-200 font-semibold">Articles</span>
+  <div class="bytedepth-container pt-6 pb-4">
+    <nav class="text-sm font-medium text-slate-600 dark:text-slate-300 flex items-center gap-2" aria-label="Breadcrumb">
+      <a href="{{ site.Home.RelPermalink }}" class="text-inherit hover:text-red-600 dark:hover:text-red-500 no-underline transition-colors">Home</a>
+      <span class="text-slate-400 dark:text-slate-600 text-xs" aria-hidden="true">/</span>
+      <span class="text-slate-900 dark:text-white font-semibold" aria-current="page">Articles</span>
     </nav>
   </div>
 
@@ -36,8 +36,7 @@
         <div class="flex items-center gap-6 sm:gap-8 overflow-x-auto no-scrollbar py-1">
           <span class="sr-only">Topics</span>
           <a href="{{ `blog/` | relLangURL }}"
-             class="category-tab-active pb-3 -mb-px shrink-0 text-sm no-underline flex items-center gap-1.5"
-             style="color: #dc2626 !important; border-bottom: 2px solid #dc2626 !important; font-weight: 700 !important;">
+             class="category-tab-active pb-3 -mb-px shrink-0 text-sm no-underline flex items-center gap-1.5 text-red-600 dark:text-red-500 border-b-2 border-red-600 dark:border-red-500 font-bold">
             <span>All</span>
           </a>
           {{/* Curate primary top categories matching ByteDepth tab density */}}
@@ -96,7 +95,7 @@
       <!-- View All Articles Button (In-Place Seamless Loader) -->
       {{ if gt (len $gridPosts) 9 }}
       <div class="mt-12 mb-16 text-center" id="view-all-articles-container">
-        <a class="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-sm border border-slate-300 dark:border-slate-700 bg-white dark:bg-[#0c1220] text-slate-800 dark:text-slate-200 hover:border-slate-400 dark:hover:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800/80 text-sm font-semibold transition-all no-underline shadow-2xs cursor-pointer group"
+        <a class="inline-flex items-center justify-center gap-2 px-6 py-2.5 btn-secondary rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-[#0c1220] text-slate-800 dark:text-slate-200 hover:border-slate-400 dark:hover:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800/80 text-sm font-semibold transition-all no-underline shadow-xs cursor-pointer group"
            id="btn-load-more-articles"
            href="{{ `blog/` | relLangURL }}"
            role="button"
@@ -116,45 +115,55 @@
       </div>
       {{ end }}
 
-      <!-- BROWSE ALL TOPICS Section (ByteDepth Reference) -->
+      <!-- Browse all topics Section (Issue 4 & 9 Resolved) -->
       <div class="mt-14 mb-8">
-        <span class="font-mono text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest block mb-4">
-          BROWSE ALL TOPICS
-        </span>
+        <h3 class="font-mono text-xs font-bold text-slate-500 dark:text-slate-400 tracking-wider block mb-4">
+          Browse all topics
+        </h3>
 
-        <div class="border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0c1220] rounded-sm overflow-hidden" style="border: 1px solid #e2e8f0;">
-          <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5" style="display: grid;">
+        <div class="border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0c1220] rounded-xl overflow-hidden shadow-xs">
+          <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 divide-x divide-y divide-slate-200 dark:divide-slate-800">
             
-            <a href="{{ `categories/kubernetes/` | relLangURL }}" class="p-4 sm:p-5 text-xs sm:text-sm font-medium text-slate-800 dark:text-slate-200 hover:text-red-600 dark:hover:text-red-500 transition-colors no-underline block" style="border-right: 1px solid #e2e8f0; border-bottom: 1px solid #e2e8f0;">
-              Kubernetes
+            <a href="{{ `categories/kubernetes/` | relLangURL }}" class="px-4 py-3 sm:py-3.5 text-sm sm:text-base font-semibold text-slate-900 dark:text-white hover:text-red-600 dark:hover:text-red-500 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-all no-underline flex items-center justify-between group">
+              <span>Kubernetes</span>
+              <span class="text-xs text-slate-400 group-hover:text-red-500 transition-transform group-hover:translate-x-0.5">?</span>
             </a>
-            <a href="{{ `categories/security/` | relLangURL }}" class="p-4 sm:p-5 text-xs sm:text-sm font-medium text-slate-800 dark:text-slate-200 hover:text-red-600 dark:hover:text-red-500 transition-colors no-underline block" style="border-right: 1px solid #e2e8f0; border-bottom: 1px solid #e2e8f0;">
-              Security
+            <a href="{{ `categories/security/` | relLangURL }}" class="px-4 py-3 sm:py-3.5 text-sm sm:text-base font-semibold text-slate-900 dark:text-white hover:text-red-600 dark:hover:text-red-500 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-all no-underline flex items-center justify-between group">
+              <span>Security</span>
+              <span class="text-xs text-slate-400 group-hover:text-red-500 transition-transform group-hover:translate-x-0.5">?</span>
             </a>
-            <a href="{{ `categories/devops/` | relLangURL }}" class="p-4 sm:p-5 text-xs sm:text-sm font-medium text-slate-800 dark:text-slate-200 hover:text-red-600 dark:hover:text-red-500 transition-colors no-underline block" style="border-right: 1px solid #e2e8f0; border-bottom: 1px solid #e2e8f0;">
-              DevOps
+            <a href="{{ `categories/devops/` | relLangURL }}" class="px-4 py-3 sm:py-3.5 text-sm sm:text-base font-semibold text-slate-900 dark:text-white hover:text-red-600 dark:hover:text-red-500 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-all no-underline flex items-center justify-between group">
+              <span>DevOps</span>
+              <span class="text-xs text-slate-400 group-hover:text-red-500 transition-transform group-hover:translate-x-0.5">?</span>
             </a>
-            <a href="{{ `categories/google-cloud/` | relLangURL }}" class="p-4 sm:p-5 text-xs sm:text-sm font-medium text-slate-800 dark:text-slate-200 hover:text-red-600 dark:hover:text-red-500 transition-colors no-underline block" style="border-right: 1px solid #e2e8f0; border-bottom: 1px solid #e2e8f0;">
-              Google Cloud
+            <a href="{{ `categories/google-cloud/` | relLangURL }}" class="px-4 py-3 sm:py-3.5 text-sm sm:text-base font-semibold text-slate-900 dark:text-white hover:text-red-600 dark:hover:text-red-500 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-all no-underline flex items-center justify-between group">
+              <span>Google Cloud</span>
+              <span class="text-xs text-slate-400 group-hover:text-red-500 transition-transform group-hover:translate-x-0.5">?</span>
             </a>
-            <a href="{{ `categories/openshift/` | relLangURL }}" class="p-4 sm:p-5 text-xs sm:text-sm font-medium text-slate-800 dark:text-slate-200 hover:text-red-600 dark:hover:text-red-500 transition-colors no-underline block" style="border-bottom: 1px solid #e2e8f0;">
-              OpenShift
+            <a href="{{ `categories/openshift/` | relLangURL }}" class="px-4 py-3 sm:py-3.5 text-sm sm:text-base font-semibold text-slate-900 dark:text-white hover:text-red-600 dark:hover:text-red-500 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-all no-underline flex items-center justify-between group">
+              <span>OpenShift</span>
+              <span class="text-xs text-slate-400 group-hover:text-red-500 transition-transform group-hover:translate-x-0.5">?</span>
             </a>
 
-            <a href="{{ `categories/architecture/` | relLangURL }}" class="p-4 sm:p-5 text-xs sm:text-sm font-medium text-slate-800 dark:text-slate-200 hover:text-red-600 dark:hover:text-red-500 transition-colors no-underline block" style="border-right: 1px solid #e2e8f0;">
-              Architecture
+            <a href="{{ `categories/architecture/` | relLangURL }}" class="px-4 py-3 sm:py-3.5 text-sm sm:text-base font-semibold text-slate-900 dark:text-white hover:text-red-600 dark:hover:text-red-500 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-all no-underline flex items-center justify-between group">
+              <span>Architecture</span>
+              <span class="text-xs text-slate-400 group-hover:text-red-500 transition-transform group-hover:translate-x-0.5">?</span>
             </a>
-            <a href="{{ `categories/cka/` | relLangURL }}" class="p-4 sm:p-5 text-xs sm:text-sm font-medium text-slate-800 dark:text-slate-200 hover:text-red-600 dark:hover:text-red-500 transition-colors no-underline block" style="border-right: 1px solid #e2e8f0;">
-              CKA & Linux
+            <a href="{{ `categories/cka/` | relLangURL }}" class="px-4 py-3 sm:py-3.5 text-sm sm:text-base font-semibold text-slate-900 dark:text-white hover:text-red-600 dark:hover:text-red-500 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-all no-underline flex items-center justify-between group">
+              <span>CKA & Linux</span>
+              <span class="text-xs text-slate-400 group-hover:text-red-500 transition-transform group-hover:translate-x-0.5">?</span>
             </a>
-            <a href="{{ `categories/tls/` | relLangURL }}" class="p-4 sm:p-5 text-xs sm:text-sm font-medium text-slate-800 dark:text-slate-200 hover:text-red-600 dark:hover:text-red-500 transition-colors no-underline block" style="border-right: 1px solid #e2e8f0;">
-              TLS & Zero-Trust
+            <a href="{{ `categories/tls/` | relLangURL }}" class="px-4 py-3 sm:py-3.5 text-sm sm:text-base font-semibold text-slate-900 dark:text-white hover:text-red-600 dark:hover:text-red-500 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-all no-underline flex items-center justify-between group">
+              <span>TLS & Zero-Trust</span>
+              <span class="text-xs text-slate-400 group-hover:text-red-500 transition-transform group-hover:translate-x-0.5">?</span>
             </a>
-            <a href="{{ `categories/ai/` | relLangURL }}" class="p-4 sm:p-5 text-xs sm:text-sm font-medium text-slate-800 dark:text-slate-200 hover:text-red-600 dark:hover:text-red-500 transition-colors no-underline block" style="border-right: 1px solid #e2e8f0;">
-              AI & ML
+            <a href="{{ `categories/ai/` | relLangURL }}" class="px-4 py-3 sm:py-3.5 text-sm sm:text-base font-semibold text-slate-900 dark:text-white hover:text-red-600 dark:hover:text-red-500 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-all no-underline flex items-center justify-between group">
+              <span>AI & ML</span>
+              <span class="text-xs text-slate-400 group-hover:text-red-500 transition-transform group-hover:translate-x-0.5">?</span>
             </a>
-            <a href="{{ `categories/certifications/` | relLangURL }}" class="p-4 sm:p-5 text-xs sm:text-sm font-medium text-slate-800 dark:text-slate-200 hover:text-red-600 dark:hover:text-red-500 transition-colors no-underline block">
-              Certifications
+            <a href="{{ `categories/certifications/` | relLangURL }}" class="px-4 py-3 sm:py-3.5 text-sm sm:text-base font-semibold text-slate-900 dark:text-white hover:text-red-600 dark:hover:text-red-500 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-all no-underline flex items-center justify-between group">
+              <span>Certifications</span>
+              <span class="text-xs text-slate-400 group-hover:text-red-500 transition-transform group-hover:translate-x-0.5">?</span>
             </a>
 
           </div>
@@ -187,8 +196,7 @@
           aria-label="Email address for engineering newsletter">
         <button 
           type="submit" 
-          class="px-6 py-2.5 rounded-md sm:rounded-l-none text-white font-bold text-sm transition-colors cursor-pointer shrink-0 shadow-xs"
-          style="background-color: #dc2626 !important; color: #ffffff !important;">
+          class="btn-primary px-6 py-2.5 rounded-lg sm:rounded-l-none bg-red-600 hover:bg-red-700 text-white font-bold text-sm transition-colors cursor-pointer shrink-0 shadow-xs">
           Subscribe
         </button>
       </form>

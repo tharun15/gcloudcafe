@@ -7,12 +7,15 @@
   {{ $featuredSeriesKey := "TLS & mTLS Architecture for DevOps Engineers" }}
 
   <!-- Breadcrumbs & Status Bar -->
-  <div class="bytedepth-container pt-5 pb-2">
+  <div class="bytedepth-container pt-6 pb-4">
     <div class="flex items-center justify-between">
-      <nav class="text-xs font-mono text-slate-500 dark:text-slate-400" aria-label="Breadcrumb">
-        <a href="{{ site.Home.RelPermalink }}" class="text-inherit hover:text-red-600 dark:hover:text-red-500 no-underline">Home</a>
-        <span class="mx-1.5 text-slate-300 dark:text-slate-700">/</span>
-        <span class="text-slate-900 dark:text-slate-200 font-semibold">Series</span>
+      <nav class="flex items-center gap-2 text-sm font-medium text-slate-600 dark:text-slate-300" aria-label="Breadcrumb">
+        <a href="{{ site.Home.RelPermalink }}" class="text-slate-700 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-500 no-underline transition-colors flex items-center gap-1.5">
+          <i class="fa-solid fa-house text-xs text-slate-400 dark:text-slate-500" aria-hidden="true"></i>
+          <span>Home</span>
+        </a>
+        <span class="text-slate-300 dark:text-slate-700">/</span>
+        <span class="text-slate-900 dark:text-white font-semibold" aria-current="page">Series</span>
       </nav>
       <div class="hidden sm:flex items-center gap-2 font-mono text-xs text-slate-500 dark:text-slate-400">
         <span class="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
@@ -117,7 +120,7 @@
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
                       {{ range $idx, $ep := $sorted }}
                         <a href="{{ $ep.RelPermalink }}" class="p-3 rounded-lg bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 hover:border-slate-400 dark:hover:border-slate-600 text-xs no-underline flex flex-col justify-between transition-all group/ep">
-                          <span class="font-mono text-[10px] font-bold text-red-600 dark:text-red-500 mb-1 uppercase">Part {{ add $idx 1 }}</span>
+                          <span class="font-mono text-xs font-bold text-red-600 dark:text-red-500 mb-1 uppercase">Part {{ add $idx 1 }}</span>
                           <span class="font-bold text-slate-900 dark:text-white line-clamp-1 group-hover/ep:text-red-600 dark:group-hover/ep:text-red-500 transition-colors">{{ $ep.Title }}</span>
                           <span class="font-mono text-[10px] text-slate-500 dark:text-slate-400 mt-2 flex items-center gap-1">
                             <i class="fa-regular fa-clock text-[9px]"></i> {{ $ep.ReadingTime }} min

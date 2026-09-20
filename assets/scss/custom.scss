@@ -1329,11 +1329,41 @@ table {
    SUPERCHARGED CTRL+K COMMAND PALETTE (Phase 5)
    ═══════════════════════════════════════════════════════════════ */
 
+.search-modal {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 9999 !important;
+  display: none;
+  align-items: flex-start !important;
+  justify-content: center !important;
+  padding: 4rem 1rem 2rem !important;
+
+  &.show {
+    display: flex !important;
+  }
+}
+
+.search-modal-overlay {
+  position: fixed !important;
+  inset: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  background-color: rgba(15, 23, 42, 0.7) !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+  z-index: 1 !important;
+  cursor: pointer !important;
+}
+
 .modern-command-center {
+  position: relative !important;
+  z-index: 10 !important;
+  width: 100% !important;
+  max-width: 680px !important;
   border-radius: 1.25rem !important;
   overflow: hidden !important;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(0, 0, 0, 0.08) !important;
-  border: 1px solid rgba(226, 232, 240, 0.8) !important;
+  box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(0, 0, 0, 0.12) !important;
+  border: 1px solid rgba(226, 232, 240, 0.9) !important;
   background-color: #ffffff !important;
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
@@ -1342,7 +1372,7 @@ table {
 .dark .modern-command-center {
   background-color: #0b1120 !important;
   border-color: rgba(51, 65, 85, 0.7) !important;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.1) !important;
 }
 
 .modern-command-center .search-wrapper-header {
@@ -1694,4 +1724,108 @@ table {
   100% {
     transform: translateX(100%);
   }
+}
+
+
+/* ???????????????????????????????????????????????????????????????
+   UNIFIED BUTTON DESIGN SYSTEM & MOTION ACCESSIBILITY (Phase 6)
+   ??????????????????????????????????????????????????????????????? */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  border-radius: 0.5rem;
+  background-color: #dc2626 !important;
+  color: #ffffff !important;
+  border: none !important;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  transition: all 0.2s ease;
+  text-decoration: none;
+
+  &:hover {
+    background-color: #b91c1c !important;
+    color: #ffffff !important;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px -1px rgba(220, 38, 38, 0.25);
+  }
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  border-radius: 0.5rem;
+  background-color: #ffffff;
+  color: #1e293b;
+  border: 1px solid #cbd5e1;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  transition: all 0.2s ease;
+  text-decoration: none;
+
+  &:hover {
+    background-color: #f8fafc;
+    border-color: #94a3b8;
+    color: #0f172a;
+    transform: translateY(-1px);
+  }
+}
+
+:root.dark .btn-secondary,
+.dark .btn-secondary {
+  background-color: #0c1220;
+  color: #e2e8f0;
+  border-color: #334155;
+
+  &:hover {
+    background-color: #1e293b;
+    border-color: #475569;
+    color: #ffffff;
+  }
+}
+
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  border-radius: 0.5rem;
+  background-color: #f1f5f9;
+  color: #334155;
+  border: 1px solid #e2e8f0;
+  transition: all 0.2s ease;
+  text-decoration: none;
+
+  &:hover {
+    background-color: #e2e8f0;
+    color: #0f172a;
+  }
+}
+
+:root.dark .btn-ghost,
+.dark .btn-ghost {
+  background-color: rgba(30, 41, 59, 0.8);
+  color: #cbd5e1;
+  border-color: #334155;
+
+  &:hover {
+    background-color: #334155;
+    color: #ffffff;
+  }
+}
+
+/* Reduced motion and pause on hover for news ticker */
+@media (prefers-reduced-motion: reduce) {
+  .ticker-marquee-content {
+    animation: none !important;
+    overflow-x: auto !important;
+  }
+}
+
+.ticker-marquee-wrapper:hover .ticker-marquee-content {
+  animation-play-state: paused !important;
 }

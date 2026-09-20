@@ -1,10 +1,13 @@
 {{ define "main" }}
   <!-- Breadcrumbs (ByteDepth Container) -->
-  <div class="bytedepth-container pt-5 pb-2">
-    <nav class="text-xs font-mono text-slate-500 dark:text-slate-400" aria-label="Breadcrumb">
-      <a href="{{ site.Home.RelPermalink }}" class="text-inherit hover:text-red-600 dark:hover:text-red-500 no-underline">Home</a>
-      <span class="mx-1.5 text-slate-300 dark:text-slate-700">/</span>
-      <span class="text-slate-900 dark:text-slate-200 font-semibold">About</span>
+  <div class="bytedepth-container pt-6 pb-4">
+    <nav class="flex items-center gap-2 text-sm font-medium text-slate-600 dark:text-slate-300" aria-label="Breadcrumb">
+      <a href="{{ site.Home.RelPermalink }}" class="text-slate-700 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-500 no-underline transition-colors flex items-center gap-1.5">
+        <i class="fa-solid fa-house text-xs text-slate-400 dark:text-slate-500" aria-hidden="true"></i>
+        <span>Home</span>
+      </a>
+      <span class="text-slate-300 dark:text-slate-700">/</span>
+      <span class="text-slate-900 dark:text-white font-semibold" aria-current="page">About</span>
     </nav>
   </div>
 
@@ -13,7 +16,7 @@
     <div class="bytedepth-container">
       <div class="max-w-3xl">
         <span class="inline-block font-mono text-xs font-black uppercase tracking-widest text-red-600 dark:text-red-500 mb-3" style="color: #dc2626 !important;">
-          BEHIND THE PUBLICATION
+          Behind the publication
         </span>
         <h1 id="about-hero-title" class="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 dark:text-white tracking-tight leading-[1.15] mb-5">
           Deep Technical Writing for Engineers Who Run Production Systems.
