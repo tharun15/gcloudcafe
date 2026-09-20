@@ -89,9 +89,8 @@ To understand how these primitives fit together in practice, consider the trajec
 
 ---
 
-## 1. Day 1: SQL Before a Pipeline
+## 1. Day 1: Why Event Files in Cloud Storage? (External Tables)
 
-### The Business Reality
 At 9:07 AM on launch day, Offvia sold its very first plane ticket.
 
 A traveler in Milan booked a weekend getaway to Barcelona. The booking service validated the credit card, confirmed seat 14B with the airline, emailed the confirmation, and emitted a single transaction receipt into Google Cloud Storage:
@@ -102,20 +101,46 @@ gs://offvia-bookings/raw/2026/09/18/booking_000001.parquet
 
 By Sunday night, Offvia had processed 180 bookings. Each transaction landed as its own Parquet file in the bucket.
 
-On Monday morning, the founders wanted to know:
-> *"Which departure airports saw the highest demand this weekend, and did any bookings fail after payment processing?"*
+On Monday morning, the founders asked their first analytical question:
+> *Which departure airports saw the highest demand this weekend, and did any bookings fail after payment processing?*
 
-### Why the Traditional Approach Fails
-An engineer might naturally say: *"Let's build a data pipeline! We can spin up a Pub/Sub topic, write an Apache Beam streaming job on Cloud Dataflow, set up a Cloud Composer (Managed Airflow) environment to orchestrate daily ingestion DAGs, and load the records into a database."*
+### Why Not Just Run SQL on the Operational Database?
+Every software engineer initially asks: *Offvia's web app already runs on a database like Cloud SQL (PostgreSQL or MySQL). When a user books a flight, the app executes an `INSERT`. Why can't we simply run CRUD operations and query that database directly?*
 
-For 180 files, that would take two weeks of development time and cost hundreds of dollars a month in idle infrastructure.
+```sql
+-- Why not just run this on our live production database?
+SELECT 
+  origin_airport, 
+  COUNT(*) AS bookings, 
+  COUNTIF(booking_status = 'FAILED') AS failed_bookings
+FROM bookings
+GROUP BY origin_airport;
+```
 
-The data already sat durably inside Cloud Storage. The team didn't need to *move* the data. They only needed a SQL interface to *inspect* it.
+In production, querying the operational database for analytics creates two severe failures:
 
-### The GCP Building Block: External Tables
-Offvia created a **BigQuery External Table**.
+1. **OLTP vs. OLAP (Lock Contention & Outages):**
+   Operational databases are optimized for **OLTP** (Online Transaction Processing)—handling thousands of rapid, row-level read/write transactions per second with strict ACID guarantees. Analytical queries do the opposite: they scan hundreds of thousands of rows to aggregate metrics. Running analytical table scans on your primary database acquires shared read locks, evicts hot transactional cache from memory (buffer pool), and exhausts connection pools. While your query aggregates airport statistics, active travelers trying to checkout experience latency spikes and `504 Gateway Timeout` errors.
+2. **Mutable State vs. Immutable Event History:**
+   A transactional database stores **current state**, not historical truth. If a customer cancels their booking tomorrow, the application runs:
+   ```sql
+   UPDATE bookings SET booking_status = 'CANCELLED' WHERE booking_id = 'booking_000001';
+   ```
+   The original record—that the seat was booked and paid on launch day—is overwritten. For financial reconciliation, historical reporting, and system replayability, you need an **immutable event log**: an unchangeable receipt of every transaction exactly as it happened.
 
-An external table stores only the table schema and metadata pointers inside BigQuery. The actual Parquet files remain untouched in Cloud Storage. When someone runs SQL, BigQuery's compute slots read the referenced files directly across Google's high-speed network fabric.
+### Why Cloud Storage and Parquet?
+Instead of overloading the production database, the booking API writes an event receipt to **Google Cloud Storage (GCS)** for every completed booking.
+
+- **Cloud Storage** provides virtually limitless, 99.999999999% durable, dirt-cheap object storage ($0.02 per GB/month). Dumping transaction receipts into GCS decouples analytics from the transactional application entirely.
+- **Why Parquet instead of CSV or JSON?** JSON and CSV are uncompressed plain text without strict data types. Every downstream tool must read 100% of the text across the network and parse strings. **Apache Parquet** is a binary columnar format with:
+  - **Embedded Schema & Types:** Timestamps, integers, and decimals are preserved with strict typing.
+  - **Columnar Layout:** Query engines can read only the columns needed (e.g., `origin_airport` and `booking_status`) without scanning the rest of the record.
+  - **Block Metadata:** Parquet stores min/max statistics for every column chunk, allowing readers to skip irrelevant data blocks before reading bytes off disk.
+
+### The Solution: BigQuery External Tables
+Rather than building an elaborate ETL pipeline (Cloud Pub/Sub, Dataflow, Cloud Composer) for just 180 files, Offvia created a **BigQuery External Table**.
+
+An external table stores only the table schema and metadata pointers inside BigQuery. The actual Parquet files remain untouched in Cloud Storage. When someone runs SQL, BigQuery's compute slots stream the files directly across Google's high-speed Jupiter network fabric.
 
 <div class="my-7 overflow-hidden rounded-2xl border border-slate-200 bg-slate-50/70 dark:border-slate-800 dark:bg-slate-900/50">
 <div class="border-b border-slate-200 px-5 py-3 dark:border-slate-800">
@@ -160,35 +185,30 @@ GROUP BY origin_airport
 ORDER BY bookings DESC;
 ```
 
-### The Engineering Responsibility Accepted
-External tables give you instant SQL access, but they make a critical architectural trade-off: **every single query must discover, list, and transfer files over the network.** For 180 files, the listing overhead takes milliseconds. But as file counts grow into the thousands, that discovery cost turns into severe user friction.
-
-External tables are built for **data exploration and staging**—not repeated, sub-second analytics.
+**The Trade-Off Accepted:** External tables allow instant querying with zero pipeline maintenance, but **every query must list and read files over the network**. For 180 files, this takes milliseconds. As file counts grow into tens of thousands, that object-listing overhead becomes a bottleneck. External tables are ideal for data exploration and staging—not repeated, sub-second production dashboards.
 
 ---
 
-## 2. Month 1: The 45-Second Dashboard Spinner
+## 2. Month 1: The 45-Second Dashboard Spinner (Native Managed Tables)
 
-### The Business Reality
 One month later, Offvia had scaled to 5,000 bookings a day. 
 
 The operations team built an executive Looker dashboard displaying real-time route volume, ticket sales, flight cancellations, and seat occupancy. Every morning, route managers opened the dashboard to review yesterday's numbers.
 
-### Why the Existing Setup Breaks
-Every morning, the dashboard tiles spun for **45 to 60 seconds**. Frustrated managers hit "Refresh", kicking off duplicate queries that locked up even more compute slots.
+### Why the External Table Setup Broke
+Every morning, the dashboard tiles spun for **45 to 60 seconds**. Frustrated managers hit "Refresh", kicking off duplicate queries that saturated compute slots.
 
 The SQL had not changed. The physical storage layer had outlived its purpose:
-- The external table now pointed to **40,000+ small Parquet files** in Cloud Storage.
-- For every query, BigQuery spent 15 seconds just calling Cloud Storage object-listing APIs to find which files existed.
+- The external table now referenced **40,000+ individual Parquet files** in Cloud Storage.
+- For every query, BigQuery spent 15 seconds just calling Cloud Storage object-listing APIs to determine which files existed.
 - Compute slots spent the majority of their time negotiating HTTP file transfers across the network rather than computing aggregations.
 - Because data remained outside BigQuery's native storage engine, BigQuery could not use its proprietary columnar indexing or storage-level optimizations.
 
-### The GCP Building Block: Native Managed Tables
+### The Solution: BigQuery Native Managed Tables
 Offvia migrated its analytics path to a **BigQuery Native Managed Table**.
 
 When data moves into BigQuery-managed storage, BigQuery converts it into **Capacitor**—Google's proprietary columnar format—and distributes it across **Colossus**, Google's high-speed distributed file system.
 
-In Capacitor:
 - **Column Pruning:** If a dashboard queries only `carrier_code` and `fare_amount`, BigQuery physically reads only those two columns off disk. The other 30 columns in the booking record are skipped completely.
 - **Local NVMe Throughput:** Data lives alongside Google's Borg compute cluster, eliminating external HTTP object-listing overhead.
 
@@ -249,19 +269,12 @@ GROUP BY carrier_code;
 
 **Result:** Dashboard load time plunged from **48 seconds to 780 milliseconds**.
 
-### The Engineering Responsibility Accepted
-Performance is purchased with operational discipline. The moment Offvia introduced a managed table, the team had to design a formal ingestion workflow:
-- *How frequently do new files load into BigQuery?*
-- *How do we avoid loading duplicate bookings if an upload retries?*
-- *How do we rebuild the managed table if a downstream schema breaks?*
-
-Cloud Storage remains the immutable raw record. BigQuery is the performance serving layer.
+**The Trade-Off Accepted:** Performance requires operational discipline. The moment Offvia introduced a managed table, the team accepted pipeline duties: defining ingestion frequency, deduplicating retried uploads, and handling schema drift. Cloud Storage remains the immutable raw archive; BigQuery is the analytical engine.
 
 ---
 
-## 3. Month 3: The One-Day Query That Read Two Years
+## 3. Month 3: The One-Day Query That Scanned Two Years (Date Partitioning)
 
-### The Business Reality
 Three months later, Offvia signed partnerships with regional airlines and loaded two full years of historical flight booking data. The managed table reached **2.84 TiB** across 450 million rows.
 
 Finance opened their daily reconciliation dashboard to check yesterday's flight departures:
@@ -279,7 +292,7 @@ WHERE departure_timestamp >= TIMESTAMP '2026-09-18 00:00:00+00'
 GROUP BY 1, 2, 3;
 ```
 
-### Why the Existing Setup Breaks
+### Why the Unpartitioned Query Exploded
 The query requested **one single day of departures** (roughly 2.8 GiB of data). 
 
 Yet when the query finished, the BigQuery console reported:
@@ -299,7 +312,7 @@ The Math of an Unpartitioned Query:
 
 > **Crucial Data Engineering Law:** A `WHERE` clause describes what rows you want. It does not automatically guarantee that the storage engine can skip reading everything else.
 
-### The GCP Building Block: Date Partitioning
+### The Solution: Date Partitioning
 Offvia rebuilt the table with **Date Partitioning** on `departure_timestamp`.
 
 Partitioning cuts the physical storage into discrete segments based on the partition key. Think of it like giving each calendar day its own drawer in the filing cabinet. When a query filters by `2026-09-18`, BigQuery inspects the table metadata, opens the drawer for September 18, and completely prunes the other 729 days.
@@ -352,9 +365,8 @@ Cannot query over table 'offvia_dw.bookings_partitioned' without a filter over c
 
 ---
 
-## 4. Month 6: Thirty Days Were Correct. Eighty-Four GiB Was Not.
+## 4. Month 6: Pruning Inside Date Drawers (Table Clustering)
 
-### The Business Reality
 Offvia launched an airline partner portal. Partner airlines like Delta (`DL`), British Airways (`BA`), and Lufthansa (`LH`) could log in to inspect their passenger occupancy and route volume for the previous 30 days.
 
 Delta's portal dashboard executed this query:
@@ -372,7 +384,7 @@ WHERE departure_timestamp >= TIMESTAMP '2026-08-20 00:00:00+00'
   AND carrier_code = 'DL';
 ```
 
-### Why the Existing Setup Breaks
+### Why Partitioning Alone Was Not Enough
 Partition pruning worked as designed: BigQuery opened only the 30 daily partitions and ignored the rest of history. 
 
 However, each day's partition contained flights from **every single airline in Europe and North America**. Delta accounted for only 140 flights out of 1.2 million rows in that 30-day window.
@@ -380,12 +392,12 @@ However, each day's partition contained flights from **every single airline in E
 To extract those 140 rows, BigQuery still had to scan **84 GiB of data across all 30 partitions**! The partner portal took nearly four seconds to render every page load.
 
 Partitioning answered:
-> *"Which dates should I open?"*
+> *Which dates should I open?*
 
 It could not answer:
-> *"Where inside those dates can I find Delta?"*
+> *Where inside those dates can I find Delta?*
 
-### The GCP Building Block: Multi-Column Clustering
+### The Solution: Multi-Column Clustering
 Offvia added **Table Clustering** on `carrier_code` and `booking_status`.
 
 Clustering sorts the physical Capacitor storage blocks based on the contents of the clustered columns. BigQuery tracks the minimum and maximum values of the clustered keys for every storage block.
@@ -437,9 +449,8 @@ A query filtering on `carrier_code = 'DL' AND booking_status = 'CONFIRMED'` gets
 
 ---
 
-## 5. Month 9: The Booking That Arrived a Day Late
+## 5. Month 9: The Booking That Arrived a Day Late (Dual-Timestamp Modeling)
 
-### The Business Reality
 Offvia launched long-haul transcontinental routes and in-flight Wi-Fi upgrades.
 
 A passenger on a flight from San Francisco to Tokyo purchased an in-flight business class seat upgrade at **11:50 PM on Monday**. 
@@ -448,19 +459,19 @@ Midway across the Pacific, the aircraft lost satellite internet connectivity. Th
 
 At **4:10 AM on Tuesday**, the plane touched down in Tokyo, reconnected to ground Wi-Fi, and batch-uploaded the accumulated flight receipts to Cloud Storage.
 
-### Why the Existing Setup Breaks
+### Why the Existing Pipeline Drifted
 On Tuesday morning, finance ran their Monday revenue report:
 - **Tuesday 08:00 AM:** Monday revenue reported at **$1,420,000**.
 - **Tuesday 11:00 AM:** The same Monday revenue report re-ran and showed **$1,455,000**.
 
-Finance was furious: *"Why are closed historical financial numbers changing under our feet?"*
+Finance was alarmed: *"Why are closed historical financial numbers changing retroactively?"*
 
 The data pipeline had partitioned the table by the timestamp when BigQuery loaded the file:
 - Because the receipt arrived in the cloud on Tuesday morning, BigQuery assigned it to Tuesday's partition.
 - But the flight departed and the service was delivered on Monday!
-- When automated reconciliation backfilled the transaction into Monday's flight date, it silently retroactively altered Monday's revenue report.
+- When automated reconciliation backfilled the transaction into Monday's flight date, it silently altered Monday's closed revenue report.
 
-### The GCP Building Block: Dual-Timestamp Modeling
+### The Solution: Dual-Timestamp Modeling
 In distributed, real-world systems, you must never confuse **when an event happened in the real world** with **when your cloud platform received the byte stream**.
 
 Offvia established a formal data contract with two explicit timestamps:
@@ -526,9 +537,8 @@ Dual timestamps make late arrivals visible and processable, but they don't solve
 
 ---
 
-## 6. Month 12: The Monday 9:00 AM Executive Storm
+## 6. Month 12: The Monday 9:00 AM Executive Storm (Materialized Views)
 
-### The Business Reality
 By Month 12, Offvia had 180 route managers, pricing analysts, and executives. Every Monday at 9:00 AM, all 180 users opened Looker to run weekly route performance reviews.
 
 One critical dashboard tile calculated gross route revenue, passenger counts, and average ticket yield across every airline and cabin class:
@@ -546,7 +556,7 @@ WHERE departure_timestamp >= TIMESTAMP '2025-01-01 00:00:00+00'
 GROUP BY 1, 2, 3;
 ```
 
-### Why the Existing Setup Breaks
+### Why Compute Slots Saturated
 Partitioning pruned dates older than 2025. Clustering helped queries targeting a single airline.
 
 However, this executive query intentionally aggregated **every airline, every cabin class, and 18 months of history**.
@@ -558,7 +568,7 @@ When 180 users loaded this tile at 9:00 AM:
 
 Running a nightly batch cron job to precompute the numbers wasn't acceptable: revenue managers needed to see bookings that completed five minutes ago to make dynamic pricing decisions.
 
-### The GCP Building Block: Materialized Views with Smart Tuning
+### The Solution: Materialized Views with Smart Tuning
 Offvia deployed a **BigQuery Materialized View**.
 
 A standard database view is just a saved query: when you run it, BigQuery executes the underlying SQL from scratch.
@@ -613,9 +623,8 @@ GROUP BY 1, 2, 3;
 
 ---
 
-## 7. Month 15: Sunday, 2:15 AM — The Full-Table Corruption
+## 7. Month 15: Sunday 2:15 AM Full-Table Corruption (Time Travel & Snapshots)
 
-### The Business Reality
 At 2:15 AM on a Sunday, an on-call data engineer ran a database maintenance script intended to clean up abandoned, unpaid reservations.
 
 The intended SQL was:
@@ -639,12 +648,12 @@ At 2:18 AM, alert channels exploded. Flight check-in kiosks at airports were rej
 At that moment, query optimization did not matter. Partitioning did not matter. Clustering did not matter.
 
 The only question that mattered was:
-> *"Can we restore the exact state of this table as it existed at 2:14 AM without losing data or days of downtime?"*
+> *Can we restore the exact state of this table as it existed at 2:14 AM without losing data or days of downtime?*
 
-### Why Traditional Backups Fail
-In traditional databases, recovery means locating the last nightly snapshot, provisioning a temporary database server, replaying 26 hours of write-ahead logs (WAL), and executing an offline cutover. That process takes 8 to 14 hours of total downtime.
+### Why Traditional Database Backups Fail
+In traditional database architectures, recovery means locating the last nightly snapshot, provisioning a temporary database server, replaying 26 hours of write-ahead logs (WAL), and executing an offline cutover. That process takes 8 to 14 hours of total downtime.
 
-### The GCP Building Block: Time Travel & Table Snapshots
+### The Solution: BigQuery Time Travel & Table Snapshots
 Offvia leveraged **BigQuery Time Travel**.
 
 BigQuery automatically retains a complete historical record of every table modification for a configurable window (by default, 7 days). You can query any historical state using the `FOR SYSTEM_TIME AS OF` clause.
@@ -729,15 +738,14 @@ OPTIONS (
 
 ---
 
-## 8. Month 18: The Aviation Regulatory Audit
+## 8. Month 18: The Aviation Regulatory Audit (Authorized Views)
 
-### The Business Reality
 To operate international routes, Offvia was legally required to share passenger volume, route frequency, and load factors with the **Civil Aviation Authority (CAA)** for compliance and antitrust audits.
 
 The CAA auditor required read access to run SQL queries over the past 36 months of route operations.
 
 ### Why Direct Table Sharing Breaks
-Offvia's core table `offvia_dw.bookings` contained:
+Offvia's core table `offvia_dw.bookings` contained sensitive passenger records:
 - `passenger_full_name`
 - `passport_number`
 - `contact_email`
@@ -747,7 +755,7 @@ Granting the external auditor access to the dataset would violate GDPR and PCI-D
 
 Exporting monthly CSV dumps was equally flawed: it created stale snapshots, duplicate data, and unmonitored sensitive files floating in external storage.
 
-### The GCP Building Block: Authorized Views
+### The Solution: BigQuery Authorized Views
 Offvia implemented a **BigQuery Authorized View**.
 
 An Authorized View allows you to share query results with specific users or groups without giving them direct access to the underlying tables. 
@@ -763,7 +771,7 @@ An Authorized View allows you to share query results with specific users or grou
 <div class="mt-1 text-xs text-slate-500 dark:text-slate-400">offvia_dw.bookings (Contains PII)</div>
 </div>
 <div class="rotate-90 text-xl text-slate-400 md:rotate-0">→</div>
-<div class="rounded-xl border-2 border-teal-500 bg-teal-50 px-4 py-3 dark:bg-teal-950/30">
+<div class="rounded-xl border-2 border-teal-500 bg-teal-50 px-4 py-3 dark:border-teal-900 dark:bg-teal-950/30">
 <div class="font-bold text-teal-900 dark:text-teal-200">Authorized View</div>
 <div class="mt-1 text-xs text-slate-500 dark:text-slate-400">offvia_audit.daily_route_occupancy</div>
 </div>
