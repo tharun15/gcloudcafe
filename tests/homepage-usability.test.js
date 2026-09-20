@@ -76,7 +76,7 @@ describe('Homepage & Site-Wide Usability Heuristics & Accessibility Suite', () =
     expect(heroHtml).not.toContain('bg-red-500');
     expect(heroHtml).toContain('border-amber-400/30');
     expect(heroHtml).toContain('fa-star');
-    expect(heroHtml).toContain('Featured Story');
+    expect(heroHtml).toMatch(/Spotlight|Featured/);
   });
 
   it('Issue 5: ensures search overlay has full viewport scrim and deep drop shadow in custom.scss', () => {

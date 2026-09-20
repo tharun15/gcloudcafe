@@ -47,7 +47,7 @@
                 <span class="flex items-center justify-center w-4 h-4 rounded-full bg-amber-400/20 text-amber-400 text-[10px]" aria-hidden="true">
                   <i class="fa-solid fa-star"></i>
                 </span>
-                <span class="font-bold tracking-wider uppercase text-white">Featured Story</span>
+                <span class="font-bold tracking-wider uppercase text-white">Spotlight</span>
               </span>
               {{ with $page.Params.image }}
                 {{ partial "image" (dict "Src" . "Context" $page "Alt" $page.Title "Class" "w-full h-full object-cover group-hover/img:scale-105 transition-transform duration-500 ease-out" "Loading" "eager" "FetchPriority" "high") }}
