@@ -9,7 +9,7 @@ tags: ["TLS", "SSL", "Networking", "Cryptography", "OpenSSL", "Kubernetes", "Dev
 author: tharun-vempati
 series: "TLS & mTLS Architecture for DevOps Engineers"
 series_order: 2
-featured: true
+featured: false
 draft: false
 ---
 

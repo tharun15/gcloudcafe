@@ -1216,14 +1216,16 @@
         return [
           { text: "Cloud", hold: 1200 },
           { text: "DevOps", hold: 1200 },
-          { text: "Security", hold: 1200 }
+          { text: "Security", hold: 1200 },
+          { text: "AI", hold: 1200 }
         ];
       }
       return [
         { text: "Cloud", hold: 1100 },
         { text: "DevOps", hold: 1100 },
         { text: "Security", hold: 1100 },
-        { text: "Cloud · DevOps · Security", hold: 10000 }
+        { text: "AI", hold: 1100 },
+        { text: "Cloud · DevOps · Security · AI", hold: 10000 }
       ];
     }
 

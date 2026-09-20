@@ -7,7 +7,7 @@ image: "/images/gcp-storage-building-blocks.jpg"
 categories: ["Google Cloud", "Architecture"]
 tags: ["Data Engineering", "GCP", "BigQuery", "Cloud Storage", "SQL", "Architecture", "TravelTech"]
 author: tharun-vempati
-featured: false
+featured: true
 draft: false
 series: "Data Engineering on Google Cloud"
 series_order: 1
