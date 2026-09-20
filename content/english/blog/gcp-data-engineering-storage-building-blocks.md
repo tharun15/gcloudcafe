@@ -1,7 +1,7 @@
 ---
 title: "Data Engineering on GCP (Part 1): The Core Storage & Access Building Blocks Demystified"
 meta_title: "GCP Data Engineering: Storage Primitives, Tables & Authorized Views"
-description: "Follow the story of AnyPay, a scaling fintech on Google Cloud, as its engineers, architects, and finance teams solve real production challenges using external tables, partitioning, clustering, time-series, materialized views, snapshots, and authorized views."
+description: "Follow the story of Offvia, a scaling fintech on Google Cloud, as its engineers, architects, and finance teams solve real production challenges using external tables, partitioning, clustering, time-series, materialized views, snapshots, and authorized views."
 date: 2026-09-19
 image: "/images/gcp-storage-building-blocks.jpg"
 categories: ["Google Cloud", "Architecture"]
@@ -13,36 +13,36 @@ series: "Data Engineering on Google Cloud"
 series_order: 1
 ---
 
-Meet **AnyPay**, a fast-growing payment processing platform built on Google Cloud.
+Meet **Offvia**, a fast-growing payment processing platform built on Google Cloud.
 
-AnyPay handles credit card authorizations, mobile wallet checkouts, and nightly merchant settlement payouts. On Day 1, the platform handled a modest 1,200 transactions. Eighteen months later, AnyPay was processing **50 million transactions a day** across thousands of online storefronts and brick-and-mortar retail terminals.
+Offvia handles credit card authorizations, mobile wallet checkouts, and nightly merchant settlement payouts. On Day 1, the platform handled a modest 1,200 transactions. Eighteen months later, Offvia was processing **50 million transactions a day** across thousands of online storefronts and brick-and-mortar retail terminals.
 
 Scaling to that volume did not happen in a single, perfectly planned architecture whiteboard session. 
 
-Like every real engineering organization, AnyPay's data architecture was forged through **uncomfortable production friction**:
+Like every real engineering organization, Offvia's data architecture was forged through **uncomfortable production friction**:
 - An analyst staring at a dashboard loading spinner for forty-five seconds.
 - A finance director demanding an emergency postmortem over a $17,900 billing spike.
 - An on-call engineer restoring corrupted tables at 2:15 AM after a botched script update.
 - An external banking auditor refusing to certify compliance because credit card numbers shared the same dataset as operational metrics.
 
-Every time AnyPay hit a scaling wall, the team convened to evaluate the engineering trade-offs:
+Every time Offvia hit a scaling wall, the team convened to evaluate the engineering trade-offs:
 - **Maya (Lead Data Architect):** Balances long-term governance, storage decoupling, and cost predictability.
 - **Devin (Senior Data Engineer):** The pipeline builder wrestling with query execution plans, slot contention, and 2:00 AM alerts.
 - **Sarah (Lead Business Analyst):** Needs instant query responses and fresh data to answer urgent merchant inquiries.
 - **Marcus (VP of Finance):** Monitors the GCP billing console and demands justification for every dollar of compute burn.
 - **Elena (Head of Compliance & Security):** Enforces zero-trust data access policies and strict PCI-DSS Level 1 boundaries.
 
-If you understand *why* AnyPay adopted each Google Cloud storage primitive, you will understand how to design resilient, cost-effective data pipelines on GCP.
+If you understand *why* Offvia adopted each Google Cloud storage primitive, you will understand how to design resilient, cost-effective data pipelines on GCP.
 
 ---
 
-## The AnyPay Architectural Roadmap
+## The Offvia Architectural Roadmap
 
-Here is how seven core storage primitives solved AnyPay's growing pains as transaction volume exploded:
+Here is how seven core storage primitives solved Offvia's growing pains as transaction volume exploded:
 
 <div class="my-6 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/50 space-y-3">
 <div class="font-bold text-slate-900 dark:text-slate-100 text-sm border-b border-slate-200 dark:border-slate-800 pb-2">
-🗺️ AnyPay's Production Storage Evolution
+🗺️ Offvia's Production Storage Evolution
 </div>
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
 <div class="p-3 rounded-xl bg-amber-50/60 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900">
@@ -93,9 +93,9 @@ Here is how seven core storage primitives solved AnyPay's growing pains as trans
 ## 1. Day 1: Exploring Raw Files with External Tables
 
 ### The Operational Catalyst
-On AnyPay's launch day, the backend payment gateway streams JSON receipts directly into a Google Cloud Storage (GCS) bucket:
+On Offvia's launch day, the backend payment gateway streams JSON receipts directly into a Google Cloud Storage (GCS) bucket:
 
-`gs://anypay-lake-production/transactions/2026/09/18/receipts_0900.parquet`
+`gs://offvia-lake-production/transactions/2026/09/18/receipts_0900.parquet`
 
 At 10:00 AM, Sarah (Lead Analyst) gets an urgent message from Operations: several payments from a flagship merchant are failing. Sarah asks Devin (Data Engineer): *"Can I run a SQL query right now across this morning's receipts to inspect the error codes?"*
 
@@ -159,10 +159,10 @@ When BigQuery executes a query against an External Table:
 Devin executed this DDL to create the external table:
 
 ```sql
-CREATE OR REPLACE EXTERNAL TABLE `anypay_lake.transactions_raw`
+CREATE OR REPLACE EXTERNAL TABLE `offvia_lake.transactions_raw`
 OPTIONS (
   format = 'PARQUET',
-  uris = ['gs://anypay-lake-production/transactions/*/*.parquet']
+  uris = ['gs://offvia-lake-production/transactions/*/*.parquet']
 );
 ```
 
@@ -173,7 +173,7 @@ Within ten minutes, Sarah identified that a merchant had passed an unsupported c
 ## 2. Month 1: The 45-Second Timeout & Native Managed Tables
 
 ### The Operational Catalyst
-One month in, AnyPay is processing 300,000 transactions a day. Sarah has built operational monitoring dashboards for the executive team. 
+One month in, Offvia is processing 300,000 transactions a day. Sarah has built operational monitoring dashboards for the executive team. 
 
 Every morning at 8:30 AM, when regional managers open their dashboards, every tile spins for **45 to 60 seconds**. Several tiles intermittently time out.
 
@@ -211,7 +211,7 @@ Moving food from a wholesale warehouse across town into your kitchen pantry. You
 <div class="p-3.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-2">
 <strong class="text-slate-900 dark:text-slate-100 block text-sm">Columnar Storage Pruning:</strong>
 <p class="text-slate-600 dark:text-slate-400 m-0 leading-relaxed">
-AnyPay's payment records contain 48 fields (merchant info, card tokens, device fingerprints, billing addresses). When Sarah runs <code>SELECT SUM(amount)</code>, BigQuery's storage engine reads <strong>only the amount column from disk</strong>. The remaining 47 columns are completely ignored, slashing byte reads by 94%.
+Offvia's payment records contain 48 fields (merchant info, card tokens, device fingerprints, billing addresses). When Sarah runs <code>SELECT SUM(amount)</code>, BigQuery's storage engine reads <strong>only the amount column from disk</strong>. The remaining 47 columns are completely ignored, slashing byte reads by 94%.
 </p>
 </div>
 <div class="p-3.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-2">
@@ -233,7 +233,7 @@ When data is ingested into BigQuery native storage:
 Devin created the managed warehouse table and loaded the raw data:
 
 ```sql
-CREATE OR REPLACE TABLE `anypay_dw.transactions_managed` AS
+CREATE OR REPLACE TABLE `offvia_dw.transactions_managed` AS
 SELECT 
   transaction_id,
   merchant_id,
@@ -243,7 +243,7 @@ SELECT
   status,
   payment_method,
   event_timestamp
-FROM `anypay_lake.transactions_raw`;
+FROM `offvia_lake.transactions_raw`;
 ```
 
 ---
@@ -251,7 +251,7 @@ FROM `anypay_lake.transactions_raw`;
 ## 3. Month 3: The $17,900 Invoice Shock & Partitioning
 
 ### The Operational Catalyst
-Three months later, AnyPay had accumulated two full years of historical payment logs, totaling **2.84 TiB** across 450 million records.
+Three months later, Offvia had accumulated two full years of historical payment logs, totaling **2.84 TiB** across 450 million records.
 
 On Monday morning, Marcus (VP of Finance) walks into Maya's office looking alarmed:
 > *"Maya, our BigQuery bill just surged by **$17,900 in one week**. What broke in production? Did someone leave a machine learning model running in a loop?"*
@@ -265,7 +265,7 @@ SELECT
   merchant_id, 
   COUNT(transaction_id) AS total_swipes, 
   SUM(amount) AS gross_volume
-FROM `anypay_dw.transactions_managed`
+FROM `offvia_dw.transactions_managed`
 WHERE transaction_date = '2026-09-18'
 GROUP BY merchant_id;
 ```
@@ -308,7 +308,7 @@ A filing cabinet with 730 daily folders. When an auditor asks for September 18 r
 </div>
 </div>
 <div class="p-4 rounded-xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900 text-xs space-y-2">
-<strong class="text-amber-800 dark:text-amber-300 block">The Production Safety Rail AnyPay Implemented:</strong>
+<strong class="text-amber-800 dark:text-amber-300 block">The Production Safety Rail Offvia Implemented:</strong>
 <p class="text-slate-600 dark:text-slate-400 m-0 leading-relaxed">
 Devin configured the table with <code>OPTIONS(require_partition_filter = true)</code>. If an analyst or automated dashboard queries the table without a date filter in the <code>WHERE</code> clause, BigQuery immediately rejects the query with an error before spending a single cent.
 </p>
@@ -322,13 +322,13 @@ Devin configured the table with <code>OPTIONS(require_partition_filter = true)</
 Devin rebuilt the table with daily partitioning and the mandatory filter safeguard:
 
 ```sql
-CREATE OR REPLACE TABLE `anypay_dw.transactions_partitioned`
+CREATE OR REPLACE TABLE `offvia_dw.transactions_partitioned`
 PARTITION BY DATE(event_timestamp)
 OPTIONS (
   require_partition_filter = true,
-  description = 'AnyPay core transactions partitioned by swipe date'
+  description = 'Offvia core transactions partitioned by swipe date'
 ) AS
-SELECT * FROM `anypay_dw.transactions_managed`;
+SELECT * FROM `offvia_dw.transactions_managed`;
 ```
 
 **The Quantifiable Impact:**
@@ -343,13 +343,13 @@ Marcus approved the cloud architecture budget before the end of the day.
 ## 4. Month 6: The Merchant Portal Slog & Clustering
 
 ### The Operational Catalyst
-AnyPay launches an embedded self-service portal allowing thousands of store merchants to inspect their daily payouts and transaction histories.
+Offvia launches an embedded self-service portal allowing thousands of store merchants to inspect their daily payouts and transaction histories.
 
 When an enterprise retailer like `MERCHANT-GLOBAL-801` logs in, the merchant portal executes this query:
 
 ```sql
 SELECT transaction_id, amount, status, payment_method, event_timestamp
-FROM `anypay_dw.transactions_partitioned`
+FROM `offvia_dw.transactions_partitioned`
 WHERE event_timestamp >= '2026-08-20'
   AND event_timestamp < '2026-09-19'
   AND merchant_id = 'MERCHANT-GLOBAL-801';
@@ -393,7 +393,7 @@ BigQuery checks min/max metadata on each Capacitor block inside those 30 drawers
 <div class="p-3.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs">
 <strong class="text-slate-800 dark:text-slate-200 block mb-1">Production Rule: Column Ordering Matters!</strong>
 <p class="text-slate-600 dark:text-slate-400 m-0 leading-relaxed">
-AnyPay clustered by <code>CLUSTER BY merchant_id, status</code>. Clustering is strictly hierarchical. Queries filtering by <code>merchant_id</code> get maximum pruning benefit. Queries filtering <em>only</em> by <code>status</code> receive minimal block pruning. <strong>Always order clustering columns starting with your highest-cardinality equality filter.</strong>
+Offvia clustered by <code>CLUSTER BY merchant_id, status</code>. Clustering is strictly hierarchical. Queries filtering by <code>merchant_id</code> get maximum pruning benefit. Queries filtering <em>only</em> by <code>status</code> receive minimal block pruning. <strong>Always order clustering columns starting with your highest-cardinality equality filter.</strong>
 </p>
 </div>
 </div>
@@ -402,13 +402,13 @@ AnyPay clustered by <code>CLUSTER BY merchant_id, status</code>. Clustering is s
 Devin updated the production table schema:
 
 ```sql
-CREATE OR REPLACE TABLE `anypay_dw.transactions_clustered`
+CREATE OR REPLACE TABLE `offvia_dw.transactions_clustered`
 PARTITION BY DATE(event_timestamp)
 CLUSTER BY merchant_id, status
 OPTIONS (
   require_partition_filter = true
 ) AS
-SELECT * FROM `anypay_dw.transactions_partitioned`;
+SELECT * FROM `offvia_dw.transactions_partitioned`;
 ```
 
 **The Quantifiable Impact:**
@@ -421,7 +421,7 @@ SELECT * FROM `anypay_dw.transactions_partitioned`;
 ## 5. Month 9: The Mystery of Drifting Financial Books (Time-Series Modeling)
 
 ### The Operational Catalyst
-AnyPay expands internationally, providing offline card readers to regional airlines, passenger ferries, and underground subway kiosks.
+Offvia expands internationally, providing offline card readers to regional airlines, passenger ferries, and underground subway kiosks.
 
 A week after launch, Marcus (VP of Finance) calls an emergency sync with Maya and Devin:
 > *"Our accounting numbers are drifting. On Tuesday morning, our executive report showed Monday's global revenue was $1,240,000. On Wednesday morning, the exact same report for Monday showed $1,315,000. Why are historical financial numbers changing after the books close?"*
@@ -431,12 +431,12 @@ Sarah checks the data. No rows were manually updated. No unauthorized deletions 
 Devin digs into the network logs and solves the mystery:
 - A card swiped on an in-flight airline terminal at 11:50 PM Monday over the Pacific Ocean stays stored on local terminal memory.
 - The aircraft lands in Tokyo at 4:10 AM UTC Tuesday. The terminal connects to airport Wi-Fi and pushes the batch of receipts to Google Cloud.
-- AnyPay's pipeline had been partitioned by `_PARTITIONTIME` (ingestion time—when BigQuery received the packet).
+- Offvia's pipeline had been partitioned by `_PARTITIONTIME` (ingestion time—when BigQuery received the packet).
 - Because the swipe arrived on Tuesday, BigQuery dropped Monday's purchase into Tuesday's partition!
 - When analysts re-ran backfills or late reconciliation scripts, late records were backfilled into Monday, causing previous daily revenue totals to change retroactively.
 
 ### The Team Decision
-Maya establishes AnyPay's dual-timestamp modeling standard:
+Maya establishes Offvia's dual-timestamp modeling standard:
 > *"In event-driven architecture, never confuse **when an event happened** with **when our cloud received it**. We must explicitly model two separate timestamps: **Event Timestamp** and **Ingestion Timestamp**."*
 
 ### 💡 In Plain English
@@ -447,7 +447,7 @@ An airplane's black box flight recorder. It logs both the exact second a turbine
 ⏱️ The Dual-Timestamp Data Contract
 </div>
 <div class="p-3 bg-slate-900 rounded-lg text-slate-200 font-mono text-xs">
-CREATE TABLE anypay_dw.transactions (<br>
+CREATE TABLE offvia_dw.transactions (<br>
 &nbsp;&nbsp;transaction_id STRING NOT NULL,<br>
 &nbsp;&nbsp;merchant_id STRING NOT NULL,<br>
 &nbsp;&nbsp;<strong class="text-emerald-400">event_timestamp TIMESTAMP NOT NULL</strong>,&nbsp;&nbsp;-- Physical card swipe (Business Truth)<br>
@@ -475,7 +475,7 @@ CLUSTER BY merchant_id, status;
 ## 6. Month 12: Executive Dashboard Storm & Materialized Views
 
 ### The Operational Catalyst
-It is 9:00 AM on Monday. 180 AnyPay executives, country managers, and risk officers log into Looker to review regional performance.
+It is 9:00 AM on Monday. 180 Offvia executives, country managers, and risk officers log into Looker to review regional performance.
 
 Every dashboard tab runs heavy rollups:
 
@@ -487,13 +487,13 @@ SELECT
   SUM(amount) AS total_gross_volume,
   COUNT(transaction_id) AS total_transactions,
   AVG(amount) AS average_ticket_size
-FROM `anypay_dw.transactions`
+FROM `offvia_dw.transactions`
 GROUP BY 1, 2, 3;
 ```
 
 Even with partitioning and clustering, this query must aggregate **every single transaction across all merchants and historical dates**.
 
-180 users firing this query simultaneously consumes all 2,000 reserved compute slots in AnyPay's BigQuery project. Queries queue up. Dashboard tiles freeze with `Resources Exceeded` errors. 
+180 users firing this query simultaneously consumes all 2,000 reserved compute slots in Offvia's BigQuery project. Queries queue up. Dashboard tiles freeze with `Resources Exceeded` errors. 
 
 Devin proposes an Airflow batch job: *"We can run a scheduled hourly ETL script that pre-aggregates the numbers into a summary table."*
 
@@ -523,7 +523,7 @@ Keeping a running tally sheet next to the register. When twenty customers make p
 <div class="p-3.5 rounded-xl border border-emerald-300 dark:border-emerald-800 bg-emerald-50/40 dark:bg-emerald-950/20 space-y-1.5">
 <strong class="text-emerald-800 dark:text-emerald-300 block text-sm">Transparent Smart Tuning</strong>
 <p class="text-slate-600 dark:text-slate-400 m-0 leading-relaxed">
-Analysts do not need to change their SQL. They continue querying <code>anypay_dw.transactions</code>. BigQuery's cost-based optimizer automatically detects the matching Materialized View and transparently reroutes the query to read the precomputed summary.
+Analysts do not need to change their SQL. They continue querying <code>offvia_dw.transactions</code>. BigQuery's cost-based optimizer automatically detects the matching Materialized View and transparently reroutes the query to read the precomputed summary.
 </p>
 </div>
 <div class="p-3.5 rounded-xl border border-blue-300 dark:border-blue-800 bg-blue-50/40 dark:bg-blue-950/20 space-y-1.5">
@@ -539,7 +539,7 @@ If 400 transactions landed five seconds ago and have not been materialized yet, 
 Devin deployed the Materialized View:
 
 ```sql
-CREATE MATERIALIZED VIEW `anypay_dw.mv_monthly_merchant_metrics`
+CREATE MATERIALIZED VIEW `offvia_dw.mv_monthly_merchant_metrics`
 OPTIONS (
   enable_refresh = true,
   refresh_interval_minutes = 30
@@ -551,7 +551,7 @@ SELECT
   SUM(amount) AS total_gross_volume,
   COUNT(transaction_id) AS total_transactions,
   AVG(amount) AS average_ticket_size
-FROM `anypay_dw.transactions`
+FROM `offvia_dw.transactions`
 GROUP BY 1, 2, 3;
 ```
 
@@ -578,12 +578,12 @@ into:
 The command executes against production:
 
 ```sql
-UPDATE `anypay_dw.transactions`
+UPDATE `offvia_dw.transactions`
 SET status = 'FAILED'
 WHERE 1 = 1;
 ```
 
-Fifty million production payments across three continents are suddenly marked as `FAILED`. AnyPay's automated webhook services begin triggering merchant refund notifications.
+Fifty million production payments across three continents are suddenly marked as `FAILED`. Offvia's automated webhook services begin triggering merchant refund notifications.
 
 The on-call engineer calls Maya in full panic: *"I just destroyed our production table. Do we have database tape backups from last night? How many hours of payments did we just lose?"*
 
@@ -594,9 +594,9 @@ Maya stays completely calm:
 Devin runs the recovery query:
 
 ```sql
-CREATE OR REPLACE TABLE `anypay_dw.transactions` AS
+CREATE OR REPLACE TABLE `offvia_dw.transactions` AS
 SELECT * 
-FROM `anypay_dw.transactions`
+FROM `offvia_dw.transactions`
 FOR SYSTEM_TIME AS OF TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 20 MINUTE);
 ```
 
@@ -636,8 +636,8 @@ As the production base table modifies or deletes rows, BigQuery writes new block
 Devin created the pre-migration snapshot with an explicit expiration policy:
 
 ```sql
-CREATE SNAPSHOT TABLE `anypay_backups.transactions_pre_migration_2026_q3`
-CLONE `anypay_dw.transactions`
+CREATE SNAPSHOT TABLE `offvia_backups.transactions_pre_migration_2026_q3`
+CLONE `offvia_dw.transactions`
 OPTIONS (
   expiration_timestamp = TIMESTAMP '2026-12-31 00:00:00 UTC',
   description = 'Pre-migration immutable snapshot for Q3 architecture refactor'
@@ -649,7 +649,7 @@ OPTIONS (
 ## 8. Month 18: The Global Banking Audit & Authorized Views
 
 ### The Operational Catalyst
-AnyPay secures a major partnership with a tier-1 global clearing bank. As part of regulatory compliance, the bank's external audit team must inspect daily settlement volumes, chargeback rates, and transaction fees across all merchants for the past 36 months.
+Offvia secures a major partnership with a tier-1 global clearing bank. As part of regulatory compliance, the bank's external audit team must inspect daily settlement volumes, chargeback rates, and transaction fees across all merchants for the past 36 months.
 
 Elena (Head of Compliance) calls an immediate halt to data access requests:
 > *"We cannot grant the bank auditors read access to our transactions dataset. The `transactions` table contains unmasked cardholder numbers (PAN), customer tax IDs, and confidential margin rates. Giving external contractors read permissions violates PCI-DSS Level 1 compliance and European GDPR data protection regulations."*
@@ -658,18 +658,18 @@ Sarah suggests creating a standard SQL view:
 *"Can't we just create a view that selects only the safe aggregate columns and place it in an external audit dataset?"*
 
 ```sql
-CREATE VIEW `anypay_audit.daily_settlements` AS
+CREATE VIEW `offvia_audit.daily_settlements` AS
 SELECT 
   merchant_id, 
   DATE(event_timestamp) AS settlement_date,
   SUM(amount) AS total_settled,
   COUNT(transaction_id) AS total_swipes
-FROM `anypay_dw.transactions`
+FROM `offvia_dw.transactions`
 GROUP BY 1, 2;
 ```
 
 Devin tests it:
-*"In standard database security models, that does not work. When the bank auditor queries `anypay_audit.daily_settlements`, **BigQuery throws `403 Access Denied`**. To read through a standard view, the auditor must also possess read permissions on the underlying base table in `anypay_dw`. If we grant them read access to `anypay_dw`, they can bypass the view and query raw credit cards."*
+*"In standard database security models, that does not work. When the bank auditor queries `offvia_audit.daily_settlements`, **BigQuery throws `403 Access Denied`**. To read through a standard view, the auditor must also possess read permissions on the underlying base table in `offvia_dw`. If we grant them read access to `offvia_dw`, they can bypass the view and query raw credit cards."*
 
 ### The Team Decision
 Maya implements **BigQuery Authorized Views**:
@@ -686,7 +686,7 @@ The bank teller drive-through window. You cannot walk into the bank vault to cou
 </div>
 <div>
 <h4 class="text-base font-bold text-slate-900 dark:text-slate-100 m-0">Stage 8: Authorized Views (Zero-Trust Delegated Access)</h4>
-<p class="text-xs text-slate-500 dark:text-slate-400 m-0">How AnyPay achieved PCI-DSS compliance while sharing audited metrics</p>
+<p class="text-xs text-slate-500 dark:text-slate-400 m-0">How Offvia achieved PCI-DSS compliance while sharing audited metrics</p>
 </div>
 </div>
 <span class="text-xs px-3 py-1 rounded-full bg-indigo-600 text-white font-semibold">Zero-Trust IAM</span>
@@ -695,7 +695,7 @@ The bank teller drive-through window. You cannot walk into the bank vault to cou
 <div class="p-3.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-2">
 <strong class="text-slate-900 dark:text-slate-100 block text-sm">1. External Bank Auditor</strong>
 <p class="text-slate-600 dark:text-slate-400 m-0">
-Granted <code>roles/bigquery.dataViewer</code> <strong>only</strong> on the partner dataset <code>anypay_audit</code>.
+Granted <code>roles/bigquery.dataViewer</code> <strong>only</strong> on the partner dataset <code>offvia_audit</code>.
 </p>
 <div class="p-2 rounded bg-rose-50 dark:bg-rose-950/40 text-rose-700 dark:text-rose-400 font-semibold text-[11px]">
 🚫 Zero read access to underlying payment tables
@@ -704,16 +704,16 @@ Granted <code>roles/bigquery.dataViewer</code> <strong>only</strong> on the part
 <div class="p-3.5 rounded-xl bg-indigo-50/30 dark:bg-indigo-950/30 border-2 border-indigo-500/40 space-y-2">
 <strong class="text-indigo-900 dark:text-indigo-200 block text-sm">2. The Authorized View</strong>
 <p class="text-slate-600 dark:text-slate-400 m-0 font-mono text-[11px]">
-anypay_audit.daily_settlements
+offvia_audit.daily_settlements
 </p>
 <div class="p-2 rounded bg-indigo-100 dark:bg-indigo-900/50 text-indigo-800 dark:text-indigo-200 font-semibold text-[11px]">
-✔ Authorized inside anypay_dw dataset ACL
+✔ Authorized inside offvia_dw dataset ACL
 </div>
 </div>
 <div class="p-3.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-2">
 <strong class="text-slate-900 dark:text-slate-100 block text-sm">3. Restricted Finance Vault</strong>
 <p class="text-slate-600 dark:text-slate-400 m-0">
-Dataset <code>anypay_dw</code> holds raw credit cards, tax IDs, and merchant margins.
+Dataset <code>offvia_dw</code> holds raw credit cards, tax IDs, and merchant margins.
 </p>
 <div class="p-2 rounded bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 font-semibold text-[11px]">
 🔒 Vault remains completely locked
@@ -726,29 +726,29 @@ Dataset <code>anypay_dw</code> holds raw credit cards, tax IDs, and merchant mar
 1. Devin created the public view in the partner audit dataset:
 
 ```sql
-CREATE OR REPLACE VIEW `anypay_audit.daily_settlements` AS
+CREATE OR REPLACE VIEW `offvia_audit.daily_settlements` AS
 SELECT 
   merchant_id, 
   currency,
   DATE(event_timestamp) AS settlement_date,
   SUM(amount) AS total_settled_amount,
   COUNT(transaction_id) AS total_transactions
-FROM `anypay_dw.transactions`
+FROM `offvia_dw.transactions`
 GROUP BY 1, 2, 3;
 ```
 
 2. Devin authorized the view inside the source dataset:
-- In the BigQuery Console, navigate to dataset `anypay_dw` ➔ **Share** ➔ **Authorize Views**.
-- Add view `anypay_audit.daily_settlements` and click **Save**.
-- Grant the bank auditor role `roles/bigquery.dataViewer` on dataset `anypay_audit`.
+- In the BigQuery Console, navigate to dataset `offvia_dw` ➔ **Share** ➔ **Authorize Views**.
+- Add view `offvia_audit.daily_settlements` and click **Save**.
+- Grant the bank auditor role `roles/bigquery.dataViewer` on dataset `offvia_audit`.
 
-Elena certified compliance ahead of schedule, clearing AnyPay to launch its global banking partnership.
+Elena certified compliance ahead of schedule, clearing Offvia to launch its global banking partnership.
 
 ---
 
 ## 🚨 5 Fatal Cloud Data Misconceptions Debunked
 
-In production, engineering myths lead directly to billing shocks, degraded performance, and failed audits. Here are five costly misconceptions AnyPay's team debunked:
+In production, engineering myths lead directly to billing shocks, degraded performance, and failed audits. Here are five costly misconceptions Offvia's team debunked:
 
 <div class="my-6 grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
 <div class="p-4 rounded-xl bg-rose-50/60 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-900 space-y-2">
@@ -802,9 +802,9 @@ In production, engineering myths lead directly to billing shocks, degraded perfo
 
 ## What's Next in the Series?
 
-In this foundational deep dive, we traced how AnyPay navigated real production bottlenecks to build an enterprise-grade Google Cloud storage architecture.
+In this foundational deep dive, we traced how Offvia navigated real production bottlenecks to build an enterprise-grade Google Cloud storage architecture.
 
-In **Part 1.1 (Hands-On Implementation Lab)**, we will take AnyPay's complete production setup and deploy it live in Google Cloud Shell:
+In **Part 1.1 (Hands-On Implementation Lab)**, we will take Offvia's complete production setup and deploy it live in Google Cloud Shell:
 - Creating GCS data lakes and querying Parquet files with External Tables.
 - Building partitioned, clustered tables with enforced `require_partition_filter` constraints.
 - Deploying live Materialized Views and inspecting query execution plans.
