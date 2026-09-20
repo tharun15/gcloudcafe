@@ -194,9 +194,9 @@
   }
 }
 
-.single-post img,
-.post-content img,
-.article-content img {
+.single-post img:not(.icon):not(.gcp-icon):not(.inline-icon),
+.post-content img:not(.icon):not(.gcp-icon):not(.inline-icon),
+.article-content img:not(.icon):not(.gcp-icon):not(.inline-icon) {
   width: 100%;
   max-width: 820px;
   height: auto;
@@ -207,8 +207,22 @@
   transition: transform 0.3s ease;
 }
 
-.single-post img:hover {
+.single-post img:not(.icon):not(.gcp-icon):not(.inline-icon):hover {
   transform: scale(1.01);
+}
+
+img.gcp-icon,
+img.icon,
+img.inline-icon,
+.diagram-box img {
+  width: 2rem !important;
+  height: 2rem !important;
+  max-width: none !important;
+  display: inline-block !important;
+  margin: 0 !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  transition: none !important;
 }
 
 /* Enhanced Universal Code Blocks & Copy Button */
@@ -1135,9 +1149,9 @@ table {
 }
 
 /* ── 6. Images & Media Containment ── */
-.single-post img,
-.blog-article-content img,
-.post-content img {
+.single-post img:not(.icon):not(.gcp-icon):not(.inline-icon),
+.blog-article-content img:not(.icon):not(.gcp-icon):not(.inline-icon),
+.post-content img:not(.icon):not(.gcp-icon):not(.inline-icon) {
   max-width: 100% !important;
   height: auto !important;
 }
