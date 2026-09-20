@@ -1,7 +1,7 @@
 ---
-title: "From One Booking File to a Data Platform: How Offvia Grew on Google Cloud"
-meta_title: "GCP Data Engineering Architecture: From Cloud Storage to BigQuery"
-description: "Follow Offvia from its first booking file to a fast, recoverable, and securely shared BigQuery platform. Learn GCP data engineering step-by-step through real scaling problems."
+title: "Data Engineering on GCP: The Core Storage & Access Building Blocks Demystified"
+meta_title: "GCP Data Engineering Architecture: Storage & Access Building Blocks"
+description: "A step-by-step architectural guide to core Google Cloud data engineering storage and access primitives. From Cloud Storage to partitioned BigQuery, materialized views, and authorized views."
 date: 2026-09-19
 image: "/images/gcp-storage-building-blocks.jpg"
 categories: ["Google Cloud", "Architecture"]
@@ -13,7 +13,7 @@ series: "Data Engineering on Google Cloud"
 series_order: 1
 ---
 
-# From One Booking File to a Data Platform: How Offvia Grew on Google Cloud
+# Data Engineering on GCP: The Core Storage & Access Building Blocks Demystified
 
 When software engineers build an application, success has a very clear definition. 
 
@@ -32,15 +32,13 @@ Suddenly, the production database is useless. Running heavy aggregations across 
 
 It does not start with an intimidating architecture diagram packed with twenty Google Cloud icons. It starts when a business outgrows its transactional application and needs to answer analytical questions without breaking production.
 
-To see how real cloud architectures evolve, we are going to follow **Offvia**—a fast-growing travel booking startup. We will not hand you a finished, enterprise-scale data warehouse on day one. Instead, we will start with the smallest possible operational setup: **one user, one flight booking, and one Parquet file in Cloud Storage.**
-
-Every time Offvia hits a real scaling wall, we will watch the existing setup break, understand *why* it fails, and introduce the exact Google Cloud storage primitive designed to solve it.
+To understand how these primitives fit together in practice, consider the trajectory of **Offvia**, a regional flight booking platform. Rather than starting with an abstract blueprint, each component in the platform emerged as a direct response to a concrete operational failure—from a slow dashboard to a runaway query bill, a silent accounting drift, and a late-night production corruption.
 
 ---
 
 <div class="my-7 overflow-hidden rounded-2xl border border-slate-200 bg-slate-50/70 dark:border-slate-800 dark:bg-slate-900/50">
 <div class="border-b border-slate-200 px-5 py-3 dark:border-slate-800">
-<div class="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Offvia's Growth Blueprint</div>
+<div class="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Architecture Growth Blueprint</div>
 <div class="mt-1 font-bold text-slate-900 dark:text-slate-100">Every GCP storage primitive is an answer to a specific scaling friction</div>
 </div>
 <div class="p-5 text-xs text-slate-600 dark:text-slate-400 space-y-3">
@@ -797,7 +795,7 @@ GROUP BY 1, 2, 3, 4;
 #### Step 2: Authorize the View to Access the Protected Dataset
 In the Google Cloud console:
 1. Navigate to the source dataset `offvia_dw`.
-2. Click **Sharing** $ightarrow$ **Authorize Views**.
+2. Click **Sharing** → **Authorize Views**.
 3. Select `offvia_audit.daily_route_occupancy`.
 4. Grant the auditor IAM permissions (`roles/bigquery.dataViewer` and `roles/bigquery.jobUser`) on the `offvia_audit` dataset only.
 5. **Do not grant the auditor any permissions on `offvia_dw`.**
@@ -808,7 +806,7 @@ Offvia turned raw data into a **governed, production data contract**.
 
 ---
 
-## The Complete Offvia Platform: Why Every Box Exists
+## The Complete Architecture: Why Every Building Block Exists
 
 Now—and only now—does it make sense to view the final enterprise architecture.
 
