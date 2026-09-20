@@ -43,7 +43,7 @@
           <!-- Left Column: Visual Media with Red FEATURED badge inside the link -->
           <div class="relative overflow-hidden bg-slate-900 flex items-stretch hero-bytedepth-img h-full min-h-[300px] lg:min-h-[440px]">
             <a href="{{ $page.RelPermalink }}" class="block w-full h-full relative group/img no-underline overflow-hidden" aria-label="Read featured: {{ $page.Title }}">
-              <span class="absolute top-4 left-4 z-30 px-2.5 py-1 bg-red-600 text-white font-mono text-[11px] font-black uppercase tracking-widest rounded-sm shadow-md pointer-events-none" style="background-color: #dc2626 !important; color: #ffffff !important;">
+              <span class="absolute top-4 left-4 z-30 px-2.5 py-1 bg-red-600 text-white font-mono text-[11px] font-black uppercase tracking-widest rounded-sm shadow-md pointer-events-none" >
                 FEATURED
               </span>
               {{ with $page.Params.image }}
@@ -61,8 +61,8 @@
             <div>
               <!-- Category Banner Tag (ByteDepth Figma Spec) -->
               <a href="{{ `categories/` | relLangURL }}{{ $firstCat | urlize | lower }}/" 
-                 class="hero-category-banner w-full flex items-center px-4 py-1.5 rounded-md font-mono text-xs font-bold uppercase tracking-wider mb-4 no-underline hover:opacity-95 transition-opacity"
-                 style="background-color: #ede9fe; color: #6b21a8; letter-spacing: 0.08em;">
+                 class="hero-category-banner w-full flex items-center px-4 py-1.5 rounded-md font-mono text-xs font-bold uppercase tracking-wider mb-4 no-underline bg-purple-100 text-purple-800 dark:bg-purple-950/60 dark:text-purple-300 hover:opacity-95 transition-opacity"
+                 >
                 {{ $firstCat | upper }}
               </a>
 

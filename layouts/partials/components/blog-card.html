@@ -47,7 +47,7 @@
       <!-- Category Pill + Reading Time in mono -->
       <div class="flex items-center justify-between gap-2 mb-3">
         <a href="{{ `categories/` | relLangURL }}{{ $firstCat | urlize | lower }}/"
-           class="inline-flex items-center px-2.5 py-0.5 rounded text-[11px] font-mono font-bold uppercase tracking-wider {{ $badgeBg }} no-underline hover:opacity-90 transition-opacity">
+           class="inline-flex items-center px-2.5 py-0.5 rounded text-xs font-mono font-bold uppercase tracking-wider {{ $badgeBg }} no-underline hover:opacity-90 transition-opacity">
           {{ $firstCat | humanize }}
         </a>
         <span class="text-xs font-mono text-slate-500 dark:text-slate-400">
@@ -70,7 +70,7 @@
       <!-- Hashtags Strip -->
       <div class="flex flex-wrap gap-1.5">
         {{ range first 3 ($tags | default (slice)) }}
-          <span class="border border-slate-200 dark:border-slate-800 px-2 py-0.5 rounded text-[10px] font-mono text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-900/40">
+          <span class="border border-slate-200 dark:border-slate-800 px-2.5 py-0.5 rounded text-xs font-mono text-slate-600 dark:text-slate-400 bg-slate-50 dark:bg-slate-900/40">
             #{{ . }}
           </span>
         {{ end }}
@@ -84,7 +84,7 @@
       {{ if $authorImage }}
         <img src="{{ $authorImage | relURL }}" alt="{{ $authorName }}" class="w-6 h-6 rounded-full object-cover" loading="lazy" onerror="this.onerror=null; this.src='{{ `/images/avatar.png` | relURL }}';">
       {{ else }}
-        <div class="w-6 h-6 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-white font-bold text-[10px] flex items-center justify-center">
+        <div class="w-6 h-6 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-white font-bold text-xs flex items-center justify-center">
           {{ substr $authorName 0 1 }}
         </div>
       {{ end }}
