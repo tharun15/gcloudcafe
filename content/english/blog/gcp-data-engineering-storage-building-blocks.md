@@ -2,7 +2,7 @@
 title: "Data Engineering on GCP: The Core Storage & Access Building Blocks Demystified"
 meta_title: "GCP Data Engineering Architecture: Storage & Access Building Blocks"
 description: "A step-by-step architectural guide to core Google Cloud data engineering storage and access primitives. From Cloud Storage to partitioned BigQuery, materialized views, and authorized views."
-date: 2026-09-19
+date: 2026-09-20
 image: "/images/gcp-storage-building-blocks.jpg"
 categories: ["Google Cloud", "Architecture"]
 tags: ["Data Engineering", "GCP", "BigQuery", "Cloud Storage", "SQL", "Architecture", "TravelTech"]
