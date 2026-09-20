@@ -70,11 +70,13 @@ describe('Homepage & Site-Wide Usability Heuristics & Accessibility Suite', () =
     expect(tickerIndex).toBeLessThan(mainIndex);
   });
 
-  it('renders a professional frosted glass pill for the Featured hero badge', () => {
+  it('renders a creative, non-danger editorial badge for the Featured hero story', () => {
     const heroHtml = fs.readFileSync(path.join(rootDir, 'layouts/partials/components/blog-hero.html'), 'utf8');
-    expect(heroHtml).not.toContain('bg-red-600 text-white font-mono text-[11px] font-black uppercase tracking-widest rounded-sm');
-    expect(heroHtml).toContain('rounded-full bg-slate-950/80 backdrop-blur-md border border-white/15');
-    expect(heroHtml).toContain('Featured');
+    expect(heroHtml).not.toContain('bg-red-600');
+    expect(heroHtml).not.toContain('bg-red-500');
+    expect(heroHtml).toContain('border-amber-400/30');
+    expect(heroHtml).toContain('fa-star');
+    expect(heroHtml).toContain('Featured Story');
   });
 
   it('Issue 5: ensures search overlay has full viewport scrim and deep drop shadow in custom.scss', () => {

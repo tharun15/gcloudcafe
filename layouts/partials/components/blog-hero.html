@@ -43,9 +43,11 @@
           <!-- Left Column: Visual Media with Red FEATURED badge inside the link -->
           <div class="relative overflow-hidden bg-slate-900 flex items-stretch hero-bytedepth-img h-full min-h-[300px] lg:min-h-[440px]">
             <a href="{{ $page.RelPermalink }}" class="block w-full h-full relative group/img no-underline overflow-hidden" aria-label="Read featured: {{ $page.Title }}">
-              <span class="absolute top-4 left-4 z-30 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-950/80 backdrop-blur-md border border-white/15 text-slate-100 font-mono text-xs font-bold uppercase tracking-wider shadow-lg pointer-events-none transition-transform group-hover/img:scale-105">
-                <span class="w-2 h-2 rounded-full bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.9)] animate-pulse" aria-hidden="true"></span>
-                <span>Featured</span>
+              <span class="absolute top-4 left-4 z-30 inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-950/85 backdrop-blur-md border border-amber-400/30 text-slate-100 font-mono text-xs font-semibold shadow-xl pointer-events-none transition-all duration-300 group-hover/img:scale-105 group-hover/img:border-amber-400/60">
+                <span class="flex items-center justify-center w-4 h-4 rounded-full bg-amber-400/20 text-amber-400 text-[10px]" aria-hidden="true">
+                  <i class="fa-solid fa-star"></i>
+                </span>
+                <span class="font-bold tracking-wider uppercase text-white">Featured Story</span>
               </span>
               {{ with $page.Params.image }}
                 {{ partial "image" (dict "Src" . "Context" $page "Alt" $page.Title "Class" "w-full h-full object-cover group-hover/img:scale-105 transition-transform duration-500 ease-out" "Loading" "eager" "FetchPriority" "high") }}
