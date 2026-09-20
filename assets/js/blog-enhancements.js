@@ -1709,13 +1709,27 @@
       });
     }
 
+    function isManualApprovedPulse(p) {
+      if (!p) return false;
+      var reason = (p.eligibility_reason || "").toLowerCase();
+      return !reason.includes("auto-published");
+    }
+
     function sortCohortByScore(list) {
-      return (list || []).slice(0, 6).sort(function(a, b) {
+      return (list || []).slice().sort(function(a, b) {
+        // Priority 1: Manual approvals always take higher precedence over auto-published posts
+        var manualA = isManualApprovedPulse(a) ? 1 : 0;
+        var manualB = isManualApprovedPulse(b) ? 1 : 0;
+        if (manualB !== manualA) return manualB - manualA;
+
+        // Priority 2: Community vote score
         var scoreA = typeof a.score === "number" ? a.score : ((a.upvotes || 0) - (a.downvotes || 0));
         var scoreB = typeof b.score === "number" ? b.score : ((b.upvotes || 0) - (b.downvotes || 0));
         if (scoreB !== scoreA) return scoreB - scoreA;
+
+        // Priority 3: Recency
         return new Date(b.created_at || 0) - new Date(a.created_at || 0);
-      });
+      }).slice(0, 6);
     }
 
     function fetchPulses() {
@@ -1723,7 +1737,7 @@
       setupPulseSearch();
       setupPulseFocusModal();
       // Fetch latest 6 approved articles (the active competing cohort)
-      var queryUrl = config.url + "/rest/v1/cloud_pulses?status=eq.approved&order=created_at.desc&limit=6";
+      var queryUrl = config.url + "/rest/v1/cloud_pulses?status=eq.approved&order=created_at.desc&limit=24";
       
       fetch(queryUrl, {
         headers: {
@@ -1737,7 +1751,7 @@
           allLoadedPulses = sortCohortByScore(data);
           filterAndRenderPulses();
         } else if (supabase) {
-          supabase.from("cloud_pulses").select("*").eq("status", "approved").order("created_at", { ascending: false }).limit(6).then(function(sRes) {
+          supabase.from("cloud_pulses").select("*").eq("status", "approved").order("created_at", { ascending: false }).limit(24).then(function(sRes) {
             if (sRes && Array.isArray(sRes.data) && sRes.data.length > 0) {
               allLoadedPulses = sortCohortByScore(sRes.data);
               filterAndRenderPulses();
@@ -1754,7 +1768,7 @@
       .catch(function (err) {
         console.error("Cloud Pulse fetch error:", err);
         if (supabase) {
-          supabase.from("cloud_pulses").select("*").eq("status", "approved").order("created_at", { ascending: false }).limit(6).then(function(sRes) {
+          supabase.from("cloud_pulses").select("*").eq("status", "approved").order("created_at", { ascending: false }).limit(24).then(function(sRes) {
             if (sRes && sRes.data && sRes.data.length > 0) {
               allLoadedPulses = sortCohortByScore(sRes.data);
               filterAndRenderPulses();
@@ -2307,9 +2321,17 @@ function renderPulses(pulses) {
     var refreshBtn = document.getElementById("refresh-candidates-btn");
 
     var tabPendingBtn = document.getElementById("tab-pending-btn");
+    var tabPublishedBtn = document.getElementById("tab-published-btn");
     var tabManualBtn = document.getElementById("tab-manual-btn");
     var sectionPending = document.getElementById("section-pending-approvals");
+    var sectionPublished = document.getElementById("section-published-posts");
     var sectionManual = document.getElementById("section-manual-post");
+    var publishedGrid = document.getElementById("published-cards-grid");
+    var publishedCountBadge = document.getElementById("published-count-badge");
+    var refreshPublishedBtn = document.getElementById("refresh-published-btn");
+    var triggerAutoPublishBtn = document.getElementById("trigger-auto-publish-btn");
+    var cachedPublishedPulses = [];
+    var currentAdminPublishedFilter = "all";
 
     // Gemini API Key Controls
     var geminiKeyInput = document.getElementById("gemini-api-key-input");
@@ -2573,6 +2595,7 @@ function renderPulses(pulses) {
 
       fetchGeminiApiKeyFromSupabase();
       fetchPendingCandidates();
+      fetchPublishedPulses();
     }
 
     if (saveGeminiKeyBtn && geminiKeyInput) {
@@ -2595,19 +2618,39 @@ function renderPulses(pulses) {
       if (authPrompt) authPrompt.classList.remove("hidden");
     }
 
-    if (tabPendingBtn && tabManualBtn) {
-      tabPendingBtn.addEventListener("click", function () {
-        tabPendingBtn.className = "px-4 py-2 rounded-xl text-xs font-extrabold bg-primary text-white border-none cursor-pointer";
-        tabManualBtn.className = "px-4 py-2 rounded-xl text-xs font-bold bg-theme-light dark:bg-darkmode-theme-light text-text/80 dark:text-darkmode-text/80 hover:text-primary border border-border/60 dark:border-darkmode-border/60 cursor-pointer";
-        if (sectionPending) sectionPending.classList.remove("hidden");
-        if (sectionManual) sectionManual.classList.add("hidden");
-      });
+    function resetAdminTabStyles() {
+      var inactiveClass = "px-4 py-2 rounded-xl text-xs font-bold bg-theme-light dark:bg-darkmode-theme-light text-text/80 dark:text-darkmode-text/80 hover:text-primary border border-border/60 dark:border-darkmode-border/60 cursor-pointer transition-all";
+      if (tabPendingBtn) tabPendingBtn.className = inactiveClass;
+      if (tabPublishedBtn) tabPublishedBtn.className = inactiveClass;
+      if (tabManualBtn) tabManualBtn.className = inactiveClass;
+      if (sectionPending) sectionPending.classList.add("hidden");
+      if (sectionPublished) sectionPublished.classList.add("hidden");
+      if (sectionManual) sectionManual.classList.add("hidden");
+    }
 
+    if (tabPendingBtn) {
+      tabPendingBtn.addEventListener("click", function () {
+        resetAdminTabStyles();
+        tabPendingBtn.className = "px-4 py-2 rounded-xl text-xs font-extrabold bg-primary text-white border-none cursor-pointer shadow-xs transition-all";
+        if (sectionPending) sectionPending.classList.remove("hidden");
+        fetchPendingCandidates();
+      });
+    }
+
+    if (tabPublishedBtn) {
+      tabPublishedBtn.addEventListener("click", function () {
+        resetAdminTabStyles();
+        tabPublishedBtn.className = "px-4 py-2 rounded-xl text-xs font-extrabold bg-primary text-white border-none cursor-pointer shadow-xs transition-all";
+        if (sectionPublished) sectionPublished.classList.remove("hidden");
+        fetchPublishedPulses();
+      });
+    }
+
+    if (tabManualBtn) {
       tabManualBtn.addEventListener("click", function () {
-        tabManualBtn.className = "px-4 py-2 rounded-xl text-xs font-extrabold bg-primary text-white border-none cursor-pointer";
-        tabPendingBtn.className = "px-4 py-2 rounded-xl text-xs font-bold bg-theme-light dark:bg-darkmode-theme-light text-text/80 dark:text-darkmode-text/80 hover:text-primary border border-border/60 dark:border-darkmode-border/60 cursor-pointer";
+        resetAdminTabStyles();
+        tabManualBtn.className = "px-4 py-2 rounded-xl text-xs font-extrabold bg-primary text-white border-none cursor-pointer shadow-xs transition-all";
         if (sectionManual) sectionManual.classList.remove("hidden");
-        if (sectionPending) sectionPending.classList.add("hidden");
       });
     }
 
@@ -3016,7 +3059,9 @@ function renderPulses(pulses) {
           content: content,
           link_url: linkUrl || null,
           tags: tagsArr,
-          status: "approved"
+          status: "approved",
+          eligibility_reason: "[Manual Approved] Curated and published by newsroom admin.",
+          updated_at: new Date().toISOString()
         };
 
         fetch(config.url + "/rest/v1/cloud_pulses?id=eq." + encodeURIComponent(candidateId), {
@@ -3369,6 +3414,11 @@ function renderPulses(pulses) {
         card.style.pointerEvents = "none";
       }
 
+      var patchBody = { status: newStatus, updated_at: new Date().toISOString() };
+      if (newStatus === "approved") {
+        patchBody.eligibility_reason = "[Manual Approved] Verified and published by newsroom admin.";
+      }
+
       fetch(config.url + "/rest/v1/cloud_pulses?id=eq." + encodeURIComponent(id.trim()), {
         method: "PATCH",
         headers: {
@@ -3377,7 +3427,7 @@ function renderPulses(pulses) {
           "Content-Type": "application/json",
           "Prefer": "return=representation"
         },
-        body: JSON.stringify({ status: newStatus })
+        body: JSON.stringify(patchBody)
       })
       .then(function (res) {
         if (res.ok) {
@@ -3386,8 +3436,276 @@ function renderPulses(pulses) {
       });
     }
 
+    function fetchPublishedPulses() {
+      if (!publishedGrid) return;
+      publishedGrid.innerHTML = '<div class="col-span-full text-center py-12 text-xs font-semibold text-text/90 dark:text-darkmode-text/90"><i class="fa-solid fa-spinner fa-spin text-lg text-primary block mb-2"></i>Loading live published posts...</div>';
+
+      fetch(config.url + "/rest/v1/cloud_pulses?status=eq.approved&order=created_at.desc&limit=100", {
+        headers: {
+          "apikey": config.anonKey,
+          "Authorization": "Bearer " + config.anonKey
+        }
+      })
+      .then(function(res) { return res.json(); })
+      .then(function(data) {
+        if (!Array.isArray(data)) data = [];
+        cachedPublishedPulses = data;
+        if (publishedCountBadge) publishedCountBadge.textContent = String(data.length);
+        updateAdminPublishedFilterCounts();
+        applyAdminPublishedFilter();
+      })
+      .catch(function(err) {
+        console.error("Error fetching published pulses:", err);
+        if (publishedGrid) publishedGrid.innerHTML = '<div class="col-span-full text-center py-12 text-xs font-semibold text-rose-500">Failed to load published posts.</div>';
+      });
+    }
+
+    function renderPublishedCards(itemsToRender) {
+      if (!publishedGrid) return;
+      if (!Array.isArray(itemsToRender) || itemsToRender.length === 0) {
+        var msg = currentAdminPublishedFilter === "all"
+          ? "No published micro-posts found on the live site."
+          : "No published micro-posts found for this cloud ecosystem.";
+        publishedGrid.innerHTML = '<div class="col-span-full text-center py-12 bg-body dark:bg-darkmode-body border border-border/80 rounded-3xl text-xs text-text/90 dark:text-darkmode-text/90 font-semibold"><i class="fa-solid fa-circle-check text-emerald-500 text-xl block mb-2"></i>' + escapeHtml(msg) + '</div>';
+        return;
+      }
+
+      var html = "";
+      itemsToRender.forEach(function(p) {
+        var prov = detectCandidateProvider(p);
+        var isManual = isManualApprovedPulse(p);
+
+        var statusBadge = isManual
+          ? '<span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 uppercase tracking-wider inline-flex items-center gap-1"><i class="fa-solid fa-user-check"></i> Manual Curation</span>'
+          : '<span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-purple-500/15 text-purple-600 dark:text-purple-400 border border-purple-500/30 uppercase tracking-wider inline-flex items-center gap-1"><i class="fa-solid fa-robot"></i> Auto-Published (12h)</span>';
+
+        var tagsHtml = "";
+        if (Array.isArray(p.tags)) {
+          p.tags.forEach(function(t) {
+            tagsHtml += '<span class="text-[10px] font-semibold text-primary/80 bg-primary/10 px-2 py-0.5 rounded-md">' + escapeHtml(t) + '</span> ';
+          });
+        }
+
+        var linkHtml = "";
+        if (p.link_url) {
+          linkHtml = '<div class="mb-3"><a href="' + escapeHtml(p.link_url) + '" target="_blank" rel="noopener noreferrer" class="text-[11px] font-bold text-primary hover:underline inline-flex items-center gap-1.5"><i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i> View Official Source</a></div>';
+        }
+
+        var scoreHtml = '<span class="text-[10px] font-bold font-mono px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">Score: ' + (p.score || 0) + ' (+' + (p.upvotes || 0) + '/-' + (p.downvotes || 0) + ')</span>';
+
+        html += '<div class="bg-body dark:bg-darkmode-body border border-border/80 dark:border-darkmode-border/80 rounded-3xl p-6 shadow-xs flex flex-col justify-between transition-all" data-published-id="' + p.id + '">' +
+          '<div>' +
+            '<div class="flex items-center justify-between gap-2 mb-3 flex-wrap">' +
+              '<div class="flex items-center gap-2">' +
+                '<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold border ' + prov.badgeClass + '">' +
+                  '<i class="' + prov.icon + '"></i> ' + escapeHtml(prov.name) +
+                '</span>' +
+                statusBadge +
+              '</div>' +
+              '<div class="flex items-center gap-2">' +
+                scoreHtml +
+                '<span class="text-[10px] font-medium text-text/60 dark:text-darkmode-text/60 flex items-center gap-1">' +
+                  '<i class="fa-regular fa-clock text-[9px]"></i> ' + formatDate(p.created_at) +
+                '</span>' +
+              '</div>' +
+            '</div>' +
+            '<h4 class="text-base sm:text-lg font-bold text-dark dark:text-darkmode-dark mb-2.5 leading-snug">' + escapeHtml(p.title) + '</h4>' +
+            formatCandidateContentToHtml(p.content) +
+            linkHtml +
+            '<div class="flex flex-wrap gap-1 mb-4">' + tagsHtml + '</div>' +
+          '</div>' +
+
+          '<div class="pt-3.5 border-t border-border/40 dark:border-darkmode-border/40 flex items-center justify-between gap-2 flex-wrap sm:flex-nowrap shrink-0">' +
+            '<button data-action-unpublish="' + p.id + '" class="px-3.5 py-2 rounded-xl text-xs font-bold transition-all border border-rose-500/25 bg-rose-500/10 hover:bg-rose-500/20 text-rose-600 dark:text-rose-400 cursor-pointer inline-flex items-center gap-1.5">' +
+              '<i class="fa-solid fa-eye-slash text-[11px]"></i> Unpublish' +
+            '</button>' +
+            '<a href="/pulse/#pulse-' + p.id + '" target="_blank" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-theme-light dark:bg-darkmode-theme-light text-text/80 dark:text-darkmode-text/80 hover:text-primary border border-border/70 dark:border-darkmode-border/70 cursor-pointer inline-flex items-center gap-1.5 no-underline">' +
+              '<i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i> View on Live Site' +
+            '</a>' +
+          '</div>' +
+        '</div>';
+      });
+
+      publishedGrid.innerHTML = html;
+      bindPublishedActions();
+    }
+
+    function bindPublishedActions() {
+      if (!publishedGrid) return;
+      publishedGrid.querySelectorAll("[data-action-unpublish]").forEach(function(btn) {
+        btn.addEventListener("click", function(e) {
+          e.preventDefault();
+          var id = this.getAttribute("data-action-unpublish");
+          if (!id) return;
+          var confirmMsg = "Are you sure you want to unpublish this micro-post?\n\nIt will be immediately retracted from the live Cloud Pulse feed.";
+          if (!window.confirm(confirmMsg)) return;
+          unpublishPulse(id.trim());
+        });
+      });
+    }
+
+    function unpublishPulse(id) {
+      var card = publishedGrid ? publishedGrid.querySelector('[data-published-id="' + id + '"]') : null;
+      if (card) {
+        card.style.opacity = "0.35";
+        card.style.pointerEvents = "none";
+      }
+
+      fetch(config.url + "/rest/v1/cloud_pulses?id=eq." + encodeURIComponent(id), {
+        method: "PATCH",
+        headers: {
+          "apikey": config.anonKey,
+          "Authorization": "Bearer " + config.anonKey,
+          "Content-Type": "application/json",
+          "Prefer": "return=representation"
+        },
+        body: JSON.stringify({
+          status: "rejected",
+          updated_at: new Date().toISOString()
+        })
+      })
+      .then(function(res) {
+        if (res.ok) {
+          fetchPublishedPulses();
+          fetchPendingCandidates();
+        } else {
+          alert("Could not unpublish micro-post. Please try again.");
+          if (card) {
+            card.style.opacity = "1";
+            card.style.pointerEvents = "auto";
+          }
+        }
+      })
+      .catch(function(err) {
+        console.error("Error unpublishing pulse:", err);
+        alert("Network error unpublishing pulse.");
+        if (card) {
+          card.style.opacity = "1";
+          card.style.pointerEvents = "auto";
+        }
+      });
+    }
+
+    function updateAdminPublishedFilterCounts() {
+      var counts = { all: cachedPublishedPulses.length, gcp: 0, aws: 0, k8s: 0, openshift: 0 };
+      cachedPublishedPulses.forEach(function(c) {
+        var prov = detectCandidateProvider(c);
+        if (counts[prov.id] !== undefined) counts[prov.id]++;
+      });
+
+      var elAll = document.getElementById("pub-filter-count-all");
+      if (elAll) elAll.textContent = String(counts.all);
+      var elGcp = document.getElementById("pub-filter-count-gcp");
+      if (elGcp) elGcp.textContent = String(counts.gcp);
+      var elAws = document.getElementById("pub-filter-count-aws");
+      if (elAws) elAws.textContent = String(counts.aws);
+      var elK8s = document.getElementById("pub-filter-count-k8s");
+      if (elK8s) elK8s.textContent = String(counts.k8s);
+      var elOs = document.getElementById("pub-filter-count-openshift");
+      if (elOs) elOs.textContent = String(counts.openshift);
+    }
+
+    function applyAdminPublishedFilter() {
+      if (currentAdminPublishedFilter === "all") {
+        renderPublishedCards(cachedPublishedPulses);
+      } else {
+        var filtered = cachedPublishedPulses.filter(function(c) {
+          return detectCandidateProvider(c).id === currentAdminPublishedFilter;
+        });
+        renderPublishedCards(filtered);
+      }
+    }
+
+    function initAdminPublishedFilterPills() {
+      var filterContainer = document.getElementById("admin-published-provider-filters");
+      if (!filterContainer) return;
+
+      filterContainer.querySelectorAll("[data-admin-published-filter]").forEach(function(btn) {
+        btn.addEventListener("click", function(e) {
+          e.preventDefault();
+          var filter = this.getAttribute("data-admin-published-filter") || "all";
+          currentAdminPublishedFilter = filter;
+
+          filterContainer.querySelectorAll("[data-admin-published-filter]").forEach(function(b) {
+            b.className = "px-3 py-1.5 rounded-xl text-xs font-bold transition-all bg-theme-light dark:bg-darkmode-theme-light text-text/80 dark:text-darkmode-text/80 hover:text-primary border border-border/70 dark:border-darkmode-border/70 cursor-pointer whitespace-nowrap";
+          });
+          this.className = "px-3 py-1.5 rounded-xl text-xs font-bold transition-all bg-primary text-white shadow-xs cursor-pointer border-none whitespace-nowrap";
+
+          applyAdminPublishedFilter();
+        });
+      });
+    }
+
+    if (refreshPublishedBtn) {
+      refreshPublishedBtn.addEventListener("click", fetchPublishedPulses);
+    }
+
+    if (triggerAutoPublishBtn) {
+      triggerAutoPublishBtn.addEventListener("click", async function() {
+        var origHtml = triggerAutoPublishBtn.innerHTML;
+        triggerAutoPublishBtn.disabled = true;
+        triggerAutoPublishBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-[11px] mr-1"></i> Checking Inactivity...';
+
+        try {
+          var res = await fetch(config.url + "/rest/v1/cloud_pulses?status=eq.approved&order=created_at.desc&limit=25", {
+            headers: { "apikey": config.anonKey, "Authorization": "Bearer " + config.anonKey }
+          });
+          var approved = await res.json();
+          var latestManual = 0;
+          if (Array.isArray(approved)) {
+            approved.forEach(function(p) {
+              if (isManualApprovedPulse(p)) {
+                var t = new Date(p.updated_at || p.created_at).getTime();
+                if (t > latestManual) latestManual = t;
+              }
+            });
+          }
+          var elapsedHours = latestManual ? ((Date.now() - latestManual) / (1000 * 60 * 60)) : Infinity;
+          if (elapsedHours < 12) {
+            alert("12-Hour Watchdog Status:\n\nAdmin manually approved a post " + elapsedHours.toFixed(1) + " hours ago. The 12-hour fallback auto-publisher will only trigger after 12h of inactivity (" + (12 - elapsedHours).toFixed(1) + "h remaining).");
+          } else {
+            var doPublish = confirm("12-Hour Watchdog Triggered:\n\nNo admin approvals in the last " + (elapsedHours === Infinity ? "12+" : elapsedHours.toFixed(1)) + " hours.\n\nDo you want to run the auto-publisher now to promote the freshest candidate?");
+            if (doPublish) {
+              triggerAutoPublishBtn.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles fa-spin text-[11px] mr-1"></i> Auto-Publishing...';
+              var pRes = await fetch(config.url + "/rest/v1/cloud_pulses?status=eq.pending_approval&order=created_at.desc&limit=1", {
+                headers: { "apikey": config.anonKey, "Authorization": "Bearer " + config.anonKey }
+              });
+              var pData = await pRes.json();
+              if (Array.isArray(pData) && pData.length > 0) {
+                var topCand = pData[0];
+                var updRes = await fetch(config.url + "/rest/v1/cloud_pulses?id=eq." + encodeURIComponent(topCand.id), {
+                  method: "PATCH",
+                  headers: { "apikey": config.anonKey, "Authorization": "Bearer " + config.anonKey, "Content-Type": "application/json" },
+                  body: JSON.stringify({
+                    status: "approved",
+                    eligibility_reason: "[Auto-Published] Published automatically after 12h without manual admin curation.",
+                    updated_at: new Date().toISOString()
+                  })
+                });
+                if (updRes.ok) {
+                  alert("Auto-published candidate:\n\n\"" + topCand.title + "\" is now live!");
+                  fetchPublishedPulses();
+                  fetchPendingCandidates();
+                } else {
+                  alert("Failed to auto-publish candidate.");
+                }
+              } else {
+                alert("No pending candidates available in the approval queue.");
+              }
+            }
+          }
+        } catch(e) {
+          alert("Watchdog check error: " + e.message);
+        } finally {
+          triggerAutoPublishBtn.disabled = false;
+          triggerAutoPublishBtn.innerHTML = origHtml;
+        }
+      });
+    }
+
     // Initial setup & fetch
     initAdminFilterPills();
+    initAdminPublishedFilterPills();
     fetchPendingCandidates();
   }
 

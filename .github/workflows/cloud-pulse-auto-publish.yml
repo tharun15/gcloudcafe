@@ -1,0 +1,26 @@
+name: Cloud Pulse 12-Hour Fallback Auto-Publisher
+
+on:
+  schedule:
+    # Check every 4 hours for admin inactivity
+    - cron: '0 */4 * * *'
+  workflow_dispatch: # Allows manual trigger from GitHub UI or Admin portal
+
+jobs:
+  check-and-auto-publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Run 12-Hour Fallback Auto-Publisher
+        run: node scripts/auto-publish-cloud-pulse.js
+        env:
+          SUPABASE_URL: "https://axiijcsxtiukloarbfor.supabase.co"
+          SUPABASE_ANON_KEY: "sb_publishable_cRcwg02R3nXTykDrxalL6w_-kc9Wesc"
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
