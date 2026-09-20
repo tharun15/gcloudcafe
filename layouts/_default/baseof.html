@@ -38,14 +38,14 @@
     <!-- header -->
     {{ partial "essentials/header.html" . }}
 
+    <!-- Live Cloud Pulse Telemetry Ticker -->
+    {{ partial "components/ticker-tape.html" . }}
+
     {{ partial "search-modal.html" (dict "Context" . ) }}
 
     <main id="main-content" tabindex="-1">
       {{ block "main" . }}{{ end }}
     </main>
-
-    <!-- Live Cloud Pulse Telemetry Ticker (Positioned above footer to eliminate visual distraction at page top) -->
-    {{ partial "components/ticker-tape.html" . }}
 
     <!-- footer -->
     {{ partial "essentials/footer.html" . }}

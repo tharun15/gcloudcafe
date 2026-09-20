@@ -60,14 +60,23 @@ describe('Homepage & Site-Wide Usability Heuristics & Accessibility Suite', () =
     expect(headerHtml).toContain('Search &amp; Menu');
   });
 
-  it('Issue 7: relocates ticker-tape above footer to eliminate top visual distraction', () => {
+  it('maintains ticker-tape directly below header per user preference with pause on hover', () => {
     const baseofHtml = fs.readFileSync(path.join(rootDir, 'layouts/_default/baseof.html'), 'utf8');
+    const headerIndex = baseofHtml.indexOf('essentials/header.html');
     const tickerIndex = baseofHtml.indexOf('components/ticker-tape.html');
     const mainIndex = baseofHtml.indexOf('<main id="main-content"');
-    const footerIndex = baseofHtml.indexOf('essentials/footer.html');
 
-    expect(tickerIndex).toBeGreaterThan(mainIndex);
-    expect(tickerIndex).toBeLessThan(footerIndex);
+    expect(tickerIndex).toBeGreaterThan(headerIndex);
+    expect(tickerIndex).toBeLessThan(mainIndex);
+  });
+
+  it('renders a creative, non-danger editorial badge for the Featured hero story', () => {
+    const heroHtml = fs.readFileSync(path.join(rootDir, 'layouts/partials/components/blog-hero.html'), 'utf8');
+    expect(heroHtml).not.toContain('bg-red-600');
+    expect(heroHtml).not.toContain('bg-red-500');
+    expect(heroHtml).toContain('border-amber-400/30');
+    expect(heroHtml).toContain('fa-star');
+    expect(heroHtml).toMatch(/Spotlight|Featured/);
   });
 
   it('Issue 5: ensures search overlay has full viewport scrim and deep drop shadow in custom.scss', () => {
