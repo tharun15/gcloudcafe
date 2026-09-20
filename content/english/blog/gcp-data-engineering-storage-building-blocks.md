@@ -70,6 +70,28 @@ External tables are useful when you want to:
 
 > **Practical Rule:** Use external tables for exploration, interoperability, and colder lakehouse tiers. Use managed tables when the data is queried frequently, powers dashboards, or requires BigQuery's full optimization suite.
 
+```mermaid
+flowchart LR
+    Query["Incoming SQL Query"]
+
+    subgraph Managed["BigQuery Managed Table"]
+        direction TB
+        Opt["Query Optimizer & Metadata Cache"]
+        Cap["Capacitor Columnar Storage<br/>(Compressed, sorted, fast micro-scans)"]
+        Opt --> Cap
+    end
+
+    subgraph External["External Table (Lake Tier)"]
+        direction TB
+        Meta["Schema Definition"]
+        GCS["Cloud Storage Bucket<br/>(Reads raw Parquet / ORC / CSV across network)"]
+        Meta --> GCS
+    end
+
+    Query -->|"Native fast path"| Opt
+    Query -->|"Remote network read"| Meta
+```
+
 ---
 
 ### 2. Partitioning
@@ -102,6 +124,26 @@ Suppose an orders table is partitioned by `order_date` and clustered by `custome
 Clustering works especially well for columns that frequently appear in `WHERE` filters, `JOIN` conditions, or `GROUP BY` aggregations. You can define up to four clustering columns, and **their order matters** because BigQuery sorts data hierarchically according to that sequence.
 
 Unlike a traditional relational database B-tree index, clustering does not create a separate lookup index. Instead, BigQuery physically sorts the data blocks and maintains lightweight min/max metadata that allows the execution engine to skip blocks that cannot possibly match your filter.
+
+```mermaid
+flowchart TD
+    Query["Query: WHERE order_date = '2026-09-18' AND customer_id = 'CUST-402'"]
+
+    subgraph Step1["Level 1: Partition Pruning (Date Folders)"]
+        P1["📁 2026-09-17<br/>(Skipped)"]
+        P2["📂 2026-09-18<br/><b>MATCH (Opened)</b>"]
+        P3["📁 2026-09-19<br/>(Skipped)"]
+    end
+
+    subgraph Step2["Level 2: Clustering Block Pruning (Sorted Offsets)"]
+        B1["Block 1: IDs A-B<br/>(Skipped)"]
+        B2["Block 2: IDs C-D<br/><b>MATCH (Read only ~42 MB)</b>"]
+        B3["Block 3: IDs E-Z<br/>(Skipped)"]
+    end
+
+    Query -->|"Date filter prunes 99% of partitions"| P2
+    P2 -->|"Customer ID prunes non-matching blocks"| B2
+```
 
 ---
 
@@ -137,6 +179,34 @@ There are two important nuances:
 
 Materialized views are ideal for stable, frequently queried aggregations—not as a universal replacement for scheduled ELT transformations.
 
+```mermaid
+flowchart TD
+    User["Analyst or BI Dashboard"]
+    Query["SELECT region, SUM(revenue)<br/>FROM orders_raw GROUP BY region"]
+
+    subgraph Optimizer["BigQuery Optimizer (Smart Tuning)"]
+        Check{"Materialized View<br/>matches query pattern?"}
+    end
+
+    subgraph FastPath["⚡ Accelerated Execution (Sub-Second)"]
+        direction TB
+        MV["Materialized View Storage<br/>(Reads precomputed summary)"]
+        Delta["Base Table Delta Reader<br/>(Reads only fresh un-materialized rows)"]
+        Combine["Merge & Return Result"]
+        MV --> Combine
+        Delta --> Combine
+    end
+
+    subgraph SlowPath["⚠️ Fallback Execution"]
+        Raw["Full Scan on Raw Orders Table<br/>(Scans 2.84 TiB, burns slots)"]
+    end
+
+    User --> Query
+    Query --> Check
+    Check -->|"YES (Transparent Rewrite)"| FastPath
+    Check -->|"NO (No matching MV)"| SlowPath
+```
+
 ---
 
 ### 6. Time Travel and Table Snapshots
@@ -149,6 +219,32 @@ Materialized views are ideal for stable, frequently queried aggregations—not a
 **The cost model:** When a snapshot is first created, it adds **$0 extra storage charges** because it shares unchanged storage blocks with the base table. Storage charges begin accruing only as data in the base table is modified or deleted while the snapshot preserves the old blocks.
 
 *Simple rule:* Time travel is an automated rolling recovery window. A snapshot is an explicit, named recovery point that you control.
+
+```mermaid
+flowchart TD
+    subgraph T0["Day 1: Base Table Created & Snapshot Taken"]
+        Base1["Base Table: orders"]
+        Snap1["Snapshot: orders_backup_day1"]
+        BlockA1["Storage Block A"]
+        BlockB1["Storage Block B"]
+        BlockC1["Storage Block C"]
+
+        Base1 --> BlockA1 & BlockB1 & BlockC1
+        Snap1 -.->|"Zero duplicate bytes ($0 extra cost)"| BlockA1 & BlockB1 & BlockC1
+    end
+
+    subgraph T1["Day 2: Base Table Updates Row in Block B"]
+        Base2["Base Table: orders (Updated)"]
+        Snap2["Snapshot: orders_backup_day1 (Preserved)"]
+        BlockA2["Storage Block A (Shared)"]
+        BlockB_new["Storage Block B' (New data)"]
+        BlockB_old["Storage Block B (Preserved for snapshot)"]
+        BlockC2["Storage Block C (Shared)"]
+
+        Base2 --> BlockA2 & BlockB_new & BlockC2
+        Snap2 -.-> BlockA2 & BlockB_old & BlockC2
+    end
+```
 
 ---
 
@@ -166,6 +262,28 @@ Normally, if a user queries a view in BigQuery, they **must also have read permi
 - You authorize the view inside the source dataset.
 - BigQuery grants the *view itself* permission to query the restricted tables.
 - End users are granted access **only** to the dataset containing the view. They have zero permissions on the raw source dataset, preventing any direct access to sensitive rows or columns.
+
+```mermaid
+flowchart LR
+    subgraph Users["End Users & BI Tools"]
+        Analyst["Data Analyst / Dashboard<br/><i>Role: bigquery.dataViewer on reporting_shared</i><br/><b>NO ACCESS to finance_raw (403 Forbidden)</b>"]
+    end
+
+    subgraph Reporting["Reporting Dataset (reporting_shared)"]
+        AuthView["Authorized View: monthly_sales_summary<br/><code>SELECT region, SUM(amount) FROM finance_raw.orders...</code>"]
+    end
+
+    subgraph Source["Restricted Dataset (finance_raw)"]
+        direction TB
+        Grant["View Authorized in Dataset Access List"]
+        RawTable["Base Table: orders_raw<br/>(Contains PII, Credit Cards, Balances)"]
+        Grant --> RawTable
+    end
+
+    Analyst -->|"1. Queries view directly"| AuthView
+    AuthView -->|"2. BigQuery runs query with view's authorized identity"| Grant
+    AuthView -->|"3. Returns only safe, aggregated metrics"| Analyst
+```
 
 ---
 
