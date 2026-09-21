@@ -1431,6 +1431,30 @@
       + "🌐 " + pulseTargetUrl;
   }
 
+  /* ── Shared Cloud Pulse Sorting & Synchronization Helper ── */
+  function isManualApprovedPulse(p) {
+    if (!p) return false;
+    var reason = (p.eligibility_reason || "").toLowerCase();
+    return !reason.includes("auto-published");
+  }
+
+  function sortCohortByScore(list) {
+    return (list || []).slice().sort(function(a, b) {
+      // Priority 1: Manual approvals always take higher precedence over auto-published posts
+      var manualA = isManualApprovedPulse(a) ? 1 : 0;
+      var manualB = isManualApprovedPulse(b) ? 1 : 0;
+      if (manualB !== manualA) return manualB - manualA;
+
+      // Priority 2: Community vote score
+      var scoreA = typeof a.score === "number" ? a.score : ((a.upvotes || 0) - (a.downvotes || 0));
+      var scoreB = typeof b.score === "number" ? b.score : ((b.upvotes || 0) - (b.downvotes || 0));
+      if (scoreB !== scoreA) return scoreB - scoreA;
+
+      // Priority 3: Recency
+      return new Date(b.created_at || 0) - new Date(a.created_at || 0);
+    });
+  }
+
   function initCloudPulseSystem() {
     var feedContainer = document.querySelector("[data-cloud-pulse-feed]");
     if (!feedContainer) return;
@@ -1737,7 +1761,7 @@
       setupPulseSearch();
       setupPulseFocusModal();
       // Fetch latest 6 approved articles (the active competing cohort)
-      var queryUrl = config.url + "/rest/v1/cloud_pulses?status=eq.approved&order=created_at.desc&limit=24";
+      var queryUrl = config.url + "/rest/v1/cloud_pulses?status=eq.approved&order=created_at.desc&limit=30";
       
       fetch(queryUrl, {
         headers: {
@@ -1751,7 +1775,7 @@
           allLoadedPulses = sortCohortByScore(data);
           filterAndRenderPulses();
         } else if (supabase) {
-          supabase.from("cloud_pulses").select("*").eq("status", "approved").order("created_at", { ascending: false }).limit(24).then(function(sRes) {
+          supabase.from("cloud_pulses").select("*").eq("status", "approved").order("created_at", { ascending: false }).limit(30).then(function(sRes) {
             if (sRes && Array.isArray(sRes.data) && sRes.data.length > 0) {
               allLoadedPulses = sortCohortByScore(sRes.data);
               filterAndRenderPulses();
@@ -1882,7 +1906,7 @@ function renderPulses(pulses) {
       }
 
       // Pre-sorted & calculated by Supabase Postgres View (cloud_pulses_trending)
-      var topPulses = pulses.slice(0, 6);
+      var topPulses = pulses; // Display full cohort for 1-to-1 sync with ticker and comprehensive filtering
 
       var html = "";
       topPulses.forEach(function (p, idx) {
@@ -1975,13 +1999,31 @@ function renderPulses(pulses) {
 
       function scrollToTargetPulse() {
         if (window.location.hash && window.location.hash.startsWith("#pulse-")) {
-          var targetCard = document.querySelector(window.location.hash);
+          var targetId = window.location.hash.replace("#pulse-", "");
+          var targetCard = document.getElementById("pulse-" + targetId);
+
+          // If target pulse exists in cohort but is currently hidden by an active filter or search query, reset filter
+          if (!targetCard && allLoadedPulses.some(function(p) { return String(p.id) === targetId; })) {
+            activeFilter = "all";
+            activeSearchQuery = "";
+            var searchInput = document.getElementById("pulse-search-input");
+            if (searchInput) searchInput.value = "";
+            var clearBtn = document.getElementById("pulse-search-clear");
+            if (clearBtn) clearBtn.classList.add("hidden");
+            var chips = document.querySelectorAll("[data-pulse-filter]");
+            chips.forEach(function(c) {
+              updatePulseChipUI(c, c.getAttribute("data-pulse-filter") === "all");
+            });
+            filterAndRenderPulses();
+            targetCard = document.getElementById("pulse-" + targetId);
+          }
+
           if (targetCard) {
             targetCard.scrollIntoView({ behavior: "smooth", block: "center" });
             targetCard.classList.add("ring-2", "ring-primary", "shadow-xl");
             setTimeout(function() {
               targetCard.classList.remove("ring-2", "ring-primary", "shadow-xl");
-            }, 3000);
+            }, 3500);
           }
         }
       }
@@ -2277,7 +2319,7 @@ function renderPulses(pulses) {
       return { label: raw, cls: "ticker-tag-default" };
     }
 
-    var queryUrl = config.url + "/rest/v1/cloud_pulses?status=eq.approved&order=created_at.desc&limit=10";
+    var queryUrl = config.url + "/rest/v1/cloud_pulses?status=eq.approved&order=created_at.desc&limit=30";
     fetch(queryUrl, {
       headers: {
         "apikey": config.anonKey,
@@ -2288,8 +2330,10 @@ function renderPulses(pulses) {
     .then(function(data) {
       if (!Array.isArray(data) || data.length === 0) return;
 
+      // Maintain strict 1-to-1 parity with Pulse newsroom feed by using identical ranking
+      var sorted = sortCohortByScore(data).slice(0, 10);
       var itemsHtml = "";
-      data.forEach(function(item) {
+      sorted.forEach(function(item) {
         var tagMeta = getTagMeta(item.tags);
         var safeTitle = escapeHtml(item.title || "Cloud Pulse Update");
         var pulsePostLink = "/pulse/#pulse-" + encodeURIComponent(item.id || "");
