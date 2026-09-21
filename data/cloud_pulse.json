@@ -1,10 +1,572 @@
-[{"id":"09900f5e-4d21-4d5e-84a6-f5eec4459b40","title":"AWS Lambda now supports direct read configuration for Amazon S3 Files","content":"🎯 What Changed: AWS Lambda now supports direct configuration for S3 file reads, allowing functions to explicitly choose between S3 Files high-performance storage or standard S3 bucket access. This introduces a new control point for data sourcing.\n\n💡 Why It Matters: This enables engineers to optimize Lambda function performance and cost by aligning data access with the appropriate S3 storage tier. It provides critical architectural flexibility for data-intensive serverless applications.","tags":["#AWS","#CloudArchitecture","#CloudNews"],"upvotes":1,"downvotes":0,"score":1,"author":"Cloud Newsroom Bot","created_at":"2026-09-12T09:07:10.082273+00:00","link_url":"https://aws.amazon.com/about-aws/whats-new/2026/09/aws-lambda-direct-read-s3files/","status":"approved","eligibility_reason":"Official AWS Release: Ingested & AI synthesized for Admin Approval Queue.","updated_at":"2026-09-12T09:07:10.082273+00:00"}, 
- {"id":"57b1b07d-9511-4a40-b351-2ec2866364b4","title":"Kubernetes v1.37: Introducing Node Lifecycle Conditions","content":"🎯 What Changed: Kubernetes v1.37 introduces Node Lifecycle Conditions, providing a standardized, unified API for expressing a node's operational state beyond existing disparate signals like readiness or taints.\n\n💡 Why It Matters: This simplifies node management and automation, enabling more robust scheduling decisions, improved cluster autoscaling, and consistent handling of node health across diverse environments.","tags":["#Kubernetes","#CNCF","#CloudNative"],"upvotes":1,"downvotes":0,"score":1,"author":"Cloud Newsroom Bot","created_at":"2026-09-12T09:07:09.525138+00:00","link_url":"https://kubernetes.io/blog/2026/09/09/kubernetes-v1-37-node-lifecycle-conditions/","status":"approved","eligibility_reason":"Official Kubernetes Release: Ingested & AI synthesized for Admin Approval Queue.","updated_at":"2026-09-12T09:07:09.525138+00:00"}, 
- {"id":"3fe90a4f-d10b-4659-92f0-9b0c719b38b9","title":"GCP Boosts HPC Security: Slurm Vulnerability Fixed, PAM GA","content":"🎯 What Changed: Google Cloud has addressed a critical security vulnerability (CVE-2026-65107) affecting Slurm clusters on GCP, with mitigation details available.\n💡 Engineering Impact: This enhances security for HPC and AI workloads utilizing Slurm on GCP. Additionally, Privileged Access Manager's Access Approval and Transparency features are now generally available, bolstering control over privileged access.","tags":["#GoogleCloud","#GCP","#CloudNews"],"upvotes":1,"downvotes":0,"score":1,"author":"Cloud Newsroom Bot","created_at":"2026-09-08T09:28:48.274643+00:00","link_url":"https://docs.cloud.google.com/release-notes#September_07_2026","status":"approved","eligibility_reason":"Official GCP Release: Ingested & AI synthesized for Admin Approval Queue.","updated_at":"2026-09-08T09:28:48.274643+00:00"}, 
- {"id":"da813a6b-e60b-454d-a6fb-86b0cbde083f","title":"Kubernetes v1.37: etcd RangeStream Cuts Memory Use on Large List Reads","content":"<p>I am excited to announce that etcd RangeStream is graduating to beta in Kubernetes v1.37. Paired with etcd v3.7, it reduces the memory the API server and etcd need to read a large collection, and makes peak usage m...","tags":["#Kubernetes","#CNCF","#CloudNative"],"upvotes":1,"downvotes":0,"score":1,"author":"Cloud Newsroom Bot","created_at":"2026-09-08T09:28:33.058815+00:00","link_url":"https://kubernetes.io/blog/2026/09/01/kubernetes-v1-37-etcd-range-stream/","status":"approved","eligibility_reason":"Official Kubernetes Release: Ingested & AI synthesized for Admin Approval Queue.","updated_at":"2026-09-08T09:28:33.058815+00:00"}, 
- {"id":"3bca7f0f-8cbd-4f7d-af25-5cc95727da15","title":"K8s 1.37: DRA Extended Resources Go GA, Streamlining Device Mgmt","content":"🎯 What Changed: Kubernetes 1.37 graduates Dynamic Resource Allocation (DRA) Extended Resource support to GA, allowing DRA drivers to directly manage traditional extended resource requests.\n💡 Engineering Impact: This simplifies specialized hardware integration, enabling seamless DRA adoption for existing workloads and enhancing cluster operator control over device lifecycle, scheduling, and visibility. Performance improvements are also introduced.","tags":["#Kubernetes","#CNCF","#CloudNative"],"upvotes":1,"downvotes":0,"score":1,"author":"Cloud Newsroom Bot","created_at":"2026-09-08T09:27:03.590674+00:00","link_url":"https://kubernetes.io/blog/2026/09/03/kubernetes-v1-37-dra-updates/","status":"approved","eligibility_reason":"Official Kubernetes Release: Ingested & AI synthesized for Admin Approval Queue.","updated_at":"2026-09-08T09:27:03.590674+00:00"}, 
- {"id":"f1049656-039c-486e-9508-144003d01524","title":"Kubernetes v1.37: KubeletInUserNamespace (aka Rootless mode) Graduates to Beta","content":"🎯 What Changed: Kubernetes v1.37 promotes the KubeletInUserNamespace (rootless mode) feature to Beta, enabling all node components to run as a non-root user.\n💡 Engineering Impact: This significantly enhances security by confining potential container-breakout vulnerabilities to a non-root user, preventing full host compromise. It enables safer multi-tenant environments, nested Kubernetes, and simplified local development without requiring root privileges.","tags":["#Kubernetes","#CNCF","#CloudNative"],"upvotes":1,"downvotes":0,"score":1,"author":"Cloud Newsroom Bot","created_at":"2026-09-08T09:26:55.902544+00:00","link_url":"https://kubernetes.io/blog/2026/09/04/kubernetes-v1-37-rootless-beta/","status":"approved","eligibility_reason":"Official Kubernetes Release: Ingested & AI synthesized for Admin Approval Queue.","updated_at":"2026-09-08T09:26:55.902544+00:00"}, 
- {"id":"734c4253-71f1-4e31-b7de-59fadeb811ad","title":"Amazon ECS introduces Early Success Criteria for service deployments","content":"🎯 What Changed: Amazon ECS now supports Early Success Criteria for rolling service deployments, enabling engineers to define custom, real-time conditions that must be met for a deployment to be considered successful.\n\n💡 Why It Matters: This significantly enhances deployment reliability and safety. It allows for automated validation and faster rollbacks when defined success metrics or health checks fail, reducing MTTR and operational risk.","tags":["#AWS","#CloudArchitecture","#CloudNews"],"upvotes":1,"downvotes":0,"score":1,"author":"Cloud Newsroom Bot","created_at":"2026-09-06T02:47:40.603332+00:00","link_url":"https://aws.amazon.com/about-aws/whats-new/2026/09/amazon-ecs-deployments-early-success/","status":"approved","eligibility_reason":"Official AWS Release: Grounded candidate notes evaluated for high technical relevance.","updated_at":"2026-09-06T02:47:40.603332+00:00"}, 
- {"id":"2802d4f9-6364-400b-a13e-261fe0ee41e7","title":"Agentic AI: The Last Mile of Reliable Tool Calling","content":"🎯 What Changed: This analysis emphasizes the critical, often overlooked challenge of reliable tool calling in agentic AI systems.\n💡 Engineering Impact: Engineers must prioritize robust tool calling mechanisms to prevent silent production failures and enable agentic AI to move beyond reasoning to reliable action execution.","tags":["#OpenShift","#RedHat","#DevOps"],"upvotes":1,"downvotes":0,"score":1,"author":"Cloud Newsroom Bot","created_at":"2026-09-04T09:24:40.171324+00:00","link_url":"https://www.redhat.com/en/blog/last-mile-problem-agentic-ai-why-tool-calling-reliability-harder-it-looks","status":"approved","eligibility_reason":"Official OpenShift Release: Ingested & AI synthesized for Admin Approval Queue.","updated_at":"2026-09-04T09:24:40.171324+00:00"}, 
- {"id":"61cb2490-7fee-44cd-9db7-7aa600cf0d7c","title":"Red Hat Satellite 6.20: Containerized RHEL Management & PQC Ready","content":"🎯 What Changed: Red Hat Satellite 6.20 LA introduces container-based deployment and post-quantum cryptography (PQC) enablement for RHEL management.\n💡 Engineering Impact: This update modernizes RHEL management with simplified container deployment, enhancing scalability and operational efficiency. It also future-proofs security by enabling post-quantum cryptography, crucial for meeting evolving compliance and threat landscapes.","tags":["#OpenShift","#RedHat","#DevOps"],"upvotes":1,"downvotes":0,"score":1,"author":"Cloud Newsroom Bot","created_at":"2026-09-03T09:33:05.57274+00:00","link_url":"https://www.redhat.com/en/blog/red-hat-satellite-620-limited-availability-early-access-containerized-management-and-post-quantum-cryptographic-enablement","status":"approved","eligibility_reason":"Official OpenShift Release: Ingested & AI synthesized for Admin Approval Queue.","updated_at":"2026-09-03T09:33:05.57274+00:00"}, 
- {"id":"95d71432-51a7-4e90-8a28-c9d29e9bf96b","title":"Ask Red Hat AI: Building Trust in Enterprise Troubleshooting","content":"🎯 What Changed: Red Hat's Ask Red Hat conversational AI now offers trusted, explainable troubleshooting for enterprise environments.\n💡 Engineering Impact: This AI acts as an intelligent front door, leveraging existing knowledge to deliver reliable, explainable answers crucial for production environments, enhancing DevOps efficiency and trust in AI-driven support.","tags":["#OpenShift","#RedHat","#DevOps"],"upvotes":1,"downvotes":0,"score":1,"author":"Cloud Newsroom Bot","created_at":"2026-09-02T09:25:29.128617+00:00","link_url":"https://www.redhat.com/en/blog/how-ask-red-hat-earns-trust-enterprise-ai-troubleshooting","status":"approved","eligibility_reason":"Official OpenShift Release: Ingested & AI synthesized for Admin Approval Queue.","updated_at":"2026-09-02T09:25:29.128617+00:00"}]
+[
+  {
+    "id": "09900f5e-4d21-4d5e-84a6-f5eec4459b40",
+    "title": "AWS Lambda now supports direct read configuration for Amazon S3 Files",
+    "content": "🎯 What Changed: AWS Lambda now supports direct configuration for S3 file reads, allowing functions to explicitly choose between S3 Files high-performance storage or standard S3 bucket access. This introduces a new control point for data sourcing.\n\n💡 Why It Matters: This enables engineers to optimize Lambda function performance and cost by aligning data access with the appropriate S3 storage tier. It provides critical architectural flexibility for data-intensive serverless applications.",
+    "tags": [
+      "#AWS",
+      "#CloudArchitecture",
+      "#CloudNews"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 2,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-09-12T09:07:10.082273+00:00",
+    "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/09/aws-lambda-direct-read-s3files/",
+    "status": "approved",
+    "eligibility_reason": "Official AWS Release: Ingested & AI synthesized for Admin Approval Queue.",
+    "updated_at": "2026-09-12T09:07:10.082273+00:00"
+  },
+  {
+    "id": "57b1b07d-9511-4a40-b351-2ec2866364b4",
+    "title": "Kubernetes v1.37: Introducing Node Lifecycle Conditions",
+    "content": "🎯 What Changed: Kubernetes v1.37 introduces Node Lifecycle Conditions, providing a standardized, unified API for expressing a node's operational state beyond existing disparate signals like readiness or taints.\n\n💡 Why It Matters: This simplifies node management and automation, enabling more robust scheduling decisions, improved cluster autoscaling, and consistent handling of node health across diverse environments.",
+    "tags": [
+      "#Kubernetes",
+      "#CNCF",
+      "#CloudNative"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 2,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-09-12T09:07:09.525138+00:00",
+    "link_url": "https://kubernetes.io/blog/2026/09/09/kubernetes-v1-37-node-lifecycle-conditions/",
+    "status": "approved",
+    "eligibility_reason": "Official Kubernetes Release: Ingested & AI synthesized for Admin Approval Queue.",
+    "updated_at": "2026-09-12T09:07:09.525138+00:00"
+  },
+  {
+    "id": "f95c05c1-9086-41e5-865d-b927425704d5",
+    "title": "Accelerating the borderless Lakehouse: Announcing preview of cross-cloud caching",
+    "content": "Google Cloud has launched the preview of cross-cloud caching for its borderless Lakehouse to accelerate queries on",
+    "tags": [
+      "#GoogleCloud",
+      "#GCP",
+      "#CloudNews"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-09-21T03:01:27.758584+00:00",
+    "link_url": "https://cloud.google.com/blog/products/data-analytics/borderless-lakehouse-cross-cloud-caching-and-connections/",
+    "status": "approved",
+    "eligibility_reason": "[Manual Approved] Verified and published by newsroom admin.",
+    "updated_at": "2026-09-21T04:53:41.274+00:00"
+  },
+  {
+    "id": "b0436139-8778-4638-b59d-fef2eb368349",
+    "title": "WorkSpaces Boosts Graphics with NVIDIA Blackwell G7 GPUs",
+    "content": "🎯 What Changed: Amazon WorkSpaces Personal and Core now support Graphics G7 bundles, leveraging NVIDIA Blackwell RTX PRO 4500 GPUs for enhanced performance.\n💡 Engineering Impact: These G7 bundles offer up to 2.1x performance improvement, enabling demanding professional applications like CAD/CAM, 3D rendering, and AI-assisted design with higher fidelity. Engineers can now run larger, more complex models and scenes on virtual desktops, optimizing workflows for graphics-intensive tasks.",
+    "tags": [
+      "#AWS",
+      "#CloudArchitecture",
+      "#CloudNews"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-09-17T09:54:13.321785+00:00",
+    "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/09/amazon-workspaces-nvidia-blackwell-gpu-instances/",
+    "status": "approved",
+    "eligibility_reason": "Official AWS Release: Ingested & AI synthesized for Admin Approval Queue.",
+    "updated_at": "2026-09-17T09:54:13.321785+00:00"
+  },
+  {
+    "id": "acf72977-f464-4fa2-bb3a-9af283d60d4f",
+    "title": "K8s v1.37: Memory QoS Beta Improves Container Memory Management",
+    "content": "🎯 What Changed: Memory QoS has graduated to Beta in Kubernetes v1.37, now enabled by default on Linux nodes using cgroup v2 for improved kernel guidance.\n💡 Engineering Impact: This advancement offers cluster operators finer control over container memory, allowing explicit configuration for throttling and tiered reservation to enhance workload stability and prevent OOMs. Existing clusters upgrade safely without immediate runtime changes.",
+    "tags": [
+      "#Kubernetes",
+      "#CNCF",
+      "#CloudNative"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-09-17T09:54:02.886942+00:00",
+    "link_url": "https://kubernetes.io/blog/2026/09/14/kubernetes-v1-37-memory-qos-graduates-to-beta/",
+    "status": "approved",
+    "eligibility_reason": "Official Kubernetes Release: Ingested & AI synthesized for Admin Approval Queue.",
+    "updated_at": "2026-09-17T09:54:02.886942+00:00"
+  },
+  {
+    "id": "da813a6b-e60b-454d-a6fb-86b0cbde083f",
+    "title": "Kubernetes v1.37: etcd RangeStream Cuts Memory Use on Large List Reads",
+    "content": "<p>I am excited to announce that etcd RangeStream is graduating to beta in Kubernetes v1.37. Paired with etcd v3.7, it reduces the memory the API server and etcd need to read a large collection, and makes peak usage m...",
+    "tags": [
+      "#Kubernetes",
+      "#CNCF",
+      "#CloudNative"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-09-08T09:28:33.058815+00:00",
+    "link_url": "https://kubernetes.io/blog/2026/09/01/kubernetes-v1-37-etcd-range-stream/",
+    "status": "approved",
+    "eligibility_reason": "Official Kubernetes Release: Ingested & AI synthesized for Admin Approval Queue.",
+    "updated_at": "2026-09-08T09:28:33.058815+00:00"
+  },
+  {
+    "id": "3bca7f0f-8cbd-4f7d-af25-5cc95727da15",
+    "title": "K8s 1.37: DRA Extended Resources Go GA, Streamlining Device Mgmt",
+    "content": "🎯 What Changed: Kubernetes 1.37 graduates Dynamic Resource Allocation (DRA) Extended Resource support to GA, allowing DRA drivers to directly manage traditional extended resource requests.\n💡 Engineering Impact: This simplifies specialized hardware integration, enabling seamless DRA adoption for existing workloads and enhancing cluster operator control over device lifecycle, scheduling, and visibility. Performance improvements are also introduced.",
+    "tags": [
+      "#Kubernetes",
+      "#CNCF",
+      "#CloudNative"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-09-08T09:27:03.590674+00:00",
+    "link_url": "https://kubernetes.io/blog/2026/09/03/kubernetes-v1-37-dra-updates/",
+    "status": "approved",
+    "eligibility_reason": "Official Kubernetes Release: Ingested & AI synthesized for Admin Approval Queue.",
+    "updated_at": "2026-09-08T09:27:03.590674+00:00"
+  },
+  {
+    "id": "f1049656-039c-486e-9508-144003d01524",
+    "title": "Kubernetes v1.37: KubeletInUserNamespace (aka Rootless mode) Graduates to Beta",
+    "content": "🎯 What Changed: Kubernetes v1.37 promotes the KubeletInUserNamespace (rootless mode) feature to Beta, enabling all node components to run as a non-root user.\n💡 Engineering Impact: This significantly enhances security by confining potential container-breakout vulnerabilities to a non-root user, preventing full host compromise. It enables safer multi-tenant environments, nested Kubernetes, and simplified local development without requiring root privileges.",
+    "tags": [
+      "#Kubernetes",
+      "#CNCF",
+      "#CloudNative"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-09-08T09:26:55.902544+00:00",
+    "link_url": "https://kubernetes.io/blog/2026/09/04/kubernetes-v1-37-rootless-beta/",
+    "status": "approved",
+    "eligibility_reason": "Official Kubernetes Release: Ingested & AI synthesized for Admin Approval Queue.",
+    "updated_at": "2026-09-08T09:26:55.902544+00:00"
+  },
+  {
+    "id": "734c4253-71f1-4e31-b7de-59fadeb811ad",
+    "title": "Amazon ECS introduces Early Success Criteria for service deployments",
+    "content": "🎯 What Changed: Amazon ECS now supports Early Success Criteria for rolling service deployments, enabling engineers to define custom, real-time conditions that must be met for a deployment to be considered successful.\n\n💡 Why It Matters: This significantly enhances deployment reliability and safety. It allows for automated validation and faster rollbacks when defined success metrics or health checks fail, reducing MTTR and operational risk.",
+    "tags": [
+      "#AWS",
+      "#CloudArchitecture",
+      "#CloudNews"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-09-06T02:47:40.603332+00:00",
+    "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/09/amazon-ecs-deployments-early-success/",
+    "status": "approved",
+    "eligibility_reason": "Official AWS Release: Grounded candidate notes evaluated for high technical relevance.",
+    "updated_at": "2026-09-06T02:47:40.603332+00:00"
+  },
+  {
+    "id": "2802d4f9-6364-400b-a13e-261fe0ee41e7",
+    "title": "Agentic AI: The Last Mile of Reliable Tool Calling",
+    "content": "🎯 What Changed: This analysis emphasizes the critical, often overlooked challenge of reliable tool calling in agentic AI systems.\n💡 Engineering Impact: Engineers must prioritize robust tool calling mechanisms to prevent silent production failures and enable agentic AI to move beyond reasoning to reliable action execution.",
+    "tags": [
+      "#OpenShift",
+      "#RedHat",
+      "#DevOps"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-09-04T09:24:40.171324+00:00",
+    "link_url": "https://www.redhat.com/en/blog/last-mile-problem-agentic-ai-why-tool-calling-reliability-harder-it-looks",
+    "status": "approved",
+    "eligibility_reason": "Official OpenShift Release: Ingested & AI synthesized for Admin Approval Queue.",
+    "updated_at": "2026-09-04T09:24:40.171324+00:00"
+  },
+  {
+    "id": "61cb2490-7fee-44cd-9db7-7aa600cf0d7c",
+    "title": "Red Hat Satellite 6.20: Containerized RHEL Management & PQC Ready",
+    "content": "🎯 What Changed: Red Hat Satellite 6.20 LA introduces container-based deployment and post-quantum cryptography (PQC) enablement for RHEL management.\n💡 Engineering Impact: This update modernizes RHEL management with simplified container deployment, enhancing scalability and operational efficiency. It also future-proofs security by enabling post-quantum cryptography, crucial for meeting evolving compliance and threat landscapes.",
+    "tags": [
+      "#OpenShift",
+      "#RedHat",
+      "#DevOps"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-09-03T09:33:05.57274+00:00",
+    "link_url": "https://www.redhat.com/en/blog/red-hat-satellite-620-limited-availability-early-access-containerized-management-and-post-quantum-cryptographic-enablement",
+    "status": "approved",
+    "eligibility_reason": "Official OpenShift Release: Ingested & AI synthesized for Admin Approval Queue.",
+    "updated_at": "2026-09-03T09:33:05.57274+00:00"
+  },
+  {
+    "id": "95d71432-51a7-4e90-8a28-c9d29e9bf96b",
+    "title": "Ask Red Hat AI: Building Trust in Enterprise Troubleshooting",
+    "content": "🎯 What Changed: Red Hat's Ask Red Hat conversational AI now offers trusted, explainable troubleshooting for enterprise environments.\n💡 Engineering Impact: This AI acts as an intelligent front door, leveraging existing knowledge to deliver reliable, explainable answers crucial for production environments, enhancing DevOps efficiency and trust in AI-driven support.",
+    "tags": [
+      "#OpenShift",
+      "#RedHat",
+      "#DevOps"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-09-02T09:25:29.128617+00:00",
+    "link_url": "https://www.redhat.com/en/blog/how-ask-red-hat-earns-trust-enterprise-ai-troubleshooting",
+    "status": "approved",
+    "eligibility_reason": "Official OpenShift Release: Ingested & AI synthesized for Admin Approval Queue.",
+    "updated_at": "2026-09-02T09:25:29.128617+00:00"
+  },
+  {
+    "id": "9924c0a7-7f2f-47af-bab9-86be938537a7",
+    "title": "Amazon Quick now lets you build custom apps with natural language -",
+    "content": "🎯 What Changed: Amazon Quick is now generally available, enabling teams to build custom internal applications, dashboards, and portals using natural language prompts. This significantly reduces traditional development time and complexity.\n\n💡 Why It Matters: This empowers engineers to rapidly provision internal tools and dashboards, leveraging AI for UI generation. It streamlines operational workflows by minimizing manual coding, allowing focus on backend integrations and data governance.",
+    "tags": [
+      "#AWS",
+      "#CloudArchitecture",
+      "#CloudNews"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-09-02T02:33:59.055129+00:00",
+    "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/09/amazon-quick-custom-apps-natural-language/",
+    "status": "approved",
+    "eligibility_reason": "Official AWS Release: Grounded candidate notes evaluated for high technical relevance.",
+    "updated_at": "2026-09-02T02:33:59.055129+00:00"
+  },
+  {
+    "id": "43c9d2a4-d8ac-443e-8e14-04ee49057415",
+    "title": "Enterprise AI: Architecting for Production Success",
+    "content": "🎯 What Changed: The focus shifts to architecting robust, production-grade AI systems beyond just the model itself.\n💡 Engineering Impact: Architects gain critical guidance on integrating model storage, serving layers, and operational frameworks into existing enterprise systems, ensuring AI initiatives deliver real business value through scalable, maintainable deployments.",
+    "tags": [
+      "#OpenShift",
+      "#RedHat",
+      "#DevOps"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-09-01T09:50:57.64508+00:00",
+    "link_url": "https://www.redhat.com/en/blog/beyond-model-architecting-production-grade-enterprise-ai-systems",
+    "status": "approved",
+    "eligibility_reason": "Official OpenShift Release: Ingested & AI synthesized for Admin Approval Queue.",
+    "updated_at": "2026-09-01T09:50:57.64508+00:00"
+  },
+  {
+    "id": "25421061-2cc4-4966-a86b-b1217be180ee",
+    "title": "Red Hat Training Accelerates Cloud Skills with Practical Experience",
+    "content": "🎯 What Changed: Red Hat Training emphasizes practical, hands-on experience to accelerate technical growth and build operational confidence in complex cloud environments.\n💡 Engineering Impact: This approach directly benefits engineers by providing the practical skills needed to navigate complex data systems and new platforms, reducing the learning curve and improving DevOps efficiency. It fosters a more skilled workforce capable of confidently managing and deploying OpenShift and related technologies.",
+    "tags": [
+      "#OpenShift",
+      "#RedHat",
+      "#DevOps"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-08-30T10:23:55.340724+00:00",
+    "link_url": "https://www.redhat.com/en/blog/learning-while-building-how-red-hat-training-accelerates-technical-growth",
+    "status": "approved",
+    "eligibility_reason": "Official OpenShift Release: Ingested & AI synthesized for Admin Approval Queue.",
+    "updated_at": "2026-08-30T10:23:55.340724+00:00"
+  },
+  {
+    "id": "8b22b9c2-dfbf-42f9-b276-e9c8edde5a17",
+    "title": "Red Hat Guides Enterprise AI Hosting & Day 2 Ops",
+    "content": "🎯 What Changed: Red Hat details best practices and architectural patterns for managing enterprise AI at scale, leveraging Red Hat AI Enterprise for integrated hosting and operations.\n💡 Engineering Impact: This guidance helps architects and DevOps teams operationalize complex AI workloads, offering clarity on hosting choices (managed, self-hosted, hybrid) and streamlining Day 2 operations for RAG, fine-tuning, and agents.",
+    "tags": [
+      "#OpenShift",
+      "#RedHat",
+      "#DevOps"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-08-30T10:23:51.02025+00:00",
+    "link_url": "https://www.redhat.com/en/blog/managing-enterprise-ai-scale-hosting-deployment-patterns-and-day-2-operations",
+    "status": "approved",
+    "eligibility_reason": "Official OpenShift Release: Ingested & AI synthesized for Admin Approval Queue.",
+    "updated_at": "2026-08-30T10:23:51.02025+00:00"
+  },
+  {
+    "id": "2f080810-bcf2-47ca-bacd-e88af22ff136",
+    "title": "Kubernetes v1.37: Pod Certificates and Cluster Trust Bundles",
+    "content": "🎯 What Changed: Kubernetes 1.37 introduces Pod Certificates and Cluster Trust Bundles as a GA feature, enabling built-in X.509 certificate issuance for secure workload identity.\n💡 Engineering Impact: This enhances security by providing proof-of-possession credentials for TLS/mTLS, moving beyond bearer tokens. It simplifies certificate management and rotation directly within Kubernetes, offering a pluggable framework for various certificate types.",
+    "tags": [
+      "#Kubernetes",
+      "#CNCF",
+      "#CloudNative"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-08-30T10:23:34.266335+00:00",
+    "link_url": "https://kubernetes.io/blog/2026/08/28/kubernetes-v1-37-pod-certificates-and-cluster-trust-bundles/",
+    "status": "approved",
+    "eligibility_reason": "Official Kubernetes Release: Ingested & AI synthesized for Admin Approval Queue.",
+    "updated_at": "2026-08-30T10:23:34.266335+00:00"
+  },
+  {
+    "id": "a113e12d-90d7-4d60-bb53-a73c57a80d2d",
+    "title": "Amazon Redshift integrates with Agent Toolkit for AWS for AI-assisted data warehouse management",
+    "content": "🎯 What Changed: Amazon Redshift now integrates with the Agent Toolkit for AWS, introducing AI-assisted capabilities for data warehouse management, querying, and migration.\n\n💡 Why It Matters: This integration streamlines Redshift operations by leveraging AI to simplify complex tasks like data management, querying, and migrations, boosting efficiency for data engineers and reducing manual effort.",
+    "tags": [
+      "#AWS",
+      "#CloudArchitecture",
+      "#CloudNews"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-08-28T08:44:23.349707+00:00",
+    "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/08/redshift-agenttoolkit-for-ai-assisted-datawarehouse-mgmt",
+    "status": "approved",
+    "eligibility_reason": "Official AWS Release: Grounded candidate notes evaluated for high technical relevance.",
+    "updated_at": "2026-08-28T08:44:23.349707+00:00"
+  },
+  {
+    "id": "72e6cded-ca00-4a58-8ca8-016504a5bbe8",
+    "title": "Amazon Redshift streaming can now ingest 10MiB records from Amazon Kinesis Data Streams",
+    "content": "🎯 What Changed: Amazon Redshift streaming ingestion from Kinesis Data Streams now supports individual record sizes up to 10MiB. This represents a 10x increase from the previous limit, significantly enhancing direct data processing capabilities.\n\n💡 Why It Matters: This allows engineers to simplify data pipelines by directly ingesting larger events or documents without pre-processing. It reduces architectural complexity and improves throughput for high-volume streaming analytics workloads.",
+    "tags": [
+      "#AWS",
+      "#CloudArchitecture",
+      "#CloudNews"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-08-28T08:44:19.535775+00:00",
+    "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/08/redshift-streaming-supports-kds-10mib-records",
+    "status": "approved",
+    "eligibility_reason": "Official AWS Release: Grounded candidate notes evaluated for high technical relevance.",
+    "updated_at": "2026-08-28T08:44:19.535775+00:00"
+  },
+  {
+    "id": "2d581b2c-c11c-4c04-87d8-d0581dc2f218",
+    "title": "OpenShift & Partners Launch OTel 2.0 for Production Telco AI",
+    "content": "🎯 What Changed: Red Hat, ATT, AMD, Dell, and Microsoft launched OTel 2.0, an open-source initiative accelerating domain-specific AI model training for telecommunications networks.\n💡 Engineering Impact: This collaboration streamlines the development and deployment of production-ready AI models for telcos, enhancing network operations and service delivery through open, specialized AI.",
+    "tags": [
+      "#OpenShift",
+      "#RedHat",
+      "#DevOps"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-08-27T12:09:37.130136+00:00",
+    "link_url": "https://www.redhat.com/en/blog/open-telco-ai-training-model-industry",
+    "status": "approved",
+    "eligibility_reason": "Official OpenShift Release: Ingested & AI synthesized for Admin Approval Queue.",
+    "updated_at": "2026-08-27T12:09:37.130136+00:00"
+  },
+  {
+    "id": "5f4cba7c-bf9b-4d24-b3d5-08d816336225",
+    "title": "OpenShift AI Agents Automate Jira Triage, Boost Dev Efficiency",
+    "content": "🎯 What Changed: OpenShift now leverages modular AI agent workflows to automate Jira ticket discovery, context enrichment, and structured summarization.\n💡 Engineering Impact: This innovation transforms AI agents into pipeline workers, drastically reducing triage time from hours to minutes and providing developers immediate, actionable context without human intervention. It boosts operational efficiency and accelerates development cycles.",
+    "tags": [
+      "#OpenShift",
+      "#RedHat",
+      "#DevOps"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-08-27T12:09:33.165722+00:00",
+    "link_url": "https://www.redhat.com/en/blog/taming-agent-beast-monolithic-prompt-modular-agentic-workflow",
+    "status": "approved",
+    "eligibility_reason": "Official OpenShift Release: Ingested & AI synthesized for Admin Approval Queue.",
+    "updated_at": "2026-08-27T12:09:33.165722+00:00"
+  },
+  {
+    "id": "4ba2a608-67f6-46af-816d-4c63f5bab866",
+    "title": "AWS Glue 5.1 is now available in AWS European Sovereign Cloud Region",
+    "content": "🎯 What Changed: AWS Glue 5.1, the latest serverless data integration version, is now available within the AWS European Sovereign Cloud Region. This expands access to its advanced ETL capabilities for data engineers operating under strict data residency requirements.\n\n💡 Why It Matters: This enables organizations with stringent data sovereignty and residency mandates to build and run modern ETL workflows using Glue's latest features. Engineers can now design compliant, scalable data pipelines directly within the sovereign cloud.",
+    "tags": [
+      "#AWS",
+      "#CloudArchitecture",
+      "#CloudNews"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-08-27T07:02:49.688687+00:00",
+    "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/08/aws-glue-5-1-european-sovereign-cloud",
+    "status": "approved",
+    "eligibility_reason": "Official AWS Release: Grounded candidate notes evaluated for high technical relevance.",
+    "updated_at": "2026-08-27T07:02:49.688687+00:00"
+  },
+  {
+    "id": "594631c3-bea6-4e2c-9a88-c97419486d92",
+    "title": "Amazon Connect Customer now supports points-based scoring in performance evaluations",
+    "content": "🎯 What Changed: Amazon Connect has introduced points-based scoring for performance evaluations, allowing administrators to assign custom point values when assessing both human and AI agent interactions.\n\n💡 Why It Matters: This provides granular calibration, empowering engineers to standardize quality assurance frameworks and accurately measure agent performance, leading to more effective training and operational improvements.",
+    "tags": [
+      "#AWS",
+      "#CloudArchitecture",
+      "#CloudNews"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-08-27T06:59:37.163854+00:00",
+    "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/08/amazon-connect-customer-points-based-scoring-evaluations/",
+    "status": "approved",
+    "eligibility_reason": "Official AWS Release: Grounded candidate notes evaluated for high technical relevance.",
+    "updated_at": "2026-08-27T06:59:37.163854+00:00"
+  },
+  {
+    "id": "21ab3932-cac6-49fe-aefb-512473fbf152",
+    "title": "Kubernetes v1.37 Boosts Performance & Cost Efficiency",
+    "content": "🎯 What Changed: Kubernetes v1.37 stabilizes core APIs, enables HorizontalPodAutoscaler scale-to-zero, and boosts performance with resilient watch caches and gang scheduling.\n💡 Engineering",
+    "tags": [
+      "#Kubernetes",
+      "#CNCF",
+      "#CloudNative"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-08-26T17:01:21.223383+00:00",
+    "link_url": "https://kubernetes.io/blog/2026/08/26/kubernetes-v1-37-release/",
+    "status": "approved",
+    "eligibility_reason": "Official Kubernetes Release: Ingested & AI synthesized for Admin Approval Queue.",
+    "updated_at": "2026-08-26T17:01:21.223383+00:00"
+  },
+  {
+    "id": "67d18bcc-e22e-487b-87f3-395640e3be9e",
+    "title": "OpenShift Enables Self-Service Enterprise Data Agents",
+    "content": "🎯 What Changed: OpenShift now offers a blueprint for building enterprise data agents, empowering users with direct, multi-source data insights beyond standard dashboards.\n💡 Engineering Impact: This architectural pattern empowers engineers to deploy scalable data agents, significantly reducing ad-hoc query burdens on development teams and democratizing access to critical business intelligence for faster decision-making.",
+    "tags": [
+      "#OpenShift",
+      "#RedHat",
+      "#DevOps"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-08-26T05:38:25.294345+00:00",
+    "link_url": "https://www.redhat.com/en/blog/we-built-enterprise-data-agent-and-you-can-too",
+    "status": "approved",
+    "eligibility_reason": "Official OpenShift Release: Ingested & AI synthesized for Admin Approval Queue.",
+    "updated_at": "2026-08-26T05:38:25.294345+00:00"
+  },
+  {
+    "id": "6324b454-77aa-4350-b7db-0e0e3d332bf3",
+    "title": "AI Production Success: 5 Pillars Beyond Benchmarks",
+    "content": "🎯 What Changed: New guidance outlines 5 critical principles for evaluating AI agents to achieve real business value beyond benchmark scores.\n💡 Engineering Impact: Engineers can now design and validate AI systems for tangible business outcomes, moving beyond raw performance metrics to ensure real-world 'correctness' in the Software 3.0 era.",
+    "tags": [
+      "#OpenShift",
+      "#RedHat",
+      "#DevOps"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-08-26T05:38:19.593947+00:00",
+    "link_url": "https://www.redhat.com/en/blog/beyond-benchmarks-5-pillars-ai-evaluation-systems",
+    "status": "approved",
+    "eligibility_reason": "Official OpenShift Release: Ingested & AI synthesized for Admin Approval Queue.",
+    "updated_at": "2026-08-26T05:38:19.593947+00:00"
+  },
+  {
+    "id": "bdcc1312-88d0-48c9-8468-24ba8d8fccc0",
+    "title": "Red Hat's Mentorship Culture: A Blueprint for Cloud Teams",
+    "content": "🎯 What Changed: Red Hat highlights its reciprocal mentorship culture, empowering early-career talent and enriching team dynamics.\n💡 Engineering Impact: This approach cultivates a skilled talent pipeline, accelerating innovation and improving the architectural quality and operational efficiency of cloud solutions.",
+    "tags": [
+      "#OpenShift",
+      "#RedHat",
+      "#DevOps"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-08-26T05:38:13.409516+00:00",
+    "link_url": "https://www.redhat.com/en/blog/paying-it-forward-how-mentorship-comes-full-circle-early-talent",
+    "status": "approved",
+    "eligibility_reason": "Official OpenShift Release: Ingested & AI synthesized for Admin Approval Queue.",
+    "updated_at": "2026-08-26T05:38:13.409516+00:00"
+  },
+  {
+    "id": "3fe90a4f-d10b-4659-92f0-9b0c719b38b9",
+    "title": "GCP Boosts HPC Security: Slurm Vulnerability Fixed, PAM GA",
+    "content": "🎯 What Changed: Google Cloud has addressed a critical security vulnerability (CVE-2026-65107) affecting Slurm clusters on GCP, with mitigation details available.\n💡 Engineering Impact: This enhances security for HPC and AI workloads utilizing Slurm on GCP. Additionally, Privileged Access Manager's Access Approval and Transparency features are now generally available, bolstering control over privileged access.",
+    "tags": [
+      "#GoogleCloud",
+      "#GCP",
+      "#CloudNews"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 0,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-09-08T09:28:48.274643+00:00",
+    "link_url": "https://docs.cloud.google.com/release-notes#September_07_2026",
+    "status": "approved",
+    "eligibility_reason": "Official GCP Release: Ingested & AI synthesized for Admin Approval Queue.",
+    "updated_at": "2026-09-08T09:28:48.274643+00:00"
+  },
+  {
+    "id": "7b7e5e65-e911-4102-b41c-84e0f43adb71",
+    "title": "AWS RTB Fabric now supports configurable Availability Zone affinity",
+    "content": "🎯 What Changed: AWS RTB Fabric has launched configurable Availability Zone affinity for responder gateways, allowing teams to control how partner traffic.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
+    "tags": [
+      "#AWS",
+      "#CloudArchitecture",
+      "#CloudNews"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-09-21T03:02:08.148171+00:00",
+    "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/09/aws-rtb-fabric-configurable-availability-zone-affinity/",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 90.2h without manual admin curation.",
+    "updated_at": "2026-09-21T04:04:22.072+00:00"
+  },
+  {
+    "id": "3cb50cc1-e81f-43df-82a7-399bb363ddfa",
+    "title": "DevFest Workbench: Master Self-Evolving AI Agents with GCloud Stack",
+    "content": "🎯 What Changed: GCloud DevFest introduces 'Workbench,' a new workshop experience emphasizing architectural models for building self-evolving AI agents.\n💡 Engineering Impact: Engineers gain practical skills in designing long-running, self-evolving multi-agent systems using Google's agentic stack. This approach optimizes compute costs by separating state from active compute and enables safer, self-patching architectures for robust AI solutions.",
+    "tags": [
+      "#GoogleCloud",
+      "#GCP",
+      "#CloudNews"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-09-20T09:40:04.242988+00:00",
+    "link_url": "https://cloud.google.com/blog/topics/developers-practitioners/the-devfest-community-workshop-experience-building-real-agents-together/",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 84.4h without manual admin curation.",
+    "updated_at": "2026-09-20T22:16:40.914+00:00"
+  }
+]

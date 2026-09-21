@@ -18,7 +18,7 @@
   <div class="ticker-track-container h-full relative flex-1 overflow-hidden flex items-center">
     <div class="ticker-marquee-content h-full flex items-center will-change-transform" data-pulse-ticker-marquee>
       {{ range $i := (slice 1 2) }}
-        {{ range $pulses }}
+        {{ range first 10 $pulses }}
           {{ $cleanTitle := .title | htmlUnescape }}
           {{ $rawTag := "CLOUD" }}
           {{ if .tags }}
