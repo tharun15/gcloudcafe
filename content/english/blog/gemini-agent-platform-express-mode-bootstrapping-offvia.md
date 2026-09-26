@@ -41,22 +41,24 @@ In this first guide of our 6-part series, we will bypass the red tape, dissect G
 To understand where Express Mode fits, picture an international airport:
 
 ```mermaid
-flowchart LR
-    subgraph Express["🏃 Express Mode (Fast-Track Gate)"]
+flowchart TD
+    subgraph Express["🏃 1. Express Mode (Fast-Track Crew Gate)"]
         direction TB
-        E1["⚡ 30-Second Instant Sandbox Project"]
-        E2["🔑 1-Click API Key (x-goog-api-key)"]
-        E3["🌐 Public Endpoints & Safety Quotas"]
-        E4["🎯 Goal: Rapid Prototyping in an Hour"]
+        E1["⚡ 30-Second Instant Sandbox Project (No Billing Setup)"]
+        E2["🔑 1-Click API Key Authentication (x-goog-api-key)"]
+        E3["🌐 Public Internet Endpoints & Safety Quotas"]
+        E4["🎯 Primary Objective: Rapid Prototyping in an Afternoon"]
         E1 --> E2 --> E3 --> E4
     end
 
-    subgraph Enterprise["🛂 Gemini Enterprise (Customs Clearance)"]
+    Express ==>|"Graduate to Production When Ready"| Enterprise
+
+    subgraph Enterprise["🛂 2. Gemini Enterprise (Full Customs Clearance)"]
         direction TB
-        F1["🏛️ Standard Enterprise GCP Hierarchy"]
-        F2["🛡️ ADC, IAM Roles & Workload Identity"]
-        F3["🔒 VPC Service Controls & CMEK"]
-        F4["🚀 Goal: Governed, Compliant Scale"]
+        F1["🏛️ Standard GCP Organization & Resource Hierarchy"]
+        F2["🛡️ Workload Identity, ADC & Least-Privilege IAM Roles"]
+        F3["🔒 VPC Service Controls, Private Service Connect & CMEK"]
+        F4["🚀 Primary Objective: Production SLAs, Compliance & Audit Logs"]
         F1 --> F2 --> F3 --> F4
     end
 ```
@@ -78,28 +80,30 @@ Modern **Gemini Enterprise Agent Platform** applications shift the entire center
 
 ```mermaid
 flowchart TD
-    subgraph Traditional["TRADITIONAL VERTEX AI (Model-Centric)"]
+    subgraph Traditional["1. TRADITIONAL VERTEX AI (Model-Centric Paradigm)"]
         direction LR
         P1["User Prompt"] --> M1["[ Model Endpoint ]"] --> R1["Static Text / JSON Response"]
     end
 
-    subgraph Agentic["GEMINI ENTERPRISE AGENT PLATFORM (Agent-Centric)"]
+    Traditional ==>|"Evolves into Autonomous Cognitive Loop"| Agentic
+
+    subgraph Agentic["2. GEMINI ENTERPRISE AGENT PLATFORM (Agent-Centric Paradigm)"]
         direction TB
         User["User Goal: 'Plan Tokyo Trip'"] --> Engine
         
-        subgraph Engine["🤖 Agent Cognitive Loop"]
+        subgraph Engine["🤖 Autonomous Agent Cognitive Loop"]
             direction TB
-            LLM["🧭 Reasoning Engine<br/><i>(Gemini 2.5 Flash)</i>"]
-            ADK["🛠️ Orchestration & Memory<br/><i>(Google ADK / Studio)</i>"]
-            MCP["🔌 Remote Toolsets (MCP)<br/>• BigQuery Lakehouse • Airline GDS APIs"]
+            LLM["🧭 Reasoning & Planning Engine<br/><b>(Gemini 2.5 Flash)</b>"]
+            ADK["🛠️ Orchestration, Sessions & Memory<br/><b>(Google ADK / Agent Studio)</b>"]
+            MCP["🔌 Remote Enterprise Toolsets (MCP)<br/>• Offvia BigQuery Lakehouse &bull; Live Airline GDS APIs"]
             
             LLM -->|State Loop| ADK
-            ADK -->|Tool Discovery & Invocation| MCP
-            MCP -->|Tool Results & Data| ADK
-            ADK -->|Refined Context| LLM
+            ADK -->|Tool Invocation| MCP
+            MCP -->|Tool Execution Results| ADK
+            ADK -->|Refined Working Memory| LLM
         end
         
-        Engine --> Output["✅ Validated Contract, Tool Result, or Clarification Turn"]
+        Engine --> Output["✅ Validated Data Contract, Flight Options, or Clarification Turn"]
     end
 ```
 
@@ -336,11 +340,14 @@ Notice what happened:
 Extracting a validated `TripIntent` object is step one. In a production architecture, the lifecycle expands into five governed stages:
 
 ```mermaid
-flowchart LR
-    S1["1. Intent Ingestion<br/><i>(Pydantic Contract)</i>"] --> S2["2. Domain Verification<br/><i>(IATA, Currency, GDS)</i>"]
-    S2 --> S3["3. Multi-Agent Team<br/><i>(Supervisor & Specialists)</i>"]
-    S3 --> S4["4. Remote MCP Toolsets<br/><i>(BigQuery & Live APIs)</i>"]
-    S4 --> S5["5. Human Sign-Off<br/><i>(Booking Confirmation)</i>"]
+flowchart TD
+    S1["🎯 Stage 1: Intent Ingestion<br/><b>Pydantic V2 Contract Validation</b>"]
+    S2["✈️ Stage 2: Domain Verification<br/><b>IATA Codes, Currency & GDS Airline Rules</b>"]
+    S3["🤖 Stage 3: Multi-Agent Specialist Team<br/><b>Supervisor Orchestration & State Machine</b>"]
+    S4["🔌 Stage 4: Remote MCP Toolsets<br/><b>BigQuery Lakehouse & Real-Time APIs</b>"]
+    S5["👤 Stage 5: Human-in-the-Loop Governance<br/><b>Explicit User Approval & Booking Execution</b>"]
+
+    S1 --> S2 --> S3 --> S4 --> S5
 ```
 
 1. **Domain Lookup:** Downstream services resolve "Tokyo" to `HND` and `NRT` via authoritative database queries—never via LLM memory.
