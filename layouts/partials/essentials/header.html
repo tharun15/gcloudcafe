@@ -44,11 +44,12 @@
       <button
         type="button"
         data-target="search-modal"
-        class="search-trigger flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-500 transition-all cursor-pointer whitespace-nowrap shrink-0"
+        class="search-trigger group flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white bg-slate-100/80 dark:bg-slate-800/60 hover:bg-slate-200/70 dark:hover:bg-slate-700/60 border border-slate-200 dark:border-slate-700/80 transition-all cursor-pointer whitespace-nowrap shrink-0 h-9"
         aria-label="Search & Menu (Ctrl+K)">
-        <i class="fa-solid fa-magnifying-glass text-[11px] shrink-0"></i>
-        <span class="hidden sm:inline whitespace-nowrap">Search &amp; Menu</span>
-        <kbd class="hidden sm:inline-flex items-center px-1.5 py-0.5 text-[10px] font-mono font-bold rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-500 whitespace-nowrap shrink-0">Ctrl K</kbd>
+        <i class="fa-solid fa-magnifying-glass text-[11px] text-slate-400 group-hover:text-slate-700 dark:group-hover:text-slate-200 transition-colors shrink-0"></i>
+        <span class="sr-only">Search &amp; Menu</span>
+        <span class="hidden sm:inline text-slate-600 dark:text-slate-400 group-hover:text-slate-900 dark:group-hover:text-white transition-colors">Search...</span>
+        <kbd class="hidden sm:inline-flex items-center px-1.5 py-0.5 text-[10px] font-mono font-medium rounded bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-slate-700 text-slate-400 dark:text-slate-500 shadow-2xs whitespace-nowrap shrink-0">Ctrl K</kbd>
       </button>
 
       <!-- Language Switcher -->
@@ -58,8 +59,7 @@
       {{ partial "components/theme-switcher" (dict "Class" "flex items-center") }}
 
       <!-- Subscribe Button (ByteDepth Reference) -->
-      <a href="{{ `newsletter/` | relLangURL }}" 
-         class="btn-primary inline-flex items-center px-4 py-1.5 rounded-lg text-white font-bold text-xs shadow-xs transition-all no-underline bg-red-600 hover:bg-red-700 cursor-pointer">
+      <a href="{{ `newsletter/` | relLangURL }}" class="btn-primary inline-flex items-center px-3.5 sm:px-4 py-1.5 rounded-lg text-white font-bold text-xs shadow-xs transition-all no-underline bg-red-600 hover:bg-red-700 cursor-pointer h-9 shrink-0">
         Subscribe
       </a>
 
