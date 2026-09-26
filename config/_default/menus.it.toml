@@ -1,4 +1,4 @@
-############# English navigation ##############
+############# Italian navigation ##############
 
 # main menu
 [[main]]
@@ -7,7 +7,7 @@ url = "/"
 weight = 1
 
 [[main]]
-name = "Series"
+name = "Serie"
 url = "/series"
 weight = 2
 
@@ -23,13 +23,13 @@ url = "#"
 weight = 4
 
 [[main]]
-name = "About"
+name = "Chi Siamo"
 parent = "company"
 url = "/about"
 weight = 1
 
 [[main]]
-name = "Contact"
+name = "Contatti"
 parent = "company"
 url = "/contact"
 weight = 2
@@ -47,12 +47,12 @@ url = "/blog"
 weight = 2
 
 [[footer]]
-name = "About"
+name = "Chi Siamo"
 url = "/about"
 weight = 3
 
 [[footer]]
-name = "Contact"
+name = "Contatti"
 url = "/contact"
 weight = 4
 
@@ -62,7 +62,7 @@ url = "/privacy-policy"
 weight = 5
 
 [[footer]]
-name = "Terms of Service"
+name = "Termini di Servizio"
 url = "/terms-of-service"
 weight = 6
 
