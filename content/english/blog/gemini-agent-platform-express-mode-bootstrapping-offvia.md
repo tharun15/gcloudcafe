@@ -1,19 +1,19 @@
 ---
-title: "The New Gemini Agent Platform & Express Mode (Part 1): Bootstrapping Offvia"
-meta_title: "Gemini Agent Platform Express Mode (Part 1): Bootstrapping Offvia | Gcloudcafe"
-description: "Explore Google Cloud's new Gemini Agent Platform and Express Mode. Learn the architectural shift from Vertex AI, API Key vs ADC authentication, and bootstrap Offvia with Gemini 3.8 Flash."
+title: "Gemini Enterprise Agent Platform & Express Mode (Part 1): Bootstrapping Offvia"
+meta_title: "Gemini Enterprise Agent Platform & Express Mode (Part 1): Bootstrapping Offvia | Gcloudcafe"
+description: "Explore Google Cloud's new Gemini Enterprise Agent Platform and Express Mode. Learn the architectural shift from Vertex AI, API Key vs ADC authentication, and bootstrap Offvia with Gemini 3.8 Flash."
 date: 2026-09-26
 image: "/images/gemini-agent-platform-express-mode.jpg"
 categories: ["Google Cloud", "AI & ML", "Architecture"]
-tags: ["Gemini Agent Platform", "Express Mode", "Vertex AI", "Gemini 3.8 Flash", "AI Agents", "Google Cloud", "Python", "TravelTech"]
+tags: ["Gemini Enterprise Agent Platform", "Express Mode", "Vertex AI", "Gemini 3.8 Flash", "AI Agents", "Google Cloud", "Python", "TravelTech"]
 author: tharun-vempati
 featured: true
 draft: false
-series: "Building Offvia with Gemini Agent Platform"
+series: "Building Offvia with Gemini Enterprise Agent Platform"
 series_order: 1
 ---
 
-# The New Gemini Agent Platform & Express Mode (Part 1): Bootstrapping Offvia
+# Gemini Enterprise Agent Platform & Express Mode (Part 1): Bootstrapping Offvia
 
 When you open the Google Cloud Console today, an unmistakable headline greets you in the navigation drawer:
 
@@ -37,13 +37,13 @@ To deliver that vision, we need autonomous agents that can parse intent, query l
 
 Google Cloud recognized this enterprise bottleneck. Alongside the Agent Platform rebrand, Google launched **Express Mode**.
 
-In this inaugural guide of our 6-part master series, we deconstruct the new **Gemini Agent Platform**, dissect the mechanics of **Express Mode**, evaluate the critical trade-offs between **API Key** and **Application Default Credentials (ADC)**, and write the foundation code in Python to bootstrap Offvia's trip parser using **Gemini 3.8 Flash**.
+In this inaugural guide of our 6-part master series, we deconstruct the new **Gemini Enterprise Agent Platform**, dissect the mechanics of **Express Mode**, evaluate the critical trade-offs between **API Key** and **Application Default Credentials (ADC)**, and write the foundation code in Python to bootstrap Offvia's trip parser using **Gemini 3.8 Flash**.
 
 ---
 
-## 💡 What is Gemini Agent Platform Express Mode? (Featured Snippet)
+## 💡 What is Gemini Enterprise Agent Platform (Express Mode)? (Featured Snippet)
 
-> **Gemini Agent Platform Express Mode** is Google Cloud's instant sandbox environment designed for zero-friction AI agent prototyping. It bypasses organizational billing obstacles and complex IAM role bindings, providing immediate API key access to **Gemini 3.8 Flash**, visual **Agent Studio**, and the **Google ADK (`google-adk`)** Python framework.
+> **Gemini Enterprise Agent Platform (Express Mode)** is Google Cloud's instant sandbox environment designed for zero-friction AI agent prototyping. It bypasses organizational billing obstacles and complex IAM role bindings, providing immediate API key access to **Gemini 3.8 Flash**, visual **Agent Studio**, and the **Google ADK (`google-adk`)** Python framework.
 
 ---
 
@@ -74,17 +74,17 @@ Conversely, passengers emigrating permanently must pass through the **Full Custo
 
 ---
 
-## 🏛️ The Core Architectural Shift: Vertex AI vs Gemini Agent Platform
+## 🏛️ The Core Architectural Shift: Vertex AI vs Gemini Enterprise Agent Platform
 
-To grasp what changed under the hood, we must look past the UI rebrand. Vertex AI was built around the paradigm of **Predictive ML Pipelines**. Gemini Agent Platform is built around the paradigm of **Autonomous Cognitive Loops**.
+To grasp what changed under the hood, we must look past the UI rebrand. Vertex AI was built around the paradigm of **Predictive ML Pipelines**. Gemini Enterprise Agent Platform is built around the paradigm of **Autonomous Cognitive Loops**.
 
 ```text
 TRADITIONAL VERTEX AI PARADIGM (Model-Centric):
 User Prompt ──► [Model Endpoint] ──► Text / JSON Output (Static Response)
 
-NEW GEMINI AGENT PLATFORM PARADIGM (Agent-Centric):
+NEW GEMINI ENTERPRISE AGENT PLATFORM PARADIGM (Agent-Centric):
                   ┌──────────────────────────────────────────────┐
-                  │          GEMINI AGENT PLATFORM               │
+                  │          GEMINI ENTERPRISE AGENT PLATFORM    │
 User Goal ───────►│  ┌─────────────────────────────────────────┐  │
                   │  │ 🧭 Reasoning Engine (Gemini 3.8 Flash)  │  │
                   │  └──────────────────┬──────────────────────┘  │
@@ -150,7 +150,7 @@ The following responsive architecture grid outlines the exact technical capabili
 
 ---
 
-## 🚨 5 Fatal Misconceptions About Gemini Agent Platform
+## 🚨 5 Fatal Misconceptions About Gemini Enterprise Agent Platform
 
 When adopting Google Cloud's new agent stack, engineering teams frequently stumble into expensive assumptions:
 
@@ -277,7 +277,7 @@ Create a new file named `offvia_intent_parser.py`. Notice how we leverage **Gemi
 # -*- coding: utf-8 -*-
 """
 Offvia Travel Concierge -- Intent Parser (Part 1)
-Bootstrapped on Gemini Agent Platform using Gemini 3.8 Flash.
+Bootstrapped on Gemini Enterprise Agent Platform using Gemini 3.8 Flash.
 """
 
 import os
@@ -391,7 +391,9 @@ Notice what just happened:
 ## 📖 Authoritative Standards & Documentation
 
 For further reading and official specifications, reference:
-* [Google Cloud Agent Platform Overview](https://cloud.google.com/products/agent-platform)
+* [Google Cloud Gemini Enterprise Overview](https://cloud.google.com/products/gemini)
+* [Vertex AI Documentation](https://cloud.google.com/vertex-ai/docs)
+* [Vertex AI Agent Builder Documentation](https://cloud.google.com/generative-ai-app-builder/docs/introduction)
 * [Google GenAI Python SDK Documentation](https://github.com/googleapis/python-genai)
 * [Model Context Protocol (MCP) Specification](https://modelcontextprotocol.io/)
 * [Daniel Kahneman: Thinking, Fast and Slow (System 1 & System 2 Architecture)](https://en.wikipedia.org/wiki/Thinking,_Fast_and_Slow)
