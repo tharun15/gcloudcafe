@@ -380,27 +380,58 @@
       }
     }
 
+    function openSearchPalette() {
+      var searchTrigger = document.querySelector("[data-target='search-modal'], [data-search-trigger], .search-trigger, [data-target='#search-modal']");
+      if (searchTrigger) {
+        searchTrigger.click();
+      } else if (searchModal) {
+        searchModal.classList.add("show");
+        searchModal.setAttribute("aria-hidden", "false");
+        document.body.style.overflowY = "hidden";
+      }
+      setTimeout(function () {
+        updateActiveCommand(0);
+        if (commandView && (!searchInput || !searchInput.value.trim())) {
+          commandView.style.display = "";
+        }
+        var targetInput = searchInput || document.querySelector("[data-search-input]") || document.getElementById("search-modal-input");
+        if (targetInput) {
+          targetInput.focus();
+          targetInput.select();
+        }
+      }, 50);
+    }
+
+    function closeSearchPalette() {
+      var closeBtn = document.querySelector("[data-target='close-search-modal']");
+      if (closeBtn) {
+        closeBtn.click();
+      } else if (searchModal) {
+        searchModal.classList.remove("show");
+        searchModal.setAttribute("aria-hidden", "true");
+        document.body.style.overflowY = "";
+      }
+    }
+
     // Toggle Modal on Ctrl+K / Cmd+K
+    // Use capture phase and stopImmediatePropagation to ensure deterministic toggling and eliminate double-toggle cancellation with theme search.js
     document.addEventListener("keydown", function (e) {
-      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
+      if ((e.ctrlKey || e.metaKey) && e.key && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        e.stopImmediatePropagation();
         var isModalOpen = searchModal && searchModal.classList.contains("show");
         if (isModalOpen) {
-          e.preventDefault();
-          var closeBtn = document.querySelector("[data-target='close-search-modal']");
-          if (closeBtn) closeBtn.click();
+          closeSearchPalette();
         } else {
-          var searchTrigger = document.querySelector("[data-target='search-modal'], [data-search-trigger], .search-trigger, [data-target='#search-modal']");
-          if (searchTrigger) {
-            e.preventDefault();
-            searchTrigger.click();
-            setTimeout(function () {
-              updateActiveCommand(0);
-              if (searchInput) searchInput.focus();
-            }, 120);
-          }
+          openSearchPalette();
+        }
+      } else if (e.key === "Escape") {
+        var isModalOpen = searchModal && searchModal.classList.contains("show");
+        if (isModalOpen) {
+          closeSearchPalette();
         }
       }
-    });
+    }, true);
 
     if (!searchModal) return;
 
@@ -413,8 +444,12 @@
           if (commandView && (!searchInput || !searchInput.value.trim())) {
             commandView.style.display = "";
           }
-          if (searchInput) searchInput.focus();
-        }, 120);
+          var targetInput = searchInput || document.querySelector("[data-search-input]") || document.getElementById("search-modal-input");
+          if (targetInput) {
+            targetInput.focus();
+            targetInput.select();
+          }
+        }, 50);
       });
     });
 
