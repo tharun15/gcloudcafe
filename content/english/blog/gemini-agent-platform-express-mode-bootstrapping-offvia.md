@@ -5,7 +5,7 @@ description: "Explore Google Cloud Gemini Enterprise Agent Platform Express Mode
 date: 2026-09-26
 last_modified: 2026-09-26
 image: "/images/gemini-agent-platform-express-mode.jpg"
-categories: ["Google Cloud", "AI & ML", "Architecture"]
+categories: ["Google Cloud", "AI", "Architecture"]
 tags: ["Gemini Enterprise Agent Platform", "Express Mode", "Vertex AI", "Gemini 2.5 Flash", "Agent Studio", "Google Gen AI SDK", "Python", "TravelTech"]
 author: tharun-vempati
 featured: true
