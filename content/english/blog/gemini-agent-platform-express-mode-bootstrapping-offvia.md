@@ -1,7 +1,7 @@
 ---
-title: "From Vertex AI to Google Cloud's Agent Platform: Build a Travel Intent Parser with Express Mode (Part 1)"
-meta_title: "Agent Platform Express Mode Hands-On Guide | GCloud Cafe"
-description: "Explore Google Cloud Agent Platform Express Mode, compare API keys with ADC, and build a schema-constrained travel-intent parser in Python."
+title: "From Vertex AI to Gemini Enterprise Agent Platform: Build a Travel Intent Parser with Express Mode (Part 1)"
+meta_title: "Gemini Enterprise Agent Platform Express Mode Guide | GCloud Cafe"
+description: "Explore Google Cloud Gemini Enterprise Agent Platform Express Mode, compare API keys with ADC, and build a schema-constrained travel-intent parser in Python."
 date: 2026-09-26
 last_modified: 2026-09-26
 image: "/images/gemini-agent-platform-express-mode.jpg"
@@ -14,11 +14,11 @@ series: "Building Offvia with Gemini Enterprise Agent Platform"
 series_order: 1
 ---
 
-# From Vertex AI to Google Cloud's Agent Platform: Build a Travel Intent Parser with Express Mode (Part 1)
+# From Vertex AI to Gemini Enterprise Agent Platform: Build a Travel Intent Parser with Express Mode (Part 1)
 
 Google Cloud's agent-focused platform direction makes it easier to transition from isolated foundational model calls to governed, multi-agent workflows. In this first guide of our 6-part series, you will use **Express Mode** and Python to transform an unformatted natural-language travel request into a strictly validated `TripIntent` application contract—without pretending that an LLM alone has verified flight schedules, seat inventories, or hotel cancellation policies.
 
-> 📌 **Terminology & Scope:** In this series, **"Agent Platform"** refers to Google Cloud's agent-focused console experience (encompassing **Agent Studio**, **Agent Development Kit**, and **Express Mode**). Under the hood, foundational [Vertex AI capabilities](https://cloud.google.com/vertex-ai/docs) and [Gemini Enterprise](https://cloud.google.com/products/gemini) infrastructure remain integral to Google Cloud's broader AI ecosystem.
+> 📌 **Terminology & Grounding:** Google Cloud officially designates the platform as **Gemini Enterprise Agent Platform (formerly Vertex AI)**—a comprehensive platform for building, scaling, governing, and optimizing AI agents. In this series, we refer to it by its exact name, **Gemini Enterprise Agent Platform**, and explore its **Express Mode** sandbox alongside **Agent Studio** and the **Agent Development Kit (ADK)**.
 
 ---
 
@@ -38,7 +38,7 @@ That is where **Express Mode** provides immediate value.
 
 ---
 
-## 💡 What Is Express Mode on Agent Platform?
+## 💡 What Is Express Mode on Gemini Enterprise Agent Platform?
 
 > **Express Mode** is Google Cloud's Preview onboarding experience designed for zero-friction agent prototyping. It allows developers to test prompts, access visual **Agent Studio**, and obtain an API key for supported model requests without first setting up enterprise billing hierarchies, IAM bindings, or VPC service perimeters.
 
@@ -54,7 +54,7 @@ At publication time, Google Cloud documents Express Mode as providing:
 
 ```text
 +--------------------------------------+--------------------------------------+
-| EXPRESS MODE                         | FULL GOOGLE CLOUD AGENT PLATFORM     |
+| EXPRESS MODE                         | GEMINI ENTERPRISE AGENT PLATFORM     |
 | Fast-Track Crew Lane                 | Full Operational Customs Clearance   |
 +--------------------------------------+--------------------------------------+
 | • Ephemeral, frictionless sandbox    | • Standard GCP project & billing org |
@@ -71,7 +71,7 @@ A fast-track crew gate lets airline pilots step quickly onto the tarmac for rapi
 Conversely, permanent immigration requires rigorous customs clearance, background checks, and identity audits. 
 
 * **Express Mode is your Fast-Track Lane:** Use it to validate prompts, structure schemas, and prove concept viability in an afternoon.
-* **Full Agent Platform is your Customs Clearance:** Graduate to standard Google Cloud infrastructure before your agent connects to private databases, executes financial transactions, or handles sensitive traveler PII.
+* **Full Gemini Enterprise Agent Platform is your Customs Clearance:** Graduate to standard Google Cloud infrastructure before your agent connects to private databases, executes financial transactions, or handles sensitive traveler PII.
 
 ---
 
@@ -83,7 +83,7 @@ Traditional Vertex AI applications were primarily **model-centric**:
 User Prompt ──► [ Model Endpoint ] ──► Static Text / JSON Response
 ```
 
-Modern Agent Platform applications are **agent-centric**:
+Modern Gemini Enterprise Agent Platform applications are **agent-centric**:
 
 ```text
 User Goal
@@ -114,13 +114,13 @@ The platform unifies four key primitives:
 1. **Agent Studio:** Visual playground to test prompts, attach tools, and export configurations directly into code.
 2. **Agent Development Kit (ADK):** Open-source code-first framework in Python, TypeScript, Go, and Java for building deterministic multi-agent state loops.
 3. **Agent Garden:** Enterprise blueprints for common workflows (retrieval-augmented generation, financial advisory, and customer support).
-4. **Agent Platform MCP:** Anthropic's [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) specification for exposing enterprise databases and tools securely.
+4. **Gemini Enterprise Agent Platform MCP:** Anthropic's [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) specification for exposing enterprise databases and tools securely.
 
 ---
 
-## 📊 Express Mode vs Full Agent Platform: Feature Comparison
+## 📊 Express Mode vs Full Gemini Enterprise Agent Platform: Feature Comparison
 
-| Capability | Express Mode (Preview) | Full Google Cloud Agent Platform |
+| Capability | Express Mode (Preview) | Full Gemini Enterprise Agent Platform |
 | :--- | :--- | :--- |
 | **Primary Purpose** | Fast prototyping, prompt iteration, schema validation | Governed production deployment and enterprise operations |
 | **Setup Overhead** | **< 60 seconds** (instant sandbox project) | Standard Cloud Identity, Organization, IAM, and Billing |
@@ -194,7 +194,7 @@ test -n "$GEMINI_API_KEY" && echo "GEMINI_API_KEY is available"
 # -*- coding: utf-8 -*-
 """
 Offvia Travel Concierge -- Schema-Constrained Intent Parser (Part 1)
-Bootstrapped on Google Cloud Agent Platform Express Mode.
+Bootstrapped on Google Cloud Gemini Enterprise Agent Platform Express Mode.
 """
 
 from __future__ import annotations
