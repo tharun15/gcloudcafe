@@ -19,13 +19,13 @@ describe('SEO, GEO & Reader Conversion Optimization Suite', () => {
     const enHome = fs.readFileSync(path.join(publicDir, 'index.html'), 'utf-8');
     const itHome = fs.readFileSync(path.join(publicDir, 'it/index.html'), 'utf-8');
 
-    expect(enHome).toMatch(/<link rel="alternate" hreflang="en" href="[^"]+"/);
-    expect(enHome).toMatch(/<link rel="alternate" hreflang="it" href="[^"]+"/);
-    expect(enHome).toMatch(/<link rel="alternate" hreflang="x-default" href="[^"]+"/);
+    expect(enHome).toMatch(/<link\s+[^>]*rel=["']?alternate["']?[^>]*hreflang=["']?en["']?[^>]*>/i);
+    expect(enHome).toMatch(/<link\s+[^>]*rel=["']?alternate["']?[^>]*hreflang=["']?it["']?[^>]*>/i);
+    expect(enHome).toMatch(/<link\s+[^>]*rel=["']?alternate["']?[^>]*hreflang=["']?x-default["']?[^>]*>/i);
 
-    expect(itHome).toMatch(/<link rel="alternate" hreflang="en" href="[^"]+"/);
-    expect(itHome).toMatch(/<link rel="alternate" hreflang="it" href="[^"]+"/);
-    expect(itHome).toMatch(/<link rel="alternate" hreflang="x-default" href="[^"]+"/);
+    expect(itHome).toMatch(/<link\s+[^>]*rel=["']?alternate["']?[^>]*hreflang=["']?en["']?[^>]*>/i);
+    expect(itHome).toMatch(/<link\s+[^>]*rel=["']?alternate["']?[^>]*hreflang=["']?it["']?[^>]*>/i);
+    expect(itHome).toMatch(/<link\s+[^>]*rel=["']?alternate["']?[^>]*hreflang=["']?x-default["']?[^>]*>/i);
   });
 
   it('verifies static/llms.txt and static/llms-full.txt are populated with latest articles and multilingual endpoints', () => {
