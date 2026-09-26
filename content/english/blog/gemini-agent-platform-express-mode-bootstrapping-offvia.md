@@ -40,17 +40,25 @@ In this first guide of our 6-part series, we will bypass the red tape, dissect G
 
 To understand where Express Mode fits, picture an international airport:
 
-```text
-+--------------------------------------+--------------------------------------+
-| EXPRESS MODE                         | GEMINI ENTERPRISE AGENT PLATFORM     |
-| Fast-Track Crew Gate                 | Full Customs & Immigration           |
-+--------------------------------------+--------------------------------------+
-| • 30-second instant sandbox project  | • Standard enterprise GCP hierarchy  |
-| • 1-Click API key authentication     | • ADC, IAM roles, Workload Identity  |
-| • Public endpoints & safety quotas   | • VPC Service Controls & CMEK        |
-| • Zero billing required upfront      | • Production SLAs & Cloud Audit Logs |
-| • Goal: Rapid prototyping in an hour | • Goal: Governed, compliant scale    |
-+--------------------------------------+--------------------------------------+
+```mermaid
+flowchart LR
+    subgraph Express["🏃 Express Mode (Fast-Track Gate)"]
+        direction TB
+        E1["⚡ 30-Second Instant Sandbox Project"]
+        E2["🔑 1-Click API Key (x-goog-api-key)"]
+        E3["🌐 Public Endpoints & Safety Quotas"]
+        E4["🎯 Goal: Rapid Prototyping in an Hour"]
+        E1 --> E2 --> E3 --> E4
+    end
+
+    subgraph Enterprise["🛂 Gemini Enterprise (Customs Clearance)"]
+        direction TB
+        F1["🏛️ Standard Enterprise GCP Hierarchy"]
+        F2["🛡️ ADC, IAM Roles & Workload Identity"]
+        F3["🔒 VPC Service Controls & CMEK"]
+        F4["🚀 Goal: Governed, Compliant Scale"]
+        F1 --> F2 --> F3 --> F4
+    end
 ```
 
 When an airline crew lands for a 45-minute turnaround, they don't stand in a two-hour general customs line. They flash their badge at the crew gate and walk straight onto the tarmac. 
@@ -331,16 +339,12 @@ Notice what happened:
 
 Extracting a validated `TripIntent` object is step one. In a production architecture, the lifecycle expands into five governed stages:
 
-```text
-┌────────────────────────┐      ┌────────────────────────┐      ┌────────────────────────┐
-│  1. Intent Ingestion   │ ───► │ 2. Domain Verification │ ───► │  3. Multi-Agent Team   │
-│  (Pydantic Contract)   │      │ (IATA / Currency / GDS)│      │  (Supervisor & Agents) │
-└────────────────────────┘      └────────────────────────┘      └────────────────────────┘
-                                                                             │
-┌────────────────────────┐      ┌────────────────────────┐                   ▼
-│  5. Human Sign-Off     │ ◄─── │ 4. Remote MCP Toolsets │ ◄─────────────────┘
-│  (Booking Confirmation)│      │ (BigQuery & Real APIs) │
-└────────────────────────┘      └────────────────────────┘
+```mermaid
+flowchart LR
+    S1["1. Intent Ingestion<br/><i>(Pydantic Contract)</i>"] --> S2["2. Domain Verification<br/><i>(IATA, Currency, GDS)</i>"]
+    S2 --> S3["3. Multi-Agent Team<br/><i>(Supervisor & Specialists)</i>"]
+    S3 --> S4["4. Remote MCP Toolsets<br/><i>(BigQuery & Live APIs)</i>"]
+    S4 --> S5["5. Human Sign-Off<br/><i>(Booking Confirmation)</i>"]
 ```
 
 1. **Domain Lookup:** Downstream services resolve "Tokyo" to `HND` and `NRT` via authoritative database queries—never via LLM memory.
