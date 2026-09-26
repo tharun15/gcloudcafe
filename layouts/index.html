@@ -115,7 +115,8 @@
       </div>
       {{ end }}
 
-      <!-- Browse all topics Section (Issue 4 & 9 Resolved) -->
+      
+<!-- Browse all topics Section (Issue 4 & 9 Resolved) -->
       <div class="mt-14 mb-8">
         <h3 class="font-mono text-xs font-bold text-slate-500 dark:text-slate-400 tracking-wider block mb-4">
           Browse all topics
@@ -123,49 +124,30 @@
 
         <div class="border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0c1220] rounded-xl overflow-hidden shadow-xs">
           <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 divide-x divide-y divide-slate-200 dark:divide-slate-800">
-            
-            <a href="{{ `categories/kubernetes/` | relLangURL }}" class="px-4 py-3 sm:py-3.5 text-sm sm:text-base font-semibold text-slate-900 dark:text-white hover:text-red-600 dark:hover:text-red-500 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-all no-underline flex items-center justify-between group">
-              <span>Kubernetes</span>
-              <span class="text-xs text-slate-400 group-hover:text-red-500 transition-transform group-hover:translate-x-0.5">?</span>
-            </a>
-            <a href="{{ `categories/security/` | relLangURL }}" class="px-4 py-3 sm:py-3.5 text-sm sm:text-base font-semibold text-slate-900 dark:text-white hover:text-red-600 dark:hover:text-red-500 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-all no-underline flex items-center justify-between group">
-              <span>Security</span>
-              <span class="text-xs text-slate-400 group-hover:text-red-500 transition-transform group-hover:translate-x-0.5">?</span>
-            </a>
-            <a href="{{ `categories/devops/` | relLangURL }}" class="px-4 py-3 sm:py-3.5 text-sm sm:text-base font-semibold text-slate-900 dark:text-white hover:text-red-600 dark:hover:text-red-500 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-all no-underline flex items-center justify-between group">
-              <span>DevOps</span>
-              <span class="text-xs text-slate-400 group-hover:text-red-500 transition-transform group-hover:translate-x-0.5">?</span>
-            </a>
-            <a href="{{ `categories/google-cloud/` | relLangURL }}" class="px-4 py-3 sm:py-3.5 text-sm sm:text-base font-semibold text-slate-900 dark:text-white hover:text-red-600 dark:hover:text-red-500 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-all no-underline flex items-center justify-between group">
-              <span>Google Cloud</span>
-              <span class="text-xs text-slate-400 group-hover:text-red-500 transition-transform group-hover:translate-x-0.5">?</span>
-            </a>
-            <a href="{{ `categories/openshift/` | relLangURL }}" class="px-4 py-3 sm:py-3.5 text-sm sm:text-base font-semibold text-slate-900 dark:text-white hover:text-red-600 dark:hover:text-red-500 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-all no-underline flex items-center justify-between group">
-              <span>OpenShift</span>
-              <span class="text-xs text-slate-400 group-hover:text-red-500 transition-transform group-hover:translate-x-0.5">?</span>
-            </a>
-
-            <a href="{{ `categories/architecture/` | relLangURL }}" class="px-4 py-3 sm:py-3.5 text-sm sm:text-base font-semibold text-slate-900 dark:text-white hover:text-red-600 dark:hover:text-red-500 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-all no-underline flex items-center justify-between group">
-              <span>Architecture</span>
-              <span class="text-xs text-slate-400 group-hover:text-red-500 transition-transform group-hover:translate-x-0.5">?</span>
-            </a>
-            <a href="{{ `categories/cka/` | relLangURL }}" class="px-4 py-3 sm:py-3.5 text-sm sm:text-base font-semibold text-slate-900 dark:text-white hover:text-red-600 dark:hover:text-red-500 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-all no-underline flex items-center justify-between group">
-              <span>CKA & Linux</span>
-              <span class="text-xs text-slate-400 group-hover:text-red-500 transition-transform group-hover:translate-x-0.5">?</span>
-            </a>
-            <a href="{{ `categories/tls/` | relLangURL }}" class="px-4 py-3 sm:py-3.5 text-sm sm:text-base font-semibold text-slate-900 dark:text-white hover:text-red-600 dark:hover:text-red-500 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-all no-underline flex items-center justify-between group">
-              <span>TLS & Zero-Trust</span>
-              <span class="text-xs text-slate-400 group-hover:text-red-500 transition-transform group-hover:translate-x-0.5">?</span>
-            </a>
-            <a href="{{ `categories/ai/` | relLangURL }}" class="px-4 py-3 sm:py-3.5 text-sm sm:text-base font-semibold text-slate-900 dark:text-white hover:text-red-600 dark:hover:text-red-500 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-all no-underline flex items-center justify-between group">
-              <span>AI & ML</span>
-              <span class="text-xs text-slate-400 group-hover:text-red-500 transition-transform group-hover:translate-x-0.5">?</span>
-            </a>
-            <a href="{{ `categories/certifications/` | relLangURL }}" class="px-4 py-3 sm:py-3.5 text-sm sm:text-base font-semibold text-slate-900 dark:text-white hover:text-red-600 dark:hover:text-red-500 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-all no-underline flex items-center justify-between group">
-              <span>Certifications</span>
-              <span class="text-xs text-slate-400 group-hover:text-red-500 transition-transform group-hover:translate-x-0.5">?</span>
-            </a>
-
+            {{ $catCounts := dict }}
+            {{ range site.Taxonomies.categories }}
+              {{ $catCounts = merge $catCounts (dict .Page.RelPermalink .Count) }}
+            {{ end }}
+            {{ $topicList := slice
+              (dict "name" "Kubernetes" "slug" "kubernetes")
+              (dict "name" "Security" "slug" "security")
+              (dict "name" "DevOps" "slug" "devops")
+              (dict "name" "Google Cloud" "slug" "google-cloud")
+              (dict "name" "OpenShift" "slug" "openshift")
+              (dict "name" "Architecture" "slug" "architecture")
+              (dict "name" "CKA & Linux" "slug" "cka")
+              (dict "name" "TLS & Zero-Trust" "slug" "tls")
+              (dict "name" "AI & ML" "slug" "ai")
+              (dict "name" "Certifications" "slug" "certifications")
+            }}
+            {{ range $topicList }}
+              {{ $targetUrl := printf "/categories/%s/" .slug }}
+              {{ $count := index $catCounts $targetUrl | default 0 }}
+              <a href="{{ printf "categories/%s/" .slug | relLangURL }}" class="px-4 py-3 sm:py-3.5 text-sm sm:text-base font-semibold text-slate-900 dark:text-white hover:text-red-600 dark:hover:text-red-500 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-all no-underline flex items-center justify-between group">
+                <span>{{ .name }}</span>
+                <span class="text-xs font-mono font-semibold text-slate-400 dark:text-slate-500 group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors">{{ $count }}</span>
+              </a>
+            {{ end }}
           </div>
         </div>
       </div>
