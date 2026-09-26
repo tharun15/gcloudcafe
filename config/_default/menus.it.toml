@@ -1,0 +1,64 @@
+############# Italian navigation ##############
+
+# main menu
+[[main]]
+name = "Home"
+url = "/"
+weight = 1
+
+[[main]]
+name = "Serie"
+url = "/series"
+weight = 2
+
+[[main]]
+name = "Pulse"
+url = "/pulse"
+weight = 3
+
+[[main]]
+name = "Chi Siamo"
+url = "/about"
+weight = 4
+
+[[main]]
+name = "Contatti"
+url = "/contact"
+weight = 5
+
+
+# footer menu
+[[footer]]
+name = "Home"
+url = "/"
+weight = 1
+
+[[footer]]
+name = "Blog"
+url = "/blog"
+weight = 2
+
+[[footer]]
+name = "Chi Siamo"
+url = "/about"
+weight = 3
+
+[[footer]]
+name = "Contatti"
+url = "/contact"
+weight = 4
+
+[[footer]]
+name = "Privacy Policy"
+url = "/privacy-policy"
+weight = 5
+
+[[footer]]
+name = "Termini di Servizio"
+url = "/terms-of-service"
+weight = 6
+
+[[footer]]
+name = "Cookie Policy"
+url = "/cookie-policy"
+weight = 7

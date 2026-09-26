@@ -1,6 +1,19 @@
 ################ English language ##################
 [en]
-languageName = "En"
+languageName = "English"
 languageCode = "en-us"
 contentDir = "content/english"
 weight = 1
+[en.params]
+title = "Gcloudcafe"
+description = "Gcloudcafe delivers deep, reproducible engineering guides on Kubernetes, Google Cloud, Red Hat OpenShift, TLS security, and DevOps architectures for production practitioners."
+
+################ Italian language ##################
+[it]
+languageName = "Italiano"
+languageCode = "it-it"
+contentDir = "content/italian"
+weight = 2
+[it.params]
+title = "Gcloudcafe"
+description = "Gcloudcafe offre guide ingegneristiche approfondite e riproducibili su Kubernetes, Google Cloud, Red Hat OpenShift, sicurezza TLS e architetture DevOps per professionisti in produzione."

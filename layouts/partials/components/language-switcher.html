@@ -1,0 +1,115 @@
+{{ $currentPage := . }}
+{{ $currentLang := site.Language.Lang }}
+{{ $siteLanguages := site.Home.AllTranslations }}
+
+<div class="relative inline-block text-left" data-lang-switcher>
+  <!-- Desktop / Header Trigger Button -->
+  <button
+    type="button"
+    class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-500 transition-all cursor-pointer"
+    aria-expanded="false"
+    aria-haspopup="true"
+    aria-label="Select language (current: {{ site.Language.LanguageName }})"
+    data-lang-trigger>
+    <i class="fa-solid fa-globe text-[11px] text-slate-500 dark:text-slate-400"></i>
+    <span class="uppercase font-mono font-bold">{{ $currentLang }}</span>
+    <i class="fa-solid fa-chevron-down text-[9px] text-slate-400 transition-transform duration-200" data-lang-chevron></i>
+  </button>
+
+  <!-- Dropdown Menu -->
+  <div
+    class="hidden absolute right-0 mt-2 w-44 py-1.5 rounded-xl bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-slate-800 shadow-xl z-50 transition-all duration-200"
+    role="menu"
+    aria-orientation="vertical"
+    data-lang-menu>
+    <div class="px-3 py-1 border-b border-slate-100 dark:border-slate-800/60 mb-1">
+      <span class="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+        Language / Lingua
+      </span>
+    </div>
+    {{ range $siteLanguages }}
+      {{ $langObj := .Language }}
+      {{ $isCurrent := eq $currentLang $langObj.Lang }}
+      {{/* Resolve link: current page translation or language home */}}
+      {{ $targetUrl := .RelPermalink }}
+      {{ range $currentPage.Translations }}
+        {{ if eq .Language.Lang $langObj.Lang }}
+          {{ $targetUrl = .RelPermalink }}
+        {{ end }}
+      {{ end }}
+
+      <a
+        href="{{ $targetUrl }}"
+        class="flex items-center justify-between px-3 py-2 text-xs font-semibold no-underline transition-colors {{ if $isCurrent }}text-red-600 dark:text-red-500 bg-red-50/50 dark:bg-red-950/20{{ else }}text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/60 hover:text-slate-900 dark:hover:text-white{{ end }}"
+        role="menuitem"
+        hreflang="{{ $langObj.Lang }}">
+        <div class="flex items-center gap-2">
+          <span class="font-mono text-[10px] uppercase font-bold px-1 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
+            {{ $langObj.Lang }}
+          </span>
+          <span>{{ $langObj.LanguageName }}</span>
+        </div>
+        {{ if $isCurrent }}
+          <i class="fa-solid fa-check text-[11px] text-red-600 dark:text-red-500"></i>
+        {{ end }}
+      </a>
+    {{ end }}
+  </div>
+</div>
+
+<script>
+  (function() {
+    function initLanguageSwitchers() {
+      document.querySelectorAll('[data-lang-switcher]').forEach(function(container) {
+        if (container.__lang_init) return;
+        container.__lang_init = true;
+
+        var trigger = container.querySelector('[data-lang-trigger]');
+        var menu = container.querySelector('[data-lang-menu]');
+        var chevron = container.querySelector('[data-lang-chevron]');
+
+        if (!trigger || !menu) return;
+
+        function openMenu() {
+          menu.classList.remove('hidden');
+          trigger.setAttribute('aria-expanded', 'true');
+          if (chevron) chevron.style.transform = 'rotate(180deg)';
+        }
+
+        function closeMenu() {
+          menu.classList.add('hidden');
+          trigger.setAttribute('aria-expanded', 'false');
+          if (chevron) chevron.style.transform = 'rotate(0deg)';
+        }
+
+        trigger.addEventListener('click', function(e) {
+          e.stopPropagation();
+          var isOpen = !menu.classList.contains('hidden');
+          if (isOpen) {
+            closeMenu();
+          } else {
+            openMenu();
+          }
+        });
+
+        // Close on escape
+        document.addEventListener('keydown', function(e) {
+          if (e.key === 'Escape') closeMenu();
+        });
+
+        // Close on click outside
+        document.addEventListener('click', function(e) {
+          if (!container.contains(e.target)) {
+            closeMenu();
+          }
+        });
+      });
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initLanguageSwitchers);
+    } else {
+      initLanguageSwitchers();
+    }
+  })();
+</script>
