@@ -1,6 +1,6 @@
 ---
-title: "Gemini Enterprise Agent Platform & Express Mode (Part 1): Bootstrapping Offvia"
-meta_title: "Gemini Enterprise Agent Platform & Express Mode (Part 1): Bootstrapping Offvia | Gcloudcafe"
+title: "Why Vertex AI Just Became 'Agent Platform': Fast-Tracking Autonomous AI with Express Mode (Part 1)"
+meta_title: "Why Vertex AI Just Became 'Agent Platform': Fast-Tracking Autonomous AI with Express Mode | Gcloudcafe"
 description: "Explore Google Cloud's new Gemini Enterprise Agent Platform and Express Mode. Learn the architectural shift from Vertex AI, API Key vs ADC authentication, and bootstrap Offvia with Gemini 3.8 Flash."
 date: 2026-09-26
 image: "/images/gemini-agent-platform-express-mode.jpg"
@@ -13,7 +13,7 @@ series: "Building Offvia with Gemini Enterprise Agent Platform"
 series_order: 1
 ---
 
-# Gemini Enterprise Agent Platform & Express Mode (Part 1): Bootstrapping Offvia
+# Why Vertex AI Just Became "Agent Platform": Fast-Tracking Autonomous AI with Express Mode (Part 1)
 
 When you open the Google Cloud Console today, an unmistakable headline greets you in the navigation drawer:
 
