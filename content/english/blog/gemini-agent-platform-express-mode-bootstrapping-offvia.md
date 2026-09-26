@@ -72,39 +72,35 @@ Conversely, permanent immigration requires rigorous visa checks and background a
 
 ## 🏛️ The Paradigm Shift: Model Endpoints vs Cognitive Loops
 
-For four years, Vertex AI operated on a **model-centric** paradigm:
+For four years, Vertex AI operated on a **model-centric** paradigm: you sent tokens in, you received static tokens out. The model had no memory, no tools, and no operational awareness.
 
-```text
-User Prompt ──► [ Model Endpoint ] ──► Static Text / JSON Response
-```
+Modern **Gemini Enterprise Agent Platform** applications shift the entire center of gravity to **autonomous cognitive loops**:
 
-You passed tokens in; you got tokens out. The model had no memory, no tools, and no operational awareness.
+```mermaid
+flowchart TD
+    subgraph Traditional["TRADITIONAL VERTEX AI (Model-Centric)"]
+        direction LR
+        P1["User Prompt"] --> M1["[ Model Endpoint ]"] --> R1["Static Text / JSON Response"]
+    end
 
-Modern **Gemini Enterprise Agent Platform** applications are **agent-centric**:
-
-```text
-User Goal ("Plan Tokyo Trip")
-   │
-   ▼
-┌─────────────────────────────────────────────────────────────┐
-│                 AGENT COGNITIVE ENGINE                      │
-│                                                             │
-│   ┌─────────────────────────────────────────────────────┐   │
-│   │ 🧭 Reasoning Engine (Gemini Flash)                  │   │
-│   └──────────────────────────┬──────────────────────────┘   │
-│                              │ State Loop                   │
-│   ┌──────────────────────────▼──────────────────────────┐   │
-│   │ 🛠️ Orchestration & Memory (Google ADK / Studio)     │   │
-│   └──────────────────────────┬──────────────────────────┘   │
-│                              │ Tool Discovery               │
-│   ┌──────────────────────────▼──────────────────────────┐   │
-│   │ 🔌 Remote Toolsets (Model Context Protocol - MCP)   │   │
-│   │   • BigQuery Lakehouse   • Live Airline GDS APIs    │   │
-│   └─────────────────────────────────────────────────────┘   │
-└─────────────────────────────────────────────────────────────┘
-   │
-   ▼
-Validated Contract, Tool Result, or Clarification Turn
+    subgraph Agentic["GEMINI ENTERPRISE AGENT PLATFORM (Agent-Centric)"]
+        direction TB
+        User["User Goal: 'Plan Tokyo Trip'"] --> Engine
+        
+        subgraph Engine["🤖 Agent Cognitive Loop"]
+            direction TB
+            LLM["🧭 Reasoning Engine<br/><i>(Gemini 2.5 Flash)</i>"]
+            ADK["🛠️ Orchestration & Memory<br/><i>(Google ADK / Studio)</i>"]
+            MCP["🔌 Remote Toolsets (MCP)<br/>• BigQuery Lakehouse • Airline GDS APIs"]
+            
+            LLM -->|State Loop| ADK
+            ADK -->|Tool Discovery & Invocation| MCP
+            MCP -->|Tool Results & Data| ADK
+            ADK -->|Refined Context| LLM
+        end
+        
+        Engine --> Output["✅ Validated Contract, Tool Result, or Clarification Turn"]
+    end
 ```
 
 The platform unifies four critical primitives:
