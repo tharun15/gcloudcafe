@@ -44,12 +44,11 @@
 
           <div class="border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0c1220] rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all group flex flex-col justify-between">
             <!-- Author Image & Active Badge -->
-            <div class="relative bg-slate-100 dark:bg-slate-900 h-72 sm:h-80 overflow-hidden flex items-center justify-center">
+            <div class="relative bg-slate-100 dark:bg-slate-900 h-56 sm:h-72 overflow-hidden flex items-end justify-center">
               {{ with $authorPage.Params.image }}
                 <img src="{{ . | relURL }}" 
                      alt="{{ $authorPage.Title }}" 
-                     class="w-full h-full object-cover object-[center_12%] group-hover:scale-105 transition-transform duration-500 ease-out" 
-                     style="object-position: center 12%;" 
+                     class="h-full w-auto max-w-full object-contain object-bottom group-hover:scale-105 transition-transform duration-500 ease-out" 
                      loading="lazy"
                      onerror="this.onerror=null; this.src='{{ `/images/avatar.png` | relURL }}';">
               {{ else }}
