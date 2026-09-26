@@ -1,9 +1,18 @@
 ---
 title: "Superare l'Esame Red Hat OpenShift Administrator (EX280) – Parte 2: L'Aspetto Tecnico"
-meta_title: "Guida Pratica ai Domini Tecnici dell'Esame EX280"
+meta_title: "Obiettivi Esame EX280 e Guida Tecnica Pratica"
 date: 2025-11-02
 image: "/images/post4-dp.png"
-description: "Approfondimento tecnico sull'esame EX280: connessione al cluster, gestione dei task e padronanza dei domini chiave attraverso la pratica reale."
+description: "Approfondimento tecnico sugli obiettivi dell'esame Red Hat EX280 e task DO280: connessione al cluster, RBAC, storage, route e best practice."
+faqs:
+  - question: "Quali sono gli obiettivi ufficiali dell'esame Red Hat OpenShift EX280?"
+    answer: "L'esame Red Hat EX280 verifica competenze pratiche su gestione del cluster, autenticazione utenti con HTPasswd, RBAC, quote di progetto, storage persistente (PV/PVC/StorageClass), NetworkPolicies, cifratura delle route (Edge/Re-encrypt), probe di salute e deployment di Operator."
+  - question: "Come si collega il corso Red Hat DO280 all'esame EX280?"
+    answer: "Il corso DO280 (OpenShift Administration II) copre il programma fondamentale dell'esame EX280. Ciascun laboratorio pratico del DO280 rispecchia fedelmente gli scenari reali richiesti durante le 3 ore dell'esame pratico."
+  - question: "È possibile usare la console web e la documentazione OpenShift durante l'esame EX280?"
+    answer: "Sì, la documentazione ufficiale OpenShift e la console web sono accessibili all'interno dell'ambiente d'esame. Tuttavia, la rapidità con la CLI 'oc' è fondamentale per completare tutti i 21-23 task entro il tempo limite."
+  - question: "Qual è il punteggio minimo per superare l'esame Red Hat OpenShift Administrator (EX280)?"
+    answer: "L'esame prevede un punteggio massimo di 300 punti con una soglia di superamento di 210 punti (70%). Si tratta di un esame interamente pratico su cluster attivo."
 categories: ["Certifications", "DevOps", "Red Hat", "Openshift", "Administrator"]
 tags: ["Red Hat", "OpenShift", "EX280", "Certification", "DevOps", "Technical"]
 author: tharun-vempati
@@ -157,3 +166,25 @@ oc get csv -n openshift-operators
 ✅ Riserva il task del Project Template per la fase conclusiva  
 
 L'esame EX280 certifica la tua capacità di amministrare un cluster OpenShift reale in scenari operativi concreti. Con una preparazione metodica e una buona gestione del tempo, il successo è alla tua portata! 🎓
+
+---
+
+## Domande Frequenti (Obiettivi Esame EX280 & FAQ)
+
+### Quali sono gli obiettivi ufficiali dell'esame Red Hat OpenShift EX280?
+L'esame Red Hat EX280 verifica competenze pratiche in:
+1. Gestione dei cluster OpenShift e configurazione dell'autenticazione (`htpasswd`, provider OAuth).
+2. Configurazione di Role-Based Access Control (RBAC), ruoli e gruppi.
+3. Gestione dello storage applicativo persistente (PV, PVC, StorageClass).
+4. Isolamento del traffico con `NetworkPolicy` e configurazione di Edge / Re-encrypt Routes.
+5. Deployment e scaling di carichi applicativi con probe di vitalità e prontezza (liveness, readiness).
+6. Configurazione del Self-Service sviluppatori, ResourceQuota, LimitRange e Project Templates.
+
+### Come si collega il corso Red Hat DO280 all'esame EX280?
+Il **corso DO280** (*OpenShift Administration II*) copre l'intero programma teorico e pratico dell'esame EX280. Esercitarsi su tutti i lab del DO280 fino a completare i task in autonomia rappresenta la preparazione più solida.
+
+### È possibile usare la console web e la documentazione OpenShift durante l'esame EX280?
+Sì. Sia la console web sia la documentazione ufficiale offline sono disponibili all'interno dell'ambiente remoto. Tuttavia, l'uso della CLI `oc` è indispensabile per risparmiare tempo ed eseguire tutti i 21-23 task entro 3 ore.
+
+### Qual è il punteggio minimo per superare l'esame EX280?
+L'esame prevede un massimo di **300 punti** con una soglia di superamento di **210 punti (70%)**.

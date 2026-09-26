@@ -1,9 +1,18 @@
 ---
 title: "Passing the Red Hat OpenShift Administrator (EX280) Exam – Part 2: The Technical Side"
-meta_title: "A Hands-On Guide to the EX280 Exam's Technical Domains"
+meta_title: "EX280 Exam Objectives & Hands-On Technical Guide"
 date: 2025-11-02
 image: "/images/post4-dp.png"
-description: "Deep-dive into the technical side of the EX280 exam — connecting to the cluster, understanding tasks, and mastering key topics through real-world practice."
+description: "Deep-dive into the technical side of Red Hat EX280 exam objectives and DO280 tasks — connecting to the cluster, auth, storage, routes, and hands-on practice."
+faqs:
+  - question: "What are the official Red Hat OpenShift EX280 exam objectives?"
+    answer: "The Red Hat EX280 exam tests hands-on skills across cluster management, user authentication via HTPasswd, RBAC role bindings, project quotas, persistent storage (PV/PVC/StorageClass), NetworkPolicies, route encryption (Edge/Re-encrypt), pod health probes, and Operator deployments."
+  - question: "How does the Red Hat DO280 course relate to the EX280 exam tasks?"
+    answer: "The DO280 course (OpenShift Administration II: Configuring a Production Cluster) covers the core curriculum of the EX280 exam. Every lab in DO280 directly mirrors the real-world performance tasks required in the 3-hour practical examination."
+  - question: "Can you use the OpenShift web console and documentation during the EX280 exam?"
+    answer: "Yes, the official OpenShift product documentation and the OpenShift Web Console are accessible inside the exam terminal environment. However, speed with the 'oc' CLI is critical to finish all 21-23 tasks within the 3-hour limit."
+  - question: "What is the passing score for the Red Hat Certified Specialist in OpenShift Administration (EX280) exam?"
+    answer: "The EX280 exam is scored out of 300 points, with a passing threshold of 210 points (70%). It is a 100% practical, hands-on lab examination."
 categories: ["Certifications", "DevOps", "Red Hat", "Openshift", "Administrator"]
 tags: ["Red Hat", "OpenShift", "EX280", "Certification", "DevOps", "Technical"]
 author: tharun-vempati
@@ -13,7 +22,7 @@ draft: false
 ---
 
 ## Introduction
-In [Part 1](/blog/passing-ex280-exam-part-1-non-technical-side/), I covered the *non-technical* aspects of the Red Hat OpenShift Administrator (EX280) exam — setting up the remote environment, managing testing conditions, and handling pre-exam prep.
+In [Part 1](/blog/passing-openshift-administartor-exam-part-1/), I covered the *non-technical* aspects of the Red Hat OpenShift Administrator (EX280) exam — setting up the remote environment, managing testing conditions, and handling pre-exam prep.
 
 This second part focuses on the **technical side** — the hands-on components you’ll work on within the OpenShift cluster. If Part 1 was about *preparing your environment*, this one’s about *executing with precision*.
 
@@ -249,6 +258,18 @@ In an exam scenario (or in a real-world environment), if you are asked to instal
 
 ---
 
+
+### Deep Dive: Hands-On EX280 Task Walkthroughs
+To master each specific objective on the live terminal, follow our step-by-step technical guides:
+- **Authentication & RBAC:** [EX280 Tips Part 1: Connecting to the Cluster & HTPasswd Provider](/blog/ex280-tips-part1-htpasswd/)
+- **Network Security & Ingress:** [EX280 Tips Part 2: Network Policies and Edge Routes](/blog/ex280-tips-part2/)
+- **Persistent Storage & Secrets:** [EX280 Tips Part 3: Storage Classes, PV, PVC, ConfigMaps & Secrets](/blog/ex280-tips-part3/)
+- **Workload Resilience & Scaling:** [EX280 Tips Part 4: Deployments, Probes & Reliability](/blog/ex280-tips-part4/)
+- **Multi-Tenancy & Project Templates:** [EX280 Tips Part 5: Developer Self Service & Quotas](/blog/ex280-tips-part5/)
+- **High-Velocity CLI Reference:** [The Ultimate kubectl & oc CLI Speed Cheat Sheet](/blog/kubectl-oc-cli-speed-cheat-sheet/)
+
+---
+
 ## Recommended Workflow
 1. Connect and verify cluster access  
 2. Configure auth & RBAC  
@@ -289,3 +310,25 @@ If you haven’t yet, revisit [Part 1: The Non-Technical Side](/blog/passing-ope
 
 *Authored by Tharun Vempati*  
 *Red Hat Certified OpenShift Administrator | DevOps Engineer*
+
+---
+
+## Frequently Asked Questions (EX280 Exam Objectives & FAQ)
+
+### What are the official Red Hat OpenShift EX280 exam objectives?
+The Red Hat EX280 exam tests hands-on competency in:
+1. Managing OpenShift Container Platform clusters and authentication (`htpasswd`, OAuth).
+2. Configuring Role-Based Access Control (RBAC) and group permissions.
+3. Managing persistent application storage (PV, PVC, StorageClasses).
+4. Securing pod communication via `NetworkPolicy` and configuring external Edge / Re-encrypt Routes.
+5. Deploying and scaling multi-container applications with health probes (liveness, readiness).
+6. Configuring Developer Self-Service, ResourceQuotas, LimitRanges, and Project Templates.
+
+### How does the Red Hat DO280 course relate to the EX280 exam tasks?
+The **DO280 course** (*OpenShift Administration II: Configuring a Production Cluster*) covers the exact core syllabus of the EX280 exam. Practicing every lab in DO280 until you can execute the tasks without looking at solutions is the single most effective preparation strategy.
+
+### Can you use the OpenShift web console and documentation during the EX280 exam?
+Yes. Both the OpenShift Web Console and offline official documentation are available within the exam environment. However, relying solely on the web UI can slow you down; mastering imperative `oc` CLI commands is essential to complete all 21–23 tasks within the 3-hour limit.
+
+### What is the passing score for the Red Hat Certified Specialist in OpenShift Administration (EX280) exam?
+The exam is scored out of **300 points**, requiring **210 points (70%)** to earn the certification.
