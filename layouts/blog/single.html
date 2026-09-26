@@ -148,6 +148,9 @@
             </div>
           </div>
 
+          <!-- In-Article Newsletter Lead Magnet -->
+          {{ partial "components/newsletter-card.html" . }}
+
           <!-- Series Prev/Next Navigation Footer -->
           {{ $currentPage := . }}
           {{ with $currentPage.Params.series }}

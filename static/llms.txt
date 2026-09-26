@@ -1,19 +1,48 @@
 # GCloud Cafe — Practical Cloud Architecture & Certifications
 
-> GCloud Cafe (https://gcloudcafe.com) is an engineering platform providing practical tutorials, exam preparation guides (Red Hat EX280, CKA, GCP, AWS), and real-time cloud micro-news (Cloud Pulse).
+> GCloud Cafe (https://gcloudcafe.com) is an engineering platform delivering practical, production-grounded architecture guides, hands-on certification strategies (Red Hat EX280, CKA, Google Cloud PCA), TLS cryptography teardowns, Gemini AI agent development, and real-time cloud micro-news (Cloud Pulse).
 
-## Core Pages
-- [GCloud Cafe Homepage](https://gcloudcafe.com/): Practical cloud architecture tutorials, exam guides, and platform overview.
-- [Cloud Pulse Live Feed](https://gcloudcafe.com/pulse/): Real-time community-ranked cloud updates and micro-news feed.
-- [All Blog Articles](https://gcloudcafe.com/blog/): Technical deep dives on OpenShift, Kubernetes, GCP, and AWS.
-- [Categories Index](https://gcloudcafe.com/categories/): Browse technical guides by category.
-- [About GCloud Cafe](https://gcloudcafe.com/about/): Platform mission and author profile.
+## Editions & Languages
+- [English Edition (Default)](https://gcloudcafe.com/): Primary platform with all technical articles, guides, and Cloud Pulse.
+- [Italian Edition (Edizione Italiana)](https://gcloudcafe.com/it/): Edizione italiana completa con traduzioni integrali degli articoli di architettura cloud, Kubernetes e certificazioni.
 
-## Key Technical Guides
-- [EX280 OpenShift Administrator Series](https://gcloudcafe.com/blog/passing-ex280-exam-part-2-technical-side/): Deep dive into NetworkPolicies, Edge Routes, and OpenShift 4.x administration.
-- [CKA Exam Readiness Guide](https://gcloudcafe.com/blog/cka-exam-readiness/): Hands-on Kubernetes cluster configuration and exam strategy.
-- [GCP Generative AI Leader Guide](https://gcloudcafe.com/blog/gcp-generative-ai-leader/): Gemini models, Vertex AI, and enterprise cloud AI deployments.
+## Core Platform Navigation
+- [GCloud Cafe Home](https://gcloudcafe.com/): Practical cloud architecture tutorials, exam guides, and platform overview.
+- [Cloud Pulse Live Feed](https://gcloudcafe.com/pulse/): Real-time community-ranked cloud updates, CVE advisories, and micro-news feed.
+- [All Technical Articles](https://gcloudcafe.com/blog/): Complete technical article archive across Kubernetes, OpenShift, GCP, and TLS.
+- [Article Series](https://gcloudcafe.com/series/): Multi-part guided curriculum for EX280 and TLS Demystified.
+- [Categories Index](https://gcloudcafe.com/categories/): Browse technical guides by architectural domain.
+- [Engineering Newsletter](https://gcloudcafe.com/newsletter/): Bi-weekly technical dispatch for 1,000+ DevOps and cloud engineers.
+- [Author Profile — Tharun Vempati](https://gcloudcafe.com/authors/tharun-vempati/): Enterprise cloud architect, certified Kubernetes administrator, and author profile.
+- [About GCloud Cafe](https://gcloudcafe.com/about/): Platform mission, architectural principles, and editorial standards.
 
-## Feeds & Indexes
-- [GCloud Cafe RSS Feed](https://gcloudcafe.com/index.xml): Site-wide RSS feed.
-- [Search Index JSON](https://gcloudcafe.com/searchindex.json): Programmatic search index endpoint.
+## Featured Technical Guides by Domain
+
+### 1. TLS Cryptography & Zero-Trust Security
+- [TLS Demystified (Part 1): Keys, CSRs, CAs & Chain of Trust](https://gcloudcafe.com/blog/tls-demystified-part1-cryptography-keys-csr-ca-explained/): Master modern TLS fundamentals, asymmetric key pairs, CSR generation, and OpenSSL commands.
+- [TLS Demystified (Part 2): Modern Handshake, Cipher Suites & Troubleshooting](https://gcloudcafe.com/blog/tls-demystified-part2-handshake-ciphers-and-troubleshooting/): 1-RTT vs 2-RTT packet flows, ECDHE key agreement, cipher suite anatomy, and real-world OpenSSL s_client debugging.
+- [TLS Demystified (Part 3): mTLS, Java KeyStores & Cert-Manager](https://gcloudcafe.com/blog/tls-demystified-part3-mtls-keystores-and-cert-manager/): Enterprise mutual TLS, KeyStores vs TrustStores, Kubernetes cert-manager automation, and PKIX path debugging.
+
+### 2. Enterprise AI & Agent Platforms
+- [Gemini Enterprise Agent Platform: Express Mode Bootstrapping](https://gcloudcafe.com/blog/gemini-agent-platform-express-mode-bootstrapping-offvia/): Vertex AI vs Gemini Enterprise Agent Platform, API keys vs ADC, and building a schema-constrained travel-intent parser in Python.
+- [Journey Through Generative AI: GCP Generative AI Leader Guide](https://gcloudcafe.com/blog/gcp-generative-ai-leader/): Gemini models, Vertex AI Studio, Model Garden, prompt techniques, and enterprise AI governance.
+
+### 3. Google Cloud Architecture & Data Engineering
+- [GCP Data Engineering: Core Storage & Access Primitives Demystified](https://gcloudcafe.com/blog/gcp-data-engineering-storage-building-blocks/): Cloud Storage classes, BigQuery partitioning/clustering, materialized views, and authorized views.
+- [Renewing Google Cloud Professional Cloud Architect Without an Exam](https://gcloudcafe.com/blog/gcp-pca-renewal/): Continuing Education renewal roadmap, Skill Badge Challenge Labs, Terraform, and GKE architecture lessons.
+
+### 4. Kubernetes & Red Hat OpenShift (EX280 / CKA)
+- [CKA Exam Readiness: Definitive Self-Assessment Checklist](https://gcloudcafe.com/blog/cka-exam-readiness/): Essential `kubectl` skills, cluster troubleshooting, CNI networking, and etcd disaster recovery.
+- [Ultimate kubectl CLI Speed Cheat Sheet for CKA](https://gcloudcafe.com/blog/kubectl-oc-cli-speed-cheat-sheet/): High-speed terminal shortcuts, imperative commands, Gateway API, and JSONPath tricks.
+- [EX280 (Part 1): HTPasswd Identity Provider](https://gcloudcafe.com/blog/ex280-tips-part1-htpasswd/): OpenShift cluster authentication, RBAC cluster roles, and group bindings.
+- [EX280 (Part 2): NetworkPolicies & Edge Routes](https://gcloudcafe.com/blog/ex280-tips-part2/): Ingress/egress isolation, Edge TLS termination, and re-encrypt routes.
+- [EX280 (Part 3): Storage Classes, PVs, PVCs, ConfigMaps & Secrets](https://gcloudcafe.com/blog/ex280-tips-part3/): Persistent volume claims, dynamic storage provisioning, and pod volume mounts.
+- [EX280 (Part 4): Deployments, StatefulSets & Reliability](https://gcloudcafe.com/blog/ex280-tips-part4/): Probes, resource limits, and Horizontal Pod Autoscalers (HPA).
+- [EX280 (Part 5): Developer Self Service](https://gcloudcafe.com/blog/ex280-tips-part5/): Project request templates, quotas, and limit ranges.
+- [Passing EX280 Exam (Part 1): Mental Preparation & Strategy](https://gcloudcafe.com/blog/passing-openshift-administartor-exam-part-1/): Remote exam terminal setup, time management, and mindset.
+- [Passing EX280 Exam (Part 2): The Technical Side](https://gcloudcafe.com/blog/passing-ex280-exam-part-2-technical-side/): Deep-dive into OpenShift tasks and hands-on lab drills.
+
+## Machine-Readable Resources & Feeds
+- [Site Sitemap](https://gcloudcafe.com/sitemap.xml): Complete XML sitemap listing all canonical URLs.
+- [Site RSS Feed](https://gcloudcafe.com/index.xml): Live XML RSS feed of new posts.
+- [Search Index JSON](https://gcloudcafe.com/searchindex.json): Programmatic search index endpoint.\n

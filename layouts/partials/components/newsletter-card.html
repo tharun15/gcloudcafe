@@ -1,0 +1,48 @@
+{{ $isIt := eq site.Language.Lang "it" }}
+<aside class="blog-newsletter-card my-10 p-6 sm:p-8 rounded-3xl border border-primary/20 bg-linear-to-br from-primary/5 via-theme-light to-theme-light dark:from-primary/10 dark:via-darkmode-theme-light dark:to-darkmode-theme-light shadow-sm" aria-label="{{ if $isIt }}Iscrizione Newsletter{{ else }}Newsletter Subscription{{ end }}">
+  <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+    <div class="max-w-xl">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[11px] font-bold tracking-wider uppercase bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary mb-3">
+        <i class="fa-solid fa-envelope-open-text"></i>
+        <span>{{ if $isIt }}DISPATCH BISETTIMANALE{{ else }}BI-WEEKLY DISPATCH{{ end }}</span>
+      </div>
+      <h3 class="text-xl sm:text-2xl font-bold text-dark dark:text-darkmode-dark tracking-tight mb-2">
+        {{ if $isIt }}
+          Migliora le tue competenze di Cloud Architecture
+        {{ else }}
+          Level Up Your Cloud &amp; DevOps Engineering
+        {{ end }}
+      </h3>
+      <p class="text-sm text-text/90 dark:text-darkmode-text/90 leading-relaxed">
+        {{ if $isIt }}
+          Unisciti a oltre 1.000 ingegneri. Ricevi guide tecniche su Kubernetes, GCP, OpenShift, sicurezza TLS e strategie di certificazione direttamente nella tua casella di posta.
+        {{ else }}
+          Join 1,000+ engineers. Get battle-tested architectural deep dives, Kubernetes guides, TLS security, and cloud exam teardowns directly to your inbox.
+        {{ end }}
+      </p>
+    </div>
+
+    <div class="w-full md:w-auto md:min-w-[320px] shrink-0">
+      <form action="{{ `newsletter/` | relLangURL }}" method="get" data-supabase-subscribe class="flex flex-col gap-2">
+        <div class="flex flex-col sm:flex-row gap-2">
+          <input
+            type="email"
+            name="email"
+            required
+            placeholder="{{ if $isIt }}tu@azienda.com{{ else }}you@company.com{{ end }}"
+            class="blog-newsletter-input text-sm py-2.5 px-3.5 flex-grow"
+            aria-label="{{ if $isIt }}Indirizzo email per la newsletter{{ else }}Email address for engineering newsletter{{ end }}"
+          />
+          <button
+            type="submit"
+            class="btn-primary rounded-xl px-5 py-2.5 bg-primary hover:bg-primary/90 text-white font-bold text-xs uppercase tracking-wider transition-all hover:scale-105 active:scale-95 whitespace-nowrap cursor-pointer shadow-xs shrink-0">
+            {{ if $isIt }}Iscriviti{{ else }}Subscribe{{ end }}
+          </button>
+        </div>
+        <p data-newsletter-status class="text-[11px] font-mono text-text/60 dark:text-darkmode-text/60">
+          {{ if $isIt }}Zero spam · Cancellati in qualsiasi momento{{ else }}Zero spam · Unsubscribe anytime{{ end }}
+        </p>
+      </form>
+    </div>
+  </div>
+</aside>
