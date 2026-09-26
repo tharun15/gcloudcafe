@@ -127,6 +127,7 @@
             {{ $catCounts := dict }}
             {{ range site.Taxonomies.categories }}
               {{ $catCounts = merge $catCounts (dict .Page.RelPermalink .Count) }}
+              {{ $catCounts = merge $catCounts (dict .Page.Data.Term .Count) }}
             {{ end }}
             {{ $topicList := slice
               (dict "name" "Kubernetes" "slug" "kubernetes")
@@ -141,9 +142,9 @@
               (dict "name" "Certifications" "slug" "certifications")
             }}
             {{ range $topicList }}
-              {{ $targetUrl := printf "/categories/%s/" .slug }}
-              {{ $count := index $catCounts $targetUrl | default 0 }}
-              <a href="{{ printf "categories/%s/" .slug | relLangURL }}" class="px-4 py-3 sm:py-3.5 text-sm sm:text-base font-semibold text-slate-900 dark:text-white hover:text-red-600 dark:hover:text-red-500 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-all no-underline flex items-center justify-between group">
+              {{ $targetUrl := printf "categories/%s/" .slug | relLangURL }}
+              {{ $count := index $catCounts $targetUrl | default (index $catCounts .slug) | default 0 }}
+              <a href="{{ $targetUrl }}" class="px-4 py-3 sm:py-3.5 text-sm sm:text-base font-semibold text-slate-900 dark:text-white hover:text-red-600 dark:hover:text-red-500 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-all no-underline flex items-center justify-between group">
                 <span>{{ .name }}</span>
                 <span class="text-xs font-mono font-semibold text-slate-400 dark:text-slate-500 group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors">{{ $count }}</span>
               </a>
