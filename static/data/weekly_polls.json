@@ -177,32 +177,32 @@
     "year": 2026,
     "category": "AI Infrastructure & Architecture",
     "badge": "Prediction of the Week",
-    "topic": "AI Agent Infrastructure",
-    "question": "By 2027, where will the majority of enterprise LLM & Agentic reasoning workloads run?",
-    "context": "With open-weights reasoning models surging and token economics shifting rapidly, engineering teams are deciding between hyperscaler managed APIs and private GPU infrastructure.",
+    "topic": "Agentic Reasoning Infrastructure",
+    "question": "For multi-step agentic reasoning loops, what infrastructure architecture will dominate production by 2027?",
+    "context": "Recursive agent loops amplify token consumption and round-trip latency, challenging standard stateless API architectures.",
     "options": [
       {
-        "id": "hyperscaler-serverless",
-        "text": "Hyperscaler Managed APIs (Vertex AI / Bedrock / Azure AI)",
-        "description": "Zero infra ops, managed governance, enterprise SLAs and native IAM federation",
+        "id": "frontier-managed-apis",
+        "text": "Frontier Managed Reasoning APIs (Claude Thinking / OpenAI o-series / Gemini 2.5 Flash)",
+        "description": "Maximum reasoning depth with zero cluster management, managed tool execution & enterprise SLAs",
         "votes": 0
       },
       {
-        "id": "self-hosted-k8s",
-        "text": "Self-hosted Kubernetes on Cloud GPUs (vLLM / Triton / Ray)",
-        "description": "Granular cost control at scale and complete freedom from proprietary API lock-in",
+        "id": "hybrid-tiered-routing",
+        "text": "Hierarchical Hybrid Routing (Small local/self-hosted SLMs + Cloud Fallback)",
+        "description": "Sub-50ms local planning loops with cloud escalation only for complex synthesis",
         "votes": 0
       },
       {
-        "id": "on-prem-baremetal",
-        "text": "Private On-Prem Bare Metal & Colocated Sovereign GPUs",
-        "description": "Strict data residency, zero cloud egress fees, and 24/7 fixed hardware amortization",
+        "id": "self-hosted-reasoning-clusters",
+        "text": "Self-Hosted Open-Weights Reasoning Clusters (DeepSeek-R1 / Qwen on private vLLM)",
+        "description": "Ultra-low TTFT, complete data privacy, and zero per-token loop penalty",
         "votes": 0
       },
       {
-        "id": "edge-hybrid",
-        "text": "Edge & Local SLMs (NPUs / Apple Silicon) + Cloud Fallback",
-        "description": "Sub-10ms latency, offline resilience, and tiered hierarchical query routing",
+        "id": "edge-client-execution",
+        "text": "Client & Edge-First Execution (NPU / Workstation + Async Cloud Tools)",
+        "description": "Zero network hop for reasoning scratchpads with decentralized execution",
         "votes": 0
       }
     ],

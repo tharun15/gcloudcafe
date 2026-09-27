@@ -5508,6 +5508,9 @@ function renderPulses(pulses) {
     var tabSubscribersBtn = document.getElementById("tab-subscribers-btn");
     var tabContentEngineBtn = document.getElementById("tab-content-engine-btn");
     var tabTalksBtn = document.getElementById("tab-talks-btn");
+    var tabWeeklyPollsBtn = document.getElementById("tab-weekly-polls-btn");
+    var weeklyPollsCountBadge = document.getElementById("weekly-polls-count-badge");
+    var sectionWeeklyPolls = document.getElementById("section-weekly-polls");
     var contentNicheSelect = document.getElementById("content-engine-niche-select");
     var talkVenueSelect = document.getElementById("talk-venue-select");
 
@@ -5636,7 +5639,8 @@ function renderPulses(pulses) {
         { btn: tabProposalsBtn, sec: sectionProposals, activeClass: "bg-primary text-white font-extrabold" },
         { btn: tabSubscribersBtn, sec: sectionSubscribers, activeClass: "bg-primary text-white font-extrabold" },
         { btn: tabContentEngineBtn, sec: sectionContentEngine, activeClass: "bg-amber-500 text-white font-extrabold shadow-xs" },
-        { btn: tabTalksBtn, sec: sectionTalkIdeas, activeClass: "bg-indigo-600 text-white font-extrabold shadow-xs" }
+        { btn: tabTalksBtn, sec: sectionTalkIdeas, activeClass: "bg-indigo-600 text-white font-extrabold shadow-xs" },
+        { btn: tabWeeklyPollsBtn, sec: sectionWeeklyPolls, activeClass: "bg-emerald-600 text-white font-extrabold shadow-xs" }
       ];
 
       allTabs.forEach(function (t) {
@@ -5651,7 +5655,9 @@ function renderPulses(pulses) {
       });
 
       // Automatically re-render dynamic items upon switching tabs so user sees previously generated data
-      if (activeTab === tabContentEngineBtn) {
+      if (activeTab === tabWeeklyPollsBtn) {
+        renderWeeklyPollsAdminQueue();
+      } else if (activeTab === tabContentEngineBtn) {
         renderContentIdeas();
         renderPermanentContentVault();
       } else if (activeTab === tabTalksBtn) {
@@ -5668,6 +5674,7 @@ function renderPulses(pulses) {
     if (tabSubscribersBtn) tabSubscribersBtn.addEventListener("click", function() { switchAdminTab(tabSubscribersBtn); });
     if (tabContentEngineBtn) tabContentEngineBtn.addEventListener("click", function() { switchAdminTab(tabContentEngineBtn); });
     if (tabTalksBtn) tabTalksBtn.addEventListener("click", function() { switchAdminTab(tabTalksBtn); });
+    if (tabWeeklyPollsBtn) tabWeeklyPollsBtn.addEventListener("click", function() { switchAdminTab(tabWeeklyPollsBtn); });
 
     if (refreshBtn) {
       refreshBtn.addEventListener("click", function () {
@@ -8009,10 +8016,417 @@ function renderPulses(pulses) {
       });
     }
 
+    /* ── Weekly Polls Queue Manager in Community Admin ── */
+    var cachedPollsQueue = null;
+    var pollsFilterStatus = "all";
+
+    function showPollsToast(msg) {
+      var toast = document.getElementById("admin-polls-toast");
+      if (!toast) return;
+      toast.textContent = msg;
+      toast.classList.remove("hidden");
+      setTimeout(function () { toast.classList.add("hidden"); }, 3000);
+    }
+
+    function getAdminActivePollId() {
+      try {
+        var override = localStorage.getItem("gcloudcafe_admin_active_poll_id");
+        if (override) return override;
+      } catch (e) {}
+      return "week-2026-39";
+    }
+
+    function loadPollsQueueData(callback) {
+      if (cachedPollsQueue && cachedPollsQueue.length > 0) {
+        if (callback) callback(cachedPollsQueue);
+        return;
+      }
+
+      try {
+        var localQueue = localStorage.getItem("gcloudcafe_admin_polls_queue");
+        if (localQueue) {
+          cachedPollsQueue = JSON.parse(localQueue);
+          if (Array.isArray(cachedPollsQueue) && cachedPollsQueue.length > 0) {
+            if (callback) callback(cachedPollsQueue);
+            return;
+          }
+        }
+      } catch (e) {}
+
+      fetch("/data/weekly_polls.json")
+        .then(function (res) { return res.json(); })
+        .then(function (data) {
+          if (Array.isArray(data) && data.length > 0) {
+            cachedPollsQueue = data;
+          } else {
+            cachedPollsQueue = [];
+          }
+          if (callback) callback(cachedPollsQueue);
+        })
+        .catch(function () {
+          cachedPollsQueue = [];
+          if (callback) callback(cachedPollsQueue);
+        });
+    }
+
+    function renderWeeklyPollsAdminQueue() {
+      loadPollsQueueData(function (polls) {
+        var activePollId = getAdminActivePollId();
+        var activePoll = polls.find(function (p) { return p.id === activePollId; }) || polls[0];
+
+        if (weeklyPollsCountBadge) {
+          weeklyPollsCountBadge.textContent = polls.length;
+        }
+
+        var liveTopicEl = document.getElementById("admin-live-poll-topic");
+        var liveQuestionEl = document.getElementById("admin-live-poll-question");
+        var liveVotesEl = document.getElementById("admin-live-poll-votes");
+        var queueTotalEl = document.getElementById("admin-queue-total-count");
+
+        if (queueTotalEl) queueTotalEl.textContent = polls.length;
+
+        if (activePoll) {
+          if (liveTopicEl) liveTopicEl.textContent = "Week " + (activePoll.weekNumber || activePoll.week || 39) + " · " + (activePoll.topic || activePoll.category);
+          if (liveQuestionEl) liveQuestionEl.textContent = activePoll.question;
+
+          var totalRecordedVotes = 0;
+          try {
+            var rawVote = localStorage.getItem("gcloudcafe_weekly_poll_" + activePoll.id);
+            if (rawVote) totalRecordedVotes += 1;
+          } catch (e) {}
+          (activePoll.options || []).forEach(function (o) { totalRecordedVotes += (o.votes || 0); });
+          if (activePoll.otherOption) totalRecordedVotes += (activePoll.otherOption.votes || 0);
+
+          if (liveVotesEl) liveVotesEl.textContent = totalRecordedVotes + (totalRecordedVotes === 1 ? " prediction recorded" : " predictions recorded");
+        }
+
+        var searchInput = document.getElementById("admin-polls-search-input");
+        var query = searchInput ? searchInput.value.toLowerCase().trim() : "";
+
+        var filtered = polls.filter(function (p) {
+          var isLive = p.id === activePollId;
+          if (pollsFilterStatus === "active" && !isLive) return false;
+          if (pollsFilterStatus === "upcoming" && isLive) return false;
+
+          if (query) {
+            var text = ((p.topic || "") + " " + (p.category || "") + " " + (p.question || "") + " week " + p.weekNumber).toLowerCase();
+            if (!text.includes(query)) return false;
+          }
+          return true;
+        });
+
+        var countAllEl = document.getElementById("filter-polls-count-all");
+        if (countAllEl) countAllEl.textContent = polls.length;
+
+        var grid = document.getElementById("admin-polls-queue-grid");
+        if (!grid) return;
+
+        if (filtered.length === 0) {
+          grid.innerHTML = '<div class="p-8 text-center bg-body dark:bg-darkmode-body border border-border/70 rounded-2xl text-xs text-text/60">No polls matched your filter.</div>';
+          return;
+        }
+
+        var html = '';
+        filtered.forEach(function (poll) {
+          var isLive = poll.id === activePollId;
+          var weekNum = poll.weekNumber || poll.week || 39;
+          var borderClass = isLive
+            ? "border-2 border-emerald-500/70 bg-emerald-500/[0.03] dark:bg-emerald-500/[0.05]"
+            : "border border-border/80 dark:border-darkmode-border/80 bg-body dark:bg-darkmode-body";
+
+          html += '<div class="p-5 rounded-2xl ' + borderClass + ' shadow-xs space-y-3 transition-all" data-poll-id="' + poll.id + '">';
+            html += '<div class="flex flex-wrap items-center justify-between gap-2">';
+              html += '<div class="flex items-center gap-2">';
+                html += '<span class="px-2.5 py-0.5 rounded-full font-mono text-[11px] font-bold ' + (isLive ? 'bg-emerald-500/20 text-emerald-600 dark:text-emerald-400' : 'bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300') + '">Week ' + weekNum + ' (' + (poll.year || 2026) + ')</span>';
+                html += '<span class="text-xs font-semibold text-text/70 dark:text-darkmode-text/70">' + escapeHtml(poll.category || 'Architecture') + '</span>';
+              html += '</div>';
+
+              html += '<div class="flex items-center gap-2">';
+                if (isLive) {
+                  html += '<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-500 text-white shadow-xs">';
+                    html += '<span class="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span> LIVE ON SITE';
+                  html += '</span>';
+                } else {
+                  html += '<button data-admin-promote-poll="' + poll.id + '" class="px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-[11px] transition-colors cursor-pointer border-none shadow-xs flex items-center gap-1">';
+                    html += '<i class="fa-solid fa-play text-[9px]"></i> Promote to Live';
+                  html += '</button>';
+                }
+
+                html += '<button data-admin-edit-poll="' + poll.id + '" class="px-2 py-1 rounded-lg bg-theme-light dark:bg-darkmode-theme-light hover:bg-slate-200 dark:hover:bg-slate-700 text-text/80 text-[11px] font-semibold border border-border/80 cursor-pointer flex items-center gap-1">';
+                  html += '<i class="fa-solid fa-pen text-[9px]"></i> Edit';
+                html += '</button>';
+
+                html += '<button data-admin-reset-poll-votes="' + poll.id + '" class="px-2 py-1 rounded-lg bg-transparent hover:bg-rose-500/10 text-rose-500 text-[11px] font-semibold border border-rose-500/30 cursor-pointer" title="Reset votes for this poll">';
+                  html += '<i class="fa-solid fa-rotate-left text-[9px]"></i> Reset';
+                html += '</button>';
+              html += '</div>';
+            html += '</div>';
+
+            html += '<div>';
+              html += '<h4 class="text-sm sm:text-base font-black text-dark dark:text-darkmode-dark mb-1 leading-snug">' + escapeHtml(poll.question) + '</h4>';
+              html += '<p class="text-xs text-text/70 dark:text-darkmode-text/70 m-0 leading-relaxed">' + escapeHtml(poll.context || '') + '</p>';
+            html += '</div>';
+
+            html += '<div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-2 border-t border-border/40 text-xs">';
+              (poll.options || []).forEach(function (opt, idx) {
+                html += '<div class="p-2 rounded-lg bg-theme-light/40 dark:bg-darkmode-theme-light/30 border border-border/50 flex items-start gap-2">';
+                  html += '<span class="font-mono text-[10px] font-bold text-primary mt-0.5">' + (idx + 1) + '.</span>';
+                  html += '<div class="min-w-0 flex-grow">';
+                    html += '<div class="font-bold text-dark dark:text-darkmode-dark text-[11px] leading-tight">' + escapeHtml(opt.text) + '</div>';
+                    html += '<div class="text-[10px] text-text/60 truncate">' + escapeHtml(opt.description || '') + '</div>';
+                  html += '</div>';
+                html += '</div>';
+              });
+              if (poll.otherOption) {
+                html += '<div class="p-2 rounded-lg bg-theme-light/40 dark:bg-darkmode-theme-light/30 border border-dashed border-border/70 flex items-start gap-2">';
+                  html += '<span class="font-mono text-[10px] font-bold text-amber-500 mt-0.5">5.</span>';
+                  html += '<div class="min-w-0 flex-grow">';
+                    html += '<div class="font-bold text-dark dark:text-darkmode-dark text-[11px] leading-tight">' + escapeHtml(poll.otherOption.text) + '</div>';
+                    html += '<div class="text-[10px] text-text/60 truncate">' + escapeHtml(poll.otherOption.description || '') + '</div>';
+                  html += '</div>';
+                html += '</div>';
+              }
+            html += '</div>';
+
+          html += '</div>';
+        });
+
+        grid.innerHTML = html;
+
+        grid.querySelectorAll("[data-admin-promote-poll]").forEach(function (btn) {
+          btn.onclick = function (e) {
+            e.preventDefault();
+            var targetId = btn.getAttribute("data-admin-promote-poll");
+            try {
+              localStorage.setItem("gcloudcafe_admin_active_poll_id", targetId);
+            } catch (err) {}
+            showPollsToast("Promoted " + targetId + " to Live on Site!");
+            renderWeeklyPollsAdminQueue();
+          };
+        });
+
+        grid.querySelectorAll("[data-admin-reset-poll-votes]").forEach(function (btn) {
+          btn.onclick = function (e) {
+            e.preventDefault();
+            var targetId = btn.getAttribute("data-admin-reset-poll-votes");
+            try {
+              localStorage.removeItem("gcloudcafe_weekly_poll_" + targetId);
+            } catch (err) {}
+            var pObj = polls.find(function (p) { return p.id === targetId; });
+            if (pObj) {
+              (pObj.options || []).forEach(function (o) { o.votes = 0; });
+              if (pObj.otherOption) pObj.otherOption.votes = 0;
+              try {
+                localStorage.setItem("gcloudcafe_admin_polls_queue", JSON.stringify(polls));
+              } catch (err) {}
+            }
+            showPollsToast("Reset votes for " + targetId);
+            renderWeeklyPollsAdminQueue();
+          };
+        });
+
+        grid.querySelectorAll("[data-admin-edit-poll]").forEach(function (btn) {
+          btn.onclick = function (e) {
+            e.preventDefault();
+            var targetId = btn.getAttribute("data-admin-edit-poll");
+            var pObj = polls.find(function (p) { return p.id === targetId; });
+            if (!pObj) return;
+
+            openPollModal("edit", pObj);
+          };
+        });
+      });
+    }
+
+    function openPollModal(mode, poll) {
+      var modal = document.getElementById("admin-poll-modal");
+      if (!modal) return;
+      var title = document.getElementById("admin-poll-modal-title");
+      var modeInput = document.getElementById("poll-form-mode");
+      var idInput = document.getElementById("poll-form-id");
+
+      var weekInput = document.getElementById("poll-form-week");
+      var categoryInput = document.getElementById("poll-form-category");
+      var badgeInput = document.getElementById("poll-form-badge");
+      var topicInput = document.getElementById("poll-form-topic");
+      var questionInput = document.getElementById("poll-form-question");
+      var contextInput = document.getElementById("poll-form-context");
+
+      var opt1 = document.getElementById("poll-form-opt1");
+      var opt1Desc = document.getElementById("poll-form-opt1-desc");
+      var opt2 = document.getElementById("poll-form-opt2");
+      var opt2Desc = document.getElementById("poll-form-opt2-desc");
+      var opt3 = document.getElementById("poll-form-opt3");
+      var opt3Desc = document.getElementById("poll-form-opt3-desc");
+      var opt4 = document.getElementById("poll-form-opt4");
+      var opt4Desc = document.getElementById("poll-form-opt4-desc");
+
+      if (mode === "edit" && poll) {
+        if (title) title.innerHTML = '<i class="fa-solid fa-pen-to-square text-emerald-500"></i> Edit Week ' + poll.weekNumber + ' Poll';
+        if (modeInput) modeInput.value = "edit";
+        if (idInput) idInput.value = poll.id;
+        if (weekInput) weekInput.value = poll.weekNumber || 39;
+        if (categoryInput) categoryInput.value = poll.category || "";
+        if (badgeInput) badgeInput.value = poll.badge || "Prediction of the Week";
+        if (topicInput) topicInput.value = poll.topic || "";
+        if (questionInput) questionInput.value = poll.question || "";
+        if (contextInput) contextInput.value = poll.context || "";
+
+        var opts = poll.options || [];
+        if (opt1 && opts[0]) opt1.value = opts[0].text || "";
+        if (opt1Desc && opts[0]) opt1Desc.value = opts[0].description || "";
+        if (opt2 && opts[1]) opt2.value = opts[1].text || "";
+        if (opt2Desc && opts[1]) opt2Desc.value = opts[1].description || "";
+        if (opt3 && opts[2]) opt3.value = opts[2].text || "";
+        if (opt3Desc && opts[2]) opt3Desc.value = opts[2].description || "";
+        if (opt4 && opts[3]) opt4.value = opts[3].text || "";
+        if (opt4Desc && opts[3]) opt4Desc.value = opts[3].description || "";
+      } else {
+        if (title) title.innerHTML = '<i class="fa-solid fa-calendar-plus text-emerald-500"></i> Schedule New Weekly Poll';
+        if (modeInput) modeInput.value = "create";
+        if (idInput) idInput.value = "";
+        var form = document.getElementById("admin-poll-form");
+        if (form) form.reset();
+        if (badgeInput) badgeInput.value = "Prediction of the Week";
+      }
+
+      modal.classList.remove("hidden");
+      modal.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }
+
+    var modalCloseBtn = document.getElementById("admin-poll-modal-close");
+    var modalCancelBtn = document.getElementById("admin-poll-cancel-btn");
+    var pollModal = document.getElementById("admin-poll-modal");
+    if (modalCloseBtn && pollModal) {
+      modalCloseBtn.onclick = function () { pollModal.classList.add("hidden"); };
+    }
+    if (modalCancelBtn && pollModal) {
+      modalCancelBtn.onclick = function () { pollModal.classList.add("hidden"); };
+    }
+
+    var createPollBtn = document.getElementById("admin-create-poll-btn");
+    if (createPollBtn) {
+      createPollBtn.onclick = function () { openPollModal("create", null); };
+    }
+
+    var pollForm = document.getElementById("admin-poll-form");
+    if (pollForm) {
+      pollForm.onsubmit = function (e) {
+        e.preventDefault();
+        var mode = document.getElementById("poll-form-mode").value;
+        var existingId = document.getElementById("poll-form-id").value;
+        var weekVal = parseInt(document.getElementById("poll-form-week").value, 10);
+        var pollId = existingId || ("week-2026-" + weekVal);
+
+        var newPollObj = {
+          id: pollId,
+          weekNumber: weekVal,
+          year: 2026,
+          category: document.getElementById("poll-form-category").value.trim(),
+          badge: document.getElementById("poll-form-badge").value.trim(),
+          topic: document.getElementById("poll-form-topic").value.trim(),
+          question: document.getElementById("poll-form-question").value.trim(),
+          context: document.getElementById("poll-form-context").value.trim(),
+          options: [
+            { id: "opt-1", text: document.getElementById("poll-form-opt1").value.trim(), description: document.getElementById("poll-form-opt1-desc").value.trim(), votes: 0 },
+            { id: "opt-2", text: document.getElementById("poll-form-opt2").value.trim(), description: document.getElementById("poll-form-opt2-desc").value.trim(), votes: 0 },
+            { id: "opt-3", text: document.getElementById("poll-form-opt3").value.trim(), description: document.getElementById("poll-form-opt3-desc").value.trim(), votes: 0 },
+            { id: "opt-4", text: document.getElementById("poll-form-opt4").value.trim(), description: document.getElementById("poll-form-opt4-desc").value.trim(), votes: 0 }
+          ],
+          otherOption: { id: "other", text: "Other / Different perspective", description: "Hold an alternative architectural stance or distinct prediction", votes: 0 },
+          customTakes: []
+        };
+
+        loadPollsQueueData(function (polls) {
+          if (mode === "edit") {
+            var idx = polls.findIndex(function (p) { return p.id === pollId; });
+            if (idx >= 0) {
+              polls[idx] = newPollObj;
+            } else {
+              polls.push(newPollObj);
+            }
+          } else {
+            polls.push(newPollObj);
+          }
+
+          cachedPollsQueue = polls;
+          try {
+            localStorage.setItem("gcloudcafe_admin_polls_queue", JSON.stringify(polls));
+          } catch (err) {}
+
+          if (pollModal) pollModal.classList.add("hidden");
+          showPollsToast("Poll saved to queue successfully!");
+          renderWeeklyPollsAdminQueue();
+        });
+      };
+    }
+
+    var exportPollsBtn = document.getElementById("admin-export-polls-json-btn");
+    if (exportPollsBtn) {
+      exportPollsBtn.onclick = function (e) {
+        e.preventDefault();
+        loadPollsQueueData(function (polls) {
+          var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(polls, null, 2));
+          var downloadAnchor = document.createElement("a");
+          downloadAnchor.setAttribute("href", dataStr);
+          downloadAnchor.setAttribute("download", "weekly_polls.json");
+          document.body.appendChild(downloadAnchor);
+          downloadAnchor.click();
+          downloadAnchor.remove();
+          showPollsToast("Exported weekly_polls.json!");
+        });
+      };
+    }
+
+    var resetActiveVotesBtn = document.getElementById("admin-reset-all-poll-votes-btn");
+    if (resetActiveVotesBtn) {
+      resetActiveVotesBtn.onclick = function (e) {
+        e.preventDefault();
+        var activeId = getAdminActivePollId();
+        try {
+          localStorage.removeItem("gcloudcafe_weekly_poll_" + activeId);
+        } catch (err) {}
+        loadPollsQueueData(function (polls) {
+          var activeP = polls.find(function (p) { return p.id === activeId; });
+          if (activeP) {
+            (activeP.options || []).forEach(function (o) { o.votes = 0; });
+            if (activeP.otherOption) activeP.otherOption.votes = 0;
+            try {
+              localStorage.setItem("gcloudcafe_admin_polls_queue", JSON.stringify(polls));
+            } catch (err) {}
+          }
+          showPollsToast("Active poll votes reset to 0!");
+          renderWeeklyPollsAdminQueue();
+        });
+      };
+    }
+
+    var filterAllBtn = document.getElementById("filter-polls-all");
+    var filterActiveBtn = document.getElementById("filter-polls-active");
+    var filterUpcomingBtn = document.getElementById("filter-polls-upcoming");
+    var searchPollsInput = document.getElementById("admin-polls-search-input");
+
+    function setPollsFilter(status, btn) {
+      pollsFilterStatus = status;
+      [filterAllBtn, filterActiveBtn, filterUpcomingBtn].forEach(function (b) {
+        if (!b) return;
+        if (b === btn) {
+          b.className = "px-3 py-1 rounded-lg text-xs font-bold bg-primary text-white border-none cursor-pointer";
+        } else {
+          b.className = "px-3 py-1 rounded-lg text-xs font-semibold bg-theme-light dark:bg-darkmode-theme-light text-text/70 hover:text-primary border border-border/60 cursor-pointer";
+        }
+      });
+      renderWeeklyPollsAdminQueue();
+    }
+
+    if (filterAllBtn) filterAllBtn.onclick = function () { setPollsFilter("all", filterAllBtn); };
+    if (filterActiveBtn) filterActiveBtn.onclick = function () { setPollsFilter("active", filterActiveBtn); };
+    if (filterUpcomingBtn) filterUpcomingBtn.onclick = function () { setPollsFilter("upcoming", filterUpcomingBtn); };
+    if (searchPollsInput) {
+      searchPollsInput.addEventListener("input", function () { renderWeeklyPollsAdminQueue(); });
+    }
+
   }
-
-
-
 
   /* ── Weekly Architecture Opinion & Prediction Poll System ── */
   function initWeeklyOpinionPollSystem() {
@@ -8022,7 +8436,9 @@ function renderPulses(pulses) {
     var container = widget.querySelector("[data-weekly-poll-container]");
     if (!container) return;
 
-    var pollId = widget.getAttribute("data-weekly-poll-id") || "week-2026-39";
+    var adminOverrideId = null;
+    try { adminOverrideId = localStorage.getItem("gcloudcafe_admin_active_poll_id"); } catch (e) {}
+    var pollId = adminOverrideId || widget.getAttribute("data-weekly-poll-id") || "week-2026-39";
     var storageKey = "gcloudcafe_weekly_poll_" + pollId;
 
     // Load active poll data from embedded JSON or fallback
@@ -8043,7 +8459,7 @@ function renderPulses(pulses) {
         weekNumber: 39,
         year: 2026,
         category: "AI Infrastructure",
-        question: "By 2027, where will the majority of enterprise LLM & Agentic reasoning workloads run?",
+        question: "For multi-step agentic reasoning loops, what infrastructure architecture will dominate production by 2027?",
         context: "With open-weights reasoning models surging and token economics shifting rapidly, engineering teams are deciding between hyperscaler managed APIs and private GPU infrastructure.",
         options: [
           { id: "hyperscaler-serverless", text: "Hyperscaler Managed APIs (Vertex AI / Bedrock / Azure AI)", description: "Zero infra ops, managed governance, SLAs & native IAM federation", votes: 0 },
