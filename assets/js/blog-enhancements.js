@@ -3862,7 +3862,7 @@ function renderPulses(pulses) {
     ];
 
     function fetchPollData() {
-      fetch(config.url + "/rest/v1/cloud_provider_polls?select=*", {
+      fetch(config.url + "/rest/v1/cloud_provider_polls?provider=in.(GCP,AWS,AZURE,OTHERS)&select=*", {
         headers: {
           "apikey": config.anonKey,
           "Authorization": "Bearer " + config.anonKey,
@@ -3873,7 +3873,9 @@ function renderPulses(pulses) {
       .then(function (res) { return res.json(); })
       .then(function (data) {
         if (Array.isArray(data) && data.length > 0) {
-          pollData = data;
+          pollData = data.filter(function (r) {
+            return ["GCP", "AWS", "AZURE", "OTHERS"].indexOf(r.provider) !== -1;
+          });
         }
         renderPollUI();
       })
@@ -8587,7 +8589,13 @@ function renderPulses(pulses) {
       };
     }
 
+    var config = window.SUPABASE_CONFIG || {
+      url: "https://axiijcsxtiukloarbfor.supabase.co",
+      anonKey: "sb_publishable_cRcwg02R3nXTykDrxalL6w_-kc9Wesc"
+    };
+
     var tallyKey = "weekly_poll_tallies_" + pollData.id;
+    var providerPrefix = "wp_" + pollData.id + "_";
 
     // Retrieve and sync vote tallies so reloads reflect votes accurately
     function getStoredTallies() {
@@ -8630,6 +8638,109 @@ function renderPulses(pulses) {
       if (pollData.otherOption) {
         pollData.otherOption.votes = tallies[pollData.otherOption.id] || 0;
       }
+    }
+
+    // Fetch remote accumulated votes from Supabase across all sessions
+    function fetchRemoteWeeklyPollVotes() {
+      if (!config || !config.url || !config.anonKey) return;
+      var queryUrl = config.url + "/rest/v1/cloud_provider_polls?provider=like." + encodeURIComponent(providerPrefix) + "*&select=*";
+      fetch(queryUrl, {
+        headers: {
+          "apikey": config.anonKey,
+          "Authorization": "Bearer " + config.anonKey,
+          "Cache-Control": "no-cache",
+          "Pragma": "no-cache"
+        }
+      })
+      .then(function (res) { return res.json(); })
+      .then(function (rows) {
+        if (Array.isArray(rows) && rows.length > 0) {
+          var remoteTallies = {};
+          rows.forEach(function (r) {
+            if (r.provider && r.provider.indexOf(providerPrefix) === 0) {
+              var optId = r.provider.slice(providerPrefix.length);
+              remoteTallies[optId] = r.votes || 0;
+            }
+          });
+
+          var localTallies = getStoredTallies();
+          var mergedTallies = {};
+          pollData.options.forEach(function (opt) {
+            mergedTallies[opt.id] = Math.max(localTallies[opt.id] || 0, remoteTallies[opt.id] || 0);
+          });
+          if (pollData.otherOption) {
+            mergedTallies[pollData.otherOption.id] = Math.max(localTallies[pollData.otherOption.id] || 0, remoteTallies[pollData.otherOption.id] || 0);
+          }
+          saveTallies(mergedTallies);
+
+          var userVote = getSavedUserVote();
+          applyTallies(userVote);
+          if (userVote) {
+            renderResultsState(userVote);
+          }
+        }
+      })
+      .catch(function (err) {
+        console.warn("Weekly poll remote sync fetch warning:", err);
+      });
+    }
+
+    // Sync individual vote atomically to Supabase for global cross-session accumulation
+    function syncVoteToSupabase(optionId) {
+      if (!config || !config.url || !config.anonKey) return;
+      var targetProvider = providerPrefix + optionId;
+
+      fetch(config.url + "/rest/v1/cloud_provider_polls?provider=eq." + encodeURIComponent(targetProvider) + "&select=*", {
+        headers: {
+          "apikey": config.anonKey,
+          "Authorization": "Bearer " + config.anonKey,
+          "Cache-Control": "no-cache"
+        }
+      })
+      .then(function (res) { return res.json(); })
+      .then(function (rows) {
+        if (Array.isArray(rows) && rows.length > 0) {
+          var current = rows[0];
+          var newVotes = (current.votes || 0) + 1;
+          var newToday = (current.today_votes || 0) + 1;
+          return fetch(config.url + "/rest/v1/cloud_provider_polls?provider=eq." + encodeURIComponent(targetProvider), {
+            method: "PATCH",
+            headers: {
+              "apikey": config.anonKey,
+              "Authorization": "Bearer " + config.anonKey,
+              "Content-Type": "application/json",
+              "Prefer": "return=representation"
+            },
+            body: JSON.stringify({
+              votes: newVotes,
+              today_votes: newToday,
+              updated_at: new Date().toISOString()
+            })
+          });
+        } else {
+          return fetch(config.url + "/rest/v1/cloud_provider_polls", {
+            method: "POST",
+            headers: {
+              "apikey": config.anonKey,
+              "Authorization": "Bearer " + config.anonKey,
+              "Content-Type": "application/json",
+              "Prefer": "return=representation"
+            },
+            body: JSON.stringify({
+              provider: targetProvider,
+              votes: 1,
+              today_votes: 1,
+              updated_at: new Date().toISOString()
+            })
+          });
+        }
+      })
+      .then(function () {
+        setTimeout(fetchRemoteWeeklyPollVotes, 300);
+      })
+      .catch(function (err) {
+        console.warn("Weekly poll vote sync error:", err);
+      });
     }
 
     // Check user vote in localStorage
@@ -8719,6 +8830,9 @@ function renderPulses(pulses) {
       } catch (e) {}
 
       renderResultsState(voteRecord);
+
+      // Sync vote to Supabase across all sessions
+      syncVoteToSupabase(optionId);
     }
 
     // Render Results Mode with animated progress bars
@@ -8736,9 +8850,6 @@ function renderPulses(pulses) {
         '<span class="flex items-center gap-1.5 font-bold text-slate-800 dark:text-slate-200">' +
           '<i class="fa-solid fa-chart-simple text-red-500 text-[11px]"></i> Results' +
         '</span>' +
-        '<span class="text-[11px] font-semibold text-slate-400 dark:text-slate-500">' +
-          totalVotes + ' ' + (totalVotes === 1 ? 'vote recorded' : 'votes recorded') +
-        '</span>' +
       '</div>';
       allOptions.forEach(function (opt) {
         var votes = opt.votes || 0;
@@ -8749,9 +8860,9 @@ function renderPulses(pulses) {
           ? "border-red-500/70 bg-red-500/[0.04] dark:bg-red-500/[0.06] ring-1 ring-red-500/30"
           : "border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0c1220]";
 
-        var barGradient = isUserChoice
-          ? "bg-gradient-to-r from-red-600 to-amber-500"
-          : "bg-slate-300 dark:bg-slate-700";
+        var barBg = isUserChoice
+          ? "linear-gradient(90deg, #ef4444, #f59e0b)"
+          : (votes > 0 ? "linear-gradient(90deg, #64748b, #475569)" : "transparent");
 
         resultsHtml += '<div class="poll-result-card p-3.5 sm:p-4 rounded-xl border ' + cardBorderClass + ' transition-all">' +
           '<div class="flex items-center justify-between gap-2 mb-1.5">' +
@@ -8764,25 +8875,24 @@ function renderPulses(pulses) {
             '</div>' +
             '<span class="text-xs sm:text-sm font-mono font-black text-slate-900 dark:text-white shrink-0">' + percent + '%</span>' +
           '</div>' +
-          '<div class="w-full bg-slate-100 dark:bg-slate-800/80 rounded-full h-2 my-2 overflow-hidden">' +
-            '<div class="poll-progress-bar ' + barGradient + ' h-full rounded-full transition-all duration-700 ease-out" style="width: 0%;" data-target-width="' + percent + '%"></div>' +
+          '<div class="w-full rounded-full my-2.5 overflow-hidden bg-slate-100 dark:bg-slate-800" style="height: 8px;">' +
+            '<div class="poll-progress-bar rounded-full" style="width: 0%; height: 100%; background: ' + barBg + '; transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);" data-target-width="' + percent + '%"></div>' +
           '</div>' +
-          '<div class="flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400">' +
-            '<span class="truncate pr-2">' + escapeHtml(opt.description || '') + '</span>' +
-            '<span class="font-mono shrink-0">' + votes + (votes === 1 ? ' vote' : ' votes') + '</span>' +
-          '</div>' +
+          (opt.description ? '<div class="text-[11px] text-slate-500 dark:text-slate-400 leading-normal truncate">' + escapeHtml(opt.description) + '</div>' : '') +
         '</div>';
       });
 
       container.innerHTML = resultsHtml;
 
-      // Animate progress bars smoothly after paint
+      // Force layout reflow so animation from 0% to target-width triggers smoothly for all options
       setTimeout(function () {
         container.querySelectorAll(".poll-progress-bar").forEach(function (bar) {
           var target = bar.getAttribute("data-target-width");
-          if (target) bar.style.width = target;
+          if (target) {
+            bar.style.width = target;
+          }
         });
-      }, 50);
+      }, 30);
     }
 
     // Live countdown to next weekly question (Resets Sunday 00:00 UTC)
@@ -8835,6 +8945,9 @@ function renderPulses(pulses) {
       applyTallies(null);
       renderVotingState();
     }
+
+    fetchRemoteWeeklyPollVotes();
+    setInterval(fetchRemoteWeeklyPollVotes, 15000);
 
     startNextQuestionCountdown();
   }
