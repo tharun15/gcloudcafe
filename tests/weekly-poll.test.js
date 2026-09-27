@@ -62,6 +62,26 @@ function changePrediction(pollId, storage) {
   return { success: true };
 }
 
+function getNextWeeklyPollCountdown(now) {
+  var target = new Date(now.getTime());
+  var day = now.getUTCDay();
+  var daysUntilSunday = (7 - day) % 7;
+  if (daysUntilSunday === 0 && (now.getUTCHours() > 0 || now.getUTCMinutes() > 0 || now.getUTCSeconds() > 0)) {
+    daysUntilSunday = 7;
+  }
+  target.setUTCDate(now.getUTCDate() + daysUntilSunday);
+  target.setUTCHours(0, 0, 0, 0);
+
+  var diff = target.getTime() - now.getTime();
+  if (diff <= 0) return "Dropping soon!";
+
+  var d = Math.floor(diff / (1000 * 60 * 60 * 24));
+  var h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  var m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+  var pad = function (n) { return n < 10 ? "0" + n : n; };
+  return d > 0 ? (d + "d " + pad(h) + "h " + pad(m) + "m") : (pad(h) + "h " + pad(m) + "m");
+}
+
 describe('Streamlined Weekly Architecture Prediction Engine', () => {
   let mockStorage;
   let freshPoll;
@@ -79,13 +99,13 @@ describe('Streamlined Weekly Architecture Prediction Engine', () => {
       id: "week-2026-39",
       weekNumber: 39,
       year: 2026,
-      category: "AI Infrastructure",
-      question: "By 2027, where will enterprise LLM workloads run?",
+      category: "AI & Developer Workflows",
+      question: "By 2027, what will software engineers spend most of their time doing?",
       options: [
-        { id: "opt-1", text: "Hyperscaler APIs", votes: 0 },
-        { id: "opt-2", text: "Self-hosted K8s", votes: 0 },
-        { id: "opt-3", text: "Private Bare Metal", votes: 0 },
-        { id: "opt-4", text: "Edge SLMs", votes: 0 }
+        { id: "opt-1", text: "Reviewing AI code", votes: 0 },
+        { id: "opt-2", text: "System design & architecture", votes: 0 },
+        { id: "opt-3", text: "Writing code by hand", votes: 0 },
+        { id: "opt-4", text: "Debugging production fires", votes: 0 }
       ],
       otherOption: {
         id: "other",
@@ -144,5 +164,17 @@ describe('Streamlined Weekly Architecture Prediction Engine', () => {
     expect(secondRes.success).toBe(true);
     const stored = JSON.parse(mockStorage.getItem('gcloudcafe_weekly_poll_week-2026-39'));
     expect(stored.optionId).toBe('other');
+  });
+
+  it('calculates the countdown timer to next Sunday 00:00 UTC accurately', () => {
+    // Test from a Wednesday (e.g., 2026-09-23T12:00:00Z -> next Sunday is 2026-09-27T00:00:00Z: exactly 3 days 12 hours)
+    const testDate = new Date('2026-09-23T12:00:00Z');
+    const countdown = getNextWeeklyPollCountdown(testDate);
+    expect(countdown).toBe('3d 12h 00m');
+
+    // Test on Sunday evening (2026-09-27T18:00:00Z -> next Sunday is 2026-10-04T00:00:00Z: 6 days 6 hours)
+    const sundayDate = new Date('2026-09-27T18:00:00Z');
+    const sundayCountdown = getNextWeeklyPollCountdown(sundayDate);
+    expect(sundayCountdown).toBe('6d 06h 00m');
   });
 });

@@ -8085,6 +8085,27 @@ function renderPulses(pulses) {
 
         if (queueTotalEl) queueTotalEl.textContent = polls.length;
 
+        var adminTimerEl = document.getElementById("admin-polls-countdown");
+        if (adminTimerEl) {
+          var now = new Date();
+          var targetDate = new Date(now.getTime());
+          var day = now.getUTCDay();
+          var daysUntilSunday = (7 - day) % 7;
+          if (daysUntilSunday === 0 && (now.getUTCHours() > 0 || now.getUTCMinutes() > 0 || now.getUTCSeconds() > 0)) {
+            daysUntilSunday = 7;
+          }
+          targetDate.setUTCDate(now.getUTCDate() + daysUntilSunday);
+          targetDate.setUTCHours(0, 0, 0, 0);
+          var diff = targetDate.getTime() - now.getTime();
+          if (diff > 0) {
+            var d = Math.floor(diff / (1000 * 60 * 60 * 24));
+            var h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            var m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            var pad = function(n) { return n < 10 ? "0" + n : n; };
+            adminTimerEl.textContent = "Next in: " + (d > 0 ? (d + "d " + pad(h) + "h " + pad(m) + "m") : (pad(h) + "h " + pad(m) + "m"));
+          }
+        }
+
         if (activePoll) {
           if (liveTopicEl) liveTopicEl.textContent = "Week " + (activePoll.weekNumber || activePoll.week || 39) + " · " + (activePoll.topic || activePoll.category);
           if (liveQuestionEl) liveQuestionEl.textContent = activePoll.question;
@@ -8613,9 +8634,10 @@ function renderPulses(pulses) {
 
       // Bottom Results Summary Bar
       resultsHtml += '<div class="mt-3 pt-2 flex flex-wrap items-center justify-between gap-2 text-xs text-slate-500 dark:text-slate-400">' +
-        '<div class="flex items-center gap-1.5 font-mono">' +
-          '<i class="fa-solid fa-chart-pie text-slate-400"></i>' +
-          '<span><strong>' + totalVotes + '</strong> ' + (totalVotes === 1 ? 'prediction recorded' : 'predictions recorded') + ' this week</span>' +
+        '<div class="flex flex-wrap items-center gap-2 sm:gap-3 font-mono text-[11px]">' +
+          '<span class="flex items-center gap-1.5"><i class="fa-solid fa-chart-pie text-slate-400"></i><span><strong>' + totalVotes + '</strong> ' + (totalVotes === 1 ? 'prediction' : 'predictions') + ' recorded</span></span>' +
+          '<span class="text-slate-300 dark:text-slate-700 hidden sm:inline">•</span>' +
+          '<span class="inline-flex items-center gap-1 text-amber-600 dark:text-amber-400 font-semibold"><i class="fa-regular fa-clock text-[10px]"></i> Next question in: <strong id="weekly-poll-footer-timer">--</strong></span>' +
         '</div>' +
         '<div class="flex items-center gap-3">' +
           '<button type="button" data-weekly-change-vote class="font-mono text-[11px] text-slate-500 dark:text-slate-400 hover:text-red-600 dark:hover:text-red-400 bg-transparent border-none cursor-pointer flex items-center gap-1"><i class="fa-solid fa-rotate-left text-[10px]"></i> Change prediction</button>' +
@@ -8645,6 +8667,47 @@ function renderPulses(pulses) {
       }
     }
 
+    // Live countdown to next weekly question (Resets Sunday 00:00 UTC)
+    function startNextQuestionCountdown() {
+      function updateCountdown() {
+        var now = new Date();
+        var target = new Date(now.getTime());
+        var day = now.getUTCDay();
+        var daysUntilSunday = (7 - day) % 7;
+        if (daysUntilSunday === 0 && (now.getUTCHours() > 0 || now.getUTCMinutes() > 0 || now.getUTCSeconds() > 0)) {
+          daysUntilSunday = 7;
+        }
+        target.setUTCDate(now.getUTCDate() + daysUntilSunday);
+        target.setUTCHours(0, 0, 0, 0);
+
+        var diff = target.getTime() - now.getTime();
+        var text = "";
+        if (diff <= 0) {
+          text = "Dropping soon!";
+        } else {
+          var d = Math.floor(diff / (1000 * 60 * 60 * 24));
+          var h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+          var m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+          var s = Math.floor((diff % (1000 * 60)) / 1000);
+
+          var pad = function (n) { return n < 10 ? "0" + n : n; };
+          text = d > 0 ? (d + "d " + pad(h) + "h " + pad(m) + "m") : (pad(h) + "h " + pad(m) + "m " + pad(s) + "s");
+        }
+
+        var headerEl = document.getElementById("weekly-poll-countdown-timer");
+        if (headerEl) headerEl.textContent = text;
+
+        var footerEl = document.getElementById("weekly-poll-footer-timer");
+        if (footerEl) footerEl.textContent = text;
+
+        var adminEl = document.getElementById("admin-polls-countdown");
+        if (adminEl) adminEl.textContent = "Next in: " + text;
+      }
+
+      updateCountdown();
+      setInterval(updateCountdown, 1000);
+    }
+
     // Initialize: check if user already voted. He CANNOT view results before answering!
     var existingVote = getSavedUserVote();
     if (existingVote) {
@@ -8652,6 +8715,8 @@ function renderPulses(pulses) {
     } else {
       renderVotingState();
     }
+
+    startNextQuestionCountdown();
   }
 
 

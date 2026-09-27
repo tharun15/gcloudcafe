@@ -503,8 +503,9 @@ create policy "Allow anon update" on public.author_proposals for update using (t
                 Covers Week 35 through Week 50 (Dec 2026). Hands-free automatic weekly rotation based on ISO calendar.
               </p>
             </div>
-            <div class="pt-3 border-t border-border/40 dark:border-darkmode-border/40 text-[11px] text-text/60 font-mono">
-              <i class="fa-solid fa-calendar-check text-emerald-500 mr-1"></i> Resets every Sunday at 00:00 UTC
+            <div class="flex items-center justify-between pt-3 border-t border-border/40 dark:border-darkmode-border/40 text-[11px] text-text/60 font-mono">
+              <span><i class="fa-solid fa-calendar-check text-emerald-500 mr-1"></i> Resets every Sunday 00:00 UTC</span>
+              <span id="admin-polls-countdown" class="text-amber-600 dark:text-amber-400 font-bold bg-amber-500/10 px-2 py-0.5 rounded-full border border-amber-500/20">Next in: --</span>
             </div>
           </div>
 
