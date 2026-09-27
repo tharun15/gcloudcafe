@@ -8639,8 +8639,8 @@ function renderPulses(pulses) {
           '<span class="text-slate-300 dark:text-slate-700 hidden sm:inline">•</span>' +
           '<span class="inline-flex items-center gap-1 text-amber-600 dark:text-amber-400 font-semibold"><i class="fa-regular fa-clock text-[10px]"></i> Next question in: <strong id="weekly-poll-footer-timer">--</strong></span>' +
         '</div>' +
-        '<div class="flex items-center gap-3">' +
-          '<button type="button" data-weekly-change-vote class="font-mono text-[11px] text-slate-500 dark:text-slate-400 hover:text-red-600 dark:hover:text-red-400 bg-transparent border-none cursor-pointer flex items-center gap-1"><i class="fa-solid fa-rotate-left text-[10px]"></i> Change prediction</button>' +
+        '<div class="flex items-center gap-1.5 text-[11px] font-mono text-emerald-600 dark:text-emerald-400 font-semibold">' +
+          '<i class="fa-solid fa-circle-check text-[10px]"></i> Prediction locked' +
         '</div>' +
       '</div>';
 
@@ -8653,18 +8653,6 @@ function renderPulses(pulses) {
           if (target) bar.style.width = target;
         });
       }, 50);
-
-      // Handle Change Vote Button
-      var changeVoteBtn = container.querySelector("[data-weekly-change-vote]");
-      if (changeVoteBtn) {
-        changeVoteBtn.onclick = function (e) {
-          e.preventDefault();
-          try {
-            localStorage.removeItem(storageKey);
-          } catch (e) {}
-          renderVotingState();
-        };
-      }
     }
 
     // Live countdown to next weekly question (Resets Sunday 00:00 UTC)

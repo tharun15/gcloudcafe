@@ -56,11 +56,7 @@ function recordPredictionVote(poll, optionId, storage) {
   };
 }
 
-function changePrediction(pollId, storage) {
-  var storageKey = "gcloudcafe_weekly_poll_" + pollId;
-  storage.removeItem(storageKey);
-  return { success: true };
-}
+// Vote is locked permanently once cast per weekly debate
 
 function getNextWeeklyPollCountdown(now) {
   var target = new Date(now.getTime());
@@ -152,18 +148,12 @@ describe('Streamlined Weekly Architecture Prediction Engine', () => {
     expect(stored.optionId).toBe('other');
   });
 
-  it('allows user to change their prediction cleanly and pick another option', () => {
-    recordPredictionVote(freshPoll, 'opt-1', mockStorage);
-    expect(mockStorage.getItem('gcloudcafe_weekly_poll_week-2026-39')).not.toBeNull();
-
-    changePrediction('week-2026-39', mockStorage);
-    expect(mockStorage.getItem('gcloudcafe_weekly_poll_week-2026-39')).toBeNull();
-
-    // Now vote for "other"
-    const secondRes = recordPredictionVote(freshPoll, 'other', mockStorage);
-    expect(secondRes.success).toBe(true);
+  it('locks prediction vote permanently once cast without change option', () => {
+    const res = recordPredictionVote(freshPoll, 'opt-1', mockStorage);
+    expect(res.success).toBe(true);
     const stored = JSON.parse(mockStorage.getItem('gcloudcafe_weekly_poll_week-2026-39'));
-    expect(stored.optionId).toBe('other');
+    expect(stored.optionId).toBe('opt-1');
+    expect(stored.timestamp).toBeGreaterThan(0);
   });
 
   it('calculates the countdown timer to next Sunday 00:00 UTC accurately', () => {
