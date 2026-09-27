@@ -175,41 +175,41 @@
     "id": "week-2026-39",
     "weekNumber": 39,
     "year": 2026,
-    "category": "AI Infrastructure & Architecture",
+    "category": "AI & Developer Workflows",
     "badge": "Prediction of the Week",
-    "topic": "Agentic Reasoning Infrastructure",
-    "question": "For multi-step agentic reasoning loops, what infrastructure architecture will dominate production by 2027?",
-    "context": "Recursive agent loops amplify token consumption and round-trip latency, challenging standard stateless API architectures.",
+    "topic": "Future of Software Engineering",
+    "question": "By 2027, what will software engineers spend most of their time doing?",
+    "context": "As AI tools evolve from simple code autocomplete to autonomous agents, how will everyday engineering work transform?",
     "options": [
       {
-        "id": "frontier-managed-apis",
-        "text": "Frontier Managed Reasoning APIs (Claude Thinking / OpenAI o-series / Gemini 2.5 Flash)",
-        "description": "Maximum reasoning depth with zero cluster management, managed tool execution & enterprise SLAs",
+        "id": "reviewing-testing-ai-code",
+        "text": "Reviewing & testing AI-generated code",
+        "description": "Reading AI pull requests, validating edge cases, and catching subtle hallucinations",
         "votes": 0
       },
       {
-        "id": "hybrid-tiered-routing",
-        "text": "Hierarchical Hybrid Routing (Small local/self-hosted SLMs + Cloud Fallback)",
-        "description": "Sub-50ms local planning loops with cloud escalation only for complex synthesis",
+        "id": "system-design-architecture",
+        "text": "System design & architecture",
+        "description": "Designing data schemas, APIs, and writing precise specifications for AI agents to build",
         "votes": 0
       },
       {
-        "id": "self-hosted-reasoning-clusters",
-        "text": "Self-Hosted Open-Weights Reasoning Clusters (DeepSeek-R1 / Qwen on private vLLM)",
-        "description": "Ultra-low TTFT, complete data privacy, and zero per-token loop penalty",
+        "id": "writing-core-code-manually",
+        "text": "Writing core code by hand",
+        "description": "Crafting mission-critical business logic where human accuracy cannot be compromised",
         "votes": 0
       },
       {
-        "id": "edge-client-execution",
-        "text": "Client & Edge-First Execution (NPU / Workstation + Async Cloud Tools)",
-        "description": "Zero network hop for reasoning scratchpads with decentralized execution",
+        "id": "debugging-production-fires",
+        "text": "Debugging production fires & outages",
+        "description": "Tracking down complex incidents, performance bottlenecks, and multi-service edge cases",
         "votes": 0
       }
     ],
     "otherOption": {
       "id": "other",
       "text": "Other / Different perspective",
-      "description": "Hold an alternative architectural stance or distinct prediction",
+      "description": "Hold a different prediction for how developer workflows will evolve",
       "votes": 0
     },
     "customTakes": []
@@ -226,13 +226,13 @@
     "options": [
       {
         "id": "gateway-universal",
-        "text": "Yes \u2014 Gateway API will become the universal enterprise standard, with Ingress relegated to legacy",
+        "text": "Yes — Gateway API will become the universal enterprise standard, with Ingress relegated to legacy",
         "description": "Role-oriented CRDs and native cross-namespace routing solve real platform bottlenecks",
         "votes": 0
       },
       {
         "id": "ingress-persists",
-        "text": "No \u2014 Ingress v1 is good enough for 80% of HTTP microservices and will persist indefinitely",
+        "text": "No — Ingress v1 is good enough for 80% of HTTP microservices and will persist indefinitely",
         "description": "Simplicity, ubiquitous tooling, and minimal CRD overhead keep Ingress alive",
         "votes": 0
       },
@@ -355,25 +355,25 @@
     "options": [
       {
         "id": "ebpf-wins",
-        "text": "Yes \u2014 Node-level eBPF and ztunnel drastically cut resource costs and eliminate sidecar lifecycle friction",
+        "text": "Yes — Node-level eBPF and ztunnel drastically cut resource costs and eliminate sidecar lifecycle friction",
         "description": "No pod injection, instant pod startup, and 60%+ lower cluster RAM overhead",
         "votes": 0
       },
       {
         "id": "sidecar-resilience",
-        "text": "No \u2014 Dedicated per-pod sidecars provide strictly isolated fault domains and finer-grained mTLS boundaries",
+        "text": "No — Dedicated per-pod sidecars provide strictly isolated fault domains and finer-grained mTLS boundaries",
         "description": "Hard pod isolation prevents cross-tenant blast radius on shared worker nodes",
         "votes": 0
       },
       {
         "id": "hybrid-approach",
-        "text": "Hybrid \u2014 eBPF for L4 routing/observability, and selective L7 sidecars only where complex policies require it",
+        "text": "Hybrid — eBPF for L4 routing/observability, and selective L7 sidecars only where complex policies require it",
         "description": "Best of both worlds: zero-overhead L4 security with optional L7 waypoint proxies",
         "votes": 0
       },
       {
         "id": "no-mesh",
-        "text": "Neither \u2014 Standard cloud ingress and API gateways are sufficient; service mesh is over-engineering for most",
+        "text": "Neither — Standard cloud ingress and API gateways are sufficient; service mesh is over-engineering for most",
         "description": "Most teams do not have the operational scale to justify any service mesh flavor",
         "votes": 0
       }
@@ -527,13 +527,13 @@
     "options": [
       {
         "id": "s3-streaming-wins",
-        "text": "Yes \u2014 S3-native streaming eliminates Kafka rebalancing nightmares and slashes cross-AZ networking costs",
+        "text": "Yes — S3-native streaming eliminates Kafka rebalancing nightmares and slashes cross-AZ networking costs",
         "description": "Stateless brokers that write directly to object storage reduce TCO by up to 70%",
         "votes": 0
       },
       {
         "id": "kafka-kraft-standard",
-        "text": "No \u2014 Classic Apache Kafka with KRaft remains the battle-tested gold standard for zero-data-loss durability",
+        "text": "No — Classic Apache Kafka with KRaft remains the battle-tested gold standard for zero-data-loss durability",
         "description": "Mature enterprise ecosystem, deep connector library, and proven multi-petabyte scale",
         "votes": 0
       },
@@ -656,19 +656,19 @@
     "options": [
       {
         "id": "otel-success",
-        "text": "Yes \u2014 OTel Collector allowed us to dual-write or switch vendors (e.g. Datadog to Grafana) with zero app code changes",
+        "text": "Yes — OTel Collector allowed us to dual-write or switch vendors (e.g. Datadog to Grafana) with zero app code changes",
         "description": "Standardized instrumentation made backend APM migrations an infrastructure configuration task",
         "votes": 0
       },
       {
         "id": "partial-otel",
-        "text": "Partially \u2014 Traces and metrics are standard OTel, but logs and APM profiling still rely on proprietary vendor agents",
+        "text": "Partially — Traces and metrics are standard OTel, but logs and APM profiling still rely on proprietary vendor agents",
         "description": "Advanced profiling, database query drill-downs, and session replay remain vendor-specific",
         "votes": 0
       },
       {
         "id": "otel-complexity",
-        "text": "No \u2014 The operational complexity of running and scaling OTel Collectors offset the vendor savings",
+        "text": "No — The operational complexity of running and scaling OTel Collectors offset the vendor savings",
         "description": "Managing memory limits, tail sampling pipelines, and buffer drops created new operational debt",
         "votes": 0
       },

@@ -8458,16 +8458,17 @@ function renderPulses(pulses) {
         id: pollId,
         weekNumber: 39,
         year: 2026,
-        category: "AI Infrastructure",
-        question: "For multi-step agentic reasoning loops, what infrastructure architecture will dominate production by 2027?",
-        context: "With open-weights reasoning models surging and token economics shifting rapidly, engineering teams are deciding between hyperscaler managed APIs and private GPU infrastructure.",
+        category: "AI & Developer Workflows",
+        topic: "Future of Software Engineering",
+        question: "By 2027, what will software engineers spend most of their time doing?",
+        context: "As AI tools evolve from simple code autocomplete to autonomous agents, how will everyday engineering work transform?",
         options: [
-          { id: "hyperscaler-serverless", text: "Hyperscaler Managed APIs (Vertex AI / Bedrock / Azure AI)", description: "Zero infra ops, managed governance, SLAs & native IAM federation", votes: 0 },
-          { id: "self-hosted-k8s", text: "Self-hosted Kubernetes on Cloud GPUs (vLLM / Triton / Ray)", description: "Granular cost control at scale + freedom from proprietary API lock-in", votes: 0 },
-          { id: "on-prem-baremetal", text: "Private On-Prem Bare Metal & Colocated Sovereign GPUs", description: "Strict data residency, zero cloud egress fees, 24/7 fixed amortization", votes: 0 },
-          { id: "edge-hybrid", text: "Edge & Local SLMs (NPUs / Apple Silicon) + Cloud Fallback", description: "Sub-10ms latency, offline resilience & tiered hierarchical routing", votes: 0 }
+          { id: "reviewing-testing-ai-code", text: "Reviewing & testing AI-generated code", description: "Reading AI pull requests, validating edge cases, and catching subtle hallucinations", votes: 0 },
+          { id: "system-design-architecture", text: "System design & architecture", description: "Designing data schemas, APIs, and writing precise specifications for AI agents to build", votes: 0 },
+          { id: "writing-core-code-manually", text: "Writing core code by hand", description: "Crafting mission-critical business logic where human accuracy cannot be compromised", votes: 0 },
+          { id: "debugging-production-fires", text: "Debugging production fires & outages", description: "Tracking down complex incidents, performance bottlenecks, and multi-service edge cases", votes: 0 }
         ],
-        otherOption: { id: "other", text: "Other / Different perspective", description: "Hold an alternative architectural stance or distinct prediction", votes: 0 }
+        otherOption: { id: "other", text: "Other / Different perspective", description: "Hold a different prediction for how developer workflows will evolve", votes: 0 }
       };
     }
 
