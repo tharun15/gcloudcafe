@@ -8860,9 +8860,9 @@ function renderPulses(pulses) {
           ? "border-red-500/70 bg-red-500/[0.04] dark:bg-red-500/[0.06] ring-1 ring-red-500/30"
           : "border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0c1220]";
 
-        var barGradient = isUserChoice
-          ? "bg-gradient-to-r from-red-600 to-amber-500"
-          : (votes > 0 ? "bg-slate-500 dark:bg-slate-400" : "bg-transparent");
+        var barBg = isUserChoice
+          ? "linear-gradient(90deg, #ef4444, #f59e0b)"
+          : (votes > 0 ? "linear-gradient(90deg, #64748b, #475569)" : "transparent");
 
         resultsHtml += '<div class="poll-result-card p-3.5 sm:p-4 rounded-xl border ' + cardBorderClass + ' transition-all">' +
           '<div class="flex items-center justify-between gap-2 mb-1.5">' +
@@ -8875,8 +8875,8 @@ function renderPulses(pulses) {
             '</div>' +
             '<span class="text-xs sm:text-sm font-mono font-black text-slate-900 dark:text-white shrink-0">' + percent + '%</span>' +
           '</div>' +
-          '<div class="w-full bg-slate-100 dark:bg-slate-800/80 rounded-full h-2.5 my-2 overflow-hidden">' +
-            '<div class="poll-progress-bar ' + barGradient + ' h-full rounded-full transition-all duration-700 ease-out" style="width: 0%;" data-target-width="' + percent + '%"></div>' +
+          '<div class="w-full rounded-full my-2.5 overflow-hidden bg-slate-100 dark:bg-slate-800" style="height: 8px;">' +
+            '<div class="poll-progress-bar rounded-full" style="width: 0%; height: 100%; background: ' + barBg + '; transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);" data-target-width="' + percent + '%"></div>' +
           '</div>' +
           (opt.description ? '<div class="text-[11px] text-slate-500 dark:text-slate-400 leading-normal truncate">' + escapeHtml(opt.description) + '</div>' : '') +
         '</div>';
@@ -8884,17 +8884,15 @@ function renderPulses(pulses) {
 
       container.innerHTML = resultsHtml;
 
-      // Force layout reflow so animation from 0% to target-width triggers reliably on all options
-      requestAnimationFrame(function () {
-        requestAnimationFrame(function () {
-          container.querySelectorAll(".poll-progress-bar").forEach(function (bar) {
-            var target = bar.getAttribute("data-target-width");
-            if (target) {
-              bar.style.width = target;
-            }
-          });
+      // Force layout reflow so animation from 0% to target-width triggers smoothly for all options
+      setTimeout(function () {
+        container.querySelectorAll(".poll-progress-bar").forEach(function (bar) {
+          var target = bar.getAttribute("data-target-width");
+          if (target) {
+            bar.style.width = target;
+          }
         });
-      });
+      }, 30);
     }
 
     // Live countdown to next weekly question (Resets Sunday 00:00 UTC)
