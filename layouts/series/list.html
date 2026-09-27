@@ -253,14 +253,14 @@
                 </details>
               </div>
 
-              {{/* Footer Link */}}
-              <div class="pt-3 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between">
-                <a href="{{ $part1.RelPermalink }}" class="font-mono text-xs font-bold text-red-600 dark:text-red-500 hover:underline flex items-center gap-1.5 no-underline">
-                  <span>Start Guide</span>
-                  <i class="fa-solid fa-arrow-right text-[10px]"></i>
+              {{/* Footer CTA Button */}}
+              <div class="pt-3 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between gap-3">
+                <a href="{{ $part1.RelPermalink }}" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white font-mono text-xs font-bold transition-colors no-underline shadow-xs cursor-pointer">
+                  <span>Start Part 1</span>
+                  <i class="fa-solid fa-play text-[9px]"></i>
                 </a>
-                <span class="font-mono text-[11px] text-slate-500 dark:text-slate-400">
-                  {{ $part1.Date.Format "Jan 2006" }}
+                <span class="font-mono text-xs text-slate-500 dark:text-slate-400">
+                  {{ $totalParts }} Parts · ~{{ $totalMin }}m
                 </span>
               </div>
             </div>

@@ -6,6 +6,8 @@ Allow: /
 Disallow: /pulse-admin/
 Disallow: /admin/
 Disallow: /scratch/
+Disallow: /admin-articles/
+Disallow: /community-admin/
 
 # Explicit Permission for AI Agents & LLM Web Crawlers
 User-agent: GPTBot

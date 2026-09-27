@@ -21,9 +21,10 @@ defaultContentLanguage = 'en'
 defaultContentLanguageInSubdir = false
 
 ########################### Services #############################
-[services]
-[services.googleAnalytics]
-ID = 'G-N8R2LLDRSM'
+# Google Analytics is loaded via params.toml custom_script with performance lazy loading and production gating
+#[services]
+#[services.googleAnalytics]
+#ID = 'G-N8R2LLDRSM'
 
 ########################## Permalinks ############################
 [permalinks.page]

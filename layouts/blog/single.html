@@ -19,11 +19,18 @@
           </a>
           <span class="text-slate-300 dark:text-slate-700">/</span>
           <a href="{{ `blog/` | relLangURL }}" class="text-slate-700 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-500 no-underline transition-colors">Articles</a>
-          {{ if .Params.categories }}
+          {{ with .Params.series }}
             <span class="text-slate-300 dark:text-slate-700">/</span>
-            <a href="{{ `categories/` | relLangURL }}{{ index .Params.categories 0 | urlize | lower }}/" class="text-slate-700 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-500 no-underline transition-colors" aria-current="page">
-              {{ index .Params.categories 0 | humanize }}
-            </a>
+            <a href="{{ `series/` | relLangURL }}" class="text-slate-700 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-500 no-underline transition-colors">Series</a>
+            <span class="text-slate-300 dark:text-slate-700">/</span>
+            <span class="text-slate-900 dark:text-white font-semibold truncate max-w-xs">{{ . }}</span>
+          {{ else }}
+            {{ if .Params.categories }}
+              <span class="text-slate-300 dark:text-slate-700">/</span>
+              <a href="{{ `categories/` | relLangURL }}{{ index .Params.categories 0 | urlize | lower }}/" class="text-slate-700 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-500 no-underline transition-colors" aria-current="page">
+                {{ index .Params.categories 0 | humanize }}
+              </a>
+            {{ end }}
           {{ end }}
         </div>
       </nav>
@@ -196,6 +203,15 @@
                       {{ .Title }}
                     </div>
                   </a>
+                {{ else }}
+                  <a href="{{ `series/` | relLangURL }}" class="blog-article-shell p-4 rounded-2xl border border-emerald-500/40 bg-emerald-500/5 hover:border-emerald-500 transition-all flex flex-col justify-between text-right no-underline group sm:col-start-2">
+                    <div class="flex items-center justify-end gap-1.5 text-[11px] font-mono font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 mb-2">
+                      <i class="fa-solid fa-circle-check"></i> Track Completed · Next Steps <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                    </div>
+                    <div class="text-sm font-bold text-dark dark:text-darkmode-dark group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
+                      You finished this series! Explore other Masterclass Tracks &rarr;
+                    </div>
+                  </a>
                 {{ end }}
               </div>
             {{ end }}
@@ -225,9 +241,21 @@
         </aside>
       </div>
 
-      <!-- Related Posts Grid -->
-      {{ $related := (where site.RegularPages "Section" "in" site.Params.mainSections) | intersect (where site.RegularPages ".Title" "!=" .Title) | union (site.RegularPages.Related . ) }}
-      {{ $related = $related | shuffle | first 3 }}
+      <!-- Related Posts Grid (Topical Relevance First, Category Fallback, No Random Shuffle) -->
+      {{ $related := site.RegularPages.Related . }}
+      {{ if lt (len $related) 3 }}
+        {{ with index .Params.categories 0 }}
+          {{ $catName := . }}
+          {{ $catPosts := where (where site.RegularPages "Section" "blog") ".Params.categories" "intersect" (slice $catName) }}
+          {{ $catPosts = where $catPosts "Permalink" "!=" $.Permalink }}
+          {{ $related = $related | union $catPosts }}
+        {{ end }}
+      {{ end }}
+      {{ if lt (len $related) 3 }}
+        {{ $otherPosts := where (where site.RegularPages "Section" "blog") "Permalink" "!=" .Permalink }}
+        {{ $related = $related | union $otherPosts }}
+      {{ end }}
+      {{ $related = first 3 $related }}
       {{ with $related }}
         <div class="heavy-section-deferred section pb-0 pt-16 border-t border-border/60 dark:border-darkmode-border/60" aria-labelledby="related-posts-heading">
           <p class="blog-eyebrow">Continue Reading</p>
