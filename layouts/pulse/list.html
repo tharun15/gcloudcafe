@@ -72,91 +72,9 @@
         <div class="lg:col-span-4">
           <div class="space-y-6">
             
-            <!-- Quarterly Cloud Battle Widget -->
-            <div class="rounded-xl sm:rounded-2xl p-6 bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-slate-800 shadow-sm">
-              <div class="mb-3">
-                <div class="flex items-center gap-1.5 font-mono text-xs font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400 mb-1">
-                  <i class="fa-solid fa-trophy"></i> CLOUD BATTLE · <span data-poll-quarter-label>Q3 2026</span>
-                </div>
-                <div data-poll-reset-badge class="font-mono text-[10px] text-slate-500 dark:text-slate-400">
-                  Resets quarterly
-                </div>
-              </div>
-              
-              <h3 class="text-base font-bold text-slate-900 dark:text-white mb-1">
-                Which Cloud Will Win Q3?
-              </h3>
-              <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">
-                Community benchmark for cloud architects.
-              </p>
-
-              <!-- Providers Voting List -->
-              <div data-cloud-poll-container class="space-y-3 mb-2">
-                <!-- GCP Row -->
-                <div class="p-3.5 rounded-lg bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800" data-provider-card="GCP">
-                  <div class="flex items-center justify-between text-xs font-bold mb-1.5 text-slate-900 dark:text-slate-100">
-                    <span class="text-blue-600 dark:text-blue-400 flex items-center gap-1.5"><i class="fa-brands fa-google text-xs"></i> GCP</span>
-                    <span data-provider-percent="GCP" class="font-mono">0%</span>
-                  </div>
-                  <div class="w-full bg-slate-200 dark:bg-slate-800 rounded-full h-1.5 mb-2 overflow-hidden">
-                    <div data-provider-bar="GCP" class="bg-blue-500 h-full rounded-full transition-all duration-500" style="width: 0%;"></div>
-                  </div>
-                  <div class="flex items-center justify-between text-[10px]">
-                    <span class="font-mono text-slate-500 dark:text-slate-400" data-provider-votes="GCP">0 votes</span>
-                    <button data-poll-vote="GCP" class="px-2.5 py-1 rounded font-mono text-[11px] font-bold bg-blue-600 hover:bg-blue-500 text-white border-none cursor-pointer transition-colors shadow-xs">Vote</button>
-                  </div>
-                </div>
-
-                <!-- AWS Row -->
-                <div class="p-3.5 rounded-lg bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800" data-provider-card="AWS">
-                  <div class="flex items-center justify-between text-xs font-bold mb-1.5 text-slate-900 dark:text-slate-100">
-                    <span class="text-amber-600 dark:text-amber-400 flex items-center gap-1.5"><i class="fa-brands fa-aws text-xs"></i> AWS</span>
-                    <span data-provider-percent="AWS" class="font-mono">0%</span>
-                  </div>
-                  <div class="w-full bg-slate-200 dark:bg-slate-800 rounded-full h-1.5 mb-2 overflow-hidden">
-                    <div data-provider-bar="AWS" class="bg-amber-500 h-full rounded-full transition-all duration-500" style="width: 0%;"></div>
-                  </div>
-                  <div class="flex items-center justify-between text-[10px]">
-                    <span class="font-mono text-slate-500 dark:text-slate-400" data-provider-votes="AWS">0 votes</span>
-                    <button data-poll-vote="AWS" class="px-2.5 py-1 rounded font-mono text-[11px] font-bold bg-amber-600 hover:bg-amber-500 text-white border-none cursor-pointer transition-colors shadow-xs">Vote</button>
-                  </div>
-                </div>
-
-                <!-- Azure Row -->
-                <div class="p-3.5 rounded-lg bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800" data-provider-card="AZURE">
-                  <div class="flex items-center justify-between text-xs font-bold mb-1.5 text-slate-900 dark:text-slate-100">
-                    <span class="text-sky-600 dark:text-sky-400 flex items-center gap-1.5"><i class="fa-brands fa-microsoft text-xs"></i> Azure</span>
-                    <span data-provider-percent="AZURE" class="font-mono">0%</span>
-                  </div>
-                  <div class="w-full bg-slate-200 dark:bg-slate-800 rounded-full h-1.5 mb-2 overflow-hidden">
-                    <div data-provider-bar="AZURE" class="bg-sky-500 h-full rounded-full transition-all duration-500" style="width: 0%;"></div>
-                  </div>
-                  <div class="flex items-center justify-between text-[10px]">
-                    <span class="font-mono text-slate-500 dark:text-slate-400" data-provider-votes="AZURE">0 votes</span>
-                    <button data-poll-vote="AZURE" class="px-2.5 py-1 rounded font-mono text-[11px] font-bold bg-sky-600 hover:bg-sky-500 text-white border-none cursor-pointer transition-colors shadow-xs">Vote</button>
-                  </div>
-                </div>
-
-                <!-- Others Row -->
-                <div class="p-3.5 rounded-lg bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800" data-provider-card="OTHERS">
-                  <div class="flex items-center justify-between text-xs font-bold mb-1.5 text-slate-900 dark:text-slate-100">
-                    <span class="text-indigo-600 dark:text-indigo-400 flex items-center gap-1.5"><i class="fa-solid fa-cloud text-xs"></i> Others</span>
-                    <span data-provider-percent="OTHERS" class="font-mono">0%</span>
-                  </div>
-                  <div class="w-full bg-slate-200 dark:bg-slate-800 rounded-full h-1.5 mb-2 overflow-hidden">
-                    <div data-provider-bar="OTHERS" class="bg-indigo-500 h-full rounded-full transition-all duration-500" style="width: 0%;"></div>
-                  </div>
-                  <div class="flex items-center justify-between text-[10px]">
-                    <span class="font-mono text-slate-500 dark:text-slate-400" data-provider-votes="OTHERS">0 votes</span>
-                    <button data-poll-vote="OTHERS" class="px-2.5 py-1 rounded font-mono text-[11px] font-bold bg-indigo-600 hover:bg-indigo-500 text-white border-none cursor-pointer transition-colors shadow-xs">Vote</button>
-                  </div>
-                </div>
-              </div>
-
-
-            </div>
-
-            <!-- Trending Topics & Tag Cloud -->
+            <!-- Weekly Architecture Opinion Poll Widget -->
+            {{ partial "components/weekly-poll.html" . }}
+<!-- Trending Topics & Tag Cloud -->
             <div class="rounded-xl sm:rounded-2xl p-6 bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-slate-800 shadow-sm">
               <div class="flex items-center gap-2 mb-3">
                 <i class="fa-solid fa-fire text-red-500 text-xs"></i>

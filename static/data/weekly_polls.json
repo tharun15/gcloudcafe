@@ -1,0 +1,690 @@
+[
+  {
+    "id": "week-2026-35",
+    "weekNumber": 35,
+    "year": 2026,
+    "category": "Container Security",
+    "badge": "Sandboxing Debate",
+    "topic": "Container Sandboxing",
+    "question": "For running untrusted multi-tenant workloads in Kubernetes, which isolation runtime do you trust in production?",
+    "context": "Standard Linux namespaces and cgroups share the host kernel. Hardened runtimes isolate container syscalls at a performance trade-off.",
+    "options": [
+      {
+        "id": "gvisor",
+        "text": "Google gVisor (runsc user-space kernel interception)",
+        "description": "Strong syscall sandboxing with low RAM overhead and native GKE support",
+        "votes": 0
+      },
+      {
+        "id": "kata-containers",
+        "text": "Kata Containers / Firecracker microVMs",
+        "description": "Hardware-enforced hypervisor virtualization with dedicated guest kernels",
+        "votes": 0
+      },
+      {
+        "id": "hardened-runc",
+        "text": "Standard runc + Strict Seccomp, AppArmor and User Namespaces",
+        "description": "Zero virtualization overhead while eliminating root-to-host privilege escalation",
+        "votes": 0
+      },
+      {
+        "id": "separate-clusters",
+        "text": "Physical Cluster Separation: Never co-locate untrusted workloads on same nodes",
+        "description": "Complete node and network isolation bypassing shared host security entirely",
+        "votes": 0
+      }
+    ],
+    "otherOption": {
+      "id": "other",
+      "text": "Other / Different perspective",
+      "description": "Hold an alternative architectural stance or distinct prediction",
+      "votes": 0
+    },
+    "customTakes": []
+  },
+  {
+    "id": "week-2026-36",
+    "weekNumber": 36,
+    "year": 2026,
+    "category": "Cloud Architecture",
+    "badge": "Compute Economics",
+    "topic": "Serverless vs Containers",
+    "question": "Are serverless functions (Cloud Functions, Lambda) still viable for core business APIs versus containers?",
+    "context": "Cold starts, concurrency limits, and vendor-specific runtimes have caused some teams to standardize exclusively on container platforms (Cloud Run, ECS, Kubernetes).",
+    "options": [
+      {
+        "id": "containers-everywhere",
+        "text": "Containers Everywhere (Cloud Run, GKE, ECS): Standard Docker containers for 100% of services",
+        "description": "Consistent local debugging, vendor portability, and unified CI/CD pipelines",
+        "votes": 0
+      },
+      {
+        "id": "serverless-event-only",
+        "text": "Serverless Functions exclusively for asynchronous event handlers and webhooks",
+        "description": "Core APIs run in long-lived services; functions handle S3/GCS events and async queues",
+        "votes": 0
+      },
+      {
+        "id": "serverless-first",
+        "text": "Serverless First: Always start with Lambda/Cloud Functions until forced otherwise",
+        "description": "Zero maintenance, true scale-to-zero economics, and fastest time to market",
+        "votes": 0
+      },
+      {
+        "id": "edge-functions",
+        "text": "Edge Workers (Cloudflare Workers, Fastly Compute) handling API routing and auth",
+        "description": "Zero cold start, sub-20ms global latency, and distributed execution near users",
+        "votes": 0
+      }
+    ],
+    "otherOption": {
+      "id": "other",
+      "text": "Other / Different perspective",
+      "description": "Hold an alternative architectural stance or distinct prediction",
+      "votes": 0
+    },
+    "customTakes": []
+  },
+  {
+    "id": "week-2026-37",
+    "weekNumber": 37,
+    "year": 2026,
+    "category": "Cloud FinOps",
+    "badge": "Cost Engineering",
+    "topic": "Compute Cost Optimization",
+    "question": "How does your team extract the largest savings on cloud compute costs?",
+    "context": "With cloud budgets under intense scrutiny, engineering organizations balance Spot/Preemptible volatility against multi-year commitment lock-in.",
+    "options": [
+      {
+        "id": "spot-fleet",
+        "text": "Aggressive Spot/Preemptible VM fleets with graceful node termination drain handlers",
+        "description": "60-80% discounts for stateless Kubernetes microservices and batch jobs",
+        "votes": 0
+      },
+      {
+        "id": "commitments",
+        "text": "3-Year Savings Plans / Committed Use Discounts (CUDs)",
+        "description": "Predictable 40-60% discounts without operational interruption risk",
+        "votes": 0
+      },
+      {
+        "id": "rightsizing",
+        "text": "Autonomous Pod and VM rightsizing (Vertical Pod Autoscaler / Karpenter)",
+        "description": "Eliminating idle CPU/memory over-provisioning across existing nodes",
+        "votes": 0
+      },
+      {
+        "id": "arm-graviton",
+        "text": "Migrating workloads from x86 to ARM (AWS Graviton / GCP Axion)",
+        "description": "Immediate 20-30% price-performance gain with minimal recompilation",
+        "votes": 0
+      }
+    ],
+    "otherOption": {
+      "id": "other",
+      "text": "Other / Different perspective",
+      "description": "Hold an alternative architectural stance or distinct prediction",
+      "votes": 0
+    },
+    "customTakes": []
+  },
+  {
+    "id": "week-2026-38",
+    "weekNumber": 38,
+    "year": 2026,
+    "category": "Platform Engineering",
+    "badge": "Repository Architecture",
+    "topic": "Monorepo vs Polyrepo",
+    "question": "For enterprise microservices and infrastructure code, which repository strategy delivers better velocity?",
+    "context": "Polyrepos provide clear access boundaries and isolated CI builds, while monorepos enable atomic cross-service changes and shared libraries.",
+    "options": [
+      {
+        "id": "monorepo-tools",
+        "text": "Single Monorepo with intelligent build caching (Bazel / Nx / Turborepo)",
+        "description": "Atomic cross-service refactors, single source of truth, and guaranteed dependency compatibility",
+        "votes": 0
+      },
+      {
+        "id": "polyrepo-standard",
+        "text": "Polyrepo (one repo per service) with automated semantic versioning and package publishing",
+        "description": "Fine-grained permissions, fast lightweight git operations, and independent deployment cadences",
+        "votes": 0
+      },
+      {
+        "id": "hybrid-repos",
+        "text": "Domain-oriented Monorepos (one monorepo per engineering domain/tribe)",
+        "description": "Balances team autonomy without the extreme scale penalties of a company-wide single repo",
+        "votes": 0
+      },
+      {
+        "id": "infra-split",
+        "text": "Separate Monorepo for Infrastructure/Terraform, Polyrepos for Application code",
+        "description": "Keeps security blast radius and CI pipelines strictly segregated",
+        "votes": 0
+      }
+    ],
+    "otherOption": {
+      "id": "other",
+      "text": "Other / Different perspective",
+      "description": "Hold an alternative architectural stance or distinct prediction",
+      "votes": 0
+    },
+    "customTakes": []
+  },
+  {
+    "id": "week-2026-39",
+    "weekNumber": 39,
+    "year": 2026,
+    "category": "AI & Developer Workflows",
+    "badge": "Prediction of the Week",
+    "topic": "Future of Software Engineering",
+    "question": "By 2027, what will software engineers spend most of their time doing?",
+    "context": "As AI tools evolve from simple code autocomplete to autonomous agents, how will everyday engineering work transform?",
+    "options": [
+      {
+        "id": "reviewing-testing-ai-code",
+        "text": "Reviewing & testing AI-generated code",
+        "description": "Reading AI pull requests, validating edge cases, and catching subtle hallucinations",
+        "votes": 0
+      },
+      {
+        "id": "system-design-architecture",
+        "text": "System design & architecture",
+        "description": "Designing data schemas, APIs, and writing precise specifications for AI agents to build",
+        "votes": 0
+      },
+      {
+        "id": "writing-core-code-manually",
+        "text": "Writing core code by hand",
+        "description": "Crafting mission-critical business logic where human accuracy cannot be compromised",
+        "votes": 0
+      },
+      {
+        "id": "debugging-production-fires",
+        "text": "Debugging production fires & outages",
+        "description": "Tracking down complex incidents, performance bottlenecks, and multi-service edge cases",
+        "votes": 0
+      }
+    ],
+    "otherOption": {
+      "id": "other",
+      "text": "Other / Different perspective",
+      "description": "Hold a different prediction for how developer workflows will evolve",
+      "votes": 0
+    },
+    "customTakes": []
+  },
+  {
+    "id": "week-2026-40",
+    "weekNumber": 40,
+    "year": 2026,
+    "category": "Kubernetes & Cloud-Native",
+    "badge": "Architecture Debate",
+    "topic": "Gateway API vs Ingress",
+    "question": "Will the Kubernetes Gateway API completely displace Ingress v1 in production clusters by 2027?",
+    "context": "Gateway API offers expressive cross-namespace routing and role-oriented control, but Ingress v1 remains widely established across thousands of enterprise Helm charts.",
+    "options": [
+      {
+        "id": "gateway-universal",
+        "text": "Yes — Gateway API will become the universal enterprise standard, with Ingress relegated to legacy",
+        "description": "Role-oriented CRDs and native cross-namespace routing solve real platform bottlenecks",
+        "votes": 0
+      },
+      {
+        "id": "ingress-persists",
+        "text": "No — Ingress v1 is good enough for 80% of HTTP microservices and will persist indefinitely",
+        "description": "Simplicity, ubiquitous tooling, and minimal CRD overhead keep Ingress alive",
+        "votes": 0
+      },
+      {
+        "id": "mesh-ingress",
+        "text": "Both will be eclipsed by service mesh ingress (Ambient Mesh / Cilium Ingress)",
+        "description": "Direct integration with mTLS and eBPF kernel routing replaces standalone ingress controllers",
+        "votes": 0
+      },
+      {
+        "id": "managed-cloud-lb",
+        "text": "Cloud provider managed load balancer controllers will dominate without raw manifests",
+        "description": "AWS ALB Controller and GKE Gateway abstract raw gateway specs for enterprise teams",
+        "votes": 0
+      }
+    ],
+    "otherOption": {
+      "id": "other",
+      "text": "Other / Different perspective",
+      "description": "Hold an alternative architectural stance or distinct prediction",
+      "votes": 0
+    },
+    "customTakes": []
+  },
+  {
+    "id": "week-2026-41",
+    "weekNumber": 41,
+    "year": 2026,
+    "category": "Cloud Strategy & FinOps",
+    "badge": "Industry Reality",
+    "topic": "Multi-Cloud Strategy",
+    "question": "What is the primary driver for multi-cloud deployments in your organization today?",
+    "context": "Between egress costs, operational complexity, and vendor discounts, organizations report drastically different ROI on multi-cloud architectures.",
+    "options": [
+      {
+        "id": "compliance-resilience",
+        "text": "Regulatory compliance, data sovereignty, and mandatory cross-provider failover",
+        "description": "EU DORA, banking regulations, and sovereign cloud mandates dictate non-negotiable multi-vendor posture",
+        "votes": 0
+      },
+      {
+        "id": "best-of-breed",
+        "text": "Best-of-breed services (e.g. BigQuery on GCP, AD on Azure, Bedrock on AWS)",
+        "description": "Choosing the best specialized managed service for each departmental workload",
+        "votes": 0
+      },
+      {
+        "id": "procurement-leverage",
+        "text": "Procurement leverage and negotiating aggressive hyperscaler discounts",
+        "description": "Keeping credible alternative vendors prevents single-source price gouging",
+        "votes": 0
+      },
+      {
+        "id": "single-cloud-advocate",
+        "text": "Multi-cloud is an anti-pattern: we intentionally standardize on a single hyperscaler",
+        "description": "The cognitive load, tooling fragmentation, and egress fees exceed any theoretical redundancy benefits",
+        "votes": 0
+      }
+    ],
+    "otherOption": {
+      "id": "other",
+      "text": "Other / Different perspective",
+      "description": "Hold an alternative architectural stance or distinct prediction",
+      "votes": 0
+    },
+    "customTakes": []
+  },
+  {
+    "id": "week-2026-42",
+    "weekNumber": 42,
+    "year": 2026,
+    "category": "Security & Cryptography",
+    "badge": "Zero-Trust Forecast",
+    "topic": "Post-Quantum TLS 1.3",
+    "question": "When will your enterprise mandate Post-Quantum TLS (ML-KEM / Kyber) for internal microservices?",
+    "context": "NIST has finalized post-quantum standards, and Harvest Now, Decrypt Later threats are prompting early crypto-agility initiatives across zero-trust networks.",
+    "options": [
+      {
+        "id": "active-rollout",
+        "text": "Already testing or planning rollout for high-security services within the next 12 months",
+        "description": "Proactive protection against adversary data harvesting and compliance readiness",
+        "votes": 0
+      },
+      {
+        "id": "cloud-managed-wait",
+        "text": "Waiting for cloud provider managed services (ALB, Cloudflare, API Gateways) to enable it transparently",
+        "description": "Relying on hyperscalers to handle cipher negotiation and hardware offload",
+        "votes": 0
+      },
+      {
+        "id": "delayed-adoption",
+        "text": "2 to 4 years away: legacy hardware accelerators and MTU packet overhead make early rollout impractical",
+        "description": "Larger key exchange packets require network audits and crypto library upgrades",
+        "votes": 0
+      },
+      {
+        "id": "regulation-dependent",
+        "text": "Not on our radar until regulatory bodies (PCI-DSS, FedRAMP, HIPAA) formally enforce it",
+        "description": "Resource constraints prioritize active CVEs over future quantum threats",
+        "votes": 0
+      }
+    ],
+    "otherOption": {
+      "id": "other",
+      "text": "Other / Different perspective",
+      "description": "Hold an alternative architectural stance or distinct prediction",
+      "votes": 0
+    },
+    "customTakes": []
+  },
+  {
+    "id": "week-2026-43",
+    "weekNumber": 43,
+    "year": 2026,
+    "category": "Service Mesh & Networking",
+    "badge": "Kernel vs Sidecar",
+    "topic": "eBPF vs Sidecar Mesh",
+    "question": "Will sidecarless eBPF networking (Cilium / Istio Ambient) make Envoy sidecars obsolete?",
+    "context": "Envoy sidecars consume noticeable CPU/memory overhead per pod, but sidecarless architectures introduce node-level security boundary questions.",
+    "options": [
+      {
+        "id": "ebpf-wins",
+        "text": "Yes — Node-level eBPF and ztunnel drastically cut resource costs and eliminate sidecar lifecycle friction",
+        "description": "No pod injection, instant pod startup, and 60%+ lower cluster RAM overhead",
+        "votes": 0
+      },
+      {
+        "id": "sidecar-resilience",
+        "text": "No — Dedicated per-pod sidecars provide strictly isolated fault domains and finer-grained mTLS boundaries",
+        "description": "Hard pod isolation prevents cross-tenant blast radius on shared worker nodes",
+        "votes": 0
+      },
+      {
+        "id": "hybrid-approach",
+        "text": "Hybrid — eBPF for L4 routing/observability, and selective L7 sidecars only where complex policies require it",
+        "description": "Best of both worlds: zero-overhead L4 security with optional L7 waypoint proxies",
+        "votes": 0
+      },
+      {
+        "id": "no-mesh",
+        "text": "Neither — Standard cloud ingress and API gateways are sufficient; service mesh is over-engineering for most",
+        "description": "Most teams do not have the operational scale to justify any service mesh flavor",
+        "votes": 0
+      }
+    ],
+    "otherOption": {
+      "id": "other",
+      "text": "Other / Different perspective",
+      "description": "Hold an alternative architectural stance or distinct prediction",
+      "votes": 0
+    },
+    "customTakes": []
+  },
+  {
+    "id": "week-2026-44",
+    "weekNumber": 44,
+    "year": 2026,
+    "category": "Data Engineering & AI",
+    "badge": "Database Architecture",
+    "topic": "Vector Storage: Postgres vs Dedicated",
+    "question": "For enterprise RAG and semantic search in production, which database architecture do you favor?",
+    "context": "pgvector with HNSW indexing handles millions of embeddings inside existing Postgres clusters, while dedicated engines (Pinecone, Qdrant, Milvus) claim higher QPS.",
+    "options": [
+      {
+        "id": "pgvector-all-in",
+        "text": "Postgres + pgvector: keeping relational data, metadata filters, and embeddings in one ACID store wins",
+        "description": "Zero data synchronization pipelines, single backup mechanism, and native SQL joins",
+        "votes": 0
+      },
+      {
+        "id": "dedicated-vector",
+        "text": "Dedicated Vector DB (Qdrant / Milvus / Pinecone) for ultra-low latency and billion-scale indexing",
+        "description": "Optimized SIMD kernels, distributed sharding, and native hybrid BM25 + dense search",
+        "votes": 0
+      },
+      {
+        "id": "search-engine",
+        "text": "Cloud-native search engines (OpenSearch / Elasticsearch / BigQuery Vector Search)",
+        "description": "Leveraging existing enterprise search clusters and log aggregation infrastructure",
+        "votes": 0
+      },
+      {
+        "id": "embedded-cache",
+        "text": "In-memory caches & embedded vector engines (Redis / SQLite-vss) for localized fast retrieval",
+        "description": "Microservice-local index with sub-millisecond retrieval times",
+        "votes": 0
+      }
+    ],
+    "otherOption": {
+      "id": "other",
+      "text": "Other / Different perspective",
+      "description": "Hold an alternative architectural stance or distinct prediction",
+      "votes": 0
+    },
+    "customTakes": []
+  },
+  {
+    "id": "week-2026-45",
+    "weekNumber": 45,
+    "year": 2026,
+    "category": "DevOps & Infrastructure",
+    "badge": "IaC Evolution",
+    "topic": "Infrastructure as Code",
+    "question": "Which Infrastructure as Code (IaC) toolchain will anchor your cloud provisioning through 2027?",
+    "context": "Following licensing shifts and the maturity of programming-language IaC, platform teams are choosing between declarative HCL and code-first frameworks.",
+    "options": [
+      {
+        "id": "opentofu",
+        "text": "OpenTofu (Linux Foundation open-source fork with native state encryption)",
+        "description": "Drop-in Terraform migration with community governance and zero commercial licensing traps",
+        "votes": 0
+      },
+      {
+        "id": "terraform-official",
+        "text": "Terraform (HashiCorp / IBM ecosystem with HCP Terraform)",
+        "description": "Existing enterprise support agreements and ubiquitous provider registry stability",
+        "votes": 0
+      },
+      {
+        "id": "pulumi-cdk",
+        "text": "Code-First IaC (Pulumi / AWS CDK / SST) in TypeScript or Python",
+        "description": "Real programming constructs, native loops, IDE autocompletion, and unit testability",
+        "votes": 0
+      },
+      {
+        "id": "crossplane-gitops",
+        "text": "Kubernetes Resource Model (Crossplane / Config Connector) via GitOps",
+        "description": "Continuous drift reconciliation and unified control plane for cloud resources via ArgoCD",
+        "votes": 0
+      }
+    ],
+    "otherOption": {
+      "id": "other",
+      "text": "Other / Different perspective",
+      "description": "Hold an alternative architectural stance or distinct prediction",
+      "votes": 0
+    },
+    "customTakes": []
+  },
+  {
+    "id": "week-2026-46",
+    "weekNumber": 46,
+    "year": 2026,
+    "category": "Platform Engineering",
+    "badge": "Developer Experience",
+    "topic": "Internal Developer Portals",
+    "question": "Are Internal Developer Portals (like Spotify Backstage) delivering real engineering productivity ROI?",
+    "context": "Organizations invested heavily in developer portals to catalog microservices and standardize scaffolding, but maintenance cost is high.",
+    "options": [
+      {
+        "id": "high-roi",
+        "text": "High ROI: Radically reduced onboarding time, clear service ownership, and self-service infra templates",
+        "description": "Eliminated tribal knowledge and ticket queues for spinning up standard microservices",
+        "votes": 0
+      },
+      {
+        "id": "catalog-only",
+        "text": "Moderate ROI: Essential for service catalogs and tech docs, but custom plugins are a maintenance headache",
+        "description": "Works well as a central directory, but golden path automation remains half-adopted",
+        "votes": 0
+      },
+      {
+        "id": "low-roi",
+        "text": "Low or Negative ROI: Ended up as an unmaintained internal ghost town; CLI tools and READMEs work better",
+        "description": "Heavy React/Node maintenance overhead without sufficient long-term developer adoption",
+        "votes": 0
+      },
+      {
+        "id": "saas-portal",
+        "text": "Commercial SaaS Portals (Port / Cortex / OpsLevel) to avoid maintaining bespoke code",
+        "description": "Offloading UI maintenance and plugin integrations to managed vendors",
+        "votes": 0
+      }
+    ],
+    "otherOption": {
+      "id": "other",
+      "text": "Other / Different perspective",
+      "description": "Hold an alternative architectural stance or distinct prediction",
+      "votes": 0
+    },
+    "customTakes": []
+  },
+  {
+    "id": "week-2026-47",
+    "weekNumber": 47,
+    "year": 2026,
+    "category": "Distributed Systems",
+    "badge": "Streaming Architecture",
+    "topic": "Event Streaming Evolution",
+    "question": "Will cloud object storage-backed streaming (WarpStream / Redpanda Tiered) replace classic Kafka clusters?",
+    "context": "Decoupling compute from storage by writing directly to S3/GCS promises to eliminate rebalancing, partition limits, and expensive local SSD storage costs.",
+    "options": [
+      {
+        "id": "s3-streaming-wins",
+        "text": "Yes — S3-native streaming eliminates Kafka rebalancing nightmares and slashes cross-AZ networking costs",
+        "description": "Stateless brokers that write directly to object storage reduce TCO by up to 70%",
+        "votes": 0
+      },
+      {
+        "id": "kafka-kraft-standard",
+        "text": "No — Classic Apache Kafka with KRaft remains the battle-tested gold standard for zero-data-loss durability",
+        "description": "Mature enterprise ecosystem, deep connector library, and proven multi-petabyte scale",
+        "votes": 0
+      },
+      {
+        "id": "redpanda-cpp",
+        "text": "Redpanda / C++ native brokers with tiered storage provide the ideal balance of sub-5ms latency and infinite retention",
+        "description": "No JVM garbage collection pauses, thread-per-core efficiency, and tiered S3 archival",
+        "votes": 0
+      },
+      {
+        "id": "serverless-event-buses",
+        "text": "Serverless event buses (AWS EventBridge / GCP Eventarc) supersede raw Kafka topics for application workflows",
+        "description": "Content-based filtering and native managed integration with zero broker management",
+        "votes": 0
+      }
+    ],
+    "otherOption": {
+      "id": "other",
+      "text": "Other / Different perspective",
+      "description": "Hold an alternative architectural stance or distinct prediction",
+      "votes": 0
+    },
+    "customTakes": []
+  },
+  {
+    "id": "week-2026-48",
+    "weekNumber": 48,
+    "year": 2026,
+    "category": "Security & DevSecOps",
+    "badge": "Supply Chain Defense",
+    "topic": "CI/CD & Supply Chain Security",
+    "question": "How is your team securing software supply chain pipelines against compromised third-party dependencies?",
+    "context": "Recent supply chain incidents have shifted focus to signed provenance (SLSA), pinned SHA digests, and ephemeral runners.",
+    "options": [
+      {
+        "id": "sha-pinning-oidc",
+        "text": "Strict SHA-pinning of all actions/images + ephemeral isolated runners with zero static credentials (OIDC only)",
+        "description": "Eliminating static IAM keys and preventing mutable tag injection attacks",
+        "votes": 0
+      },
+      {
+        "id": "mirror-registries",
+        "text": "Internal mirror registries with automated vulnerability & malware quarantine scanning",
+        "description": "Air-gapped proxying and automated gating before upstream packages reach developers",
+        "votes": 0
+      },
+      {
+        "id": "sigstore-cosign",
+        "text": "Cryptographic artifact signing and verification (Sigstore / Cosign / SLSA level 3)",
+        "description": "Verifiable build provenance and cryptographic attestation enforcement at admission controller",
+        "votes": 0
+      },
+      {
+        "id": "standard-dependabot",
+        "text": "Basic Dependabot/Snyk PR scanning; advanced supply chain hardening is too complex for our velocity",
+        "description": "Pragmatic vulnerability alerts without the overhead of bespoke signing infrastructures",
+        "votes": 0
+      }
+    ],
+    "otherOption": {
+      "id": "other",
+      "text": "Other / Different perspective",
+      "description": "Hold an alternative architectural stance or distinct prediction",
+      "votes": 0
+    },
+    "customTakes": []
+  },
+  {
+    "id": "week-2026-49",
+    "weekNumber": 49,
+    "year": 2026,
+    "category": "Database Engineering",
+    "badge": "Global Architecture",
+    "topic": "Distributed SQL vs Cloud Relational",
+    "question": "When building new mission-critical global transactional services, what is your default database architecture?",
+    "context": "Distributed SQL engines (CockroachDB, YugabyteDB, Google Cloud Spanner) offer scale-out transactions, while Aurora/Cloud SQL offer operational simplicity.",
+    "options": [
+      {
+        "id": "managed-cloud-relational",
+        "text": "Managed Cloud-Native Relational (AWS Aurora / GCP Cloud SQL) with read replicas and caching",
+        "description": "Proven operational simplicity, rich ecosystem, and predictable query optimization",
+        "votes": 0
+      },
+      {
+        "id": "distributed-sql-spanner",
+        "text": "Globally Distributed SQL (Google Cloud Spanner / CockroachDB) for multi-region active-active ACID",
+        "description": "True horizontal scale-out without manual application sharding or cross-region split-brain",
+        "votes": 0
+      },
+      {
+        "id": "single-region-postgres",
+        "text": "Single-region Postgres with logical replication and disaster recovery failover",
+        "description": "Avoiding distributed transaction latency penalties; 99.9% of apps do not need multi-region active-active",
+        "votes": 0
+      },
+      {
+        "id": "nosql-single-table",
+        "text": "Document / Key-Value NoSQL (DynamoDB / Firestore) using single-table design for infinite scaling",
+        "description": "Predictable single-digit millisecond latency at any request volume without connection pooling bottlenecks",
+        "votes": 0
+      }
+    ],
+    "otherOption": {
+      "id": "other",
+      "text": "Other / Different perspective",
+      "description": "Hold an alternative architectural stance or distinct prediction",
+      "votes": 0
+    },
+    "customTakes": []
+  },
+  {
+    "id": "week-2026-50",
+    "weekNumber": 50,
+    "year": 2026,
+    "category": "Observability & SRE",
+    "badge": "Telemetry Reality",
+    "topic": "OpenTelemetry & Vendor Lock-in",
+    "question": "Has OpenTelemetry (OTel) successfully reduced your monitoring vendor lock-in?",
+    "context": "OTel standardized metrics, traces, and logs collection, but backend storage and analytics still require specialized SaaS or open-source infrastructure.",
+    "options": [
+      {
+        "id": "otel-success",
+        "text": "Yes — OTel Collector allowed us to dual-write or switch vendors (e.g. Datadog to Grafana) with zero app code changes",
+        "description": "Standardized instrumentation made backend APM migrations an infrastructure configuration task",
+        "votes": 0
+      },
+      {
+        "id": "partial-otel",
+        "text": "Partially — Traces and metrics are standard OTel, but logs and APM profiling still rely on proprietary vendor agents",
+        "description": "Advanced profiling, database query drill-downs, and session replay remain vendor-specific",
+        "votes": 0
+      },
+      {
+        "id": "otel-complexity",
+        "text": "No — The operational complexity of running and scaling OTel Collectors offset the vendor savings",
+        "description": "Managing memory limits, tail sampling pipelines, and buffer drops created new operational debt",
+        "votes": 0
+      },
+      {
+        "id": "full-oss-stack",
+        "text": "We use 100% self-hosted open-source (Prometheus, Grafana, Tempo, Loki) and never lock into SaaS",
+        "description": "Complete data ownership and zero per-gigabyte SaaS ingestion price gouging",
+        "votes": 0
+      }
+    ],
+    "otherOption": {
+      "id": "other",
+      "text": "Other / Different perspective",
+      "description": "Hold an alternative architectural stance or distinct prediction",
+      "votes": 0
+    },
+    "customTakes": []
+  }
+]

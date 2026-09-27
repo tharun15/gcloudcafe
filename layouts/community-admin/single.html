@@ -80,6 +80,11 @@
             <span>Talk &amp; Speaker Hub</span>
             <span id="talks-count-badge" class="px-1.5 py-0.5 rounded-full bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 text-[10px] font-mono">5</span>
           </button>
+          <button id="tab-weekly-polls-btn" class="px-4 py-2 rounded-xl text-xs font-bold bg-theme-light dark:bg-darkmode-theme-light text-text/80 dark:text-darkmode-text/80 hover:text-emerald-500 border border-border/60 dark:border-darkmode-border/60 cursor-pointer transition-all flex items-center gap-2">
+            <i class="fa-solid fa-chart-pie text-emerald-500"></i>
+            <span>Polls Queue</span>
+            <span id="weekly-polls-count-badge" class="px-1.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-[10px] font-mono">16</span>
+          </button>
         </div>
 
         <div class="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end">
@@ -453,7 +458,154 @@ create policy "Allow anon select" on public.author_proposals for select using (t
 create policy "Allow anon update" on public.author_proposals for update using (true);</code></pre>
           </div>
         </details>
+      
+      <!-- ── TAB 5: Weekly Architecture Polls Queue Manager ── -->
+      <div id="section-weekly-polls" class="space-y-6 hidden">
+        <!-- Executive KPI / Live Status Banner -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <!-- Active Poll Card -->
+          <div class="p-5 rounded-2xl bg-body dark:bg-darkmode-body border border-border/80 dark:border-darkmode-border/80 shadow-xs flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between gap-2 mb-2">
+                <span class="text-xs font-mono font-bold uppercase tracking-wider text-text/60 dark:text-darkmode-text/60">Live Active Poll</span>
+                <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> Live on Site
+                </span>
+              </div>
+              <h4 id="admin-live-poll-topic" class="text-base font-extrabold text-dark dark:text-darkmode-dark mb-1">
+                Week 39 · Future of Software Engineering
+              </h4>
+              <p id="admin-live-poll-question" class="text-xs text-text/70 dark:text-darkmode-text/70 line-clamp-2 mb-3">
+                By 2027, what will software engineers spend most of their time doing?
+              </p>
+            </div>
+            <div class="flex items-center justify-between pt-3 border-t border-border/40 dark:border-darkmode-border/40 text-[11px] font-mono">
+              <span id="admin-live-poll-votes" class="text-slate-500 dark:text-slate-400">0 predictions recorded</span>
+              <a href="{{ site.Home.RelPermalink }}#weekly-opinion-poll-widget" target="_blank" class="text-primary hover:underline flex items-center gap-1 font-bold no-underline">
+                View on site <i class="fa-solid fa-arrow-up-right-from-square text-[9px]"></i>
+              </a>
+            </div>
+          </div>
+
+          <!-- Queue Health & Capacity -->
+          <div class="p-5 rounded-2xl bg-body dark:bg-darkmode-body border border-border/80 dark:border-darkmode-border/80 shadow-xs flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between gap-2 mb-2">
+                <span class="text-xs font-mono font-bold uppercase tracking-wider text-text/60 dark:text-darkmode-text/60">Queue Capacity</span>
+                <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">
+                  Autopilot Ready
+                </span>
+              </div>
+              <div class="text-3xl font-black text-dark dark:text-darkmode-dark mb-1">
+                <span id="admin-queue-total-count">16</span> <span class="text-sm font-semibold text-text/60">Weeks Scheduled</span>
+              </div>
+              <p class="text-xs text-text/70 dark:text-darkmode-text/70">
+                Covers Week 35 through Week 50 (Dec 2026). Hands-free automatic weekly rotation based on ISO calendar.
+              </p>
+            </div>
+            <div class="flex items-center justify-between pt-3 border-t border-border/40 dark:border-darkmode-border/40 text-[11px] text-text/60 font-mono">
+              <span><i class="fa-solid fa-calendar-check text-emerald-500 mr-1"></i> Resets every Sunday 00:00 UTC</span>
+              <span id="admin-polls-countdown" class="text-amber-600 dark:text-amber-400 font-bold bg-amber-500/10 px-2 py-0.5 rounded-full border border-amber-500/20">Next in: --</span>
+            </div>
+          </div>
+
+          <!-- Fast Queue Actions -->
+          <div class="p-5 rounded-2xl bg-body dark:bg-darkmode-body border border-border/80 dark:border-darkmode-border/80 shadow-xs flex flex-col justify-between">
+            <div>
+              <span class="text-xs font-mono font-bold uppercase tracking-wider text-text/60 dark:text-darkmode-text/60 block mb-3">Queue Management</span>
+              <div class="space-y-2">
+                <button id="admin-create-poll-btn" class="w-full py-2 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer border-none">
+                  <i class="fa-solid fa-plus text-[10px]"></i> Add / Schedule Poll
+                </button>
+                <button id="admin-export-polls-json-btn" class="w-full py-2 px-3 rounded-xl bg-theme-light dark:bg-darkmode-theme-light hover:bg-slate-200 dark:hover:bg-slate-700 text-text/80 dark:text-darkmode-text/80 font-bold text-xs border border-border/80 dark:border-darkmode-border/80 transition-all flex items-center justify-center gap-1.5 cursor-pointer">
+                  <i class="fa-solid fa-download text-[10px]"></i> Export Queue (JSON)
+                </button>
+                <button id="admin-reset-all-poll-votes-btn" class="w-full py-1.5 px-3 rounded-xl bg-transparent hover:bg-rose-500/10 text-rose-500 font-semibold text-[11px] transition-all flex items-center justify-center gap-1.5 cursor-pointer border border-rose-500/30">
+                  <i class="fa-solid fa-rotate-left text-[10px]"></i> Reset Active Poll Votes
+                </button>
+              </div>
+            </div>
+            <p id="admin-polls-toast" class="text-[11px] font-mono text-emerald-500 hidden mt-2 mb-0 text-center"></p>
+          </div>
+        </div>
+
+        <!-- Filter & Search Bar -->
+        <div class="flex flex-wrap items-center justify-between gap-3 p-4 bg-body dark:bg-darkmode-body border border-border/80 dark:border-darkmode-border/80 rounded-2xl">
+          <div class="flex items-center gap-2">
+            <span class="text-xs font-bold text-dark dark:text-darkmode-dark">Filter:</span>
+            <button id="filter-polls-all" class="px-3 py-1 rounded-lg text-xs font-bold bg-primary text-white border-none cursor-pointer">All (<span id="filter-polls-count-all">16</span>)</button>
+            <button id="filter-polls-active" class="px-3 py-1 rounded-lg text-xs font-semibold bg-theme-light dark:bg-darkmode-theme-light text-text/70 hover:text-primary border border-border/60 cursor-pointer">Live Active</button>
+            <button id="filter-polls-upcoming" class="px-3 py-1 rounded-lg text-xs font-semibold bg-theme-light dark:bg-darkmode-theme-light text-text/70 hover:text-primary border border-border/60 cursor-pointer">Upcoming Queued</button>
+          </div>
+          <div class="flex items-center gap-2">
+            <input type="text" id="admin-polls-search-input" placeholder="Search topic, category, or question..." class="px-3 py-1.5 rounded-xl border border-border/80 dark:border-darkmode-border/80 bg-theme-light dark:bg-darkmode-theme-light text-xs text-dark dark:text-darkmode-dark focus:outline-none focus:border-primary w-64">
+          </div>
+        </div>
+
+        <!-- Create / Edit Poll Modal / Drawer -->
+        <div id="admin-poll-modal" class="hidden p-6 rounded-2xl bg-body dark:bg-darkmode-body border-2 border-emerald-500/40 shadow-lg space-y-4">
+          <div class="flex items-center justify-between border-b border-border/60 pb-3">
+            <h3 id="admin-poll-modal-title" class="text-base font-extrabold text-dark dark:text-darkmode-dark flex items-center gap-2">
+              <i class="fa-solid fa-calendar-plus text-emerald-500"></i> Schedule New Weekly Poll
+            </h3>
+            <button id="admin-poll-modal-close" class="text-text/50 hover:text-rose-500 bg-transparent border-none cursor-pointer text-lg font-bold">&times;</button>
+          </div>
+          <form id="admin-poll-form" class="space-y-4">
+            <input type="hidden" id="poll-form-mode" value="create">
+            <input type="hidden" id="poll-form-id" value="">
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div>
+                <label class="block text-xs font-bold text-dark dark:text-darkmode-dark mb-1">Week Number (1-52)</label>
+                <input type="number" id="poll-form-week" min="1" max="52" required class="w-full px-3 py-2 rounded-xl border border-border/80 dark:border-darkmode-border/80 bg-theme-light dark:bg-darkmode-theme-light text-xs font-mono">
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-dark dark:text-darkmode-dark mb-1">Category / Domain</label>
+                <input type="text" id="poll-form-category" required placeholder="e.g. AI Infrastructure & Architecture" class="w-full px-3 py-2 rounded-xl border border-border/80 dark:border-darkmode-border/80 bg-theme-light dark:bg-darkmode-theme-light text-xs">
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-dark dark:text-darkmode-dark mb-1">Badge Text</label>
+                <input type="text" id="poll-form-badge" required placeholder="e.g. Prediction of the Week" class="w-full px-3 py-2 rounded-xl border border-border/80 dark:border-darkmode-border/80 bg-theme-light dark:bg-darkmode-theme-light text-xs">
+              </div>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-dark dark:text-darkmode-dark mb-1">Short Topic Name</label>
+              <input type="text" id="poll-form-topic" required placeholder="e.g. Future of Software Engineering" class="w-full px-3 py-2 rounded-xl border border-border/80 dark:border-darkmode-border/80 bg-theme-light dark:bg-darkmode-theme-light text-xs">
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-dark dark:text-darkmode-dark mb-1">Debate / Prediction Question</label>
+              <input type="text" id="poll-form-question" required placeholder="e.g. By 2027, what will software engineers spend most of their time doing?" class="w-full px-3 py-2 rounded-xl border border-border/80 dark:border-darkmode-border/80 bg-theme-light dark:bg-darkmode-theme-light text-xs font-semibold">
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-dark dark:text-darkmode-dark mb-1">Context Clarification Snippet</label>
+              <textarea id="poll-form-context" rows="2" required placeholder="e.g. Recursive agent loops amplify token consumption and round-trip latency, challenging standard stateless API architectures." class="w-full px-3 py-2 rounded-xl border border-border/80 dark:border-darkmode-border/80 bg-theme-light dark:bg-darkmode-theme-light text-xs resize-none"></textarea>
+            </div>
+            <div class="space-y-2 pt-2 border-t border-border/40">
+              <span class="block text-xs font-bold text-dark dark:text-darkmode-dark mb-1">4 Curated Prediction Options:</span>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                <input type="text" id="poll-form-opt1" required placeholder="Option 1 Text" class="px-3 py-1.5 rounded-lg border border-border/80 bg-theme-light dark:bg-darkmode-theme-light text-xs">
+                <input type="text" id="poll-form-opt1-desc" required placeholder="Option 1 Subtitle / Trade-off" class="px-3 py-1.5 rounded-lg border border-border/80 bg-theme-light dark:bg-darkmode-theme-light text-[11px] text-text/70">
+                <input type="text" id="poll-form-opt2" required placeholder="Option 2 Text" class="px-3 py-1.5 rounded-lg border border-border/80 bg-theme-light dark:bg-darkmode-theme-light text-xs">
+                <input type="text" id="poll-form-opt2-desc" required placeholder="Option 2 Subtitle / Trade-off" class="px-3 py-1.5 rounded-lg border border-border/80 bg-theme-light dark:bg-darkmode-theme-light text-[11px] text-text/70">
+                <input type="text" id="poll-form-opt3" required placeholder="Option 3 Text" class="px-3 py-1.5 rounded-lg border border-border/80 bg-theme-light dark:bg-darkmode-theme-light text-xs">
+                <input type="text" id="poll-form-opt3-desc" required placeholder="Option 3 Subtitle / Trade-off" class="px-3 py-1.5 rounded-lg border border-border/80 bg-theme-light dark:bg-darkmode-theme-light text-[11px] text-text/70">
+                <input type="text" id="poll-form-opt4" required placeholder="Option 4 Text" class="px-3 py-1.5 rounded-lg border border-border/80 bg-theme-light dark:bg-darkmode-theme-light text-xs">
+                <input type="text" id="poll-form-opt4-desc" required placeholder="Option 4 Subtitle / Trade-off" class="px-3 py-1.5 rounded-lg border border-border/80 bg-theme-light dark:bg-darkmode-theme-light text-[11px] text-text/70">
+              </div>
+            </div>
+            <div class="flex items-center justify-end gap-2 pt-3 border-t border-border/60">
+              <button type="button" id="admin-poll-cancel-btn" class="px-4 py-2 rounded-xl bg-theme-light dark:bg-darkmode-theme-light text-xs font-semibold text-text/70 border border-border/80 cursor-pointer">Cancel</button>
+              <button type="submit" id="admin-poll-save-btn" class="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold cursor-pointer border-none shadow-xs">Save to Poll Queue</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Polls Queue Cards List Container -->
+        <div id="admin-polls-queue-grid" class="space-y-4">
+          <!-- Rendered dynamically by JS -->
+        </div>
       </div>
+
+</div>
 
     </div>
 
