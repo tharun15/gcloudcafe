@@ -8600,6 +8600,8 @@ function renderPulses(pulses) {
 
     // Render interactive voting state
     function renderVotingState() {
+      var statusLabel = widget.querySelector("[data-weekly-poll-status-label]");
+      if (statusLabel) statusLabel.textContent = "Active";
       var optionsHtml = '';
       pollData.options.forEach(function (opt) {
         optionsHtml += '<div class="poll-option-card p-3.5 sm:p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/40 hover:border-red-500/50 hover:bg-red-500/[0.02] transition-all cursor-pointer group flex items-start justify-between gap-3" data-option-id="' + opt.id + '" role="button" tabindex="0" aria-label="Vote for ' + escapeHtml(opt.text) + '">' +
@@ -8682,6 +8684,9 @@ function renderPulses(pulses) {
 
     // Render Results Mode with animated progress bars
     function renderResultsState(userVote) {
+      var statusLabel = widget.querySelector("[data-weekly-poll-status-label]");
+      if (statusLabel) statusLabel.textContent = "Community Results";
+
       var allOptions = pollData.options.slice();
       if (pollData.otherOption) {
         allOptions.push(pollData.otherOption);
@@ -8691,7 +8696,14 @@ function renderPulses(pulses) {
         return sum + (opt.votes || 0);
       }, 0);
 
-      var resultsHtml = '';
+      var resultsHtml = '<div class="flex items-center justify-between pb-2 mb-3 border-b border-slate-200/60 dark:border-slate-800/60 text-xs font-mono text-slate-500 dark:text-slate-400">' +
+        '<span class="flex items-center gap-1.5 font-bold text-slate-800 dark:text-slate-200">' +
+          '<i class="fa-solid fa-chart-simple text-emerald-500 text-[11px]"></i> Community Results' +
+        '</span>' +
+        '<span class="text-[11px] font-semibold text-slate-400 dark:text-slate-500">' +
+          totalVotes + ' ' + (totalVotes === 1 ? 'vote' : 'votes') +
+        '</span>' +
+      '</div>';
       allOptions.forEach(function (opt) {
         var votes = opt.votes || 0;
         var percent = totalVotes > 0 ? ((votes / totalVotes) * 100).toFixed(1) : "0.0";
@@ -8725,18 +8737,6 @@ function renderPulses(pulses) {
           '</div>' +
         '</div>';
       });
-
-      // Bottom Results Summary Bar
-      resultsHtml += '<div class="mt-3 pt-2 flex flex-wrap items-center justify-between gap-2 text-xs text-slate-500 dark:text-slate-400">' +
-        '<div class="flex flex-wrap items-center gap-2 sm:gap-3 font-mono text-[11px]">' +
-          '<span class="flex items-center gap-1.5"><i class="fa-solid fa-chart-pie text-slate-400"></i><span><strong>' + totalVotes + '</strong> ' + (totalVotes === 1 ? 'prediction' : 'predictions') + ' recorded</span></span>' +
-          '<span class="text-slate-300 dark:text-slate-700 hidden sm:inline">•</span>' +
-          '<span class="inline-flex items-center gap-1 text-amber-600 dark:text-amber-400 font-semibold"><i class="fa-regular fa-clock text-[10px]"></i> Next question in: <strong id="weekly-poll-footer-timer">--</strong></span>' +
-        '</div>' +
-        '<div class="flex items-center gap-1.5 text-[11px] font-mono text-emerald-600 dark:text-emerald-400 font-semibold">' +
-          '<i class="fa-solid fa-circle-check text-[10px]"></i> Prediction locked' +
-        '</div>' +
-      '</div>';
 
       container.innerHTML = resultsHtml;
 
