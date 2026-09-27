@@ -8587,6 +8587,51 @@ function renderPulses(pulses) {
       };
     }
 
+    var tallyKey = "weekly_poll_tallies_" + pollData.id;
+
+    // Retrieve and sync vote tallies so reloads reflect votes accurately
+    function getStoredTallies() {
+      var map = {};
+      pollData.options.forEach(function (opt) {
+        map[opt.id] = opt.votes || 0;
+      });
+      if (pollData.otherOption) {
+        map[pollData.otherOption.id] = pollData.otherOption.votes || 0;
+      }
+      try {
+        var raw = localStorage.getItem(tallyKey);
+        if (raw) {
+          var parsed = JSON.parse(raw);
+          Object.keys(parsed).forEach(function (k) {
+            map[k] = parsed[k];
+          });
+        }
+      } catch (e) {}
+      return map;
+    }
+
+    function saveTallies(tallies) {
+      try {
+        localStorage.setItem(tallyKey, JSON.stringify(tallies));
+      } catch (e) {}
+    }
+
+    function applyTallies(userVote) {
+      var tallies = getStoredTallies();
+      if (userVote && userVote.optionId) {
+        if (!tallies[userVote.optionId] || tallies[userVote.optionId] === 0) {
+          tallies[userVote.optionId] = (tallies[userVote.optionId] || 0) + 1;
+          saveTallies(tallies);
+        }
+      }
+      pollData.options.forEach(function (opt) {
+        opt.votes = tallies[opt.id] || 0;
+      });
+      if (pollData.otherOption) {
+        pollData.otherOption.votes = tallies[pollData.otherOption.id] || 0;
+      }
+    }
+
     // Check user vote in localStorage
     function getSavedUserVote() {
       try {
@@ -8658,17 +8703,11 @@ function renderPulses(pulses) {
 
     // Cast prediction vote and immediately show results
     function castPredictionVote(optionId) {
-      if (optionId === "other") {
-        if (pollData.otherOption) {
-          pollData.otherOption.votes = (pollData.otherOption.votes || 0) + 1;
-        }
-      } else {
-        pollData.options.forEach(function (opt) {
-          if (opt.id === optionId) {
-            opt.votes = (opt.votes || 0) + 1;
-          }
-        });
-      }
+      var tallies = getStoredTallies();
+      tallies[optionId] = (tallies[optionId] || 0) + 1;
+      saveTallies(tallies);
+
+      applyTallies({ optionId: optionId });
 
       var voteRecord = {
         optionId: optionId,
@@ -8684,9 +8723,6 @@ function renderPulses(pulses) {
 
     // Render Results Mode with animated progress bars
     function renderResultsState(userVote) {
-      var statusLabel = widget.querySelector("[data-weekly-poll-status-label]");
-      if (statusLabel) statusLabel.textContent = "Community Results";
-
       var allOptions = pollData.options.slice();
       if (pollData.otherOption) {
         allOptions.push(pollData.otherOption);
@@ -8696,12 +8732,12 @@ function renderPulses(pulses) {
         return sum + (opt.votes || 0);
       }, 0);
 
-      var resultsHtml = '<div class="flex items-center justify-between pb-2 mb-3 border-b border-slate-200/60 dark:border-slate-800/60 text-xs font-mono text-slate-500 dark:text-slate-400">' +
+      var resultsHtml = '<div class="flex items-center justify-between pb-1 mb-2 text-xs font-mono text-slate-500 dark:text-slate-400">' +
         '<span class="flex items-center gap-1.5 font-bold text-slate-800 dark:text-slate-200">' +
-          '<i class="fa-solid fa-chart-simple text-emerald-500 text-[11px]"></i> Community Results' +
+          '<i class="fa-solid fa-chart-simple text-red-500 text-[11px]"></i> Results' +
         '</span>' +
         '<span class="text-[11px] font-semibold text-slate-400 dark:text-slate-500">' +
-          totalVotes + ' ' + (totalVotes === 1 ? 'vote' : 'votes') +
+          totalVotes + ' ' + (totalVotes === 1 ? 'vote recorded' : 'votes recorded') +
         '</span>' +
       '</div>';
       allOptions.forEach(function (opt) {
@@ -8793,8 +8829,10 @@ function renderPulses(pulses) {
     // Initialize: check if user already voted. He CANNOT view results before answering!
     var existingVote = getSavedUserVote();
     if (existingVote) {
+      applyTallies(existingVote);
       renderResultsState(existingVote);
     } else {
+      applyTallies(null);
       renderVotingState();
     }
 
