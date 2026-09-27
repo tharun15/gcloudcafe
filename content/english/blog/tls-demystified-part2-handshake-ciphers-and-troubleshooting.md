@@ -1,7 +1,7 @@
 ---
 title: "TLS for DevOps Engineers (Part 2): The Modern Handshake (TLS 1.2 vs 1.3), Cipher Suites & SSL Troubleshooting"
-meta_title: "TLS Handshake Explained: TLS 1.2 vs 1.3, Ciphers & Debugging (Part 2)"
-description: "Master the modern TLS Handshake for DevOps: 1-RTT vs 2-RTT packet flows, ECDHE key agreement, cipher suite anatomy, session resumption, and real-world OpenSSL debugging."
+meta_title: "TLS 1.2 vs 1.3 Handshake: Packet Flows & Debugging Guide"
+description: "Master the TLS handshake packet-by-packet: 1-RTT vs 2-RTT flows, ECDHE key exchange, cipher suites, SNI routing, and practical OpenSSL debugging one-liners."
 date: 2026-08-15
 image: "/images/tls-part2-handshake.jpg"
 categories: ["Security", "DevOps", "Architecture", "TLS"]

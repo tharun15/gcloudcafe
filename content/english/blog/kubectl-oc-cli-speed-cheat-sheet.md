@@ -1,7 +1,7 @@
 ---
 title: "The Ultimate kubectl CLI Speed Cheat Sheet: Ace Your CKA Exam"
-meta_title: "kubectl CLI Speed Cheat Sheet | CKA & CKAD Exam Guide"
-description: "High-speed terminal shortcuts, imperative commands, Ingress, Gateway API, and JSONPath tricks to ace your Certified Kubernetes Administrator (CKA) exam."
+meta_title: "CKA Cheat Sheet: Essential kubectl Commands & Speed Tricks"
+description: "High-speed terminal shortcuts, imperative commands, JSONPath, Ingress, and troubleshooting one-liners to ace your Certified Kubernetes Administrator (CKA) exam."
 date: 2026-08-14
 image: "/images/kubectl-speed-cheat-sheet.jpg"
 categories: ["Kubernetes", "Certifications", "DevOps", "CKA"]
