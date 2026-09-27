@@ -8012,7 +8012,453 @@ function renderPulses(pulses) {
   }
 
 
+
+  /* ── Weekly Architecture Opinion & Prediction Poll System ── */
+  function initWeeklyOpinionPollSystem() {
+    var widget = document.getElementById("weekly-opinion-poll-widget");
+    if (!widget) return;
+
+    var container = widget.querySelector("[data-weekly-poll-container]");
+    if (!container) return;
+
+    var pollId = widget.getAttribute("data-weekly-poll-id") || "week-2026-39";
+    var storageKey = "gcloudcafe_weekly_poll_" + pollId;
+    var takesStorageKey = "gcloudcafe_weekly_takes_" + pollId;
+
+    // Load active poll data from embedded JSON or fallback
+    var pollData = null;
+    var dataScript = document.getElementById("weekly-poll-active-data");
+    if (dataScript && dataScript.textContent) {
+      try {
+        pollData = JSON.parse(dataScript.textContent);
+      } catch (e) {
+        console.warn("Failed to parse weekly-poll-active-data script:", e);
+      }
+    }
+
+    if (!pollData) {
+      // Fallback baseline for week 39
+      pollData = {
+        id: pollId,
+        weekNumber: 39,
+        year: 2026,
+        category: "AI Infrastructure",
+        question: "By 2027, where will the majority of enterprise LLM & Agentic reasoning workloads run?",
+        context: "With open-weights reasoning models surging and token economics shifting rapidly, engineering teams are deciding between hyperscaler managed APIs and private GPU infrastructure.",
+        options: [
+          { id: "hyperscaler-serverless", text: "Hyperscaler Managed APIs (Vertex AI / Bedrock / Azure AI)", description: "Zero infra ops, managed governance, SLAs & native IAM federation", votes: 142 },
+          { id: "self-hosted-k8s", text: "Self-hosted Kubernetes on Cloud GPUs (vLLM / Triton / Ray)", description: "Granular cost control at scale + freedom from proprietary API lock-in", votes: 98 },
+          { id: "on-prem-baremetal", text: "Private On-Prem Bare Metal & Colocated Sovereign GPUs", description: "Strict data residency, zero cloud egress fees, 24/7 fixed amortization", votes: 64 },
+          { id: "edge-hybrid", text: "Edge & Local SLMs (NPUs / Apple Silicon) + Cloud Fallback", description: "Sub-10ms latency, offline resilience & tiered hierarchical routing", votes: 41 }
+        ],
+        otherOption: { id: "other", text: "Other / Different perspective (Share your take)", description: "Have a distinct architectural prediction? Submit your custom take.", votes: 29 },
+        customTakes: [
+          { id: "take-1", author: "Lead SRE @ Fintech", text: "Hybrid tiering: small local SLMs handle 85% of routing and classification; cloud APIs only for deep multi-step synthesis.", timeAgo: "1d ago" },
+          { id: "take-2", author: "Cloud Architect @ Scaleup", text: "Specialized GPU clouds (CoreWeave, Lambda) connected over direct interconnects, bypassing traditional hyperscalers entirely.", timeAgo: "2d ago" },
+          { id: "take-3", author: "Platform Eng Lead", text: "Within 18 months token costs drop another 80%, rendering self-hosted GPU infra financially unjustifiable for 95% of companies.", timeAgo: "3d ago" }
+        ]
+      };
+    }
+
+    // Merge any locally submitted takes
+    function getMergedTakes() {
+      var saved = [];
+      try {
+        var raw = localStorage.getItem(takesStorageKey);
+        if (raw) saved = JSON.parse(raw);
+      } catch (e) {}
+      if (!Array.isArray(saved)) saved = [];
+      var base = (pollData.customTakes || []).slice();
+      return saved.concat(base);
+    }
+
+    // Check user vote in localStorage
+    function getSavedUserVote() {
+      try {
+        var raw = localStorage.getItem(storageKey);
+        if (!raw) return null;
+        return JSON.parse(raw);
+      } catch (e) {
+        return null;
+      }
+    }
+
+    // Render interactive voting state
+    function renderVotingState() {
+      var customDrawer = widget.querySelector("[data-weekly-custom-take-drawer]");
+      var customInput = widget.querySelector("[data-weekly-custom-take-input]");
+      var charCount = widget.querySelector("[data-weekly-char-count]");
+      var roleSelect = widget.querySelector("[data-weekly-custom-role]");
+      var submitCustomBtn = widget.querySelector("[data-weekly-submit-custom-take]");
+      var cancelCustomBtn = widget.querySelector("[data-weekly-cancel-custom]");
+      var takeError = widget.querySelector("[data-weekly-take-error]");
+      var skipBtn = widget.querySelector("[data-weekly-skip-to-results]");
+      var takesSection = widget.querySelector("[data-weekly-takes-section]");
+
+      if (takesSection) takesSection.classList.add("hidden");
+      if (customDrawer) customDrawer.classList.add("hidden");
+      if (takeError) takeError.classList.add("hidden");
+
+      var optionsHtml = '';
+      pollData.options.forEach(function (opt) {
+        optionsHtml += '<div class="poll-option-card p-3.5 sm:p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/40 hover:border-red-500/50 hover:bg-red-500/[0.02] transition-all cursor-pointer group flex items-start justify-between gap-3" data-option-id="' + opt.id + '" role="button" tabindex="0" aria-label="Vote for ' + escapeHtml(opt.text) + '">' +
+          '<div class="flex items-start gap-3 flex-grow">' +
+            '<span class="poll-radio-indicator w-4 h-4 rounded-full border-2 border-slate-400 dark:border-slate-600 group-hover:border-red-500 shrink-0 mt-0.5 transition-colors flex items-center justify-center">' +
+              '<span class="w-1.5 h-1.5 rounded-full bg-transparent group-hover:bg-red-500/40"></span>' +
+            '</span>' +
+            '<div>' +
+              '<div class="text-xs sm:text-sm font-bold text-slate-900 dark:text-slate-100 leading-snug group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors">' + escapeHtml(opt.text) + '</div>' +
+              '<div class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 leading-normal">' + escapeHtml(opt.description) + '</div>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
+      });
+
+      // Add Option 5: Open-Ended / Alternative Perspective
+      if (pollData.otherOption) {
+        var other = pollData.otherOption;
+        optionsHtml += '<div class="poll-option-card poll-option-other p-3.5 sm:p-4 rounded-xl border border-dashed border-slate-300 dark:border-slate-700 bg-slate-50/40 dark:bg-slate-900/20 hover:border-red-500/70 hover:bg-red-500/[0.02] transition-all cursor-pointer group flex items-start justify-between gap-3" data-option-id="other" role="button" tabindex="0" aria-label="' + escapeHtml(other.text) + '">' +
+          '<div class="flex items-start gap-3 flex-grow">' +
+            '<span class="poll-radio-indicator w-4 h-4 rounded-full border-2 border-slate-400 dark:border-slate-600 group-hover:border-red-500 shrink-0 mt-0.5 transition-colors flex items-center justify-center">' +
+              '<span class="w-1.5 h-1.5 rounded-full bg-transparent group-hover:bg-red-500/40"></span>' +
+            '</span>' +
+            '<div>' +
+              '<div class="text-xs sm:text-sm font-bold text-slate-900 dark:text-slate-100 leading-snug group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors flex items-center gap-1.5">' +
+                '<i class="fa-regular fa-comment-dots text-red-500 text-xs"></i>' +
+                '<span>' + escapeHtml(other.text) + '</span>' +
+              '</div>' +
+              '<div class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 leading-normal">' + escapeHtml(other.description) + '</div>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
+      }
+
+      container.innerHTML = optionsHtml;
+
+      // Bind Click to Options
+      container.querySelectorAll("[data-option-id]").forEach(function (card) {
+        var optId = card.getAttribute("data-option-id");
+        card.addEventListener("click", function (e) {
+          e.preventDefault();
+          if (optId === "other") {
+            // Smoothly reveal the custom take drawer
+            if (customDrawer) {
+              customDrawer.classList.remove("hidden");
+              if (customInput) {
+                customInput.focus();
+                customInput.scrollIntoView({ behavior: "smooth", block: "nearest" });
+              }
+            }
+          } else {
+            // Standard 1-click voting
+            castStandardVote(optId);
+          }
+        });
+
+        // Keyboard accessibility
+        card.addEventListener("keydown", function (e) {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            card.click();
+          }
+        });
+      });
+
+      // Character counter listener
+      if (customInput && charCount) {
+        customInput.addEventListener("input", function () {
+          var len = this.value.length;
+          charCount.textContent = len + " / 140";
+          if (len > 130) {
+            charCount.className = "text-[10px] font-mono text-amber-500 font-bold";
+          } else {
+            charCount.className = "text-[10px] font-mono text-slate-400";
+          }
+          if (takeError && len >= 3) {
+            takeError.classList.add("hidden");
+          }
+        });
+      }
+
+      // Cancel Custom Drawer
+      if (cancelCustomBtn && customDrawer) {
+        cancelCustomBtn.addEventListener("click", function (e) {
+          e.preventDefault();
+          customDrawer.classList.add("hidden");
+          if (customInput) customInput.value = "";
+          if (charCount) charCount.textContent = "0 / 140";
+          if (takeError) takeError.classList.add("hidden");
+        });
+      }
+
+      // Submit Custom Take & Vote
+      if (submitCustomBtn) {
+        submitCustomBtn.onclick = function (e) {
+          e.preventDefault();
+          var text = customInput ? customInput.value.trim() : "";
+          if (text.length < 3) {
+            if (takeError) takeError.classList.remove("hidden");
+            if (customInput) {
+              customInput.focus();
+              customInput.classList.add("border-red-500");
+              setTimeout(function () { customInput.classList.remove("border-red-500"); }, 2000);
+            }
+            return;
+          }
+
+          var role = roleSelect ? roleSelect.value : "Cloud Architect";
+          castCustomTakeVote(text, role);
+        };
+      }
+
+      // Skip to results preview
+      if (skipBtn) {
+        skipBtn.onclick = function (e) {
+          e.preventDefault();
+          renderResultsState(null, true);
+        };
+      }
+    }
+
+    // Cast 1-click standard vote
+    function castStandardVote(optionId) {
+      pollData.options.forEach(function (opt) {
+        if (opt.id === optionId) {
+          opt.votes = (opt.votes || 0) + 1;
+        }
+      });
+
+      var voteRecord = {
+        optionId: optionId,
+        timestamp: Date.now()
+      };
+      try {
+        localStorage.setItem(storageKey, JSON.stringify(voteRecord));
+      } catch (e) {}
+
+      renderResultsState(voteRecord, false);
+    }
+
+    // Cast custom take vote
+    function castCustomTakeVote(takeText, role) {
+      if (pollData.otherOption) {
+        pollData.otherOption.votes = (pollData.otherOption.votes || 0) + 1;
+      }
+
+      var newTake = {
+        id: "take-user-" + Date.now(),
+        author: role,
+        text: takeText,
+        timeAgo: "Just now",
+        isUser: true
+      };
+
+      try {
+        var raw = localStorage.getItem(takesStorageKey);
+        var savedTakes = raw ? JSON.parse(raw) : [];
+        if (!Array.isArray(savedTakes)) savedTakes = [];
+        savedTakes.unshift(newTake);
+        localStorage.setItem(takesStorageKey, JSON.stringify(savedTakes));
+      } catch (e) {}
+
+      var voteRecord = {
+        optionId: "other",
+        customTake: takeText,
+        role: role,
+        timestamp: Date.now()
+      };
+      try {
+        localStorage.setItem(storageKey, JSON.stringify(voteRecord));
+      } catch (e) {}
+
+      renderResultsState(voteRecord, false);
+    }
+
+    // Render Results Mode with animated progress bars & community drawer
+    function renderResultsState(userVote, isPreview) {
+      var customDrawer = widget.querySelector("[data-weekly-custom-take-drawer]");
+      if (customDrawer) customDrawer.classList.add("hidden");
+
+      var allOptions = pollData.options.slice();
+      if (pollData.otherOption) {
+        allOptions.push(pollData.otherOption);
+      }
+
+      var totalVotes = allOptions.reduce(function (sum, opt) {
+        return sum + (opt.votes || 0);
+      }, 0);
+
+      var resultsHtml = '';
+      allOptions.forEach(function (opt) {
+        var votes = opt.votes || 0;
+        var percent = totalVotes > 0 ? ((votes / totalVotes) * 100).toFixed(1) : "0.0";
+        var isUserChoice = userVote && userVote.optionId === opt.id;
+
+        var cardBorderClass = isUserChoice
+          ? "border-red-500/70 bg-red-500/[0.04] dark:bg-red-500/[0.06] ring-1 ring-red-500/30"
+          : "border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0c1220]";
+
+        var barGradient = isUserChoice
+          ? "bg-gradient-to-r from-red-600 to-amber-500"
+          : "bg-slate-300 dark:bg-slate-700";
+
+        resultsHtml += '<div class="poll-result-card p-3.5 sm:p-4 rounded-xl border ' + cardBorderClass + ' transition-all">' +
+          '<div class="flex items-center justify-between gap-2 mb-1.5">' +
+            '<div class="flex items-center gap-2 flex-grow min-w-0">' +
+              '<span class="text-xs sm:text-sm font-bold text-slate-900 dark:text-slate-100 truncate">' +
+                (opt.id === "other" ? '<i class="fa-regular fa-comment-dots text-red-500 mr-1.5 text-xs"></i>' : '') +
+                escapeHtml(opt.text) +
+              '</span>' +
+              (isUserChoice ? '<span class="shrink-0 inline-flex items-center gap-1 text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20"><i class="fa-solid fa-check text-[9px]"></i> Your Choice</span>' : '') +
+            '</div>' +
+            '<span class="text-xs sm:text-sm font-mono font-black text-slate-900 dark:text-white shrink-0">' + percent + '%</span>' +
+          '</div>' +
+          '<div class="w-full bg-slate-100 dark:bg-slate-800/80 rounded-full h-2 my-2 overflow-hidden">' +
+            '<div class="poll-progress-bar ' + barGradient + ' h-full rounded-full transition-all duration-700 ease-out" style="width: 0%;" data-target-width="' + percent + '%"></div>' +
+          '</div>' +
+          '<div class="flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400">' +
+            '<span class="truncate pr-2">' + escapeHtml(opt.description || '') + '</span>' +
+            '<span class="font-mono shrink-0">' + votes + ' votes</span>' +
+          '</div>' +
+        '</div>';
+      });
+
+      // Bottom Results Summary Bar
+      resultsHtml += '<div class="mt-3 pt-2 flex flex-wrap items-center justify-between gap-2 text-xs text-slate-500 dark:text-slate-400">' +
+        '<div class="flex items-center gap-1.5 font-mono">' +
+          '<i class="fa-solid fa-users text-slate-400"></i>' +
+          '<span><strong>' + totalVotes + '</strong> cloud architects voted this week</span>' +
+        '</div>' +
+        '<div class="flex items-center gap-3">' +
+          (isPreview
+            ? '<button type="button" data-weekly-vote-now class="font-mono text-[11px] font-bold text-red-600 dark:text-red-400 hover:underline bg-transparent border-none cursor-pointer flex items-center gap-1"><i class="fa-solid fa-vote-yea"></i> Vote on this poll</button>'
+            : '<button type="button" data-weekly-change-vote class="font-mono text-[11px] text-slate-500 dark:text-slate-400 hover:text-red-600 dark:hover:text-red-400 bg-transparent border-none cursor-pointer flex items-center gap-1"><i class="fa-solid fa-rotate-left text-[10px]"></i> Change vote</button>'
+          ) +
+        '</div>' +
+      '</div>';
+
+      container.innerHTML = resultsHtml;
+
+      // Animate progress bars smoothly after paint
+      setTimeout(function () {
+        container.querySelectorAll(".poll-progress-bar").forEach(function (bar) {
+          var target = bar.getAttribute("data-target-width");
+          if (target) bar.style.width = target;
+        });
+      }, 50);
+
+      // Handle Change Vote Button
+      var changeVoteBtn = container.querySelector("[data-weekly-change-vote]");
+      if (changeVoteBtn) {
+        changeVoteBtn.onclick = function (e) {
+          e.preventDefault();
+          try {
+            localStorage.removeItem(storageKey);
+          } catch (e) {}
+          renderVotingState();
+        };
+      }
+
+      // Handle Vote Now Button in Preview
+      var voteNowBtn = container.querySelector("[data-weekly-vote-now]");
+      if (voteNowBtn) {
+        voteNowBtn.onclick = function (e) {
+          e.preventDefault();
+          renderVotingState();
+        };
+      }
+
+      // Show & Hydrate Community Perspectives Drawer
+      var takesSection = widget.querySelector("[data-weekly-takes-section]");
+      if (takesSection) {
+        takesSection.classList.remove("hidden");
+        var mergedTakes = getMergedTakes();
+
+        var takesCountEl = takesSection.querySelector("[data-weekly-takes-count]");
+        if (takesCountEl) takesCountEl.textContent = mergedTakes.length;
+
+        var takesList = takesSection.querySelector("[data-weekly-takes-list]");
+        var toggleBtn = takesSection.querySelector("[data-weekly-toggle-takes]");
+        var chevronText = takesSection.querySelector("[data-weekly-takes-chevron-text]");
+        var chevronIcon = takesSection.querySelector("i.fa-chevron-down");
+
+        if (takesList) {
+          var takesHtml = '';
+          mergedTakes.forEach(function (take) {
+            var isUserTake = take.isUser || (userVote && userVote.customTake === take.text);
+            var borderClass = isUserTake
+              ? "p-3 rounded-xl bg-red-500/[0.04] dark:bg-red-500/[0.06] border border-red-500/30 ring-1 ring-red-500/20"
+              : "p-3 rounded-xl bg-slate-50/70 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800";
+
+            takesHtml += '<div class="' + borderClass + ' text-xs">' +
+              '<div class="flex items-center justify-between text-[10px] font-mono text-slate-400 mb-1">' +
+                '<span class="font-bold text-slate-700 dark:text-slate-300 flex items-center gap-1.5">' +
+                  escapeHtml(take.author || 'Cloud Engineer') +
+                  (isUserTake ? '<span class="px-1.5 py-0.2 rounded bg-red-600 text-white text-[9px] font-bold">Your Take</span>' : '') +
+                '</span>' +
+                '<span>' + escapeHtml(take.timeAgo || 'Recently') + '</span>' +
+              '</div>' +
+              '<p class="text-slate-700 dark:text-slate-200 italic m-0 leading-relaxed">"' + escapeHtml(take.text) + '"</p>' +
+            '</div>';
+          });
+
+          // If user voted for a standard option, provide an inline way to add their take too!
+          if (userVote && userVote.optionId !== "other") {
+            takesHtml += '<div class="pt-2 text-center">' +
+              '<button type="button" data-weekly-add-perspective class="font-mono text-[11px] font-semibold text-red-600 dark:text-red-400 hover:underline bg-transparent border-none cursor-pointer flex items-center justify-center gap-1.5 mx-auto">' +
+                '<i class="fa-solid fa-pen-to-square text-[10px]"></i> Have an extra perspective to share with the community?' +
+              '</button>' +
+            '</div>';
+          }
+
+          takesList.innerHTML = takesHtml;
+
+          // Extra perspective click
+          var addPerspBtn = takesList.querySelector("[data-weekly-add-perspective]");
+          if (addPerspBtn) {
+            addPerspBtn.onclick = function (e) {
+              e.preventDefault();
+              var customDrawer = widget.querySelector("[data-weekly-custom-take-drawer]");
+              if (customDrawer) {
+                customDrawer.classList.remove("hidden");
+                var customInput = widget.querySelector("[data-weekly-custom-take-input]");
+                if (customInput) customInput.focus();
+              }
+            };
+          }
+        }
+
+        // Toggle drawer expand/collapse
+        if (toggleBtn && takesList) {
+          toggleBtn.onclick = function (e) {
+            e.preventDefault();
+            var isHidden = takesList.classList.contains("hidden");
+            if (isHidden) {
+              takesList.classList.remove("hidden");
+              if (chevronText) chevronText.textContent = "Collapse";
+              if (chevronIcon) chevronIcon.style.transform = "rotate(180deg)";
+            } else {
+              takesList.classList.add("hidden");
+              if (chevronText) chevronText.textContent = "Expand";
+              if (chevronIcon) chevronIcon.style.transform = "rotate(0deg)";
+            }
+          };
+        }
+      }
+    }
+
+    // Initialize: check if user already voted
+    var existingVote = getSavedUserVote();
+    if (existingVote) {
+      renderResultsState(existingVote, false);
+    } else {
+      renderVotingState();
+    }
+  }
+
+
   function initApp() {
+    initWeeklyOpinionPollSystem();
     initCommentsSystem();
     initCloudPulseSystem();
     initCloudProviderPollSystem();
