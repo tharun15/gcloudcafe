@@ -5506,8 +5506,14 @@ function renderPulses(pulses) {
     // Tabs
     var tabProposalsBtn = document.getElementById("tab-proposals-btn");
     var tabSubscribersBtn = document.getElementById("tab-subscribers-btn");
+    var tabContentEngineBtn = document.getElementById("tab-content-engine-btn");
+    var tabTalksBtn = document.getElementById("tab-talks-btn");
+
     var sectionProposals = document.getElementById("section-author-proposals");
     var sectionSubscribers = document.getElementById("section-newsletter-subscribers");
+    var sectionContentEngine = document.getElementById("section-content-engine");
+    var sectionTalkIdeas = document.getElementById("section-talk-ideas");
+
     var refreshBtn = document.getElementById("refresh-community-btn");
 
     // Proposals Elements
@@ -5621,22 +5627,31 @@ function renderPulses(pulses) {
       logoutBtn.addEventListener("click", lockDashboard);
     }
 
-    // Tab Navigation
-    if (tabProposalsBtn && tabSubscribersBtn && sectionProposals && sectionSubscribers) {
-      tabProposalsBtn.addEventListener("click", function () {
-        tabProposalsBtn.className = "px-4 py-2 rounded-xl text-xs font-extrabold bg-primary text-white border-none cursor-pointer shadow-xs transition-all flex items-center gap-2";
-        tabSubscribersBtn.className = "px-4 py-2 rounded-xl text-xs font-bold bg-theme-light dark:bg-darkmode-theme-light text-text/80 dark:text-darkmode-text/80 hover:text-primary border border-border/60 dark:border-darkmode-border/60 cursor-pointer transition-all flex items-center gap-2";
-        sectionProposals.classList.remove("hidden");
-        sectionSubscribers.classList.add("hidden");
-      });
+    // Tab Navigation for all 4 admin tools
+    function switchAdminTab(activeTab) {
+      var allTabs = [
+        { btn: tabProposalsBtn, sec: sectionProposals, activeClass: "bg-primary text-white font-extrabold" },
+        { btn: tabSubscribersBtn, sec: sectionSubscribers, activeClass: "bg-primary text-white font-extrabold" },
+        { btn: tabContentEngineBtn, sec: sectionContentEngine, activeClass: "bg-amber-500 text-white font-extrabold shadow-xs" },
+        { btn: tabTalksBtn, sec: sectionTalkIdeas, activeClass: "bg-indigo-600 text-white font-extrabold shadow-xs" }
+      ];
 
-      tabSubscribersBtn.addEventListener("click", function () {
-        tabSubscribersBtn.className = "px-4 py-2 rounded-xl text-xs font-extrabold bg-primary text-white border-none cursor-pointer shadow-xs transition-all flex items-center gap-2";
-        tabProposalsBtn.className = "px-4 py-2 rounded-xl text-xs font-bold bg-theme-light dark:bg-darkmode-theme-light text-text/80 dark:text-darkmode-text/80 hover:text-primary border border-border/60 dark:border-darkmode-border/60 cursor-pointer transition-all flex items-center gap-2";
-        sectionSubscribers.classList.remove("hidden");
-        sectionProposals.classList.add("hidden");
+      allTabs.forEach(function (t) {
+        if (!t.btn || !t.sec) return;
+        if (t.btn === activeTab) {
+          t.btn.className = "px-4 py-2 rounded-xl text-xs border-none cursor-pointer shadow-xs transition-all flex items-center gap-2 " + t.activeClass;
+          t.sec.classList.remove("hidden");
+        } else {
+          t.btn.className = "px-4 py-2 rounded-xl text-xs font-bold bg-theme-light dark:bg-darkmode-theme-light text-text/80 dark:text-darkmode-text/80 hover:text-primary border border-border/60 dark:border-darkmode-border/60 cursor-pointer transition-all flex items-center gap-2";
+          t.sec.classList.add("hidden");
+        }
       });
     }
+
+    if (tabProposalsBtn) tabProposalsBtn.addEventListener("click", function() { switchAdminTab(tabProposalsBtn); });
+    if (tabSubscribersBtn) tabSubscribersBtn.addEventListener("click", function() { switchAdminTab(tabSubscribersBtn); });
+    if (tabContentEngineBtn) tabContentEngineBtn.addEventListener("click", function() { switchAdminTab(tabContentEngineBtn); });
+    if (tabTalksBtn) tabTalksBtn.addEventListener("click", function() { switchAdminTab(tabTalksBtn); });
 
     if (refreshBtn) {
       refreshBtn.addEventListener("click", function () {
@@ -6028,6 +6043,675 @@ function renderPulses(pulses) {
         });
       });
     }
+
+
+    /* ══════════════════════════════════════════════════════════ */
+    /* ── SECTION 3 & 4: CONTENT ENGINE & TALK SPEAKER HUB ─── */
+    /* ══════════════════════════════════════════════════════════ */
+
+    // Ephemeral & Permanent Storage Keys
+    var KEY_EPHEMERAL_CONTENT = "gcloudcafe_ephemeral_content_ideas";
+    var KEY_PERMANENT_CONTENT = "gcloudcafe_permanent_content_ideas";
+    var KEY_EPHEMERAL_TALKS = "gcloudcafe_ephemeral_talk_ideas";
+    var KEY_PERMANENT_TALKS = "gcloudcafe_permanent_talk_ideas";
+
+    var defaultContentCurations = {
+      "all": [
+        {
+          id: "rec_k8s_gateway",
+          title: "Kubernetes Gateway API in Production: Migrating from Ingress with Zero Downtime",
+          category: "Kubernetes",
+          viralityScore: 97,
+          whyViral: "Gateway API has reached GA and Kubernetes SIG-Network is urging migration. Production teams struggle with HTTPRoute and TLS cross-namespace delegation.",
+          keywords: "kubernetes gateway api, migrate ingress to gateway api, httproute example, tls gateway api",
+          outline: [
+            "Architectural shift: Ingress vs Gateway API separation of roles (Infra vs App dev)",
+            "Step-by-step canary migration using Envoy Gateway / Contour",
+            "Debugging cross-namespace ReferenceGrants and TLS certificate routing"
+          ]
+        },
+        {
+          id: "rec_gemini_adk",
+          title: "Building Multi-Agent Workflows with Gemini Enterprise Agent Platform & Python",
+          category: "AI Agents",
+          viralityScore: 95,
+          whyViral: "Enterprise AI shifts from raw chat prompts to deterministic multi-agent systems with schema-constrained JSON outputs.",
+          keywords: "gemini enterprise agent platform, vertex ai multi agent, pydantic gemini python, express mode",
+          outline: [
+            "Single prompt vs Agentic loop: State management and tool calling",
+            "Express Mode bootstrapping with ADC vs API key credentials",
+            "Production schema enforcement with Pydantic and retry backoffs"
+          ]
+        },
+        {
+          id: "rec_openshift_storage",
+          title: "OpenShift 4 Storage Troubleshooting: Recovering from Multi-Attach Errors (VolumeLocked)",
+          category: "OpenShift",
+          viralityScore: 94,
+          whyViral: "Volume attachment timeout is the #1 reason stateful pods get stuck in ContainerCreating in enterprise OpenShift clusters.",
+          keywords: "openshift storage volume locked error, rwo pvc containercreating, ceph odf attach error",
+          outline: [
+            "Root cause: CSI node driver detachment timeouts and kubelet unmount loops",
+            "Step-by-step force-detach runbook using oc and volumeattachment CRDs",
+            "Long-term remediation: Pod disruption budgets and ReadWriteMany CSI configuration"
+          ]
+        },
+        {
+          id: "rec_tls_quantum",
+          title: "Post-Quantum Cryptography in TLS: Benchmarking X25519MLKEM768 in NGINX & Cloudflare",
+          category: "Security",
+          viralityScore: 92,
+          whyViral: "NIST standardized post-quantum algorithms (ML-KEM). Major browsers now negotiate hybrid post-quantum key exchange by default.",
+          keywords: "post quantum tls 1.3, ml kem 768 benchmark, hybrid key exchange, nginx openssl 3.3",
+          outline: [
+            "How hybrid post-quantum key exchange works (ECDH + Kyber / ML-KEM)",
+            "Packet size impact: Measuring TCP handshake latency over real mobile networks",
+            "Configuring OpenSSL 3.x and Ingress controllers for post-quantum readiness"
+          ]
+        },
+        {
+          id: "rec_gcp_bigquery",
+          title: "BigQuery Storage Billing Optimization: Physical vs Logical Storage Deep Dive",
+          category: "Google Cloud",
+          viralityScore: 90,
+          whyViral: "Google Cloud introduced physical storage billing which can cut BigQuery storage costs by up to 50% for compressed datasets.",
+          keywords: "bigquery physical vs logical storage, gcp cost optimization, bq partitioning clustering",
+          outline: [
+            "Understanding Capacitor compression ratios on columnar BigQuery tables",
+            "Querying INFORMATION_SCHEMA.TABLE_STORAGE to evaluate cost savings",
+            "Safe transition script without interrupting BI queries"
+          ]
+        }
+      ]
+    };
+
+    var defaultTalkCurations = {
+      "cloud-native": [
+        {
+          id: "talk_tls_post_quantum",
+          title: "Zero-Trust at Quantum Speed: Implementing Hybrid TLS 1.3 in Cloud-Native Mesh",
+          format: "45-min Technical Deep Dive",
+          level: "Intermediate / Advanced",
+          audience: "Cloud Architects, SREs, Security Engineers",
+          abstract: "As NIST finalizes post-quantum standards, modern distributed systems must prepare for 'harvest-now, decrypt-later' threats. In this session, we dissect the hybrid X25519MLKEM768 key exchange mechanism in TLS 1.3. We will inspect live packet captures, analyze real latency trade-offs on Kubernetes Ingresses, and deliver a production-ready blueprint for automating mTLS certificates without service disruption.",
+          takeaways: [
+            "Understand how hybrid post-quantum key exchange prevents cryptographic obsolescence",
+            "Benchmark packet size overhead and latency impacts on live service mesh proxies",
+            "Implement automated certificate rotation in Kubernetes using cert-manager"
+          ]
+        },
+        {
+          id: "talk_k8s_resilience",
+          title: "3 AM Kubernetes Incident Runbook: Fixing NetworkPolicies, Storage Locks, and CoreDNS Panics",
+          format: "45-min War Stories & Live Demo",
+          level: "All Engineering Levels",
+          audience: "DevOps Engineers, On-Call Practitioners, SREs",
+          abstract: "When a multi-region Kubernetes cluster degrades in the middle of the night, standard dashboards often mask the true root cause. This talk walks through three real-world production outages: silent NetworkPolicy packet drops, multi-attach PVC volume locks, and CoreDNS throttling. Attendees will learn non-destructive diagnostic CLI commands and leave with a battle-tested triage flowchart.",
+          takeaways: [
+            "Quickly isolate NetworkPolicy drops using tcpdump and iptables / OVN trace logs",
+            "Safely resolve stuck PersistentVolumeAttachments without node reboots",
+            "Tune CoreDNS autoscaling and autopath to eliminate silent DNS lookup latency"
+          ]
+        },
+        {
+          id: "talk_gemini_enterprise",
+          title: "Beyond Simple Chatbots: Building Schema-Constrained AI Agents with Gemini Enterprise",
+          format: "30-min Practitioner Session",
+          level: "Intermediate",
+          audience: "Software Engineers, Cloud Architects, AI/ML Practitioners",
+          abstract: "Enterprises cannot deploy LLMs that hallucinate unstructured prose into production APIs. In this architecture teardown, we showcase how Google Cloud's Gemini Enterprise Agent Platform enforces strict Pydantic schemas, handles tool calling with API backoffs, and connects to enterprise data stores using Application Default Credentials (ADC).",
+          takeaways: [
+            "Design deterministic, schema-constrained multi-agent loops in Python",
+            "Secure API keys vs ADC authentication in enterprise CI/CD environments",
+            "Measure cost, latency, and token efficiency across Gemini Flash vs Pro models"
+          ]
+        },
+        {
+          id: "talk_openshift_migration",
+          title: "Enterprise OpenShift 4 Administration: Mastering Multi-Tenancy & Self-Service at Scale",
+          format: "20-min Lightning Talk",
+          level: "Intermediate",
+          audience: "Platform Engineers, System Administrators",
+          abstract: "How do you give 500 developers instant cluster access without risking cluster-wide CPU exhaustion or rogue route takeovers? This lightning talk shares the battle-tested configuration for OpenShift Project Request Templates, LimitRanges, and custom HTPasswd role bindings that keep multi-tenant clusters secure and compliant.",
+          takeaways: [
+            "Configure custom OpenShift project request templates for automated governance",
+            "Enforce tenant isolation with automated egress firewalls and edge routes",
+            "Streamline EX280-grade administration drills for enterprise ops teams"
+          ]
+        },
+        {
+          id: "talk_bigquery_optimization",
+          title: "FinOps for Cloud Architects: Slashing 40% Off Google Cloud Data Pipelines",
+          format: "45-min Deep Dive",
+          level: "Advanced",
+          audience: "Data Architects, FinOps Leads, Cloud Engineers",
+          abstract: "Data engineering pipelines frequently suffer from slot thrashing, full-table scans, and runaway storage costs. This session demonstrates real architectural patterns across BigQuery, Cloud Storage lifecycle rules, and authorized materialized views that drastically reduce compute billing while maintaining sub-second query response times.",
+          takeaways: [
+            "Optimize BigQuery partitioning and clustering strategies to prune petabyte queries",
+            "Leverage physical storage billing models to cut columnar storage bills",
+            "Implement authorized views and column-level masking without duplicated data"
+          ]
+        }
+      ]
+    };
+
+    // State getters / setters with Top 5 Housekeeping
+    function getEphemeralContentIdeas() {
+      try {
+        var items = JSON.parse(localStorage.getItem(KEY_EPHEMERAL_CONTENT) || "[]");
+        return items.slice(0, 5);
+      } catch (e) { return []; }
+    }
+
+    function saveEphemeralContentIdeas(items) {
+      // Enforce strict Top 5 housekeeping
+      var top5 = (items || []).slice(0, 5);
+      try { localStorage.setItem(KEY_EPHEMERAL_CONTENT, JSON.stringify(top5)); } catch (e) {}
+      renderContentIdeas();
+    }
+
+    function getPermanentContentIdeas() {
+      try {
+        return JSON.parse(localStorage.getItem(KEY_PERMANENT_CONTENT) || "[]");
+      } catch (e) { return []; }
+    }
+
+    function savePermanentContentIdeas(items) {
+      try { localStorage.setItem(KEY_PERMANENT_CONTENT, JSON.stringify(items || [])); } catch (e) {}
+      renderPermanentContentVault();
+    }
+
+    function getEphemeralTalks() {
+      try {
+        var items = JSON.parse(localStorage.getItem(KEY_EPHEMERAL_TALKS) || "[]");
+        return items.slice(0, 5);
+      } catch (e) { return []; }
+    }
+
+    function saveEphemeralTalks(items) {
+      var top5 = (items || []).slice(0, 5);
+      try { localStorage.setItem(KEY_EPHEMERAL_TALKS, JSON.stringify(top5)); } catch (e) {}
+      renderTalkIdeas();
+    }
+
+    function getPermanentTalks() {
+      try {
+        return JSON.parse(localStorage.getItem(KEY_PERMANENT_TALKS) || "[]");
+      } catch (e) { return []; }
+    }
+
+    function savePermanentTalks(items) {
+      try { localStorage.setItem(KEY_PERMANENT_TALKS, JSON.stringify(items || [])); } catch (e) {}
+      renderPermanentTalksVault();
+    }
+
+    // Render Content Ideas (Top 5 Active)
+    function renderContentIdeas() {
+      var grid = document.getElementById("content-ideas-grid");
+      if (!grid) return;
+      var ideas = getEphemeralContentIdeas();
+      if (!ideas.length) {
+        ideas = defaultContentCurations["all"];
+        saveEphemeralContentIdeas(ideas);
+        return;
+      }
+
+      grid.innerHTML = ideas.map(function(item, idx) {
+        return '<div class="bg-body dark:bg-darkmode-body border border-border/80 dark:border-darkmode-border/80 rounded-2xl p-5 shadow-xs hover:border-amber-500/50 transition-all flex flex-col md:flex-row items-start justify-between gap-5 group">'
+          + '<div class="space-y-2 flex-grow">'
+          + '  <div class="flex items-center gap-2 flex-wrap">'
+          + '    <span class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-amber-500/15 text-amber-600 dark:text-amber-400 font-mono">#' + (idx + 1) + ' ' + escapeHtml(item.category || "Cloud") + '</span>'
+          + '    <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-mono"><i class="fa-solid fa-arrow-trend-up mr-1"></i>' + (item.viralityScore || 95) + '/100 Viral Index</span>'
+          + '  </div>'
+          + '  <h4 class="text-sm font-bold text-dark dark:text-darkmode-dark group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">' + escapeHtml(item.title) + '</h4>'
+          + '  <p class="text-xs text-text/80 dark:text-darkmode-text/80 leading-relaxed"><strong class="text-dark dark:text-darkmode-dark">Why it&#39;s trending:</strong> ' + escapeHtml(item.whyViral || "") + '</p>'
+          + '  <div class="text-[11px] font-mono text-text/60 dark:text-darkmode-text/60 bg-theme-light/40 dark:bg-darkmode-theme-light/20 p-2.5 rounded-xl border border-border/50 dark:border-darkmode-border/50">'
+          + '    <span class="font-bold text-text/80 dark:text-darkmode-text/80">Target Keywords:</span> ' + escapeHtml(item.keywords || "")
+          + '  </div>'
+          + '</div>'
+          + '<div class="shrink-0 flex sm:flex-col gap-2 w-full sm:w-auto">'
+          + '  <button data-save-content-id="' + escapeHtml(item.id) + '" class="px-3 py-1.5 rounded-xl bg-amber-500/15 hover:bg-amber-500 text-amber-600 hover:text-white dark:text-amber-400 dark:hover:text-white border border-amber-500/30 text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer whitespace-nowrap">'
+          + '    <i class="fa-regular fa-star"></i> <span>Save to Vault</span>'
+          + '  </button>'
+          + '  <button data-copy-content-id="' + escapeHtml(item.id) + '" class="px-3 py-1.5 rounded-xl bg-theme-light dark:bg-darkmode-theme-light hover:border-amber-500 border border-border/80 dark:border-darkmode-border/80 text-xs font-semibold transition-all flex items-center justify-center gap-1.5 cursor-pointer whitespace-nowrap">'
+          + '    <i class="fa-regular fa-copy"></i> <span>Copy Blueprint</span>'
+          + '  </button>'
+          + '  <button data-discard-content-id="' + escapeHtml(item.id) + '" class="px-3 py-1.5 rounded-xl text-text/50 hover:text-red-500 text-xs font-semibold transition-colors flex items-center justify-center gap-1 cursor-pointer whitespace-nowrap" title="Discard this recommendation">'
+          + '    <i class="fa-solid fa-xmark text-sm"></i> <span>Discard</span>'
+          + '  </button>'
+          + '</div>'
+          + '</div>';
+      }).join("");
+
+      attachContentIdeaHandlers();
+    }
+
+    // Render Permanent Content Vault
+    function renderPermanentContentVault() {
+      var grid = document.getElementById("vault-content-grid");
+      var countEl = document.getElementById("vault-content-count");
+      if (!grid) return;
+      var vault = getPermanentContentIdeas();
+      if (countEl) countEl.textContent = vault.length;
+
+      if (!vault.length) {
+        grid.innerHTML = '<div class="p-6 text-center border border-border/60 dark:border-darkmode-border/60 rounded-2xl bg-theme-light/10 dark:bg-darkmode-theme-light/5 text-xs text-text/60 dark:text-darkmode-text/60">'
+          + 'Star items from the active recommendations above to pin them permanently in this vault.'
+          + '</div>';
+        return;
+      }
+
+      grid.innerHTML = vault.map(function(item) {
+        return '<div class="bg-body dark:bg-darkmode-body border border-amber-500/30 rounded-2xl p-4 shadow-xs flex flex-col md:flex-row items-start justify-between gap-4">'
+          + '<div class="space-y-1.5 flex-grow">'
+          + '  <div class="flex items-center gap-2">'
+          + '    <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-600 dark:text-amber-400 font-mono">⭐ Permanent Vault</span>'
+          + '    <span class="text-[11px] font-mono text-text/60 dark:text-darkmode-text/60">' + escapeHtml(item.category || "Cloud") + '</span>'
+          + '  </div>'
+          + '  <h5 class="text-xs sm:text-sm font-bold text-dark dark:text-darkmode-dark">' + escapeHtml(item.title) + '</h5>'
+          + '  <p class="text-xs text-text/70 dark:text-darkmode-text/70">' + escapeHtml(item.keywords || "") + '</p>'
+          + '</div>'
+          + '<div class="shrink-0 flex items-center gap-2">'
+          + '  <button data-copy-vault-id="' + escapeHtml(item.id) + '" class="px-3 py-1.5 rounded-xl bg-theme-light dark:bg-darkmode-theme-light border border-border/80 dark:border-darkmode-border/80 text-xs font-semibold cursor-pointer">'
+          + '    <i class="fa-regular fa-copy mr-1"></i> Copy'
+          + '  </button>'
+          + '  <button data-delete-vault-id="' + escapeHtml(item.id) + '" class="px-3 py-1.5 rounded-xl text-rose-500 hover:bg-rose-500/10 border border-rose-500/30 text-xs font-bold transition-colors cursor-pointer" title="Delete from vault">'
+          + '    <i class="fa-regular fa-trash-can mr-1"></i> Delete'
+          + '  </button>'
+          + '</div>'
+          + '</div>';
+      }).join("");
+
+      attachVaultHandlers();
+    }
+
+    function attachContentIdeaHandlers() {
+      // Save to Vault
+      document.querySelectorAll("[data-save-content-id]").forEach(function(btn) {
+        btn.addEventListener("click", function() {
+          var id = btn.getAttribute("data-save-content-id");
+          var ideas = getEphemeralContentIdeas();
+          var item = ideas.find(function(i) { return i.id === id; });
+          if (!item) return;
+
+          var vault = getPermanentContentIdeas();
+          if (!vault.some(function(v) { return v.id === id; })) {
+            vault.unshift(item);
+            savePermanentContentIdeas(vault);
+          }
+          btn.innerHTML = '<i class="fa-solid fa-check text-amber-500"></i> <span>Saved!</span>';
+          btn.classList.add("pointer-events-none");
+        });
+      });
+
+      // Discard from Top 5
+      document.querySelectorAll("[data-discard-content-id]").forEach(function(btn) {
+        btn.addEventListener("click", function() {
+          var id = btn.getAttribute("data-discard-content-id");
+          var ideas = getEphemeralContentIdeas().filter(function(i) { return i.id !== id; });
+          saveEphemeralContentIdeas(ideas);
+        });
+      });
+
+      // Copy Blueprint
+      document.querySelectorAll("[data-copy-content-id]").forEach(function(btn) {
+        btn.addEventListener("click", function() {
+          var id = btn.getAttribute("data-copy-content-id");
+          var ideas = getEphemeralContentIdeas();
+          var item = ideas.find(function(i) { return i.id === id; });
+          if (!item) return;
+          var text = "# Article Blueprint: " + item.title + "\n\n"
+            + "**Category:** " + item.category + "\n"
+            + "**Viral Angle:** " + item.whyViral + "\n"
+            + "**Target Keywords:** " + item.keywords + "\n\n"
+            + "## Core Architecture & Hands-On Outline\n"
+            + (item.outline ? item.outline.map(function(o) { return "- " + o; }).join("\n") : "- Introduction & Problem Statement\n- Hands-on Lab Implementation\n- Troubleshooting Gotchas & FAQ");
+          navigator.clipboard.writeText(text).then(function() {
+            var orig = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-check text-emerald-500"></i> <span>Copied!</span>';
+            setTimeout(function() { btn.innerHTML = orig; }, 1800);
+          });
+        });
+      });
+    }
+
+    function attachVaultHandlers() {
+      document.querySelectorAll("[data-delete-vault-id]").forEach(function(btn) {
+        btn.addEventListener("click", function() {
+          var id = btn.getAttribute("data-delete-vault-id");
+          if (!confirm("Are you sure you want to remove this item from your permanent vault?")) return;
+          var vault = getPermanentContentIdeas().filter(function(v) { return v.id !== id; });
+          savePermanentContentIdeas(vault);
+        });
+      });
+
+      document.querySelectorAll("[data-copy-vault-id]").forEach(function(btn) {
+        btn.addEventListener("click", function() {
+          var id = btn.getAttribute("data-copy-vault-id");
+          var vault = getPermanentContentIdeas();
+          var item = vault.find(function(v) { return v.id === id; });
+          if (!item) return;
+          navigator.clipboard.writeText("# " + item.title + "\n\nKeywords: " + (item.keywords || "")).then(function() {
+            var orig = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-check text-emerald-500"></i> Copied!';
+            setTimeout(function() { btn.innerHTML = orig; }, 1800);
+          });
+        });
+      });
+    }
+
+    // Render Talk Ideas (Top 5 Active)
+    function renderTalkIdeas() {
+      var grid = document.getElementById("talk-ideas-grid");
+      if (!grid) return;
+      var talks = getEphemeralTalks();
+      if (!talks.length) {
+        talks = defaultTalkCurations["cloud-native"];
+        saveEphemeralTalks(talks);
+        return;
+      }
+
+      grid.innerHTML = talks.map(function(talk, idx) {
+        return '<div class="bg-body dark:bg-darkmode-body border border-border/80 dark:border-darkmode-border/80 rounded-2xl p-5 shadow-xs hover:border-indigo-500/50 transition-all flex flex-col md:flex-row items-start justify-between gap-5 group">'
+          + '<div class="space-y-2 flex-grow">'
+          + '  <div class="flex items-center gap-2 flex-wrap">'
+          + '    <span class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-indigo-500/15 text-indigo-600 dark:text-indigo-400 font-mono">#' + (idx + 1) + ' ' + escapeHtml(talk.format || "Deep Dive") + '</span>'
+          + '    <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-200 dark:bg-slate-700 text-text/80 dark:text-darkmode-text/80 font-mono">' + escapeHtml(talk.level || "Intermediate") + '</span>'
+          + '  </div>'
+          + '  <h4 class="text-sm font-bold text-dark dark:text-darkmode-dark group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">' + escapeHtml(talk.title) + '</h4>'
+          + '  <p class="text-xs text-text/80 dark:text-darkmode-text/80 leading-relaxed font-serif italic">"' + escapeHtml(talk.abstract) + '"</p>'
+          + '  <div class="text-[11px] text-text/80 dark:text-darkmode-text/80 bg-theme-light/40 dark:bg-darkmode-theme-light/20 p-3 rounded-xl border border-border/50 dark:border-darkmode-border/50">'
+          + '    <span class="font-bold text-dark dark:text-darkmode-dark block mb-1">Key Attendee Takeaways:</span>'
+          + '    <ul class="list-disc pl-4 space-y-0.5">' + (talk.takeaways ? talk.takeaways.map(function(t) { return '<li>' + escapeHtml(t) + '</li>'; }).join("") : '<li>Practical hands-on runbook</li>') + '</ul>'
+          + '  </div>'
+          + '</div>'
+          + '<div class="shrink-0 flex sm:flex-col gap-2 w-full sm:w-auto">'
+          + '  <button data-save-talk-id="' + escapeHtml(talk.id) + '" class="px-3 py-1.5 rounded-xl bg-indigo-500/15 hover:bg-indigo-600 text-indigo-600 hover:text-white dark:text-indigo-400 dark:hover:text-white border border-indigo-500/30 text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer whitespace-nowrap">'
+          + '    <i class="fa-regular fa-star"></i> <span>Save to Vault</span>'
+          + '  </button>'
+          + '  <button data-copy-talk-id="' + escapeHtml(talk.id) + '" class="px-3 py-1.5 rounded-xl bg-theme-light dark:bg-darkmode-theme-light hover:border-indigo-500 border border-border/80 dark:border-darkmode-border/80 text-xs font-semibold transition-all flex items-center justify-center gap-1.5 cursor-pointer whitespace-nowrap">'
+          + '    <i class="fa-regular fa-copy"></i> <span>Copy CFP Pitch</span>'
+          + '  </button>'
+          + '  <button data-discard-talk-id="' + escapeHtml(talk.id) + '" class="px-3 py-1.5 rounded-xl text-text/50 hover:text-red-500 text-xs font-semibold transition-colors flex items-center justify-center gap-1 cursor-pointer whitespace-nowrap">'
+          + '    <i class="fa-solid fa-xmark text-sm"></i> <span>Discard</span>'
+          + '  </button>'
+          + '</div>'
+          + '</div>';
+      }).join("");
+
+      attachTalkIdeaHandlers();
+    }
+
+    // Render Permanent Talks Vault
+    function renderPermanentTalksVault() {
+      var grid = document.getElementById("vault-talks-grid");
+      var countEl = document.getElementById("vault-talks-count");
+      if (!grid) return;
+      var vault = getPermanentTalks();
+      if (countEl) countEl.textContent = vault.length;
+
+      if (!vault.length) {
+        grid.innerHTML = '<div class="p-6 text-center border border-border/60 dark:border-darkmode-border/60 rounded-2xl bg-theme-light/10 dark:bg-darkmode-theme-light/5 text-xs text-text/60 dark:text-darkmode-text/60">'
+          + 'Star proposals from above to keep them permanently in your CFP vault.'
+          + '</div>';
+        return;
+      }
+
+      grid.innerHTML = vault.map(function(talk) {
+        return '<div class="bg-body dark:bg-darkmode-body border border-indigo-500/30 rounded-2xl p-4 shadow-xs flex flex-col md:flex-row items-start justify-between gap-4">'
+          + '<div class="space-y-1.5 flex-grow">'
+          + '  <div class="flex items-center gap-2">'
+          + '    <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 font-mono">⭐ Permanent CFP Vault</span>'
+          + '    <span class="text-[11px] font-mono text-text/60 dark:text-darkmode-text/60">' + escapeHtml(talk.format || "Talk") + '</span>'
+          + '  </div>'
+          + '  <h5 class="text-xs sm:text-sm font-bold text-dark dark:text-darkmode-dark">' + escapeHtml(talk.title) + '</h5>'
+          + '  <p class="text-xs text-text/70 dark:text-darkmode-text/70 line-clamp-2">"' + escapeHtml(talk.abstract) + '"</p>'
+          + '</div>'
+          + '<div class="shrink-0 flex items-center gap-2">'
+          + '  <button data-copy-talk-vault-id="' + escapeHtml(talk.id) + '" class="px-3 py-1.5 rounded-xl bg-theme-light dark:bg-darkmode-theme-light border border-border/80 dark:border-darkmode-border/80 text-xs font-semibold cursor-pointer">'
+          + '    <i class="fa-regular fa-copy mr-1"></i> Copy CFP'
+          + '  </button>'
+          + '  <button data-delete-talk-vault-id="' + escapeHtml(talk.id) + '" class="px-3 py-1.5 rounded-xl text-rose-500 hover:bg-rose-500/10 border border-rose-500/30 text-xs font-bold transition-colors cursor-pointer">'
+          + '    <i class="fa-regular fa-trash-can mr-1"></i> Delete'
+          + '  </button>'
+          + '</div>'
+          + '</div>';
+      }).join("");
+
+      attachTalkVaultHandlers();
+    }
+
+    function attachTalkIdeaHandlers() {
+      // Save to Vault
+      document.querySelectorAll("[data-save-talk-id]").forEach(function(btn) {
+        btn.addEventListener("click", function() {
+          var id = btn.getAttribute("data-save-talk-id");
+          var talks = getEphemeralTalks();
+          var item = talks.find(function(t) { return t.id === id; });
+          if (!item) return;
+
+          var vault = getPermanentTalks();
+          if (!vault.some(function(v) { return v.id === id; })) {
+            vault.unshift(item);
+            savePermanentTalks(vault);
+          }
+          btn.innerHTML = '<i class="fa-solid fa-check text-indigo-500"></i> <span>Saved!</span>';
+          btn.classList.add("pointer-events-none");
+        });
+      });
+
+      // Discard from Top 5
+      document.querySelectorAll("[data-discard-talk-id]").forEach(function(btn) {
+        btn.addEventListener("click", function() {
+          var id = btn.getAttribute("data-discard-talk-id");
+          var talks = getEphemeralTalks().filter(function(t) { return t.id !== id; });
+          saveEphemeralTalks(talks);
+        });
+      });
+
+      // Copy CFP Pitch
+      document.querySelectorAll("[data-copy-talk-id]").forEach(function(btn) {
+        btn.addEventListener("click", function() {
+          var id = btn.getAttribute("data-copy-talk-id");
+          var talks = getEphemeralTalks();
+          var talk = talks.find(function(t) { return t.id === id; });
+          if (!talk) return;
+          var text = "# Proposal Title: " + talk.title + "\n\n"
+            + "**Format:** " + talk.format + "\n"
+            + "**Target Audience:** " + talk.audience + "\n\n"
+            + "## Session Abstract\n" + talk.abstract + "\n\n"
+            + "## Attendee Takeaways\n" + (talk.takeaways ? talk.takeaways.map(function(t) { return "- " + t; }).join("\n") : "- Practical runbook");
+          navigator.clipboard.writeText(text).then(function() {
+            var orig = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-check text-emerald-500"></i> <span>Copied!</span>';
+            setTimeout(function() { btn.innerHTML = orig; }, 1800);
+          });
+        });
+      });
+    }
+
+    function attachTalkVaultHandlers() {
+      document.querySelectorAll("[data-delete-talk-vault-id]").forEach(function(btn) {
+        btn.addEventListener("click", function() {
+          var id = btn.getAttribute("data-delete-talk-vault-id");
+          if (!confirm("Are you sure you want to remove this talk proposal from your permanent vault?")) return;
+          var vault = getPermanentTalks().filter(function(v) { return v.id !== id; });
+          savePermanentTalks(vault);
+        });
+      });
+
+      document.querySelectorAll("[data-copy-talk-vault-id]").forEach(function(btn) {
+        btn.addEventListener("click", function() {
+          var id = btn.getAttribute("data-copy-talk-vault-id");
+          var vault = getPermanentTalks();
+          var talk = vault.find(function(t) { return t.id === id; });
+          if (!talk) return;
+          var text = "# " + talk.title + "\n\n" + talk.abstract;
+          navigator.clipboard.writeText(text).then(function() {
+            var orig = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-check text-emerald-500"></i> Copied!';
+            setTimeout(function() { btn.innerHTML = orig; }, 1800);
+          });
+        });
+      });
+    }
+
+    // AI Generation Trigger for Content Engine
+    var generateContentBtn = document.getElementById("generate-content-ideas-btn");
+    var contentNicheSelect = document.getElementById("content-engine-niche-select");
+    var contentStatusMsg = document.getElementById("content-engine-status-msg");
+
+    if (generateContentBtn) {
+      generateContentBtn.addEventListener("click", async function() {
+        var niche = contentNicheSelect ? contentNicheSelect.value : "all";
+        generateContentBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-[11px]"></i> Analyzing Trends...';
+        generateContentBtn.classList.add("pointer-events-none");
+        if (contentStatusMsg) {
+          contentStatusMsg.textContent = "Scanning cloud releases, CVEs, and search queries for " + niche + "...";
+          contentStatusMsg.classList.remove("hidden");
+        }
+
+        var keyToUse = (typeof cachedGeminiApiKey !== "undefined" && cachedGeminiApiKey) ? cachedGeminiApiKey : localStorage.getItem("gcloudcafe_gemini_api_key");
+        if (!keyToUse) {
+          try {
+            var res = await fetch(config.url + "/rest/v1/site_settings?key=eq.gemini_api_key&select=value", {
+              headers: { "apikey": config.anonKey, "Authorization": "Bearer " + config.anonKey }
+            });
+            if (res.ok) {
+              var rows = await res.json();
+              if (rows && rows.length > 0) keyToUse = rows[0].value;
+            }
+          } catch(e) {}
+        }
+
+        var prompt = "You are the chief content strategist and lead cloud architect for GCloud Cafe (https://gcloudcafe.com).\n"
+          + "Recommend exactly 5 high-impact, viral, practitioner-grade technical articles to write next for the niche: '" + niche + "'.\n"
+          + "Focus on real production pain points, recent CVEs, new Kubernetes/GCP features, or certification challenges (EX280/CKA/PCA).\n"
+          + "STRICT FORMAT: Return ONLY a valid JSON array of 5 objects with this exact structure (no markdown fences, no raw text):\n"
+          + '[{"id":"rec_1","title":"Title with high CTR","category":"Category Name","viralityScore":95,"whyViral":"Why this topic is trending right now","keywords":"3-4 target search keywords","outline":["Key point 1","Key point 2","Key point 3"]}]';
+
+        var generatedItems = null;
+
+        if (keyToUse) {
+          var models = ["gemini-2.5-flash", "gemini-1.5-flash", "gemini-flash-latest"];
+          for (var i = 0; i < models.length; i++) {
+            try {
+              var url = "https://generativelanguage.googleapis.com/v1beta/models/" + models[i] + ":generateContent?key=" + encodeURIComponent(keyToUse);
+              var resp = await fetch(url, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }], generationConfig: { temperature: 0.3 } })
+              });
+              if (resp.ok) {
+                var jsonResp = await resp.json();
+                var rawTxt = jsonResp?.candidates?.[0]?.content?.parts?.[0]?.text || "";
+                var cleaned = rawTxt.replace(/```json/g, "").replace(/```/g, "").trim();
+                var parsed = JSON.parse(cleaned);
+                if (Array.isArray(parsed) && parsed.length >= 3) {
+                  generatedItems = parsed.slice(0, 5);
+                  break;
+                }
+              }
+            } catch(e) {}
+          }
+        }
+
+        if (!generatedItems) {
+          generatedItems = defaultContentCurations[niche] || defaultContentCurations["all"];
+        }
+
+        // Apply strict Top 5 housekeeping
+        saveEphemeralContentIdeas(generatedItems);
+
+        generateContentBtn.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles"></i> <span>Discover Top 5 Topics</span>';
+        generateContentBtn.classList.remove("pointer-events-none");
+        if (contentStatusMsg) {
+          contentStatusMsg.textContent = "✨ Discovered and loaded Top 5 freshest topics! Housekeeping active.";
+          setTimeout(function() { contentStatusMsg.classList.add("hidden"); }, 3000);
+        }
+      });
+    }
+
+    // AI Generation Trigger for Talk Hub
+    var generateTalksBtn = document.getElementById("generate-talk-ideas-btn");
+    var talkVenueSelect = document.getElementById("talk-venue-select");
+    var talkStatusMsg = document.getElementById("talk-status-msg");
+
+    if (generateTalksBtn) {
+      generateTalksBtn.addEventListener("click", async function() {
+        var venue = talkVenueSelect ? talkVenueSelect.value : "cloud-native";
+        generateTalksBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-[11px]"></i> Formulating Talks...';
+        generateTalksBtn.classList.add("pointer-events-none");
+        if (talkStatusMsg) {
+          talkStatusMsg.textContent = "Formulating CFP proposals for " + venue + "...";
+          talkStatusMsg.classList.remove("hidden");
+        }
+
+        var keyToUse = (typeof cachedGeminiApiKey !== "undefined" && cachedGeminiApiKey) ? cachedGeminiApiKey : localStorage.getItem("gcloudcafe_gemini_api_key");
+        if (!keyToUse) {
+          try {
+            var res = await fetch(config.url + "/rest/v1/site_settings?key=eq.gemini_api_key&select=value", {
+              headers: { "apikey": config.anonKey, "Authorization": "Bearer " + config.anonKey }
+            });
+            if (res.ok) {
+              var rows = await res.json();
+              if (rows && rows.length > 0) keyToUse = rows[0].value;
+            }
+          } catch(e) {}
+        }
+
+        var prompt = "You are a tech conference CFP reviewer and veteran cloud speaker for major events like KubeCon, Google Cloud Next, and DevOpsDays.\n"
+          + "Formulate exactly 5 CFP-ready talk proposals on modern Cloud, Kubernetes, TLS, and AI Agent architecture for venue: '" + venue + "'.\n"
+          + "STRICT FORMAT: Return ONLY a valid JSON array of 5 objects with this exact structure (no markdown fences, no raw text):\n"
+          + '[{"id":"talk_1","title":"Compelling talk title","format":"45-min Deep Dive","level":"Intermediate","audience":"Target roles","abstract":"2-3 sentence engaging abstract","takeaways":["Takeaway 1","Takeaway 2","Takeaway 3"]}]';
+
+        var generatedTalks = null;
+
+        if (keyToUse) {
+          var models = ["gemini-2.5-flash", "gemini-1.5-flash", "gemini-flash-latest"];
+          for (var i = 0; i < models.length; i++) {
+            try {
+              var url = "https://generativelanguage.googleapis.com/v1beta/models/" + models[i] + ":generateContent?key=" + encodeURIComponent(keyToUse);
+              var resp = await fetch(url, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }], generationConfig: { temperature: 0.3 } })
+              });
+              if (resp.ok) {
+                var jsonResp = await resp.json();
+                var rawTxt = jsonResp?.candidates?.[0]?.content?.parts?.[0]?.text || "";
+                var cleaned = rawTxt.replace(/```json/g, "").replace(/```/g, "").trim();
+                var parsed = JSON.parse(cleaned);
+                if (Array.isArray(parsed) && parsed.length >= 3) {
+                  generatedTalks = parsed.slice(0, 5);
+                  break;
+                }
+              }
+            } catch(e) {}
+          }
+        }
+
+        if (!generatedTalks) {
+          generatedTalks = defaultTalkCurations[venue] || defaultTalkCurations["cloud-native"];
+        }
+
+        saveEphemeralTalks(generatedTalks);
+
+        generateTalksBtn.innerHTML = '<i class="fa-solid fa-microphone-lines"></i> <span>Generate Top 5 Talks</span>';
+        generateTalksBtn.classList.remove("pointer-events-none");
+        if (talkStatusMsg) {
+          talkStatusMsg.textContent = "🎙️ Generated Top 5 conference talk proposals! Housekeeping active.";
+          setTimeout(function() { talkStatusMsg.classList.add("hidden"); }, 3000);
+        }
+      });
+    }
+
+    // Initial render of Content Engine & Talk Hub
+    renderContentIdeas();
+    renderPermanentContentVault();
+    renderTalkIdeas();
+    renderPermanentTalksVault();
+
 
     // Export Subscribers CSV
     if (exportSubscribersCsvBtn) {
