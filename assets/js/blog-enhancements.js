@@ -5573,10 +5573,7 @@ function renderPulses(pulses) {
       sessionStorage.removeItem("pulse_admin_authed");
     }
 
-    // Check existing authentication
-    if (sessionStorage.getItem("pulse_admin_authed") === "true") {
-      unlockDashboard();
-    }
+    // Authentication check deferred to the end of initCommunityAdminSystem
 
     if (passcodeBtn && passcodeInput) {
       passcodeBtn.addEventListener("click", function () {
@@ -6371,8 +6368,14 @@ function renderPulses(pulses) {
       if (!grid) return;
       var ideas = getEphemeralContentIdeas();
       if (!ideas.length) {
-        ideas = (defaultContentCurations["all"] || []).slice(0, 5);
-        try { localStorage.setItem(KEY_EPHEMERAL_CONTENT, JSON.stringify(ideas)); } catch (e) {}
+        if (typeof defaultContentCurations !== "undefined" && defaultContentCurations && defaultContentCurations["all"]) {
+          ideas = defaultContentCurations["all"].slice(0, 5);
+        } else {
+          ideas = [];
+        }
+        if (ideas.length) {
+          try { localStorage.setItem(KEY_EPHEMERAL_CONTENT, JSON.stringify(ideas)); } catch (e) {}
+        }
       }
 
       var countBadge = document.getElementById("content-engine-count-badge");
@@ -6578,8 +6581,14 @@ function renderPulses(pulses) {
       if (!grid) return;
       var talks = getEphemeralTalks();
       if (!talks.length) {
-        talks = (defaultTalkCurations["cloud-native"] || []).slice(0, 5);
-        try { localStorage.setItem(KEY_EPHEMERAL_TALKS, JSON.stringify(talks)); } catch (e) {}
+        if (typeof defaultTalkCurations !== "undefined" && defaultTalkCurations && defaultTalkCurations["cloud-native"]) {
+          talks = defaultTalkCurations["cloud-native"].slice(0, 5);
+        } else {
+          talks = [];
+        }
+        if (talks.length) {
+          try { localStorage.setItem(KEY_EPHEMERAL_TALKS, JSON.stringify(talks)); } catch (e) {}
+        }
       }
 
       var countBadge = document.getElementById("talks-count-badge");
@@ -7021,6 +7030,11 @@ function renderPulses(pulses) {
     renderPermanentContentVault();
     renderTalkIdeas();
     renderPermanentTalksVault();
+
+    // Check existing authentication once all variables, data structures, and handlers are initialized
+    if (sessionStorage.getItem("pulse_admin_authed") === "true") {
+      unlockDashboard();
+    }
 
 
     // Export Subscribers CSV
