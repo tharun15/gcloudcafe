@@ -8850,9 +8850,6 @@ function renderPulses(pulses) {
         '<span class="flex items-center gap-1.5 font-bold text-slate-800 dark:text-slate-200">' +
           '<i class="fa-solid fa-chart-simple text-red-500 text-[11px]"></i> Results' +
         '</span>' +
-        '<span class="text-[11px] font-semibold text-slate-400 dark:text-slate-500">' +
-          totalVotes + ' ' + (totalVotes === 1 ? 'vote recorded' : 'votes recorded') +
-        '</span>' +
       '</div>';
       allOptions.forEach(function (opt) {
         var votes = opt.votes || 0;
@@ -8865,7 +8862,7 @@ function renderPulses(pulses) {
 
         var barGradient = isUserChoice
           ? "bg-gradient-to-r from-red-600 to-amber-500"
-          : "bg-slate-300 dark:bg-slate-700";
+          : (votes > 0 ? "bg-slate-500 dark:bg-slate-400" : "bg-transparent");
 
         resultsHtml += '<div class="poll-result-card p-3.5 sm:p-4 rounded-xl border ' + cardBorderClass + ' transition-all">' +
           '<div class="flex items-center justify-between gap-2 mb-1.5">' +
@@ -8878,25 +8875,26 @@ function renderPulses(pulses) {
             '</div>' +
             '<span class="text-xs sm:text-sm font-mono font-black text-slate-900 dark:text-white shrink-0">' + percent + '%</span>' +
           '</div>' +
-          '<div class="w-full bg-slate-100 dark:bg-slate-800/80 rounded-full h-2 my-2 overflow-hidden">' +
+          '<div class="w-full bg-slate-100 dark:bg-slate-800/80 rounded-full h-2.5 my-2 overflow-hidden">' +
             '<div class="poll-progress-bar ' + barGradient + ' h-full rounded-full transition-all duration-700 ease-out" style="width: 0%;" data-target-width="' + percent + '%"></div>' +
           '</div>' +
-          '<div class="flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400">' +
-            '<span class="truncate pr-2">' + escapeHtml(opt.description || '') + '</span>' +
-            '<span class="font-mono shrink-0">' + votes + (votes === 1 ? ' vote' : ' votes') + '</span>' +
-          '</div>' +
+          (opt.description ? '<div class="text-[11px] text-slate-500 dark:text-slate-400 leading-normal truncate">' + escapeHtml(opt.description) + '</div>' : '') +
         '</div>';
       });
 
       container.innerHTML = resultsHtml;
 
-      // Animate progress bars smoothly after paint
-      setTimeout(function () {
-        container.querySelectorAll(".poll-progress-bar").forEach(function (bar) {
-          var target = bar.getAttribute("data-target-width");
-          if (target) bar.style.width = target;
+      // Force layout reflow so animation from 0% to target-width triggers reliably on all options
+      requestAnimationFrame(function () {
+        requestAnimationFrame(function () {
+          container.querySelectorAll(".poll-progress-bar").forEach(function (bar) {
+            var target = bar.getAttribute("data-target-width");
+            if (target) {
+              bar.style.width = target;
+            }
+          });
         });
-      }, 50);
+      });
     }
 
     // Live countdown to next weekly question (Resets Sunday 00:00 UTC)
