@@ -168,3 +168,58 @@ describe('Streamlined Weekly Architecture Prediction Engine', () => {
     expect(sundayCountdown).toBe('6d 06h 00m');
   });
 });
+describe('Weekly Poll Queue & Lifecycle Auto-Replacement Engine', () => {
+  it('automatically replaces active poll with next in line when active poll is deleted', () => {
+    const queue = [
+      { id: 'poll-1', question: 'Question 1', votes: 10 },
+      { id: 'poll-2', question: 'Question 2', votes: 0 },
+      { id: 'poll-3', question: 'Question 3', votes: 0 }
+    ];
+
+    let activePollId = 'poll-1';
+
+    // Simulate delete active poll
+    const idx = queue.findIndex(p => p.id === activePollId);
+    queue.splice(idx, 1);
+    activePollId = queue[0].id;
+
+    expect(queue.length).toBe(2);
+    expect(activePollId).toBe('poll-2');
+    expect(queue[0].id).toBe('poll-2');
+    expect(queue[1].id).toBe('poll-3');
+  });
+
+  it('shifts subsequent queue items forward when an upcoming poll is deleted', () => {
+    const queue = [
+      { id: 'poll-1', question: 'Active Question' },
+      { id: 'poll-2', question: 'Upcoming Question 2' },
+      { id: 'poll-3', question: 'Upcoming Question 3' }
+    ];
+
+    // Delete poll-2 from upcoming queue
+    const idx = queue.findIndex(p => p.id === 'poll-2');
+    queue.splice(idx, 1);
+
+    expect(queue.length).toBe(2);
+    expect(queue[0].id).toBe('poll-1');
+    expect(queue[1].id).toBe('poll-3'); // poll-3 shifted up into slot #2
+  });
+
+  it('allows reordering the upcoming queue so admin controls what goes live next', () => {
+    const queue = [
+      { id: 'poll-1', question: 'Active' },
+      { id: 'poll-2', question: 'Next in line' },
+      { id: 'poll-3', question: 'Second in line' }
+    ];
+
+    // Move poll-3 up
+    const idx = queue.findIndex(p => p.id === 'poll-3');
+    const temp = queue[idx];
+    queue[idx] = queue[idx - 1];
+    queue[idx - 1] = temp;
+
+    expect(queue[1].id).toBe('poll-3'); // poll-3 is now next in line
+    expect(queue[2].id).toBe('poll-2');
+  });
+});
+

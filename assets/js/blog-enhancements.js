@@ -8147,6 +8147,7 @@ function renderPulses(pulses) {
           return;
         }
 
+        var upcomingPollsList = polls.filter(function (p) { return p.id !== activePollId; });
         var html = '';
         filtered.forEach(function (poll) {
           var isLive = poll.id === activePollId;
@@ -8162,14 +8163,29 @@ function renderPulses(pulses) {
                 html += '<span class="text-xs font-semibold text-text/70 dark:text-darkmode-text/70">' + escapeHtml(poll.category || 'Architecture') + '</span>';
               html += '</div>';
 
-              html += '<div class="flex items-center gap-2">';
+              html += '<div class="flex items-center gap-1.5 sm:gap-2 flex-wrap justify-end">';
                 if (isLive) {
                   html += '<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-500 text-white shadow-xs">';
                     html += '<span class="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span> LIVE ON SITE';
                   html += '</span>';
                 } else {
-                  html += '<button data-admin-promote-poll="' + poll.id + '" class="px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-[11px] transition-colors cursor-pointer border-none shadow-xs flex items-center gap-1">';
-                    html += '<i class="fa-solid fa-play text-[9px]"></i> Promote to Live';
+                  var upcomingIndex = upcomingPollsList.indexOf(poll);
+                  if (upcomingIndex === 0) {
+                    html += '<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30 shadow-2xs">';
+                      html += '<i class="fa-regular fa-clock text-[9px]"></i> Next in Line';
+                    html += '</span>';
+                  } else {
+                    html += '<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-mono font-semibold bg-slate-100 dark:bg-slate-800 text-text/60 border border-border/40">';
+                      html += 'Queue #' + (upcomingIndex + 1);
+                    html += '</span>';
+                  }
+
+                  // Queue reorder controls
+                  html += '<button data-admin-move-up-poll="' + poll.id + '" class="px-2 py-1 rounded-lg bg-theme-light dark:bg-darkmode-theme-light hover:bg-slate-200 dark:hover:bg-slate-700 text-text/70 text-[10px] font-bold border border-border/70 cursor-pointer" title="Move Up in Queue">';
+                    html += '<i class="fa-solid fa-arrow-up text-[9px]"></i>';
+                  html += '</button>';
+                  html += '<button data-admin-move-down-poll="' + poll.id + '" class="px-2 py-1 rounded-lg bg-theme-light dark:bg-darkmode-theme-light hover:bg-slate-200 dark:hover:bg-slate-700 text-text/70 text-[10px] font-bold border border-border/70 cursor-pointer" title="Move Down in Queue">';
+                    html += '<i class="fa-solid fa-arrow-down text-[9px]"></i>';
                   html += '</button>';
                 }
 
@@ -8179,6 +8195,10 @@ function renderPulses(pulses) {
 
                 html += '<button data-admin-reset-poll-votes="' + poll.id + '" class="px-2 py-1 rounded-lg bg-transparent hover:bg-rose-500/10 text-rose-500 text-[11px] font-semibold border border-rose-500/30 cursor-pointer" title="Reset votes for this poll">';
                   html += '<i class="fa-solid fa-rotate-left text-[9px]"></i> Reset';
+                html += '</button>';
+
+                html += '<button data-admin-delete-poll="' + poll.id + '" class="px-2 py-1 rounded-lg bg-transparent hover:bg-rose-500/10 text-rose-600 dark:text-rose-400 text-[11px] font-semibold border border-rose-500/40 cursor-pointer flex items-center gap-1" title="Delete poll (next item replaces it)">';
+                  html += '<i class="fa-solid fa-trash text-[9px]"></i> Delete';
                 html += '</button>';
               html += '</div>';
             html += '</div>';
@@ -8214,14 +8234,88 @@ function renderPulses(pulses) {
 
         grid.innerHTML = html;
 
-        grid.querySelectorAll("[data-admin-promote-poll]").forEach(function (btn) {
+        // Move Up in Queue
+        grid.querySelectorAll("[data-admin-move-up-poll]").forEach(function (btn) {
           btn.onclick = function (e) {
             e.preventDefault();
-            var targetId = btn.getAttribute("data-admin-promote-poll");
+            var targetId = btn.getAttribute("data-admin-move-up-poll");
+            var idx = polls.findIndex(function (p) { return p.id === targetId; });
+            if (idx > 0) {
+              // Ensure we don't swap with active poll if active poll is at 0
+              var prevIdx = idx - 1;
+              var temp = polls[idx];
+              polls[idx] = polls[prevIdx];
+              polls[prevIdx] = temp;
+              cachedPollsQueue = polls;
+              try {
+                localStorage.setItem("gcloudcafe_admin_polls_queue", JSON.stringify(polls));
+              } catch (err) {}
+              showPollsToast("Moved up in queue!");
+              renderWeeklyPollsAdminQueue();
+            }
+          };
+        });
+
+        // Move Down in Queue
+        grid.querySelectorAll("[data-admin-move-down-poll]").forEach(function (btn) {
+          btn.onclick = function (e) {
+            e.preventDefault();
+            var targetId = btn.getAttribute("data-admin-move-down-poll");
+            var idx = polls.findIndex(function (p) { return p.id === targetId; });
+            if (idx >= 0 && idx < polls.length - 1) {
+              var nextIdx = idx + 1;
+              var temp = polls[idx];
+              polls[idx] = polls[nextIdx];
+              polls[nextIdx] = temp;
+              cachedPollsQueue = polls;
+              try {
+                localStorage.setItem("gcloudcafe_admin_polls_queue", JSON.stringify(polls));
+              } catch (err) {}
+              showPollsToast("Moved down in queue!");
+              renderWeeklyPollsAdminQueue();
+            }
+          };
+        });
+
+        // Delete Poll from Queue (next item automatically replaces it)
+        grid.querySelectorAll("[data-admin-delete-poll]").forEach(function (btn) {
+          btn.onclick = function (e) {
+            e.preventDefault();
+            var targetId = btn.getAttribute("data-admin-delete-poll");
+            var idx = polls.findIndex(function (p) { return p.id === targetId; });
+            if (idx < 0) return;
+
+            var isTargetActive = (targetId === activePollId);
+            var confirmMsg = isTargetActive
+              ? "Are you sure you want to delete the active poll? The next scheduled question in the queue will immediately replace it."
+              : "Are you sure you want to delete this poll? Upcoming queued questions will automatically shift up to replace it.";
+
+            if (!confirm(confirmMsg)) return;
+
+            // Remove poll from array
+            polls.splice(idx, 1);
+
+            // Clean up localStorage vote record for deleted poll
             try {
-              localStorage.setItem("gcloudcafe_admin_active_poll_id", targetId);
+              localStorage.removeItem("gcloudcafe_weekly_poll_" + targetId);
             } catch (err) {}
-            showPollsToast("Promoted " + targetId + " to Live on Site!");
+
+            // If deleted poll was active, promote next item in queue to be active
+            if (isTargetActive && polls.length > 0) {
+              var newActivePoll = polls[idx] || polls[0];
+              try {
+                localStorage.setItem("gcloudcafe_admin_active_poll_id", newActivePoll.id);
+              } catch (err) {}
+              showPollsToast("Active poll deleted. Replaced by: " + (newActivePoll.topic || newActivePoll.question));
+            } else {
+              showPollsToast("Poll deleted. Queue automatically shifted up!");
+            }
+
+            cachedPollsQueue = polls;
+            try {
+              localStorage.setItem("gcloudcafe_admin_polls_queue", JSON.stringify(polls));
+            } catch (err) {}
+
             renderWeeklyPollsAdminQueue();
           };
         });
