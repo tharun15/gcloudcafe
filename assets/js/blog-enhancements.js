@@ -5503,11 +5503,19 @@ function renderPulses(pulses) {
     var authedControls = document.getElementById("admin-authed-controls");
     var logoutBtn = document.getElementById("admin-logout-btn");
 
-    // Tabs
+    // Tabs & Dropdown Selectors
     var tabProposalsBtn = document.getElementById("tab-proposals-btn");
     var tabSubscribersBtn = document.getElementById("tab-subscribers-btn");
+    var tabContentEngineBtn = document.getElementById("tab-content-engine-btn");
+    var tabTalksBtn = document.getElementById("tab-talks-btn");
+    var contentNicheSelect = document.getElementById("content-engine-niche-select");
+    var talkVenueSelect = document.getElementById("talk-venue-select");
+
     var sectionProposals = document.getElementById("section-author-proposals");
     var sectionSubscribers = document.getElementById("section-newsletter-subscribers");
+    var sectionContentEngine = document.getElementById("section-content-engine");
+    var sectionTalkIdeas = document.getElementById("section-talk-ideas");
+
     var refreshBtn = document.getElementById("refresh-community-btn");
 
     // Proposals Elements
@@ -5553,6 +5561,10 @@ function renderPulses(pulses) {
 
       loadProposals();
       loadSubscribers();
+      renderContentIdeas();
+      renderPermanentContentVault();
+      renderTalkIdeas();
+      renderPermanentTalksVault();
     }
 
     function lockDashboard() {
@@ -5563,10 +5575,7 @@ function renderPulses(pulses) {
       sessionStorage.removeItem("pulse_admin_authed");
     }
 
-    // Check existing authentication
-    if (sessionStorage.getItem("pulse_admin_authed") === "true") {
-      unlockDashboard();
-    }
+    // Authentication check deferred to the end of initCommunityAdminSystem
 
     if (passcodeBtn && passcodeInput) {
       passcodeBtn.addEventListener("click", function () {
@@ -5621,22 +5630,44 @@ function renderPulses(pulses) {
       logoutBtn.addEventListener("click", lockDashboard);
     }
 
-    // Tab Navigation
-    if (tabProposalsBtn && tabSubscribersBtn && sectionProposals && sectionSubscribers) {
-      tabProposalsBtn.addEventListener("click", function () {
-        tabProposalsBtn.className = "px-4 py-2 rounded-xl text-xs font-extrabold bg-primary text-white border-none cursor-pointer shadow-xs transition-all flex items-center gap-2";
-        tabSubscribersBtn.className = "px-4 py-2 rounded-xl text-xs font-bold bg-theme-light dark:bg-darkmode-theme-light text-text/80 dark:text-darkmode-text/80 hover:text-primary border border-border/60 dark:border-darkmode-border/60 cursor-pointer transition-all flex items-center gap-2";
-        sectionProposals.classList.remove("hidden");
-        sectionSubscribers.classList.add("hidden");
+    // Tab Navigation for all 4 admin tools (automatically re-loads dynamic content upon switching)
+    function switchAdminTab(activeTab) {
+      var allTabs = [
+        { btn: tabProposalsBtn, sec: sectionProposals, activeClass: "bg-primary text-white font-extrabold" },
+        { btn: tabSubscribersBtn, sec: sectionSubscribers, activeClass: "bg-primary text-white font-extrabold" },
+        { btn: tabContentEngineBtn, sec: sectionContentEngine, activeClass: "bg-amber-500 text-white font-extrabold shadow-xs" },
+        { btn: tabTalksBtn, sec: sectionTalkIdeas, activeClass: "bg-indigo-600 text-white font-extrabold shadow-xs" }
+      ];
+
+      allTabs.forEach(function (t) {
+        if (!t.btn || !t.sec) return;
+        if (t.btn === activeTab) {
+          t.btn.className = "px-4 py-2 rounded-xl text-xs border-none cursor-pointer shadow-xs transition-all flex items-center gap-2 " + t.activeClass;
+          t.sec.classList.remove("hidden");
+        } else {
+          t.btn.className = "px-4 py-2 rounded-xl text-xs font-bold bg-theme-light dark:bg-darkmode-theme-light text-text/80 dark:text-darkmode-text/80 hover:text-primary border border-border/60 dark:border-darkmode-border/60 cursor-pointer transition-all flex items-center gap-2";
+          t.sec.classList.add("hidden");
+        }
       });
 
-      tabSubscribersBtn.addEventListener("click", function () {
-        tabSubscribersBtn.className = "px-4 py-2 rounded-xl text-xs font-extrabold bg-primary text-white border-none cursor-pointer shadow-xs transition-all flex items-center gap-2";
-        tabProposalsBtn.className = "px-4 py-2 rounded-xl text-xs font-bold bg-theme-light dark:bg-darkmode-theme-light text-text/80 dark:text-darkmode-text/80 hover:text-primary border border-border/60 dark:border-darkmode-border/60 cursor-pointer transition-all flex items-center gap-2";
-        sectionSubscribers.classList.remove("hidden");
-        sectionProposals.classList.add("hidden");
-      });
+      // Automatically re-render dynamic items upon switching tabs so user sees previously generated data
+      if (activeTab === tabContentEngineBtn) {
+        renderContentIdeas();
+        renderPermanentContentVault();
+      } else if (activeTab === tabTalksBtn) {
+        renderTalkIdeas();
+        renderPermanentTalksVault();
+      } else if (activeTab === tabProposalsBtn) {
+        renderProposals();
+      } else if (activeTab === tabSubscribersBtn) {
+        renderSubscribers();
+      }
     }
+
+    if (tabProposalsBtn) tabProposalsBtn.addEventListener("click", function() { switchAdminTab(tabProposalsBtn); });
+    if (tabSubscribersBtn) tabSubscribersBtn.addEventListener("click", function() { switchAdminTab(tabSubscribersBtn); });
+    if (tabContentEngineBtn) tabContentEngineBtn.addEventListener("click", function() { switchAdminTab(tabContentEngineBtn); });
+    if (tabTalksBtn) tabTalksBtn.addEventListener("click", function() { switchAdminTab(tabTalksBtn); });
 
     if (refreshBtn) {
       refreshBtn.addEventListener("click", function () {
@@ -6028,6 +6059,1933 @@ function renderPulses(pulses) {
         });
       });
     }
+
+
+
+    /* ══════════════════════════════════════════════════════════ */
+    /* ── SECTION 3 & 4: CONTENT ENGINE & TALK SPEAKER HUB ─── */
+    /* ══════════════════════════════════════════════════════════ */
+
+    // Ephemeral & Permanent Storage Keys
+    var KEY_EPHEMERAL_CONTENT = "gcloudcafe_ephemeral_content_ideas";
+    var KEY_PERMANENT_CONTENT = "gcloudcafe_permanent_content_ideas";
+    var KEY_EPHEMERAL_TALKS = "gcloudcafe_ephemeral_talk_ideas";
+    var KEY_PERMANENT_TALKS = "gcloudcafe_permanent_talk_ideas";
+
+    // Rich Curated Grounded Content Topics Pool
+    var defaultContentCurations = {
+      "all": [
+        {
+          id: "rec_k8s_gateway",
+          title: "Kubernetes Gateway API in Production: Migrating from Ingress with Zero Downtime",
+          category: "Kubernetes",
+          categoryType: "🌲 Evergreen Architectural Core",
+          viralityScore: 97,
+          whyViral: "Gateway API reached GA and Kubernetes SIG-Network is urging migration. Production teams struggle with HTTPRoute and TLS cross-namespace delegation.",
+          keywords: "kubernetes gateway api, migrate ingress to gateway api, httproute example, tls gateway api",
+          groundingRefs: [
+            { title: "Kubernetes KEP-1907: Gateway API Spec", url: "https://github.com/kubernetes/enhancements/issues/1907" },
+            { title: "Gateway API v1.1 Release Notes", url: "https://gateway-api.sigs.k8s.io/" }
+          ],
+          outline: [
+            "Architectural shift: Ingress vs Gateway API separation of roles (Infra vs App dev)",
+            "Step-by-step canary migration using Envoy Gateway and HTTPRoute traffic weights",
+            "Debugging cross-namespace ReferenceGrants and TLS certificate routing"
+          ]
+        },
+        {
+          id: "rec_gemini_adk",
+          title: "Building Multi-Agent Workflows with Gemini Enterprise Agent Platform & Python",
+          category: "AI Agents",
+          categoryType: "🔥 Latest Viral & Trending",
+          viralityScore: 95,
+          whyViral: "Enterprise AI shifts from raw chat prompts to deterministic multi-agent systems with schema-constrained JSON outputs.",
+          keywords: "gemini enterprise agent platform, vertex ai multi agent, pydantic gemini python, express mode",
+          groundingRefs: [
+            { title: "arXiv:2403.05530: Gemini 1.5 Architecture", url: "https://arxiv.org/abs/2403.05530" },
+            { title: "Google Cloud: Gemini Agent Platform Documentation", url: "https://cloud.google.com/vertex-ai" }
+          ],
+          outline: [
+            "Single prompt vs Agentic loop: State management and tool calling",
+            "Express Mode bootstrapping with ADC vs API key credentials",
+            "Production schema enforcement with Pydantic and retry backoffs"
+          ]
+        },
+        {
+          id: "rec_openshift_storage",
+          title: "OpenShift 4 Storage Troubleshooting: Recovering from Multi-Attach Errors (VolumeLocked)",
+          category: "OpenShift",
+          categoryType: "🧪 Production Runbook & War Story",
+          viralityScore: 94,
+          whyViral: "Volume attachment timeout is the #1 reason stateful pods get stuck in ContainerCreating in enterprise OpenShift clusters.",
+          keywords: "openshift storage volume locked error, rwo pvc containercreating, ceph odf attach error",
+          groundingRefs: [
+            { title: "Kubernetes CSI Spec v1.5", url: "https://github.com/container-storage-interface/spec" },
+            { title: "Red Hat OpenShift Storage Troubleshooting Guide", url: "https://docs.openshift.com/" }
+          ],
+          outline: [
+            "Root cause: CSI node driver detachment timeouts and kubelet unmount loops",
+            "Step-by-step force-detach runbook using oc and volumeattachment CRDs",
+            "Long-term remediation: Pod disruption budgets and ReadWriteMany CSI configuration"
+          ]
+        },
+        {
+          id: "rec_tls_quantum",
+          title: "Post-Quantum Cryptography in TLS: Benchmarking X25519MLKEM768 in NGINX & Cloudflare",
+          category: "Security",
+          categoryType: "🎯 High Search Growth / Spec Finalized",
+          viralityScore: 92,
+          whyViral: "NIST standardized post-quantum algorithms (ML-KEM). Major browsers now negotiate hybrid post-quantum key exchange by default.",
+          keywords: "post quantum tls 1.3, ml kem 768 benchmark, hybrid key exchange, nginx openssl 3.3",
+          groundingRefs: [
+            { title: "NIST FIPS 203: ML-KEM Standard", url: "https://csrc.nist.gov/pubs/fips/203/final" },
+            { title: "IETF RFC 8446: TLS Protocol v1.3", url: "https://datatracker.ietf.org/doc/html/rfc8446" }
+          ],
+          outline: [
+            "How hybrid post-quantum key exchange works (ECDH + Kyber / ML-KEM)",
+            "Packet size impact: Measuring TCP handshake latency over real mobile networks",
+            "Configuring OpenSSL 3.x and Ingress controllers for post-quantum readiness"
+          ]
+        },
+        {
+          id: "rec_gcp_bigquery",
+          title: "BigQuery Storage Billing Optimization: Physical vs Logical Storage Deep Dive",
+          category: "Google Cloud",
+          categoryType: "🌲 Evergreen Architectural Core",
+          viralityScore: 90,
+          whyViral: "Google Cloud introduced physical storage billing which can cut BigQuery storage costs by up to 50% for compressed datasets.",
+          keywords: "bigquery physical vs logical storage, gcp cost optimization, bq partitioning clustering",
+          groundingRefs: [
+            { title: "Google Research: Capacitor Columnar Storage (VLDB)", url: "https://research.google/pubs/pub45778/" },
+            { title: "BigQuery Documentation: Storage Billing Models", url: "https://cloud.google.com/bigquery/pricing" }
+          ],
+          outline: [
+            "Understanding Capacitor compression ratios on columnar BigQuery tables",
+            "Querying INFORMATION_SCHEMA.TABLE_STORAGE to evaluate cost savings",
+            "Safe transition script without interrupting BI queries"
+          ]
+        }
+      ],
+      "kubernetes": [
+        {
+          id: "rec_k8s_gateway_api",
+          title: "Kubernetes Gateway API: Production HTTPRoute Traffic Splitting & Canary Deployments",
+          category: "Kubernetes",
+          categoryType: "🌲 Evergreen Architectural Core",
+          viralityScore: 96,
+          whyViral: "Gateway API is replacing Ingress controllers across all major managed Kubernetes distributions.",
+          keywords: "kubernetes gateway api canary, envoy gateway httproute, k8s traffic splitting",
+          groundingRefs: [
+            { title: "Kubernetes KEP-1907 Gateway API", url: "https://github.com/kubernetes/enhancements/issues/1907" }
+          ],
+          outline: [
+            "HTTPRoute vs classic Ingress annotations: cleaner multi-service traffic weights",
+            "Blue/Green and progressive Canary deployments with Envoy Gateway",
+            "Cross-namespace ReferenceGrant security boundaries"
+          ]
+        },
+        {
+          id: "rec_k8s_dns_latency",
+          title: "Debugging Silent 5-Second DNS Latency Spikes in CoreDNS & Kubernetes",
+          category: "Kubernetes",
+          categoryType: "🧪 Production Runbook & War Story",
+          viralityScore: 95,
+          whyViral: "The ndots:5 issue continues to silently degrade microservice latency across production clusters.",
+          keywords: "coredns 5s latency, ndots 5 kubernetes, coredns autopath packet drop",
+          groundingRefs: [
+            { title: "CoreDNS Architecture & Performance", url: "https://coredns.io/manual/toc/" }
+          ],
+          outline: [
+            "Why resolv.conf ndots:5 causes 4 sequential failed queries for external domains",
+            "Configuring NodeLocal DNSCache and CoreDNS autopath plugin",
+            "Benchmarking DNS query latencies under synthetic 10,000 QPS load"
+          ]
+        },
+        {
+          id: "rec_k8s_ebpf_cilium",
+          title: "eBPF-Powered Kubernetes Networking: Replacing Kube-Proxy with Cilium",
+          category: "Kubernetes",
+          categoryType: "🔥 Latest Viral & Trending",
+          viralityScore: 94,
+          whyViral: "Iptables overhead on 1,000+ node clusters is driving enterprise adoption of eBPF and Cilium.",
+          keywords: "ebpf cilium kube-proxy replacement, kubernetes packet tracing, cilium hubble",
+          groundingRefs: [
+            { title: "Cilium eBPF Architecture Spec", url: "https://docs.cilium.io/" }
+          ],
+          outline: [
+            "Why large iptables rulesets cause O(N) packet traversal bottlenecks",
+            "Direct server return (DSR) and socket-level load balancing with eBPF",
+            "Tracing dropped packets with Hubble CLI in real time"
+          ]
+        },
+        {
+          id: "rec_k8s_dra",
+          title: "Dynamic Resource Allocation (DRA) in Kubernetes: Next-Gen GPU & Accelerator Scheduling",
+          category: "Kubernetes",
+          categoryType: "🎯 High Search Growth / Spec Finalized",
+          viralityScore: 92,
+          whyViral: "Standard Device Plugins cannot handle dynamic GPU slicing or multi-node tensor interconnects for LLM inference workloads.",
+          keywords: "kubernetes dra gpu scheduling, dynamic resource allocation k8s, kep 3063",
+          groundingRefs: [
+            { title: "Kubernetes KEP-3063: Dynamic Resource Allocation", url: "https://github.com/kubernetes/enhancements/issues/3063" }
+          ],
+          outline: [
+            "Device Plugins vs DRA architecture: ResourceClaims and ResourceClaimTemplates",
+            "Allocating NVIDIA Multi-Instance GPUs (MIG) dynamically per pod",
+            "Benchmarking scheduling throughput for batch AI inference pipelines"
+          ]
+        },
+        {
+          id: "rec_k8s_pdb",
+          title: "PodDisruptionBudgets and Eviction API: Preventing Cascading Outages During Cluster Upgrades",
+          category: "Kubernetes",
+          categoryType: "🌲 Evergreen Architectural Core",
+          viralityScore: 91,
+          whyViral: "Aggressive node draining during automated GKE/EKS upgrades frequently violates quorum in stateful workloads.",
+          keywords: "poddisruptionbudget best practices, pdb eviction api, zero downtime node drain",
+          groundingRefs: [
+            { title: "Kubernetes Disruptions Architecture", url: "https://kubernetes.io/docs/concepts/workloads/pods/disruptions/" }
+          ],
+          outline: [
+            "How the Eviction API checks minAvailable and maxUnavailable before evicting pods",
+            "Configuring PDBs for etcd, Kafka, and Redis clusters to avoid split-brain",
+            "Writing safe cordon and drain automated CI/CD pipelines"
+          ]
+        }
+      ],
+      "google-cloud": [
+        {
+          id: "rec_gcp_spanner_dual",
+          title: "Google Cloud Spanner Dual-Region Configurations: Achieving 99.999% SLA at Lower Cost",
+          category: "Google Cloud",
+          categoryType: "🌲 Evergreen Architectural Core",
+          viralityScore: 95,
+          whyViral: "Dual-region instances offer five-nines availability without paying the higher latency and slot costs of multi-region replication.",
+          keywords: "cloud spanner dual region, spanner high availability, gcp database architecture",
+          groundingRefs: [
+            { title: "Google Spanner TrueTime Paper (OSDI)", url: "https://research.google/pubs/pub39966/" }
+          ],
+          outline: [
+            "Leader election and TrueTime commit wait mechanics across dual regions",
+            "Configuring witness nodes for automatic zero-RPO failovers",
+            "Read-write transaction latency benchmarks vs multi-region configurations"
+          ]
+        },
+        {
+          id: "rec_gcp_cloudrun_vpc",
+          title: "Direct VPC Egress for Cloud Run: Eliminating Serverless VPC Access Connectors",
+          category: "Google Cloud",
+          categoryType: "🔥 Latest Viral & Trending",
+          viralityScore: 94,
+          whyViral: "Direct VPC egress drastically cuts serverless latency and eliminates costly Connector VMs.",
+          keywords: "cloud run direct vpc egress, serverless vpc connector replacement, private cloud sql run",
+          groundingRefs: [
+            { title: "Google Cloud Run Networking Architecture", url: "https://cloud.google.com/run/docs/configuring/vpc-direct-vpc" }
+          ],
+          outline: [
+            "Legacy Serverless VPC Access Connectors vs Direct VPC Egress performance",
+            "Connecting Cloud Run containers to Private Service Access (Cloud SQL & Memorystore)",
+            "Terraform configuration for subnets with private Google access"
+          ]
+        },
+        {
+          id: "rec_gcp_bigquery_phys",
+          title: "BigQuery Physical Storage Billing: Saving 50% on Petabyte Columnar Tables",
+          category: "Google Cloud",
+          categoryType: "🌲 Evergreen Architectural Core",
+          viralityScore: 93,
+          whyViral: "Capacitor compression ratios make physical storage far cheaper than active logical pricing.",
+          keywords: "bigquery physical storage billing, capacitor compression, gcp finops bq",
+          groundingRefs: [
+            { title: "Google Research: Capacitor Columnar Storage (VLDB)", url: "https://research.google/pubs/pub45778/" }
+          ],
+          outline: [
+            "Comparing physical compressed bytes against uncompressed logical bytes",
+            "Querying INFORMATION_SCHEMA.TABLE_STORAGE to forecast cost reduction",
+            "Automated transition script with zero query downtime"
+          ]
+        },
+        {
+          id: "rec_gcp_workload_id",
+          title: "GKE Workload Identity Federation: Eliminating Long-Lived Service Account Keys",
+          category: "Google Cloud",
+          categoryType: "🧪 Production Runbook & War Story",
+          viralityScore: 92,
+          whyViral: "Leaked service account JSON keys remain the primary vector for GCP security breaches.",
+          keywords: "gke workload identity federation, eliminate gcp service account json, gke iam role binding",
+          groundingRefs: [
+            { title: "Google Cloud Workload Identity Federation Guide", url: "https://cloud.google.com/iam/docs/workload-identity-federation" }
+          ],
+          outline: [
+            "How Kubernetes ServiceAccounts map to Google Service Accounts via OIDC",
+            "Automating IAM policy bindings with Terraform and Kustomize",
+            "Audit scripts to detect and revoke orphaned JSON service account keys"
+          ]
+        },
+        {
+          id: "rec_gcp_vertex_agents",
+          title: "Vertex AI Agent Platform: Bootstrapping Stateful Multi-Tool Agent Workflows",
+          category: "Google Cloud",
+          categoryType: "🔥 Latest Viral & Trending",
+          viralityScore: 91,
+          whyViral: "Enterprises want turnkey agents with grounding and tool calling directly inside Google Cloud VPCs.",
+          keywords: "vertex ai agent builder, gemini agent enterprise platform, adc vertex python",
+          groundingRefs: [
+            { title: "Google Cloud: Vertex AI Agent Architecture", url: "https://cloud.google.com/vertex-ai" }
+          ],
+          outline: [
+            "Agent state orchestration: Memory stores and session management",
+            "Secure tool execution via Cloud Run private endpoints",
+            "Latency and cost benchmarking across Gemini 1.5 Flash vs Pro"
+          ]
+        }
+      ],
+      "ai-agents": [
+        {
+          id: "rec_ai_pydantic_schema",
+          title: "Schema-Constrained LLM Generation: Enforcing Strict Pydantic Output in Production",
+          category: "AI Agents",
+          categoryType: "🌲 Evergreen Architectural Core",
+          viralityScore: 96,
+          whyViral: "Downstream microservices crash when LLMs return unstructured or hallucinated JSON keys.",
+          keywords: "pydantic json schema llm, gemini response_schema python, deterministic agent output",
+          groundingRefs: [
+            { title: "arXiv:2403.05530: Gemini Model Architecture", url: "https://arxiv.org/abs/2403.05530" }
+          ],
+          outline: [
+            "Grammar-constrained decoding vs prompt engineering",
+            "Implementing nested Pydantic models with Gemini responseSchema",
+            "Self-correcting validation loops with AST parsing and automated retries"
+          ]
+        },
+        {
+          id: "rec_ai_tool_calling",
+          title: "Autonomous Tool Calling: Preventing Infinite Tool Execution Loops in Multi-Agent Systems",
+          category: "AI Agents",
+          categoryType: "🧪 Production Runbook & War Story",
+          viralityScore: 95,
+          whyViral: "Unbounded agent loops can rack up thousands of dollars in API bills and freeze worker processes.",
+          keywords: "agent loop termination, tool calling guardrails, langgraph multi agent limits",
+          groundingRefs: [
+            { title: "arXiv:2305.15334: Gorilla Tool Calling Architecture", url: "https://arxiv.org/abs/2305.15334" }
+          ],
+          outline: [
+            "Loop detection heuristics: cycle detection and token burn monitors",
+            "State machine limits: max_iterations and circuit breakers",
+            "Writing non-blocking async tool dispatchers with timeout fallbacks"
+          ]
+        },
+        {
+          id: "rec_ai_rag_evaluation",
+          title: "Evaluating RAG Retrieval Quality: Measuring Context Precision and Recall with Ragas",
+          category: "AI Agents",
+          categoryType: "🎯 High Search Growth / Spec Finalized",
+          viralityScore: 93,
+          whyViral: "Vector search precision is the bottleneck in production AI agent knowledge grounding.",
+          keywords: "rag evaluation ragas, context precision recall, chunking benchmark vector search",
+          groundingRefs: [
+            { title: "arXiv:2309.15217: Ragas Automated RAG Evaluation", url: "https://arxiv.org/abs/2309.15217" }
+          ],
+          outline: [
+            "Semantic chunking strategies vs fixed-token chunking",
+            "Automated evaluation metrics: Faithfulness, Answer Relevance, and Context Recall",
+            "Continuous integration test suite for knowledge base updates"
+          ]
+        },
+        {
+          id: "rec_ai_local_quant",
+          title: "Running Enterprise LLMs Locally: vLLM, Speculative Decoding, and KV Cache Optimization",
+          category: "AI Agents",
+          categoryType: "🔥 Latest Viral & Trending",
+          viralityScore: 92,
+          whyViral: "Data privacy regulations are forcing enterprises to host models on private GKE/EKS clusters.",
+          keywords: "vllm speculative decoding, pagedattention kv cache, private llm hosting k8s",
+          groundingRefs: [
+            { title: "vLLM: Efficient Memory Management with PagedAttention (SOSP)", url: "https://arxiv.org/abs/2309.06180" }
+          ],
+          outline: [
+            "PagedAttention mechanics: eliminating memory fragmentation in GPU VRAM",
+            "Speculative decoding: drafting with small models to double throughput",
+            "Deploying vLLM container workloads with autoscaling on GKE"
+          ]
+        },
+        {
+          id: "rec_ai_agent_eval",
+          title: "Production Multi-Agent Observability: Tracing Token Latency & Steps with OpenTelemetry",
+          category: "AI Agents",
+          categoryType: "🌲 Evergreen Architectural Core",
+          viralityScore: 90,
+          whyViral: "Debugging multi-turn agent conversations requires distributed tracing down to tool invocations.",
+          keywords: "opentelemetry ai agent tracing, arize phoenix otel, llm observability latency",
+          groundingRefs: [
+            { title: "OpenTelemetry GenAI Semantic Conventions", url: "https://opentelemetry.io/docs/specs/semconv/gen-ai/" }
+          ],
+          outline: [
+            "Mapping agent graph execution steps to OpenTelemetry spans",
+            "Capturing input/output token metrics and tool latencies in Prometheus",
+            "Visualizing execution bottlenecks and retries in Jaeger"
+          ]
+        }
+      ],
+      "openshift": [
+        {
+          id: "rec_ocp_multitenancy",
+          title: "OpenShift 4 Multi-Tenancy Architecture: Project Request Templates and Quota Isolation",
+          category: "OpenShift",
+          categoryType: "🌲 Evergreen Architectural Core",
+          viralityScore: 96,
+          whyViral: "Ungoverned self-service in large enterprise OpenShift clusters leads to noisy neighbor outages.",
+          keywords: "openshift project request templates, clusterresourcequota ocp4, multitenant isolation openshift",
+          groundingRefs: [
+            { title: "Red Hat OpenShift Multi-Tenancy Architecture Guide", url: "https://cloud.redhat.com/architecture/" }
+          ],
+          outline: [
+            "Customizing project-request templates to inject default NetworkPolicies and LimitRanges",
+            "Configuring ClusterResourceQuotas across groups of developer namespaces",
+            "Automated tenant onboarding via GitOps pipelines"
+          ]
+        },
+        {
+          id: "rec_ocp_storage_trouble",
+          title: "Resolving OpenShift 4 Multi-Attach Storage Locks (VolumeAttachment Stuck)",
+          category: "OpenShift",
+          categoryType: "🧪 Production Runbook & War Story",
+          viralityScore: 95,
+          whyViral: "CSI volume attachment timeouts are the most common cause of ContainerCreating stalls in OCP.",
+          keywords: "openshift volumeattachment stuck, csi attach error rwo, openshift storage remediation",
+          groundingRefs: [
+            { title: "Kubernetes CSI Spec v1.5", url: "https://github.com/container-storage-interface/spec" }
+          ],
+          outline: [
+            "Analyzing Kubelet unmount loops vs cloud CSI attachment timeouts",
+            "Safely force-detaching VolumeAttachment resources using oc patch",
+            "Remediation: PDB configurations and Ceph/ODF ReadWriteMany settings"
+          ]
+        },
+        {
+          id: "rec_ocp_ex280",
+          title: "EX280 Exam Mastery: 16 Essential Drills for Red Hat Certified OpenShift Administrator",
+          category: "OpenShift",
+          categoryType: "🎯 High Search Growth / Spec Finalized",
+          viralityScore: 94,
+          whyViral: "Engineers taking the hands-on EX280 exam need practical speed drills to pass under the 3-hour limit.",
+          keywords: "ex280 exam drills, openshift administrator certification, ex280 rhcsa ocp4",
+          groundingRefs: [
+            { title: "Red Hat Certified Specialist in OpenShift Administration (EX280)", url: "https://www.redhat.com/en/services/training/ex280" }
+          ],
+          outline: [
+            "Essential oc CLI shortcuts and dry-run manifest generation",
+            "Role bindings, HTPasswd identity providers, and machine config pools",
+            "Storage provisioning and troubleshooting exercises"
+          ]
+        },
+        {
+          id: "rec_ocp_gitops",
+          title: "OpenShift GitOps with ArgoCD: Declarative Cluster Config & Zero-Drift Governance",
+          category: "OpenShift",
+          categoryType: "🌲 Evergreen Architectural Core",
+          viralityScore: 92,
+          whyViral: "Managing cluster configurations manually across multiple OpenShift clusters causes configuration drift.",
+          keywords: "openshift gitops argocd, zero drift cluster governance, app of apps pattern ocp",
+          groundingRefs: [
+            { title: "OpenShift GitOps Documentation", url: "https://docs.openshift.com/container-platform/latest/cicd/gitops/understanding-openshift-gitops.html" }
+          ],
+          outline: [
+            "App-of-Apps architectural pattern for multi-cluster rollout",
+            "Managing secrets securely in Git with Sealed Secrets and Vault",
+            "Automated sync-wave ordering for Operators and Custom Resources"
+          ]
+        },
+        {
+          id: "rec_ocp_egress",
+          title: "OpenShift Egress Firewalls & EgressIPs: Enterprise Perimeter Security",
+          category: "OpenShift",
+          categoryType: "🧪 Production Runbook & War Story",
+          viralityScore: 91,
+          whyViral: "Corporate compliance requires outbound container traffic to route through predictable, static firewall IPs.",
+          keywords: "openshift egressip configuration, ocp egressnetworkpolicy, static outbound ip k8s",
+          groundingRefs: [
+            { title: "OVN-Kubernetes Egress Architecture", url: "https://github.com/ovn-org/ovn-kubernetes" }
+          ],
+          outline: [
+            "OVN-Kubernetes CNI packet forwarding for egress IP assignment",
+            "Configuring EgressNetworkPolicy to restrict external API access",
+            "High availability failover mechanics for node-hosted EgressIPs"
+          ]
+        }
+      ],
+      "tls-security": [
+        {
+          id: "rec_sec_pqc_bench",
+          title: "Benchmarking Post-Quantum Hybrid TLS 1.3: Latency & Packet Overhead with ML-KEM",
+          category: "Security",
+          categoryType: "🎯 High Search Growth / Spec Finalized",
+          viralityScore: 96,
+          whyViral: "NIST's publication of FIPS 203 has triggered widespread browser and CDN adoption of post-quantum TLS.",
+          keywords: "post quantum tls 1.3 benchmark, ml kem 768 packet size, x25519mlkem768 handshake",
+          groundingRefs: [
+            { title: "NIST FIPS 203: ML-KEM Standard", url: "https://csrc.nist.gov/pubs/fips/203/final" },
+            { title: "IETF RFC 8446: TLS 1.3 Specification", url: "https://datatracker.ietf.org/doc/html/rfc8446" }
+          ],
+          outline: [
+            "Cryptographic breakdown: ECDH + Kyber / ML-KEM-768 hybrid key exchange",
+            "Measuring initial flight packet fragmentation across lossy mobile networks",
+            "OpenSSL 3.3 and NGINX configuration guide for production readiness"
+          ]
+        },
+        {
+          id: "rec_sec_spiffe_spire",
+          title: "Zero-Trust Service Mesh Authentication: SPIFFE/SPIRE in Multi-Cluster Kubernetes",
+          category: "Security",
+          categoryType: "🌲 Evergreen Architectural Core",
+          viralityScore: 95,
+          whyViral: "Static API keys and shared secrets are being replaced by cryptographic cryptographic workload identities.",
+          keywords: "spiffe spire multi cluster, workload identity mTLS, spire node agent cert rotation",
+          groundingRefs: [
+            { title: "SPIFFE Specification & Architecture", url: "https://spiffe.io/" }
+          ],
+          outline: [
+            "Workload attestation: How SPIRE node agents verify pod UID and namespace",
+            "Automated X.509 SVID issuance and microsecond rotation",
+            "Federated cross-cluster trust domains without shared root CAs"
+          ]
+        },
+        {
+          id: "rec_sec_cert_manager",
+          title: "Automated Certificate Management in Kubernetes: Zero-Downtime Let's Encrypt Rotation",
+          category: "Security",
+          categoryType: "🧪 Production Runbook & War Story",
+          viralityScore: 94,
+          whyViral: "Expired TLS certificates remain a top cause of sudden customer-facing production outages.",
+          keywords: "cert-manager lets encrypt zero downtime, acme dns01 ingress certs, vault pki k8s",
+          groundingRefs: [
+            { title: "cert-manager Architecture & Design", url: "https://cert-manager.io/docs/" }
+          ],
+          outline: [
+            "Configuring ClusterIssuers with ACME DNS-01 and HTTP-01 challenges",
+            "Integrating HashiCorp Vault PKI for internal microservice mTLS",
+            "Setting up Prometheus alerts for certificates nearing expiration"
+          ]
+        },
+        {
+          id: "rec_sec_sigstore",
+          title: "Supply Chain Security with Sigstore: Keyless Container Signing with Cosign in CI/CD",
+          category: "Security",
+          categoryType: "🔥 Latest Viral & Trending",
+          viralityScore: 93,
+          whyViral: "Securing the software supply chain against image tampering is now mandated by federal cybersecurity standards.",
+          keywords: "cosign keyless signing github actions, sigstore fulcio rekor, slsa level 3 containers",
+          groundingRefs: [
+            { title: "Sigstore Architecture Spec", url: "https://www.sigstore.dev/" }
+          ],
+          outline: [
+            "How keyless signing works: OIDC tokens, Fulcio CA, and Rekor transparency log",
+            "Signing container images automatically in GitHub Actions pipelines",
+            "Enforcing image signature admission verification in Kubernetes using Kyverno"
+          ]
+        },
+        {
+          id: "rec_sec_mtls_envoy",
+          title: "Deep Dive into Envoy mTLS: Handshake Inspection, Cipher Negotiation, and ALPN",
+          category: "Security",
+          categoryType: "🌲 Evergreen Architectural Core",
+          viralityScore: 91,
+          whyViral: "Engineers troubleshooting service mesh communication need deep protocol-level understanding of Envoy TLS filters.",
+          keywords: "envoy mtls handshake inspection, alpn h2 negotiation, openssl s_client envoy debug",
+          groundingRefs: [
+            { title: "Envoy Proxy TLS Architecture", url: "https://www.envoyproxy.io/docs/envoy/latest/intro/arch_overview/security/ssl" }
+          ],
+          outline: [
+            "Tracing TLS 1.3 ClientHello, ServerHello, and CertificateVerify in Envoy access logs",
+            "Application Layer Protocol Negotiation (ALPN) for HTTP/2 and gRPC streams",
+            "Diagnosing certificate verification errors and hostname mismatch panics"
+          ]
+        }
+      ]
+    };
+
+    // Rich Curated Conference Talk Proposals with Grounding Research & Author Perspective
+    // Content aliases to match single.html dropdown options exactly
+    defaultContentCurations["k8s-openshift"] = defaultContentCurations["kubernetes"] || defaultContentCurations["all"];
+    defaultContentCurations["gcp-data"] = defaultContentCurations["google-cloud"] || defaultContentCurations["all"];
+
+    var defaultTalkCurations = {
+      "cloud-native": [
+        {
+          id: "talk_tls_post_quantum",
+          title: "Zero-Trust at Quantum Speed: Implementing Hybrid TLS 1.3 in Cloud-Native Mesh",
+          format: "45-min Technical Deep Dive",
+          level: "Intermediate / Advanced",
+          audience: "Cloud Architects, SREs, Security Engineers",
+          categoryType: "🌲 Evergreen Architectural Core",
+          whyReviewersAccept: "Zero vendor marketing. Delivers real Wireshark packet captures, microsecond latency benchmarks, and copy-paste YAML configs for immediate production impact.",
+          abstract: "As NIST finalizes post-quantum standards, modern distributed systems must prepare for 'harvest-now, decrypt-later' threats. In this session, we dissect the hybrid X25519MLKEM768 key exchange mechanism in TLS 1.3. We inspect live packet captures, analyze real latency trade-offs on Kubernetes Ingresses, and deliver a production-ready blueprint for automating mTLS certificates without service disruption.",
+          groundingRefs: [
+            { title: "NIST FIPS 203 ML-KEM Standard", url: "https://csrc.nist.gov/pubs/fips/203/final" },
+            { title: "IETF RFC 8446 TLS 1.3 Spec", url: "https://datatracker.ietf.org/doc/html/rfc8446" },
+            { title: "arXiv:2405.02104: PQC in Service Meshes", url: "https://arxiv.org/abs/2405.02104" }
+          ],
+          takeaways: [
+            "Understand how hybrid post-quantum key exchange prevents cryptographic obsolescence",
+            "Benchmark packet size overhead (1,184-byte keys) and latency impacts on live proxies",
+            "Implement automated certificate rotation in Kubernetes using cert-manager"
+          ],
+          slidesOutline: [
+            "Slide 1-10: The Harvest-Now Decrypt-Later threat model & TLS 1.3 handshake packet breakdown",
+            "Slide 11-25: Benchmarking Envoy & NGINX handshake latency across 4G/5G mobile edges",
+            "Slide 26-40: Live Production Runbook - Cert-Manager automated rotation & fallback policies"
+          ]
+        },
+        {
+          id: "talk_k8s_resilience",
+          title: "3 AM Kubernetes Incident Runbook: Fixing NetworkPolicies, Storage Locks, and CoreDNS Panics",
+          format: "45-min War Stories & Live Demo",
+          level: "All Engineering Levels",
+          audience: "DevOps Engineers, On-Call Practitioners, SREs",
+          categoryType: "🧪 Production War Story / Runbook",
+          whyReviewersAccept: "Every SRE has suffered through 3 AM silent DNS timeouts. This talk provides the exact non-destructive diagnostic flowcharts and CLI commands attendees can run immediately.",
+          abstract: "When a multi-region Kubernetes cluster degrades in the middle of the night, standard dashboards often mask the true root cause. This talk walks through three real-world production outages: silent NetworkPolicy packet drops, multi-attach PVC volume locks, and CoreDNS throttling. Attendees learn non-destructive diagnostic CLI commands and leave with a battle-tested triage flowchart.",
+          groundingRefs: [
+            { title: "Google Research: Borg & Kubernetes Architecture", url: "https://research.google/pubs/pub43438/" },
+            { title: "Kubernetes KEP-3063: Dynamic Resource Allocation", url: "https://github.com/kubernetes/enhancements/issues/3063" },
+            { title: "CoreDNS Performance Tuning RFC", url: "https://coredns.io/manual/toc/" }
+          ],
+          takeaways: [
+            "Quickly isolate NetworkPolicy drops using tcpdump and iptables / OVN trace logs",
+            "Safely resolve stuck PersistentVolumeAttachments without dangerous node reboots",
+            "Tune CoreDNS autoscaling and autopath to eliminate silent DNS lookup latency"
+          ],
+          slidesOutline: [
+            "Slide 1-12: Anatomy of the 3 AM PagerDuty storm: What dashboards hide vs what packets prove",
+            "Slide 13-28: Triage Deep Dive: Unraveling multi-attach volume locks & CoreDNS UDP buffer exhaustion",
+            "Slide 29-45: Battle-tested on-call triage cheat sheet & preventative SLO alert rules"
+          ]
+        },
+        {
+          id: "talk_k8s_gateway_api",
+          title: "The Great Ingress Migration: Zero-Downtime Gateway API in Large-Scale Production",
+          format: "45-min Architecture Deep Dive",
+          level: "Intermediate",
+          audience: "Platform Engineers, Kubernetes Operators",
+          categoryType: "🌲 Evergreen Architectural Core",
+          whyReviewersAccept: "Program committees are flooded with migration questions from teams struggling with HTTPRoute and ReferenceGrant boundaries.",
+          abstract: "With Ingress entering maintenance mode, platform teams are racing to adopt the Gateway API. This talk details a real-world migration of 150+ microservices without dropping a single TLS session. We demonstrate how Envoy Gateway, HTTPRoute splitting, and automated cert-manager binding deliver cleaner multi-tenant ownership.",
+          groundingRefs: [
+            { title: "Kubernetes KEP-1907: Gateway API Spec", url: "https://github.com/kubernetes/enhancements/issues/1907" }
+          ],
+          takeaways: [
+            "Architectural separation of GatewayClass, Gateway, and HTTPRoute roles",
+            "Canary traffic shifting without restarting ingress controller pods",
+            "Troubleshooting Cross-Namespace ReferenceGrant permission errors"
+          ],
+          slidesOutline: [
+            "Slide 1-12: The Ingress Dead-End: Why annotations became unmaintainable at scale",
+            "Slide 13-28: Gateway API Architecture: Role-oriented configuration in action",
+            "Slide 29-45: Production Migration Blueprint: Dual-homed routing and automated validation"
+          ]
+        },
+        {
+          id: "talk_k8s_ebpf",
+          title: "eBPF Superpowers: Tracing Silent Packet Drops and Kernel TCP Latency in Production",
+          format: "45-min Deep Dive with Live Demos",
+          level: "Advanced",
+          audience: "SREs, Network Engineers, Performance Specialists",
+          categoryType: "🔥 Latest Viral & Trending",
+          whyReviewersAccept: "Replaces theory with live bpftrace and Cilium Hubble demonstrations that reveal invisible kernel packet drops without changing application code.",
+          abstract: "When latency spikes between Kubernetes nodes but application logs show nothing, the culprit is often buried inside Linux kernel conntrack tables or TCP socket buffers. This talk reveals how to write lightweight eBPF tracepoints to observe microsecond network stalls, socket retries, and silent SYN drops in live production environments.",
+          groundingRefs: [
+            { title: "BPF and XDP Reference Guide", url: "https://docs.cilium.io/en/stable/bpf/" }
+          ],
+          takeaways: [
+            "Deploy live bpftrace probes safely on production worker nodes",
+            "Diagnose conntrack table exhaustion before packet drops occur",
+            "Map kernel network latency directly to Kubernetes pod namespaces"
+          ],
+          slidesOutline: [
+            "Slide 1-10: The Invisible Latency: Why tcpdump is too slow and dashboards are too blind",
+            "Slide 11-25: Kernel Deep Dive: How eBPF inspects socket buffers at zero overhead",
+            "Slide 26-45: Live Production Demos: Tracing connection drops with Hubble and bpftrace"
+          ]
+        },
+        {
+          id: "talk_k8s_dra_gpus",
+          title: "GPU Scheduling at Hyperscale: Mastering Kubernetes Dynamic Resource Allocation (DRA)",
+          format: "30-min Deep Dive",
+          level: "Advanced",
+          audience: "MLOps Engineers, AI Platform Architects",
+          categoryType: "🎯 High CFP Acceptance Rate",
+          whyReviewersAccept: "Every major conference is starved for deep architectural talks on solving GPU fragmentation and multi-node training resource claims.",
+          abstract: "Standard Kubernetes device plugins allocate whole GPUs, leading to massive resource waste in AI inference workloads. This session explores Kubernetes Dynamic Resource Allocation (KEP-3063), showing how ResourceClaims and custom driver plugins enable dynamic GPU slicing, shared PCIe topologies, and automated multi-accelerator provisioning.",
+          groundingRefs: [
+            { title: "Kubernetes KEP-3063: Dynamic Resource Allocation", url: "https://github.com/kubernetes/enhancements/issues/3063" }
+          ],
+          takeaways: [
+            "Understand the architectural shift from Device Plugins to DRA",
+            "Provision fractional GPU slices dynamically for inference pods",
+            "Optimize NUMA node and NVLink topology placement for distributed training"
+          ],
+          slidesOutline: [
+            "Slide 1-10: The $100K GPU Problem: Why device plugins leave 60% VRAM unutilized",
+            "Slide 11-20: DRA Internals: ResourceClaims, Drivers, and Scheduler Plugins",
+            "Slide 21-30: Architecture Blueprint: Production deployment with NVIDIA DRA driver"
+          ]
+        }
+      ],
+      "google-cloud": [
+        {
+          id: "talk_gcp_gemini_agent",
+          title: "Beyond Simple Chatbots: Building Schema-Constrained AI Agents with Gemini Enterprise",
+          format: "45-min Architecture Deep Dive",
+          level: "Intermediate",
+          audience: "Cloud Architects, Software Engineers, AI/ML Leads",
+          categoryType: "🔥 Latest Viral & Trending",
+          whyReviewersAccept: "Cuts through generative AI marketing to solve the #1 enterprise problem: how to enforce deterministic JSON schemas and resilient tool-calling in enterprise backend APIs.",
+          abstract: "Enterprises cannot deploy LLMs that hallucinate unstructured prose into production APIs. In this architecture teardown, we showcase how Google Cloud's Gemini Enterprise Agent Platform enforces strict Pydantic schemas, handles tool calling with API backoffs, and connects to enterprise data stores using Application Default Credentials (ADC).",
+          groundingRefs: [
+            { title: "arXiv:2403.05530: Gemini Model Capabilities", url: "https://arxiv.org/abs/2403.05530" },
+            { title: "Google Cloud: Vertex AI Agent Documentation", url: "https://cloud.google.com/vertex-ai" }
+          ],
+          takeaways: [
+            "Design deterministic, schema-constrained multi-agent loops in Python",
+            "Secure API keys vs ADC authentication in enterprise CI/CD environments",
+            "Measure cost, latency, and token efficiency across Gemini Flash vs Pro models"
+          ],
+          slidesOutline: [
+            "Slide 1-12: The Enterprise Failure Mode: Why freeform LLM outputs break downstream microservices",
+            "Slide 13-28: Schema Enforcement Architecture: Pydantic parsing, AST validation & self-healing retries",
+            "Slide 29-45: Production Architecture: Cloud Run + Secret Manager + ADC zero-trust deployment"
+          ]
+        },
+        {
+          id: "talk_gcp_bigquery_finops",
+          title: "FinOps for Cloud Architects: Slashing 40% Off Google Cloud Data Pipelines",
+          format: "45-min Deep Dive",
+          level: "Advanced",
+          audience: "Data Architects, FinOps Leads, Cloud Engineers",
+          categoryType: "🎯 High CFP Acceptance Rate",
+          whyReviewersAccept: "Every conference attendee's leadership is demanding cloud cost reduction this year. This talk shows concrete query optimization and storage migration steps that produce immediate dollar savings.",
+          abstract: "Data engineering pipelines frequently suffer from slot thrashing, full-table scans, and runaway storage costs. This session demonstrates real architectural patterns across BigQuery, Cloud Storage lifecycle rules, and authorized materialized views that drastically reduce compute billing while maintaining sub-second query response times.",
+          groundingRefs: [
+            { title: "Google Research: Capacitor Columnar Storage (VLDB)", url: "https://research.google/pubs/pub45778/" },
+            { title: "BigQuery Documentation: Storage Billing Models", url: "https://cloud.google.com/bigquery/pricing" }
+          ],
+          takeaways: [
+            "Optimize BigQuery partitioning and clustering strategies to prune petabyte queries",
+            "Leverage physical storage billing models to cut columnar storage bills",
+            "Implement authorized views and column-level masking without duplicated data"
+          ],
+          slidesOutline: [
+            "Slide 1-12: The Cloud Billing Shock: Analyzing INFORMATION_SCHEMA to identify petabyte scan leaks",
+            "Slide 13-28: Storage & Compute Tuning: Capacitor compression ratios & physical billing transitions",
+            "Slide 29-45: Architecture Blueprint: Automated FinOps guardrails & CI/CD query dry-run linters"
+          ]
+        },
+        {
+          id: "talk_gcp_spanner_ha",
+          title: "Surviving Regional Cloud Outages: Spanner Dual-Region & Multi-Region Resiliency",
+          format: "45-min Resilience Session",
+          level: "Advanced",
+          audience: "Principal Architects, SRE Leads",
+          categoryType: "🌲 Evergreen Architectural Core",
+          whyReviewersAccept: "Demystifies TrueTime consensus and leader election during real cloud datacenter cutoffs, providing concrete testing strategies.",
+          abstract: "When an entire cloud region loses network connectivity, can your database truly fail over with zero RPO and zero split-brain? This session examines Google Cloud Spanner's Paxos consensus implementation across dual and multi-region topologies. We demonstrate automated failovers, commit-wait latency tuning, and cost-effective disaster recovery architectures.",
+          groundingRefs: [
+            { title: "Google Spanner TrueTime Paper (OSDI)", url: "https://research.google/pubs/pub39966/" }
+          ],
+          takeaways: [
+            "How Paxos leader election operates during complete regional fiber cuts",
+            "Tuning read-only queries with staleness bounds for microsecond performance",
+            "Designing active-active multi-region architectures with Spanner"
+          ],
+          slidesOutline: [
+            "Slide 1-12: The True Cost of Regional Outages: Why active-passive replication fails",
+            "Slide 13-28: TrueTime and Paxos Internals: How Spanner guarantees serializability",
+            "Slide 29-45: Chaos Engineering Demo: Simulating regional severance and automated recovery"
+          ]
+        },
+        {
+          id: "talk_gcp_gke_hardening",
+          title: "Hardening GKE for PCI-DSS & HIPAA: Workload Identity, Shielded GKE, and Binary Auth",
+          format: "30-min Practitioner Session",
+          level: "Intermediate",
+          audience: "Security Engineers, Compliance Leads",
+          categoryType: "🧪 Production War Story / Runbook",
+          whyReviewersAccept: "Gives compliance engineers a definitive, actionable checklist for passing regulated audits on Google Kubernetes Engine without slowing developer deployments.",
+          abstract: "Achieving continuous compliance on Kubernetes often feels like fighting your developer teams. In this session, we reveal an automated security baseline for GKE: replacing static service account keys with Workload Identity Federation, enforcing cryptographic container provenance with Binary Authorization, and automating Datapath v2 network policies.",
+          groundingRefs: [
+            { title: "NIST SP 800-190 Container Security Guide", url: "https://csrc.nist.gov/publications/detail/sp/800-190/final" }
+          ],
+          takeaways: [
+            "Eliminate all service account JSON keys using Workload Identity Federation",
+            "Enforce cryptographically signed container deployments using Binary Authorization",
+            "Audit and enforce network isolation using GKE Datapath v2 flow logs"
+          ],
+          slidesOutline: [
+            "Slide 1-10: Anatomy of a Cloud Breach: How exposed JSON keys lead to lateral movement",
+            "Slide 11-20: Zero-Trust GKE: Workload Identity, KMS envelope encryption, and Shielded Nodes",
+            "Slide 21-30: Policy as Code: Enforcing compliance in CI/CD with Krew and Kyverno"
+          ]
+        },
+        {
+          id: "talk_gcp_cloudrun_scaling",
+          title: "Cold Starts, Concurrency, and VPCs: Cloud Run Under 50,000 Requests per Second",
+          format: "30-min Performance Deep Dive",
+          level: "Intermediate",
+          audience: "Backend Engineers, Cloud Architects",
+          categoryType: "🔥 Latest Viral & Trending",
+          whyReviewersAccept: "Full of real load-testing benchmarks, showing exactly how to configure concurrency, min-instances, and direct VPC egress to avoid latency cliffs.",
+          abstract: "Serverless containers promise infinite scale, but improper concurrency or VPC connector bottlenecks can turn sudden traffic spikes into HTTP 504 timeouts. This talk provides actionable tuning techniques for Cloud Run under extreme load, demonstrating Direct VPC egress optimizations and CPU allocation strategies.",
+          groundingRefs: [
+            { title: "Google Cloud Run Networking Architecture", url: "https://cloud.google.com/run/docs/configuring/vpc-direct-vpc" }
+          ],
+          takeaways: [
+            "Tune container concurrency to maximize CPU utilization without memory starvation",
+            "Eliminate VPC connector throttles using Cloud Run Direct VPC Egress",
+            "Analyze startup latency benchmarks across Go, Node.js, and Python runtimes"
+          ],
+          slidesOutline: [
+            "Slide 1-8: The Serverless Mirage: What happens when 50,000 RPS hits un-tuned Cloud Run",
+            "Slide 9-20: Concurrency vs CPU Allocation: Finding the sweet spot for throughput and cost",
+            "Slide 21-30: Architecture Blueprint: High-throughput Cloud Run + Cloud Armor + VPC design"
+          ]
+        }
+      ],
+      "devops-days": [
+        {
+          id: "talk_devops_3am_runbook",
+          title: "3 AM Kubernetes Incident Runbook: Fixing NetworkPolicies, Storage Locks, and CoreDNS Panics",
+          format: "45-min War Stories & Live Demo",
+          level: "All Engineering Levels",
+          audience: "DevOps Engineers, On-Call Practitioners, SREs",
+          categoryType: "🧪 Production War Story / Runbook",
+          whyReviewersAccept: "Every SRE has suffered through 3 AM silent DNS timeouts. This talk provides the exact non-destructive diagnostic flowcharts and CLI commands attendees can run immediately.",
+          abstract: "When a multi-region Kubernetes cluster degrades in the middle of the night, standard dashboards often mask the true root cause. This talk walks through three real-world production outages: silent NetworkPolicy packet drops, multi-attach PVC volume locks, and CoreDNS throttling. Attendees learn non-destructive diagnostic CLI commands and leave with a battle-tested triage flowchart.",
+          groundingRefs: [
+            { title: "Google Research: Borg & Kubernetes Architecture", url: "https://research.google/pubs/pub43438/" },
+            { title: "CoreDNS Performance Tuning RFC", url: "https://coredns.io/manual/toc/" }
+          ],
+          takeaways: [
+            "Quickly isolate NetworkPolicy drops using tcpdump and iptables / OVN trace logs",
+            "Safely resolve stuck PersistentVolumeAttachments without dangerous node reboots",
+            "Tune CoreDNS autoscaling and autopath to eliminate silent DNS lookup latency"
+          ],
+          slidesOutline: [
+            "Slide 1-12: Anatomy of the 3 AM PagerDuty storm: What dashboards hide vs what packets prove",
+            "Slide 13-28: Triage Deep Dive: Unraveling multi-attach volume locks & CoreDNS UDP buffer exhaustion",
+            "Slide 29-45: Battle-tested on-call triage cheat sheet & preventative SLO alert rules"
+          ]
+        },
+        {
+          id: "talk_devops_alert_fatigue",
+          title: "Killing 80% of Your Alerts: An SRE's Guide to Symptom-Based Alerting and Burn Rates",
+          format: "45-min Cultural & Technical Session",
+          level: "Intermediate",
+          audience: "On-Call Engineers, Engineering Managers, SREs",
+          categoryType: "🌲 Evergreen Architectural Core",
+          whyReviewersAccept: "Addresses on-call burnout directly with Google SRE workbook methodologies, helping teams replace noisy CPU alerts with multi-window burn rate SLOs.",
+          abstract: "If your engineers receive 50 PagerDuty notifications a week, they are not on call—they are experiencing alert fatigue. This session details how to overhaul legacy alerting systems using multi-window, multi-burn-rate alerts based on real user SLIs, eliminating noisy alerts and guaranteeing waking engineers only for true customer impact.",
+          groundingRefs: [
+            { title: "Google SRE Book: Alerting on SLOs", url: "https://sre.google/workbook/alerting-on-slos/" }
+          ],
+          takeaways: [
+            "Formulate actionable Service Level Indicators (SLIs) that reflect actual user pain",
+            "Implement multi-window burn rate alert rules in Prometheus / Alertmanager",
+            "Automate on-call toil reduction with blameless postmortem action tracking"
+          ],
+          slidesOutline: [
+            "Slide 1-10: The On-Call Nightmare: How alert fatigue causes production blind spots",
+            "Slide 11-25: Mathematical Framework: Multi-window burn rates and error budget consumption",
+            "Slide 26-45: Implementation Guide: Real Alertmanager YAML rules and PagerDuty routing"
+          ]
+        },
+        {
+          id: "talk_devops_chaos_testing",
+          title: "Chaos Engineering in Production: Safely Injecting Latency and Pod Failures",
+          format: "30-min Practitioner Session",
+          level: "Intermediate",
+          audience: "DevOps Practitioners, QA Architects, SREs",
+          categoryType: "🧪 Production War Story / Runbook",
+          whyReviewersAccept: "Demystifies chaos engineering by starting with safe, scoped experiments instead of chaotic cluster destruction.",
+          abstract: "How do you test system resilience without getting fired? This session walks through safe chaos engineering methodologies using Chaos Mesh and LitmusChaos. We show how to define steady-state hypotheses, implement automated blast-radius containment, and inject network delay to verify circuit breakers.",
+          groundingRefs: [
+            { title: "Principles of Chaos Engineering", url: "https://principlesofchaos.org/" }
+          ],
+          takeaways: [
+            "Define verifiable steady-state metrics before executing chaos experiments",
+            "Configure automated emergency abort triggers when error budgets degrade",
+            "Validate service mesh retries and circuit breaking under real packet loss"
+          ],
+          slidesOutline: [
+            "Slide 1-8: The Fallacy of Static Testing: Why staging environments miss production failure modes",
+            "Slide 9-20: Scoped Experiments: Network latency, DNS loss, and pod termination with Chaos Mesh",
+            "Slide 21-30: Production Playbook: Integrating chaos experiments into continuous delivery"
+          ]
+        },
+        {
+          id: "talk_devops_gitops_drift",
+          title: "Preventing GitOps Drift: Reconciling Terraform and ArgoCD Without Pipeline Deadlocks",
+          format: "30-min Architecture Talk",
+          level: "Intermediate",
+          audience: "Platform Engineers, DevOps Leads",
+          categoryType: "🎯 High CFP Acceptance Rate",
+          whyReviewersAccept: "Solves the ubiquitous friction between infrastructure-as-code (Terraform) and application delivery (ArgoCD) with clean state ownership.",
+          abstract: "Who owns the ingress certificate—Terraform or the Helm chart? When multiple GitOps tools manage overlapping resources, race conditions and perpetual sync loops occur. This session establishes strict resource ownership boundaries, showing how to coordinate Crossplane, Terraform, and ArgoCD cleanly.",
+          groundingRefs: [
+            { title: "Open GitOps Principles", url: "https://opengitops.dev/" }
+          ],
+          takeaways: [
+            "Establish unambiguous resource ownership boundaries between IaaS and K8s manifests",
+            "Use ArgoCD sync waves and ignoreDifferences to eliminate reconciliation loops",
+            "Automate drift detection and remediation with webhook notifications"
+          ],
+          slidesOutline: [
+            "Slide 1-8: The Reconciliation War: When Terraform and ArgoCD fight over the same resource",
+            "Slide 9-20: Separation of Concerns: Crossplane vs Terraform vs Kubernetes Controllers",
+            "Slide 21-30: Best Practices: Declarative drift detection and clean promotion pipelines"
+          ]
+        },
+        {
+          id: "talk_devops_postmortems",
+          title: "Writing Blameless Postmortems That Actually Prevent Outages",
+          format: "30-min Cultural & Process Talk",
+          level: "All Engineering Levels",
+          audience: "DevOps Engineers, Team Leads, SREs",
+          categoryType: "🌲 Evergreen Architectural Core",
+          whyReviewersAccept: "A refreshing, human-centered session that moves beyond technical checklists to build genuine psychological safety and high-leverage organizational learning.",
+          abstract: "Saying 'human error was the root cause' is where the investigation should begin, not where it ends. This talk provides a blueprint for facilitating truly blameless incident retrospectives, teaching engineers how to identify systemic design traps and track corrective actions that genuinely prevent recurrences.",
+          groundingRefs: [
+            { title: "Etsy: Blameless PostMortems and Just Culture", url: "https://www.etsy.com/codeascraft/blameless-postmortems" }
+          ],
+          takeaways: [
+            "Eliminate human error from root cause taxonomies",
+            "Facilitate constructive timeline reconstruction after major incidents",
+            "Ensure remediation action items are prioritized over new feature roadmaps"
+          ],
+          slidesOutline: [
+            "Slide 1-8: The Blame Trap: How punitive retrospectives drive incident reports underground",
+            "Slide 9-20: Systemic Causation: Human factors, cognitive load, and safety margins",
+            "Slide 21-30: Facilitator Runbook: Templates, interview questions, and follow-through"
+          ]
+        }
+      ],
+      "redhat-commons": [
+        {
+          id: "talk_ocp_multitenant_scale",
+          title: "Enterprise OpenShift 4 Administration: Mastering Multi-Tenancy & Governance at Scale",
+          format: "45-min Architecture Deep Dive",
+          level: "Intermediate / Advanced",
+          audience: "Platform Engineers, System Administrators, OCP Operators",
+          categoryType: "🌲 Evergreen Architectural Core",
+          whyReviewersAccept: "Delivers enterprise compliance realities that textbook docs skip: hard multi-tenant isolation, project templates, and automated quota guardrails for hundreds of developers.",
+          abstract: "How do you give 500 developers instant cluster access without risking cluster-wide CPU exhaustion or rogue route takeovers? This session shares the battle-tested configuration for OpenShift Project Request Templates, LimitRanges, and custom HTPasswd role bindings that keep multi-tenant clusters secure and compliant.",
+          groundingRefs: [
+            { title: "Red Hat Enterprise Multi-Tenancy Guide", url: "https://cloud.redhat.com/architecture/" },
+            { title: "NIST SP 800-190 Container Security Guide", url: "https://csrc.nist.gov/publications/detail/sp/800-190/final" }
+          ],
+          takeaways: [
+            "Configure custom OpenShift project request templates for automated governance",
+            "Enforce tenant isolation with automated egress firewalls and edge routes",
+            "Streamline EX280-grade administration drills for enterprise ops teams"
+          ],
+          slidesOutline: [
+            "Slide 1-10: Multi-tenant chaos: How unconstrained namespaces take down shared worker nodes",
+            "Slide 11-22: Automation Blueprint: Project Request Templates, ClusterResourceQuotas & NetworkPolicies",
+            "Slide 23-30: Day-2 Ops Checklist: Audit logging, RBAC governance, and security automation"
+          ]
+        },
+        {
+          id: "talk_ocp_storage_odf",
+          title: "Taming OpenShift Data Foundation: Troubleshooting Ceph OSD Failures and PVC Timeouts",
+          format: "45-min Operational Deep Dive",
+          level: "Advanced",
+          audience: "Storage Administrators, OpenShift Architects",
+          categoryType: "🧪 Production War Story / Runbook",
+          whyReviewersAccept: "Ceph and ODF storage failures can paralyze stateful workloads. This talk delivers battle-tested CLI commands and recovery flowcharts for storage administrators.",
+          abstract: "OpenShift Data Foundation (ODF) brings cloud-native block and file storage to on-prem and hybrid clouds, but disk degradation or network partition can throw Ceph into HEALTH_WARN or HEALTH_ERR states. This talk provides concrete diagnostics to recover degraded pools, clear mon quorums, and resolve VolumeAttachment locks safely.",
+          groundingRefs: [
+            { title: "Red Hat OpenShift Data Foundation Architecture", url: "https://docs.redhat.com/en/documentation/red_hat_openshift_data_foundation/" }
+          ],
+          takeaways: [
+            "Diagnose Ceph OSD crashes and peering issues using oc rsh into rook-ceph pods",
+            "Resolve VolumeLocked errors without rebooting bare-metal worker nodes",
+            "Configure proactive storage monitoring and capacity alerts in OpenShift Prometheus"
+          ],
+          slidesOutline: [
+            "Slide 1-12: The Storage Nightmare: When PVCs get locked in ContainerCreating across clusters",
+            "Slide 13-28: Ceph Under the Hood: CRUSH maps, OSD peering, and Rook-Ceph operator reconciliation",
+            "Slide 29-45: Field Recovery Runbook: Step-by-step triage commands for degraded pools"
+          ]
+        },
+        {
+          id: "talk_ocp_mcp_upgrades",
+          title: "Zero-Downtime OpenShift 4 Upgrades: MachineConfigPools, Nodes, and Operators",
+          format: "30-min Administration Talk",
+          level: "Intermediate",
+          audience: "OpenShift Administrators, SREs",
+          categoryType: "🌲 Evergreen Architectural Core",
+          whyReviewersAccept: "Upgrading large enterprise OCP clusters between Y-streams is high-risk. This session provides the paused MachineConfigPool strategy used in Fortune 500 rollouts.",
+          abstract: "Major OpenShift cluster upgrades touch the control plane, worker nodes, and dozens of installed operators. Learn how to pause MachineConfigPools, perform canary node OS updates, and validate cluster operator health gates to ensure zero downtime for running microservices during major upgrades.",
+          groundingRefs: [
+            { title: "OpenShift Container Platform Update Architecture", url: "https://docs.openshift.com/container-platform/latest/updating/understanding_updates.html" }
+          ],
+          takeaways: [
+            "Use paused MachineConfigPools to stage node reboots and CoreOS updates",
+            "Validate cluster operator upgrade gates before progressing to worker nodes",
+            "Automate pre-upgrade backup checks for etcd and critical CRDs"
+          ],
+          slidesOutline: [
+            "Slide 1-8: The Upgrade Anxiety: What breaks during automated rolling cluster upgrades",
+            "Slide 9-20: The MachineConfig Operator: Staging updates with custom MachineConfigPools",
+            "Slide 21-30: Pre-flight & Post-flight Verification: Health-check checklists and automated verification"
+          ]
+        },
+        {
+          id: "talk_ocp_rhacs_security",
+          title: "Advanced Cluster Security (RHACS / StackRox): Enforcing Runtime Security and Compliance",
+          format: "30-min Security Session",
+          level: "Intermediate",
+          audience: "Security Engineers, DevSecOps Leads",
+          categoryType: "🎯 High CFP Acceptance Rate",
+          whyReviewersAccept: "Combines compliance auditing with live runtime detection, showing how to block privilege escalations and cryptominers without false positive alerts.",
+          abstract: "Red Hat Advanced Cluster Security provides deep visibility into Kubernetes container runtimes. In this session, we demonstrate how to configure declarative security policies that automatically block unauthorized image registries, alert on privilege escalation attempts, and enforce compliance reporting against CIS Kubernetes benchmarks.",
+          groundingRefs: [
+            { title: "Red Hat Advanced Cluster Security Architecture", url: "https://www.redhat.com/en/technologies/cloud-computing/openshift/advanced-cluster-security-for-kubernetes" }
+          ],
+          takeaways: [
+            "Implement declarative security policies across multiple OpenShift clusters",
+            "Detect and terminate rogue container processes in real time",
+            "Integrate vulnerability scans directly into OpenShift Pipelines (Tekton)"
+          ],
+          slidesOutline: [
+            "Slide 1-8: Vulnerability vs Runtime Threat: Why image scanning alone is insufficient",
+            "Slide 9-20: RHACS Architecture: Sensor, Collector, and Central policy enforcement",
+            "Slide 21-30: Enforcement Blueprints: Blocking vulnerable pods in CI/CD before deployment"
+          ]
+        },
+        {
+          id: "talk_ocp_virtualization",
+          title: "Migrating from VMware to OpenShift Virtualization: Architecture and Migration Playbook",
+          format: "45-min Migration Deep Dive",
+          level: "Intermediate",
+          audience: "Infrastructure Architects, Virtualization Engineers, Platform Leads",
+          categoryType: "🔥 Latest Viral & Trending",
+          whyReviewersAccept: "The VMware licensing changes have created immense urgency for enterprise infrastructure teams looking to migrate VMs to KubeVirt and OpenShift.",
+          abstract: "With enterprise infrastructure costs shifting rapidly, organizations are evaluating OpenShift Virtualization to run VMs and containers side-by-side on a single platform. This session covers network binding, live migration mechanics, and the Migration Toolkit for Virtualization (MTV) to transition production VMs with minimal disruption.",
+          groundingRefs: [
+            { title: "KubeVirt Architecture & Design Guide", url: "https://kubevirt.io/" }
+          ],
+          takeaways: [
+            "Understand KubeVirt pod virtualization architecture and storage integration",
+            "Configure Multus secondary networks for VLAN-backed VM communication",
+            "Execute cold and warm VM migrations from vSphere using MTV"
+          ],
+          slidesOutline: [
+            "Slide 1-12: The Virtualization Shift: Why run VMs on Kubernetes infrastructure?",
+            "Slide 13-28: KubeVirt Internals: Libvirt in a pod, live migration, and SR-IOV networking",
+            "Slide 29-45: Field Migration Playbook: Step-by-step migration from vSphere clusters"
+          ]
+        }
+      ],
+      "security-summit": [
+        {
+          id: "talk_sec_hybrid_tls",
+          title: "Zero-Trust at Quantum Speed: Implementing Hybrid TLS 1.3 in Cloud-Native Mesh",
+          format: "45-min Technical Deep Dive",
+          level: "Intermediate / Advanced",
+          audience: "Cloud Architects, SREs, Security Engineers",
+          categoryType: "🌲 Evergreen Architectural Core",
+          whyReviewersAccept: "Zero vendor marketing. Delivers real Wireshark packet captures, microsecond latency benchmarks, and copy-paste YAML configs for immediate production impact.",
+          abstract: "As NIST finalizes post-quantum standards, modern distributed systems must prepare for 'harvest-now, decrypt-later' threats. In this session, we dissect the hybrid X25519MLKEM768 key exchange mechanism in TLS 1.3. We inspect live packet captures, analyze real latency trade-offs on Kubernetes Ingresses, and deliver a production-ready blueprint for automating mTLS certificates without service disruption.",
+          groundingRefs: [
+            { title: "NIST FIPS 203 ML-KEM Standard", url: "https://csrc.nist.gov/pubs/fips/203/final" },
+            { title: "IETF RFC 8446 TLS 1.3 Spec", url: "https://datatracker.ietf.org/doc/html/rfc8446" },
+            { title: "arXiv:2405.02104: PQC in Service Meshes", url: "https://arxiv.org/abs/2405.02104" }
+          ],
+          takeaways: [
+            "Understand how hybrid post-quantum key exchange prevents cryptographic obsolescence",
+            "Benchmark packet size overhead (1,184-byte keys) and latency impacts on live proxies",
+            "Implement automated certificate rotation in Kubernetes using cert-manager"
+          ],
+          slidesOutline: [
+            "Slide 1-10: The Harvest-Now Decrypt-Later threat model & TLS 1.3 handshake packet breakdown",
+            "Slide 11-25: Benchmarking Envoy & NGINX handshake latency across 4G/5G mobile edges",
+            "Slide 26-40: Live Production Runbook - Cert-Manager automated rotation & fallback policies"
+          ]
+        },
+        {
+          id: "talk_sec_spiffe_identities",
+          title: "Cryptographic Workload Identity with SPIFFE/SPIRE: Killing the API Key in Microservices",
+          format: "45-min Deep Dive",
+          level: "Advanced",
+          audience: "Security Architects, Principal Engineers, DevSecOps Leads",
+          categoryType: "🌲 Evergreen Architectural Core",
+          whyReviewersAccept: "Replaces vulnerable long-lived credentials with automated cryptographic workload identity verification.",
+          abstract: "Static API keys, database passwords, and long-lived cloud credentials continue to be the primary cause of cloud breaches. This session demonstrates how SPIFFE/SPIRE provides cryptographically verifiable, ephemeral workload identities across hybrid and multi-cloud Kubernetes clusters without hardcoded secrets.",
+          groundingRefs: [
+            { title: "SPIFFE Specification & Architecture", url: "https://spiffe.io/" }
+          ],
+          takeaways: [
+            "How SPIRE agents perform node and workload attestation in Kubernetes",
+            "Issue short-lived X.509 SVID certificates with sub-minute rotation",
+            "Federate trust domains across multi-cloud environments seamlessly"
+          ],
+          slidesOutline: [
+            "Slide 1-12: The Secret Sprawl Epidemic: Why vaulting static tokens still leaves attack surfaces",
+            "Slide 13-28: SPIFFE/SPIRE Architecture: Workload API, Attestors, and SVID minting",
+            "Slide 29-45: Production Deployment: Integrating SPIRE with Envoy mTLS in live service mesh"
+          ]
+        },
+        {
+          id: "talk_sec_sigstore_supply_chain",
+          title: "Defending Against Supply Chain Poisoning: Keyless Signing and SLSA Level 3 with Sigstore",
+          format: "30-min Practitioner Session",
+          level: "Intermediate",
+          audience: "DevSecOps Engineers, CI/CD Architects",
+          categoryType: "🔥 Latest Viral & Trending",
+          whyReviewersAccept: "A hands-on, realistic walkthrough of cryptographic supply chain verification using Sigstore, Cosign, and Kyverno admission controllers.",
+          abstract: "How can you be certain that the container image running in your production cluster is the exact binary built by your trusted GitHub Actions workflow? This session demonstrates keyless container signing with Cosign, cryptographic provenance attestation with SLSA, and automated admission rejection of unsigned images in Kubernetes.",
+          groundingRefs: [
+            { title: "Sigstore Architecture Specification", url: "https://www.sigstore.dev/" }
+          ],
+          takeaways: [
+            "Implement keyless signing in GitHub Actions using Fulcio and Rekor transparency logs",
+            "Generate cryptographic SLSA Level 3 build provenance attestations",
+            "Enforce admission verification using Kyverno policies in Kubernetes"
+          ],
+          slidesOutline: [
+            "Slide 1-8: The Supply Chain Threat: Dependency hijacking, rogue image tags, and registry tampering",
+            "Slide 9-20: Keyless Cryptography: How OIDC identities replace vulnerable private keys",
+            "Slide 21-30: Policy Enforcement: Rejecting unverified images at the Kubernetes admission webhook"
+          ]
+        },
+        {
+          id: "talk_sec_ebpf_security",
+          title: "eBPF-Based Runtime Threat Detection with Tetragon: Blocking Kernel-Level Exploits",
+          format: "30-min Deep Dive with Live Demos",
+          level: "Advanced",
+          audience: "Security Operations (SecOps), SREs, Kubernetes Engineers",
+          categoryType: "🎯 High CFP Acceptance Rate",
+          whyReviewersAccept: "Live demonstrations showing how eBPF can intercept and block malicious system calls (privilege escalations, root namespaces) before user-space processes execute.",
+          abstract: "Traditional Linux auditd logs are easily overwhelmed and user-space detection agents can be bypassed by sophisticated rootkits. In this session, we explore eBPF runtime security using Tetragon, showing how in-kernel filters can detect namespace escapes, unauthorized file access, and reverse shells, killing malicious processes synchronously.",
+          groundingRefs: [
+            { title: "Cilium Tetragon eBPF Security Architecture", url: "https://tetragon.io/" }
+          ],
+          takeaways: [
+            "Observe system calls and kernel capabilities directly via eBPF tracepoints",
+            "Enforce in-kernel process termination for unauthorized namespace escapes",
+            "Export real-time security events to SIEM without performance overhead"
+          ],
+          slidesOutline: [
+            "Slide 1-8: The Blind Spot of User-Space Agents: How container escapes evade logging",
+            "Slide 9-20: Tetragon Kernel Architecture: Hooking LSM, kprobes, and tracepoints",
+            "Slide 21-30: Live Exploit & Containment: Intercepting a simulated CVE privilege escalation"
+          ]
+        },
+        {
+          id: "talk_sec_vault_secrets",
+          title: "Architecting Zero-Trust Secret Rotation: HashiCorp Vault on Kubernetes at Scale",
+          format: "30-min Practitioner Session",
+          level: "Intermediate",
+          audience: "Cloud Architects, Security Engineers",
+          categoryType: "🌲 Evergreen Architectural Core",
+          whyReviewersAccept: "Addresses the day-2 operational nightmare of rotating database credentials and dynamic secrets without causing application downtime.",
+          abstract: "Deploying HashiCorp Vault in Kubernetes is only step one; establishing dynamic secret leases, automated database user rotation, and Vault Agent sidecar injection is where real engineering challenges arise. This talk shares architectural patterns for resilient, high-availability Vault clusters handling thousands of microservices.",
+          groundingRefs: [
+            { title: "HashiCorp Vault Reference Architecture", url: "https://developer.hashicorp.com/vault" }
+          ],
+          takeaways: [
+            "Configure dynamic database credentials with automatic lease renewals",
+            "Optimize Vault Agent injector mutating webhooks to prevent pod startup timeouts",
+            "Implement multi-region Raft storage disaster recovery and automated unsealing"
+          ],
+          slidesOutline: [
+            "Slide 1-8: The Secret Rotation Dilemma: Why applications crash when passwords change",
+            "Slide 9-20: Dynamic Secrets Architecture: Vault leasing, renewal loops, and agent injection",
+            "Slide 21-30: High Availability & Disaster Recovery: Multi-cluster Raft replication"
+          ]
+        }
+      ]
+    };
+
+    // State getters / setters with Top 5 Housekeeping
+    function getEphemeralContentIdeas(niche) {
+      var sel = document.getElementById("content-engine-niche-select");
+      var n = niche || (sel ? sel.value : "all");
+      var key = KEY_EPHEMERAL_CONTENT + "_" + n;
+      try {
+        var items = JSON.parse(localStorage.getItem(key) || "[]");
+        if (Array.isArray(items) && items.length > 0) return items.slice(0, 5);
+      } catch (e) {}
+      return [];
+    }
+
+    function saveEphemeralContentIdeas(items, niche) {
+      var sel = document.getElementById("content-engine-niche-select");
+      var n = niche || (sel ? sel.value : "all");
+      var key = KEY_EPHEMERAL_CONTENT + "_" + n;
+      var top5 = (items || []).slice(0, 5);
+      try { localStorage.setItem(key, JSON.stringify(top5)); } catch (e) {}
+      renderContentIdeas();
+    }
+
+    function getPermanentContentIdeas() {
+      try {
+        return JSON.parse(localStorage.getItem(KEY_PERMANENT_CONTENT) || "[]");
+      } catch (e) { return []; }
+    }
+
+    function savePermanentContentIdeas(items) {
+      try { localStorage.setItem(KEY_PERMANENT_CONTENT, JSON.stringify(items || [])); } catch (e) {}
+      renderPermanentContentVault();
+    }
+
+    function getEphemeralTalks(venue) {
+      var sel = document.getElementById("talk-venue-select");
+      var v = venue || (sel ? sel.value : "cloud-native");
+      var key = KEY_EPHEMERAL_TALKS + "_" + v;
+      try {
+        var items = JSON.parse(localStorage.getItem(key) || "[]");
+        if (Array.isArray(items) && items.length > 0) return items.slice(0, 5);
+      } catch (e) {}
+      return [];
+    }
+
+    function saveEphemeralTalks(items, venue) {
+      var sel = document.getElementById("talk-venue-select");
+      var v = venue || (sel ? sel.value : "cloud-native");
+      var key = KEY_EPHEMERAL_TALKS + "_" + v;
+      var top5 = (items || []).slice(0, 5);
+      try { localStorage.setItem(key, JSON.stringify(top5)); } catch (e) {}
+      renderTalkIdeas();
+    }
+
+    function getPermanentTalks() {
+      try {
+        return JSON.parse(localStorage.getItem(KEY_PERMANENT_TALKS) || "[]");
+      } catch (e) { return []; }
+    }
+
+    function savePermanentTalks(items) {
+      try { localStorage.setItem(KEY_PERMANENT_TALKS, JSON.stringify(items || [])); } catch (e) {}
+      renderPermanentTalksVault();
+    }
+
+    // Helper: Category badge styling for Author Perspective
+    function getCategoryBadgeClass(categoryType) {
+      var cat = categoryType || "";
+      if (cat.indexOf("Evergreen") !== -1) {
+        return "bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 border border-emerald-500/30";
+      } else if (cat.indexOf("Viral") !== -1 || cat.indexOf("Trending") !== -1) {
+        return "bg-amber-500/15 text-amber-700 dark:text-amber-400 border border-amber-500/30";
+      } else if (cat.indexOf("War Story") !== -1 || cat.indexOf("Runbook") !== -1) {
+        return "bg-cyan-500/15 text-cyan-700 dark:text-cyan-400 border border-cyan-500/30";
+      } else if (cat.indexOf("Acceptance") !== -1 || cat.indexOf("CFP") !== -1) {
+        return "bg-purple-500/15 text-purple-700 dark:text-purple-400 border border-purple-500/30";
+      }
+      return "bg-indigo-500/15 text-indigo-700 dark:text-indigo-400 border border-indigo-500/30";
+    }
+
+    // Render Content Ideas (Top 5 Active)
+    function renderContentIdeas() {
+      var grid = document.getElementById("content-ideas-grid");
+      if (!grid) return;
+      var sel = document.getElementById("content-engine-niche-select");
+      var niche = sel ? sel.value : "all";
+      var ideas = getEphemeralContentIdeas(niche);
+      if (!ideas.length) {
+        if (typeof defaultContentCurations !== "undefined" && defaultContentCurations) {
+          ideas = (defaultContentCurations[niche] || defaultContentCurations["all"] || []).slice(0, 5);
+        } else {
+          ideas = [];
+        }
+        if (ideas.length) {
+          try { localStorage.setItem(KEY_EPHEMERAL_CONTENT + "_" + niche, JSON.stringify(ideas)); } catch (e) {}
+        }
+      }
+
+      var countBadge = document.getElementById("content-engine-count-badge");
+      if (countBadge) countBadge.textContent = ideas.length;
+
+      grid.innerHTML = ideas.map(function(item, idx) {
+        var catClass = getCategoryBadgeClass(item.categoryType || item.category);
+
+        // Grounding research links badges
+        var refsHtml = "";
+        if (item.groundingRefs && Array.isArray(item.groundingRefs) && item.groundingRefs.length > 0) {
+          refsHtml = '<div class="flex items-center gap-1.5 flex-wrap pt-1">'
+            + '<span class="text-[10px] font-bold uppercase tracking-wider text-text/60 dark:text-darkmode-text/60 flex items-center gap-1"><i class="fa-solid fa-graduation-cap text-amber-500"></i> Grounding:</span>'
+            + item.groundingRefs.map(function(ref) {
+                return '<a href="' + escapeHtml(ref.url) + '" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-amber-500/10 hover:bg-amber-500/20 text-amber-700 dark:text-amber-400 font-mono text-[10px] border border-amber-500/20 transition-colors">'
+                  + '<i class="fa-solid fa-book-bookmark text-[9px]"></i> ' + escapeHtml(ref.title) + ' <i class="fa-solid fa-arrow-up-right-from-square text-[8px] opacity-70"></i></a>';
+              }).join(" ")
+            + '</div>';
+        }
+
+        return '<div class="bg-body dark:bg-darkmode-body border border-border/80 dark:border-darkmode-border/80 rounded-2xl p-5 shadow-xs hover:border-amber-500/50 transition-all flex flex-col md:flex-row items-start justify-between gap-5 group">'
+          + '<div class="space-y-2.5 flex-grow">'
+          + '  <div class="flex items-center gap-2 flex-wrap">'
+          + '    <span class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-amber-500/15 text-amber-700 dark:text-amber-400 font-mono">#' + (idx + 1) + ' ' + escapeHtml(item.category || "Cloud") + '</span>'
+          + '    <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold ' + catClass + '">' + escapeHtml(item.categoryType || "🔥 Trending Topic") + '</span>'
+          + '    <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-200 dark:bg-slate-700 text-text/80 dark:text-darkmode-text/80 font-mono flex items-center gap-1"><i class="fa-solid fa-fire text-amber-500 text-[10px]"></i> Score: ' + (item.viralityScore || 90) + '/100</span>'
+          + '  </div>'
+          + '  <h4 class="text-base font-bold text-dark dark:text-darkmode-dark group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors leading-snug">' + escapeHtml(item.title) + '</h4>'
+          + '  <div class="text-[11px] bg-amber-500/5 dark:bg-amber-500/10 border-l-2 border-amber-500 p-2.5 rounded-r-xl">'
+          + '    <span class="font-bold text-amber-800 dark:text-amber-300 flex items-center gap-1 mb-0.5"><i class="fa-solid fa-bullseye text-[10px]"></i> Why Readers Click &amp; Share:</span>'
+          + '    <span class="text-text/80 dark:text-darkmode-text/80 italic">&ldquo;' + escapeHtml(item.whyViral || "") + '&rdquo;</span>'
+          + '  </div>'
+          + refsHtml
+          + '  <div class="text-[11px] text-text/80 dark:text-darkmode-text/80 bg-theme-light/40 dark:bg-darkmode-theme-light/20 p-2.5 rounded-xl border border-border/50 dark:border-darkmode-border/50">'
+          + '    <span class="font-bold text-dark dark:text-darkmode-dark block mb-1"><i class="fa-solid fa-list-check text-amber-500 mr-1"></i> 3-Step Hands-On Outline:</span>'
+          + '    <ul class="list-disc pl-4 space-y-0.5 font-mono text-[10.5px]">' + (item.outline ? item.outline.map(function(o) { return '<li>' + escapeHtml(o) + '</li>'; }).join("") : '<li>Production Failure Mode</li><li>Architecture Implementation</li><li>Benchmarking & Verification</li>') + '</ul>'
+          + '  </div>'
+          + '  <div class="text-[11px] font-mono text-text/60 dark:text-darkmode-text/60 pt-1">'
+          + '    <i class="fa-solid fa-tags mr-1"></i> <span class="font-semibold text-text/80 dark:text-darkmode-text/80">Target SEO Keywords:</span> ' + escapeHtml(item.keywords || "")
+          + '  </div>'
+          + '</div>'
+          + '<div class="shrink-0 flex sm:flex-col gap-2 w-full sm:w-auto">'
+          + '  <button data-save-content-id="' + escapeHtml(item.id) + '" class="px-3 py-1.5 rounded-xl bg-amber-500/15 hover:bg-amber-600 text-amber-700 hover:text-white dark:text-amber-400 dark:hover:text-white border border-amber-500/30 text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer whitespace-nowrap">'
+          + '    <i class="fa-regular fa-star"></i> <span>Save to Vault</span>'
+          + '  </button>'
+          + '  <button data-copy-content-id="' + escapeHtml(item.id) + '" class="px-3 py-1.5 rounded-xl bg-theme-light dark:bg-darkmode-theme-light hover:border-amber-500 border border-border/80 dark:border-darkmode-border/80 text-xs font-semibold transition-all flex items-center justify-center gap-1.5 cursor-pointer whitespace-nowrap">'
+          + '    <i class="fa-regular fa-copy"></i> <span>Copy Blueprint</span>'
+          + '  </button>'
+          + '  <button data-discard-content-id="' + escapeHtml(item.id) + '" class="px-3 py-1.5 rounded-xl text-text/50 hover:text-red-500 text-xs font-semibold transition-colors flex items-center justify-center gap-1 cursor-pointer whitespace-nowrap" title="Remove this topic and rotate next">'
+          + '    <i class="fa-solid fa-xmark text-sm"></i> <span>Discard</span>'
+          + '  </button>'
+          + '</div>'
+          + '</div>';
+      }).join("");
+
+      attachContentIdeaHandlers();
+    }
+
+    // Render Permanent Content Vault
+    function renderPermanentContentVault() {
+      var grid = document.getElementById("vault-content-grid");
+      var countEl = document.getElementById("vault-content-count");
+      if (!grid) return;
+      var vault = getPermanentContentIdeas();
+      if (countEl) countEl.textContent = vault.length;
+
+      if (!vault.length) {
+        grid.innerHTML = '<div class="p-6 text-center border border-border/60 dark:border-darkmode-border/60 rounded-2xl bg-theme-light/10 dark:bg-darkmode-theme-light/5 text-xs text-text/60 dark:text-darkmode-text/60">Star items from the active recommendations above to pin them permanently in this vault.</div>';
+        return;
+      }
+
+      grid.innerHTML = vault.map(function(item) {
+        return '<div class="bg-body dark:bg-darkmode-body border border-border/80 dark:border-darkmode-border/80 rounded-2xl p-4 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">'
+          + '<div>'
+          + '  <div class="flex items-center gap-2 mb-1 flex-wrap">'
+          + '    <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/15 text-amber-700 dark:text-amber-400 font-mono">' + escapeHtml(item.category || "Cloud") + '</span>'
+          + '    <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ' + getCategoryBadgeClass(item.categoryType) + '">' + escapeHtml(item.categoryType || "Starred Article") + '</span>'
+          + '  </div>'
+          + '  <h5 class="text-sm font-bold text-dark dark:text-darkmode-dark">' + escapeHtml(item.title) + '</h5>'
+          + '  <p class="text-xs text-text/70 dark:text-darkmode-text/70 mt-0.5 line-clamp-1">' + escapeHtml(item.whyViral || "") + '</p>'
+          + '</div>'
+          + '<div class="shrink-0 flex items-center gap-2">'
+          + '  <button data-copy-vault-id="' + escapeHtml(item.id) + '" class="px-3 py-1.5 rounded-xl bg-theme-light dark:bg-darkmode-theme-light hover:border-primary border border-border/80 dark:border-darkmode-border/80 text-xs font-semibold transition-all cursor-pointer">'
+          + '    <i class="fa-regular fa-copy mr-1"></i> Copy'
+          + '  </button>'
+          + '  <button data-delete-vault-id="' + escapeHtml(item.id) + '" class="px-3 py-1.5 rounded-xl text-rose-500 hover:bg-rose-500/10 border border-rose-500/30 text-xs font-bold transition-colors cursor-pointer" title="Delete from vault">'
+          + '    <i class="fa-regular fa-trash-can mr-1"></i> Delete'
+          + '  </button>'
+          + '</div>'
+          + '</div>';
+      }).join("");
+
+      attachVaultHandlers();
+    }
+
+    function attachContentIdeaHandlers() {
+      // Save to Vault
+      document.querySelectorAll("[data-save-content-id]").forEach(function(btn) {
+        btn.addEventListener("click", function() {
+          var id = btn.getAttribute("data-save-content-id");
+          var ideas = getEphemeralContentIdeas();
+          var item = ideas.find(function(i) { return i.id === id; });
+          if (!item) return;
+
+          var vault = getPermanentContentIdeas();
+          if (!vault.some(function(v) { return v.id === id; })) {
+            vault.unshift(item);
+            savePermanentContentIdeas(vault);
+          }
+          btn.innerHTML = '<i class="fa-solid fa-check text-amber-500"></i> <span>Saved!</span>';
+          btn.classList.add("pointer-events-none");
+        });
+      });
+
+      // Discard from Top 5
+      document.querySelectorAll("[data-discard-content-id]").forEach(function(btn) {
+        btn.addEventListener("click", function() {
+          var id = btn.getAttribute("data-discard-content-id");
+          var ideas = getEphemeralContentIdeas().filter(function(i) { return i.id !== id; });
+          saveEphemeralContentIdeas(ideas);
+        });
+      });
+
+      // Copy Blueprint
+      document.querySelectorAll("[data-copy-content-id]").forEach(function(btn) {
+        btn.addEventListener("click", function() {
+          var id = btn.getAttribute("data-copy-content-id");
+          var ideas = getEphemeralContentIdeas();
+          var item = ideas.find(function(i) { return i.id === id; });
+          if (!item) return;
+
+          var refsLines = [];
+          if (item.groundingRefs && item.groundingRefs.length) {
+            refsLines.push("");
+            refsLines.push("## Authoritative Grounding & Research Links");
+            item.groundingRefs.forEach(function(r) {
+              refsLines.push("- [" + r.title + "](" + r.url + ")");
+            });
+          }
+
+          var outlineLines = [];
+          if (item.outline && item.outline.length) {
+            item.outline.forEach(function(o, i) {
+              outlineLines.push((i + 1) + ". " + o);
+            });
+          } else {
+            outlineLines.push("1. Problem & Root Cause");
+            outlineLines.push("2. Implementation Manifests");
+            outlineLines.push("3. Benchmarking & Verification");
+          }
+
+          var textParts = [
+            "# Article Blueprint: " + item.title,
+            "",
+            "**Category:** " + (item.category || "Cloud") + " (" + (item.categoryType || "Evergreen") + ")",
+            "**Why Readers Click & Share:** " + (item.whyViral || ""),
+            "**Target SEO Keywords:** " + (item.keywords || "")
+          ];
+
+          if (refsLines.length) textParts = textParts.concat(refsLines);
+          textParts.push("");
+          textParts.push("## 3-Step Hands-On Implementation Outline");
+          textParts = textParts.concat(outlineLines);
+
+          var fullText = textParts.join("\n");
+          navigator.clipboard.writeText(fullText).then(function() {
+            var orig = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-check text-emerald-500"></i> <span>Copied!</span>';
+            setTimeout(function() { btn.innerHTML = orig; }, 1800);
+          });
+        });
+      });
+    }
+
+    function attachVaultHandlers() {
+      document.querySelectorAll("[data-delete-vault-id]").forEach(function(btn) {
+        btn.addEventListener("click", function() {
+          var id = btn.getAttribute("data-delete-vault-id");
+          if (!confirm("Are you sure you want to remove this item from your permanent vault?")) return;
+          var vault = getPermanentContentIdeas().filter(function(v) { return v.id !== id; });
+          savePermanentContentIdeas(vault);
+        });
+      });
+
+      document.querySelectorAll("[data-copy-vault-id]").forEach(function(btn) {
+        btn.addEventListener("click", function() {
+          var id = btn.getAttribute("data-copy-vault-id");
+          var vault = getPermanentContentIdeas();
+          var item = vault.find(function(v) { return v.id === id; });
+          if (!item) return;
+          navigator.clipboard.writeText("# " + item.title + "\n\nKeywords: " + (item.keywords || "")).then(function() {
+            var orig = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-check text-emerald-500"></i> Copied!';
+            setTimeout(function() { btn.innerHTML = orig; }, 1800);
+          });
+        });
+      });
+    }
+
+    // Render Talk Ideas (Top 5 Active) - Empathetic Author Perspective
+    function renderTalkIdeas() {
+      var grid = document.getElementById("talk-ideas-grid");
+      if (!grid) return;
+      var sel = document.getElementById("talk-venue-select");
+      var venue = sel ? sel.value : "cloud-native";
+      var talks = getEphemeralTalks(venue);
+      if (!talks.length) {
+        if (typeof defaultTalkCurations !== "undefined" && defaultTalkCurations) {
+          talks = (defaultTalkCurations[venue] || defaultTalkCurations["cloud-native"] || []).slice(0, 5);
+        } else {
+          talks = [];
+        }
+        if (talks.length) {
+          try { localStorage.setItem(KEY_EPHEMERAL_TALKS + "_" + venue, JSON.stringify(talks)); } catch (e) {}
+        }
+      }
+
+      var countBadge = document.getElementById("talks-count-badge");
+      if (countBadge) countBadge.textContent = talks.length;
+
+      grid.innerHTML = talks.map(function(talk, idx) {
+        var catClass = getCategoryBadgeClass(talk.categoryType);
+
+        // Grounding research links badges
+        var refsHtml = "";
+        if (talk.groundingRefs && Array.isArray(talk.groundingRefs) && talk.groundingRefs.length > 0) {
+          refsHtml = '<div class="flex items-center gap-1.5 flex-wrap pt-1">'
+            + '<span class="text-[10px] font-bold uppercase tracking-wider text-text/60 dark:text-darkmode-text/60 flex items-center gap-1"><i class="fa-solid fa-graduation-cap text-indigo-500"></i> Grounding:</span>'
+            + talk.groundingRefs.map(function(ref) {
+                return '<a href="' + escapeHtml(ref.url) + '" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-700 dark:text-indigo-400 font-mono text-[10px] border border-indigo-500/20 transition-colors">'
+                  + '<i class="fa-solid fa-book-bookmark text-[9px]"></i> ' + escapeHtml(ref.title) + ' <i class="fa-solid fa-arrow-up-right-from-square text-[8px] opacity-70"></i></a>';
+              }).join(" ")
+            + '</div>';
+        }
+
+        // Speaker 3-slide outline
+        var slidesHtml = "";
+        if (talk.slidesOutline && Array.isArray(talk.slidesOutline) && talk.slidesOutline.length > 0) {
+          slidesHtml = '<div class="text-[11px] text-text/80 dark:text-darkmode-text/80 bg-theme-light/40 dark:bg-darkmode-theme-light/20 p-2.5 rounded-xl border border-border/50 dark:border-darkmode-border/50">'
+            + '<span class="font-bold text-dark dark:text-darkmode-dark block mb-1"><i class="fa-solid fa-layer-group text-indigo-500 mr-1"></i> 3-Slide Speaker Flow:</span>'
+            + '<ol class="list-decimal pl-4 space-y-0.5 font-mono text-[10.5px]">' + talk.slidesOutline.map(function(s) { return '<li>' + escapeHtml(s) + '</li>'; }).join("") + '</ol>'
+            + '</div>';
+        }
+
+        return '<div class="bg-body dark:bg-darkmode-body border border-border/80 dark:border-darkmode-border/80 rounded-2xl p-5 shadow-xs hover:border-indigo-500/50 transition-all flex flex-col md:flex-row items-start justify-between gap-5 group">'
+          + '<div class="space-y-2.5 flex-grow">'
+          + '  <div class="flex items-center gap-2 flex-wrap">'
+          + '    <span class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-indigo-500/15 text-indigo-700 dark:text-indigo-400 font-mono">#' + (idx + 1) + ' ' + escapeHtml(talk.format || "Deep Dive") + '</span>'
+          + '    <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold ' + catClass + '">' + escapeHtml(talk.categoryType || "🌲 Evergreen Architectural Core") + '</span>'
+          + '    <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-200 dark:bg-slate-700 text-text/80 dark:text-darkmode-text/80 font-mono">' + escapeHtml(talk.level || "Intermediate") + '</span>'
+          + '  </div>'
+          + '  <h4 class="text-base font-bold text-dark dark:text-darkmode-dark group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors leading-snug">' + escapeHtml(talk.title) + '</h4>'
+          + '  <p class="text-xs text-text/80 dark:text-darkmode-text/80 leading-relaxed font-serif italic">&ldquo;' + escapeHtml(talk.abstract) + '&rdquo;</p>'
+          + '  <div class="text-[11px] bg-indigo-500/5 dark:bg-indigo-500/10 border-l-2 border-indigo-500 p-2.5 rounded-r-xl">'
+          + '    <span class="font-bold text-indigo-800 dark:text-indigo-300 flex items-center gap-1 mb-0.5"><i class="fa-solid fa-bullseye text-[10px]"></i> Why CFP Reviewers Pick This:</span>'
+          + '    <span class="text-text/80 dark:text-darkmode-text/80 italic">&ldquo;' + escapeHtml(talk.whyReviewersAccept || "Addresses real production failure modes with zero vendor marketing.") + '&rdquo;</span>'
+          + '  </div>'
+          + refsHtml
+          + slidesHtml
+          + '  <div class="text-[11px] text-text/80 dark:text-darkmode-text/80 bg-theme-light/40 dark:bg-darkmode-theme-light/20 p-2.5 rounded-xl border border-border/50 dark:border-darkmode-border/50">'
+          + '    <span class="font-bold text-dark dark:text-darkmode-dark block mb-1"><i class="fa-solid fa-chalkboard-user text-indigo-500 mr-1"></i> Key Attendee Takeaways:</span>'
+          + '    <ul class="list-disc pl-4 space-y-0.5 font-mono text-[10.5px]">' + (talk.takeaways ? talk.takeaways.map(function(t) { return '<li>' + escapeHtml(t) + '</li>'; }).join("") : '<li>Practical hands-on runbook</li>') + '</ul>'
+          + '  </div>'
+          + '</div>'
+          + '<div class="shrink-0 flex sm:flex-col gap-2 w-full sm:w-auto">'
+          + '  <button data-save-talk-id="' + escapeHtml(talk.id) + '" class="px-3 py-1.5 rounded-xl bg-indigo-500/15 hover:bg-indigo-600 text-indigo-700 hover:text-white dark:text-indigo-400 dark:hover:text-white border border-indigo-500/30 text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer whitespace-nowrap">'
+          + '    <i class="fa-regular fa-star"></i> <span>Save to Vault</span>'
+          + '  </button>'
+          + '  <button data-copy-talk-id="' + escapeHtml(talk.id) + '" class="px-3 py-1.5 rounded-xl bg-theme-light dark:bg-darkmode-theme-light hover:border-indigo-500 border border-border/80 dark:border-darkmode-border/80 text-xs font-semibold transition-all flex items-center justify-center gap-1.5 cursor-pointer whitespace-nowrap" title="Copy full CFP proposal formatted for submission">'
+          + '    <i class="fa-regular fa-copy"></i> <span>Copy CFP Pitch</span>'
+          + '  </button>'
+          + '  <button data-discard-talk-id="' + escapeHtml(talk.id) + '" class="px-3 py-1.5 rounded-xl text-text/50 hover:text-red-500 text-xs font-semibold transition-colors flex items-center justify-center gap-1 cursor-pointer whitespace-nowrap" title="Discard proposal and rotate next">'
+          + '    <i class="fa-solid fa-xmark text-sm"></i> <span>Discard</span>'
+          + '  </button>'
+          + '</div>'
+          + '</div>';
+      }).join("");
+
+      attachTalkIdeaHandlers();
+    }
+
+    // Render Permanent Talks Vault
+    function renderPermanentTalksVault() {
+      var grid = document.getElementById("vault-talks-grid");
+      var countEl = document.getElementById("vault-talks-count");
+      if (!grid) return;
+      var vault = getPermanentTalks();
+      if (countEl) countEl.textContent = vault.length;
+
+      if (!vault.length) {
+        grid.innerHTML = '<div class="p-6 text-center border border-border/60 dark:border-darkmode-border/60 rounded-2xl bg-theme-light/10 dark:bg-darkmode-theme-light/5 text-xs text-text/60 dark:text-darkmode-text/60">Star proposals from above to keep them permanently in your CFP vault.</div>';
+        return;
+      }
+
+      grid.innerHTML = vault.map(function(talk) {
+        return '<div class="bg-body dark:bg-darkmode-body border border-border/80 dark:border-darkmode-border/80 rounded-2xl p-4 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">'
+          + '<div>'
+          + '  <div class="flex items-center gap-2 mb-1 flex-wrap">'
+          + '    <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-indigo-500/15 text-indigo-700 dark:text-indigo-400 font-mono">' + escapeHtml(talk.format || "Talk") + '</span>'
+          + '    <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ' + getCategoryBadgeClass(talk.categoryType) + '">' + escapeHtml(talk.categoryType || "Starred Proposal") + '</span>'
+          + '  </div>'
+          + '  <h5 class="text-sm font-bold text-dark dark:text-darkmode-dark">' + escapeHtml(talk.title) + '</h5>'
+          + '  <p class="text-xs text-text/70 dark:text-darkmode-text/70 mt-0.5 line-clamp-1 italic">&ldquo;' + escapeHtml(talk.abstract) + '&rdquo;</p>'
+          + '</div>'
+          + '<div class="shrink-0 flex items-center gap-2">'
+          + '  <button data-copy-talk-vault-id="' + escapeHtml(talk.id) + '" class="px-3 py-1.5 rounded-xl bg-theme-light dark:bg-darkmode-theme-light hover:border-indigo-500 border border-border/80 dark:border-darkmode-border/80 text-xs font-semibold transition-all cursor-pointer">'
+          + '    <i class="fa-regular fa-copy mr-1"></i> Copy'
+          + '  </button>'
+          + '  <button data-delete-talk-vault-id="' + escapeHtml(talk.id) + '" class="px-3 py-1.5 rounded-xl text-rose-500 hover:bg-rose-500/10 border border-rose-500/30 text-xs font-bold transition-colors cursor-pointer" title="Delete from vault">'
+          + '    <i class="fa-regular fa-trash-can mr-1"></i> Delete'
+          + '  </button>'
+          + '</div>'
+          + '</div>';
+      }).join("");
+
+      attachTalkVaultHandlers();
+    }
+
+    function attachTalkIdeaHandlers() {
+      // Save to Vault
+      document.querySelectorAll("[data-save-talk-id]").forEach(function(btn) {
+        btn.addEventListener("click", function() {
+          var id = btn.getAttribute("data-save-talk-id");
+          var talks = getEphemeralTalks();
+          var item = talks.find(function(t) { return t.id === id; });
+          if (!item) return;
+
+          var vault = getPermanentTalks();
+          if (!vault.some(function(v) { return v.id === id; })) {
+            vault.unshift(item);
+            savePermanentTalks(vault);
+          }
+          btn.innerHTML = '<i class="fa-solid fa-check text-indigo-500"></i> <span>Saved!</span>';
+          btn.classList.add("pointer-events-none");
+        });
+      });
+
+      // Discard from Top 5
+      document.querySelectorAll("[data-discard-talk-id]").forEach(function(btn) {
+        btn.addEventListener("click", function() {
+          var id = btn.getAttribute("data-discard-talk-id");
+          var talks = getEphemeralTalks().filter(function(t) { return t.id !== id; });
+          saveEphemeralTalks(talks);
+        });
+      });
+
+      // Copy CFP Pitch formatted for submission platforms
+      document.querySelectorAll("[data-copy-talk-id]").forEach(function(btn) {
+        btn.addEventListener("click", function() {
+          var id = btn.getAttribute("data-copy-talk-id");
+          var talks = getEphemeralTalks();
+          var talk = talks.find(function(t) { return t.id === id; });
+          if (!talk) return;
+
+          var refsLines = [];
+          if (talk.groundingRefs && talk.groundingRefs.length) {
+            refsLines.push("");
+            refsLines.push("## Grounding Research & Specs");
+            talk.groundingRefs.forEach(function(r) {
+              refsLines.push("- [" + r.title + "](" + r.url + ")");
+            });
+          }
+
+          var slidesLines = [];
+          if (talk.slidesOutline && talk.slidesOutline.length) {
+            slidesLines.push("");
+            slidesLines.push("## 3-Slide Speaker Flow");
+            talk.slidesOutline.forEach(function(s, i) {
+              slidesLines.push((i + 1) + ". " + s);
+            });
+          }
+
+          var takeawaysLines = [];
+          if (talk.takeaways && talk.takeaways.length) {
+            talk.takeaways.forEach(function(t) {
+              takeawaysLines.push("- " + t);
+            });
+          } else {
+            takeawaysLines.push("- Practical runbook and manifests");
+          }
+
+          var textParts = [
+            "# Proposal Title: " + talk.title,
+            "",
+            "**Format:** " + (talk.format || "45-min Deep Dive"),
+            "**Category / Track:** " + (talk.categoryType || "Cloud Architecture"),
+            "**Target Audience:** " + (talk.audience || "Cloud Architects, SREs, DevOps Engineers"),
+            "**Level:** " + (talk.level || "Intermediate / Advanced"),
+            "",
+            "## Session Abstract",
+            talk.abstract || "",
+            "",
+            "## Why CFP Reviewers Should Accept This Session",
+            talk.whyReviewersAccept || "Addresses production pain points with zero product pitch.",
+            "",
+            "## Key Attendee Takeaways"
+          ];
+
+          textParts = textParts.concat(takeawaysLines);
+          if (refsLines.length) textParts = textParts.concat(refsLines);
+          if (slidesLines.length) textParts = textParts.concat(slidesLines);
+
+          var fullPitch = textParts.join("\n");
+          navigator.clipboard.writeText(fullPitch).then(function() {
+            var orig = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-check text-emerald-500"></i> <span>Copied!</span>';
+            setTimeout(function() { btn.innerHTML = orig; }, 1800);
+          });
+        });
+      });
+    }
+
+    function attachTalkVaultHandlers() {
+      document.querySelectorAll("[data-delete-talk-vault-id]").forEach(function(btn) {
+        btn.addEventListener("click", function() {
+          var id = btn.getAttribute("data-delete-talk-vault-id");
+          if (!confirm("Are you sure you want to remove this talk proposal from your permanent vault?")) return;
+          var vault = getPermanentTalks().filter(function(v) { return v.id !== id; });
+          savePermanentTalks(vault);
+        });
+      });
+
+      document.querySelectorAll("[data-copy-talk-vault-id]").forEach(function(btn) {
+        btn.addEventListener("click", function() {
+          var id = btn.getAttribute("data-copy-talk-vault-id");
+          var vault = getPermanentTalks();
+          var talk = vault.find(function(t) { return t.id === id; });
+          if (!talk) return;
+          navigator.clipboard.writeText("# " + talk.title + "\n\n" + talk.abstract).then(function() {
+            var orig = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-check text-emerald-500"></i> Copied!';
+            setTimeout(function() { btn.innerHTML = orig; }, 1800);
+          });
+        });
+      });
+    }
+
+    // Dropdown change listeners for instant switching of topics/proposals
+    if (contentNicheSelect) {
+      contentNicheSelect.addEventListener("change", function () {
+        renderContentIdeas();
+        if (contentStatusMsg) {
+          contentStatusMsg.textContent = "📂 Switched to " + contentNicheSelect.options[contentNicheSelect.selectedIndex].text;
+          contentStatusMsg.classList.remove("hidden");
+          setTimeout(function () { contentStatusMsg.classList.add("hidden"); }, 2500);
+        }
+      });
+    }
+
+    if (talkVenueSelect) {
+      talkVenueSelect.addEventListener("change", function () {
+        renderTalkIdeas();
+        if (talkStatusMsg) {
+          talkStatusMsg.textContent = "📂 Switched to " + talkVenueSelect.options[talkVenueSelect.selectedIndex].text;
+          talkStatusMsg.classList.remove("hidden");
+          setTimeout(function () { talkStatusMsg.classList.add("hidden"); }, 2500);
+        }
+      });
+    }
+
+    // AI Generation Trigger for Content Engine (Generates 1 Topic at a time, FIFO rotation)
+    var generateContentBtn = document.getElementById("generate-content-ideas-btn");
+    var resetContentBtn = document.getElementById("reset-content-ideas-btn");
+    var contentNicheSelect = document.getElementById("content-engine-niche-select");
+    var contentStatusMsg = document.getElementById("content-engine-status-msg");
+
+    if (resetContentBtn) {
+      resetContentBtn.addEventListener("click", function() {
+        var niche = contentNicheSelect ? contentNicheSelect.value : "all";
+        var fresh5 = (defaultContentCurations[niche] || defaultContentCurations["all"]).slice(0, 5);
+        saveEphemeralContentIdeas(fresh5);
+        if (contentStatusMsg) {
+          contentStatusMsg.textContent = "🔄 Reset active list to curated 5 topics.";
+          contentStatusMsg.classList.remove("hidden");
+          setTimeout(function() { contentStatusMsg.classList.add("hidden"); }, 2500);
+        }
+      });
+    }
+
+    if (generateContentBtn) {
+      generateContentBtn.addEventListener("click", async function() {
+        var niche = contentNicheSelect ? contentNicheSelect.value : "all";
+        generateContentBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-[11px]"></i> Analyzing Trends...';
+        generateContentBtn.classList.add("pointer-events-none");
+        if (contentStatusMsg) {
+          contentStatusMsg.textContent = "Scanning cloud releases, CVEs, and search queries for " + niche + "...";
+          contentStatusMsg.classList.remove("hidden");
+        }
+
+        var keyToUse = (typeof cachedGeminiApiKey !== "undefined" && cachedGeminiApiKey) ? cachedGeminiApiKey : localStorage.getItem("gcloudcafe_gemini_api_key");
+        if (!keyToUse) {
+          try {
+            var res = await fetch(config.url + "/rest/v1/site_settings?key=eq.gemini_api_key&select=value", {
+              headers: { "apikey": config.anonKey, "Authorization": "Bearer " + config.anonKey }
+            });
+            if (res.ok) {
+              var rows = await res.json();
+              if (rows && rows.length > 0) keyToUse = rows[0].value;
+            }
+          } catch(e) {}
+        }
+
+        var prompt = "You are the chief content strategist and lead cloud architect for GCloud Cafe (https://gcloudcafe.com).\n"
+          + "Recommend exactly 1 high-impact, viral, practitioner-grade technical article to write next for the niche: '" + niche + "'.\n"
+          + "Focus on real production pain points, recent CVEs, new Kubernetes/GCP features, or certification challenges.\n"
+          + "STRICT FORMAT: Return ONLY a valid JSON object (no markdown fences, no raw text) with this exact structure:\n"
+          + '{"id":"rec_' + Date.now() + '","title":"High CTR title","category":"Category Name","categoryType":"🌲 Evergreen Architectural Core","viralityScore":95,"whyViral":"Why this topic is trending right now","keywords":"3-4 target search keywords","groundingRefs":[{"title":"Reference Title","url":"https://..."}],"outline":["Key point 1","Key point 2","Key point 3"]}';
+
+        var newSingleItem = null;
+
+        if (keyToUse) {
+          var models = ["gemini-2.5-flash", "gemini-1.5-flash", "gemini-flash-latest"];
+          for (var i = 0; i < models.length; i++) {
+            try {
+              var url = "https://generativelanguage.googleapis.com/v1beta/models/" + models[i] + ":generateContent?key=" + encodeURIComponent(keyToUse);
+              var resp = await fetch(url, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }], generationConfig: { temperature: 0.4 } })
+              });
+              if (resp.ok) {
+                var jsonResp = await resp.json();
+                var rawTxt = jsonResp?.candidates?.[0]?.content?.parts?.[0]?.text || "";
+                var cleaned = rawTxt.replace(/```json/g, "").replace(/```/g, "").trim();
+                var parsed = JSON.parse(cleaned);
+                if (Array.isArray(parsed) && parsed.length > 0) {
+                  newSingleItem = parsed[0];
+                } else if (parsed && typeof parsed === "object" && parsed.title) {
+                  newSingleItem = parsed;
+                }
+                if (newSingleItem) break;
+              }
+            } catch(e) {}
+          }
+        }
+
+        if (!newSingleItem) {
+          // Fallback: pick a fresh item from pool that is not currently in the top 5
+          var pool = defaultContentCurations[niche] || defaultContentCurations["all"];
+          var current = getEphemeralContentIdeas();
+          var existingIds = current.map(function(c) { return c.id; });
+          var candidate = pool.find(function(p) { return existingIds.indexOf(p.id) === -1; });
+          if (!candidate) {
+            var base = pool[Math.floor(Math.random() * pool.length)];
+            candidate = JSON.parse(JSON.stringify(base));
+            candidate.id = "rec_" + Date.now();
+          }
+          newSingleItem = candidate;
+        }
+
+        // FIFO 1-at-a-time rotation: Insert at #1 and keep top 5 (drops oldest #5)
+        var existingList = getEphemeralContentIdeas();
+        if (!existingList.length) {
+          existingList = (defaultContentCurations[niche] || defaultContentCurations["all"]).slice(0, 5);
+        }
+        existingList.unshift(newSingleItem);
+        saveEphemeralContentIdeas(existingList.slice(0, 5));
+
+        generateContentBtn.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles"></i> <span>Generate 1 Fresh Topic</span>';
+        generateContentBtn.classList.remove("pointer-events-none");
+        if (contentStatusMsg) {
+          contentStatusMsg.textContent = "✨ Generated 1 fresh topic! Pushed to #1 and rotated oldest out of Top 5.";
+          setTimeout(function() { contentStatusMsg.classList.add("hidden"); }, 3500);
+        }
+      });
+    }
+
+    // AI Generation Trigger for Talk Hub (Generates 1 Proposal at a time, FIFO rotation)
+    var generateTalksBtn = document.getElementById("generate-talk-ideas-btn");
+    var resetTalksBtn = document.getElementById("reset-talk-ideas-btn");
+    var talkVenueSelect = document.getElementById("talk-venue-select");
+    var talkStatusMsg = document.getElementById("talk-status-msg");
+
+    if (resetTalksBtn) {
+      resetTalksBtn.addEventListener("click", function() {
+        var venue = talkVenueSelect ? talkVenueSelect.value : "cloud-native";
+        var fresh5 = (defaultTalkCurations[venue] || defaultTalkCurations["cloud-native"]).slice(0, 5);
+        saveEphemeralTalks(fresh5);
+        if (talkStatusMsg) {
+          talkStatusMsg.textContent = "🔄 Reset active talk list to curated 5 proposals.";
+          talkStatusMsg.classList.remove("hidden");
+          setTimeout(function() { talkStatusMsg.classList.add("hidden"); }, 2500);
+        }
+      });
+    }
+
+    if (generateTalksBtn) {
+      generateTalksBtn.addEventListener("click", async function() {
+        var venue = talkVenueSelect ? talkVenueSelect.value : "cloud-native";
+        generateTalksBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-[11px]"></i> Formulating Talk...';
+        generateTalksBtn.classList.add("pointer-events-none");
+        if (talkStatusMsg) {
+          talkStatusMsg.textContent = "Formulating CFP proposal for " + venue + "...";
+          talkStatusMsg.classList.remove("hidden");
+        }
+
+        var keyToUse = (typeof cachedGeminiApiKey !== "undefined" && cachedGeminiApiKey) ? cachedGeminiApiKey : localStorage.getItem("gcloudcafe_gemini_api_key");
+        if (!keyToUse) {
+          try {
+            var res = await fetch(config.url + "/rest/v1/site_settings?key=eq.gemini_api_key&select=value", {
+              headers: { "apikey": config.anonKey, "Authorization": "Bearer " + config.anonKey }
+            });
+            if (res.ok) {
+              var rows = await res.json();
+              if (rows && rows.length > 0) keyToUse = rows[0].value;
+            }
+          } catch(e) {}
+        }
+
+        var prompt = "You are a top-tier tech conference CFP reviewer and veteran cloud speaker for major events like KubeCon, Google Cloud Next, and DevOpsDays.\n"
+          + "Formulate exactly 1 CFP-ready conference talk proposal for venue: '" + venue + "' from the perspective of a seasoned, battle-tested cloud engineer.\n"
+          + "Focus on real production pain points, war stories, architecture benchmarks, and zero marketing fluff.\n"
+          + "STRICT FORMAT: Return ONLY a valid JSON object (no markdown fences, no raw text) with this exact structure:\n"
+          + '{"id":"talk_' + Date.now() + '","title":"Compelling talk title","format":"45-min Deep Dive","level":"Intermediate","audience":"Target roles","categoryType":"🌲 Evergreen Architectural Core","whyReviewersAccept":"1 sharp sentence explaining why conference reviewers will accept this over 200 other submissions","groundingRefs":[{"title":"Spec or Paper Title","url":"https://..."}],"abstract":"2-3 sentence engaging abstract","takeaways":["Takeaway 1","Takeaway 2","Takeaway 3"],"slidesOutline":["Slide 1: Anti-pattern & Root Cause","Slide 2: Architecture & Benchmarks","Slide 3: Production Runbook"]}';
+
+        var newSingleTalk = null;
+
+        if (keyToUse) {
+          var models = ["gemini-2.5-flash", "gemini-1.5-flash", "gemini-flash-latest"];
+          for (var i = 0; i < models.length; i++) {
+            try {
+              var url = "https://generativelanguage.googleapis.com/v1beta/models/" + models[i] + ":generateContent?key=" + encodeURIComponent(keyToUse);
+              var resp = await fetch(url, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }], generationConfig: { temperature: 0.4 } })
+              });
+              if (resp.ok) {
+                var jsonResp = await resp.json();
+                var rawTxt = jsonResp?.candidates?.[0]?.content?.parts?.[0]?.text || "";
+                var cleaned = rawTxt.replace(/```json/g, "").replace(/```/g, "").trim();
+                var parsed = JSON.parse(cleaned);
+                if (Array.isArray(parsed) && parsed.length > 0) {
+                  newSingleTalk = parsed[0];
+                } else if (parsed && typeof parsed === "object" && parsed.title) {
+                  newSingleTalk = parsed;
+                }
+                if (newSingleTalk) break;
+              }
+            } catch(e) {}
+          }
+        }
+
+        if (!newSingleTalk) {
+          // Fallback: pick a fresh item from pool that is not currently in the top 5
+          var pool = defaultTalkCurations[venue] || defaultTalkCurations["cloud-native"];
+          var current = getEphemeralTalks();
+          var existingIds = current.map(function(c) { return c.id; });
+          var candidate = pool.find(function(p) { return existingIds.indexOf(p.id) === -1; });
+          if (!candidate) {
+            var base = pool[Math.floor(Math.random() * pool.length)];
+            candidate = JSON.parse(JSON.stringify(base));
+            candidate.id = "talk_" + Date.now();
+          }
+          newSingleTalk = candidate;
+        }
+
+        // FIFO 1-at-a-time rotation: Insert at #1 and keep top 5 (drops oldest #5)
+        var existingTalks = getEphemeralTalks();
+        if (!existingTalks.length) {
+          existingTalks = (defaultTalkCurations[venue] || defaultTalkCurations["cloud-native"]).slice(0, 5);
+        }
+        existingTalks.unshift(newSingleTalk);
+        saveEphemeralTalks(existingTalks.slice(0, 5));
+
+        generateTalksBtn.innerHTML = '<i class="fa-solid fa-microphone-lines"></i> <span>Generate 1 Fresh Talk</span>';
+        generateTalksBtn.classList.remove("pointer-events-none");
+        if (talkStatusMsg) {
+          talkStatusMsg.textContent = "🎙️ Formulated 1 fresh talk proposal! Pushed to #1 and rotated oldest out of Top 5.";
+          setTimeout(function() { talkStatusMsg.classList.add("hidden"); }, 3500);
+        }
+      });
+    }
+
+    // Initial render of Content Engine & Talk Hub
+    renderContentIdeas();
+    renderPermanentContentVault();
+    renderTalkIdeas();
+    renderPermanentTalksVault();
+
+    // Check existing authentication once all variables, data structures, and handlers are initialized
+    if (sessionStorage.getItem("pulse_admin_authed") === "true") {
+      unlockDashboard();
+    }
+
 
     // Export Subscribers CSV
     if (exportSubscribersCsvBtn) {
