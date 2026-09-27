@@ -3983,7 +3983,10 @@ function renderPulses(pulses) {
 
     renderPollUI();
     fetchPollData();
-    setInterval(fetchPollData, 30000);
+    setInterval(function () {
+      if (document.hidden) return;
+      fetchPollData();
+    }, 30000);
   }
 
   /* ── 12. Article Admin Studio & Markdown Publisher System ── */
@@ -8933,7 +8936,13 @@ function renderPulses(pulses) {
       }
 
       updateCountdown();
-      setInterval(updateCountdown, 1000);
+      setInterval(function () {
+        if (document.hidden) return;
+        updateCountdown();
+      }, 1000);
+      document.addEventListener("visibilitychange", function () {
+        if (!document.hidden) updateCountdown();
+      });
     }
 
     // Initialize: check if user already voted. He CANNOT view results before answering!
@@ -8947,7 +8956,10 @@ function renderPulses(pulses) {
     }
 
     fetchRemoteWeeklyPollVotes();
-    setInterval(fetchRemoteWeeklyPollVotes, 15000);
+    setInterval(function () {
+      if (document.hidden) return;
+      fetchRemoteWeeklyPollVotes();
+    }, 15000);
 
     startNextQuestionCountdown();
   }

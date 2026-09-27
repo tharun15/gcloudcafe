@@ -148,8 +148,10 @@
 <!-- Google TechArticle, WebSite & BreadcrumbList JSON-LD Schema -->
 {{ partial "seo-schema.html" . }}
 
-<!-- custom script -->
-{{ partialCached "custom-script.html" . }}
+<!-- custom script (Production Only) -->
+{{ if hugo.IsProduction }}
+  {{ partialCached "custom-script.html" . }}
+{{ end }}
 
 <!-- search index -->
 {{ partial "search-index.html" . }}
