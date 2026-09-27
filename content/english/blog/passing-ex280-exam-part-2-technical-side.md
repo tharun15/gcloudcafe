@@ -1,9 +1,9 @@
 ---
 title: "Passing the Red Hat OpenShift Administrator (EX280) Exam – Part 2: The Technical Side"
-meta_title: "EX280 Exam Objectives & Hands-On Technical Guide"
+meta_title: "Red Hat EX280 Exam Guide: Hands-On Technical Objectives"
 date: 2025-11-02
 image: "/images/post4-dp.png"
-description: "Deep-dive into the technical side of Red Hat EX280 exam objectives and DO280 tasks — connecting to the cluster, auth, storage, routes, and hands-on practice."
+description: "Prepare for Red Hat OpenShift EX280 and DO280: Master hands-on cluster admin, HTPasswd auth, RBAC, storage classes, routes, network policies, and CLI speed tricks."
 faqs:
   - question: "What are the official Red Hat OpenShift EX280 exam objectives?"
     answer: "The Red Hat EX280 exam tests hands-on skills across cluster management, user authentication via HTPasswd, RBAC role bindings, project quotas, persistent storage (PV/PVC/StorageClass), NetworkPolicies, route encryption (Edge/Re-encrypt), pod health probes, and Operator deployments."

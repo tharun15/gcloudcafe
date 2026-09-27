@@ -68,7 +68,9 @@
 
 <!-- Title & Description (Guaranteed Fallback for Taxonomies and List Pages) -->
 {{ $pageTitle := "" }}
-{{ if .Title }}
+{{ if .Params.meta_title }}
+  {{ $pageTitle = printf "%s | GCloud Cafe" .Params.meta_title }}
+{{ else if .Title }}
   {{ $pageTitle = printf "%s | GCloud Cafe" .Title }}
 {{ else }}
   {{ $pageTitle = "GCloud Cafe | Practical Cloud Architecture, DevOps & Certifications" }}
@@ -84,7 +86,7 @@
 
 <!-- Open Graph / Facebook / LinkedIn Meta Tags -->
 <meta property="og:site_name" content="GCloud Cafe" />
-<meta property="og:title" content="{{ .Title | default "GCloud Cafe | Cloud Architecture & Certifications" }}" />
+<meta property="og:title" content="{{ .Params.meta_title | default .Title | default "GCloud Cafe | Cloud Architecture & Certifications" }}" />
 <meta property="og:description" content="{{ $metaDesc | truncate 200 }}" />
 <meta property="og:url" content="{{ .Permalink }}" />
 <meta property="og:type" content="{{ if .IsPage }}article{{ else }}website{{ end }}" />
@@ -122,7 +124,7 @@
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:site" content="@gcloudcafe" />
 <meta name="twitter:creator" content="@tharun_vempati" />
-<meta name="twitter:title" content="{{ .Title | default "GCloud Cafe | Cloud Architecture & Certifications" }}" />
+<meta name="twitter:title" content="{{ .Params.meta_title | default .Title | default "GCloud Cafe | Cloud Architecture & Certifications" }}" />
 <meta name="twitter:description" content="{{ $metaDesc | truncate 200 }}" />
 <meta name="twitter:image" content="{{ $imageURL }}" />
 

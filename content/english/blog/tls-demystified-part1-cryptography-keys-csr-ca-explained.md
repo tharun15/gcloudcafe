@@ -1,7 +1,7 @@
 ---
 title: "TLS for DevOps Engineers (Part 1): Keys, CSRs, CAs, and the Chain of Trust Demystified"
-meta_title: "TLS for DevOps (Part 1): Keys, CSRs, CAs & Chain of Trust"
-description: "Master modern TLS fundamentals for DevOps & Kubernetes: The postcard internet, Alice & Bob's padlock model, Key-to-Cert pipeline, 5 common misconceptions, and OpenSSL commands."
+meta_title: "TLS & PKI for DevOps: Keys, CSRs, CAs & Chain of Trust"
+description: "A complete DevOps guide to TLS foundations: Private keys, CSR generation, Public vs Private CAs, trust stores, Diffie-Hellman, and OpenSSL CLI cheat sheets."
 date: 2026-08-14
 image: "/images/tls-part1-foundations.jpg"
 categories: ["Security", "DevOps", "Architecture", "TLS"]

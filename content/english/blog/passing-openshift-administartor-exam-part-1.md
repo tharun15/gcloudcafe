@@ -1,9 +1,9 @@
 ---
 title: "Passing the Red Hat OpenShift Administrator (EX280) Exam – Part 1: The Non-Technical Side"
-meta_title: "The Preparation Perspective That's Often Undervalued"
+meta_title: "Passing Red Hat EX280: Non-Technical Prep & Remote Exam Setup"
 date: 2025-10-25
 image: "/images/post3-dp.png"
-description: "My journey of passing the Red Hat OpenShift Administrator EX280 exam — non-technical setup, last-minute lessons, and preparation tips you shouldn’t overlook."
+description: "My journey passing Red Hat OpenShift Administrator EX280: Remote exam environment setup, time management strategies, and lessons learned the hard way."
 categories: ["Certifications", "DevOps", "Red Hat", "Openshift", "Administrator"]
 tags: ["Red Hat", "OpenShift", "EX280", "Certification", "Remote Exam"]
 author: tharun-vempati
