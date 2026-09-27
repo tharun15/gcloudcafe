@@ -5559,6 +5559,10 @@ function renderPulses(pulses) {
 
       loadProposals();
       loadSubscribers();
+      renderContentIdeas();
+      renderPermanentContentVault();
+      renderTalkIdeas();
+      renderPermanentTalksVault();
     }
 
     function lockDashboard() {
@@ -5627,7 +5631,7 @@ function renderPulses(pulses) {
       logoutBtn.addEventListener("click", lockDashboard);
     }
 
-    // Tab Navigation for all 4 admin tools
+    // Tab Navigation for all 4 admin tools (automatically re-loads dynamic content upon switching)
     function switchAdminTab(activeTab) {
       var allTabs = [
         { btn: tabProposalsBtn, sec: sectionProposals, activeClass: "bg-primary text-white font-extrabold" },
@@ -5646,6 +5650,19 @@ function renderPulses(pulses) {
           t.sec.classList.add("hidden");
         }
       });
+
+      // Automatically re-render dynamic items upon switching tabs so user sees previously generated data
+      if (activeTab === tabContentEngineBtn) {
+        renderContentIdeas();
+        renderPermanentContentVault();
+      } else if (activeTab === tabTalksBtn) {
+        renderTalkIdeas();
+        renderPermanentTalksVault();
+      } else if (activeTab === tabProposalsBtn) {
+        renderProposals();
+      } else if (activeTab === tabSubscribersBtn) {
+        renderSubscribers();
+      }
     }
 
     if (tabProposalsBtn) tabProposalsBtn.addEventListener("click", function() { switchAdminTab(tabProposalsBtn); });
@@ -6045,6 +6062,7 @@ function renderPulses(pulses) {
     }
 
 
+
     /* ══════════════════════════════════════════════════════════ */
     /* ── SECTION 3 & 4: CONTENT ENGINE & TALK SPEAKER HUB ─── */
     /* ══════════════════════════════════════════════════════════ */
@@ -6055,18 +6073,24 @@ function renderPulses(pulses) {
     var KEY_EPHEMERAL_TALKS = "gcloudcafe_ephemeral_talk_ideas";
     var KEY_PERMANENT_TALKS = "gcloudcafe_permanent_talk_ideas";
 
+    // Rich Curated Grounded Content Topics Pool
     var defaultContentCurations = {
       "all": [
         {
           id: "rec_k8s_gateway",
           title: "Kubernetes Gateway API in Production: Migrating from Ingress with Zero Downtime",
           category: "Kubernetes",
+          categoryType: "🌲 Evergreen Architectural Core",
           viralityScore: 97,
-          whyViral: "Gateway API has reached GA and Kubernetes SIG-Network is urging migration. Production teams struggle with HTTPRoute and TLS cross-namespace delegation.",
+          whyViral: "Gateway API reached GA and Kubernetes SIG-Network is urging migration. Production teams struggle with HTTPRoute and TLS cross-namespace delegation.",
           keywords: "kubernetes gateway api, migrate ingress to gateway api, httproute example, tls gateway api",
+          groundingRefs: [
+            { title: "Kubernetes KEP-1907: Gateway API Spec", url: "https://github.com/kubernetes/enhancements/issues/1907" },
+            { title: "Gateway API v1.1 Release Notes", url: "https://gateway-api.sigs.k8s.io/" }
+          ],
           outline: [
             "Architectural shift: Ingress vs Gateway API separation of roles (Infra vs App dev)",
-            "Step-by-step canary migration using Envoy Gateway / Contour",
+            "Step-by-step canary migration using Envoy Gateway and HTTPRoute traffic weights",
             "Debugging cross-namespace ReferenceGrants and TLS certificate routing"
           ]
         },
@@ -6074,9 +6098,14 @@ function renderPulses(pulses) {
           id: "rec_gemini_adk",
           title: "Building Multi-Agent Workflows with Gemini Enterprise Agent Platform & Python",
           category: "AI Agents",
+          categoryType: "🔥 Latest Viral & Trending",
           viralityScore: 95,
           whyViral: "Enterprise AI shifts from raw chat prompts to deterministic multi-agent systems with schema-constrained JSON outputs.",
           keywords: "gemini enterprise agent platform, vertex ai multi agent, pydantic gemini python, express mode",
+          groundingRefs: [
+            { title: "arXiv:2403.05530: Gemini 1.5 Architecture", url: "https://arxiv.org/abs/2403.05530" },
+            { title: "Google Cloud: Gemini Agent Platform Documentation", url: "https://cloud.google.com/vertex-ai" }
+          ],
           outline: [
             "Single prompt vs Agentic loop: State management and tool calling",
             "Express Mode bootstrapping with ADC vs API key credentials",
@@ -6087,9 +6116,14 @@ function renderPulses(pulses) {
           id: "rec_openshift_storage",
           title: "OpenShift 4 Storage Troubleshooting: Recovering from Multi-Attach Errors (VolumeLocked)",
           category: "OpenShift",
+          categoryType: "🧪 Production Runbook & War Story",
           viralityScore: 94,
           whyViral: "Volume attachment timeout is the #1 reason stateful pods get stuck in ContainerCreating in enterprise OpenShift clusters.",
           keywords: "openshift storage volume locked error, rwo pvc containercreating, ceph odf attach error",
+          groundingRefs: [
+            { title: "Kubernetes CSI Spec v1.5", url: "https://github.com/container-storage-interface/spec" },
+            { title: "Red Hat OpenShift Storage Troubleshooting Guide", url: "https://docs.openshift.com/" }
+          ],
           outline: [
             "Root cause: CSI node driver detachment timeouts and kubelet unmount loops",
             "Step-by-step force-detach runbook using oc and volumeattachment CRDs",
@@ -6100,9 +6134,14 @@ function renderPulses(pulses) {
           id: "rec_tls_quantum",
           title: "Post-Quantum Cryptography in TLS: Benchmarking X25519MLKEM768 in NGINX & Cloudflare",
           category: "Security",
+          categoryType: "🎯 High Search Growth / Spec Finalized",
           viralityScore: 92,
           whyViral: "NIST standardized post-quantum algorithms (ML-KEM). Major browsers now negotiate hybrid post-quantum key exchange by default.",
           keywords: "post quantum tls 1.3, ml kem 768 benchmark, hybrid key exchange, nginx openssl 3.3",
+          groundingRefs: [
+            { title: "NIST FIPS 203: ML-KEM Standard", url: "https://csrc.nist.gov/pubs/fips/203/final" },
+            { title: "IETF RFC 8446: TLS Protocol v1.3", url: "https://datatracker.ietf.org/doc/html/rfc8446" }
+          ],
           outline: [
             "How hybrid post-quantum key exchange works (ECDH + Kyber / ML-KEM)",
             "Packet size impact: Measuring TCP handshake latency over real mobile networks",
@@ -6113,9 +6152,14 @@ function renderPulses(pulses) {
           id: "rec_gcp_bigquery",
           title: "BigQuery Storage Billing Optimization: Physical vs Logical Storage Deep Dive",
           category: "Google Cloud",
+          categoryType: "🌲 Evergreen Architectural Core",
           viralityScore: 90,
           whyViral: "Google Cloud introduced physical storage billing which can cut BigQuery storage costs by up to 50% for compressed datasets.",
           keywords: "bigquery physical vs logical storage, gcp cost optimization, bq partitioning clustering",
+          groundingRefs: [
+            { title: "Google Research: Capacitor Columnar Storage (VLDB)", url: "https://research.google/pubs/pub45778/" },
+            { title: "BigQuery Documentation: Storage Billing Models", url: "https://cloud.google.com/bigquery/pricing" }
+          ],
           outline: [
             "Understanding Capacitor compression ratios on columnar BigQuery tables",
             "Querying INFORMATION_SCHEMA.TABLE_STORAGE to evaluate cost savings",
@@ -6125,6 +6169,7 @@ function renderPulses(pulses) {
       ]
     };
 
+    // Rich Curated Conference Talk Proposals with Grounding Research & Author Perspective
     var defaultTalkCurations = {
       "cloud-native": [
         {
@@ -6133,11 +6178,23 @@ function renderPulses(pulses) {
           format: "45-min Technical Deep Dive",
           level: "Intermediate / Advanced",
           audience: "Cloud Architects, SREs, Security Engineers",
-          abstract: "As NIST finalizes post-quantum standards, modern distributed systems must prepare for 'harvest-now, decrypt-later' threats. In this session, we dissect the hybrid X25519MLKEM768 key exchange mechanism in TLS 1.3. We will inspect live packet captures, analyze real latency trade-offs on Kubernetes Ingresses, and deliver a production-ready blueprint for automating mTLS certificates without service disruption.",
+          categoryType: "🌲 Evergreen Architectural Core",
+          whyReviewersAccept: "Zero vendor marketing. Delivers real Wireshark packet captures, microsecond latency benchmarks, and copy-paste YAML configs for immediate production impact.",
+          abstract: "As NIST finalizes post-quantum standards, modern distributed systems must prepare for 'harvest-now, decrypt-later' threats. In this session, we dissect the hybrid X25519MLKEM768 key exchange mechanism in TLS 1.3. We inspect live packet captures, analyze real latency trade-offs on Kubernetes Ingresses, and deliver a production-ready blueprint for automating mTLS certificates without service disruption.",
+          groundingRefs: [
+            { title: "NIST FIPS 203 ML-KEM Standard", url: "https://csrc.nist.gov/pubs/fips/203/final" },
+            { title: "IETF RFC 8446 TLS 1.3 Spec", url: "https://datatracker.ietf.org/doc/html/rfc8446" },
+            { title: "arXiv:2405.02104: PQC in Service Meshes", url: "https://arxiv.org/abs/2405.02104" }
+          ],
           takeaways: [
             "Understand how hybrid post-quantum key exchange prevents cryptographic obsolescence",
-            "Benchmark packet size overhead and latency impacts on live service mesh proxies",
+            "Benchmark packet size overhead (1,184-byte keys) and latency impacts on live proxies",
             "Implement automated certificate rotation in Kubernetes using cert-manager"
+          ],
+          slidesOutline: [
+            "Slide 1-10: The Harvest-Now Decrypt-Later threat model & TLS 1.3 handshake packet breakdown",
+            "Slide 11-25: Benchmarking Envoy & NGINX handshake latency across 4G/5G mobile edges",
+            "Slide 26-40: Live Production Runbook - Cert-Manager automated rotation & fallback policies"
           ]
         },
         {
@@ -6146,11 +6203,23 @@ function renderPulses(pulses) {
           format: "45-min War Stories & Live Demo",
           level: "All Engineering Levels",
           audience: "DevOps Engineers, On-Call Practitioners, SREs",
-          abstract: "When a multi-region Kubernetes cluster degrades in the middle of the night, standard dashboards often mask the true root cause. This talk walks through three real-world production outages: silent NetworkPolicy packet drops, multi-attach PVC volume locks, and CoreDNS throttling. Attendees will learn non-destructive diagnostic CLI commands and leave with a battle-tested triage flowchart.",
+          categoryType: "🧪 Production War Story / Runbook",
+          whyReviewersAccept: "Every SRE has suffered through 3 AM silent DNS timeouts. This talk provides the exact non-destructive diagnostic flowcharts and CLI commands attendees can run immediately.",
+          abstract: "When a multi-region Kubernetes cluster degrades in the middle of the night, standard dashboards often mask the true root cause. This talk walks through three real-world production outages: silent NetworkPolicy packet drops, multi-attach PVC volume locks, and CoreDNS throttling. Attendees learn non-destructive diagnostic CLI commands and leave with a battle-tested triage flowchart.",
+          groundingRefs: [
+            { title: "Google Research: Borg & Kubernetes Architecture", url: "https://research.google/pubs/pub43438/" },
+            { title: "Kubernetes KEP-3063: Dynamic Resource Allocation", url: "https://github.com/kubernetes/enhancements/issues/3063" },
+            { title: "CoreDNS Performance Tuning RFC", url: "https://coredns.io/manual/toc/" }
+          ],
           takeaways: [
             "Quickly isolate NetworkPolicy drops using tcpdump and iptables / OVN trace logs",
-            "Safely resolve stuck PersistentVolumeAttachments without node reboots",
+            "Safely resolve stuck PersistentVolumeAttachments without dangerous node reboots",
             "Tune CoreDNS autoscaling and autopath to eliminate silent DNS lookup latency"
+          ],
+          slidesOutline: [
+            "Slide 1-12: Anatomy of the 3 AM PagerDuty storm: What dashboards hide vs what packets prove",
+            "Slide 13-28: Triage Deep Dive: Unraveling multi-attach volume locks & CoreDNS UDP buffer exhaustion",
+            "Slide 29-45: Battle-tested on-call triage cheat sheet & preventative SLO alert rules"
           ]
         },
         {
@@ -6159,37 +6228,70 @@ function renderPulses(pulses) {
           format: "30-min Practitioner Session",
           level: "Intermediate",
           audience: "Software Engineers, Cloud Architects, AI/ML Practitioners",
+          categoryType: "🔥 Latest Viral & Trending",
+          whyReviewersAccept: "Cuts through generative AI hype to address the number one engineering problem: how to enforce deterministic JSON schemas and resilient tool-calling in enterprise backend APIs.",
           abstract: "Enterprises cannot deploy LLMs that hallucinate unstructured prose into production APIs. In this architecture teardown, we showcase how Google Cloud's Gemini Enterprise Agent Platform enforces strict Pydantic schemas, handles tool calling with API backoffs, and connects to enterprise data stores using Application Default Credentials (ADC).",
+          groundingRefs: [
+            { title: "arXiv:2403.05530: Gemini Model Capabilities", url: "https://arxiv.org/abs/2403.05530" },
+            { title: "arXiv:2305.15334: Gorilla API Tool Calling", url: "https://arxiv.org/abs/2305.15334" }
+          ],
           takeaways: [
             "Design deterministic, schema-constrained multi-agent loops in Python",
             "Secure API keys vs ADC authentication in enterprise CI/CD environments",
             "Measure cost, latency, and token efficiency across Gemini Flash vs Pro models"
+          ],
+          slidesOutline: [
+            "Slide 1-8: The Enterprise Failure Mode: Why freeform LLM outputs break downstream microservices",
+            "Slide 9-20: Schema Enforcement Architecture: Pydantic parsing, AST validation & self-healing retries",
+            "Slide 21-30: Production Architecture: Cloud Run + Secret Manager + ADC zero-trust deployment"
           ]
         },
         {
-          id: "talk_openshift_migration",
-          title: "Enterprise OpenShift 4 Administration: Mastering Multi-Tenancy & Self-Service at Scale",
-          format: "20-min Lightning Talk",
-          level: "Intermediate",
+          id: "talk_openshift_governance",
+          title: "Enterprise OpenShift 4 Administration: Mastering Multi-Tenancy & Governance at Scale",
+          format: "30-min Architecture Session",
+          level: "Intermediate / Advanced",
           audience: "Platform Engineers, System Administrators",
-          abstract: "How do you give 500 developers instant cluster access without risking cluster-wide CPU exhaustion or rogue route takeovers? This lightning talk shares the battle-tested configuration for OpenShift Project Request Templates, LimitRanges, and custom HTPasswd role bindings that keep multi-tenant clusters secure and compliant.",
+          categoryType: "🌲 Evergreen Architectural Core",
+          whyReviewersAccept: "Delivers enterprise compliance realities that textbook docs skip: hard multi-tenant isolation, project templates, and automated quota guardrails for hundreds of developers.",
+          abstract: "How do you give 500 developers instant cluster access without risking cluster-wide CPU exhaustion or rogue route takeovers? This session shares the battle-tested configuration for OpenShift Project Request Templates, LimitRanges, and custom HTPasswd role bindings that keep multi-tenant clusters secure and compliant.",
+          groundingRefs: [
+            { title: "Red Hat Enterprise Multi-Tenancy Guide", url: "https://cloud.redhat.com/architecture/" },
+            { title: "NIST SP 800-190 Container Security Guide", url: "https://csrc.nist.gov/publications/detail/sp/800-190/final" }
+          ],
           takeaways: [
             "Configure custom OpenShift project request templates for automated governance",
             "Enforce tenant isolation with automated egress firewalls and edge routes",
             "Streamline EX280-grade administration drills for enterprise ops teams"
+          ],
+          slidesOutline: [
+            "Slide 1-10: Multi-tenant chaos: How unconstrained namespaces take down shared worker nodes",
+            "Slide 11-22: Automation Blueprint: Project Request Templates, ClusterResourceQuotas & NetworkPolicies",
+            "Slide 23-30: Day-2 Ops Checklist: Audit logging, RBAC governance, and security automation"
           ]
         },
         {
-          id: "talk_bigquery_optimization",
+          id: "talk_bigquery_finops",
           title: "FinOps for Cloud Architects: Slashing 40% Off Google Cloud Data Pipelines",
           format: "45-min Deep Dive",
           level: "Advanced",
           audience: "Data Architects, FinOps Leads, Cloud Engineers",
+          categoryType: "🎯 High CFP Acceptance Rate",
+          whyReviewersAccept: "Every conference attendee's leadership is demanding cloud cost reduction this year. This talk shows concrete query optimization and storage migration steps that produce immediate dollar savings.",
           abstract: "Data engineering pipelines frequently suffer from slot thrashing, full-table scans, and runaway storage costs. This session demonstrates real architectural patterns across BigQuery, Cloud Storage lifecycle rules, and authorized materialized views that drastically reduce compute billing while maintaining sub-second query response times.",
+          groundingRefs: [
+            { title: "Google Research: Capacitor Columnar Storage (VLDB)", url: "https://research.google/pubs/pub45778/" },
+            { title: "Google Cloud: BigQuery Architecture Whitepaper", url: "https://cloud.google.com/bigquery" }
+          ],
           takeaways: [
             "Optimize BigQuery partitioning and clustering strategies to prune petabyte queries",
             "Leverage physical storage billing models to cut columnar storage bills",
             "Implement authorized views and column-level masking without duplicated data"
+          ],
+          slidesOutline: [
+            "Slide 1-12: The Cloud Billing Shock: Analyzing INFORMATION_SCHEMA to identify petabyte scan leaks",
+            "Slide 13-28: Storage & Compute Tuning: Capacitor compression ratios & physical billing transitions",
+            "Slide 29-45: Architecture Blueprint: Automated FinOps guardrails & CI/CD query dry-run linters"
           ]
         }
       ]
@@ -6199,12 +6301,13 @@ function renderPulses(pulses) {
     function getEphemeralContentIdeas() {
       try {
         var items = JSON.parse(localStorage.getItem(KEY_EPHEMERAL_CONTENT) || "[]");
-        return items.slice(0, 5);
-      } catch (e) { return []; }
+        if (Array.isArray(items) && items.length > 0) return items.slice(0, 5);
+      } catch (e) {}
+      return [];
     }
 
     function saveEphemeralContentIdeas(items) {
-      // Enforce strict Top 5 housekeeping
+      // Enforce strict Top 5 housekeeping (FIFO maintains exactly top 5)
       var top5 = (items || []).slice(0, 5);
       try { localStorage.setItem(KEY_EPHEMERAL_CONTENT, JSON.stringify(top5)); } catch (e) {}
       renderContentIdeas();
@@ -6224,11 +6327,13 @@ function renderPulses(pulses) {
     function getEphemeralTalks() {
       try {
         var items = JSON.parse(localStorage.getItem(KEY_EPHEMERAL_TALKS) || "[]");
-        return items.slice(0, 5);
-      } catch (e) { return []; }
+        if (Array.isArray(items) && items.length > 0) return items.slice(0, 5);
+      } catch (e) {}
+      return [];
     }
 
     function saveEphemeralTalks(items) {
+      // Enforce strict Top 5 housekeeping (FIFO maintains exactly top 5)
       var top5 = (items || []).slice(0, 5);
       try { localStorage.setItem(KEY_EPHEMERAL_TALKS, JSON.stringify(top5)); } catch (e) {}
       renderTalkIdeas();
@@ -6245,38 +6350,78 @@ function renderPulses(pulses) {
       renderPermanentTalksVault();
     }
 
+    // Helper: Category badge styling for Author Perspective
+    function getCategoryBadgeClass(categoryType) {
+      var cat = categoryType || "";
+      if (cat.indexOf("Evergreen") !== -1) {
+        return "bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 border border-emerald-500/30";
+      } else if (cat.indexOf("Viral") !== -1 || cat.indexOf("Trending") !== -1) {
+        return "bg-amber-500/15 text-amber-700 dark:text-amber-400 border border-amber-500/30";
+      } else if (cat.indexOf("War Story") !== -1 || cat.indexOf("Runbook") !== -1) {
+        return "bg-cyan-500/15 text-cyan-700 dark:text-cyan-400 border border-cyan-500/30";
+      } else if (cat.indexOf("Acceptance") !== -1 || cat.indexOf("CFP") !== -1) {
+        return "bg-purple-500/15 text-purple-700 dark:text-purple-400 border border-purple-500/30";
+      }
+      return "bg-indigo-500/15 text-indigo-700 dark:text-indigo-400 border border-indigo-500/30";
+    }
+
     // Render Content Ideas (Top 5 Active)
     function renderContentIdeas() {
       var grid = document.getElementById("content-ideas-grid");
       if (!grid) return;
       var ideas = getEphemeralContentIdeas();
       if (!ideas.length) {
-        ideas = defaultContentCurations["all"];
-        saveEphemeralContentIdeas(ideas);
-        return;
+        ideas = (defaultContentCurations["all"] || []).slice(0, 5);
+        try { localStorage.setItem(KEY_EPHEMERAL_CONTENT, JSON.stringify(ideas)); } catch (e) {}
       }
 
+      var countBadge = document.getElementById("content-engine-count-badge");
+      if (countBadge) countBadge.textContent = ideas.length;
+
       grid.innerHTML = ideas.map(function(item, idx) {
+        var catClass = getCategoryBadgeClass(item.categoryType || item.category);
+
+        // Grounding research links badges
+        var refsHtml = "";
+        if (item.groundingRefs && Array.isArray(item.groundingRefs) && item.groundingRefs.length > 0) {
+          refsHtml = '<div class="flex items-center gap-1.5 flex-wrap pt-1">'
+            + '<span class="text-[10px] font-bold uppercase tracking-wider text-text/60 dark:text-darkmode-text/60 flex items-center gap-1"><i class="fa-solid fa-graduation-cap text-amber-500"></i> Grounding:</span>'
+            + item.groundingRefs.map(function(ref) {
+                return '<a href="' + escapeHtml(ref.url) + '" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-amber-500/10 hover:bg-amber-500/20 text-amber-700 dark:text-amber-400 font-mono text-[10px] border border-amber-500/20 transition-colors">'
+                  + '<i class="fa-solid fa-book-bookmark text-[9px]"></i> ' + escapeHtml(ref.title) + ' <i class="fa-solid fa-arrow-up-right-from-square text-[8px] opacity-70"></i></a>';
+              }).join(" ")
+            + '</div>';
+        }
+
         return '<div class="bg-body dark:bg-darkmode-body border border-border/80 dark:border-darkmode-border/80 rounded-2xl p-5 shadow-xs hover:border-amber-500/50 transition-all flex flex-col md:flex-row items-start justify-between gap-5 group">'
-          + '<div class="space-y-2 flex-grow">'
+          + '<div class="space-y-2.5 flex-grow">'
           + '  <div class="flex items-center gap-2 flex-wrap">'
-          + '    <span class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-amber-500/15 text-amber-600 dark:text-amber-400 font-mono">#' + (idx + 1) + ' ' + escapeHtml(item.category || "Cloud") + '</span>'
-          + '    <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-mono"><i class="fa-solid fa-arrow-trend-up mr-1"></i>' + (item.viralityScore || 95) + '/100 Viral Index</span>'
+          + '    <span class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-amber-500/15 text-amber-700 dark:text-amber-400 font-mono">#' + (idx + 1) + ' ' + escapeHtml(item.category || "Cloud") + '</span>'
+          + '    <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold ' + catClass + '">' + escapeHtml(item.categoryType || "🔥 Trending Topic") + '</span>'
+          + '    <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-200 dark:bg-slate-700 text-text/80 dark:text-darkmode-text/80 font-mono flex items-center gap-1"><i class="fa-solid fa-fire text-amber-500 text-[10px]"></i> Score: ' + (item.viralityScore || 90) + '/100</span>'
           + '  </div>'
-          + '  <h4 class="text-sm font-bold text-dark dark:text-darkmode-dark group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">' + escapeHtml(item.title) + '</h4>'
-          + '  <p class="text-xs text-text/80 dark:text-darkmode-text/80 leading-relaxed"><strong class="text-dark dark:text-darkmode-dark">Why it&#39;s trending:</strong> ' + escapeHtml(item.whyViral || "") + '</p>'
-          + '  <div class="text-[11px] font-mono text-text/60 dark:text-darkmode-text/60 bg-theme-light/40 dark:bg-darkmode-theme-light/20 p-2.5 rounded-xl border border-border/50 dark:border-darkmode-border/50">'
-          + '    <span class="font-bold text-text/80 dark:text-darkmode-text/80">Target Keywords:</span> ' + escapeHtml(item.keywords || "")
+          + '  <h4 class="text-base font-bold text-dark dark:text-darkmode-dark group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors leading-snug">' + escapeHtml(item.title) + '</h4>'
+          + '  <div class="text-[11px] bg-amber-500/5 dark:bg-amber-500/10 border-l-2 border-amber-500 p-2.5 rounded-r-xl">'
+          + '    <span class="font-bold text-amber-800 dark:text-amber-300 flex items-center gap-1 mb-0.5"><i class="fa-solid fa-bullseye text-[10px]"></i> Why Readers Click &amp; Share:</span>'
+          + '    <span class="text-text/80 dark:text-darkmode-text/80 italic">&ldquo;' + escapeHtml(item.whyViral || "") + '&rdquo;</span>'
+          + '  </div>'
+          + refsHtml
+          + '  <div class="text-[11px] text-text/80 dark:text-darkmode-text/80 bg-theme-light/40 dark:bg-darkmode-theme-light/20 p-2.5 rounded-xl border border-border/50 dark:border-darkmode-border/50">'
+          + '    <span class="font-bold text-dark dark:text-darkmode-dark block mb-1"><i class="fa-solid fa-list-check text-amber-500 mr-1"></i> 3-Step Hands-On Outline:</span>'
+          + '    <ul class="list-disc pl-4 space-y-0.5 font-mono text-[10.5px]">' + (item.outline ? item.outline.map(function(o) { return '<li>' + escapeHtml(o) + '</li>'; }).join("") : '<li>Production Failure Mode</li><li>Architecture Implementation</li><li>Benchmarking & Verification</li>') + '</ul>'
+          + '  </div>'
+          + '  <div class="text-[11px] font-mono text-text/60 dark:text-darkmode-text/60 pt-1">'
+          + '    <i class="fa-solid fa-tags mr-1"></i> <span class="font-semibold text-text/80 dark:text-darkmode-text/80">Target SEO Keywords:</span> ' + escapeHtml(item.keywords || "")
           + '  </div>'
           + '</div>'
           + '<div class="shrink-0 flex sm:flex-col gap-2 w-full sm:w-auto">'
-          + '  <button data-save-content-id="' + escapeHtml(item.id) + '" class="px-3 py-1.5 rounded-xl bg-amber-500/15 hover:bg-amber-500 text-amber-600 hover:text-white dark:text-amber-400 dark:hover:text-white border border-amber-500/30 text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer whitespace-nowrap">'
+          + '  <button data-save-content-id="' + escapeHtml(item.id) + '" class="px-3 py-1.5 rounded-xl bg-amber-500/15 hover:bg-amber-600 text-amber-700 hover:text-white dark:text-amber-400 dark:hover:text-white border border-amber-500/30 text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer whitespace-nowrap">'
           + '    <i class="fa-regular fa-star"></i> <span>Save to Vault</span>'
           + '  </button>'
           + '  <button data-copy-content-id="' + escapeHtml(item.id) + '" class="px-3 py-1.5 rounded-xl bg-theme-light dark:bg-darkmode-theme-light hover:border-amber-500 border border-border/80 dark:border-darkmode-border/80 text-xs font-semibold transition-all flex items-center justify-center gap-1.5 cursor-pointer whitespace-nowrap">'
           + '    <i class="fa-regular fa-copy"></i> <span>Copy Blueprint</span>'
           + '  </button>'
-          + '  <button data-discard-content-id="' + escapeHtml(item.id) + '" class="px-3 py-1.5 rounded-xl text-text/50 hover:text-red-500 text-xs font-semibold transition-colors flex items-center justify-center gap-1 cursor-pointer whitespace-nowrap" title="Discard this recommendation">'
+          + '  <button data-discard-content-id="' + escapeHtml(item.id) + '" class="px-3 py-1.5 rounded-xl text-text/50 hover:text-red-500 text-xs font-semibold transition-colors flex items-center justify-center gap-1 cursor-pointer whitespace-nowrap" title="Remove this topic and rotate next">'
           + '    <i class="fa-solid fa-xmark text-sm"></i> <span>Discard</span>'
           + '  </button>'
           + '</div>'
@@ -6295,24 +6440,22 @@ function renderPulses(pulses) {
       if (countEl) countEl.textContent = vault.length;
 
       if (!vault.length) {
-        grid.innerHTML = '<div class="p-6 text-center border border-border/60 dark:border-darkmode-border/60 rounded-2xl bg-theme-light/10 dark:bg-darkmode-theme-light/5 text-xs text-text/60 dark:text-darkmode-text/60">'
-          + 'Star items from the active recommendations above to pin them permanently in this vault.'
-          + '</div>';
+        grid.innerHTML = '<div class="p-6 text-center border border-border/60 dark:border-darkmode-border/60 rounded-2xl bg-theme-light/10 dark:bg-darkmode-theme-light/5 text-xs text-text/60 dark:text-darkmode-text/60">Star items from the active recommendations above to pin them permanently in this vault.</div>';
         return;
       }
 
       grid.innerHTML = vault.map(function(item) {
-        return '<div class="bg-body dark:bg-darkmode-body border border-amber-500/30 rounded-2xl p-4 shadow-xs flex flex-col md:flex-row items-start justify-between gap-4">'
-          + '<div class="space-y-1.5 flex-grow">'
-          + '  <div class="flex items-center gap-2">'
-          + '    <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-600 dark:text-amber-400 font-mono">⭐ Permanent Vault</span>'
-          + '    <span class="text-[11px] font-mono text-text/60 dark:text-darkmode-text/60">' + escapeHtml(item.category || "Cloud") + '</span>'
+        return '<div class="bg-body dark:bg-darkmode-body border border-border/80 dark:border-darkmode-border/80 rounded-2xl p-4 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">'
+          + '<div>'
+          + '  <div class="flex items-center gap-2 mb-1 flex-wrap">'
+          + '    <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/15 text-amber-700 dark:text-amber-400 font-mono">' + escapeHtml(item.category || "Cloud") + '</span>'
+          + '    <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ' + getCategoryBadgeClass(item.categoryType) + '">' + escapeHtml(item.categoryType || "Starred Article") + '</span>'
           + '  </div>'
-          + '  <h5 class="text-xs sm:text-sm font-bold text-dark dark:text-darkmode-dark">' + escapeHtml(item.title) + '</h5>'
-          + '  <p class="text-xs text-text/70 dark:text-darkmode-text/70">' + escapeHtml(item.keywords || "") + '</p>'
+          + '  <h5 class="text-sm font-bold text-dark dark:text-darkmode-dark">' + escapeHtml(item.title) + '</h5>'
+          + '  <p class="text-xs text-text/70 dark:text-darkmode-text/70 mt-0.5 line-clamp-1">' + escapeHtml(item.whyViral || "") + '</p>'
           + '</div>'
           + '<div class="shrink-0 flex items-center gap-2">'
-          + '  <button data-copy-vault-id="' + escapeHtml(item.id) + '" class="px-3 py-1.5 rounded-xl bg-theme-light dark:bg-darkmode-theme-light border border-border/80 dark:border-darkmode-border/80 text-xs font-semibold cursor-pointer">'
+          + '  <button data-copy-vault-id="' + escapeHtml(item.id) + '" class="px-3 py-1.5 rounded-xl bg-theme-light dark:bg-darkmode-theme-light hover:border-primary border border-border/80 dark:border-darkmode-border/80 text-xs font-semibold transition-all cursor-pointer">'
           + '    <i class="fa-regular fa-copy mr-1"></i> Copy'
           + '  </button>'
           + '  <button data-delete-vault-id="' + escapeHtml(item.id) + '" class="px-3 py-1.5 rounded-xl text-rose-500 hover:bg-rose-500/10 border border-rose-500/30 text-xs font-bold transition-colors cursor-pointer" title="Delete from vault">'
@@ -6360,13 +6503,42 @@ function renderPulses(pulses) {
           var ideas = getEphemeralContentIdeas();
           var item = ideas.find(function(i) { return i.id === id; });
           if (!item) return;
-          var text = "# Article Blueprint: " + item.title + "\n\n"
-            + "**Category:** " + item.category + "\n"
-            + "**Viral Angle:** " + item.whyViral + "\n"
-            + "**Target Keywords:** " + item.keywords + "\n\n"
-            + "## Core Architecture & Hands-On Outline\n"
-            + (item.outline ? item.outline.map(function(o) { return "- " + o; }).join("\n") : "- Introduction & Problem Statement\n- Hands-on Lab Implementation\n- Troubleshooting Gotchas & FAQ");
-          navigator.clipboard.writeText(text).then(function() {
+
+          var refsLines = [];
+          if (item.groundingRefs && item.groundingRefs.length) {
+            refsLines.push("");
+            refsLines.push("## Authoritative Grounding & Research Links");
+            item.groundingRefs.forEach(function(r) {
+              refsLines.push("- [" + r.title + "](" + r.url + ")");
+            });
+          }
+
+          var outlineLines = [];
+          if (item.outline && item.outline.length) {
+            item.outline.forEach(function(o, i) {
+              outlineLines.push((i + 1) + ". " + o);
+            });
+          } else {
+            outlineLines.push("1. Problem & Root Cause");
+            outlineLines.push("2. Implementation Manifests");
+            outlineLines.push("3. Benchmarking & Verification");
+          }
+
+          var textParts = [
+            "# Article Blueprint: " + item.title,
+            "",
+            "**Category:** " + (item.category || "Cloud") + " (" + (item.categoryType || "Evergreen") + ")",
+            "**Why Readers Click & Share:** " + (item.whyViral || ""),
+            "**Target SEO Keywords:** " + (item.keywords || "")
+          ];
+
+          if (refsLines.length) textParts = textParts.concat(refsLines);
+          textParts.push("");
+          textParts.push("## 3-Step Hands-On Implementation Outline");
+          textParts = textParts.concat(outlineLines);
+
+          var fullText = textParts.join("\n");
+          navigator.clipboard.writeText(fullText).then(function() {
             var orig = btn.innerHTML;
             btn.innerHTML = '<i class="fa-solid fa-check text-emerald-500"></i> <span>Copied!</span>';
             setTimeout(function() { btn.innerHTML = orig; }, 1800);
@@ -6400,39 +6572,71 @@ function renderPulses(pulses) {
       });
     }
 
-    // Render Talk Ideas (Top 5 Active)
+    // Render Talk Ideas (Top 5 Active) - Empathetic Author Perspective
     function renderTalkIdeas() {
       var grid = document.getElementById("talk-ideas-grid");
       if (!grid) return;
       var talks = getEphemeralTalks();
       if (!talks.length) {
-        talks = defaultTalkCurations["cloud-native"];
-        saveEphemeralTalks(talks);
-        return;
+        talks = (defaultTalkCurations["cloud-native"] || []).slice(0, 5);
+        try { localStorage.setItem(KEY_EPHEMERAL_TALKS, JSON.stringify(talks)); } catch (e) {}
       }
 
+      var countBadge = document.getElementById("talks-count-badge");
+      if (countBadge) countBadge.textContent = talks.length;
+
       grid.innerHTML = talks.map(function(talk, idx) {
+        var catClass = getCategoryBadgeClass(talk.categoryType);
+
+        // Grounding research links badges
+        var refsHtml = "";
+        if (talk.groundingRefs && Array.isArray(talk.groundingRefs) && talk.groundingRefs.length > 0) {
+          refsHtml = '<div class="flex items-center gap-1.5 flex-wrap pt-1">'
+            + '<span class="text-[10px] font-bold uppercase tracking-wider text-text/60 dark:text-darkmode-text/60 flex items-center gap-1"><i class="fa-solid fa-graduation-cap text-indigo-500"></i> Grounding:</span>'
+            + talk.groundingRefs.map(function(ref) {
+                return '<a href="' + escapeHtml(ref.url) + '" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-700 dark:text-indigo-400 font-mono text-[10px] border border-indigo-500/20 transition-colors">'
+                  + '<i class="fa-solid fa-book-bookmark text-[9px]"></i> ' + escapeHtml(ref.title) + ' <i class="fa-solid fa-arrow-up-right-from-square text-[8px] opacity-70"></i></a>';
+              }).join(" ")
+            + '</div>';
+        }
+
+        // Speaker 3-slide outline
+        var slidesHtml = "";
+        if (talk.slidesOutline && Array.isArray(talk.slidesOutline) && talk.slidesOutline.length > 0) {
+          slidesHtml = '<div class="text-[11px] text-text/80 dark:text-darkmode-text/80 bg-theme-light/40 dark:bg-darkmode-theme-light/20 p-2.5 rounded-xl border border-border/50 dark:border-darkmode-border/50">'
+            + '<span class="font-bold text-dark dark:text-darkmode-dark block mb-1"><i class="fa-solid fa-layer-group text-indigo-500 mr-1"></i> 3-Slide Speaker Flow:</span>'
+            + '<ol class="list-decimal pl-4 space-y-0.5 font-mono text-[10.5px]">' + talk.slidesOutline.map(function(s) { return '<li>' + escapeHtml(s) + '</li>'; }).join("") + '</ol>'
+            + '</div>';
+        }
+
         return '<div class="bg-body dark:bg-darkmode-body border border-border/80 dark:border-darkmode-border/80 rounded-2xl p-5 shadow-xs hover:border-indigo-500/50 transition-all flex flex-col md:flex-row items-start justify-between gap-5 group">'
-          + '<div class="space-y-2 flex-grow">'
+          + '<div class="space-y-2.5 flex-grow">'
           + '  <div class="flex items-center gap-2 flex-wrap">'
-          + '    <span class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-indigo-500/15 text-indigo-600 dark:text-indigo-400 font-mono">#' + (idx + 1) + ' ' + escapeHtml(talk.format || "Deep Dive") + '</span>'
+          + '    <span class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-indigo-500/15 text-indigo-700 dark:text-indigo-400 font-mono">#' + (idx + 1) + ' ' + escapeHtml(talk.format || "Deep Dive") + '</span>'
+          + '    <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold ' + catClass + '">' + escapeHtml(talk.categoryType || "🌲 Evergreen Architectural Core") + '</span>'
           + '    <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-200 dark:bg-slate-700 text-text/80 dark:text-darkmode-text/80 font-mono">' + escapeHtml(talk.level || "Intermediate") + '</span>'
           + '  </div>'
-          + '  <h4 class="text-sm font-bold text-dark dark:text-darkmode-dark group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">' + escapeHtml(talk.title) + '</h4>'
-          + '  <p class="text-xs text-text/80 dark:text-darkmode-text/80 leading-relaxed font-serif italic">"' + escapeHtml(talk.abstract) + '"</p>'
-          + '  <div class="text-[11px] text-text/80 dark:text-darkmode-text/80 bg-theme-light/40 dark:bg-darkmode-theme-light/20 p-3 rounded-xl border border-border/50 dark:border-darkmode-border/50">'
-          + '    <span class="font-bold text-dark dark:text-darkmode-dark block mb-1">Key Attendee Takeaways:</span>'
-          + '    <ul class="list-disc pl-4 space-y-0.5">' + (talk.takeaways ? talk.takeaways.map(function(t) { return '<li>' + escapeHtml(t) + '</li>'; }).join("") : '<li>Practical hands-on runbook</li>') + '</ul>'
+          + '  <h4 class="text-base font-bold text-dark dark:text-darkmode-dark group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors leading-snug">' + escapeHtml(talk.title) + '</h4>'
+          + '  <p class="text-xs text-text/80 dark:text-darkmode-text/80 leading-relaxed font-serif italic">&ldquo;' + escapeHtml(talk.abstract) + '&rdquo;</p>'
+          + '  <div class="text-[11px] bg-indigo-500/5 dark:bg-indigo-500/10 border-l-2 border-indigo-500 p-2.5 rounded-r-xl">'
+          + '    <span class="font-bold text-indigo-800 dark:text-indigo-300 flex items-center gap-1 mb-0.5"><i class="fa-solid fa-bullseye text-[10px]"></i> Why CFP Reviewers Pick This:</span>'
+          + '    <span class="text-text/80 dark:text-darkmode-text/80 italic">&ldquo;' + escapeHtml(talk.whyReviewersAccept || "Addresses real production failure modes with zero vendor marketing.") + '&rdquo;</span>'
+          + '  </div>'
+          + refsHtml
+          + slidesHtml
+          + '  <div class="text-[11px] text-text/80 dark:text-darkmode-text/80 bg-theme-light/40 dark:bg-darkmode-theme-light/20 p-2.5 rounded-xl border border-border/50 dark:border-darkmode-border/50">'
+          + '    <span class="font-bold text-dark dark:text-darkmode-dark block mb-1"><i class="fa-solid fa-chalkboard-user text-indigo-500 mr-1"></i> Key Attendee Takeaways:</span>'
+          + '    <ul class="list-disc pl-4 space-y-0.5 font-mono text-[10.5px]">' + (talk.takeaways ? talk.takeaways.map(function(t) { return '<li>' + escapeHtml(t) + '</li>'; }).join("") : '<li>Practical hands-on runbook</li>') + '</ul>'
           + '  </div>'
           + '</div>'
           + '<div class="shrink-0 flex sm:flex-col gap-2 w-full sm:w-auto">'
-          + '  <button data-save-talk-id="' + escapeHtml(talk.id) + '" class="px-3 py-1.5 rounded-xl bg-indigo-500/15 hover:bg-indigo-600 text-indigo-600 hover:text-white dark:text-indigo-400 dark:hover:text-white border border-indigo-500/30 text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer whitespace-nowrap">'
+          + '  <button data-save-talk-id="' + escapeHtml(talk.id) + '" class="px-3 py-1.5 rounded-xl bg-indigo-500/15 hover:bg-indigo-600 text-indigo-700 hover:text-white dark:text-indigo-400 dark:hover:text-white border border-indigo-500/30 text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer whitespace-nowrap">'
           + '    <i class="fa-regular fa-star"></i> <span>Save to Vault</span>'
           + '  </button>'
-          + '  <button data-copy-talk-id="' + escapeHtml(talk.id) + '" class="px-3 py-1.5 rounded-xl bg-theme-light dark:bg-darkmode-theme-light hover:border-indigo-500 border border-border/80 dark:border-darkmode-border/80 text-xs font-semibold transition-all flex items-center justify-center gap-1.5 cursor-pointer whitespace-nowrap">'
+          + '  <button data-copy-talk-id="' + escapeHtml(talk.id) + '" class="px-3 py-1.5 rounded-xl bg-theme-light dark:bg-darkmode-theme-light hover:border-indigo-500 border border-border/80 dark:border-darkmode-border/80 text-xs font-semibold transition-all flex items-center justify-center gap-1.5 cursor-pointer whitespace-nowrap" title="Copy full CFP proposal formatted for submission">'
           + '    <i class="fa-regular fa-copy"></i> <span>Copy CFP Pitch</span>'
           + '  </button>'
-          + '  <button data-discard-talk-id="' + escapeHtml(talk.id) + '" class="px-3 py-1.5 rounded-xl text-text/50 hover:text-red-500 text-xs font-semibold transition-colors flex items-center justify-center gap-1 cursor-pointer whitespace-nowrap">'
+          + '  <button data-discard-talk-id="' + escapeHtml(talk.id) + '" class="px-3 py-1.5 rounded-xl text-text/50 hover:text-red-500 text-xs font-semibold transition-colors flex items-center justify-center gap-1 cursor-pointer whitespace-nowrap" title="Discard proposal and rotate next">'
           + '    <i class="fa-solid fa-xmark text-sm"></i> <span>Discard</span>'
           + '  </button>'
           + '</div>'
@@ -6451,27 +6655,25 @@ function renderPulses(pulses) {
       if (countEl) countEl.textContent = vault.length;
 
       if (!vault.length) {
-        grid.innerHTML = '<div class="p-6 text-center border border-border/60 dark:border-darkmode-border/60 rounded-2xl bg-theme-light/10 dark:bg-darkmode-theme-light/5 text-xs text-text/60 dark:text-darkmode-text/60">'
-          + 'Star proposals from above to keep them permanently in your CFP vault.'
-          + '</div>';
+        grid.innerHTML = '<div class="p-6 text-center border border-border/60 dark:border-darkmode-border/60 rounded-2xl bg-theme-light/10 dark:bg-darkmode-theme-light/5 text-xs text-text/60 dark:text-darkmode-text/60">Star proposals from above to keep them permanently in your CFP vault.</div>';
         return;
       }
 
       grid.innerHTML = vault.map(function(talk) {
-        return '<div class="bg-body dark:bg-darkmode-body border border-indigo-500/30 rounded-2xl p-4 shadow-xs flex flex-col md:flex-row items-start justify-between gap-4">'
-          + '<div class="space-y-1.5 flex-grow">'
-          + '  <div class="flex items-center gap-2">'
-          + '    <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 font-mono">⭐ Permanent CFP Vault</span>'
-          + '    <span class="text-[11px] font-mono text-text/60 dark:text-darkmode-text/60">' + escapeHtml(talk.format || "Talk") + '</span>'
+        return '<div class="bg-body dark:bg-darkmode-body border border-border/80 dark:border-darkmode-border/80 rounded-2xl p-4 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">'
+          + '<div>'
+          + '  <div class="flex items-center gap-2 mb-1 flex-wrap">'
+          + '    <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-indigo-500/15 text-indigo-700 dark:text-indigo-400 font-mono">' + escapeHtml(talk.format || "Talk") + '</span>'
+          + '    <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ' + getCategoryBadgeClass(talk.categoryType) + '">' + escapeHtml(talk.categoryType || "Starred Proposal") + '</span>'
           + '  </div>'
-          + '  <h5 class="text-xs sm:text-sm font-bold text-dark dark:text-darkmode-dark">' + escapeHtml(talk.title) + '</h5>'
-          + '  <p class="text-xs text-text/70 dark:text-darkmode-text/70 line-clamp-2">"' + escapeHtml(talk.abstract) + '"</p>'
+          + '  <h5 class="text-sm font-bold text-dark dark:text-darkmode-dark">' + escapeHtml(talk.title) + '</h5>'
+          + '  <p class="text-xs text-text/70 dark:text-darkmode-text/70 mt-0.5 line-clamp-1 italic">&ldquo;' + escapeHtml(talk.abstract) + '&rdquo;</p>'
           + '</div>'
           + '<div class="shrink-0 flex items-center gap-2">'
-          + '  <button data-copy-talk-vault-id="' + escapeHtml(talk.id) + '" class="px-3 py-1.5 rounded-xl bg-theme-light dark:bg-darkmode-theme-light border border-border/80 dark:border-darkmode-border/80 text-xs font-semibold cursor-pointer">'
-          + '    <i class="fa-regular fa-copy mr-1"></i> Copy CFP'
+          + '  <button data-copy-talk-vault-id="' + escapeHtml(talk.id) + '" class="px-3 py-1.5 rounded-xl bg-theme-light dark:bg-darkmode-theme-light hover:border-indigo-500 border border-border/80 dark:border-darkmode-border/80 text-xs font-semibold transition-all cursor-pointer">'
+          + '    <i class="fa-regular fa-copy mr-1"></i> Copy'
           + '  </button>'
-          + '  <button data-delete-talk-vault-id="' + escapeHtml(talk.id) + '" class="px-3 py-1.5 rounded-xl text-rose-500 hover:bg-rose-500/10 border border-rose-500/30 text-xs font-bold transition-colors cursor-pointer">'
+          + '  <button data-delete-talk-vault-id="' + escapeHtml(talk.id) + '" class="px-3 py-1.5 rounded-xl text-rose-500 hover:bg-rose-500/10 border border-rose-500/30 text-xs font-bold transition-colors cursor-pointer" title="Delete from vault">'
           + '    <i class="fa-regular fa-trash-can mr-1"></i> Delete'
           + '  </button>'
           + '</div>'
@@ -6509,19 +6711,64 @@ function renderPulses(pulses) {
         });
       });
 
-      // Copy CFP Pitch
+      // Copy CFP Pitch formatted for submission platforms
       document.querySelectorAll("[data-copy-talk-id]").forEach(function(btn) {
         btn.addEventListener("click", function() {
           var id = btn.getAttribute("data-copy-talk-id");
           var talks = getEphemeralTalks();
           var talk = talks.find(function(t) { return t.id === id; });
           if (!talk) return;
-          var text = "# Proposal Title: " + talk.title + "\n\n"
-            + "**Format:** " + talk.format + "\n"
-            + "**Target Audience:** " + talk.audience + "\n\n"
-            + "## Session Abstract\n" + talk.abstract + "\n\n"
-            + "## Attendee Takeaways\n" + (talk.takeaways ? talk.takeaways.map(function(t) { return "- " + t; }).join("\n") : "- Practical runbook");
-          navigator.clipboard.writeText(text).then(function() {
+
+          var refsLines = [];
+          if (talk.groundingRefs && talk.groundingRefs.length) {
+            refsLines.push("");
+            refsLines.push("## Grounding Research & Specs");
+            talk.groundingRefs.forEach(function(r) {
+              refsLines.push("- [" + r.title + "](" + r.url + ")");
+            });
+          }
+
+          var slidesLines = [];
+          if (talk.slidesOutline && talk.slidesOutline.length) {
+            slidesLines.push("");
+            slidesLines.push("## 3-Slide Speaker Flow");
+            talk.slidesOutline.forEach(function(s, i) {
+              slidesLines.push((i + 1) + ". " + s);
+            });
+          }
+
+          var takeawaysLines = [];
+          if (talk.takeaways && talk.takeaways.length) {
+            talk.takeaways.forEach(function(t) {
+              takeawaysLines.push("- " + t);
+            });
+          } else {
+            takeawaysLines.push("- Practical runbook and manifests");
+          }
+
+          var textParts = [
+            "# Proposal Title: " + talk.title,
+            "",
+            "**Format:** " + (talk.format || "45-min Deep Dive"),
+            "**Category / Track:** " + (talk.categoryType || "Cloud Architecture"),
+            "**Target Audience:** " + (talk.audience || "Cloud Architects, SREs, DevOps Engineers"),
+            "**Level:** " + (talk.level || "Intermediate / Advanced"),
+            "",
+            "## Session Abstract",
+            talk.abstract || "",
+            "",
+            "## Why CFP Reviewers Should Accept This Session",
+            talk.whyReviewersAccept || "Addresses production pain points with zero product pitch.",
+            "",
+            "## Key Attendee Takeaways"
+          ];
+
+          textParts = textParts.concat(takeawaysLines);
+          if (refsLines.length) textParts = textParts.concat(refsLines);
+          if (slidesLines.length) textParts = textParts.concat(slidesLines);
+
+          var fullPitch = textParts.join("\n");
+          navigator.clipboard.writeText(fullPitch).then(function() {
             var orig = btn.innerHTML;
             btn.innerHTML = '<i class="fa-solid fa-check text-emerald-500"></i> <span>Copied!</span>';
             setTimeout(function() { btn.innerHTML = orig; }, 1800);
@@ -6546,8 +6793,7 @@ function renderPulses(pulses) {
           var vault = getPermanentTalks();
           var talk = vault.find(function(t) { return t.id === id; });
           if (!talk) return;
-          var text = "# " + talk.title + "\n\n" + talk.abstract;
-          navigator.clipboard.writeText(text).then(function() {
+          navigator.clipboard.writeText("# " + talk.title + "\n\n" + talk.abstract).then(function() {
             var orig = btn.innerHTML;
             btn.innerHTML = '<i class="fa-solid fa-check text-emerald-500"></i> Copied!';
             setTimeout(function() { btn.innerHTML = orig; }, 1800);
@@ -6556,10 +6802,24 @@ function renderPulses(pulses) {
       });
     }
 
-    // AI Generation Trigger for Content Engine
+    // AI Generation Trigger for Content Engine (Generates 1 Topic at a time, FIFO rotation)
     var generateContentBtn = document.getElementById("generate-content-ideas-btn");
+    var resetContentBtn = document.getElementById("reset-content-ideas-btn");
     var contentNicheSelect = document.getElementById("content-engine-niche-select");
     var contentStatusMsg = document.getElementById("content-engine-status-msg");
+
+    if (resetContentBtn) {
+      resetContentBtn.addEventListener("click", function() {
+        var niche = contentNicheSelect ? contentNicheSelect.value : "all";
+        var fresh5 = (defaultContentCurations[niche] || defaultContentCurations["all"]).slice(0, 5);
+        saveEphemeralContentIdeas(fresh5);
+        if (contentStatusMsg) {
+          contentStatusMsg.textContent = "🔄 Reset active list to curated 5 topics.";
+          contentStatusMsg.classList.remove("hidden");
+          setTimeout(function() { contentStatusMsg.classList.add("hidden"); }, 2500);
+        }
+      });
+    }
 
     if (generateContentBtn) {
       generateContentBtn.addEventListener("click", async function() {
@@ -6585,12 +6845,12 @@ function renderPulses(pulses) {
         }
 
         var prompt = "You are the chief content strategist and lead cloud architect for GCloud Cafe (https://gcloudcafe.com).\n"
-          + "Recommend exactly 5 high-impact, viral, practitioner-grade technical articles to write next for the niche: '" + niche + "'.\n"
-          + "Focus on real production pain points, recent CVEs, new Kubernetes/GCP features, or certification challenges (EX280/CKA/PCA).\n"
-          + "STRICT FORMAT: Return ONLY a valid JSON array of 5 objects with this exact structure (no markdown fences, no raw text):\n"
-          + '[{"id":"rec_1","title":"Title with high CTR","category":"Category Name","viralityScore":95,"whyViral":"Why this topic is trending right now","keywords":"3-4 target search keywords","outline":["Key point 1","Key point 2","Key point 3"]}]';
+          + "Recommend exactly 1 high-impact, viral, practitioner-grade technical article to write next for the niche: '" + niche + "'.\n"
+          + "Focus on real production pain points, recent CVEs, new Kubernetes/GCP features, or certification challenges.\n"
+          + "STRICT FORMAT: Return ONLY a valid JSON object (no markdown fences, no raw text) with this exact structure:\n"
+          + '{"id":"rec_' + Date.now() + '","title":"High CTR title","category":"Category Name","categoryType":"🌲 Evergreen Architectural Core","viralityScore":95,"whyViral":"Why this topic is trending right now","keywords":"3-4 target search keywords","groundingRefs":[{"title":"Reference Title","url":"https://..."}],"outline":["Key point 1","Key point 2","Key point 3"]}';
 
-        var generatedItems = null;
+        var newSingleItem = null;
 
         if (keyToUse) {
           var models = ["gemini-2.5-flash", "gemini-1.5-flash", "gemini-flash-latest"];
@@ -6600,50 +6860,81 @@ function renderPulses(pulses) {
               var resp = await fetch(url, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }], generationConfig: { temperature: 0.3 } })
+                body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }], generationConfig: { temperature: 0.4 } })
               });
               if (resp.ok) {
                 var jsonResp = await resp.json();
                 var rawTxt = jsonResp?.candidates?.[0]?.content?.parts?.[0]?.text || "";
                 var cleaned = rawTxt.replace(/```json/g, "").replace(/```/g, "").trim();
                 var parsed = JSON.parse(cleaned);
-                if (Array.isArray(parsed) && parsed.length >= 3) {
-                  generatedItems = parsed.slice(0, 5);
-                  break;
+                if (Array.isArray(parsed) && parsed.length > 0) {
+                  newSingleItem = parsed[0];
+                } else if (parsed && typeof parsed === "object" && parsed.title) {
+                  newSingleItem = parsed;
                 }
+                if (newSingleItem) break;
               }
             } catch(e) {}
           }
         }
 
-        if (!generatedItems) {
-          generatedItems = defaultContentCurations[niche] || defaultContentCurations["all"];
+        if (!newSingleItem) {
+          // Fallback: pick a fresh item from pool that is not currently in the top 5
+          var pool = defaultContentCurations[niche] || defaultContentCurations["all"];
+          var current = getEphemeralContentIdeas();
+          var existingIds = current.map(function(c) { return c.id; });
+          var candidate = pool.find(function(p) { return existingIds.indexOf(p.id) === -1; });
+          if (!candidate) {
+            var base = pool[Math.floor(Math.random() * pool.length)];
+            candidate = JSON.parse(JSON.stringify(base));
+            candidate.id = "rec_" + Date.now();
+          }
+          newSingleItem = candidate;
         }
 
-        // Apply strict Top 5 housekeeping
-        saveEphemeralContentIdeas(generatedItems);
+        // FIFO 1-at-a-time rotation: Insert at #1 and keep top 5 (drops oldest #5)
+        var existingList = getEphemeralContentIdeas();
+        if (!existingList.length) {
+          existingList = (defaultContentCurations[niche] || defaultContentCurations["all"]).slice(0, 5);
+        }
+        existingList.unshift(newSingleItem);
+        saveEphemeralContentIdeas(existingList.slice(0, 5));
 
-        generateContentBtn.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles"></i> <span>Discover Top 5 Topics</span>';
+        generateContentBtn.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles"></i> <span>Generate 1 Fresh Topic</span>';
         generateContentBtn.classList.remove("pointer-events-none");
         if (contentStatusMsg) {
-          contentStatusMsg.textContent = "✨ Discovered and loaded Top 5 freshest topics! Housekeeping active.";
-          setTimeout(function() { contentStatusMsg.classList.add("hidden"); }, 3000);
+          contentStatusMsg.textContent = "✨ Generated 1 fresh topic! Pushed to #1 and rotated oldest out of Top 5.";
+          setTimeout(function() { contentStatusMsg.classList.add("hidden"); }, 3500);
         }
       });
     }
 
-    // AI Generation Trigger for Talk Hub
+    // AI Generation Trigger for Talk Hub (Generates 1 Proposal at a time, FIFO rotation)
     var generateTalksBtn = document.getElementById("generate-talk-ideas-btn");
+    var resetTalksBtn = document.getElementById("reset-talk-ideas-btn");
     var talkVenueSelect = document.getElementById("talk-venue-select");
     var talkStatusMsg = document.getElementById("talk-status-msg");
+
+    if (resetTalksBtn) {
+      resetTalksBtn.addEventListener("click", function() {
+        var venue = talkVenueSelect ? talkVenueSelect.value : "cloud-native";
+        var fresh5 = (defaultTalkCurations[venue] || defaultTalkCurations["cloud-native"]).slice(0, 5);
+        saveEphemeralTalks(fresh5);
+        if (talkStatusMsg) {
+          talkStatusMsg.textContent = "🔄 Reset active talk list to curated 5 proposals.";
+          talkStatusMsg.classList.remove("hidden");
+          setTimeout(function() { talkStatusMsg.classList.add("hidden"); }, 2500);
+        }
+      });
+    }
 
     if (generateTalksBtn) {
       generateTalksBtn.addEventListener("click", async function() {
         var venue = talkVenueSelect ? talkVenueSelect.value : "cloud-native";
-        generateTalksBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-[11px]"></i> Formulating Talks...';
+        generateTalksBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-[11px]"></i> Formulating Talk...';
         generateTalksBtn.classList.add("pointer-events-none");
         if (talkStatusMsg) {
-          talkStatusMsg.textContent = "Formulating CFP proposals for " + venue + "...";
+          talkStatusMsg.textContent = "Formulating CFP proposal for " + venue + "...";
           talkStatusMsg.classList.remove("hidden");
         }
 
@@ -6660,12 +6951,13 @@ function renderPulses(pulses) {
           } catch(e) {}
         }
 
-        var prompt = "You are a tech conference CFP reviewer and veteran cloud speaker for major events like KubeCon, Google Cloud Next, and DevOpsDays.\n"
-          + "Formulate exactly 5 CFP-ready talk proposals on modern Cloud, Kubernetes, TLS, and AI Agent architecture for venue: '" + venue + "'.\n"
-          + "STRICT FORMAT: Return ONLY a valid JSON array of 5 objects with this exact structure (no markdown fences, no raw text):\n"
-          + '[{"id":"talk_1","title":"Compelling talk title","format":"45-min Deep Dive","level":"Intermediate","audience":"Target roles","abstract":"2-3 sentence engaging abstract","takeaways":["Takeaway 1","Takeaway 2","Takeaway 3"]}]';
+        var prompt = "You are a top-tier tech conference CFP reviewer and veteran cloud speaker for major events like KubeCon, Google Cloud Next, and DevOpsDays.\n"
+          + "Formulate exactly 1 CFP-ready conference talk proposal for venue: '" + venue + "' from the perspective of a seasoned, battle-tested cloud engineer.\n"
+          + "Focus on real production pain points, war stories, architecture benchmarks, and zero marketing fluff.\n"
+          + "STRICT FORMAT: Return ONLY a valid JSON object (no markdown fences, no raw text) with this exact structure:\n"
+          + '{"id":"talk_' + Date.now() + '","title":"Compelling talk title","format":"45-min Deep Dive","level":"Intermediate","audience":"Target roles","categoryType":"🌲 Evergreen Architectural Core","whyReviewersAccept":"1 sharp sentence explaining why conference reviewers will accept this over 200 other submissions","groundingRefs":[{"title":"Spec or Paper Title","url":"https://..."}],"abstract":"2-3 sentence engaging abstract","takeaways":["Takeaway 1","Takeaway 2","Takeaway 3"],"slidesOutline":["Slide 1: Anti-pattern & Root Cause","Slide 2: Architecture & Benchmarks","Slide 3: Production Runbook"]}';
 
-        var generatedTalks = null;
+        var newSingleTalk = null;
 
         if (keyToUse) {
           var models = ["gemini-2.5-flash", "gemini-1.5-flash", "gemini-flash-latest"];
@@ -6675,33 +6967,51 @@ function renderPulses(pulses) {
               var resp = await fetch(url, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }], generationConfig: { temperature: 0.3 } })
+                body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }], generationConfig: { temperature: 0.4 } })
               });
               if (resp.ok) {
                 var jsonResp = await resp.json();
                 var rawTxt = jsonResp?.candidates?.[0]?.content?.parts?.[0]?.text || "";
                 var cleaned = rawTxt.replace(/```json/g, "").replace(/```/g, "").trim();
                 var parsed = JSON.parse(cleaned);
-                if (Array.isArray(parsed) && parsed.length >= 3) {
-                  generatedTalks = parsed.slice(0, 5);
-                  break;
+                if (Array.isArray(parsed) && parsed.length > 0) {
+                  newSingleTalk = parsed[0];
+                } else if (parsed && typeof parsed === "object" && parsed.title) {
+                  newSingleTalk = parsed;
                 }
+                if (newSingleTalk) break;
               }
             } catch(e) {}
           }
         }
 
-        if (!generatedTalks) {
-          generatedTalks = defaultTalkCurations[venue] || defaultTalkCurations["cloud-native"];
+        if (!newSingleTalk) {
+          // Fallback: pick a fresh item from pool that is not currently in the top 5
+          var pool = defaultTalkCurations[venue] || defaultTalkCurations["cloud-native"];
+          var current = getEphemeralTalks();
+          var existingIds = current.map(function(c) { return c.id; });
+          var candidate = pool.find(function(p) { return existingIds.indexOf(p.id) === -1; });
+          if (!candidate) {
+            var base = pool[Math.floor(Math.random() * pool.length)];
+            candidate = JSON.parse(JSON.stringify(base));
+            candidate.id = "talk_" + Date.now();
+          }
+          newSingleTalk = candidate;
         }
 
-        saveEphemeralTalks(generatedTalks);
+        // FIFO 1-at-a-time rotation: Insert at #1 and keep top 5 (drops oldest #5)
+        var existingTalks = getEphemeralTalks();
+        if (!existingTalks.length) {
+          existingTalks = (defaultTalkCurations[venue] || defaultTalkCurations["cloud-native"]).slice(0, 5);
+        }
+        existingTalks.unshift(newSingleTalk);
+        saveEphemeralTalks(existingTalks.slice(0, 5));
 
-        generateTalksBtn.innerHTML = '<i class="fa-solid fa-microphone-lines"></i> <span>Generate Top 5 Talks</span>';
+        generateTalksBtn.innerHTML = '<i class="fa-solid fa-microphone-lines"></i> <span>Generate 1 Fresh Talk</span>';
         generateTalksBtn.classList.remove("pointer-events-none");
         if (talkStatusMsg) {
-          talkStatusMsg.textContent = "🎙️ Generated Top 5 conference talk proposals! Housekeeping active.";
-          setTimeout(function() { talkStatusMsg.classList.add("hidden"); }, 3000);
+          talkStatusMsg.textContent = "🎙️ Formulated 1 fresh talk proposal! Pushed to #1 and rotated oldest out of Top 5.";
+          setTimeout(function() { talkStatusMsg.classList.add("hidden"); }, 3500);
         }
       });
     }
