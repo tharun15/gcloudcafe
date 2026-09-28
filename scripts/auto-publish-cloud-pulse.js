@@ -157,11 +157,204 @@ function calculateInactivityHours(approvedPulses, nowTimestamp = Date.now()) {
 /**
  * Main automated publisher execution
  */
+
+const DEFAULT_MAX_ACTIVE_PULSES = 35;
+const DEFAULT_LOW_TRACTION_DAYS = 14;
+const DEFAULT_AGING_TRACTION_DAYS = 28;
+const DEFAULT_STALE_PENDING_DAYS = 14;
+
+/**
+ * Evaluates active approved and pending pulses for engagement, freshness, and cohort limits.
+ * Pure deterministic logic - 0 AI API usage.
+ */
+function evaluatePulseHousekeeping(approvedPulses = [], pendingPulses = [], options = {}) {
+  const now = options.now || Date.now();
+  const maxActive = options.maxActivePulses || DEFAULT_MAX_ACTIVE_PULSES;
+  const lowTractionDays = options.lowTractionDays || DEFAULT_LOW_TRACTION_DAYS;
+  const agingDays = options.agingTractionDays || DEFAULT_AGING_TRACTION_DAYS;
+  const stalePendingDays = options.stalePendingDays || DEFAULT_STALE_PENDING_DAYS;
+
+  const msInDay = 1000 * 60 * 60 * 24;
+
+  const approvedToPrune = [];
+  const pendingToPrune = [];
+  const stats = {
+    downvoted: 0,
+    low_traction: 0,
+    stale_aging: 0,
+    capacity_overflow: 0,
+    stale_pending: 0
+  };
+
+  // 1. Evaluate pending queue for stale unreviewed items
+  (pendingPulses || []).forEach(p => {
+    const createdTime = new Date(p.created_at || p.updated_at || now).getTime();
+    const ageDays = (now - createdTime) / msInDay;
+    if (ageDays >= stalePendingDays) {
+      pendingToPrune.push({ ...p, pruneReason: 'stale_pending', ageDays });
+      stats.stale_pending++;
+    }
+  });
+
+  // 2. Evaluate approved pulses for engagement and age
+  const retainedCandidates = [];
+
+  (approvedPulses || []).forEach(p => {
+    const createdTime = new Date(p.created_at || now).getTime();
+    const ageDays = (now - createdTime) / msInDay;
+    const upvotes = typeof p.upvotes === 'number' ? p.upvotes : 0;
+    const downvotes = typeof p.downvotes === 'number' ? p.downvotes : 0;
+    const score = typeof p.score === 'number' ? p.score : (upvotes - downvotes);
+
+    // Rule 1: Downvoted posts (negative score) older than 24h
+    if (score < 0 && ageDays >= 1) {
+      approvedToPrune.push({ ...p, pruneReason: 'downvoted', score, ageDays });
+      stats.downvoted++;
+      return;
+    }
+
+    // Rule 2: Zero traction (score <= 0) older than lowTractionDays (14 days)
+    if (score <= 0 && ageDays >= lowTractionDays) {
+      approvedToPrune.push({ ...p, pruneReason: 'low_traction', score, ageDays });
+      stats.low_traction++;
+      return;
+    }
+
+    // Rule 3: Low attention aging posts (score <= 1) older than agingDays (28 days)
+    if (score <= 1 && ageDays >= agingDays) {
+      approvedToPrune.push({ ...p, pruneReason: 'stale_aging', score, ageDays });
+      stats.stale_aging++;
+      return;
+    }
+
+    retainedCandidates.push({ ...p, score, ageDays });
+  });
+
+  // 3. Enforce Cohort Capacity Cap (Max Active Pulses)
+  let retainedApproved = [];
+  if (retainedCandidates.length > maxActive) {
+    // Sort descending by score, then recency
+    const sorted = retainedCandidates.slice().sort((a, b) => {
+      if (b.score !== a.score) return b.score - a.score;
+      return new Date(b.created_at || 0) - new Date(a.created_at || 0);
+    });
+
+    retainedApproved = sorted.slice(0, maxActive);
+    const overflow = sorted.slice(maxActive);
+
+    overflow.forEach(p => {
+      approvedToPrune.push({ ...p, pruneReason: 'capacity_overflow' });
+      stats.capacity_overflow++;
+    });
+  } else {
+    retainedApproved = retainedCandidates;
+  }
+
+  return {
+    approvedToPrune,
+    pendingToPrune,
+    retainedApproved,
+    stats
+  };
+}
+
+/**
+ * Executes Supabase REST pruning for low-attention, stale, or overflow pulses.
+ */
+async function executePulseHousekeeping(options = {}) {
+  const isDryRun = options.dryRun || process.argv.includes("--dry-run");
+  const maxActive = options.maxActivePulses || DEFAULT_MAX_ACTIVE_PULSES;
+
+  console.log("🧹 Running Autonomous Cloud Pulse Housekeeping & Cohort Hygiene...");
+
+  let approved = [];
+  let pending = [];
+  try {
+    const [appRes, pendRes] = await Promise.all([
+      fetch(`${SUPABASE_URL}/rest/v1/cloud_pulses?status=eq.approved&order=created_at.desc&limit=100`, {
+        headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` }
+      }),
+      fetch(`${SUPABASE_URL}/rest/v1/cloud_pulses?status=eq.pending_approval&order=created_at.desc&limit=50`, {
+        headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` }
+      })
+    ]);
+
+    if (appRes.ok) approved = await appRes.json();
+    if (pendRes.ok) pending = await pendRes.json();
+  } catch (err) {
+    console.error("Housekeeping fetch error:", err.message);
+    return { pruned: 0, error: err.message };
+  }
+
+  const result = evaluatePulseHousekeeping(approved, pending, { maxActivePulses: maxActive });
+  const toDelete = [...result.approvedToPrune, ...result.pendingToPrune];
+
+  console.log(`📊 Evaluation complete:
+  - Total Approved Examined: ${approved.length}
+  - Total Pending Examined: ${pending.length}
+  - Marked for Pruning: ${toDelete.length} (${result.stats.downvoted} downvoted, ${result.stats.low_traction} zero traction, ${result.stats.stale_aging} aging, ${result.stats.capacity_overflow} overflow, ${result.stats.stale_pending} stale pending)
+  - Retained Cohort Size: ${result.retainedApproved.length}`);
+
+  if (toDelete.length === 0) {
+    console.log("✨ Cloud Pulse database is clean and within optimal cohort limits. No pruning needed.");
+    return { pruned: 0, stats: result.stats, retainedCount: result.retainedApproved.length };
+  }
+
+  if (isDryRun) {
+    console.log(`[DRY RUN] Would delete ${toDelete.length} pulses from Supabase.`);
+    return { pruned: toDelete.length, dryRun: true, stats: result.stats, retainedCount: result.retainedApproved.length };
+  }
+
+  const idsToDelete = toDelete.map(p => p.id);
+  let deletedCount = 0;
+
+  for (let i = 0; i < idsToDelete.length; i += 20) {
+    const chunk = idsToDelete.slice(i, i + 20);
+    const filter = "id=in.(" + chunk.map(id => `"${id}"`).join(",") + ")";
+    try {
+      const delRes = await fetch(`${SUPABASE_URL}/rest/v1/cloud_pulses?${filter}`, {
+        method: "DELETE",
+        headers: {
+          "apikey": SUPABASE_KEY,
+          "Authorization": `Bearer ${SUPABASE_KEY}`
+        }
+      });
+      if (delRes.ok) {
+        deletedCount += chunk.length;
+      }
+    } catch (dErr) {
+      console.error("Housekeeping delete error:", dErr.message);
+    }
+  }
+
+  console.log(`🗑️ Successfully pruned ${deletedCount} low-attention/stale pulses from Supabase.`);
+
+  try {
+    const localPath = path.resolve(__dirname, '../data/cloud_pulse.json');
+    if (fs.existsSync(localPath)) {
+      fs.writeFileSync(localPath, JSON.stringify(result.retainedApproved, null, 2));
+      console.log("💾 Synchronized local data/cloud_pulse.json fallback cache.");
+    }
+  } catch (cErr) {
+    console.warn("Could not sync local cloud_pulse.json:", cErr.message);
+  }
+
+  return {
+    pruned: deletedCount,
+    stats: result.stats,
+    retainedCount: result.retainedApproved.length
+  };
+}
+
 async function runAutoPublisher(options = {}) {
   const isDryRun = options.dryRun || process.argv.includes("--dry-run");
   const force = options.force || process.argv.includes("--force");
 
   console.log("? Starting Cloud Pulse 12-Hour Fallback Watchdog...");
+
+  // 0. Run Housekeeping to purge low-attention/stale pulses & free up space
+  await executePulseHousekeeping(options);
+
 
   // 1. Fetch recent approved pulses to verify admin activity
   let approvedPulses = [];
@@ -294,6 +487,8 @@ if (require.main === module) {
 }
 
 module.exports = {
+  evaluatePulseHousekeeping,
+  executePulseHousekeeping,
   isManualApproval,
   cleanText,
   createSmartFallbackHook,

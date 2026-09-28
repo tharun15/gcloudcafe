@@ -1506,8 +1506,13 @@
     }
 
     var allLoadedPulses = [];
-    var activeFilter = "all";
-    var activeSearchQuery = "";
+    var filterEngine = window.gcloudcafePulseFilter;
+    var filterState = filterEngine ? filterEngine.parseUrlState() : {
+      provider: "all",
+      domain: "all",
+      searchQuery: "",
+      sortBy: "trending"
+    };
 
     function applyViewTransition(updateFn) {
       if (typeof document !== "undefined" && document.startViewTransition && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
@@ -1517,12 +1522,19 @@
       }
     }
 
+    function syncUrlQuery() {
+      if (typeof window === "undefined" || !window.history || !filterEngine) return;
+      var qs = filterEngine.buildQueryString(filterState);
+      var newUrl = window.location.pathname + qs;
+      window.history.replaceState(null, "", newUrl);
+    }
+
     function updateResultCounter(count) {
       var counterEl = document.getElementById("pulse-result-count");
       if (counterEl) {
         var total = allLoadedPulses.length;
         if (count === total) {
-          counterEl.textContent = "Showing " + total + " updates";
+          counterEl.textContent = total > 0 ? "Showing " + total + " updates" : "Showing all updates";
         } else {
           counterEl.textContent = "Showing " + count + " of " + total + " updates";
         }
@@ -1530,30 +1542,9 @@
     }
 
     function filterAndRenderPulses() {
-      var filtered = allLoadedPulses;
-      if (activeFilter !== "all") {
-        filtered = allLoadedPulses.filter(function(p) {
-          var tagsStr = (Array.isArray(p.tags) ? p.tags.join(" ") : "") + " " + (p.title || "") + " " + (p.content || "");
-          var lower = tagsStr.toLowerCase();
-          if (activeFilter === "kubernetes") return lower.includes("k8s") || lower.includes("kube") || lower.includes("cncf") || lower.includes("gateway") || lower.includes("kyaml");
-          if (activeFilter === "gcp") return lower.includes("gcp") || lower.includes("google") || lower.includes("bigquery");
-          if (activeFilter === "aws") return lower.includes("aws") || lower.includes("amazon") || lower.includes("rosa");
-          if (activeFilter === "azure") return lower.includes("azure") || lower.includes("microsoft");
-          if (activeFilter === "openshift") return lower.includes("openshift") || lower.includes("redhat") || lower.includes("red hat") || lower.includes("rosa") || lower.includes("odc");
-          if (activeFilter === "devops") return lower.includes("devops") || lower.includes("ci/cd") || lower.includes("gitops") || lower.includes("terraform");
-          if (activeFilter === "security") return lower.includes("security") || lower.includes("tls") || lower.includes("cve") || lower.includes("cert");
-          if (activeFilter === "ai") return lower.includes("ai") || lower.includes("llm") || lower.includes("genai") || lower.includes("model");
-          return true;
-        });
-      }
-
-      if (activeSearchQuery && activeSearchQuery.trim().length > 0) {
-        var q = activeSearchQuery.trim().toLowerCase();
-        filtered = filtered.filter(function(p) {
-          var corpus = ((p.title || "") + " " + (p.content || "") + " " + (Array.isArray(p.tags) ? p.tags.join(" ") : "")).toLowerCase();
-          return corpus.includes(q);
-        });
-      }
+      var filtered = filterEngine 
+        ? filterEngine.filterPulses(allLoadedPulses, filterState)
+        : allLoadedPulses;
 
       applyViewTransition(function() {
         updateResultCounter(filtered.length);
@@ -1562,28 +1553,141 @@
     }
 
     function updatePulseChipUI(chip, isActive) {
-      var activeClasses = ["is-active", "bg-primary", "text-white", "border-transparent", "shadow-xs"];
-      var inactiveClasses = ["bg-theme-light", "dark:bg-darkmode-theme-light", "text-text/80", "dark:text-darkmode-text/80", "border-border/60", "dark:border-darkmode-border/60"];
-      
+      if (!chip) return;
       if (isActive) {
-        inactiveClasses.forEach(function(cls) { chip.classList.remove(cls); });
-        activeClasses.forEach(function(cls) { chip.classList.add(cls); });
+        chip.classList.add("is-active");
       } else {
-        activeClasses.forEach(function(cls) { chip.classList.remove(cls); });
-        inactiveClasses.forEach(function(cls) { chip.classList.add(cls); });
+        chip.classList.remove("is-active");
       }
     }
 
-    function setupFilterChips() {
-      var chips = document.querySelectorAll("[data-pulse-filter]");
+    function updateSortButtonsUI() {
+      var sortBtns = document.querySelectorAll("[data-pulse-sort]");
+      var activeClasses = ["bg-white", "dark:bg-slate-700", "text-slate-900", "dark:text-white", "shadow-2xs", "font-bold"];
+      var inactiveClasses = ["text-slate-500", "dark:text-slate-400", "hover:text-slate-900", "dark:hover:text-white"];
+      sortBtns.forEach(function(btn) {
+        var val = btn.getAttribute("data-pulse-sort");
+        var isActive = (val === filterState.sortBy);
+        if (isActive) {
+          inactiveClasses.forEach(function(cls) { btn.classList.remove(cls); });
+          activeClasses.forEach(function(cls) { btn.classList.add(cls); });
+        } else {
+          activeClasses.forEach(function(cls) { btn.classList.remove(cls); });
+          inactiveClasses.forEach(function(cls) { btn.classList.add(cls); });
+        }
+      });
+    }
+
+    function setupProviderChips() {
+      var chips = document.querySelectorAll("[data-pulse-provider]");
       chips.forEach(function(chip) {
+        var val = chip.getAttribute("data-pulse-provider") || "all";
+        updatePulseChipUI(chip, val === filterState.provider);
         chip.addEventListener("click", function(e) {
           e.preventDefault();
+          filterState.provider = val;
           chips.forEach(function(c) {
-            updatePulseChipUI(c, false);
+            updatePulseChipUI(c, c.getAttribute("data-pulse-provider") === val);
           });
-          updatePulseChipUI(chip, true);
-          activeFilter = chip.getAttribute("data-pulse-filter") || "all";
+          syncUrlQuery();
+          filterAndRenderPulses();
+        });
+      });
+    }
+
+    function setupDomainChips() {
+      var chips = document.querySelectorAll("[data-pulse-domain]");
+      chips.forEach(function(chip) {
+        var val = chip.getAttribute("data-pulse-domain") || "all";
+        updatePulseChipUI(chip, val === filterState.domain);
+        chip.addEventListener("click", function(e) {
+          e.preventDefault();
+          filterState.domain = val;
+          chips.forEach(function(c) {
+            updatePulseChipUI(c, c.getAttribute("data-pulse-domain") === val);
+          });
+          syncUrlQuery();
+          filterAndRenderPulses();
+        });
+      });
+    }
+
+    function setupSortButtons() {
+      updateSortButtonsUI();
+      var sortBtns = document.querySelectorAll("[data-pulse-sort]");
+      sortBtns.forEach(function(btn) {
+        btn.addEventListener("click", function(e) {
+          e.preventDefault();
+          var sortVal = btn.getAttribute("data-pulse-sort") || "trending";
+          filterState.sortBy = sortVal;
+          updateSortButtonsUI();
+          syncUrlQuery();
+          filterAndRenderPulses();
+        });
+      });
+    }
+
+    function setupSidebarTopics() {
+      var pills = document.querySelectorAll(".pulse-topic-pill, [data-pulse-filter]");
+      pills.forEach(function(pill) {
+        pill.addEventListener("click", function(e) {
+          e.preventDefault();
+          var rawVal = pill.getAttribute("data-pulse-filter") || pill.getAttribute("data-pulse-provider") || pill.getAttribute("data-pulse-domain") || "";
+          var val = rawVal.toLowerCase().trim();
+          if (!val || val === "all") return;
+
+          if (["gcp", "aws", "azure", "openshift"].includes(val)) {
+            filterState.provider = val;
+            var providerChips = document.querySelectorAll("[data-pulse-provider]");
+            providerChips.forEach(function(c) {
+              updatePulseChipUI(c, (c.getAttribute("data-pulse-provider") || "").toLowerCase() === val);
+            });
+          } else {
+            filterState.domain = val;
+            var domainChips = document.querySelectorAll("[data-pulse-domain]");
+            domainChips.forEach(function(c) {
+              updatePulseChipUI(c, (c.getAttribute("data-pulse-domain") || "").toLowerCase() === val);
+            });
+          }
+
+          syncUrlQuery();
+          filterAndRenderPulses();
+
+          var targetSection = document.getElementById("cloud-pulse-section") || feedContainer;
+          if (targetSection && targetSection.scrollIntoView) {
+            targetSection.scrollIntoView({ behavior: "smooth" });
+          }
+        });
+      });
+    }
+
+    function setupResetButton() {
+      var resetBtns = document.querySelectorAll("#pulse-reset-filters-btn");
+      resetBtns.forEach(function(btn) {
+        btn.addEventListener("click", function(e) {
+          e.preventDefault();
+          filterState.provider = "all";
+          filterState.domain = "all";
+          filterState.searchQuery = "";
+          filterState.sortBy = "trending";
+
+          var searchInput = document.getElementById("pulse-search-input");
+          if (searchInput) searchInput.value = "";
+          var clearBtn = document.getElementById("pulse-search-clear");
+          if (clearBtn) clearBtn.classList.add("hidden");
+
+          var providerChips = document.querySelectorAll("[data-pulse-provider]");
+          providerChips.forEach(function(c) {
+            updatePulseChipUI(c, c.getAttribute("data-pulse-provider") === "all");
+          });
+
+          var domainChips = document.querySelectorAll("[data-pulse-domain]");
+          domainChips.forEach(function(c) {
+            updatePulseChipUI(c, c.getAttribute("data-pulse-domain") === "all");
+          });
+
+          updateSortButtonsUI();
+          syncUrlQuery();
           filterAndRenderPulses();
         });
       });
@@ -1594,24 +1698,35 @@
       var clearBtn = document.getElementById("pulse-search-clear");
       if (!searchInput) return;
 
+      if (filterState.searchQuery) {
+        searchInput.value = filterState.searchQuery;
+        if (clearBtn) clearBtn.classList.remove("hidden");
+      }
+
+      var debounceTimer = null;
       searchInput.addEventListener("input", function() {
-        activeSearchQuery = searchInput.value || "";
+        filterState.searchQuery = searchInput.value || "";
         if (clearBtn) {
-          if (activeSearchQuery.trim().length > 0) {
+          if (filterState.searchQuery.trim().length > 0) {
             clearBtn.classList.remove("hidden");
           } else {
             clearBtn.classList.add("hidden");
           }
         }
-        filterAndRenderPulses();
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(function() {
+          syncUrlQuery();
+          filterAndRenderPulses();
+        }, 80);
       });
 
       if (clearBtn) {
         clearBtn.addEventListener("click", function() {
           searchInput.value = "";
-          activeSearchQuery = "";
+          filterState.searchQuery = "";
           clearBtn.classList.add("hidden");
           searchInput.focus();
+          syncUrlQuery();
           filterAndRenderPulses();
         });
       }
@@ -1713,7 +1828,6 @@
         }
       }
 
-      // Generate Slack/Teams formatted markdown
       var whatChangedMatch = cleanContent.match(/(?:🎯\s*(?:\*\*)?What Changed(?:\*\*)?:?)([\s\S]*?)(?:💡|$)/i);
       var impactMatch = cleanContent.match(/(?:💡\s*(?:\*\*)?(?:Why It Matters|Engineering Impact|Impact)(?:\*\*)?:?)([\s\S]+)$/i);
       var whatChanged = whatChangedMatch ? whatChangedMatch[1].trim() : cleanContent;
@@ -1769,35 +1883,16 @@
       });
     }
 
-    function isManualApprovedPulse(p) {
-      if (!p) return false;
-      var reason = (p.eligibility_reason || "").toLowerCase();
-      return !reason.includes("auto-published");
-    }
-
-    function sortCohortByScore(list) {
-      return (list || []).slice().sort(function(a, b) {
-        // Priority 1: Manual approvals always take higher precedence over auto-published posts
-        var manualA = isManualApprovedPulse(a) ? 1 : 0;
-        var manualB = isManualApprovedPulse(b) ? 1 : 0;
-        if (manualB !== manualA) return manualB - manualA;
-
-        // Priority 2: Community vote score
-        var scoreA = typeof a.score === "number" ? a.score : ((a.upvotes || 0) - (a.downvotes || 0));
-        var scoreB = typeof b.score === "number" ? b.score : ((b.upvotes || 0) - (b.downvotes || 0));
-        if (scoreB !== scoreA) return scoreB - scoreA;
-
-        // Priority 3: Recency
-        return new Date(b.created_at || 0) - new Date(a.created_at || 0);
-      }).slice(0, 6);
-    }
-
     function fetchPulses() {
-      setupFilterChips();
+      setupProviderChips();
+      setupDomainChips();
+      setupSortButtons();
       setupPulseSearch();
+      setupSidebarTopics();
+      setupResetButton();
       setupPulseFocusModal();
-      // Fetch latest 6 approved articles (the active competing cohort)
-      var queryUrl = config.url + "/rest/v1/cloud_pulses?status=eq.approved&order=created_at.desc&limit=30";
+
+      var queryUrl = config.url + "/rest/v1/cloud_pulses?status=eq.approved&order=created_at.desc&limit=50";
       
       fetch(queryUrl, {
         headers: {
@@ -1808,12 +1903,12 @@
       .then(function (res) { return res.json(); })
       .then(function (data) {
         if (Array.isArray(data) && data.length > 0) {
-          allLoadedPulses = sortCohortByScore(data);
+          allLoadedPulses = data;
           filterAndRenderPulses();
         } else if (supabase) {
-          supabase.from("cloud_pulses").select("*").eq("status", "approved").order("created_at", { ascending: false }).limit(30).then(function(sRes) {
+          supabase.from("cloud_pulses").select("*").eq("status", "approved").order("created_at", { ascending: false }).limit(50).then(function(sRes) {
             if (sRes && Array.isArray(sRes.data) && sRes.data.length > 0) {
-              allLoadedPulses = sortCohortByScore(sRes.data);
+              allLoadedPulses = sRes.data;
               filterAndRenderPulses();
             } else {
               renderPulses([]);
@@ -1828,9 +1923,9 @@
       .catch(function (err) {
         console.error("Cloud Pulse fetch error:", err);
         if (supabase) {
-          supabase.from("cloud_pulses").select("*").eq("status", "approved").order("created_at", { ascending: false }).limit(24).then(function(sRes) {
+          supabase.from("cloud_pulses").select("*").eq("status", "approved").order("created_at", { ascending: false }).limit(50).then(function(sRes) {
             if (sRes && sRes.data && sRes.data.length > 0) {
-              allLoadedPulses = sortCohortByScore(sRes.data);
+              allLoadedPulses = sRes.data;
               filterAndRenderPulses();
             } else {
               renderPulses([]);
@@ -1844,7 +1939,6 @@
       });
     }
 
-    
     function formatPulseContentToHtml(rawText) {
       var text = (rawText || "").trim();
       if (!text) return "";
@@ -1907,49 +2001,49 @@
       return out;
     }
 
-function renderPulses(pulses) {
+    function renderPulses(pulses) {
+      var emptyStateEl = document.getElementById("pulse-empty-state");
+
       if (!pulses || pulses.length === 0) {
-        var queryText = activeSearchQuery ? ' matching "' + escapeHtml(activeSearchQuery) + '"' : '';
-        feedContainer.innerHTML = '<div class="col-span-full text-center py-12 px-6 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 shadow-xs">' +
+        if (emptyStateEl) {
+          emptyStateEl.classList.remove("hidden");
+          emptyStateEl.classList.add("flex");
+        }
+        feedContainer.innerHTML = '<div class="col-span-full text-center py-12 px-6 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 shadow-xs' + (emptyStateEl ? ' hidden' : '') + '">' +
           '<div class="w-12 h-12 mx-auto mb-3 rounded-full bg-slate-200/70 dark:bg-slate-800 flex items-center justify-center text-slate-500 dark:text-slate-400">' +
             '<i class="fa-solid fa-magnifying-glass text-base"></i>' +
           '</div>' +
-          '<h3 class="text-sm font-bold text-slate-900 dark:text-white mb-1">No pulse updates found' + queryText + '</h3>' +
+          '<h3 class="text-sm font-bold text-slate-900 dark:text-white mb-1">No pulse updates found</h3>' +
           '<p class="text-xs text-slate-500 dark:text-slate-400 mb-4 max-w-sm mx-auto">Try clearing your search query or selecting "All Updates" to view the latest cloud intelligence.</p>' +
           '<button id="pulse-reset-filters-btn" type="button" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono font-bold bg-red-600 hover:bg-red-700 text-white cursor-pointer transition-all border-0 shadow-xs">' +
             '<i class="fa-solid fa-rotate-left text-[10px]"></i> Reset Filters' +
           '</button>' +
         '</div>';
 
-        var resetBtn = document.getElementById("pulse-reset-filters-btn");
-        if (resetBtn) {
-          resetBtn.addEventListener("click", function() {
-            var searchInput = document.getElementById("pulse-search-input");
-            if (searchInput) searchInput.value = "";
-            var clearBtn = document.getElementById("pulse-search-clear");
-            if (clearBtn) clearBtn.classList.add("hidden");
-            activeSearchQuery = "";
-            activeFilter = "all";
-            var chips = document.querySelectorAll("[data-pulse-filter]");
-            chips.forEach(function(c) {
-              updatePulseChipUI(c, c.getAttribute("data-pulse-filter") === "all");
-            });
-            filterAndRenderPulses();
-          });
-        }
+        setupResetButton();
         updateResultCounter(0);
         return;
       }
 
-      // Pre-sorted & calculated by Supabase Postgres View (cloud_pulses_trending)
-      var topPulses = pulses; // Display full cohort for 1-to-1 sync with ticker and comprehensive filtering
+      if (emptyStateEl) {
+        emptyStateEl.classList.add("hidden");
+        emptyStateEl.classList.remove("flex");
+      }
 
+      var topPulses = pulses; // Display full cohort for 1-to-1 sync with ticker and comprehensive filtering
       var html = "";
       topPulses.forEach(function (p, idx) {
-        var rankBadge = idx === 0 ? '<span class="px-2 py-0.5 rounded font-mono text-[10px] font-bold uppercase tracking-wider bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/30">🔥 #1 TRENDING</span>'
-                      : idx === 1 ? '<span class="px-2 py-0.5 rounded font-mono text-[10px] font-bold uppercase tracking-wider bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700">#2 TOP PULSE</span>'
-                      : idx === 2 ? '<span class="px-2 py-0.5 rounded font-mono text-[10px] font-bold uppercase tracking-wider bg-amber-900/20 text-amber-700 dark:text-amber-300 border border-amber-800/30">#3 TOP PULSE</span>'
-                      : '<span class="px-2 py-0.5 rounded font-mono text-[10px] font-bold uppercase tracking-wider bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">#' + (idx + 1) + '</span>';
+        var rankBadge = "";
+        if (filterState.sortBy === "recent") {
+          rankBadge = idx === 0 
+            ? '<span class="px-2 py-0.5 rounded font-mono text-[10px] font-bold uppercase tracking-wider bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/30">⚡ LATEST</span>'
+            : '<span class="px-2 py-0.5 rounded font-mono text-[10px] font-bold uppercase tracking-wider bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">#' + (idx + 1) + '</span>';
+        } else {
+          rankBadge = idx === 0 ? '<span class="px-2 py-0.5 rounded font-mono text-[10px] font-bold uppercase tracking-wider bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/30">🔥 #1 TRENDING</span>'
+                    : idx === 1 ? '<span class="px-2 py-0.5 rounded font-mono text-[10px] font-bold uppercase tracking-wider bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700">#2 TOP PULSE</span>'
+                    : idx === 2 ? '<span class="px-2 py-0.5 rounded font-mono text-[10px] font-bold uppercase tracking-wider bg-amber-900/20 text-amber-700 dark:text-amber-300 border border-amber-800/30">#3 TOP PULSE</span>'
+                    : '<span class="px-2 py-0.5 rounded font-mono text-[10px] font-bold uppercase tracking-wider bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">#' + (idx + 1) + '</span>';
+        }
 
         var tagsHtml = "";
         if (Array.isArray(p.tags)) {
@@ -1969,23 +2063,15 @@ function renderPulses(pulses) {
           eventLinkHtml = '<div class="mb-5"><a href="' + escapeHtml(p.link_url) + '" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-primary/10 hover:bg-primary/20 text-primary text-xs sm:text-sm font-bold no-underline transition-all"><i class="fa-solid fa-link text-xs"></i> Official Event / Page <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i></a></div>';
         }
 
-        var hashtagsText = Array.isArray(p.tags) ? p.tags.map(function(t){ return t.startsWith('#') ? t : '#' + t; }).join(" ") : "";
         var cleanContentText = (p.content || "")
           .replace(/<[^>]+>/g, "")
           .replace(/&lt;[^&]+&gt;/g, "")
           .trim();
 
-        // Derive source label from tags (e.g. #GoogleCloud → "Google Cloud", #AWS → "AWS")
-        var sourceLabel = "";
-        if (Array.isArray(p.tags) && p.tags.length > 0) {
-          sourceLabel = p.tags[0].replace(/^#/, "").replace(/([a-z])([A-Z])/g, "$1 $2");
-        }
-
         var pulseTargetUrl = window.location.origin + "/pulse/";
         var originalUrl = p.link_url || pulseTargetUrl;
 
         var shareText = formatPulseLinkedInPost(p.title, cleanContentText, p.tags, p.link_url);
-
         var linkedinShareUrl = "https://www.linkedin.com/feed/?shareActive=true&text=" + encodeURIComponent(shareText);
 
         var linkedinBtnHtml = '<a href="' + linkedinShareUrl + '" data-pulse-share-title="' + escapeHtml(p.title) + '" data-pulse-share-text="' + escapeHtml(shareText) + '" data-pulse-share-url="' + escapeHtml(originalUrl) + '" target="_blank" rel="noopener noreferrer" class="pulse-share-btn inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-xs font-bold bg-[#0a66c2]/10 hover:bg-[#0a66c2] text-[#0a66c2] hover:text-white transition-all no-underline shrink-0" title="Share pulse on LinkedIn">' +
@@ -2038,17 +2124,18 @@ function renderPulses(pulses) {
           var targetId = window.location.hash.replace("#pulse-", "");
           var targetCard = document.getElementById("pulse-" + targetId);
 
-          // If target pulse exists in cohort but is currently hidden by an active filter or search query, reset filter
           if (!targetCard && allLoadedPulses.some(function(p) { return String(p.id) === targetId; })) {
             activeFilter = "all";
-            activeSearchQuery = "";
+            filterState.provider = "all";
+            filterState.domain = "all";
+            filterState.searchQuery = "";
             var searchInput = document.getElementById("pulse-search-input");
             if (searchInput) searchInput.value = "";
             var clearBtn = document.getElementById("pulse-search-clear");
             if (clearBtn) clearBtn.classList.add("hidden");
-            var chips = document.querySelectorAll("[data-pulse-filter]");
+            var chips = document.querySelectorAll("[data-pulse-provider], [data-pulse-domain]");
             chips.forEach(function(c) {
-              updatePulseChipUI(c, c.getAttribute("data-pulse-filter") === "all");
+              updatePulseChipUI(c, c.getAttribute("data-pulse-provider") === "all" || c.getAttribute("data-pulse-domain") === "all");
             });
             filterAndRenderPulses();
             targetCard = document.getElementById("pulse-" + targetId);
@@ -8966,6 +9053,118 @@ function renderPulses(pulses) {
     startNextQuestionCountdown();
   }
 
+
+  /* ── Cloud Pulse Real-Time Multi-Filter & Search Engine ── */
+  var pulseFilterEngine = {
+    matchesProvider: function (pulse, provider) {
+      if (!provider || provider === "all") return true;
+      var p = pulse || {};
+      var corpus = ((p.title || "") + " " + (p.content || "") + " " + (Array.isArray(p.tags) ? p.tags.join(" ") : "") + " " + (p.link_url || "")).toLowerCase();
+      var target = String(provider).toLowerCase();
+
+      if (target === "gcp" || target === "google") {
+        return corpus.includes("google") || corpus.includes("gcp") || corpus.includes("bigquery") || corpus.includes("vertex") || corpus.includes("spanner") || corpus.includes("gke");
+      }
+      if (target === "aws" || target === "amazon") {
+        return corpus.includes("aws") || corpus.includes("amazon") || corpus.includes("lambda") || corpus.includes("bedrock") || corpus.includes("eks") || corpus.includes("s3") || corpus.includes("kms");
+      }
+      if (target === "azure" || target === "microsoft") {
+        return corpus.includes("azure") || corpus.includes("microsoft") || corpus.includes("openai");
+      }
+      if (target === "openshift" || target === "redhat" || target === "red hat") {
+        return corpus.includes("openshift") || corpus.includes("redhat") || corpus.includes("red hat") || corpus.includes("rosa") || corpus.includes("odc") || corpus.includes("rhacs");
+      }
+      return corpus.includes(target);
+    },
+
+    matchesDomain: function (pulse, domain) {
+      if (!domain || domain === "all") return true;
+      var p = pulse || {};
+      var corpus = ((p.title || "") + " " + (p.content || "") + " " + (Array.isArray(p.tags) ? p.tags.join(" ") : "") + " " + (p.content || "")).toLowerCase();
+      var target = String(domain).toLowerCase();
+
+      if (target === "kubernetes") {
+        return corpus.includes("k8s") || corpus.includes("kube") || corpus.includes("cncf") || corpus.includes("gateway") || corpus.includes("ingress") || corpus.includes("pod") || corpus.includes("helm") || corpus.includes("eks") || corpus.includes("gke") || corpus.includes("openshift");
+      }
+      if (target === "devops") {
+        return corpus.includes("devops") || corpus.includes("ci/cd") || corpus.includes("gitops") || corpus.includes("terraform") || corpus.includes("ansible") || corpus.includes("pipeline") || corpus.includes("automation");
+      }
+      if (target === "security") {
+        return corpus.includes("security") || corpus.includes("tls") || corpus.includes("cve") || corpus.includes("cert") || corpus.includes("vulnerability") || corpus.includes("auth") || corpus.includes("iam") || corpus.includes("zero-trust") || corpus.includes("kms") || corpus.includes("encryption");
+      }
+      if (target === "ai") {
+        var tags = Array.isArray(p.tags) ? p.tags.map(function(t){ return String(t).toLowerCase(); }) : [];
+        if (tags.includes("ai") || tags.includes("genai") || tags.includes("llm")) return true;
+        return /\b(ai|llm|genai|gpt|gemini|claude|bedrock|embeddings|rag|openai)\b/i.test(corpus);
+      }
+      if (target === "databases") {
+        return corpus.includes("database") || corpus.includes("db") || corpus.includes("sql") || corpus.includes("spanner") || corpus.includes("bigquery") || corpus.includes("dynamodb") || corpus.includes("aurora") || corpus.includes("postgres") || corpus.includes("storage");
+      }
+      return corpus.includes(target);
+    },
+
+    matchesSearch: function (pulse, query) {
+      if (!query || query.trim().length === 0) return true;
+      var p = pulse || {};
+      var corpus = ((p.title || "") + " " + (p.content || "") + " " + (Array.isArray(p.tags) ? p.tags.join(" ") : "") + " " + (p.link_url || "")).toLowerCase();
+      var q = String(query).trim().toLowerCase();
+      return corpus.includes(q);
+    },
+
+    filterPulses: function (pulses, options) {
+      var opts = options || {};
+      var provider = opts.provider || "all";
+      var domain = opts.domain || "all";
+      var query = opts.searchQuery || "";
+      var sortBy = opts.sortBy || "trending";
+
+      var self = this;
+      var filtered = (pulses || []).filter(function (pulse) {
+        return (
+          self.matchesProvider(pulse, provider) &&
+          self.matchesDomain(pulse, domain) &&
+          self.matchesSearch(pulse, query)
+        );
+      });
+
+      return filtered.slice().sort(function (a, b) {
+        if (sortBy === "recent") {
+          return new Date(b.created_at || 0) - new Date(a.created_at || 0);
+        }
+        var scoreA = typeof a.score === "number" ? a.score : ((a.upvotes || 0) - (a.downvotes || 0));
+        var scoreB = typeof b.score === "number" ? b.score : ((b.upvotes || 0) - (b.downvotes || 0));
+        if (scoreB !== scoreA) return scoreB - scoreA;
+        return new Date(b.created_at || 0) - new Date(a.created_at || 0);
+      });
+    },
+
+    parseUrlState: function (searchString) {
+      var search = searchString || (typeof window !== "undefined" && window.location ? window.location.search : "");
+      var params = new URLSearchParams(search);
+      return {
+        provider: params.get("provider") || "all",
+        domain: params.get("topic") || params.get("domain") || "all",
+        searchQuery: params.get("q") || params.get("search") || "",
+        sortBy: params.get("sort") === "recent" ? "recent" : "trending"
+      };
+    },
+
+    buildQueryString: function (state) {
+      var s = state || {};
+      var params = new URLSearchParams();
+      if (s.provider && s.provider !== "all") params.set("provider", s.provider);
+      if (s.domain && s.domain !== "all") params.set("topic", s.domain);
+      if (s.searchQuery && s.searchQuery.trim().length > 0) params.set("q", s.searchQuery.trim());
+      if (s.sortBy && s.sortBy !== "trending") params.set("sort", s.sortBy);
+
+      var str = params.toString();
+      return str.length > 0 ? "?" + str : "";
+    }
+  };
+
+  if (typeof window !== "undefined") {
+    window.gcloudcafePulseFilter = pulseFilterEngine;
+  }
 
   /* ── Interactive Cloud Decision Calculator & Comparison Engine ── */
   var calculatorEngine = {
