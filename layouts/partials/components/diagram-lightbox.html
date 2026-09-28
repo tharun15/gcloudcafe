@@ -1,0 +1,90 @@
+<!-- Interactive Architecture Diagram Lightbox Modal -->
+<div
+  id="diagram-lightbox"
+  class="fixed inset-0 z-[100] opacity-0 pointer-events-none transition-opacity duration-200 select-none"
+  aria-modal="true"
+  role="dialog"
+  aria-hidden="true"
+  tabindex="-1">
+  <!-- Backdrop -->
+  <div
+    id="diagram-lightbox-backdrop"
+    class="absolute inset-0 bg-slate-950/85 backdrop-blur-md cursor-zoom-out"
+    aria-label="Close Diagram Lightbox"></div>
+
+  <!-- Modal Wrapper -->
+  <div class="relative z-10 flex flex-col h-full w-full pointer-events-none">
+    <!-- Lightbox Header / Controls Bar -->
+    <header class="pointer-events-auto flex items-center justify-between px-4 sm:px-6 py-3.5 border-b border-slate-800/80 bg-slate-900/80 backdrop-blur-sm shadow-md">
+      <div class="flex items-center gap-2.5 min-w-0 pr-4">
+        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 shrink-0">
+          <i class="fa-solid fa-diagram-project text-[11px]"></i>
+          <span class="hidden sm:inline">Architecture Diagram</span>
+        </span>
+        <h3 id="diagram-lightbox-title" class="text-xs sm:text-sm font-semibold text-slate-100 truncate mb-0"></h3>
+      </div>
+
+      <!-- Action Toolbar -->
+      <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
+        <span
+          id="diagram-zoom-level"
+          class="text-xs font-mono font-medium text-slate-300 px-2 py-1 bg-slate-800/80 border border-slate-700/60 rounded-md shadow-inner"
+          title="Current Zoom Level">100%</span>
+
+        <button
+          id="lightbox-zoom-out"
+          type="button"
+          class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition-colors border border-slate-700/50"
+          aria-label="Zoom Out"
+          title="Zoom Out (-)">
+          <i class="fa-solid fa-magnifying-glass-minus text-xs"></i>
+        </button>
+
+        <button
+          id="lightbox-zoom-in"
+          type="button"
+          class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition-colors border border-slate-700/50"
+          aria-label="Zoom In"
+          title="Zoom In (+)">
+          <i class="fa-solid fa-magnifying-glass-plus text-xs"></i>
+        </button>
+
+        <button
+          id="lightbox-reset-zoom"
+          type="button"
+          class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition-colors border border-slate-700/50"
+          aria-label="Reset Zoom"
+          title="Reset Zoom (0)">
+          <i class="fa-solid fa-rotate-left text-xs"></i>
+        </button>
+
+        <button
+          id="lightbox-close-btn"
+          type="button"
+          class="p-2 ml-1 sm:ml-2 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 hover:text-rose-300 transition-colors border border-rose-500/20"
+          aria-label="Close Lightbox"
+          title="Close (ESC)">
+          <i class="fa-solid fa-xmark text-sm"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- Lightbox Main Canvas / Pan Viewport -->
+    <div
+      id="diagram-lightbox-viewport"
+      class="flex-1 overflow-hidden relative flex items-center justify-center p-2 sm:p-6 cursor-grab active:cursor-grabbing pointer-events-auto">
+      <div
+        id="diagram-lightbox-canvas"
+        class="transition-transform duration-100 ease-out origin-center flex items-center justify-center select-none max-w-full max-h-full">
+        <div id="diagram-lightbox-content" class="flex items-center justify-center">
+          <!-- Dynamically cloned image or SVG -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Lightbox Footer / Hint -->
+    <footer class="pointer-events-auto px-4 sm:px-6 py-2 text-center text-[11px] text-slate-400 border-t border-slate-800/60 bg-slate-900/60 backdrop-blur-sm">
+      Scroll or use <kbd class="px-1.5 py-0.5 bg-slate-800 rounded text-slate-300 font-mono text-[10px] border border-slate-700">+</kbd> / <kbd class="px-1.5 py-0.5 bg-slate-800 rounded text-slate-300 font-mono text-[10px] border border-slate-700">-</kbd> to zoom, click & drag to pan, or <kbd class="px-1.5 py-0.5 bg-slate-800 rounded text-slate-300 font-mono text-[10px] border border-slate-700">ESC</kbd> to close.
+    </footer>
+  </div>
+</div>

@@ -10107,3 +10107,262 @@
   }
 
 document.addEventListener('DOMContentLoaded', initDevTerminalBlocks);
+
+  /* ── Interactive Architecture Diagram Lightbox Engine ── */
+  (function () {
+    var scale = 1.0;
+    var panX = 0;
+    var panY = 0;
+    var isPanning = false;
+    var startX = 0;
+    var startY = 0;
+    var initialPanX = 0;
+    var initialPanY = 0;
+    var isOpen = false;
+
+    var MIN_SCALE = 1.0;
+    var MAX_SCALE = 4.0;
+    var SCALE_STEP = 0.25;
+
+    function getElements() {
+      return {
+        modal: document.getElementById('diagram-lightbox'),
+        backdrop: document.getElementById('diagram-lightbox-backdrop'),
+        title: document.getElementById('diagram-lightbox-title'),
+        zoomLabel: document.getElementById('diagram-zoom-level'),
+        btnZoomIn: document.getElementById('lightbox-zoom-in'),
+        btnZoomOut: document.getElementById('lightbox-zoom-out'),
+        btnReset: document.getElementById('lightbox-reset-zoom'),
+        btnClose: document.getElementById('lightbox-close-btn'),
+        viewport: document.getElementById('diagram-lightbox-viewport'),
+        canvas: document.getElementById('diagram-lightbox-canvas'),
+        content: document.getElementById('diagram-lightbox-content')
+      };
+    }
+
+    function updateTransform() {
+      var els = getElements();
+      if (els.canvas) {
+        els.canvas.style.transform = 'translate(' + panX + 'px, ' + panY + 'px) scale(' + scale + ')';
+      }
+      if (els.zoomLabel) {
+        els.zoomLabel.textContent = Math.round(scale * 100) + '%';
+      }
+    }
+
+    function resetZoom() {
+      scale = 1.0;
+      panX = 0;
+      panY = 0;
+      updateTransform();
+    }
+
+    function zoomIn() {
+      scale = Math.min(MAX_SCALE, Math.round((scale + SCALE_STEP) * 100) / 100);
+      updateTransform();
+    }
+
+    function zoomOut() {
+      scale = Math.max(MIN_SCALE, Math.round((scale - SCALE_STEP) * 100) / 100);
+      if (scale === 1.0) {
+        panX = 0;
+        panY = 0;
+      }
+      updateTransform();
+    }
+
+    function open(target) {
+      var els = getElements();
+      if (!els.modal || !target) return;
+
+      isOpen = true;
+      resetZoom();
+
+      // Extract caption / title
+      var titleText = '';
+      if (target.alt || target.getAttribute('alt')) {
+        titleText = target.alt || target.getAttribute('alt');
+      } else if (target.getAttribute('aria-label')) {
+        titleText = target.getAttribute('aria-label');
+      } else {
+        var figure = target.closest('figure');
+        if (figure) {
+          var figcaption = figure.querySelector('figcaption');
+          if (figcaption) titleText = figcaption.textContent.trim();
+        }
+      }
+      if (!titleText) titleText = 'Architecture Diagram';
+
+      if (els.title) {
+        els.title.textContent = titleText;
+      }
+
+      // Populate content
+      if (els.content) {
+        els.content.innerHTML = '';
+        if (target.tagName.toLowerCase() === 'svg' || target.querySelector('svg')) {
+          var svgEl = target.tagName.toLowerCase() === 'svg' ? target : target.querySelector('svg');
+          var clone = svgEl.cloneNode(true);
+          clone.removeAttribute('id');
+          els.content.appendChild(clone);
+        } else if (target.tagName.toLowerCase() === 'img') {
+          var imgClone = document.createElement('img');
+          imgClone.src = target.src || target.getAttribute('src');
+          imgClone.alt = titleText;
+          imgClone.className = 'max-w-full max-h-[75vh] object-contain rounded-lg shadow-2xl';
+          els.content.appendChild(imgClone);
+        }
+      }
+
+      // Show modal
+      els.modal.classList.remove('pointer-events-none', 'opacity-0');
+      els.modal.classList.add('opacity-100');
+      els.modal.setAttribute('aria-hidden', 'false');
+      if (document.body) {
+        document.body.classList.add('lightbox-open');
+      }
+    }
+
+    function close() {
+      var els = getElements();
+      if (!els.modal) return;
+
+      isOpen = false;
+      resetZoom();
+
+      els.modal.classList.add('pointer-events-none', 'opacity-0');
+      els.modal.classList.remove('opacity-100');
+      els.modal.setAttribute('aria-hidden', 'true');
+      if (document.body) {
+        document.body.classList.remove('lightbox-open');
+      }
+    }
+
+    function initDiagramLightbox() {
+      var els = getElements();
+      if (!els.modal) return;
+
+      // Event handlers for toolbar buttons
+      if (els.btnZoomIn) els.btnZoomIn.onclick = zoomIn;
+      if (els.btnZoomOut) els.btnZoomOut.onclick = zoomOut;
+      if (els.btnReset) els.btnReset.onclick = resetZoom;
+      if (els.btnClose) els.btnClose.onclick = close;
+      if (els.backdrop) els.backdrop.onclick = close;
+
+      // Pan & drag handlers
+      if (els.viewport) {
+        els.viewport.addEventListener('mousedown', function (e) {
+          if (scale <= 1.0) return;
+          isPanning = true;
+          startX = e.clientX;
+          startY = e.clientY;
+          initialPanX = panX;
+          initialPanY = panY;
+          els.viewport.classList.add('is-panning');
+          e.preventDefault();
+        });
+
+        window.addEventListener('mousemove', function (e) {
+          if (!isPanning) return;
+          var dx = e.clientX - startX;
+          var dy = e.clientY - startY;
+          panX = initialPanX + dx;
+          panY = initialPanY + dy;
+          updateTransform();
+        });
+
+        window.addEventListener('mouseup', function () {
+          if (isPanning) {
+            isPanning = false;
+            if (els.viewport) els.viewport.classList.remove('is-panning');
+          }
+        });
+
+        // Double click to toggle zoom
+        els.viewport.addEventListener('dblclick', function (e) {
+          if (e.target.closest('button')) return;
+          if (scale === 1.0) {
+            scale = 2.0;
+          } else {
+            scale = 1.0;
+            panX = 0;
+            panY = 0;
+          }
+          updateTransform();
+        });
+
+        // Mouse wheel zoom
+        els.viewport.addEventListener('wheel', function (e) {
+          e.preventDefault();
+          if (e.deltaY < 0) {
+            zoomIn();
+          } else {
+            zoomOut();
+          }
+        }, { passive: false });
+      }
+
+      // Keyboard shortcuts
+      window.addEventListener('keydown', function (e) {
+        if (!isOpen) return;
+        if (e.key === 'Escape') {
+          close();
+        } else if (e.key === '+' || e.key === '=') {
+          zoomIn();
+        } else if (e.key === '-' || e.key === '_') {
+          zoomOut();
+        } else if (e.key === '0') {
+          resetZoom();
+        }
+      });
+
+      // Attach click triggers to diagrams
+      var targets = document.querySelectorAll(
+        '.blog-article-content img, .content img, .mermaid svg, .mermaid, .architecture-diagram, figure img'
+      );
+
+      targets.forEach(function (el) {
+        // Skip small avatars or icons
+        if (el.tagName.toLowerCase() === 'img') {
+          var w = el.getAttribute('width');
+          var h = el.getAttribute('height');
+          var src = (el.src || el.getAttribute('src') || '').toLowerCase();
+          if ((w && parseInt(w) < 100) || src.includes('avatar') || src.includes('icon') || el.classList.contains('w-6')) {
+            return;
+          }
+        }
+
+        el.classList.add('diagram-interactive-target');
+        el.setAttribute('title', 'Click to expand & zoom architecture diagram');
+
+        el.addEventListener('click', function (e) {
+          // If clicked inside mermaid container or svg
+          var targetEl = el;
+          if (el.classList.contains('mermaid') && el.querySelector('svg')) {
+            targetEl = el.querySelector('svg');
+          }
+          open(targetEl);
+          e.stopPropagation();
+        });
+      });
+    }
+
+    // Expose global API
+    window.gcloudcafeLightbox = {
+      open: open,
+      close: close,
+      zoomIn: zoomIn,
+      zoomOut: zoomOut,
+      resetZoom: resetZoom,
+      getScale: function () { return scale; },
+      getState: function () {
+        return { isOpen: isOpen, scale: scale, panX: panX, panY: panY };
+      }
+    };
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initDiagramLightbox);
+    } else {
+      initDiagramLightbox();
+    }
+  })();

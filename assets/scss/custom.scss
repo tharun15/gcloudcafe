@@ -1829,3 +1829,79 @@ table {
 .ticker-marquee-wrapper:hover .ticker-marquee-content {
   animation-play-state: paused !important;
 }
+
+
+/* ── Interactive Architecture Diagram Lightbox ── */
+.diagram-interactive-target {
+  cursor: zoom-in !important;
+  transition: filter 0.2s ease, transform 0.2s ease;
+
+  &:hover {
+    filter: brightness(1.02);
+  }
+}
+
+.diagram-wrapper {
+  position: relative;
+  display: block;
+
+  .diagram-expand-hint {
+    position: absolute;
+    bottom: 0.75rem;
+    right: 0.75rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.35rem 0.65rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #e2e8f0;
+    background: rgba(15, 23, 42, 0.75);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    border: 1px solid rgba(51, 65, 85, 0.6);
+    border-radius: 9999px;
+    opacity: 0;
+    transform: translateY(4px);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    pointer-events: none;
+    z-index: 10;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  }
+
+  &:hover .diagram-expand-hint {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+#diagram-lightbox-viewport {
+  touch-action: none;
+  user-select: none;
+
+  &.is-panning {
+    cursor: grabbing !important;
+  }
+}
+
+#diagram-lightbox-canvas {
+  will-change: transform;
+}
+
+#diagram-lightbox-content {
+  img {
+    max-width: 88vw;
+    max-height: 78vh;
+    object-fit: contain;
+    border-radius: 0.5rem;
+    box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5);
+  }
+
+  svg {
+    max-width: 88vw;
+    max-height: 78vh;
+    width: auto;
+    height: auto;
+    filter: drop-shadow(0 20px 30px rgba(0, 0, 0, 0.4));
+  }
+}
