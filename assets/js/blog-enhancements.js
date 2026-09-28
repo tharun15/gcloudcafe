@@ -8967,6 +8967,118 @@ function renderPulses(pulses) {
   }
 
 
+  /* ── Cloud Pulse Real-Time Multi-Filter & Search Engine ── */
+  var pulseFilterEngine = {
+    matchesProvider: function (pulse, provider) {
+      if (!provider || provider === "all") return true;
+      var p = pulse || {};
+      var corpus = ((p.title || "") + " " + (p.content || "") + " " + (Array.isArray(p.tags) ? p.tags.join(" ") : "") + " " + (p.link_url || "")).toLowerCase();
+      var target = String(provider).toLowerCase();
+
+      if (target === "gcp" || target === "google") {
+        return corpus.includes("google") || corpus.includes("gcp") || corpus.includes("bigquery") || corpus.includes("vertex") || corpus.includes("spanner") || corpus.includes("gke");
+      }
+      if (target === "aws" || target === "amazon") {
+        return corpus.includes("aws") || corpus.includes("amazon") || corpus.includes("lambda") || corpus.includes("bedrock") || corpus.includes("eks") || corpus.includes("s3") || corpus.includes("kms");
+      }
+      if (target === "azure" || target === "microsoft") {
+        return corpus.includes("azure") || corpus.includes("microsoft") || corpus.includes("openai");
+      }
+      if (target === "openshift" || target === "redhat" || target === "red hat") {
+        return corpus.includes("openshift") || corpus.includes("redhat") || corpus.includes("red hat") || corpus.includes("rosa") || corpus.includes("odc") || corpus.includes("rhacs");
+      }
+      return corpus.includes(target);
+    },
+
+    matchesDomain: function (pulse, domain) {
+      if (!domain || domain === "all") return true;
+      var p = pulse || {};
+      var corpus = ((p.title || "") + " " + (p.content || "") + " " + (Array.isArray(p.tags) ? p.tags.join(" ") : "") + " " + (p.content || "")).toLowerCase();
+      var target = String(domain).toLowerCase();
+
+      if (target === "kubernetes") {
+        return corpus.includes("k8s") || corpus.includes("kube") || corpus.includes("cncf") || corpus.includes("gateway") || corpus.includes("ingress") || corpus.includes("pod") || corpus.includes("helm") || corpus.includes("eks") || corpus.includes("gke") || corpus.includes("openshift");
+      }
+      if (target === "devops") {
+        return corpus.includes("devops") || corpus.includes("ci/cd") || corpus.includes("gitops") || corpus.includes("terraform") || corpus.includes("ansible") || corpus.includes("pipeline") || corpus.includes("automation");
+      }
+      if (target === "security") {
+        return corpus.includes("security") || corpus.includes("tls") || corpus.includes("cve") || corpus.includes("cert") || corpus.includes("vulnerability") || corpus.includes("auth") || corpus.includes("iam") || corpus.includes("zero-trust") || corpus.includes("kms") || corpus.includes("encryption");
+      }
+      if (target === "ai") {
+        var tags = Array.isArray(p.tags) ? p.tags.map(function(t){ return String(t).toLowerCase(); }) : [];
+        if (tags.includes("ai") || tags.includes("genai") || tags.includes("llm")) return true;
+        return /\b(ai|llm|genai|gpt|gemini|claude|bedrock|embeddings|rag|openai)\b/i.test(corpus);
+      }
+      if (target === "databases") {
+        return corpus.includes("database") || corpus.includes("db") || corpus.includes("sql") || corpus.includes("spanner") || corpus.includes("bigquery") || corpus.includes("dynamodb") || corpus.includes("aurora") || corpus.includes("postgres") || corpus.includes("storage");
+      }
+      return corpus.includes(target);
+    },
+
+    matchesSearch: function (pulse, query) {
+      if (!query || query.trim().length === 0) return true;
+      var p = pulse || {};
+      var corpus = ((p.title || "") + " " + (p.content || "") + " " + (Array.isArray(p.tags) ? p.tags.join(" ") : "") + " " + (p.link_url || "")).toLowerCase();
+      var q = String(query).trim().toLowerCase();
+      return corpus.includes(q);
+    },
+
+    filterPulses: function (pulses, options) {
+      var opts = options || {};
+      var provider = opts.provider || "all";
+      var domain = opts.domain || "all";
+      var query = opts.searchQuery || "";
+      var sortBy = opts.sortBy || "trending";
+
+      var self = this;
+      var filtered = (pulses || []).filter(function (pulse) {
+        return (
+          self.matchesProvider(pulse, provider) &&
+          self.matchesDomain(pulse, domain) &&
+          self.matchesSearch(pulse, query)
+        );
+      });
+
+      return filtered.slice().sort(function (a, b) {
+        if (sortBy === "recent") {
+          return new Date(b.created_at || 0) - new Date(a.created_at || 0);
+        }
+        var scoreA = typeof a.score === "number" ? a.score : ((a.upvotes || 0) - (a.downvotes || 0));
+        var scoreB = typeof b.score === "number" ? b.score : ((b.upvotes || 0) - (b.downvotes || 0));
+        if (scoreB !== scoreA) return scoreB - scoreA;
+        return new Date(b.created_at || 0) - new Date(a.created_at || 0);
+      });
+    },
+
+    parseUrlState: function (searchString) {
+      var search = searchString || (typeof window !== "undefined" && window.location ? window.location.search : "");
+      var params = new URLSearchParams(search);
+      return {
+        provider: params.get("provider") || "all",
+        domain: params.get("topic") || params.get("domain") || "all",
+        searchQuery: params.get("q") || params.get("search") || "",
+        sortBy: params.get("sort") === "recent" ? "recent" : "trending"
+      };
+    },
+
+    buildQueryString: function (state) {
+      var s = state || {};
+      var params = new URLSearchParams();
+      if (s.provider && s.provider !== "all") params.set("provider", s.provider);
+      if (s.domain && s.domain !== "all") params.set("topic", s.domain);
+      if (s.searchQuery && s.searchQuery.trim().length > 0) params.set("q", s.searchQuery.trim());
+      if (s.sortBy && s.sortBy !== "trending") params.set("sort", s.sortBy);
+
+      var str = params.toString();
+      return str.length > 0 ? "?" + str : "";
+    }
+  };
+
+  if (typeof window !== "undefined") {
+    window.gcloudcafePulseFilter = pulseFilterEngine;
+  }
+
   /* ── Interactive Cloud Decision Calculator & Comparison Engine ── */
   var calculatorEngine = {
     calculateStorageTier: function (options) {
