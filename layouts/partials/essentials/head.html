@@ -1,5 +1,30 @@
 <meta charset="utf-8" />
 
+<!-- Instant Theme Initialization (Prevents FOUC & preserves dark/light mode across page navigation) -->
+<script>
+  (function () {
+    try {
+      var defaultTheme = '{{ site.Params.theme_default | default "system" }}';
+      var savedTheme = localStorage.getItem("theme");
+      var isDark = false;
+      if (savedTheme === "dark") {
+        isDark = true;
+      } else if (savedTheme === "light") {
+        isDark = false;
+      } else if (defaultTheme === "dark") {
+        isDark = true;
+      } else if (defaultTheme === "system") {
+        isDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+      }
+      if (isDark) {
+        document.documentElement.classList.add("dark");
+      } else {
+        document.documentElement.classList.remove("dark");
+      }
+    } catch (e) {}
+  })();
+</script>
+
 <!-- responsive meta -->
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
 <meta http-equiv="X-Content-Type-Options" content="nosniff" />

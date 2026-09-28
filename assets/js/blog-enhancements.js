@@ -8123,7 +8123,7 @@ function renderPulses(pulses) {
           (activePoll.options || []).forEach(function (o) { totalRecordedVotes += (o.votes || 0); });
           if (activePoll.otherOption) totalRecordedVotes += (activePoll.otherOption.votes || 0);
 
-          if (liveVotesEl) liveVotesEl.textContent = totalRecordedVotes + (totalRecordedVotes === 1 ? " prediction recorded" : " predictions recorded");
+          if (liveVotesEl) liveVotesEl.textContent = totalRecordedVotes + (totalRecordedVotes === 1 ? " vote recorded" : " votes recorded");
         }
 
         var searchInput = document.getElementById("admin-polls-search-input");
@@ -8387,7 +8387,7 @@ function renderPulses(pulses) {
         if (idInput) idInput.value = poll.id;
         if (weekInput) weekInput.value = poll.weekNumber || 39;
         if (categoryInput) categoryInput.value = poll.category || "";
-        if (badgeInput) badgeInput.value = poll.badge || "Prediction of the Week";
+        if (badgeInput) badgeInput.value = poll.badge || "Question of the Week";
         if (topicInput) topicInput.value = poll.topic || "";
         if (questionInput) questionInput.value = poll.question || "";
         if (contextInput) contextInput.value = poll.context || "";
@@ -8407,7 +8407,7 @@ function renderPulses(pulses) {
         if (idInput) idInput.value = "";
         var form = document.getElementById("admin-poll-form");
         if (form) form.reset();
-        if (badgeInput) badgeInput.value = "Prediction of the Week";
+        if (badgeInput) badgeInput.value = "Question of the Week";
       }
 
       modal.classList.remove("hidden");
@@ -8453,7 +8453,7 @@ function renderPulses(pulses) {
             { id: "opt-3", text: document.getElementById("poll-form-opt3").value.trim(), description: document.getElementById("poll-form-opt3-desc").value.trim(), votes: 0 },
             { id: "opt-4", text: document.getElementById("poll-form-opt4").value.trim(), description: document.getElementById("poll-form-opt4-desc").value.trim(), votes: 0 }
           ],
-          otherOption: { id: "other", text: "Other / Different perspective", description: "Hold an alternative architectural stance or distinct prediction", votes: 0 },
+          otherOption: { id: "other", text: "Other / Different perspective", description: "Hold an alternative architectural stance or distinct perspective", votes: 0 },
           customTakes: []
         };
 
@@ -8548,7 +8548,7 @@ function renderPulses(pulses) {
 
   }
 
-  /* ── Weekly Architecture Opinion & Prediction Poll System ── */
+  /* ── Weekly Architecture Opinion & Question Poll System ── */
   function initWeeklyOpinionPollSystem() {
     var widget = document.getElementById("weekly-opinion-poll-widget");
     if (!widget) return;
@@ -8588,7 +8588,7 @@ function renderPulses(pulses) {
           { id: "writing-core-code-manually", text: "Writing core code by hand", description: "Crafting mission-critical business logic where human accuracy cannot be compromised", votes: 0 },
           { id: "debugging-production-fires", text: "Debugging production fires & outages", description: "Tracking down complex incidents, performance bottlenecks, and multi-service edge cases", votes: 0 }
         ],
-        otherOption: { id: "other", text: "Other / Different perspective", description: "Hold a different prediction for how developer workflows will evolve", votes: 0 }
+        otherOption: { id: "other", text: "Other / Different perspective", description: "Hold a different perspective for how developer workflows will evolve", votes: 0 }
       };
     }
 
@@ -8802,21 +8802,22 @@ function renderPulses(pulses) {
         var optId = card.getAttribute("data-option-id");
         card.addEventListener("click", function (e) {
           e.preventDefault();
-          castPredictionVote(optId);
+          castWeeklyVote(optId);
         });
 
         // Keyboard accessibility
         card.addEventListener("keydown", function (e) {
           if (e.key === "Enter" || e.key === " ") {
             e.preventDefault();
-            castPredictionVote(optId);
+            castWeeklyVote(optId);
           }
         });
       });
     }
 
-    // Cast prediction vote and immediately show results
-    function castPredictionVote(optionId) {
+    // Cast vote and immediately show results
+    var castPredictionVote = function (optId) { return castWeeklyVote(optId); };
+    function castWeeklyVote(optionId) {
       var tallies = getStoredTallies();
       tallies[optionId] = (tallies[optionId] || 0) + 1;
       saveTallies(tallies);
@@ -8874,7 +8875,7 @@ function renderPulses(pulses) {
                 (opt.id === "other" ? '<i class="fa-regular fa-compass text-red-500 mr-1.5 text-xs"></i>' : '') +
                 escapeHtml(opt.text) +
               '</span>' +
-              (isUserChoice ? '<span class="shrink-0 inline-flex items-center gap-1 text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20"><i class="fa-solid fa-check text-[9px]"></i> Your Prediction</span>' : '') +
+              (isUserChoice ? '<span class="shrink-0 inline-flex items-center gap-1 text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20"><i class="fa-solid fa-check text-[9px]"></i> Your Choice</span>' : '') +
             '</div>' +
             '<span class="text-xs sm:text-sm font-mono font-black text-slate-900 dark:text-white shrink-0">' + percent + '%</span>' +
           '</div>' +
