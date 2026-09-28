@@ -46,6 +46,12 @@
     <!-- Saved Articles Reading Drawer -->
     {{ partial "components/bookmarks-drawer.html" . }}
 
+    <!-- Executive TL;DR Quick-Scan Drawer -->
+    {{ partial "components/tldr-drawer.html" . }}
+
+    <!-- Floating Article Audio Player Bar -->
+    {{ partial "components/article-audio-bar.html" . }}
+
     <main id="main-content" tabindex="-1">
       {{ block "main" . }}{{ end }}
     </main>

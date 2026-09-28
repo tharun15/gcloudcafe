@@ -9839,7 +9839,486 @@
     bookmarksStore.updateToggleButtons();
   }
 
+
+  /* ── 15. Executive Audio Narration Engine ── */
+  var audioReaderEngine = {
+    _state: {
+      isPlaying: false,
+      isPaused: false,
+      rate: 1.0,
+      pitch: 1.0,
+      text: "",
+      charIndex: 0
+    },
+    _utterance: null,
+    _listeners: [],
+    _progressListeners: [],
+
+    extractCleanText: function (containerEl) {
+      if (!containerEl) return "";
+      var clone = containerEl.cloneNode(true);
+      if (!clone) return "";
+
+      var unneededSelectors = [
+        "pre", "code", "script", "style", "noscript", "svg", "canvas",
+        "table", "nav", ".dev-terminal-wrapper", "button", "form",
+        ".footnotes", "[aria-hidden='true']", "header", "footer"
+      ];
+
+      unneededSelectors.forEach(function (sel) {
+        var elements = clone.querySelectorAll(sel);
+        elements.forEach(function (el) {
+          if (el.parentNode) el.parentNode.removeChild(el);
+        });
+      });
+
+      var raw = clone.textContent || clone.innerText || "";
+      return raw
+        .replace(/\s+/g, " ")
+        .replace(/([.?!])\s*(?=[A-Z])/g, "$1\n")
+        .trim();
+    },
+
+    getState: function () {
+      return {
+        isPlaying: this._state.isPlaying,
+        isPaused: this._state.isPaused,
+        rate: this._state.rate
+      };
+    },
+
+    setRate: function (newRate) {
+      var r = parseFloat(newRate) || 1.0;
+      this._state.rate = r;
+      if (this._utterance) {
+        this._utterance.rate = r;
+      }
+      this._emitChange();
+    },
+
+    play: function (textToSpeak, options) {
+      var text = (textToSpeak || "").trim();
+      if (!text) return;
+      var self = this;
+      var opts = options || {};
+
+      if (typeof window === "undefined" || !window.speechSynthesis) {
+        console.warn("SpeechSynthesis API not supported in this environment.");
+        return;
+      }
+
+      window.speechSynthesis.cancel();
+
+      self._state.text = text;
+      self._state.isPlaying = true;
+      self._state.isPaused = false;
+
+      var UtteranceClass = window.SpeechSynthesisUtterance || function (t) { this.text = t; };
+      var u = new UtteranceClass(text);
+      u.rate = self._state.rate || 1.0;
+      u.pitch = 1.0;
+      u.lang = opts.lang || "en-US";
+
+      u.onstart = function () {
+        self._state.isPlaying = true;
+        self._state.isPaused = false;
+        self._emitChange();
+        if (opts.onStart) opts.onStart();
+      };
+
+      u.onpause = function () {
+        self._state.isPaused = true;
+        self._emitChange();
+        if (opts.onPause) opts.onPause();
+      };
+
+      u.onresume = function () {
+        self._state.isPaused = false;
+        self._emitChange();
+        if (opts.onResume) opts.onResume();
+      };
+
+      u.onend = function () {
+        self._state.isPlaying = false;
+        self._state.isPaused = false;
+        self._emitChange();
+        if (opts.onEnd) opts.onEnd();
+      };
+
+      u.onerror = function (e) {
+        self._state.isPlaying = false;
+        self._state.isPaused = false;
+        self._emitChange();
+        if (opts.onError) opts.onError(e);
+      };
+
+      u.onboundary = function (e) {
+        if (e.charIndex && text.length > 0) {
+          var pct = Math.min(100, Math.round((e.charIndex / text.length) * 100));
+          self._emitProgress(pct);
+        }
+      };
+
+      self._utterance = u;
+      window.speechSynthesis.speak(u);
+      self._emitChange();
+    },
+
+    pause: function () {
+      if (typeof window !== "undefined" && window.speechSynthesis) {
+        window.speechSynthesis.pause();
+        this._state.isPaused = true;
+        this._emitChange();
+      }
+    },
+
+    resume: function () {
+      if (typeof window !== "undefined" && window.speechSynthesis) {
+        window.speechSynthesis.resume();
+        this._state.isPaused = false;
+        this._emitChange();
+      }
+    },
+
+    stop: function () {
+      if (typeof window !== "undefined" && window.speechSynthesis) {
+        window.speechSynthesis.cancel();
+        this._state.isPlaying = false;
+        this._state.isPaused = false;
+        this._emitChange();
+      }
+    },
+
+    onStateChange: function (listener) {
+      if (typeof listener === "function") {
+        this._listeners.push(listener);
+      }
+    },
+
+    _emitChange: function () {
+      var s = this.getState();
+      this._listeners.forEach(function (fn) { fn(s); });
+    },
+
+    onProgress: function (listener) {
+      if (typeof listener === "function") {
+        this._progressListeners.push(listener);
+      }
+    },
+
+    _emitProgress: function (pct) {
+      this._progressListeners.forEach(function (fn) { fn(pct); });
+    }
+  };
+
+  if (typeof window !== "undefined") {
+    window.gcloudcafeAudioReader = audioReaderEngine;
+  }
+
+  /* ── 16. Executive TL;DR Extraction & Sharing Engine ── */
+  var tldrEngine = {
+    extractTldr: function () {
+      var payloadEl = document.getElementById("article-tldr-data");
+      if (payloadEl && payloadEl.textContent) {
+        try {
+          var parsed = JSON.parse(payloadEl.textContent);
+          if (parsed && typeof parsed === "object") {
+            return {
+              title: parsed.title || document.title,
+              url: parsed.url || (typeof window !== "undefined" && window.location ? window.location.href : ""),
+              problem: parsed.problem || "Architectural operational challenges in enterprise systems.",
+              recommendation: parsed.recommendation || "Implement proven cloud architecture building blocks.",
+              gotcha: parsed.gotcha || "Verify service quotas and retention policies before production rollout.",
+              takeaways: Array.isArray(parsed.takeaways) ? parsed.takeaways : [
+                "Decouple monolithic workflows into specialized cloud primitives",
+                "Automate partitioning and query optimization"
+              ]
+            };
+          }
+        } catch (e) {
+          console.warn("Could not parse article-tldr-data:", e);
+        }
+      }
+
+      // Semantic extraction fallback from DOM
+      var titleEl = document.querySelector("h1.entry-title, h1");
+      var title = titleEl ? titleEl.textContent.trim() : document.title;
+
+      var descEl = document.querySelector("p.description, meta[name='description']");
+      var desc = descEl ? (descEl.content || descEl.textContent || "").trim() : "";
+
+      var contentEl = document.querySelector(".content");
+      var firstP = contentEl ? contentEl.querySelector("p") : null;
+      var problem = (firstP ? firstP.textContent.trim() : desc) || "Operational transactional databases choke when queried for company-wide analytics.";
+
+      var headings = contentEl ? contentEl.querySelectorAll("h2") : [];
+      var takeaways = [];
+      headings.forEach(function (h) {
+        var txt = h.textContent.trim();
+        if (txt && !takeaways.includes(txt) && takeaways.length < 4) {
+          takeaways.push(txt);
+        }
+      });
+      if (takeaways.length === 0) {
+        takeaways = [
+          "Decouple operational OLTP from analytical OLAP workloads",
+          "Structure data tiers based on access frequency and retrieval fees",
+          "Automate partitioning to avoid full-table scan costs"
+        ];
+      }
+
+      return {
+        title: title,
+        url: typeof window !== "undefined" && window.location ? window.location.href : "",
+        problem: problem,
+        recommendation: "Decouple transactional and analytical systems using managed cloud building blocks.",
+        gotcha: "Verify retrieval fees and minimum retention commitments before shifting tiers.",
+        takeaways: takeaways
+      };
+    },
+
+    formatSlackMarkdown: function (data) {
+      var d = data || this.extractTldr();
+      var title = (d.title || "Cloud Architecture Summary").trim();
+      var url = d.url || "";
+      var takeaways = Array.isArray(d.takeaways) ? d.takeaways : [];
+
+      var md = "*⚡ Executive TL;DR: " + title + "*\n";
+      if (url) md += "🔗 " + url + "\n\n";
+
+      md += "*🎯 The Core Problem:*\n" + (d.problem || "").trim() + "\n\n";
+      md += "*💡 Architectural Recommendation:*\n" + (d.recommendation || "").trim() + "\n\n";
+      md += "*⚠️ Production Gotcha:*\n" + (d.gotcha || "").trim() + "\n\n";
+
+      if (takeaways.length > 0) {
+        md += "*🏷️ Key Architectural Takeaways:*\n";
+        takeaways.forEach(function (t) {
+          md += "• " + String(t).trim() + "\n";
+        });
+      }
+
+      return md.trim();
+    },
+
+    copySlackMarkdown: function (data, btnEl) {
+      var md = this.formatSlackMarkdown(data);
+      function showSuccess() {
+        if (!btnEl) return;
+        var origHtml = btnEl.innerHTML;
+        btnEl.innerHTML = '<i class="fa-solid fa-check text-emerald-500"></i> <span>Copied for Slack!</span>';
+        setTimeout(function () {
+          btnEl.innerHTML = origHtml;
+        }, 2200);
+      }
+
+      if (typeof navigator !== "undefined" && navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(md).then(showSuccess).catch(function () {
+          fallbackPulseCopy(md, showSuccess);
+        });
+      } else {
+        fallbackPulseCopy(md, showSuccess);
+      }
+    }
+  };
+
+  if (typeof window !== "undefined") {
+    window.gcloudcafeTldr = tldrEngine;
+  }
+
+  /* ── 17. UI Controllers for TL;DR Drawer & Floating Audio Bar ── */
+  function initExecutiveAudioAndTldrSystem() {
+    var tldrDrawer = document.getElementById("tldr-drawer");
+    var tldrPanel = document.getElementById("tldr-drawer-panel");
+    var tldrBackdrop = document.getElementById("tldr-drawer-backdrop");
+    var tldrTriggers = document.querySelectorAll("[data-tldr-drawer-trigger]");
+    var tldrCloses = document.querySelectorAll("[data-tldr-drawer-close]");
+    var tldrCopyBtn = document.getElementById("tldr-copy-slack-btn");
+    var tldrListenBtn = document.getElementById("tldr-listen-btn");
+
+    var audioBar = document.getElementById("article-audio-bar");
+    var audioBarTitle = document.getElementById("audio-bar-title");
+    var audioBarMode = document.getElementById("audio-bar-mode");
+    var audioBarStatus = document.getElementById("audio-bar-status");
+    var audioPlayPauseBtn = document.getElementById("audio-play-pause-btn");
+    var audioBarClose = document.getElementById("audio-bar-close");
+    var audioProgressFill = document.getElementById("audio-progress-fill");
+    var audioRateBtns = document.querySelectorAll("[data-audio-rate]");
+    var listenArticleBtns = document.querySelectorAll("[data-listen-article-btn]");
+
+    var currentTldrData = null;
+
+    function openTldrDrawer() {
+      if (!tldrDrawer) return;
+      currentTldrData = tldrEngine.extractTldr();
+
+      var titleEl = document.getElementById("tldr-drawer-title");
+      if (titleEl) titleEl.textContent = currentTldrData.title;
+
+      var probEl = document.getElementById("tldr-drawer-problem");
+      if (probEl) probEl.textContent = currentTldrData.problem;
+
+      var recEl = document.getElementById("tldr-drawer-recommendation");
+      if (recEl) recEl.textContent = currentTldrData.recommendation;
+
+      var gotchaEl = document.getElementById("tldr-drawer-gotcha");
+      if (gotchaEl) gotchaEl.textContent = currentTldrData.gotcha;
+
+      var takeawaysUl = document.getElementById("tldr-drawer-takeaways");
+      if (takeawaysUl) {
+        var html = "";
+        (currentTldrData.takeaways || []).forEach(function (t) {
+          html += '<li class="flex items-start gap-2.5 p-2 rounded-lg bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 text-xs text-slate-700 dark:text-slate-300">' +
+            '<i class="fa-solid fa-circle-check text-emerald-500 text-xs mt-0.5 shrink-0"></i>' +
+            '<span>' + escapeHtml(t) + '</span>' +
+          '</li>';
+        });
+        takeawaysUl.innerHTML = html;
+      }
+
+      tldrDrawer.classList.remove("pointer-events-none", "opacity-0");
+      tldrDrawer.classList.add("opacity-100");
+      if (tldrPanel) tldrPanel.classList.remove("translate-x-full");
+      document.body.classList.add("overflow-hidden");
+    }
+
+    function closeTldrDrawer() {
+      if (!tldrDrawer) return;
+      if (tldrPanel) tldrPanel.classList.add("translate-x-full");
+      tldrDrawer.classList.remove("opacity-100");
+      tldrDrawer.classList.add("opacity-0", "pointer-events-none");
+      document.body.classList.remove("overflow-hidden");
+    }
+
+    tldrTriggers.forEach(function (btn) {
+      btn.addEventListener("click", function (e) {
+        e.preventDefault();
+        openTldrDrawer();
+      });
+    });
+
+    tldrCloses.forEach(function (btn) {
+      btn.addEventListener("click", function (e) {
+        e.preventDefault();
+        closeTldrDrawer();
+      });
+    });
+
+    if (tldrBackdrop) {
+      tldrBackdrop.addEventListener("click", closeTldrDrawer);
+    }
+
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && tldrDrawer && !tldrDrawer.classList.contains("pointer-events-none")) {
+        closeTldrDrawer();
+      }
+    });
+
+    if (tldrCopyBtn) {
+      tldrCopyBtn.addEventListener("click", function () {
+        tldrEngine.copySlackMarkdown(currentTldrData, tldrCopyBtn);
+      });
+    }
+
+    function startAudioNarration(title, text, modeLabel) {
+      if (!audioBar) return;
+      audioBar.classList.remove("hidden");
+      if (audioBarTitle) audioBarTitle.textContent = title || "Article Narration";
+      if (audioBarMode) audioBarMode.textContent = modeLabel ? "• " + modeLabel : "• Audio Narration";
+      if (audioBarStatus) audioBarStatus.textContent = "Playing";
+      if (audioPlayPauseBtn) audioPlayPauseBtn.innerHTML = '<i class="fa-solid fa-pause"></i>';
+      if (audioProgressFill) audioProgressFill.style.width = "0%";
+
+      audioReaderEngine.play(text, {
+        onStart: function () {
+          if (audioBarStatus) audioBarStatus.textContent = "Playing";
+          if (audioPlayPauseBtn) audioPlayPauseBtn.innerHTML = '<i class="fa-solid fa-pause"></i>';
+        },
+        onPause: function () {
+          if (audioBarStatus) audioBarStatus.textContent = "Paused";
+          if (audioPlayPauseBtn) audioPlayPauseBtn.innerHTML = '<i class="fa-solid fa-play"></i>';
+        },
+        onResume: function () {
+          if (audioBarStatus) audioBarStatus.textContent = "Playing";
+          if (audioPlayPauseBtn) audioPlayPauseBtn.innerHTML = '<i class="fa-solid fa-pause"></i>';
+        },
+        onEnd: function () {
+          if (audioBarStatus) audioBarStatus.textContent = "Finished";
+          if (audioPlayPauseBtn) audioPlayPauseBtn.innerHTML = '<i class="fa-solid fa-rotate-left"></i>';
+          if (audioProgressFill) audioProgressFill.style.width = "100%";
+        }
+      });
+    }
+
+    listenArticleBtns.forEach(function (btn) {
+      btn.addEventListener("click", function (e) {
+        e.preventDefault();
+        var contentEl = document.querySelector(".content");
+        var text = audioReaderEngine.extractCleanText(contentEl);
+        var title = (document.querySelector("h1") ? document.querySelector("h1").textContent : document.title).trim();
+        startAudioNarration(title, text, "Deep Dive");
+      });
+    });
+
+    if (tldrListenBtn) {
+      tldrListenBtn.addEventListener("click", function (e) {
+        e.preventDefault();
+        closeTldrDrawer();
+        var data = currentTldrData || tldrEngine.extractTldr();
+        var summaryText = data.title + ". " +
+          "The Core Problem: " + data.problem + ". " +
+          "Architectural Recommendation: " + data.recommendation + ". " +
+          "Production Gotchas: " + data.gotcha + ". " +
+          "Key Takeaways: " + (data.takeaways || []).join(". ");
+        startAudioNarration(data.title, summaryText, "Executive TL;DR");
+      });
+    }
+
+    if (audioPlayPauseBtn) {
+      audioPlayPauseBtn.addEventListener("click", function () {
+        var state = audioReaderEngine.getState();
+        if (state.isPaused) {
+          audioReaderEngine.resume();
+        } else if (state.isPlaying) {
+          audioReaderEngine.pause();
+        } else {
+          var contentEl = document.querySelector(".content");
+          var text = audioReaderEngine.extractCleanText(contentEl);
+          var title = (document.querySelector("h1") ? document.querySelector("h1").textContent : document.title).trim();
+          startAudioNarration(title, text, "Deep Dive");
+        }
+      });
+    }
+
+    if (audioBarClose) {
+      audioBarClose.addEventListener("click", function () {
+        audioReaderEngine.stop();
+        if (audioBar) audioBar.classList.add("hidden");
+      });
+    }
+
+    audioRateBtns.forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var rate = parseFloat(btn.getAttribute("data-audio-rate")) || 1.0;
+        audioReaderEngine.setRate(rate);
+
+        audioRateBtns.forEach(function (b) {
+          b.classList.remove("bg-white", "dark:bg-slate-700", "text-slate-900", "dark:text-white", "shadow-2xs");
+          b.classList.add("text-slate-500", "dark:text-slate-400");
+        });
+        btn.classList.add("bg-white", "dark:bg-slate-700", "text-slate-900", "dark:text-white", "shadow-2xs");
+        btn.classList.remove("text-slate-500", "dark:text-slate-400");
+      });
+    });
+
+    audioReaderEngine.onProgress(function (pct) {
+      if (audioProgressFill) {
+        audioProgressFill.style.width = pct + "%";
+      }
+    });
+  }
+
   function initApp() {
+    initExecutiveAudioAndTldrSystem();
     initCloudDecisionCalculators();
     initBookmarksSystem();
     initWeeklyOpinionPollSystem();
