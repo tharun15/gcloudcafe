@@ -229,4 +229,139 @@ describe('Cloud Pulse Multi-Filter & Real-Time Search Engine', () => {
       expect(qsFull).toContain('sort=recent');
     });
   });
+
+  describe('7. Interactive DOM Filtering & UI Controls', () => {
+    beforeEach(() => {
+      if (typeof window !== 'undefined' && window.history) {
+        window.history.replaceState(null, '', '/pulse/');
+      }
+      document.body.innerHTML = `
+        <div id="cloud-pulse-section">
+          <input id="pulse-search-input" type="text" />
+          <button id="pulse-search-clear" class="hidden"></button>
+          <span id="pulse-result-count"></span>
+          <div id="pulse-sort-controls">
+            <button data-pulse-sort="trending" class="pulse-sort-btn font-bold"></button>
+            <button data-pulse-sort="recent" class="pulse-sort-btn"></button>
+          </div>
+          <div id="pulse-provider-chips">
+            <button data-pulse-provider="all" class="pulse-filter-chip is-active"></button>
+            <button data-pulse-provider="gcp" class="pulse-filter-chip"></button>
+            <button data-pulse-provider="aws" class="pulse-filter-chip"></button>
+            <button data-pulse-provider="azure" class="pulse-filter-chip"></button>
+          </div>
+          <div id="pulse-domain-chips">
+            <button data-pulse-domain="all" class="pulse-filter-chip is-active"></button>
+            <button data-pulse-domain="kubernetes" class="pulse-filter-chip"></button>
+            <button data-pulse-domain="security" class="pulse-filter-chip"></button>
+          </div>
+          <div id="pulse-empty-state" class="hidden">
+            <button id="pulse-reset-filters-btn"></button>
+          </div>
+          <div data-cloud-pulse-feed></div>
+          <button data-pulse-filter="security" class="pulse-topic-pill"></button>
+        </div>
+      `;
+
+      global.fetch = () => Promise.resolve({
+        json: () => Promise.resolve(samplePulses)
+      });
+
+      const scriptPath = path.join(rootDir, 'assets/js/blog-enhancements.js');
+      const scriptContent = fs.readFileSync(scriptPath, 'utf8');
+      const fn = new Function(scriptContent);
+      fn();
+    });
+
+    it('renders initial cohort and updates result counter', async () => {
+      await new Promise(r => setTimeout(r, 60));
+      const cards = document.querySelectorAll('.cloud-pulse-card');
+      expect(cards.length).toBe(5);
+      const counter = document.getElementById('pulse-result-count');
+      expect(counter.textContent).toContain('5 updates');
+    });
+
+    it('filters cards by provider chip click and updates active styling', async () => {
+      await new Promise(r => setTimeout(r, 60));
+      const gcpChip = document.querySelector('[data-pulse-provider="gcp"]');
+      const allChip = document.querySelector('[data-pulse-provider="all"]');
+
+      gcpChip.click();
+      await new Promise(r => setTimeout(r, 30));
+
+      expect(gcpChip.classList.contains('is-active')).toBe(true);
+      expect(allChip.classList.contains('is-active')).toBe(false);
+
+      const cards = document.querySelectorAll('.cloud-pulse-card');
+      expect(cards.length).toBe(1);
+      expect(cards[0].textContent).toContain('BigQuery');
+    });
+
+    it('filters cards by search input and displays clear button', async () => {
+      await new Promise(r => setTimeout(r, 60));
+      const searchInput = document.getElementById('pulse-search-input');
+      const clearBtn = document.getElementById('pulse-search-clear');
+
+      searchInput.value = 'Karpenter';
+      searchInput.dispatchEvent(new Event('input'));
+      await new Promise(r => setTimeout(r, 120));
+
+      expect(clearBtn.classList.contains('hidden')).toBe(false);
+      const cards = document.querySelectorAll('.cloud-pulse-card');
+      expect(cards.length).toBe(1);
+      expect(cards[0].textContent).toContain('Amazon EKS');
+
+      clearBtn.click();
+      await new Promise(r => setTimeout(r, 60));
+      expect(searchInput.value).toBe('');
+      expect(clearBtn.classList.contains('hidden')).toBe(true);
+      expect(document.querySelectorAll('.cloud-pulse-card').length).toBe(5);
+    });
+
+    it('displays empty state and restores all pulses on reset button click', async () => {
+      await new Promise(r => setTimeout(r, 60));
+      const searchInput = document.getElementById('pulse-search-input');
+      searchInput.value = 'NonexistentKeywordXYZ';
+      searchInput.dispatchEvent(new Event('input'));
+      await new Promise(r => setTimeout(r, 120));
+
+      const emptyState = document.getElementById('pulse-empty-state');
+      expect(emptyState.classList.contains('hidden')).toBe(false);
+      expect(document.querySelectorAll('.cloud-pulse-card').length).toBe(0);
+
+      const resetBtn = document.getElementById('pulse-reset-filters-btn');
+      resetBtn.click();
+      await new Promise(r => setTimeout(r, 60));
+
+      expect(emptyState.classList.contains('hidden')).toBe(true);
+      expect(document.querySelectorAll('.cloud-pulse-card').length).toBe(5);
+    });
+
+    it('switches sort order between trending and recent', async () => {
+      await new Promise(r => setTimeout(r, 60));
+      const recentBtn = document.querySelector('[data-pulse-sort="recent"]');
+      const trendingBtn = document.querySelector('[data-pulse-sort="trending"]');
+
+      recentBtn.click();
+      await new Promise(r => setTimeout(r, 30));
+
+      expect(recentBtn.classList.contains('font-bold')).toBe(true);
+      const cards = document.querySelectorAll('.cloud-pulse-card');
+      expect(cards[0].textContent).toContain('Azure OpenAI');
+      expect(cards[0].textContent).toContain('LATEST');
+    });
+
+    it('filters via sidebar topic pill click and updates chip state', async () => {
+      await new Promise(r => setTimeout(r, 60));
+      const pill = document.querySelector('.pulse-topic-pill[data-pulse-filter="security"]');
+      pill.click();
+      await new Promise(r => setTimeout(r, 30));
+
+      const secChip = document.querySelector('[data-pulse-domain="security"]');
+      expect(secChip.classList.contains('is-active')).toBe(true);
+
+      const cards = document.querySelectorAll('.cloud-pulse-card');
+      expect(cards.length).toBe(2);
+    });
+  });
 });

@@ -61,41 +61,95 @@
                 </button>
               </div>
 
-              <!-- Live Counter & Shortcut badge -->
-              <div class="flex items-center justify-between sm:justify-end gap-3 text-xs font-mono text-slate-500 dark:text-slate-400">
-                <span id="pulse-result-count" class="font-semibold text-slate-700 dark:text-slate-300">
-                  Showing 6 updates
-                </span>
-                <span class="hidden md:inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400">
-                  <kbd>Ctrl</kbd> + <kbd>/</kbd>
+              <!-- Shortcut badge -->
+              <div class="hidden sm:flex items-center justify-end text-xs font-mono text-slate-400 dark:text-slate-500">
+                <span class="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700">
+                  <kbd>Ctrl</kbd> + <kbd>/</kbd> to search
                 </span>
               </div>
             </div>
 
-            <!-- Topic Filter Bar -->
-            <div class="flex items-center gap-2 overflow-x-auto no-scrollbar py-1" id="pulse-filter-chips">
-              <button data-pulse-filter="all" class="pulse-filter-chip is-active">
-                All Updates
+            <!-- Sort & Counter Row -->
+            <div class="flex items-center justify-between gap-3 text-xs font-mono pt-1">
+              <span id="pulse-result-count" class="font-semibold text-slate-700 dark:text-slate-300">
+                Showing all updates
+              </span>
+
+              <div class="flex items-center gap-1 bg-slate-100 dark:bg-slate-800/80 p-0.5 rounded-xl border border-slate-200/80 dark:border-slate-700/80">
+                <button type="button" data-pulse-sort="trending" class="pulse-sort-btn px-2.5 py-1 rounded-lg text-xs font-semibold cursor-pointer transition-all bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-2xs font-bold" title="Sort by community votes">
+                  <i class="fa-solid fa-fire text-amber-500 text-[10px]"></i> Trending
+                </button>
+                <button type="button" data-pulse-sort="recent" class="pulse-sort-btn px-2.5 py-1 rounded-lg text-xs font-semibold cursor-pointer transition-all text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white" title="Sort by latest published date">
+                  <i class="fa-regular fa-clock text-[10px]"></i> Recent
+                </button>
+              </div>
+            </div>
+
+            <!-- Provider Filter Bar -->
+            <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5" id="pulse-provider-chips">
+              <span class="text-[11px] font-mono uppercase tracking-wider text-slate-400 dark:text-slate-500 font-bold shrink-0 mr-1">Provider:</span>
+              <button data-pulse-provider="all" class="pulse-filter-chip is-active">
+                All
               </button>
-              <button data-pulse-filter="kubernetes" class="pulse-filter-chip">
-                <i class="fa-brands fa-docker text-[11px]"></i> Kubernetes
+              <button data-pulse-provider="gcp" class="pulse-filter-chip">
+                <i class="fa-brands fa-google text-[10px]"></i> GCP
               </button>
-              <button data-pulse-filter="gcp" class="pulse-filter-chip">
-                <i class="fa-brands fa-google text-[11px]"></i> Google Cloud
+              <button data-pulse-provider="aws" class="pulse-filter-chip">
+                <i class="fa-brands fa-aws text-[10px]"></i> AWS
               </button>
-              <button data-pulse-filter="aws" class="pulse-filter-chip">
-                <i class="fa-brands fa-aws text-[11px]"></i> AWS
+              <button data-pulse-provider="azure" class="pulse-filter-chip">
+                <i class="fa-brands fa-microsoft text-[10px]"></i> Azure
               </button>
-              <button data-pulse-filter="azure" class="pulse-filter-chip">
-                <i class="fa-brands fa-microsoft text-[11px]"></i> Azure
+              <button data-pulse-provider="openshift" class="pulse-filter-chip">
+                <i class="fa-brands fa-redhat text-[10px]"></i> Red Hat
               </button>
-              <button data-pulse-filter="openshift" class="pulse-filter-chip">
-                <i class="fa-brands fa-redhat text-[11px]"></i> OpenShift
+            </div>
+
+            <!-- Domain / Topic Filter Bar -->
+            <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5" id="pulse-domain-chips">
+              <span class="text-[11px] font-mono uppercase tracking-wider text-slate-400 dark:text-slate-500 font-bold shrink-0 mr-1">Domain:</span>
+              <button data-pulse-domain="all" class="pulse-filter-chip is-active">
+                All Topics
+              </button>
+              <button data-pulse-domain="kubernetes" class="pulse-filter-chip">
+                <i class="fa-brands fa-docker text-[10px]"></i> Kubernetes
+              </button>
+              <button data-pulse-domain="devops" class="pulse-filter-chip">
+                <i class="fa-solid fa-code-branch text-[10px]"></i> DevOps
+              </button>
+              <button data-pulse-domain="security" class="pulse-filter-chip">
+                <i class="fa-solid fa-shield-halved text-[10px]"></i> Security
+              </button>
+              <button data-pulse-domain="ai" class="pulse-filter-chip">
+                <i class="fa-solid fa-brain text-[10px]"></i> AI &amp; LLMs
+              </button>
+              <button data-pulse-domain="databases" class="pulse-filter-chip">
+                <i class="fa-solid fa-database text-[10px]"></i> Databases
               </button>
             </div>
           </div>
 
           <!-- Dynamic Live Cards Grid (with Shimmer Skeleton Loading) -->
+          <!-- Empty State when filters yield 0 results -->
+          <div id="pulse-empty-state" class="hidden py-16 px-4 text-center flex-col items-center justify-center bg-slate-50/50 dark:bg-slate-900/30 rounded-2xl border border-dashed border-slate-200 dark:border-slate-800 mb-8">
+            <div class="w-12 h-12 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400 dark:text-slate-500 mb-3 mx-auto">
+              <i class="fa-solid fa-filter-circle-xmark text-xl"></i>
+            </div>
+            <h4 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white mb-1">
+              No matching cloud updates found
+            </h4>
+            <p class="text-xs text-slate-500 dark:text-slate-400 max-w-sm mb-4 mx-auto leading-relaxed">
+              We couldn't find any approved micro-pulses matching your current search and filter combination.
+            </p>
+            <button
+              type="button"
+              id="pulse-reset-filters-btn"
+              class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-red-500 transition-all cursor-pointer shadow-xs mx-auto">
+              <i class="fa-solid fa-arrow-rotate-left text-[10px]"></i>
+              <span>Reset All Filters</span>
+            </button>
+          </div>
+
           <div data-cloud-pulse-feed class="grid grid-cols-1 md:grid-cols-2 gap-6">
             {{ range seq 4 }}
             <div class="pulse-skeleton-card bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-slate-800 rounded-xl p-6 shadow-sm flex flex-col justify-between">
