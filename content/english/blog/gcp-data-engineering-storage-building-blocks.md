@@ -9,6 +9,16 @@ tags: ["Data Engineering", "GCP", "BigQuery", "Cloud Storage", "SQL", "Architect
 author: tharun-vempati
 featured: true
 draft: false
+tldr:
+  title: "Data Engineering on GCP: Storage & Access Primitives"
+  problem: "Running analytics directly on operational transactional databases locks active customer transactions, exhausts connection pools, and risks production outages."
+  recommendation: "Decouple transactional OLTP from analytical OLAP by staging raw immutable events in Cloud Storage, ingesting into partitioned & clustered BigQuery, and serving tenant analytics via Materialized & Authorized Views."
+  gotcha: "Never query unpartitioned BigQuery tables or move data to Coldline/Archive before understanding the 90/365-day minimum storage retention penalty and retrieval fees."
+  takeaways:
+    - "Cloud Storage Standard ($0.020/GB) is optimal for high-frequency raw ETL ingest within the first 30 days"
+    - "Partition BigQuery tables by ingestion date and cluster by high-cardinality query keys (e.g. airline, route)"
+    - "Use Materialized Views for sub-second aggregations without manual batch pipeline orchestration"
+    - "Isolate sensitive PII using Authorized Views instead of granting direct dataset read access"
 series: "Data Engineering on Google Cloud"
 series_order: 1
 ---

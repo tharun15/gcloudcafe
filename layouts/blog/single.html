@@ -77,6 +77,17 @@
           </ul>
           
           <div class="flex items-center gap-2 flex-wrap">
+            <!-- Executive TL;DR Quick-Scan Button -->
+            <button
+              type="button"
+              data-tldr-drawer-trigger
+              class="inline-flex items-center gap-1.5 rounded-xl border border-amber-500/40 bg-amber-500/10 hover:bg-amber-500/20 text-amber-700 dark:text-amber-400 px-3 py-1.5 text-[11px] font-bold shadow-2xs transition-all hover:scale-105 active:scale-95 whitespace-nowrap cursor-pointer"
+              aria-label="Open 60-second executive summary"
+              title="60-second executive summary">
+              <i class="fa-solid fa-bolt text-amber-500 text-xs"></i>
+              <span>Executive TL;DR</span>
+            </button>
+
             <!-- Bookmark Button -->
             <button
               type="button"
@@ -129,6 +140,9 @@
       <div class="row gx-0 lg:gx-5 min-w-0 max-w-full">
         <!-- Main Article Content -->
         <article class="single-post lg:col-8 min-w-0 max-w-full overflow-hidden">
+          {{ with .Params.tldr }}
+            <script type="application/json" id="article-tldr-data">{{ . | jsonify | safeJS }}</script>
+          {{ end }}
           <!-- Inline Table of Contents for Mobile -->
           <div class="block lg:hidden mb-8">
             {{ partial "toc.html" (dict "Class" "blog" "Collapsed" false "TableOfContents" .TableOfContents ) }}
