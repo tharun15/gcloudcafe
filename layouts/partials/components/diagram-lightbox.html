@@ -1,7 +1,7 @@
 <!-- Interactive Architecture Diagram Lightbox Modal -->
 <div
   id="diagram-lightbox"
-  class="fixed inset-0 z-[100] opacity-0 pointer-events-none transition-opacity duration-200 select-none"
+  class="hidden fixed inset-0 z-[100] opacity-0 pointer-events-none transition-opacity duration-200 select-none"
   aria-modal="true"
   role="dialog"
   aria-hidden="true"
@@ -13,9 +13,9 @@
     aria-label="Close Diagram Lightbox"></div>
 
   <!-- Modal Wrapper -->
-  <div class="relative z-10 flex flex-col h-full w-full pointer-events-none">
+  <div class="relative z-10 flex flex-col h-full w-full">
     <!-- Lightbox Header / Controls Bar -->
-    <header class="pointer-events-auto flex items-center justify-between px-4 sm:px-6 py-3.5 border-b border-slate-800/80 bg-slate-900/80 backdrop-blur-sm shadow-md">
+    <header class="flex items-center justify-between px-4 sm:px-6 py-3.5 border-b border-slate-800/80 bg-slate-900/80 backdrop-blur-sm shadow-md">
       <div class="flex items-center gap-2.5 min-w-0 pr-4">
         <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 shrink-0">
           <i class="fa-solid fa-diagram-project text-[11px]"></i>
@@ -72,7 +72,7 @@
     <!-- Lightbox Main Canvas / Pan Viewport -->
     <div
       id="diagram-lightbox-viewport"
-      class="flex-1 overflow-hidden relative flex items-center justify-center p-2 sm:p-6 cursor-grab active:cursor-grabbing pointer-events-auto">
+      class="flex-1 overflow-hidden relative flex items-center justify-center p-2 sm:p-6 cursor-grab active:cursor-grabbing">
       <div
         id="diagram-lightbox-canvas"
         class="transition-transform duration-100 ease-out origin-center flex items-center justify-center select-none max-w-full max-h-full">
@@ -83,7 +83,7 @@
     </div>
 
     <!-- Lightbox Footer / Hint -->
-    <footer class="pointer-events-auto px-4 sm:px-6 py-2 text-center text-[11px] text-slate-400 border-t border-slate-800/60 bg-slate-900/60 backdrop-blur-sm">
+    <footer class="px-4 sm:px-6 py-2 text-center text-[11px] text-slate-400 border-t border-slate-800/60 bg-slate-900/60 backdrop-blur-sm">
       Scroll or use <kbd class="px-1.5 py-0.5 bg-slate-800 rounded text-slate-300 font-mono text-[10px] border border-slate-700">+</kbd> / <kbd class="px-1.5 py-0.5 bg-slate-800 rounded text-slate-300 font-mono text-[10px] border border-slate-700">-</kbd> to zoom, click & drag to pan, or <kbd class="px-1.5 py-0.5 bg-slate-800 rounded text-slate-300 font-mono text-[10px] border border-slate-700">ESC</kbd> to close.
     </footer>
   </div>

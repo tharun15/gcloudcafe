@@ -9,7 +9,7 @@ describe('Interactive Architecture Diagram Lightbox Engine', () => {
   const setupDOM = () => {
     document.body.innerHTML = `
       <!-- Diagram Lightbox Modal -->
-      <div id="diagram-lightbox" class="fixed inset-0 z-[100] opacity-0 pointer-events-none transition-opacity duration-200" aria-modal="true" role="dialog" aria-hidden="true">
+      <div id="diagram-lightbox" class="hidden fixed inset-0 z-[100] opacity-0 pointer-events-none transition-opacity duration-200" aria-modal="true" role="dialog" aria-hidden="true">
         <div id="diagram-lightbox-backdrop" class="absolute inset-0 bg-slate-950/85 backdrop-blur-md"></div>
         <div class="relative z-10 flex flex-col h-full w-full">
           <!-- Lightbox Header -->
@@ -57,6 +57,11 @@ describe('Interactive Architecture Diagram Lightbox Engine', () => {
           <figcaption>Figure 1: Cloud Storage tiered lifecycle routing</figcaption>
         </figure>
 
+        <!-- Linked image: should NOT be intercepted by lightbox -->
+        <a href="/blog/other-post/" id="test-linked-wrapper">
+          <img id="test-linked-img" src="/images/thumbnail.png" alt="Linked post thumbnail" />
+        </a>
+
         <div class="mermaid" id="test-mermaid-container">
           <svg id="test-mermaid-svg" viewBox="0 0 800 400" aria-label="Event-Driven Microservices Flow">
             <g><text>PubSub ➔ Cloud Run ➔ BigQuery</text></g>
@@ -90,16 +95,30 @@ describe('Interactive Architecture Diagram Lightbox Engine', () => {
       expect(typeof window.gcloudcafeLightbox.getScale).toBe('function');
     });
 
-    it('attaches click listeners to article images and SVGs', () => {
+    it('attaches click listeners to article diagrams and unhides modal on open', () => {
       const img = document.getElementById('test-arch-img');
       const lightbox = document.getElementById('diagram-lightbox');
       const title = document.getElementById('diagram-lightbox-title');
 
+      expect(lightbox.classList.contains('hidden')).toBe(true);
+
       img.click();
 
+      expect(lightbox.classList.contains('hidden')).toBe(false);
       expect(lightbox.classList.contains('pointer-events-none')).toBe(false);
       expect(lightbox.classList.contains('opacity-100')).toBe(true);
       expect(title.textContent).toContain('Cloud Storage');
+    });
+
+    it('does NOT attach lightbox listeners to linked images', () => {
+      const linkedImg = document.getElementById('test-linked-img');
+      const lightbox = document.getElementById('diagram-lightbox');
+
+      linkedImg.click();
+
+      // Should remain hidden and inert
+      expect(lightbox.classList.contains('hidden')).toBe(true);
+      expect(lightbox.classList.contains('pointer-events-none')).toBe(true);
     });
 
     it('opens Mermaid diagrams into lightbox on click', () => {
@@ -109,6 +128,7 @@ describe('Interactive Architecture Diagram Lightbox Engine', () => {
 
       svg.dispatchEvent(new MouseEvent('click', { bubbles: true }));
 
+      expect(lightbox.classList.contains('hidden')).toBe(false);
       expect(lightbox.classList.contains('pointer-events-none')).toBe(false);
       expect(content.querySelector('svg')).not.toBeNull();
     });
@@ -197,28 +217,30 @@ describe('Interactive Architecture Diagram Lightbox Engine', () => {
   });
 
   describe('4. Dismissal & Keyboard Controls', () => {
-    it('closes on close button click', () => {
+    it('closes on close button click and restores hidden state', () => {
       const img = document.getElementById('test-arch-img');
       const lightbox = document.getElementById('diagram-lightbox');
       const closeBtn = document.getElementById('lightbox-close-btn');
 
       img.click();
-      expect(lightbox.classList.contains('pointer-events-none')).toBe(false);
+      expect(lightbox.classList.contains('hidden')).toBe(false);
 
       closeBtn.click();
+      expect(lightbox.classList.contains('hidden')).toBe(true);
       expect(lightbox.classList.contains('pointer-events-none')).toBe(true);
       expect(window.gcloudcafeLightbox.getScale()).toBe(1.0);
     });
 
-    it('closes on backdrop click', () => {
+    it('closes on backdrop click and restores hidden state', () => {
       const img = document.getElementById('test-arch-img');
       const lightbox = document.getElementById('diagram-lightbox');
       const backdrop = document.getElementById('diagram-lightbox-backdrop');
 
       img.click();
-      expect(lightbox.classList.contains('pointer-events-none')).toBe(false);
+      expect(lightbox.classList.contains('hidden')).toBe(false);
 
       backdrop.click();
+      expect(lightbox.classList.contains('hidden')).toBe(true);
       expect(lightbox.classList.contains('pointer-events-none')).toBe(true);
     });
 
@@ -237,7 +259,17 @@ describe('Interactive Architecture Diagram Lightbox Engine', () => {
 
       // Close via keyboard 'Escape'
       window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
-      expect(lightbox.classList.contains('pointer-events-none')).toBe(true);
+      expect(lightbox.classList.contains('hidden')).toBe(true);
+    });
+
+    it('does NOT intercept wheel events when closed', () => {
+      const viewport = document.getElementById('diagram-lightbox-viewport');
+      const wheelEvt = new MouseEvent('wheel', { bubbles: true, cancelable: true });
+      let prevented = false;
+      wheelEvt.preventDefault = () => { prevented = true; };
+
+      viewport.dispatchEvent(wheelEvt);
+      expect(prevented).toBe(false);
     });
   });
 });

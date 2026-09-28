@@ -10214,8 +10214,8 @@ document.addEventListener('DOMContentLoaded', initDevTerminalBlocks);
         }
       }
 
-      // Show modal
-      els.modal.classList.remove('pointer-events-none', 'opacity-0');
+      // Show modal cleanly
+      els.modal.classList.remove('hidden', 'pointer-events-none', 'opacity-0');
       els.modal.classList.add('opacity-100');
       els.modal.setAttribute('aria-hidden', 'false');
       if (document.body) {
@@ -10230,7 +10230,8 @@ document.addEventListener('DOMContentLoaded', initDevTerminalBlocks);
       isOpen = false;
       resetZoom();
 
-      els.modal.classList.add('pointer-events-none', 'opacity-0');
+      // Hide modal completely so it never intercepts pointer/wheel events
+      els.modal.classList.add('hidden', 'pointer-events-none', 'opacity-0');
       els.modal.classList.remove('opacity-100');
       els.modal.setAttribute('aria-hidden', 'true');
       if (document.body) {
@@ -10252,7 +10253,7 @@ document.addEventListener('DOMContentLoaded', initDevTerminalBlocks);
       // Pan & drag handlers
       if (els.viewport) {
         els.viewport.addEventListener('mousedown', function (e) {
-          if (scale <= 1.0) return;
+          if (!isOpen || scale <= 1.0) return;
           isPanning = true;
           startX = e.clientX;
           startY = e.clientY;
@@ -10263,7 +10264,7 @@ document.addEventListener('DOMContentLoaded', initDevTerminalBlocks);
         });
 
         window.addEventListener('mousemove', function (e) {
-          if (!isPanning) return;
+          if (!isOpen || !isPanning) return;
           var dx = e.clientX - startX;
           var dy = e.clientY - startY;
           panX = initialPanX + dx;
@@ -10280,7 +10281,7 @@ document.addEventListener('DOMContentLoaded', initDevTerminalBlocks);
 
         // Double click to toggle zoom
         els.viewport.addEventListener('dblclick', function (e) {
-          if (e.target.closest('button')) return;
+          if (!isOpen || e.target.closest('button')) return;
           if (scale === 1.0) {
             scale = 2.0;
           } else {
@@ -10291,8 +10292,9 @@ document.addEventListener('DOMContentLoaded', initDevTerminalBlocks);
           updateTransform();
         });
 
-        // Mouse wheel zoom
+        // Mouse wheel zoom - ONLY when lightbox is open!
         els.viewport.addEventListener('wheel', function (e) {
+          if (!isOpen) return;
           e.preventDefault();
           if (e.deltaY < 0) {
             zoomIn();
@@ -10316,12 +10318,17 @@ document.addEventListener('DOMContentLoaded', initDevTerminalBlocks);
         }
       });
 
-      // Attach click triggers to diagrams
+      // Attach click triggers strictly to article diagrams (not card thumbnails, not links!)
       var targets = document.querySelectorAll(
-        '.blog-article-content img, .content img, .mermaid svg, .mermaid, .architecture-diagram, figure img'
+        '.blog-article-content img, .mermaid svg, .mermaid, .architecture-diagram'
       );
 
       targets.forEach(function (el) {
+        // Never intercept links (e.g. linked images or card thumbnails)
+        if (el.closest('a')) {
+          return;
+        }
+
         // Skip small avatars or icons
         if (el.tagName.toLowerCase() === 'img') {
           var w = el.getAttribute('width');
