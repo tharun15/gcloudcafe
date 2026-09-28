@@ -43,6 +43,9 @@
 
     {{ partial "search-modal.html" (dict "Context" . ) }}
 
+    <!-- Saved Articles Reading Drawer -->
+    {{ partial "components/bookmarks-drawer.html" . }}
+
     <main id="main-content" tabindex="-1">
       {{ block "main" . }}{{ end }}
     </main>

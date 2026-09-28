@@ -44,15 +44,29 @@
 
     <!-- Card Content -->
     <div class="p-5 sm:p-6 pb-4">
-      <!-- Category Pill + Reading Time in mono -->
+      <!-- Category Pill + Reading Time in mono + Bookmark Action -->
       <div class="flex items-center justify-between gap-2 mb-3">
         <a href="{{ `categories/` | relLangURL }}{{ $firstCat | urlize | lower }}/"
            class="inline-flex items-center px-2.5 py-0.5 rounded text-xs font-mono font-bold uppercase tracking-wider {{ $badgeBg }} no-underline hover:opacity-90 transition-opacity">
           {{ $firstCat | humanize }}
         </a>
-        <span class="text-xs font-mono text-slate-500 dark:text-slate-400">
-          {{ $page.ReadingTime }} min read
-        </span>
+        <div class="flex items-center gap-2">
+          <span class="text-xs font-mono text-slate-500 dark:text-slate-400">
+            {{ $page.ReadingTime }} min read
+          </span>
+          <button
+            type="button"
+            data-bookmark-btn
+            data-article-url="{{ $page.RelPermalink }}"
+            data-article-title="{{ $page.Title }}"
+            data-article-category="{{ $firstCat }}"
+            data-article-readtime="{{ $page.ReadingTime }} min read"
+            class="w-7 h-7 rounded-lg flex items-center justify-center text-slate-400 hover:text-red-500 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+            aria-label="Save {{ $page.Title }} for later"
+            title="Save for later">
+            <i class="fa-regular fa-bookmark text-xs"></i>
+          </button>
+        </div>
       </div>
 
       <!-- Headline -->
