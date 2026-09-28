@@ -1888,20 +1888,41 @@ table {
   will-change: transform;
 }
 
-#diagram-lightbox-content {
-  img {
-    max-width: 88vw;
-    max-height: 78vh;
-    object-fit: contain;
-    border-radius: 0.5rem;
-    box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5);
-  }
+.diagram-lightbox-card {
+  position: relative;
+  background-color: #ffffff;
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  border-radius: 1.25rem;
+  padding: 1.5rem 2rem;
+  box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-width: 1150px;
+  width: 92vw;
+  max-height: 80vh;
+  margin: auto;
+  box-sizing: border-box;
 
   svg {
-    max-width: 88vw;
-    max-height: 78vh;
-    width: auto;
-    height: auto;
-    filter: drop-shadow(0 20px 30px rgba(0, 0, 0, 0.4));
+    width: 100% !important;
+    max-width: 960px !important;
+    height: auto !important;
+    display: block;
+    margin: 0 auto;
   }
+
+  img {
+    max-width: 100%;
+    max-height: 72vh;
+    object-fit: contain;
+    border-radius: 0.75rem;
+    display: block;
+  }
+}
+
+:root.dark .diagram-lightbox-card,
+.dark .diagram-lightbox-card {
+  background-color: #0b1120;
+  border-color: rgba(51, 65, 85, 0.8);
 }

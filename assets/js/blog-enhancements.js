@@ -10171,6 +10171,39 @@ document.addEventListener('DOMContentLoaded', initDevTerminalBlocks);
       updateTransform();
     }
 
+    function getDiagramTitle(target) {
+      if (target.alt || target.getAttribute('alt')) {
+        return target.alt || target.getAttribute('alt');
+      }
+      if (target.getAttribute('aria-label')) {
+        return target.getAttribute('aria-label');
+      }
+      var figure = target.closest('figure');
+      if (figure) {
+        var figcaption = figure.querySelector('figcaption');
+        if (figcaption) return figcaption.textContent.trim();
+      }
+      var current = target.classList.contains('mermaid') ? target : (target.closest('.mermaid') || target);
+      var prev = current.previousElementSibling;
+      while (prev) {
+        if (/^H[1-6]$/i.test(prev.tagName)) {
+          return prev.textContent.trim();
+        }
+        prev = prev.previousElementSibling;
+      }
+      if (current.parentElement) {
+        var pPrev = current.parentElement.previousElementSibling;
+        while (pPrev) {
+          if (/^H[1-6]$/i.test(pPrev.tagName)) {
+            return pPrev.textContent.trim();
+          }
+          pPrev = pPrev.previousElementSibling;
+        }
+      }
+      var h1 = document.querySelector('h1.entry-title, h1');
+      return h1 ? h1.textContent.trim() : 'Cloud Architecture Flow';
+    }
+
     function open(target) {
       var els = getElements();
       if (!els.modal || !target) return;
@@ -10178,40 +10211,30 @@ document.addEventListener('DOMContentLoaded', initDevTerminalBlocks);
       isOpen = true;
       resetZoom();
 
-      // Extract caption / title
-      var titleText = '';
-      if (target.alt || target.getAttribute('alt')) {
-        titleText = target.alt || target.getAttribute('alt');
-      } else if (target.getAttribute('aria-label')) {
-        titleText = target.getAttribute('aria-label');
-      } else {
-        var figure = target.closest('figure');
-        if (figure) {
-          var figcaption = figure.querySelector('figcaption');
-          if (figcaption) titleText = figcaption.textContent.trim();
-        }
-      }
-      if (!titleText) titleText = 'Architecture Diagram';
-
+      var titleText = getDiagramTitle(target);
       if (els.title) {
         els.title.textContent = titleText;
       }
 
-      // Populate content
+      // Populate content inside high-contrast canvas card
       if (els.content) {
         els.content.innerHTML = '';
+        var card = document.createElement('div');
+        card.className = 'diagram-lightbox-card';
+
         if (target.tagName.toLowerCase() === 'svg' || target.querySelector('svg')) {
           var svgEl = target.tagName.toLowerCase() === 'svg' ? target : target.querySelector('svg');
           var clone = svgEl.cloneNode(true);
-          clone.removeAttribute('id');
-          els.content.appendChild(clone);
+          // Preserve ID so scoped Mermaid stylesheet and markers continue matching!
+          card.classList.add('mermaid');
+          card.appendChild(clone);
         } else if (target.tagName.toLowerCase() === 'img') {
           var imgClone = document.createElement('img');
           imgClone.src = target.src || target.getAttribute('src');
           imgClone.alt = titleText;
-          imgClone.className = 'max-w-full max-h-[75vh] object-contain rounded-lg shadow-2xl';
-          els.content.appendChild(imgClone);
+          card.appendChild(imgClone);
         }
+        els.content.appendChild(card);
       }
 
       // Show modal cleanly
