@@ -3,7 +3,8 @@ const {
   isManualApproval,
   validateAndEnforceAnalogy,
   calculateInactivityHours,
-  createSmartFallbackHook
+  createSmartFallbackHook,
+  evaluatePulseHousekeeping
 } = require('../scripts/auto-publish-cloud-pulse.js');
 
 describe('Cloud Pulse 12-Hour Fallback & Inactivity Detection', () => {
@@ -223,5 +224,126 @@ describe('Pulse Admin Unpublish Management Flow', () => {
     // Public feed filter: only status === 'approved' are displayed
     const publicCohort = [unpublished].filter(p => p.status === 'approved');
     expect(publicCohort).toHaveLength(0);
+  });
+});
+
+
+describe('Cloud Pulse Autonomous Housekeeping & Cohort Retention Engine', () => {
+  const refTime = new Date('2026-09-28T12:00:00Z').getTime();
+
+  it('prunes downvoted posts (score < 0) that have been live for >= 1 day', () => {
+    const approved = [
+      {
+        id: 'p-downvoted',
+        title: 'Controversial / Low Quality Post',
+        score: -2,
+        upvotes: 0,
+        downvotes: 2,
+        created_at: '2026-09-26T12:00:00Z' // 2 days old
+      },
+      {
+        id: 'p-fresh-downvoted',
+        title: 'Brand New Post with Downvote',
+        score: -1,
+        upvotes: 0,
+        downvotes: 1,
+        created_at: '2026-09-28T10:00:00Z' // 2 hours old (< 1 day grace period)
+      }
+    ];
+
+    const result = evaluatePulseHousekeeping(approved, [], { now: refTime });
+    expect(result.approvedToPrune.map(p => p.id)).toContain('p-downvoted');
+    expect(result.approvedToPrune.map(p => p.id)).not.toContain('p-fresh-downvoted');
+    expect(result.stats.downvoted).toBe(1);
+  });
+
+  it('prunes zero-traction posts (score <= 0) older than 14 days to keep feed fresh', () => {
+    const approved = [
+      {
+        id: 'p-stale-zero',
+        title: 'Old Unnoticed Post',
+        score: 0,
+        upvotes: 0,
+        downvotes: 0,
+        created_at: '2026-09-10T12:00:00Z' // 18 days old (> 14 days)
+      },
+      {
+        id: 'p-fresh-zero',
+        title: 'Recent Unvoted Post',
+        score: 0,
+        upvotes: 0,
+        downvotes: 0,
+        created_at: '2026-09-25T12:00:00Z' // 3 days old (< 14 days)
+      }
+    ];
+
+    const result = evaluatePulseHousekeeping(approved, [], { now: refTime });
+    expect(result.approvedToPrune.map(p => p.id)).toContain('p-stale-zero');
+    expect(result.retainedApproved.map(p => p.id)).toContain('p-fresh-zero');
+    expect(result.stats.low_traction).toBe(1);
+  });
+
+  it('prunes low-traction aging posts (score <= 1) older than 28 days', () => {
+    const approved = [
+      {
+        id: 'p-aging-low',
+        title: 'Aging Low-Traction Post',
+        score: 1,
+        upvotes: 1,
+        downvotes: 0,
+        created_at: '2026-08-25T12:00:00Z' // > 28 days old
+      },
+      {
+        id: 'p-aging-favorite',
+        title: 'Community Favorite Evergreen Post',
+        score: 15,
+        upvotes: 15,
+        downvotes: 0,
+        created_at: '2026-08-25T12:00:00Z' // > 28 days old but high traction!
+      }
+    ];
+
+    const result = evaluatePulseHousekeeping(approved, [], { now: refTime });
+    expect(result.approvedToPrune.map(p => p.id)).toContain('p-aging-low');
+    expect(result.retainedApproved.map(p => p.id)).toContain('p-aging-favorite');
+    expect(result.stats.stale_aging).toBe(1);
+  });
+
+  it('enforces maximum cohort capacity (e.g. 35) by trimming lowest-scoring oldest tail', () => {
+    const approved = [];
+    for (let i = 1; i <= 40; i++) {
+      approved.push({
+        id: `p-${i}`,
+        title: `Post ${i}`,
+        score: i,
+        created_at: '2026-09-27T12:00:00Z'
+      });
+    }
+
+    const result = evaluatePulseHousekeeping(approved, [], { now: refTime, maxActivePulses: 35 });
+    expect(result.retainedApproved.length).toBe(35);
+    expect(result.approvedToPrune.length).toBe(5);
+    expect(result.stats.capacity_overflow).toBe(5);
+    expect(result.approvedToPrune.map(p => p.id)).toEqual(expect.arrayContaining(['p-1', 'p-2', 'p-3', 'p-4', 'p-5']));
+  });
+
+  it('prunes stale pending_approval queue items older than 14 days', () => {
+    const pending = [
+      {
+        id: 'pend-old',
+        title: 'Stale Scraped Candidate',
+        created_at: '2026-09-10T12:00:00Z' // 18 days old
+      },
+      {
+        id: 'pend-fresh',
+        title: 'Fresh Scraped Candidate',
+        created_at: '2026-09-28T08:00:00Z' // 4 hours old
+      }
+    ];
+
+    const result = evaluatePulseHousekeeping([], pending, { now: refTime });
+    expect(result.pendingToPrune.map(p => p.id)).toContain('pend-old');
+    expect(result.pendingToPrune.map(p => p.id)).not.toContain('pend-fresh');
+    expect(result.stats.stale_pending).toBe(1);
   });
 });

@@ -1,3 +1,4 @@
+const { createSmartFallbackHook } = require('./auto-publish-cloud-pulse.js');
 /**
  * Autonomous Cloud Pulse Newsroom Scraper & Gemini AI Synthesizer
  * 
@@ -151,7 +152,7 @@ async function generateAiPulse(apiKey, item) {
   if (!apiKey) {
     return {
       title: item.title,
-      content: item.summary.length > 220 ? item.summary.substring(0, 217) + "..." : item.summary
+      content: createSmartFallbackHook(item.title, item.summary)
     };
   }
 
