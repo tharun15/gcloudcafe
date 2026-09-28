@@ -1379,6 +1379,7 @@
   }
 
   function init() {
+    initCloudDecisionCalculators();
     initHeaderScroll();
     initReadingProgress();
     initCopyCode();
@@ -9148,6 +9149,160 @@ function renderPulses(pulses) {
     window.gcloudcafeCalculator = calculatorEngine;
   }
 
+  function initCloudDecisionCalculators() {
+    var widgets = document.querySelectorAll("[data-cloud-calculator]");
+    if (!widgets.length) return;
+
+    widgets.forEach(function (widget) {
+      var activePreset = widget.getAttribute("data-active-preset") || "storage-tier";
+      var presetTabs = widget.querySelectorAll("[data-calc-preset-tab]");
+      var inputPanels = widget.querySelectorAll("[data-calc-inputs]");
+
+      // Storage elements
+      var volSlider = widget.querySelector("[data-calc-storage-volume]");
+      var volLabel = widget.querySelector("[data-calc-storage-volume-label]");
+      var retSlider = widget.querySelector("[data-calc-storage-retrieval]");
+      var retLabel = widget.querySelector("[data-calc-storage-retrieval-label]");
+      var costMatrix = widget.querySelector("[data-calc-cost-matrix]");
+
+      // Output elements
+      var titleEl = widget.querySelector("[data-calc-result-title]");
+      var matchEl = widget.querySelector("[data-calc-result-match]");
+      var reasonEl = widget.querySelector("[data-calc-result-reason]");
+      var caveatsEl = widget.querySelector("[data-calc-result-caveats]");
+      var runnerUpEl = widget.querySelector("[data-calc-result-runnerup]");
+
+      function formatStorageLabel(gb) {
+        if (gb >= 1000) {
+          return Number(gb).toLocaleString() + " GB (" + (gb / 1000).toFixed(1) + " TB)";
+        }
+        return Number(gb).toLocaleString() + " GB";
+      }
+
+      function updateCalculator() {
+        if (activePreset === "storage-tier") {
+          if (costMatrix) costMatrix.classList.remove("hidden");
+
+          var vol = parseFloat(volSlider ? volSlider.value : 5000);
+          var ret = parseFloat(retSlider ? retSlider.value : 20);
+          var freqChecked = widget.querySelector("input[name$='-freq']:checked");
+          var freq = freqChecked ? freqChecked.value : "daily";
+
+          if (volLabel) volLabel.textContent = formatStorageLabel(vol);
+          if (retLabel) retLabel.textContent = ret + "%";
+
+          var res = calculatorEngine.calculateStorageTier({
+            volumeGb: vol,
+            accessFrequency: freq,
+            retrievalPercent: ret
+          });
+
+          if (titleEl) titleEl.textContent = "Cloud Storage " + res.recommendedTier;
+          if (matchEl) matchEl.textContent = res.matchPercent + "% Match";
+          if (reasonEl) reasonEl.textContent = res.reason;
+          if (caveatsEl) caveatsEl.textContent = res.caveats;
+          if (runnerUpEl) runnerUpEl.textContent = "Cloud Storage " + res.runnerUp;
+
+          // Update cost cards
+          var tiers = ["Standard", "Nearline", "Coldline", "Archive"];
+          tiers.forEach(function (tierName) {
+            var costEl = widget.querySelector("[data-calc-tier-cost='" + tierName + "']");
+            var cardEl = widget.querySelector("[data-calc-tier-card='" + tierName + "']");
+            if (costEl && res.costs[tierName]) {
+              costEl.textContent = "$" + res.costs[tierName].totalCost.toFixed(2) + "/mo";
+            }
+            if (cardEl) {
+              if (tierName === res.recommendedTier) {
+                cardEl.className = "p-2 rounded-lg border-2 border-red-500 bg-red-50/70 dark:bg-red-950/40 shadow-xs font-bold text-slate-900 dark:text-white";
+              } else {
+                cardEl.className = "p-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800/50";
+              }
+            }
+          });
+
+        } else if (activePreset === "database-selection") {
+          if (costMatrix) costMatrix.classList.add("hidden");
+
+          var workloadChecked = widget.querySelector("input[name$='-db-workload']:checked");
+          var scaleChecked = widget.querySelector("input[name$='-db-scale']:checked");
+          var workload = workloadChecked ? workloadChecked.value : "oltp-relational";
+          var scale = scaleChecked ? scaleChecked.value : "small";
+
+          var dbRes = calculatorEngine.calculateDatabase({
+            workloadType: workload,
+            scale: scale
+          });
+
+          if (titleEl) titleEl.textContent = dbRes.recommendedEngine;
+          if (matchEl) matchEl.textContent = dbRes.matchPercent + "% Match";
+          if (reasonEl) reasonEl.textContent = dbRes.primaryStrength;
+          if (caveatsEl) caveatsEl.textContent = dbRes.tradeOffs;
+          if (runnerUpEl) runnerUpEl.textContent = dbRes.runnerUp;
+
+        } else if (activePreset === "compute-selection") {
+          if (costMatrix) costMatrix.classList.add("hidden");
+
+          var natureChecked = widget.querySelector("input[name$='-compute-nature']:checked");
+          var opsChecked = widget.querySelector("input[name$='-compute-ops']:checked");
+          var nature = natureChecked ? natureChecked.value : "stateless-container";
+          var ops = opsChecked ? opsChecked.value : "zero-ops";
+
+          var computeRes = calculatorEngine.calculateCompute({
+            workloadNature: nature,
+            opsModel: ops
+          });
+
+          if (titleEl) titleEl.textContent = computeRes.recommendedPlatform;
+          if (matchEl) matchEl.textContent = computeRes.matchPercent + "% Match";
+          if (reasonEl) reasonEl.textContent = computeRes.primaryStrength;
+          if (caveatsEl) caveatsEl.textContent = computeRes.tradeOffs;
+          if (runnerUpEl) runnerUpEl.textContent = computeRes.runnerUp;
+        }
+      }
+
+      // Wire preset switcher tabs
+      presetTabs.forEach(function (tab) {
+        tab.addEventListener("click", function () {
+          var targetPreset = tab.getAttribute("data-calc-preset-tab");
+          if (!targetPreset) return;
+          activePreset = targetPreset;
+          widget.setAttribute("data-active-preset", targetPreset);
+
+          presetTabs.forEach(function (t) {
+            if (t.getAttribute("data-calc-preset-tab") === targetPreset) {
+              t.className = "calc-preset-tab px-3 py-1.5 rounded-lg transition-all cursor-pointer whitespace-nowrap bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-xs font-bold";
+            } else {
+              t.className = "calc-preset-tab px-3 py-1.5 rounded-lg transition-all cursor-pointer whitespace-nowrap text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white";
+            }
+          });
+
+          inputPanels.forEach(function (panel) {
+            if (panel.getAttribute("data-calc-inputs") === targetPreset) {
+              panel.classList.remove("hidden");
+            } else {
+              panel.classList.add("hidden");
+            }
+          });
+
+          updateCalculator();
+        });
+      });
+
+      // Wire inputs
+      if (volSlider) volSlider.addEventListener("input", updateCalculator);
+      if (retSlider) retSlider.addEventListener("input", updateCalculator);
+      widget.querySelectorAll("input[type='radio']").forEach(function (radio) {
+        radio.addEventListener("change", updateCalculator);
+      });
+
+      // Initial run
+      updateCalculator();
+    });
+  }
+
+  calculatorEngine.init = initCloudDecisionCalculators;
+
+
   /* ── Reader Personalization: Bookmarks & "Save for Later" Drawer ── */
   var BOOKMARKS_STORAGE_KEY = "gcloudcafe_saved_bookmarks";
 
@@ -9486,6 +9641,7 @@ function renderPulses(pulses) {
   }
 
   function initApp() {
+    initCloudDecisionCalculators();
     initBookmarksSystem();
     initWeeklyOpinionPollSystem();
     initCommentsSystem();

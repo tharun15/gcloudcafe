@@ -22,6 +22,7 @@ describe('Cloud Decision Calculator & Comparison Engine', () => {
     expect(typeof window.gcloudcafeCalculator.calculateStorageTier).toBe('function');
     expect(typeof window.gcloudcafeCalculator.calculateDatabase).toBe('function');
     expect(typeof window.gcloudcafeCalculator.calculateCompute).toBe('function');
+    expect(typeof window.gcloudcafeCalculator.init).toBe('function');
   });
 
   describe('1. Cloud Storage Tier Calculator', () => {
@@ -187,6 +188,71 @@ describe('Cloud Decision Calculator & Comparison Engine', () => {
       });
 
       expect(res.recommendedPlatform).toBe('Compute Engine');
+    });
+  });
+
+  describe('4. Shortcode Template & DOM Interaction', () => {
+    it('verifies layouts/shortcodes/cloud-calculator.html exists and contains data attributes', () => {
+      const shortcodeFile = path.join(rootDir, 'layouts/shortcodes/cloud-calculator.html');
+      expect(fs.existsSync(shortcodeFile)).toBe(true);
+      const html = fs.readFileSync(shortcodeFile, 'utf8');
+      expect(html).toContain('data-cloud-calculator');
+      expect(html).toContain('data-calc-preset-tab');
+      expect(html).toContain('data-calc-storage-volume');
+      expect(html).toContain('data-calc-result-title');
+    });
+
+    it('initializes DOM widget and reacts to user input changes', () => {
+      document.body.innerHTML = `
+        <div data-cloud-calculator data-active-preset="storage-tier">
+          <button data-calc-preset-tab="storage-tier" class="calc-preset-tab"></button>
+          <button data-calc-preset-tab="database-selection" class="calc-preset-tab"></button>
+          <div data-calc-inputs="storage-tier">
+            <span data-calc-storage-volume-label></span>
+            <input type="range" data-calc-storage-volume value="5000">
+            <input type="radio" name="test-freq" value="daily" checked>
+            <input type="radio" name="test-freq" value="monthly">
+            <input type="range" data-calc-storage-retrieval value="20">
+            <span data-calc-storage-retrieval-label></span>
+          </div>
+          <div data-calc-inputs="database-selection" class="hidden">
+            <input type="radio" name="test-db-workload" value="olap-analytics" checked>
+            <input type="radio" name="test-db-scale" value="massive" checked>
+          </div>
+          <div data-calc-cost-matrix>
+            <div data-calc-tier-card="Standard">
+              <span data-calc-tier-cost="Standard"></span>
+            </div>
+            <div data-calc-tier-card="Nearline">
+              <span data-calc-tier-cost="Nearline"></span>
+            </div>
+          </div>
+          <h3 data-calc-result-title></h3>
+          <span data-calc-result-match></span>
+          <p data-calc-result-reason></p>
+          <p data-calc-result-caveats></p>
+          <span data-calc-result-runnerup></span>
+        </div>
+      `;
+
+      window.gcloudcafeCalculator.init();
+
+      const titleEl = document.querySelector('[data-calc-result-title]');
+      expect(titleEl.textContent).toContain('Cloud Storage Standard');
+
+      // Switch to monthly
+      const monthlyRadio = document.querySelector('input[value="monthly"]');
+      monthlyRadio.checked = true;
+      monthlyRadio.dispatchEvent(new Event('change'));
+
+      expect(titleEl.textContent).toContain('Cloud Storage Nearline');
+
+      // Switch preset tab to database-selection
+      const dbTab = document.querySelector('[data-calc-preset-tab="database-selection"]');
+      dbTab.dispatchEvent(new Event('click'));
+
+      expect(titleEl.textContent).toContain('BigQuery');
+      expect(document.querySelector('[data-calc-cost-matrix]').classList.contains('hidden')).toBe(true);
     });
   });
 });

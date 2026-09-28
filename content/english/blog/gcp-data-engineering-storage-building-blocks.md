@@ -136,6 +136,8 @@ In production, querying the operational database for analytics creates two sever
 Instead of overloading the production database, the booking API writes an event receipt to **Google Cloud Storage (GCS)** for every completed booking.
 
 - **Cloud Storage** provides virtually limitless, 99.999999999% durable, low-cost object storage ($0.02 per GB/month for standard class). Dumping transaction receipts into GCS decouples analytics from the transactional application entirely.
+
+{{< cloud-calculator preset="storage-tier" title="Cloud Storage Tier & Cost Decision Lab" >}}
 - **Why Parquet instead of CSV or JSON?** JSON and CSV are uncompressed plain text without strict data types. Every downstream tool must read 100% of the text across the network and parse strings. **Apache Parquet** is a binary columnar format with:
   - **Embedded Schema & Types:** Timestamps, integers, and decimals are preserved with strict typing.
   - **Columnar Layout:** Query engines can read only the columns needed (e.g., `origin_airport` and `booking_status`) without scanning the rest of the record.
