@@ -76,7 +76,22 @@
             </li>
           </ul>
           
-          <div class="flex items-center gap-2">
+          <div class="flex items-center gap-2 flex-wrap">
+            <!-- Bookmark Button -->
+            <button
+              type="button"
+              data-bookmark-btn
+              data-article-url="{{ .RelPermalink }}"
+              data-article-title="{{ .Title }}"
+              data-article-category="{{ if .Params.categories }}{{ index .Params.categories 0 }}{{ else }}Cloud{{ end }}"
+              data-article-readtime="{{ .ReadingTime }} min read"
+              class="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/60 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 px-3 py-1.5 text-[11px] font-bold shadow-2xs transition-all hover:scale-105 active:scale-95 whitespace-nowrap cursor-pointer"
+              aria-label="Save this article for later"
+              title="Save for later">
+              <i class="fa-regular fa-bookmark text-xs"></i>
+              <span data-bookmark-btn-text>Save for later</span>
+            </button>
+
             <a
               href="https://www.linkedin.com/sharing/share-offsite/?url={{ .Permalink | safeURL }}"
               target="_blank"

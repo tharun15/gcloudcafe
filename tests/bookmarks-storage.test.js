@@ -6,6 +6,7 @@ import path from 'path';
 describe('Bookmarks Storage & Management Engine', () => {
   let mockStorage;
   let store;
+  const rootDir = path.resolve(__dirname, '..');
 
   beforeEach(() => {
     store = {};
@@ -19,12 +20,20 @@ describe('Bookmarks Storage & Management Engine', () => {
     // Reset DOM
     document.body.innerHTML = `
       <div id="bookmarks-header-count" class="hidden">0</div>
+      <button data-bookmarks-badge class="hidden">0</button>
+      <button id="bookmarks-drawer-trigger" data-bookmarks-drawer-trigger></button>
       <div id="bookmarks-drawer-count">0 articles</div>
       <button id="bookmarks-clear-all" style="display:none"></button>
-      <div id="bookmarks-drawer" class="translate-x-full">
-        <div id="bookmarks-drawer-list"></div>
-        <div id="bookmarks-empty-state" class="hidden"></div>
+      
+      <div id="bookmarks-drawer" class="pointer-events-none opacity-0">
+        <div id="bookmarks-drawer-backdrop"></div>
+        <div id="bookmarks-drawer-panel" class="translate-x-full">
+          <button data-bookmarks-drawer-close></button>
+          <div id="bookmarks-drawer-list"></div>
+          <div id="bookmarks-empty-state" class="hidden"></div>
+        </div>
       </div>
+
       <button data-bookmark-btn data-article-url="/blog/gcp-storage/" data-article-title="GCP Storage" data-article-category="Cloud" data-article-readtime="5 min">
         <i class="fa-regular fa-bookmark"></i>
         <span data-bookmark-btn-text>Save for later</span>
@@ -32,7 +41,7 @@ describe('Bookmarks Storage & Management Engine', () => {
     `;
 
     // Load assets/js/blog-enhancements.js to populate window.gcloudcafeBookmarks
-    const scriptPath = path.resolve(__dirname, '../assets/js/blog-enhancements.js');
+    const scriptPath = path.join(rootDir, 'assets/js/blog-enhancements.js');
     const scriptContent = fs.readFileSync(scriptPath, 'utf8');
 
     // Run script in global context
@@ -78,7 +87,6 @@ describe('Bookmarks Storage & Management Engine', () => {
       expect(res.bookmarks[0].url).toBe(article.url);
       expect(res.bookmarks[0].savedAt).toBeTypeOf('number');
 
-      // Check storage call
       expect(mockStorage.setItem).toHaveBeenCalledWith(
         'gcloudcafe_saved_bookmarks',
         expect.stringContaining(article.title)
@@ -94,11 +102,9 @@ describe('Bookmarks Storage & Management Engine', () => {
         readTime: '8 min read'
       };
 
-      // Add it first
       bm.toggleBookmark(article, mockStorage);
       expect(bm.isArticleBookmarked(article.url, mockStorage)).toBe(true);
 
-      // Toggle off
       const res = bm.toggleBookmark(article, mockStorage);
       expect(res.isSaved).toBe(false);
       expect(res.count).toBe(0);
@@ -205,6 +211,44 @@ describe('Bookmarks Storage & Management Engine', () => {
       expect(list.children.length).toBe(1);
       expect(list.innerHTML).toContain('GCP Storage Patterns');
       expect(list.innerHTML).toContain('/blog/gcp-storage/');
+    });
+  });
+
+  describe('Template & Layout Integrity', () => {
+    it('verifies bookmarks drawer partial exists and is accessible', () => {
+      const drawerFile = path.join(rootDir, 'layouts/partials/components/bookmarks-drawer.html');
+      expect(fs.existsSync(drawerFile)).toBe(true);
+      const content = fs.readFileSync(drawerFile, 'utf8');
+      expect(content).toContain('id="bookmarks-drawer"');
+      expect(content).toContain('id="bookmarks-drawer-list"');
+      expect(content).toContain('id="bookmarks-empty-state"');
+      expect(content).toContain('role="dialog"');
+      expect(content).toContain('aria-modal="true"');
+    });
+
+    it('verifies bookmarks trigger is integrated in header.html', () => {
+      const headerFile = path.join(rootDir, 'layouts/partials/essentials/header.html');
+      const content = fs.readFileSync(headerFile, 'utf8');
+      expect(content).toContain('data-bookmarks-drawer-trigger');
+      expect(content).toContain('id="bookmarks-header-count"');
+    });
+
+    it('verifies bookmarks drawer is mounted in baseof.html', () => {
+      const baseofFile = path.join(rootDir, 'layouts/_default/baseof.html');
+      const content = fs.readFileSync(baseofFile, 'utf8');
+      expect(content).toContain('bookmarks-drawer.html');
+    });
+
+    it('verifies bookmark toggle buttons exist in blog-card.html and single.html', () => {
+      const cardFile = path.join(rootDir, 'layouts/partials/components/blog-card.html');
+      const cardContent = fs.readFileSync(cardFile, 'utf8');
+      expect(cardContent).toContain('data-bookmark-btn');
+      expect(cardContent).toContain('data-article-url');
+
+      const singleFile = path.join(rootDir, 'layouts/blog/single.html');
+      const singleContent = fs.readFileSync(singleFile, 'utf8');
+      expect(singleContent).toContain('data-bookmark-btn');
+      expect(singleContent).toContain('Save for later');
     });
   });
 });
