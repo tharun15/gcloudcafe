@@ -1,0 +1,354 @@
+{{/* Interactive Cloud Decision Calculator & Architecture Lab Shortcode */}}
+{{ $id := .Get "id" | default (printf "cloud-calc-%d" (now.UnixNano)) }}
+{{ $preset := .Get "preset" | default "storage-tier" }}
+{{ $title := .Get "title" }}
+{{ if not $title }}
+  {{ if eq $preset "database-selection" }}
+    {{ $title = "Cloud Database Architectural Decision Matrix" }}
+  {{ else if eq $preset "compute-selection" }}
+    {{ $title = "Cloud Compute & Container Runtime Decision Matrix" }}
+  {{ else }}
+    {{ $title = "Cloud Storage Tier & Cost Decision Lab" }}
+  {{ end }}
+{{ end }}
+
+<div
+  id="{{ $id }}"
+  class="cloud-calculator-widget my-8 rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white/80 dark:bg-[#0c1220]/90 backdrop-blur-xl shadow-xl overflow-hidden"
+  data-cloud-calculator
+  data-active-preset="{{ $preset }}">
+
+  <!-- Header Banner -->
+  <div class="p-4 sm:p-5 border-b border-slate-200/80 dark:border-slate-800/80 bg-gradient-to-r from-slate-50 via-red-50/20 to-slate-50 dark:from-slate-900/60 dark:via-red-950/20 dark:to-slate-900/60 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-xl bg-red-500/10 text-red-600 dark:text-red-400 flex items-center justify-center shrink-0 shadow-inner">
+        <i class="fa-solid fa-sliders text-base"></i>
+      </div>
+      <div>
+        <h4 class="text-base sm:text-lg font-extrabold text-slate-900 dark:text-white leading-tight m-0">
+          {{ $title }}
+        </h4>
+        <p class="text-xs text-slate-500 dark:text-slate-400 m-0 mt-0.5 font-medium">
+          Interactive Architecture Decision &amp; Trade-off Engine
+        </p>
+      </div>
+    </div>
+
+    <!-- Preset Switcher Tabs -->
+    <div class="flex items-center p-1 rounded-xl bg-slate-200/60 dark:bg-slate-800/60 text-xs font-semibold self-start sm:self-auto overflow-x-auto max-w-full">
+      <button
+        type="button"
+        data-calc-preset-tab="storage-tier"
+        class="calc-preset-tab px-3 py-1.5 rounded-lg transition-all cursor-pointer whitespace-nowrap {{ if eq $preset "storage-tier" }}bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-xs font-bold{{ else }}text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white{{ end }}">
+        Storage Tiers
+      </button>
+      <button
+        type="button"
+        data-calc-preset-tab="database-selection"
+        class="calc-preset-tab px-3 py-1.5 rounded-lg transition-all cursor-pointer whitespace-nowrap {{ if eq $preset "database-selection" }}bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-xs font-bold{{ else }}text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white{{ end }}">
+        Databases
+      </button>
+      <button
+        type="button"
+        data-calc-preset-tab="compute-selection"
+        class="calc-preset-tab px-3 py-1.5 rounded-lg transition-all cursor-pointer whitespace-nowrap {{ if eq $preset "compute-selection" }}bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-xs font-bold{{ else }}text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white{{ end }}">
+        Compute
+      </button>
+    </div>
+  </div>
+
+  <div class="p-5 sm:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8">
+    
+    <!-- Controls Column (Left) -->
+    <div class="lg:col-span-6 space-y-6">
+
+      <!-- 1. STORAGE CONTROLS -->
+      <div data-calc-inputs="storage-tier" class="{{ if ne $preset "storage-tier" }}hidden{{ end }} space-y-5">
+        <div>
+          <div class="flex items-center justify-between text-xs font-semibold mb-2">
+            <span class="text-slate-700 dark:text-slate-300">Data Volume at Rest:</span>
+            <span data-calc-storage-volume-label class="font-mono font-bold text-red-600 dark:text-red-400 text-sm">5,000 GB (5.0 TB)</span>
+          </div>
+          <input
+            type="range"
+            min="100"
+            max="50000"
+            step="100"
+            value="5000"
+            data-calc-storage-volume
+            class="w-full accent-red-600 cursor-pointer h-2 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none">
+          <div class="flex justify-between text-[10px] font-mono text-slate-400 mt-1">
+            <span>100 GB</span>
+            <span>10 TB</span>
+            <span>25 TB</span>
+            <span>50 TB</span>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-2">
+            Access Frequency:
+          </label>
+          <div class="grid grid-cols-2 gap-2 text-xs font-medium">
+            <label class="calc-choice-chip flex items-center gap-2 p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 cursor-pointer hover:border-red-500/50 transition-all">
+              <input type="radio" name="{{ $id }}-freq" value="daily" checked class="accent-red-600">
+              <div>
+                <span class="block font-semibold text-slate-900 dark:text-white">Daily / Active</span>
+                <span class="text-[10px] text-slate-500">Continuous reads</span>
+              </div>
+            </label>
+            <label class="calc-choice-chip flex items-center gap-2 p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 cursor-pointer hover:border-red-500/50 transition-all">
+              <input type="radio" name="{{ $id }}-freq" value="monthly" class="accent-red-600">
+              <div>
+                <span class="block font-semibold text-slate-900 dark:text-white">Monthly</span>
+                <span class="text-[10px] text-slate-500">~1x per 30 days</span>
+              </div>
+            </label>
+            <label class="calc-choice-chip flex items-center gap-2 p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 cursor-pointer hover:border-red-500/50 transition-all">
+              <input type="radio" name="{{ $id }}-freq" value="quarterly" class="accent-red-600">
+              <div>
+                <span class="block font-semibold text-slate-900 dark:text-white">Quarterly</span>
+                <span class="text-[10px] text-slate-500">~1x per 90 days</span>
+              </div>
+            </label>
+            <label class="calc-choice-chip flex items-center gap-2 p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 cursor-pointer hover:border-red-500/50 transition-all">
+              <input type="radio" name="{{ $id }}-freq" value="rare" class="accent-red-600">
+              <div>
+                <span class="block font-semibold text-slate-900 dark:text-white">Rare / Disaster</span>
+                <span class="text-[10px] text-slate-500">&lt; 1x per year</span>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-2">
+            Monthly Retrieval Rate (% of dataset read):
+          </label>
+          <div class="flex items-center gap-3">
+            <input
+              type="range"
+              min="0"
+              max="100"
+              step="5"
+              value="20"
+              data-calc-storage-retrieval
+              class="w-full accent-red-600 cursor-pointer h-2 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none">
+            <span data-calc-storage-retrieval-label class="font-mono font-bold text-xs text-slate-700 dark:text-slate-300 w-12 text-right">20%</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. DATABASE CONTROLS -->
+      <div data-calc-inputs="database-selection" class="{{ if ne $preset "database-selection" }}hidden{{ end }} space-y-5">
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-2">
+            Primary Workload Pattern:
+          </label>
+          <div class="space-y-2 text-xs font-medium">
+            <label class="calc-choice-chip flex items-center gap-2.5 p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 cursor-pointer hover:border-red-500/50 transition-all">
+              <input type="radio" name="{{ $id }}-db-workload" value="oltp-relational" checked class="accent-red-600">
+              <div>
+                <span class="block font-semibold text-slate-900 dark:text-white">Relational OLTP (SQL / ACID)</span>
+                <span class="text-[10px] text-slate-500">Standard transactions, normalized schemas, PostgreSQL/MySQL</span>
+              </div>
+            </label>
+            <label class="calc-choice-chip flex items-center gap-2.5 p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 cursor-pointer hover:border-red-500/50 transition-all">
+              <input type="radio" name="{{ $id }}-db-workload" value="olap-analytics" class="accent-red-600">
+              <div>
+                <span class="block font-semibold text-slate-900 dark:text-white">Analytical OLAP (Warehouse / BI)</span>
+                <span class="text-[10px] text-slate-500">Complex aggregations, terabyte/petabyte SQL scans</span>
+              </div>
+            </label>
+            <label class="calc-choice-chip flex items-center gap-2.5 p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 cursor-pointer hover:border-red-500/50 transition-all">
+              <input type="radio" name="{{ $id }}-db-workload" value="nosql-kv" class="accent-red-600">
+              <div>
+                <span class="block font-semibold text-slate-900 dark:text-white">High-Throughput NoSQL Key-Value</span>
+                <span class="text-[10px] text-slate-500">Sub-10ms writes/reads, millions QPS, time-series/IoT</span>
+              </div>
+            </label>
+            <label class="calc-choice-chip flex items-center gap-2.5 p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 cursor-pointer hover:border-red-500/50 transition-all">
+              <input type="radio" name="{{ $id }}-db-workload" value="document" class="accent-red-600">
+              <div>
+                <span class="block font-semibold text-slate-900 dark:text-white">Document / Mobile Store</span>
+                <span class="text-[10px] text-slate-500">Hierarchical JSON, real-time listeners, offline mobile sync</span>
+              </div>
+            </label>
+            <label class="calc-choice-chip flex items-center gap-2.5 p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 cursor-pointer hover:border-red-500/50 transition-all">
+              <input type="radio" name="{{ $id }}-db-workload" value="global-distributed" class="accent-red-600">
+              <div>
+                <span class="block font-semibold text-slate-900 dark:text-white">Global Multi-Region ACID</span>
+                <span class="text-[10px] text-slate-500">Worldwide write consistency, 99.999% availability</span>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-2">
+            Anticipated Data Scale:
+          </label>
+          <div class="grid grid-cols-3 gap-2 text-xs text-center font-medium">
+            <label class="calc-choice-chip p-2 rounded-xl border border-slate-200 dark:border-slate-800 cursor-pointer hover:border-red-500/50 block transition-all">
+              <input type="radio" name="{{ $id }}-db-scale" value="small" checked class="accent-red-600 mb-1">
+              <span class="block text-[11px] font-semibold text-slate-900 dark:text-white">&lt; 1 TB</span>
+            </label>
+            <label class="calc-choice-chip p-2 rounded-xl border border-slate-200 dark:border-slate-800 cursor-pointer hover:border-red-500/50 block transition-all">
+              <input type="radio" name="{{ $id }}-db-scale" value="medium" class="accent-red-600 mb-1">
+              <span class="block text-[11px] font-semibold text-slate-900 dark:text-white">1 - 30 TB</span>
+            </label>
+            <label class="calc-choice-chip p-2 rounded-xl border border-slate-200 dark:border-slate-800 cursor-pointer hover:border-red-500/50 block transition-all">
+              <input type="radio" name="{{ $id }}-db-scale" value="massive" class="accent-red-600 mb-1">
+              <span class="block text-[11px] font-semibold text-slate-900 dark:text-white">&gt; 30 TB / PB</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. COMPUTE CONTROLS -->
+      <div data-calc-inputs="compute-selection" class="{{ if ne $preset "compute-selection" }}hidden{{ end }} space-y-5">
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-2">
+            Workload Architecture:
+          </label>
+          <div class="space-y-2 text-xs font-medium">
+            <label class="calc-choice-chip flex items-center gap-2.5 p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 cursor-pointer hover:border-red-500/50 transition-all">
+              <input type="radio" name="{{ $id }}-compute-nature" value="stateless-container" checked class="accent-red-600">
+              <div>
+                <span class="block font-semibold text-slate-900 dark:text-white">Stateless Container / HTTP API</span>
+                <span class="text-[10px] text-slate-500">Microservices, web applications, rapid autoscaling</span>
+              </div>
+            </label>
+            <label class="calc-choice-chip flex items-center gap-2.5 p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 cursor-pointer hover:border-red-500/50 transition-all">
+              <input type="radio" name="{{ $id }}-compute-nature" value="complex-orchestration" class="accent-red-600">
+              <div>
+                <span class="block font-semibold text-slate-900 dark:text-white">Complex Orchestration / Service Mesh</span>
+                <span class="text-[10px] text-slate-500">StatefulSets, DaemonSets, custom ingress, sidecars</span>
+              </div>
+            </label>
+            <label class="calc-choice-chip flex items-center gap-2.5 p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 cursor-pointer hover:border-red-500/50 transition-all">
+              <input type="radio" name="{{ $id }}-compute-nature" value="event-handler" class="accent-red-600">
+              <div>
+                <span class="block font-semibold text-slate-900 dark:text-white">Event-Driven Micro-Handler</span>
+                <span class="text-[10px] text-slate-500">Async processing triggered by Pub/Sub, Storage, or Eventarc</span>
+              </div>
+            </label>
+            <label class="calc-choice-chip flex items-center gap-2.5 p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 cursor-pointer hover:border-red-500/50 transition-all">
+              <input type="radio" name="{{ $id }}-compute-nature" value="traditional-vm" class="accent-red-600">
+              <div>
+                <span class="block font-semibold text-slate-900 dark:text-white">Traditional Virtual Machine</span>
+                <span class="text-[10px] text-slate-500">Custom OS kernels, legacy binaries, specialized hardware</span>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-2">
+            Operational Management Preference:
+          </label>
+          <div class="grid grid-cols-3 gap-2 text-xs text-center font-medium">
+            <label class="calc-choice-chip p-2 rounded-xl border border-slate-200 dark:border-slate-800 cursor-pointer hover:border-red-500/50 block transition-all">
+              <input type="radio" name="{{ $id }}-compute-ops" value="zero-ops" checked class="accent-red-600 mb-1">
+              <span class="block text-[11px] font-semibold text-slate-900 dark:text-white">Zero Ops</span>
+            </label>
+            <label class="calc-choice-chip p-2 rounded-xl border border-slate-200 dark:border-slate-800 cursor-pointer hover:border-red-500/50 block transition-all">
+              <input type="radio" name="{{ $id }}-compute-ops" value="managed-k8s" class="accent-red-600 mb-1">
+              <span class="block text-[11px] font-semibold text-slate-900 dark:text-white">Managed K8s</span>
+            </label>
+            <label class="calc-choice-chip p-2 rounded-xl border border-slate-200 dark:border-slate-800 cursor-pointer hover:border-red-500/50 block transition-all">
+              <input type="radio" name="{{ $id }}-compute-ops" value="full-control" class="accent-red-600 mb-1">
+              <span class="block text-[11px] font-semibold text-slate-900 dark:text-white">Full OS</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Recommendation Output Column (Right) -->
+    <div class="lg:col-span-6 flex flex-col justify-between">
+      
+      <div class="rounded-xl border border-slate-200/90 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/50 p-5 space-y-4">
+        
+        <!-- Top Match Header -->
+        <div class="flex items-center justify-between gap-2 flex-wrap">
+          <span class="text-[11px] font-mono uppercase tracking-wider text-slate-500 dark:text-slate-400 font-bold">
+            Architecture Recommendation
+          </span>
+          <span
+            data-calc-result-badge
+            class="px-2.5 py-0.5 rounded-full text-xs font-mono font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 inline-flex items-center gap-1">
+            <i class="fa-solid fa-circle-check text-[11px]"></i>
+            <span data-calc-result-match>98% Match</span>
+          </span>
+        </div>
+
+        <div>
+          <h3
+            data-calc-result-title
+            class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white m-0 tracking-tight leading-tight">
+            Cloud Storage Standard
+          </h3>
+          <p
+            data-calc-result-reason
+            class="text-xs text-slate-600 dark:text-slate-300 mt-2 leading-relaxed">
+            Optimal for actively queried datasets with zero retrieval charges and no minimum retention commitment.
+          </p>
+        </div>
+
+        <!-- Dynamic Storage Cost Matrix (Visible only for storage preset) -->
+        <div data-calc-cost-matrix class="pt-2 border-t border-slate-200/60 dark:border-slate-800/60">
+          <span class="block text-[11px] font-mono uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-2">
+            Monthly Cost Comparison (At-Rest + Retrieval)
+          </span>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center">
+            <div data-calc-tier-card="Standard" class="p-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800/50">
+              <span class="block text-[10px] font-mono text-slate-500">Standard</span>
+              <span data-calc-tier-cost="Standard" class="block text-xs font-mono font-bold text-slate-900 dark:text-white">$100.00</span>
+            </div>
+            <div data-calc-tier-card="Nearline" class="p-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800/50">
+              <span class="block text-[10px] font-mono text-slate-500">Nearline</span>
+              <span data-calc-tier-cost="Nearline" class="block text-xs font-mono font-bold text-slate-900 dark:text-white">$60.00</span>
+            </div>
+            <div data-calc-tier-card="Coldline" class="p-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800/50">
+              <span class="block text-[10px] font-mono text-slate-500">Coldline</span>
+              <span data-calc-tier-cost="Coldline" class="block text-xs font-mono font-bold text-slate-900 dark:text-white">$40.00</span>
+            </div>
+            <div data-calc-tier-card="Archive" class="p-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800/50">
+              <span class="block text-[10px] font-mono text-slate-500">Archive</span>
+              <span data-calc-tier-cost="Archive" class="block text-xs font-mono font-bold text-slate-900 dark:text-white">$31.00</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Caveats & Architecture Watch-out -->
+        <div class="p-3 rounded-lg bg-amber-500/10 border border-amber-500/20 text-xs">
+          <div class="flex items-start gap-2">
+            <i class="fa-solid fa-triangle-exclamation text-amber-500 mt-0.5 text-xs"></i>
+            <div>
+              <span class="font-bold text-amber-800 dark:text-amber-300">Architectural Trade-Off:</span>
+              <p data-calc-result-caveats class="text-amber-700 dark:text-amber-400 m-0 mt-0.5 leading-snug">
+                At-rest storage is $0.020/GB/mo. For data accessed less than once a month, consider lifecycle rules to transition to Nearline.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Runner-Up Note -->
+        <div class="flex items-center justify-between text-xs text-slate-500 pt-1 border-t border-slate-200/60 dark:border-slate-800/60">
+          <span>Alternative Consideration:</span>
+          <span data-calc-result-runnerup class="font-semibold text-slate-700 dark:text-slate-300">Cloud Storage Nearline</span>
+        </div>
+
+      </div>
+
+      <div class="text-[11px] text-slate-400 text-center mt-3 flex items-center justify-center gap-1.5">
+        <i class="fa-solid fa-bolt text-red-500 text-[10px]"></i>
+        <span>Live client-side estimation • Google Cloud 2026 pricing</span>
+      </div>
+
+    </div>
+
+  </div>
+</div>
