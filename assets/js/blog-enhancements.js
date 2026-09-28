@@ -8966,6 +8966,188 @@ function renderPulses(pulses) {
   }
 
 
+  /* ── Interactive Cloud Decision Calculator & Comparison Engine ── */
+  var calculatorEngine = {
+    calculateStorageTier: function (options) {
+      var opts = options || {};
+      var rawVol = parseFloat(opts.volumeGb);
+      var volumeGb = isNaN(rawVol) || rawVol < 0 ? 0 : rawVol;
+      var accessFreq = opts.accessFrequency || "daily";
+      var retrievalPct = typeof opts.retrievalPercent === "number" ? opts.retrievalPercent : 20;
+      if (retrievalPct < 0) retrievalPct = 0;
+      if (retrievalPct > 100) retrievalPct = 100;
+
+      // Cloud Storage Official Rates ($/GB/month)
+      var tiers = {
+        Standard: { atRest: 0.020, retrieval: 0.00, minDays: 0 },
+        Nearline: { atRest: 0.010, retrieval: 0.01, minDays: 30 },
+        Coldline: { atRest: 0.004, retrieval: 0.02, minDays: 90 },
+        Archive:  { atRest: 0.0012, retrieval: 0.05, minDays: 365 }
+      };
+
+      var costs = {};
+      var retrievedGb = volumeGb * (retrievalPct / 100);
+
+      Object.keys(tiers).forEach(function (name) {
+        var t = tiers[name];
+        var sCost = volumeGb * t.atRest;
+        var rCost = retrievedGb * t.retrieval;
+        var total = sCost + rCost;
+        costs[name] = {
+          storageCost: parseFloat(sCost.toFixed(2)),
+          retrievalCost: parseFloat(rCost.toFixed(2)),
+          totalCost: parseFloat(total.toFixed(2)),
+          minDays: t.minDays
+        };
+      });
+
+      var recommended = "Standard";
+      var matchPct = 95;
+      var reason = "";
+      var caveats = "";
+      var runnerUp = "Nearline";
+
+      if (accessFreq === "daily") {
+        recommended = "Standard";
+        matchPct = 98;
+        reason = "Standard storage is optimal for actively queried or streaming datasets with zero retrieval charges and no minimum retention commitment.";
+        caveats = "At-rest storage is $0.020/GB/mo. For data accessed less than once a month, consider lifecycle rules to transition to Nearline.";
+        runnerUp = "Nearline";
+      } else if (accessFreq === "monthly") {
+        recommended = "Nearline";
+        matchPct = 96;
+        reason = "Nearline halves at-rest storage costs to $0.010/GB/mo while retaining fast millisecond time-to-first-byte for data accessed ~once a month.";
+        caveats = "Enforces a 30-day minimum storage duration. Deleting or overwriting before 30 days incurs an early-deletion fee.";
+        runnerUp = costs.Standard.totalCost < costs.Nearline.totalCost ? "Standard" : "Coldline";
+      } else if (accessFreq === "quarterly") {
+        recommended = "Coldline";
+        matchPct = 94;
+        reason = "Coldline cuts storage costs by 80% to $0.004/GB/mo, making it ideal for quarterly reporting, backups, and secondary replicas.";
+        caveats = "Enforces a 90-day minimum storage duration with $0.02/GB data retrieval fees. Unplanned bulk reads can erase monthly savings.";
+        runnerUp = "Nearline";
+      } else if (accessFreq === "rare") {
+        recommended = "Archive";
+        matchPct = 99;
+        reason = "Archive storage delivers rock-bottom storage pricing at $0.0012/GB/mo ($1.20/TB/mo) for compliance, cold backups, and long-term disaster recovery.";
+        caveats = "Requires a 365-day minimum storage commitment and has a $0.05/GB retrieval charge. Recommended strictly for rarely touched data.";
+        runnerUp = "Coldline";
+      }
+
+      return {
+        recommendedTier: recommended,
+        matchPercent: matchPct,
+        reason: reason,
+        caveats: caveats,
+        runnerUp: runnerUp,
+        costs: costs
+      };
+    },
+
+    calculateDatabase: function (options) {
+      var opts = options || {};
+      var workload = opts.workloadType || "oltp-relational";
+      var scale = opts.scale || "small";
+      var latency = opts.latency || "single-digit-ms";
+
+      if (workload === "olap-analytics" || latency === "seconds-olap") {
+        return {
+          recommendedEngine: "BigQuery",
+          matchPercent: 98,
+          primaryStrength: "Serverless enterprise analytical data warehouse capable of scanning petabytes in seconds with ANSI SQL, Gemini data insights, and built-in ML.",
+          tradeOffs: "Not designed for single-row transactional point lookups (OLTP); slot reservation or on-demand query pricing applies.",
+          runnerUp: "Cloud Spanner"
+        };
+      }
+
+      if (workload === "global-distributed" || (workload === "oltp-relational" && scale === "massive")) {
+        return {
+          recommendedEngine: "Cloud Spanner",
+          matchPercent: 99,
+          primaryStrength: "Unlimited horizontal write scaling with synchronous multi-region ACID transactions, TrueTime hardware clocks, and 99.999% SLA.",
+          tradeOffs: "Higher base cost than Cloud SQL; requires schema indexing and primary key interleaving to avoid hot spots.",
+          runnerUp: "Cloud SQL"
+        };
+      }
+
+      if (workload === "nosql-kv") {
+        return {
+          recommendedEngine: "Cloud Bigtable",
+          matchPercent: 97,
+          primaryStrength: "Ultra-low sub-10ms read/write latency at millions of QPS for time-series, AdTech, telemetry, and IoT ingestion.",
+          tradeOffs: "No secondary indexes or multi-row ACID transactions; requires dedicated nodes with a minimum cluster size.",
+          runnerUp: "Firestore"
+        };
+      }
+
+      if (workload === "document") {
+        return {
+          recommendedEngine: "Firestore",
+          matchPercent: 96,
+          primaryStrength: "Flexible hierarchical JSON document model with real-time WebSocket listeners, automatic offline mobile sync, and automatic multi-region replication.",
+          tradeOffs: "Billed per document read/write/delete operation; continuous massive write streams are better suited for Bigtable.",
+          runnerUp: "Cloud Bigtable"
+        };
+      }
+
+      // Default OLTP relational
+      return {
+        recommendedEngine: "Cloud SQL",
+        matchPercent: 95,
+        primaryStrength: "Fully managed PostgreSQL, MySQL, and SQL Server with seamless read replica scaling, automated backups, and 99.95% HA.",
+        tradeOffs: "Vertical scaling limit per single primary node (up to 30TB storage); for multi-region horizontal ACID scale, upgrade to Cloud Spanner.",
+        runnerUp: "Cloud Spanner"
+      };
+    },
+
+    calculateCompute: function (options) {
+      var opts = options || {};
+      var nature = opts.workloadNature || "stateless-container";
+      var ops = opts.opsModel || "zero-ops";
+
+      if (nature === "stateless-container" || ops === "zero-ops") {
+        return {
+          recommendedPlatform: "Cloud Run",
+          matchPercent: 98,
+          primaryStrength: "Fully managed serverless container runtime that scales automatically from zero to thousands of instances in seconds with per-millisecond billing.",
+          tradeOffs: "Request timeout limit (up to 60 minutes); not designed for kernel-level OS modifications or bare-metal custom drivers.",
+          runnerUp: "Google Kubernetes Engine (GKE)"
+        };
+      }
+
+      if (nature === "complex-orchestration" || ops === "managed-k8s") {
+        return {
+          recommendedPlatform: "Google Kubernetes Engine (GKE)",
+          matchPercent: 96,
+          primaryStrength: "Production-grade Kubernetes with GKE Autopilot, multi-cluster service mesh, GPU nodepools, and custom ingress controllers.",
+          tradeOffs: "Requires Kubernetes mastery and ongoing cluster lifecycle maintenance.",
+          runnerUp: "Cloud Run"
+        };
+      }
+
+      if (nature === "event-handler") {
+        return {
+          recommendedPlatform: "Cloud Functions (2nd Gen)",
+          matchPercent: 95,
+          primaryStrength: "Single-purpose event handlers triggered directly from Eventarc, Pub/Sub, or Cloud Storage with zero server management.",
+          tradeOffs: "Cold starts can introduce latency for infrequently invoked functions; shared environment limits.",
+          runnerUp: "Cloud Run"
+        };
+      }
+
+      return {
+        recommendedPlatform: "Compute Engine",
+        matchPercent: 94,
+        primaryStrength: "Unrestricted root-level access to Linux and Windows virtual machines, custom vCPU/RAM ratios, GPUs, and persistent local SSDs.",
+        tradeOffs: "Full operational responsibility for OS patching, kernel upgrades, disk expansion, and auto-scaling health checks.",
+        runnerUp: "Google Kubernetes Engine (GKE)"
+      };
+    }
+  };
+
+  if (typeof window !== "undefined") {
+    window.gcloudcafeCalculator = calculatorEngine;
+  }
+
   /* ── Reader Personalization: Bookmarks & "Save for Later" Drawer ── */
   var BOOKMARKS_STORAGE_KEY = "gcloudcafe_saved_bookmarks";
 
