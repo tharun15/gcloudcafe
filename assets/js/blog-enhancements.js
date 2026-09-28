@@ -8966,7 +8966,345 @@ function renderPulses(pulses) {
   }
 
 
+  /* ── Reader Personalization: Bookmarks & "Save for Later" Drawer ── */
+  var BOOKMARKS_STORAGE_KEY = "gcloudcafe_saved_bookmarks";
+
+  function getSafeStorage(storageOverride) {
+    if (storageOverride) return storageOverride;
+    try {
+      if (typeof window !== "undefined" && window.localStorage) {
+        return window.localStorage;
+      }
+    } catch (e) {}
+    return null;
+  }
+
+  function normalizeUrl(url) {
+    if (!url) return "";
+    var clean = String(url).trim().split("?")[0].split("#")[0];
+    if (clean.length > 1 && clean.endsWith("/")) {
+      return clean.slice(0, -1);
+    }
+    return clean;
+  }
+
+  var bookmarksStore = {
+    getBookmarks: function (storageOverride) {
+      var storage = getSafeStorage(storageOverride);
+      if (!storage) return [];
+      try {
+        var raw = storage.getItem(BOOKMARKS_STORAGE_KEY);
+        if (!raw) return [];
+        var parsed = JSON.parse(raw);
+        if (!Array.isArray(parsed)) return [];
+        return parsed;
+      } catch (e) {
+        return [];
+      }
+    },
+
+    isArticleBookmarked: function (url, storageOverride) {
+      if (!url) return false;
+      var bookmarks = bookmarksStore.getBookmarks(storageOverride);
+      var target = normalizeUrl(url);
+      return bookmarks.some(function (b) {
+        return normalizeUrl(b.url) === target;
+      });
+    },
+
+    toggleBookmark: function (article, storageOverride) {
+      if (!article || !article.url) {
+        return { isSaved: false, bookmarks: [], count: 0 };
+      }
+      var storage = getSafeStorage(storageOverride);
+      var bookmarks = bookmarksStore.getBookmarks(storageOverride);
+      var target = normalizeUrl(article.url);
+      var existingIndex = bookmarks.findIndex(function (b) {
+        return normalizeUrl(b.url) === target;
+      });
+
+      var isSaved = false;
+      if (existingIndex > -1) {
+        bookmarks.splice(existingIndex, 1);
+        isSaved = false;
+      } else {
+        var sanitizedTitle = escapeHtml(article.title || "Untitled Article");
+        var sanitizedCategory = escapeHtml(article.category || "Cloud Engineering");
+        var sanitizedReadTime = escapeHtml(article.readTime || "5 min read");
+        var cleanUrl = String(article.url || "").trim();
+
+        bookmarks.unshift({
+          url: cleanUrl,
+          title: sanitizedTitle,
+          category: sanitizedCategory,
+          readTime: sanitizedReadTime,
+          savedAt: Date.now()
+        });
+        isSaved = true;
+      }
+
+      if (storage) {
+        try {
+          storage.setItem(BOOKMARKS_STORAGE_KEY, JSON.stringify(bookmarks));
+        } catch (e) {}
+      }
+
+      bookmarksStore.updateBadges(bookmarks.length);
+      bookmarksStore.updateToggleButtons();
+
+      return {
+        isSaved: isSaved,
+        bookmarks: bookmarks,
+        count: bookmarks.length
+      };
+    },
+
+    removeBookmark: function (url, storageOverride) {
+      var storage = getSafeStorage(storageOverride);
+      var bookmarks = bookmarksStore.getBookmarks(storageOverride);
+      var target = normalizeUrl(url);
+      var updated = bookmarks.filter(function (b) {
+        return normalizeUrl(b.url) !== target;
+      });
+
+      if (storage) {
+        try {
+          storage.setItem(BOOKMARKS_STORAGE_KEY, JSON.stringify(updated));
+        } catch (e) {}
+      }
+
+      bookmarksStore.updateBadges(updated.length);
+      bookmarksStore.updateToggleButtons();
+      bookmarksStore.renderDrawerBookmarks(updated, storageOverride);
+
+      return {
+        bookmarks: updated,
+        count: updated.length
+      };
+    },
+
+    clearAllBookmarks: function (storageOverride) {
+      var storage = getSafeStorage(storageOverride);
+      if (storage) {
+        try {
+          storage.setItem(BOOKMARKS_STORAGE_KEY, "[]");
+        } catch (e) {}
+      }
+      bookmarksStore.updateBadges(0);
+      bookmarksStore.updateToggleButtons();
+      bookmarksStore.renderDrawerBookmarks([], storageOverride);
+      return [];
+    },
+
+    updateBadges: function (count) {
+      var c = typeof count === "number" ? count : bookmarksStore.getBookmarks().length;
+      var badges = document.querySelectorAll("#bookmarks-header-count, [data-bookmarks-badge]");
+      badges.forEach(function (badge) {
+        badge.textContent = String(c);
+        if (c > 0) {
+          badge.classList.remove("hidden");
+        } else {
+          badge.classList.add("hidden");
+        }
+      });
+    },
+
+    updateToggleButtons: function () {
+      var buttons = document.querySelectorAll("[data-bookmark-btn]");
+      buttons.forEach(function (btn) {
+        var url = btn.getAttribute("data-article-url") || (typeof window !== "undefined" && window.location ? window.location.pathname : "");
+        var bookmarked = bookmarksStore.isArticleBookmarked(url);
+        var icon = btn.querySelector("i");
+        var text = btn.querySelector("[data-bookmark-btn-text]");
+
+        if (bookmarked) {
+          btn.classList.add("is-bookmarked", "text-red-500", "dark:text-red-400");
+          btn.setAttribute("aria-pressed", "true");
+          btn.setAttribute("title", "Remove from saved bookmarks");
+          if (icon) {
+            icon.classList.remove("fa-regular");
+            icon.classList.add("fa-solid");
+          }
+          if (text) {
+            text.textContent = "Saved";
+          }
+        } else {
+          btn.classList.remove("is-bookmarked", "text-red-500", "dark:text-red-400");
+          btn.setAttribute("aria-pressed", "false");
+          btn.setAttribute("title", "Save for later");
+          if (icon) {
+            icon.classList.remove("fa-solid");
+            icon.classList.add("fa-regular");
+          }
+          if (text) {
+            text.textContent = "Save for later";
+          }
+        }
+      });
+    },
+
+    renderDrawerBookmarks: function (bookmarksList, storageOverride) {
+      var list = document.getElementById("bookmarks-drawer-list");
+      var emptyState = document.getElementById("bookmarks-empty-state");
+      var drawerCount = document.getElementById("bookmarks-drawer-count");
+      var clearBtn = document.getElementById("bookmarks-clear-all");
+
+      var bookmarks = Array.isArray(bookmarksList)
+        ? bookmarksList
+        : bookmarksStore.getBookmarks(storageOverride);
+
+      if (drawerCount) {
+        drawerCount.textContent = bookmarks.length + (bookmarks.length === 1 ? " article" : " articles");
+      }
+
+      if (clearBtn) {
+        clearBtn.style.display = bookmarks.length > 0 ? "inline-flex" : "none";
+      }
+
+      if (!list || !emptyState) return;
+
+      if (!bookmarks || bookmarks.length === 0) {
+        list.innerHTML = "";
+        emptyState.classList.remove("hidden");
+        return;
+      }
+
+      emptyState.classList.add("hidden");
+      var html = "";
+      bookmarks.forEach(function (b) {
+        var cleanUrl = escapeHtml(b.url);
+        var cleanTitle = escapeHtml(b.title);
+        var cleanCat = escapeHtml(b.category || "Cloud Engineering");
+        var cleanTime = escapeHtml(b.readTime || "5 min read");
+
+        html +=
+          '<div class="bookmark-item group relative p-3.5 rounded-xl border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/70 hover:border-red-500/40 hover:shadow-md transition-all duration-200">' +
+            '<div class="flex items-start justify-between gap-3">' +
+              '<div class="flex-1 min-w-0">' +
+                '<div class="flex items-center gap-2 mb-1.5 flex-wrap">' +
+                  '<span class="inline-block text-[11px] font-semibold tracking-wider uppercase px-2 py-0.5 rounded-full bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-400 border border-red-200/60 dark:border-red-800/40">' + cleanCat + '</span>' +
+                  '<span class="text-xs text-slate-400 dark:text-slate-500 flex items-center gap-1"><i class="fa-regular fa-clock text-[10px]"></i>' + cleanTime + '</span>' +
+                '</div>' +
+                '<a href="' + cleanUrl + '" class="block text-sm font-semibold text-slate-900 dark:text-white hover:text-red-600 dark:hover:text-red-400 transition-colors line-clamp-2 leading-snug">' +
+                  cleanTitle +
+                '</a>' +
+              '</div>' +
+              '<button type="button" data-remove-bookmark="' + cleanUrl + '" class="text-slate-400 hover:text-red-500 dark:hover:text-red-400 p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" title="Remove bookmark" aria-label="Remove ' + cleanTitle + '">' +
+                '<i class="fa-solid fa-trash-can text-xs"></i>' +
+              '</button>' +
+            '</div>' +
+          '</div>';
+      });
+
+      list.innerHTML = html;
+
+      list.querySelectorAll("[data-remove-bookmark]").forEach(function (btn) {
+        btn.addEventListener("click", function (e) {
+          e.stopPropagation();
+          var url = btn.getAttribute("data-remove-bookmark");
+          bookmarksStore.removeBookmark(url, storageOverride);
+        });
+      });
+    }
+  };
+
+  if (typeof window !== "undefined") {
+    window.gcloudcafeBookmarks = bookmarksStore;
+  }
+
+  function initBookmarksSystem() {
+    var drawer = document.getElementById("bookmarks-drawer");
+    var backdrop = document.getElementById("bookmarks-drawer-backdrop");
+    var panel = document.getElementById("bookmarks-drawer-panel");
+    var triggers = document.querySelectorAll("[data-bookmarks-drawer-trigger]");
+    var closeButtons = document.querySelectorAll("[data-bookmarks-drawer-close]");
+    var clearAllBtn = document.getElementById("bookmarks-clear-all");
+
+    function openDrawer() {
+      if (!drawer) return;
+      bookmarksStore.renderDrawerBookmarks();
+      drawer.classList.remove("pointer-events-none", "opacity-0");
+      drawer.classList.add("opacity-100");
+      if (panel) {
+        panel.classList.remove("translate-x-full");
+      }
+      document.body.classList.add("overflow-hidden");
+    }
+
+    function closeDrawer() {
+      if (!drawer) return;
+      if (panel) {
+        panel.classList.add("translate-x-full");
+      }
+      drawer.classList.remove("opacity-100");
+      drawer.classList.add("opacity-0", "pointer-events-none");
+      document.body.classList.remove("overflow-hidden");
+    }
+
+    triggers.forEach(function (trigger) {
+      trigger.addEventListener("click", function (e) {
+        e.preventDefault();
+        openDrawer();
+      });
+    });
+
+    closeButtons.forEach(function (btn) {
+      btn.addEventListener("click", function (e) {
+        e.preventDefault();
+        closeDrawer();
+      });
+    });
+
+    if (backdrop) {
+      backdrop.addEventListener("click", closeDrawer);
+    }
+
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && drawer && !drawer.classList.contains("pointer-events-none")) {
+        closeDrawer();
+      }
+    });
+
+    if (clearAllBtn) {
+      clearAllBtn.addEventListener("click", function () {
+        if (confirm("Are you sure you want to clear all saved articles?")) {
+          bookmarksStore.clearAllBookmarks();
+        }
+      });
+    }
+
+    document.addEventListener("click", function (e) {
+      var btn = e.target.closest("[data-bookmark-btn]");
+      if (!btn) return;
+      e.preventDefault();
+      e.stopPropagation();
+
+      var article = {
+        url: btn.getAttribute("data-article-url") || window.location.pathname,
+        title: btn.getAttribute("data-article-title") || document.title,
+        category: btn.getAttribute("data-article-category") || "Cloud Engineering",
+        readTime: btn.getAttribute("data-article-readtime") || "5 min read"
+      };
+
+      bookmarksStore.toggleBookmark(article);
+    });
+
+    window.addEventListener("storage", function (e) {
+      if (e.key === BOOKMARKS_STORAGE_KEY) {
+        bookmarksStore.updateBadges();
+        bookmarksStore.updateToggleButtons();
+        if (drawer && !drawer.classList.contains("pointer-events-none")) {
+          bookmarksStore.renderDrawerBookmarks();
+        }
+      }
+    });
+
+    bookmarksStore.updateBadges();
+    bookmarksStore.updateToggleButtons();
+  }
+
   function initApp() {
+    initBookmarksSystem();
     initWeeklyOpinionPollSystem();
     initCommentsSystem();
     initCloudPulseSystem();
