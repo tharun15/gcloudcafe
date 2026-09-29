@@ -254,10 +254,18 @@
       wrapBtn.className = "code-action-btn code-wrap-btn blog-focus-ring";
       wrapBtn.setAttribute("aria-label", "Toggle line wrap");
       wrapBtn.setAttribute("title", "Toggle line wrap");
+      wrapBtn.setAttribute("aria-pressed", "false");
       wrapBtn.innerHTML = '<i class="fa-solid fa-arrows-left-right-to-line text-[11px]"></i>';
-      wrapBtn.addEventListener("click", function() {
-        pre.classList.toggle("code-pre-wrap");
-        wrapBtn.classList.toggle("is-active");
+      wrapBtn.addEventListener("click", function(e) {
+        if (e) {
+          e.preventDefault();
+          e.stopPropagation();
+        }
+        var isWrapped = pre.classList.toggle("code-pre-wrap");
+        wrapper.classList.toggle("code-pre-wrap", isWrapped);
+        wrapBtn.classList.toggle("is-active", isWrapped);
+        wrapBtn.setAttribute("aria-pressed", isWrapped ? "true" : "false");
+        wrapBtn.setAttribute("title", isWrapped ? "Line wrap ON (Click to unwrap)" : "Toggle line wrap");
       });
       actions.appendChild(wrapBtn);
 

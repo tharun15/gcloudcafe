@@ -380,9 +380,34 @@ pre code,
   }
 }
 
-.code-pre-wrap {
+.code-pre-wrap,
+.code-pre-wrap pre,
+.code-pre-wrap code,
+.code-pre-wrap span,
+.code-pre-wrap .line,
+.code-pre-wrap .cl,
+pre.code-pre-wrap,
+pre.code-pre-wrap code,
+pre.code-pre-wrap span,
+pre.code-pre-wrap .line,
+pre.code-pre-wrap .cl {
   white-space: pre-wrap !important;
   word-break: break-word !important;
+  overflow-wrap: anywhere !important;
+}
+
+.code-pre-wrap span[style*="display:flex"],
+.code-pre-wrap span[style*="display: flex"],
+pre.code-pre-wrap span[style*="display:flex"],
+pre.code-pre-wrap span[style*="display: flex"] {
+  display: inline-block !important;
+  width: 100% !important;
+  white-space: pre-wrap !important;
+}
+
+pre.code-pre-wrap,
+.code-block-wrapper.code-pre-wrap pre {
+  overflow-x: hidden !important;
 }
 
 .copy-code-btn {

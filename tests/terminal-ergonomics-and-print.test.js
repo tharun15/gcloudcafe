@@ -103,4 +103,16 @@ describe("Lab Mode Print & PDF Export Layout", () => {
     expect(customScss).toContain(".print-only");
     expect(customScss).toContain("page-break-inside: avoid");
   });
+
+  it("defines comprehensive code-pre-wrap and Chroma flex span overrides in custom.scss", () => {
+    const customScss = fs.readFileSync(
+      path.resolve(__dirname, "../assets/scss/custom.scss"),
+      "utf8"
+    );
+    expect(customScss).toContain(".code-pre-wrap");
+    expect(customScss).toContain("white-space: pre-wrap !important");
+    expect(customScss).toContain("overflow-wrap: anywhere !important");
+    expect(customScss).toContain("span[style*=\"display:flex\"]");
+    expect(customScss).toContain("overflow-x: hidden !important");
+  });
 });
