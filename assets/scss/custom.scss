@@ -43,12 +43,12 @@
   position: fixed;
   top: 0;
   left: 0;
-  height: 3.5px;
+  height: 3px;
   width: 0%;
   z-index: 9999;
   border-radius: 0 2px 2px 0;
-  background: linear-gradient(90deg, #ef4444, #f97316, #eab308);
-  box-shadow: 0 0 10px rgba(239, 68, 68, 0.6);
+  background: linear-gradient(90deg, #0284c7, #38bdf8);
+  box-shadow: 0 0 8px rgba(2, 132, 199, 0.35);
   transition: width 0.08s ease-out;
 }
 
@@ -66,7 +66,7 @@
 .blog-article-shell,
 .blog-sidebar-block,
 .post-feedback-widget {
-  @apply bg-body dark:bg-darkmode-theme-light rounded-3xl border border-border/80 p-6 shadow-sm transition duration-300 dark:border-darkmode-border/80 lg:p-8;
+  @apply bg-body dark:bg-darkmode-theme-light rounded-2xl border border-border/80 p-6 shadow-sm transition duration-300 dark:border-darkmode-border/80 lg:p-8;
 }
 
 .blog-hero {
@@ -75,7 +75,7 @@
 
 /* Blog Post Cards */
 .blog-card {
-  @apply bg-body dark:bg-darkmode-theme-light flex h-full flex-col overflow-hidden rounded-3xl border border-border/80 shadow-sm transition-all duration-300 dark:border-darkmode-border/80;
+  @apply bg-body dark:bg-darkmode-theme-light flex h-full flex-col overflow-hidden rounded-2xl border border-border/80 shadow-sm transition-all duration-300 dark:border-darkmode-border/80;
 
   &:hover {
     @apply -translate-y-1.5 shadow-xl border-primary/40 dark:border-darkmode-primary/40;
@@ -84,7 +84,7 @@
 
 .blog-card-media,
 .blog-hero-media {
-  @apply block overflow-hidden relative rounded-t-3xl bg-slate-100 dark:bg-slate-900/60 border-b border-border/40 dark:border-darkmode-border/40;
+  @apply block overflow-hidden relative rounded-t-2xl bg-slate-100 dark:bg-slate-900/60 border-b border-border/40 dark:border-darkmode-border/40;
   aspect-ratio: 16 / 9;
   width: 100%;
 
