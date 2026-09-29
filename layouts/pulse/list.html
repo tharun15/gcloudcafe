@@ -2,7 +2,7 @@
   <!-- Breadcrumbs -->
   <div class="bytedepth-container pt-6 pb-4">
     <nav class="flex items-center gap-2 text-sm font-medium text-slate-600 dark:text-slate-300" aria-label="Breadcrumb">
-      <a href="{{ site.Home.RelPermalink }}" class="text-slate-700 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-500 no-underline transition-colors flex items-center gap-1.5">
+      <a href="{{ site.Home.RelPermalink }}" class="text-slate-700 dark:text-slate-300 hover:text-sky-600 dark:hover:text-sky-400 no-underline transition-colors flex items-center gap-1.5">
         <i class="fa-solid fa-house text-xs text-slate-400 dark:text-slate-500" aria-hidden="true"></i>
         <span>Home</span>
       </a>
@@ -14,8 +14,8 @@
   <!-- Hero Banner (ByteDepth Standard) -->
   <div class="bytedepth-container pt-4 pb-8 border-b border-slate-200 dark:border-slate-800 mb-8">
     <div class="max-w-3xl">
-      <span class="font-mono text-xs font-black uppercase tracking-widest text-red-600 dark:text-red-500 flex items-center gap-2 mb-3">
-        <span class="inline-block w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
+      <span class="font-mono text-xs font-black uppercase tracking-widest text-sky-600 dark:text-sky-400 flex items-center gap-2 mb-3">
+        <span class="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
         LIVE NEWSROOM FEED
       </span>
       <h1 class="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-slate-900 dark:text-white mb-4">
@@ -62,7 +62,7 @@
           <!-- Dynamic Live Cards Grid -->
           <div data-cloud-pulse-feed class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="col-span-full text-center py-16 text-xs font-mono font-bold text-slate-500 dark:text-slate-400">
-              <i class="fa-solid fa-spinner fa-spin text-xl text-red-600 dark:text-red-500 mb-3 block"></i>
+              <i class="fa-solid fa-spinner fa-spin text-xl text-sky-600 dark:text-sky-400 mb-3 block"></i>
               Loading Live Cloud Pulse...
             </div>
           </div>
@@ -77,7 +77,7 @@
 <!-- Trending Topics & Tag Cloud -->
             <div class="rounded-xl sm:rounded-2xl p-6 bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-slate-800 shadow-sm">
               <div class="flex items-center gap-2 mb-3">
-                <i class="fa-solid fa-fire text-red-500 text-xs"></i>
+                <i class="fa-solid fa-fire text-sky-500 dark:text-sky-400 text-xs"></i>
                 <h3 class="font-mono text-xs font-bold uppercase tracking-widest text-slate-900 dark:text-white">
                   Trending Topics
                 </h3>
@@ -86,28 +86,28 @@
                 Filter newsroom feed by engineering domain:
               </p>
               <div class="flex flex-wrap gap-2">
-                <button data-pulse-filter="kubernetes" class="pulse-topic-pill px-2.5 py-1 rounded font-mono text-xs font-bold bg-slate-50 dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:text-red-600 dark:hover:text-red-500 hover:border-slate-400 dark:hover:border-slate-600 border border-slate-200 dark:border-slate-800 cursor-pointer transition-all">
+                <button data-pulse-filter="kubernetes" class="pulse-topic-pill px-2.5 py-1 rounded font-mono text-xs font-bold bg-slate-50 dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:text-sky-600 dark:hover:text-sky-400 hover:border-slate-400 dark:hover:border-slate-600 border border-slate-200 dark:border-slate-800 cursor-pointer transition-all">
                   #Kubernetes
                 </button>
-                <button data-pulse-filter="gcp" class="pulse-topic-pill px-2.5 py-1 rounded font-mono text-xs font-bold bg-slate-50 dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:text-red-600 dark:hover:text-red-500 hover:border-slate-400 dark:hover:border-slate-600 border border-slate-200 dark:border-slate-800 cursor-pointer transition-all">
+                <button data-pulse-filter="gcp" class="pulse-topic-pill px-2.5 py-1 rounded font-mono text-xs font-bold bg-slate-50 dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:text-sky-600 dark:hover:text-sky-400 hover:border-slate-400 dark:hover:border-slate-600 border border-slate-200 dark:border-slate-800 cursor-pointer transition-all">
                   #GoogleCloud
                 </button>
-                <button data-pulse-filter="aws" class="pulse-topic-pill px-2.5 py-1 rounded font-mono text-xs font-bold bg-slate-50 dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:text-red-600 dark:hover:text-red-500 hover:border-slate-400 dark:hover:border-slate-600 border border-slate-200 dark:border-slate-800 cursor-pointer transition-all">
+                <button data-pulse-filter="aws" class="pulse-topic-pill px-2.5 py-1 rounded font-mono text-xs font-bold bg-slate-50 dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:text-sky-600 dark:hover:text-sky-400 hover:border-slate-400 dark:hover:border-slate-600 border border-slate-200 dark:border-slate-800 cursor-pointer transition-all">
                   #AWS
                 </button>
-                <button data-pulse-filter="azure" class="pulse-topic-pill px-2.5 py-1 rounded font-mono text-xs font-bold bg-slate-50 dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:text-red-600 dark:hover:text-red-500 hover:border-slate-400 dark:hover:border-slate-600 border border-slate-200 dark:border-slate-800 cursor-pointer transition-all">
+                <button data-pulse-filter="azure" class="pulse-topic-pill px-2.5 py-1 rounded font-mono text-xs font-bold bg-slate-50 dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:text-sky-600 dark:hover:text-sky-400 hover:border-slate-400 dark:hover:border-slate-600 border border-slate-200 dark:border-slate-800 cursor-pointer transition-all">
                   #Azure
                 </button>
-                <button data-pulse-filter="openshift" class="pulse-topic-pill px-2.5 py-1 rounded font-mono text-xs font-bold bg-slate-50 dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:text-red-600 dark:hover:text-red-500 hover:border-slate-400 dark:hover:border-slate-600 border border-slate-200 dark:border-slate-800 cursor-pointer transition-all">
+                <button data-pulse-filter="openshift" class="pulse-topic-pill px-2.5 py-1 rounded font-mono text-xs font-bold bg-slate-50 dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:text-sky-600 dark:hover:text-sky-400 hover:border-slate-400 dark:hover:border-slate-600 border border-slate-200 dark:border-slate-800 cursor-pointer transition-all">
                   #OpenShift
                 </button>
-                <button data-pulse-filter="devops" class="pulse-topic-pill px-2.5 py-1 rounded font-mono text-xs font-bold bg-slate-50 dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:text-red-600 dark:hover:text-red-500 hover:border-slate-400 dark:hover:border-slate-600 border border-slate-200 dark:border-slate-800 cursor-pointer transition-all">
+                <button data-pulse-filter="devops" class="pulse-topic-pill px-2.5 py-1 rounded font-mono text-xs font-bold bg-slate-50 dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:text-sky-600 dark:hover:text-sky-400 hover:border-slate-400 dark:hover:border-slate-600 border border-slate-200 dark:border-slate-800 cursor-pointer transition-all">
                   #DevOps
                 </button>
-                <button data-pulse-filter="security" class="pulse-topic-pill px-2.5 py-1 rounded font-mono text-xs font-bold bg-slate-50 dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:text-red-600 dark:hover:text-red-500 hover:border-slate-400 dark:hover:border-slate-600 border border-slate-200 dark:border-slate-800 cursor-pointer transition-all">
+                <button data-pulse-filter="security" class="pulse-topic-pill px-2.5 py-1 rounded font-mono text-xs font-bold bg-slate-50 dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:text-sky-600 dark:hover:text-sky-400 hover:border-slate-400 dark:hover:border-slate-600 border border-slate-200 dark:border-slate-800 cursor-pointer transition-all">
                   #Security
                 </button>
-                <button data-pulse-filter="ai" class="pulse-topic-pill px-2.5 py-1 rounded font-mono text-xs font-bold bg-slate-50 dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:text-red-600 dark:hover:text-red-500 hover:border-slate-400 dark:hover:border-slate-600 border border-slate-200 dark:border-slate-800 cursor-pointer transition-all">
+                <button data-pulse-filter="ai" class="pulse-topic-pill px-2.5 py-1 rounded font-mono text-xs font-bold bg-slate-50 dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:text-sky-600 dark:hover:text-sky-400 hover:border-slate-400 dark:hover:border-slate-600 border border-slate-200 dark:border-slate-800 cursor-pointer transition-all">
                   #AI & GenAI
                 </button>
               </div>

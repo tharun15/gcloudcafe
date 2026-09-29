@@ -2,7 +2,7 @@
   <!-- Breadcrumbs -->
   <div class="bytedepth-container pt-6 pb-4">
     <nav class="flex items-center gap-2 text-sm font-medium text-slate-600 dark:text-slate-300" aria-label="Breadcrumb">
-      <a href="{{ site.Home.RelPermalink }}" class="text-slate-700 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-500 no-underline transition-colors flex items-center gap-1.5">
+      <a href="{{ site.Home.RelPermalink }}" class="text-slate-700 dark:text-slate-300 hover:text-sky-600 dark:hover:text-sky-400 no-underline transition-colors flex items-center gap-1.5">
         <i class="fa-solid fa-house text-xs text-slate-400 dark:text-slate-500" aria-hidden="true"></i>
         <span>Home</span>
       </a>
@@ -14,7 +14,7 @@
   <!-- Header -->
   <div class="bytedepth-container pt-4 pb-8 border-b border-slate-200 dark:border-slate-800 mb-10">
     <div class="max-w-3xl">
-      <span class="font-mono text-xs font-black uppercase tracking-widest text-red-600 dark:text-red-500 block mb-2">
+      <span class="font-mono text-xs font-black uppercase tracking-widest text-sky-600 dark:text-sky-400 block mb-2">
         Explore by topic
       </span>
       <h1 class="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-slate-900 dark:text-white mb-3">
@@ -33,7 +33,7 @@
         {{ range .Data.Terms.Alphabetical }}
           <a href="{{ .Page.RelPermalink }}" 
              class="border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0c1220] p-4 rounded-lg text-center hover:border-slate-400 dark:hover:border-slate-600 hover:shadow-xs transition-all no-underline block group">
-            <div class="font-mono text-xs font-bold text-slate-800 dark:text-slate-200 group-hover:text-red-600 dark:group-hover:text-red-500 transition-colors mb-1">
+            <div class="font-mono text-xs font-bold text-slate-800 dark:text-slate-200 group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors mb-1">
               {{ .Page.Title }}
             </div>
             <div class="font-mono text-[10px] text-slate-400">

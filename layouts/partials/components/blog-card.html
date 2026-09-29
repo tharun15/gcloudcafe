@@ -24,9 +24,9 @@
   {{ $badgeBg = "bg-purple-100 text-purple-700 dark:bg-purple-950/60 dark:text-purple-300" }}
 {{ end }}
 
-<article class="relative flex flex-col justify-between h-full rounded-xl overflow-hidden
-                bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-slate-800
-                hover:shadow-lg hover:border-slate-300 dark:hover:border-slate-700 transition-all duration-300 group">
+<article class="relative flex flex-col justify-between h-full rounded-2xl overflow-hidden
+                bg-white dark:bg-[#0c1222] border border-slate-200/90 dark:border-slate-800/80
+                hover:shadow-xl hover:border-sky-500/40 hover:-translate-y-1 transition-all duration-300 group">
   
   <div>
     <!-- 16:9 Aspect Video Thumbnail -->
@@ -61,7 +61,7 @@
             data-article-title="{{ $page.Title }}"
             data-article-category="{{ $firstCat }}"
             data-article-readtime="{{ $page.ReadingTime }} min read"
-            class="w-7 h-7 rounded-lg flex items-center justify-center text-slate-400 hover:text-red-500 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+            class="w-7 h-7 rounded-lg flex items-center justify-center text-slate-400 hover:text-sky-500 hover:bg-sky-500/10 dark:hover:bg-slate-800 transition-colors cursor-pointer"
             aria-label="Save {{ $page.Title }} for later"
             title="Save for later">
             <i class="fa-regular fa-bookmark text-xs"></i>
@@ -70,8 +70,8 @@
       </div>
 
       <!-- Headline -->
-      <h3 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white group-hover:text-red-600 dark:group-hover:text-red-500 transition-colors line-clamp-2 leading-snug mb-2.5">
-        <a href="{{ $page.RelPermalink }}" class="no-underline text-current hover:text-red-600 dark:hover:text-red-500">
+      <h3 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors line-clamp-2 leading-snug mb-2.5">
+        <a href="{{ $page.RelPermalink }}" class="no-underline text-current group-hover:text-sky-600 dark:group-hover:text-sky-400">
           {{ $page.Title }}
         </a>
       </h3>

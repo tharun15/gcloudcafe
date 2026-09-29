@@ -37,7 +37,7 @@
 
   <section class="pb-8 pt-2" aria-labelledby="featured-post-title">
     <div class="bytedepth-container">
-        <div class="border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0c1220] rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+        <div class="border border-slate-200/90 dark:border-slate-800/90 bg-white/95 dark:bg-[#0c1222]/95 backdrop-blur-md rounded-2xl overflow-hidden shadow-md hover:shadow-2xl hover:border-sky-500/40 transition-all duration-300 relative group">
         <div class="grid grid-cols-1 lg:grid-cols-2 min-h-[380px] lg:min-h-[440px]">
           
           <!-- Left Column: Visual Media with Spotlight badge -->
@@ -72,8 +72,8 @@
               </div>
 
               <!-- Title -->
-              <h1 id="featured-post-title" class="text-2xl sm:text-3xl lg:text-[32px] font-black text-slate-900 dark:text-white leading-[1.2] tracking-tight mb-4 hover:text-red-600 dark:hover:text-red-500 transition-colors">
-                <a href="{{ $page.RelPermalink }}" class="no-underline text-current hover:text-red-600 dark:hover:text-red-500">
+              <h1 id="featured-post-title" class="text-2xl sm:text-3xl lg:text-[32px] font-black text-slate-900 dark:text-white leading-[1.2] tracking-tight mb-4 group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors">
+                <a href="{{ $page.RelPermalink }}" class="no-underline text-current group-hover:text-sky-600 dark:group-hover:text-sky-400">
                   {{ $page.Title }}
                 </a>
               </h1>

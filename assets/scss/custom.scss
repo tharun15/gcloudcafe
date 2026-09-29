@@ -1831,3 +1831,13 @@ table {
 .ticker-marquee-wrapper:hover .ticker-marquee-content {
   animation-play-state: paused !important;
 }
+
+/* ── Ambient Radial Glow & Dark Mode Canvas (UI/UX Pro Max) ── */
+.dark body {
+  background-color: #060913;
+  background-image: 
+    radial-gradient(ellipse 90% 45% at 50% -5%, rgba(14, 165, 233, 0.08), transparent 70%),
+    radial-gradient(ellipse 60% 30% at 90% 12%, rgba(99, 102, 241, 0.04), transparent 60%);
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}

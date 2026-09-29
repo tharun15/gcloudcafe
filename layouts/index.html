@@ -45,7 +45,7 @@
 
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
         <!-- Path 1: Kubernetes & OpenShift -->
-        <a href="{{ `categories/kubernetes/` | relLangURL }}" class="p-3.5 rounded-xl bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-slate-800 hover:border-sky-500/60 dark:hover:border-sky-400/60 shadow-xs hover:shadow-md transition-all no-underline group flex flex-col justify-between">
+        <a href="{{ `categories/kubernetes/` | relLangURL }}" class="p-3.5 rounded-xl bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-slate-800 hover:border-sky-500/60 dark:hover:border-sky-400/60 shadow-xs hover:shadow-xl hover:-translate-y-1 transition-all duration-300 no-underline group flex flex-col justify-between">
           <div>
             <div class="flex items-center justify-between gap-2 mb-2">
               <span class="w-7 h-7 rounded-lg bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center text-xs shrink-0">
@@ -69,7 +69,7 @@
         </a>
 
         <!-- Path 2: Cloud Architecture -->
-        <a href="{{ `categories/google-cloud/` | relLangURL }}" class="p-3.5 rounded-xl bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-slate-800 hover:border-sky-500/60 dark:hover:border-sky-400/60 shadow-xs hover:shadow-md transition-all no-underline group flex flex-col justify-between">
+        <a href="{{ `categories/google-cloud/` | relLangURL }}" class="p-3.5 rounded-xl bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-slate-800 hover:border-sky-500/60 dark:hover:border-sky-400/60 shadow-xs hover:shadow-xl hover:-translate-y-1 transition-all duration-300 no-underline group flex flex-col justify-between">
           <div>
             <div class="flex items-center justify-between gap-2 mb-2">
               <span class="w-7 h-7 rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center text-xs shrink-0">
@@ -93,7 +93,7 @@
         </a>
 
         <!-- Path 3: Zero-Trust & TLS -->
-        <a href="{{ `categories/security/` | relLangURL }}" class="p-3.5 rounded-xl bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-slate-800 hover:border-sky-500/60 dark:hover:border-sky-400/60 shadow-xs hover:shadow-md transition-all no-underline group flex flex-col justify-between">
+        <a href="{{ `categories/security/` | relLangURL }}" class="p-3.5 rounded-xl bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-slate-800 hover:border-sky-500/60 dark:hover:border-sky-400/60 shadow-xs hover:shadow-xl hover:-translate-y-1 transition-all duration-300 no-underline group flex flex-col justify-between">
           <div>
             <div class="flex items-center justify-between gap-2 mb-2">
               <span class="w-7 h-7 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-xs shrink-0">
@@ -117,7 +117,7 @@
         </a>
 
         <!-- Path 4: Multi-Part Series & Labs -->
-        <a href="{{ `series/` | relLangURL }}" class="p-3.5 rounded-xl bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-slate-800 hover:border-sky-500/60 dark:hover:border-sky-400/60 shadow-xs hover:shadow-md transition-all no-underline group flex flex-col justify-between">
+        <a href="{{ `series/` | relLangURL }}" class="p-3.5 rounded-xl bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-slate-800 hover:border-sky-500/60 dark:hover:border-sky-400/60 shadow-xs hover:shadow-xl hover:-translate-y-1 transition-all duration-300 no-underline group flex flex-col justify-between">
           <div>
             <div class="flex items-center justify-between gap-2 mb-2">
               <span class="w-7 h-7 rounded-lg bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center text-xs shrink-0">
@@ -150,19 +150,19 @@
 
       <!-- Horizontal Category Tabs (ByteDepth Reference) -->
       {{ $categories := site.Taxonomies.categories }}
-      <div class="border-b border-slate-200 dark:border-slate-800 mb-8 sm:mb-10">
-        <div class="flex items-center gap-6 sm:gap-8 overflow-x-auto no-scrollbar py-1">
+      <div class="mb-8 sm:mb-10">
+        <div class="flex items-center gap-2.5 overflow-x-auto no-scrollbar py-2">
           <span class="sr-only">Topics</span>
           <a href="{{ `blog/` | relLangURL }}"
-             class="category-tab-active pb-3 -mb-px shrink-0 text-sm no-underline flex items-center gap-1.5 text-sky-600 dark:text-sky-400 border-b-2 border-sky-600 dark:border-sky-400 font-bold">
-            <span>All</span>
+             class="category-tab-active px-4 py-1.5 rounded-full text-xs font-mono font-bold bg-sky-500/15 text-sky-600 dark:text-sky-400 border border-sky-500/30 shadow-xs shrink-0 no-underline transition-all flex items-center gap-1.5">
+            <span>All Topics</span>
           </a>
-          {{/* Curate primary top categories matching ByteDepth tab density */}}
+          {{/* Curate primary top categories */}}
           {{ $primaryCats := slice "kubernetes" "security" "google-cloud" "devops" "openshift" "certifications" }}
           {{ range $catSlug := $primaryCats }}
             {{ with site.GetPage (printf "/categories/%s" $catSlug) }}
               <a href="{{ .RelPermalink }}"
-                 class="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white font-medium pb-3 -mb-px shrink-0 text-sm no-underline transition-colors flex items-center gap-1.5">
+                 class="px-4 py-1.5 rounded-full text-xs font-mono font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/70 border border-slate-200/80 dark:border-slate-800/80 shrink-0 no-underline transition-all flex items-center gap-1.5">
                 <span>{{ .Title }}</span>
               </a>
             {{ end }}

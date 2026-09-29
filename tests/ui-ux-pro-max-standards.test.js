@@ -8,10 +8,11 @@ describe('UI/UX Pro Max Design Standards & WCAG 2.2 Verification', () => {
   it('Issue 1 (Brand Harmony): ensures category tabs and pathway cards use cohesive sky-blue tokens rather than harsh red', () => {
     const indexHtml = fs.readFileSync(path.join(rootDir, 'layouts/index.html'), 'utf8');
     
-    // Category tabs
+    // Category capsule pill tabs
     expect(indexHtml).toContain('category-tab-active');
     expect(indexHtml).not.toContain('border-red-600 dark:border-red-500');
-    expect(indexHtml).toContain('text-sky-600 dark:text-sky-400 border-b-2 border-sky-600 dark:border-sky-400');
+    expect(indexHtml).toContain('text-sky-600 dark:text-sky-400');
+    expect(indexHtml).toContain('rounded-full');
 
     // Pathway cards
     expect(indexHtml).not.toContain('hover:border-red-500/60');
@@ -21,6 +22,16 @@ describe('UI/UX Pro Max Design Standards & WCAG 2.2 Verification', () => {
     // Newsletter section
     expect(indexHtml).not.toContain('bg-red-600 hover:bg-red-700');
     expect(indexHtml).toContain('bg-sky-600 hover:bg-sky-700');
+
+    // Hero and card hovers
+    const heroHtml = fs.readFileSync(path.join(rootDir, 'layouts/partials/components/blog-hero.html'), 'utf8');
+    expect(heroHtml).not.toContain('hover:text-red-600');
+    expect(heroHtml).toContain('group-hover:text-sky-600 dark:group-hover:text-sky-400');
+
+    const cardHtml = fs.readFileSync(path.join(rootDir, 'layouts/partials/components/blog-card.html'), 'utf8');
+    expect(cardHtml).not.toContain('hover:text-red-600');
+    expect(cardHtml).not.toContain('hover:text-red-500');
+    expect(cardHtml).toContain('group-hover:text-sky-600 dark:group-hover:text-sky-400');
   });
 
   it('Issue 2 (Typography): enforces text-wrap: balance and optical tracking (-0.02em) on article headings', () => {
