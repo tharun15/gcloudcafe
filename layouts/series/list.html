@@ -10,7 +10,7 @@
   <div class="bytedepth-container pt-6 pb-4">
     <div class="flex items-center justify-between">
       <nav class="flex items-center gap-2 text-sm font-medium text-slate-600 dark:text-slate-300" aria-label="Breadcrumb">
-        <a href="{{ site.Home.RelPermalink }}" class="text-slate-700 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-500 no-underline transition-colors flex items-center gap-1.5">
+        <a href="{{ site.Home.RelPermalink }}" class="text-slate-700 dark:text-slate-300 hover:text-sky-600 dark:hover:text-sky-400 no-underline transition-colors flex items-center gap-1.5">
           <i class="fa-solid fa-house text-xs text-slate-400 dark:text-slate-500" aria-hidden="true"></i>
           <span>Home</span>
         </a>
@@ -27,7 +27,7 @@
   <!-- Series Hero Header (ByteDepth Standard) -->
   <div class="bytedepth-container pt-4 pb-8 border-b border-slate-200 dark:border-slate-800 mb-8">
     <div class="max-w-3xl">
-      <span class="font-mono text-xs font-black uppercase tracking-widest text-red-600 dark:text-red-500 flex items-center gap-2 mb-3">
+      <span class="font-mono text-xs font-black uppercase tracking-widest text-sky-600 dark:text-sky-400 flex items-center gap-2 mb-3">
         <i class="fa-solid fa-layer-group text-[11px]"></i>
         CURATED MASTERCLASS SERIES
       </span>
@@ -99,7 +99,7 @@
                   </div>
 
                   <h2 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight mb-3">
-                    <a href="{{ $part1.RelPermalink }}" class="no-underline text-inherit hover:text-red-600 dark:hover:text-red-500 transition-colors">
+                    <a href="{{ $part1.RelPermalink }}" class="no-underline text-inherit hover:text-sky-600 dark:hover:text-sky-400 transition-colors">
                       {{ .Key }}
                     </a>
                   </h2>
@@ -120,8 +120,8 @@
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
                       {{ range $idx, $ep := $sorted }}
                         <a href="{{ $ep.RelPermalink }}" class="p-3 rounded-lg bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 hover:border-slate-400 dark:hover:border-slate-600 text-xs no-underline flex flex-col justify-between transition-all group/ep">
-                          <span class="font-mono text-xs font-bold text-red-600 dark:text-red-500 mb-1 uppercase">Part {{ add $idx 1 }}</span>
-                          <span class="font-bold text-slate-900 dark:text-white line-clamp-1 group-hover/ep:text-red-600 dark:group-hover/ep:text-red-500 transition-colors">{{ $ep.Title }}</span>
+                          <span class="font-mono text-xs font-bold text-sky-600 dark:text-sky-400 mb-1 uppercase">Part {{ add $idx 1 }}</span>
+                          <span class="font-bold text-slate-900 dark:text-white line-clamp-1 group-hover/ep:text-sky-600 dark:group-hover/ep:text-sky-400 transition-colors">{{ $ep.Title }}</span>
                           <span class="font-mono text-[10px] text-slate-500 dark:text-slate-400 mt-2 flex items-center gap-1">
                             <i class="fa-regular fa-clock text-[9px]"></i> {{ $ep.ReadingTime }} min
                           </span>
@@ -208,7 +208,7 @@
             {{/* Series Card Body */}}
             <div class="p-5 flex flex-col flex-grow justify-between">
               <div>
-                <h3 class="text-base font-bold tracking-tight text-slate-900 dark:text-white mb-2 group-hover:text-red-600 dark:group-hover:text-red-500 transition-colors line-clamp-2 leading-snug">
+                <h3 class="text-base font-bold tracking-tight text-slate-900 dark:text-white mb-2 group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors line-clamp-2 leading-snug">
                   <a href="{{ $part1.RelPermalink }}" class="no-underline text-inherit">
                     {{ .Key }}
                   </a>
@@ -226,7 +226,7 @@
                 <details class="series-card-drawer group/drawer mb-4 border border-slate-200 dark:border-slate-800 rounded-lg p-2.5 bg-slate-50 dark:bg-slate-900/50">
                   <summary class="flex items-center justify-between font-mono text-[11px] font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 cursor-pointer select-none">
                     <span class="flex items-center gap-1.5">
-                      <i class="fa-solid fa-list-ol text-red-600 dark:text-red-500 text-[10px]"></i> Episodes ({{ $totalParts }})
+                      <i class="fa-solid fa-list-ol text-sky-600 dark:text-sky-400 text-[10px]"></i> Episodes ({{ $totalParts }})
                     </span>
                     <span class="transition-transform duration-300 group-open/drawer:rotate-180 text-slate-400">
                       <i class="fa-solid fa-chevron-down text-[9px]"></i>
@@ -240,7 +240,7 @@
                           <span class="w-4 h-4 rounded flex items-center justify-center font-mono text-[10px] font-bold shrink-0 bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300">
                             {{ add $idx 1 }}
                           </span>
-                          <span class="truncate text-xs font-medium group-hover/item:text-red-600 dark:group-hover/item:text-red-500 transition-colors">
+                          <span class="truncate text-xs font-medium group-hover/item:text-sky-600 dark:group-hover/item:text-sky-400 transition-colors">
                             {{ $p.Title }}
                           </span>
                         </div>
@@ -255,7 +255,7 @@
 
               {{/* Footer CTA Button */}}
               <div class="pt-3 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between gap-3">
-                <a href="{{ $part1.RelPermalink }}" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white font-mono text-xs font-bold transition-colors no-underline shadow-xs cursor-pointer">
+                <a href="{{ $part1.RelPermalink }}" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-sky-600 hover:bg-sky-700 dark:bg-sky-500 dark:hover:bg-sky-600 text-white font-mono text-xs font-bold transition-colors no-underline shadow-xs cursor-pointer">
                   <span>Start Part 1</span>
                   <i class="fa-solid fa-play text-[9px]"></i>
                 </a>

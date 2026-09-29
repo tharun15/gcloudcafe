@@ -13,21 +13,21 @@
       <!-- Breadcrumbs -->
       <nav aria-label="breadcrumb" class="mb-6 pt-2">
         <div class="flex items-center gap-2 text-sm font-medium text-slate-600 dark:text-slate-300 flex-wrap">
-          <a href="{{ site.Home.RelPermalink }}" class="text-slate-700 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-500 no-underline transition-colors flex items-center gap-1.5">
+          <a href="{{ site.Home.RelPermalink }}" class="text-slate-700 dark:text-slate-300 hover:text-sky-600 dark:hover:text-sky-400 no-underline transition-colors flex items-center gap-1.5">
             <i class="fa-solid fa-house text-xs text-slate-400 dark:text-slate-500" aria-hidden="true"></i>
             <span>Home</span>
           </a>
           <span class="text-slate-300 dark:text-slate-700">/</span>
-          <a href="{{ `blog/` | relLangURL }}" class="text-slate-700 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-500 no-underline transition-colors">Articles</a>
+          <a href="{{ `blog/` | relLangURL }}" class="text-slate-700 dark:text-slate-300 hover:text-sky-600 dark:hover:text-sky-400 no-underline transition-colors">Articles</a>
           {{ with .Params.series }}
             <span class="text-slate-300 dark:text-slate-700">/</span>
-            <a href="{{ `series/` | relLangURL }}" class="text-slate-700 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-500 no-underline transition-colors">Series</a>
+            <a href="{{ `series/` | relLangURL }}" class="text-slate-700 dark:text-slate-300 hover:text-sky-600 dark:hover:text-sky-400 no-underline transition-colors">Series</a>
             <span class="text-slate-300 dark:text-slate-700">/</span>
             <span class="text-slate-900 dark:text-white font-semibold truncate max-w-xs">{{ . }}</span>
           {{ else }}
             {{ if .Params.categories }}
               <span class="text-slate-300 dark:text-slate-700">/</span>
-              <a href="{{ `categories/` | relLangURL }}{{ index .Params.categories 0 | urlize | lower }}/" class="text-slate-700 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-500 no-underline transition-colors" aria-current="page">
+              <a href="{{ `categories/` | relLangURL }}{{ index .Params.categories 0 | urlize | lower }}/" class="text-slate-700 dark:text-slate-300 hover:text-sky-600 dark:hover:text-sky-400 no-underline transition-colors" aria-current="page">
                 {{ index .Params.categories 0 | humanize }}
               </a>
             {{ end }}

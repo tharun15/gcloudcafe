@@ -90,28 +90,28 @@
             Access Frequency:
           </label>
           <div class="grid grid-cols-2 gap-2 text-xs font-medium">
-            <label class="calc-choice-chip flex items-center gap-2 p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 cursor-pointer hover:border-red-500/50 transition-all">
+            <label class="calc-choice-chip flex items-center gap-2 p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 cursor-pointer hover:border-sky-500/50 dark:hover:border-sky-400/50 transition-all">
               <input type="radio" name="{{ $id }}-freq" value="daily" checked class="accent-red-600">
               <div>
                 <span class="block font-semibold text-slate-900 dark:text-white">Daily / Active</span>
                 <span class="text-[10px] text-slate-500">Continuous reads</span>
               </div>
             </label>
-            <label class="calc-choice-chip flex items-center gap-2 p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 cursor-pointer hover:border-red-500/50 transition-all">
+            <label class="calc-choice-chip flex items-center gap-2 p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 cursor-pointer hover:border-sky-500/50 dark:hover:border-sky-400/50 transition-all">
               <input type="radio" name="{{ $id }}-freq" value="monthly" class="accent-red-600">
               <div>
                 <span class="block font-semibold text-slate-900 dark:text-white">Monthly</span>
                 <span class="text-[10px] text-slate-500">~1x per 30 days</span>
               </div>
             </label>
-            <label class="calc-choice-chip flex items-center gap-2 p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 cursor-pointer hover:border-red-500/50 transition-all">
+            <label class="calc-choice-chip flex items-center gap-2 p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 cursor-pointer hover:border-sky-500/50 dark:hover:border-sky-400/50 transition-all">
               <input type="radio" name="{{ $id }}-freq" value="quarterly" class="accent-red-600">
               <div>
                 <span class="block font-semibold text-slate-900 dark:text-white">Quarterly</span>
                 <span class="text-[10px] text-slate-500">~1x per 90 days</span>
               </div>
             </label>
-            <label class="calc-choice-chip flex items-center gap-2 p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 cursor-pointer hover:border-red-500/50 transition-all">
+            <label class="calc-choice-chip flex items-center gap-2 p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 cursor-pointer hover:border-sky-500/50 dark:hover:border-sky-400/50 transition-all">
               <input type="radio" name="{{ $id }}-freq" value="rare" class="accent-red-600">
               <div>
                 <span class="block font-semibold text-slate-900 dark:text-white">Rare / Disaster</span>
@@ -146,35 +146,35 @@
             Primary Workload Pattern:
           </label>
           <div class="space-y-2 text-xs font-medium">
-            <label class="calc-choice-chip flex items-center gap-2.5 p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 cursor-pointer hover:border-red-500/50 transition-all">
+            <label class="calc-choice-chip flex items-center gap-2.5 p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 cursor-pointer hover:border-sky-500/50 dark:hover:border-sky-400/50 transition-all">
               <input type="radio" name="{{ $id }}-db-workload" value="oltp-relational" checked class="accent-red-600">
               <div>
                 <span class="block font-semibold text-slate-900 dark:text-white">Relational OLTP (SQL / ACID)</span>
                 <span class="text-[10px] text-slate-500">Standard transactions, normalized schemas, PostgreSQL/MySQL</span>
               </div>
             </label>
-            <label class="calc-choice-chip flex items-center gap-2.5 p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 cursor-pointer hover:border-red-500/50 transition-all">
+            <label class="calc-choice-chip flex items-center gap-2.5 p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 cursor-pointer hover:border-sky-500/50 dark:hover:border-sky-400/50 transition-all">
               <input type="radio" name="{{ $id }}-db-workload" value="olap-analytics" class="accent-red-600">
               <div>
                 <span class="block font-semibold text-slate-900 dark:text-white">Analytical OLAP (Warehouse / BI)</span>
                 <span class="text-[10px] text-slate-500">Complex aggregations, terabyte/petabyte SQL scans</span>
               </div>
             </label>
-            <label class="calc-choice-chip flex items-center gap-2.5 p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 cursor-pointer hover:border-red-500/50 transition-all">
+            <label class="calc-choice-chip flex items-center gap-2.5 p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 cursor-pointer hover:border-sky-500/50 dark:hover:border-sky-400/50 transition-all">
               <input type="radio" name="{{ $id }}-db-workload" value="nosql-kv" class="accent-red-600">
               <div>
                 <span class="block font-semibold text-slate-900 dark:text-white">High-Throughput NoSQL Key-Value</span>
                 <span class="text-[10px] text-slate-500">Sub-10ms writes/reads, millions QPS, time-series/IoT</span>
               </div>
             </label>
-            <label class="calc-choice-chip flex items-center gap-2.5 p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 cursor-pointer hover:border-red-500/50 transition-all">
+            <label class="calc-choice-chip flex items-center gap-2.5 p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 cursor-pointer hover:border-sky-500/50 dark:hover:border-sky-400/50 transition-all">
               <input type="radio" name="{{ $id }}-db-workload" value="document" class="accent-red-600">
               <div>
                 <span class="block font-semibold text-slate-900 dark:text-white">Document / Mobile Store</span>
                 <span class="text-[10px] text-slate-500">Hierarchical JSON, real-time listeners, offline mobile sync</span>
               </div>
             </label>
-            <label class="calc-choice-chip flex items-center gap-2.5 p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 cursor-pointer hover:border-red-500/50 transition-all">
+            <label class="calc-choice-chip flex items-center gap-2.5 p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 cursor-pointer hover:border-sky-500/50 dark:hover:border-sky-400/50 transition-all">
               <input type="radio" name="{{ $id }}-db-workload" value="global-distributed" class="accent-red-600">
               <div>
                 <span class="block font-semibold text-slate-900 dark:text-white">Global Multi-Region ACID</span>
@@ -189,15 +189,15 @@
             Anticipated Data Scale:
           </label>
           <div class="grid grid-cols-3 gap-2 text-xs text-center font-medium">
-            <label class="calc-choice-chip p-2 rounded-xl border border-slate-200 dark:border-slate-800 cursor-pointer hover:border-red-500/50 block transition-all">
+            <label class="calc-choice-chip p-2 rounded-xl border border-slate-200 dark:border-slate-800 cursor-pointer hover:border-sky-500/50 dark:hover:border-sky-400/50 block transition-all">
               <input type="radio" name="{{ $id }}-db-scale" value="small" checked class="accent-red-600 mb-1">
               <span class="block text-[11px] font-semibold text-slate-900 dark:text-white">&lt; 1 TB</span>
             </label>
-            <label class="calc-choice-chip p-2 rounded-xl border border-slate-200 dark:border-slate-800 cursor-pointer hover:border-red-500/50 block transition-all">
+            <label class="calc-choice-chip p-2 rounded-xl border border-slate-200 dark:border-slate-800 cursor-pointer hover:border-sky-500/50 dark:hover:border-sky-400/50 block transition-all">
               <input type="radio" name="{{ $id }}-db-scale" value="medium" class="accent-red-600 mb-1">
               <span class="block text-[11px] font-semibold text-slate-900 dark:text-white">1 - 30 TB</span>
             </label>
-            <label class="calc-choice-chip p-2 rounded-xl border border-slate-200 dark:border-slate-800 cursor-pointer hover:border-red-500/50 block transition-all">
+            <label class="calc-choice-chip p-2 rounded-xl border border-slate-200 dark:border-slate-800 cursor-pointer hover:border-sky-500/50 dark:hover:border-sky-400/50 block transition-all">
               <input type="radio" name="{{ $id }}-db-scale" value="massive" class="accent-red-600 mb-1">
               <span class="block text-[11px] font-semibold text-slate-900 dark:text-white">&gt; 30 TB / PB</span>
             </label>
@@ -212,28 +212,28 @@
             Workload Architecture:
           </label>
           <div class="space-y-2 text-xs font-medium">
-            <label class="calc-choice-chip flex items-center gap-2.5 p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 cursor-pointer hover:border-red-500/50 transition-all">
+            <label class="calc-choice-chip flex items-center gap-2.5 p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 cursor-pointer hover:border-sky-500/50 dark:hover:border-sky-400/50 transition-all">
               <input type="radio" name="{{ $id }}-compute-nature" value="stateless-container" checked class="accent-red-600">
               <div>
                 <span class="block font-semibold text-slate-900 dark:text-white">Stateless Container / HTTP API</span>
                 <span class="text-[10px] text-slate-500">Microservices, web applications, rapid autoscaling</span>
               </div>
             </label>
-            <label class="calc-choice-chip flex items-center gap-2.5 p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 cursor-pointer hover:border-red-500/50 transition-all">
+            <label class="calc-choice-chip flex items-center gap-2.5 p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 cursor-pointer hover:border-sky-500/50 dark:hover:border-sky-400/50 transition-all">
               <input type="radio" name="{{ $id }}-compute-nature" value="complex-orchestration" class="accent-red-600">
               <div>
                 <span class="block font-semibold text-slate-900 dark:text-white">Complex Orchestration / Service Mesh</span>
                 <span class="text-[10px] text-slate-500">StatefulSets, DaemonSets, custom ingress, sidecars</span>
               </div>
             </label>
-            <label class="calc-choice-chip flex items-center gap-2.5 p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 cursor-pointer hover:border-red-500/50 transition-all">
+            <label class="calc-choice-chip flex items-center gap-2.5 p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 cursor-pointer hover:border-sky-500/50 dark:hover:border-sky-400/50 transition-all">
               <input type="radio" name="{{ $id }}-compute-nature" value="event-handler" class="accent-red-600">
               <div>
                 <span class="block font-semibold text-slate-900 dark:text-white">Event-Driven Micro-Handler</span>
                 <span class="text-[10px] text-slate-500">Async processing triggered by Pub/Sub, Storage, or Eventarc</span>
               </div>
             </label>
-            <label class="calc-choice-chip flex items-center gap-2.5 p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 cursor-pointer hover:border-red-500/50 transition-all">
+            <label class="calc-choice-chip flex items-center gap-2.5 p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 cursor-pointer hover:border-sky-500/50 dark:hover:border-sky-400/50 transition-all">
               <input type="radio" name="{{ $id }}-compute-nature" value="traditional-vm" class="accent-red-600">
               <div>
                 <span class="block font-semibold text-slate-900 dark:text-white">Traditional Virtual Machine</span>
@@ -248,15 +248,15 @@
             Operational Management Preference:
           </label>
           <div class="grid grid-cols-3 gap-2 text-xs text-center font-medium">
-            <label class="calc-choice-chip p-2 rounded-xl border border-slate-200 dark:border-slate-800 cursor-pointer hover:border-red-500/50 block transition-all">
+            <label class="calc-choice-chip p-2 rounded-xl border border-slate-200 dark:border-slate-800 cursor-pointer hover:border-sky-500/50 dark:hover:border-sky-400/50 block transition-all">
               <input type="radio" name="{{ $id }}-compute-ops" value="zero-ops" checked class="accent-red-600 mb-1">
               <span class="block text-[11px] font-semibold text-slate-900 dark:text-white">Zero Ops</span>
             </label>
-            <label class="calc-choice-chip p-2 rounded-xl border border-slate-200 dark:border-slate-800 cursor-pointer hover:border-red-500/50 block transition-all">
+            <label class="calc-choice-chip p-2 rounded-xl border border-slate-200 dark:border-slate-800 cursor-pointer hover:border-sky-500/50 dark:hover:border-sky-400/50 block transition-all">
               <input type="radio" name="{{ $id }}-compute-ops" value="managed-k8s" class="accent-red-600 mb-1">
               <span class="block text-[11px] font-semibold text-slate-900 dark:text-white">Managed K8s</span>
             </label>
-            <label class="calc-choice-chip p-2 rounded-xl border border-slate-200 dark:border-slate-800 cursor-pointer hover:border-red-500/50 block transition-all">
+            <label class="calc-choice-chip p-2 rounded-xl border border-slate-200 dark:border-slate-800 cursor-pointer hover:border-sky-500/50 dark:hover:border-sky-400/50 block transition-all">
               <input type="radio" name="{{ $id }}-compute-ops" value="full-control" class="accent-red-600 mb-1">
               <span class="block text-[11px] font-semibold text-slate-900 dark:text-white">Full OS</span>
             </label>
