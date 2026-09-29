@@ -84,6 +84,72 @@
     update();
   }
 
+  /* ── Terminal Ergonomics: Clean Shell Prompts ($ / #) on Copy ── */
+  function cleanShellSnippet(text, language) {
+    if (!text) return "";
+    var l = (language || "").toLowerCase();
+    var isShell = /^(bash|sh|shell|zsh|console|terminal)$/i.test(l);
+    var isNonShellWithHashComments = /^(yaml|yml|python|py|terraform|tf|hcl|dockerfile|docker|sql|ruby|rb|perl|pl|conf|ini|toml)$/i.test(l);
+    var lines = text.split("\n");
+
+    if (isNonShellWithHashComments) {
+      // Non-shell language with hash comments: ONLY strip lines if they explicitly start with $ prompt
+      var hasDollarPrompt = lines.some(function(line) { return /^\s*\$\s+/.test(line); });
+      if (hasDollarPrompt) {
+        return lines.map(function(line) {
+          return line.replace(/^\s*\$\s+/, "");
+        }).join("\n");
+      }
+      return text;
+    }
+
+    // For shell snippets: strip both $ and # prompts
+    var hasPrompt = isShell || lines.some(function(line) { return /^\s*[$#]\s+/.test(line); });
+    if (hasPrompt) {
+      return lines.map(function(line) {
+        return line.replace(/^\s*[$#]\s+/, "");
+      }).join("\n");
+    }
+    return text;
+  }
+
+  /* ── File Download Helper for Config Snippets ── */
+  function getSnippetFilename(language, headerText) {
+    var l = (language || "").toLowerCase();
+    if (headerText && /\.[a-z0-9]+$/i.test(headerText.trim())) {
+      return headerText.trim();
+    }
+    if (l === "yaml" || l === "yml") return "manifest.yaml";
+    if (l === "terraform" || l === "tf" || l === "hcl") return "main.tf";
+    if (l === "bash" || l === "sh" || l === "shell" || l === "zsh") return "script.sh";
+    if (l === "dockerfile" || l === "docker") return "Dockerfile";
+    if (l === "sql") return "query.sql";
+    if (l === "json") return "config.json";
+    if (l === "python" || l === "py") return "script.py";
+    return "snippet.txt";
+  }
+
+  function downloadSnippet(text, language, headerText) {
+    var filename = getSnippetFilename(language, headerText);
+    var blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(function() {
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }, 100);
+  }
+
+  if (typeof window !== "undefined") {
+    window.cleanShellSnippet = cleanShellSnippet;
+    window.getSnippetFilename = getSnippetFilename;
+    window.downloadSnippet = downloadSnippet;
+  }
+
   /* ── Developer-Grade Code Blocks with Icons, Tabs, and Glowing Copy ── */
   function initCopyCode() {
     var blocks = document.querySelectorAll("pre");
@@ -179,11 +245,46 @@
 
       header.innerHTML = '<div class="flex items-center">' + badgeHtml + lineCountHtml + '</div>';
 
+      var actions = document.createElement("div");
+      actions.className = "code-header-actions flex items-center gap-1.5";
+
+      // 1. Line-wrap toggle button
+      var wrapBtn = document.createElement("button");
+      wrapBtn.type = "button";
+      wrapBtn.className = "code-action-btn code-wrap-btn blog-focus-ring";
+      wrapBtn.setAttribute("aria-label", "Toggle line wrap");
+      wrapBtn.setAttribute("title", "Toggle line wrap");
+      wrapBtn.innerHTML = '<i class="fa-solid fa-arrows-left-right-to-line text-[11px]"></i>';
+      wrapBtn.addEventListener("click", function() {
+        pre.classList.toggle("code-pre-wrap");
+        wrapBtn.classList.toggle("is-active");
+      });
+      actions.appendChild(wrapBtn);
+
+      // 2. Download button for config files and scripts
+      var isDownloadable = /^(yaml|yml|terraform|tf|hcl|dockerfile|docker|sql|json|python|py|bash|sh|shell)$/i.test(lang || "") || filename;
+      if (isDownloadable) {
+        var dlBtn = document.createElement("button");
+        dlBtn.type = "button";
+        dlBtn.className = "code-action-btn code-download-btn blog-focus-ring";
+        dlBtn.setAttribute("aria-label", "Download snippet as file");
+        dlBtn.setAttribute("title", "Download " + getSnippetFilename(lang, filename));
+        dlBtn.innerHTML = '<i class="fa-solid fa-download text-[11px]"></i>';
+        dlBtn.addEventListener("click", function() {
+          downloadSnippet(activeCopyText, lang, filename);
+        });
+        actions.appendChild(dlBtn);
+      }
+
+      // 3. Copy button with smart shell stripping
       var btn = document.createElement("button");
+      btn.type = "button";
       btn.className = "copy-code-btn blog-focus-ring";
       btn.setAttribute("aria-label", "Copy code to clipboard");
       btn.innerHTML = '<i class="fa-regular fa-copy"></i> Copy';
-      header.appendChild(btn);
+      actions.appendChild(btn);
+
+      header.appendChild(actions);
 
       wrapper.appendChild(header);
 
@@ -228,7 +329,7 @@
       wrapper.appendChild(pre);
 
       btn.addEventListener("click", function () {
-        var text = activeCopyText;
+        var text = cleanShellSnippet(activeCopyText, lang);
         if (!navigator.clipboard) {
           fallbackCopy(text, btn);
           return;
@@ -1378,11 +1479,22 @@
     });
   }
 
+  /* ── Lab Mode: Print / Export PDF Action Handler ── */
+  function initPrintLabButtons() {
+    var printBtns = document.querySelectorAll("[data-print-article-btn]");
+    printBtns.forEach(function(btn) {
+      btn.addEventListener("click", function(e) {
+        e.preventDefault();
+        window.print();
+      });
+    });
+  }
+
   function init() {
-    initCloudDecisionCalculators();
     initHeaderScroll();
     initReadingProgress();
     initCopyCode();
+    initPrintLabButtons();
     initScrollToTop();
     initActiveTocTracking();
     initCommandPalette();
@@ -9349,6 +9461,7 @@
   }
 
   function initCloudDecisionCalculators() {
+    if (typeof calculatorEngine === "undefined") return;
     var widgets = document.querySelectorAll("[data-cloud-calculator]");
     if (!widgets.length) return;
 
@@ -9859,56 +9972,3 @@
     initApp();
   }
 })();
-
-
-
-  /* ── Modern Developer Terminal Decorator for Code Blocks ── */
-  function initDevTerminalBlocks() {
-    var codeBlocks = document.querySelectorAll('.content pre > code');
-    if (!codeBlocks.length) return;
-
-    codeBlocks.forEach(function (codeEl) {
-      var pre = codeEl.parentElement;
-      if (!pre || pre.closest('.dev-terminal-wrapper')) return;
-
-      // Extract language class e.g. language-bash, language-yaml
-      var lang = 'terminal';
-      var classes = codeEl.className.split(' ');
-      for (var i = 0; i < classes.length; i++) {
-        if (classes[i].startsWith('language-')) {
-          lang = classes[i].replace('language-', '').toUpperCase();
-          break;
-        }
-      }
-
-      var wrapper = document.createElement('div');
-      wrapper.className = 'dev-terminal-wrapper';
-
-      var bar = document.createElement('div');
-      bar.className = 'dev-terminal-bar';
-      bar.innerHTML = '<div class="dev-terminal-dots"><span class="dot-red"></span><span class="dot-yellow"></span><span class="dot-green"></span></div>' +
-                      '<span class="dev-terminal-lang">' + escapeHtml(lang) + '</span>' +
-                      '<button class="dev-copy-btn" aria-label="Copy code to clipboard"><i class="fa-regular fa-copy"></i> Copy</button>';
-
-      pre.parentNode.insertBefore(wrapper, pre);
-      wrapper.appendChild(bar);
-      wrapper.appendChild(pre);
-
-      var copyBtn = bar.querySelector('.dev-copy-btn');
-      if (copyBtn) {
-        copyBtn.addEventListener('click', function () {
-          var codeText = codeEl.innerText || codeEl.textContent;
-          navigator.clipboard.writeText(codeText).then(function () {
-            copyBtn.innerHTML = '<i class="fa-solid fa-check text-emerald-400"></i> Copied!';
-            copyBtn.style.color = '#34d399';
-            setTimeout(function () {
-              copyBtn.innerHTML = '<i class="fa-regular fa-copy"></i> Copy';
-              copyBtn.style.color = '';
-            }, 2000);
-          });
-        });
-      }
-    });
-  }
-
-document.addEventListener('DOMContentLoaded', initDevTerminalBlocks);

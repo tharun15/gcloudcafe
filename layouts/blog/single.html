@@ -39,6 +39,16 @@
 
       <!-- Article Header -->
       <header class="article-header mb-8">
+        <!-- Print-Only Lab Header (Visible ONLY on print / PDF export) -->
+        <div class="print-only mb-6 pb-4 border-b-2 border-slate-900 hidden" aria-hidden="true">
+          <div class="flex items-center justify-between text-xs text-slate-700 font-mono">
+            <span class="font-black text-slate-900 text-sm tracking-tight">GCLOUD<span class="text-sky-600">CAFE</span> · ENGINEERING LAB GUIDE</span>
+            <span>Date: {{ .PublishDate.Format "Jan 02, 2006" }}</span>
+          </div>
+          <div class="text-[10px] text-slate-500 font-mono mt-1">
+            Canonical Source: {{ .Permalink }}
+          </div>
+        </div>
         {{ $categories:= .Params.categories }}
         {{ if $categories }}
           <div class="mb-4 flex flex-wrap gap-2">
@@ -94,6 +104,17 @@
               title="Save for later">
               <i class="fa-regular fa-bookmark text-xs"></i>
               <span data-bookmark-btn-text>Save for later</span>
+            </button>
+
+            <!-- Print / Export Lab Guide Button -->
+            <button
+              type="button"
+              data-print-article-btn
+              class="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/60 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 px-3 py-1.5 text-[11px] font-bold shadow-2xs transition-all hover:scale-105 active:scale-95 whitespace-nowrap cursor-pointer"
+              aria-label="Print or export lab guide as PDF"
+              title="Print or export lab guide as PDF">
+              <i class="fa-solid fa-print text-xs"></i>
+              <span>Print Lab</span>
             </button>
 
             <a
@@ -240,6 +261,11 @@
           {{ partial "components/post-feedback" . }}
 
           <!-- Disqus Comments (if enabled) -->
+          <!-- Print-Only Lab Footer (Visible ONLY on print / PDF export) -->
+          <div class="print-only mt-10 pt-4 border-t border-slate-300 text-center text-[10px] font-mono text-slate-500 hidden" aria-hidden="true">
+            © {{ now.Format "2006" }} GCloudCafe. All rights reserved. Canonical lab documentation: {{ .Permalink }}
+          </div>
+
           {{ if site.Config.Services.Disqus.Shortname }}
             <div class="mt-16">
               {{ template "_internal/disqus.html" . }}
