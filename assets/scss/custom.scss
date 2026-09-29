@@ -1045,6 +1045,8 @@ body {
   h1, h2, h3, h4, h5, h6 {
     overflow-wrap: break-word;
     word-break: break-word;
+    text-wrap: balance;
+    letter-spacing: -0.02em;
   }
 
   h1 { line-height: 1.25 !important; }
