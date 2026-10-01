@@ -263,7 +263,7 @@ keytool -list -v -keystore client-keystore.jks -storepass changeit -alias "clien
 # Look for this critical line in the output:
 # Certificate chain length: 2 (or 3 for multi-tier PKI)
 # Certificate[1]: Subject: CN=client-payment-worker, OU=PaymentService...
-# Certificate[2]: Subject: CN=GCloudCafe Internal Root CA...
+# Certificate[2]: Subject: CN=GCloud Cafe Internal Root CA...
 ```
 
 #### 3. JVM Runtime Handshake Diagnostics (`-Djavax.net.debug`)
@@ -393,7 +393,7 @@ By the end of this lab, you will have a working TLS 1.3 mTLS connection where th
 openssl genrsa -out ca.key 4096
 
 # 2. Generate Self-Signed Root CA Certificate (valid for 10 years)
-openssl req -x509 -new -nodes -key ca.key -sha256 -days 3650 -out ca.crt   -subj "/C=US/ST=Texas/L=Austin/O=GCloudCafe PKI/CN=GCloudCafe Internal Root CA"
+openssl req -x509 -new -nodes -key ca.key -sha256 -days 3650 -out ca.crt   -subj "/C=US/ST=Texas/L=Austin/O=GCloud Cafe PKI/CN=GCloud Cafe Internal Root CA"
 ```
 
 ### Step 2: Generate Server Certificate with SAN
@@ -411,7 +411,7 @@ prompt = no
 [req_distinguished_name]
 C = US
 ST = Texas
-O = GCloudCafe
+O = GCloud Cafe
 CN = api.internal.gcloudcafe.com
 
 [v3_req]
@@ -445,7 +445,7 @@ prompt = no
 [req_distinguished_name]
 C = US
 ST = Texas
-O = GCloudCafe
+O = GCloud Cafe
 OU = PaymentService
 CN = client-payment-worker
 
@@ -571,5 +571,5 @@ Many modern Kubernetes ingress controllers (e.g. `ingress-nginx`, Envoy, Traefik
 - **[NIST SP 800-207](https://csrc.nist.gov/publications/detail/sp/800-207/final):** *Zero Trust Architecture*.
 - **[NIST SP 800-52 Rev. 2](https://csrc.nist.gov/publications/detail/sp/800-52/rev-2/final):** *Guidelines for the Selection, Configuration, and Use of TLS Implementations*.
 - **[cert-manager Documentation](https://cert-manager.io/docs/):** *Cloud-Native Certificate Management for Kubernetes*.
-- **[Gcloudcafe TLS Series (Part 1)](/blog/tls-demystified-part1-cryptography-keys-csr-ca-explained/):** *Keys, CSRs & Chain of Trust Explained*.
-- **[Gcloudcafe TLS Series (Part 2)](/blog/tls-demystified-part2-handshake-ciphers-and-troubleshooting/):** *The Modern Handshake (TLS 1.2 vs 1.3), Ciphers & Troubleshooting*.
+- **[GCloud Cafe TLS Series (Part 1)](/blog/tls-demystified-part1-cryptography-keys-csr-ca-explained/):** *Keys, CSRs & Chain of Trust Explained*.
+- **[GCloud Cafe TLS Series (Part 2)](/blog/tls-demystified-part2-handshake-ciphers-and-troubleshooting/):** *The Modern Handshake (TLS 1.2 vs 1.3), Ciphers & Troubleshooting*.

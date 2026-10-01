@@ -1,5 +1,5 @@
 ---
 title: "Blog & Guide Ingegneristiche"
-meta_title: "Blog & Guide Tecniche | Gcloudcafe"
+meta_title: "Blog & Guide Tecniche | GCloud Cafe"
 description: "Esplora tutti gli articoli, blueprint architetturali ed esperimenti pratici di ingegneria cloud."
 ---

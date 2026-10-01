@@ -5,8 +5,8 @@ languageCode = "en-us"
 contentDir = "content/english"
 weight = 1
 [en.params]
-title = "Gcloudcafe"
-description = "Gcloudcafe delivers deep, reproducible engineering guides on Kubernetes, Google Cloud, Red Hat OpenShift, TLS security, and DevOps architectures for production practitioners."
+title = "GCloud Cafe"
+description = "GCloud Cafe delivers deep, reproducible engineering guides on Kubernetes, Google Cloud, Red Hat OpenShift, Zero-Trust TLS, and DevOps architectures for production practitioners."
 
 ################ Italian language ##################
 [it]
@@ -15,5 +15,5 @@ languageCode = "it-it"
 contentDir = "content/italian"
 weight = 2
 [it.params]
-title = "Gcloudcafe"
-description = "Gcloudcafe offre guide ingegneristiche approfondite e riproducibili su Kubernetes, Google Cloud, Red Hat OpenShift, sicurezza TLS e architetture DevOps per professionisti in produzione."
+title = "GCloud Cafe"
+description = "GCloud Cafe offre guide ingegneristiche approfondite e riproducibili su Kubernetes, Google Cloud, Red Hat OpenShift, sicurezza TLS e architetture DevOps per professionisti in produzione."

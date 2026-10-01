@@ -1,12 +1,12 @@
 ---
-title: "About Gcloud Cafe"
-meta_title: "About Gcloud Cafe — Practical Cloud Architecture & Certifications"
-description: "Gcloud Cafe is an independent engineering publication delivering reproducible Kubernetes, OpenShift, GCP, and DevOps architecture guides tested in real lab environments."
+title: "About GCloud Cafe"
+meta_title: "About GCloud Cafe — Practical Cloud Architecture & Certifications"
+description: "GCloud Cafe is an independent engineering publication delivering reproducible Kubernetes, OpenShift, GCP, and DevOps architecture guides tested in real lab environments."
 ---
 
-## Welcome to Gcloud Cafe
+## Welcome to GCloud Cafe
 
-Gcloud Cafe is an independent technical publication built for Cloud Architects, DevOps practitioners, and Site Reliability Engineers (SREs). We deliver reproducible architecture guides, certification blueprints, and real-world infrastructure playbooks without marketing spin.
+GCloud Cafe is an independent technical publication built for Cloud Architects, DevOps practitioners, and Site Reliability Engineers (SREs). We deliver reproducible architecture guides, certification blueprints, and real-world infrastructure playbooks without marketing spin.
 
 ---
 
@@ -22,7 +22,7 @@ Gcloud Cafe is an independent technical publication built for Cloud Architects, 
 
 ### 🧪 Technical Credibility & Content Integrity
 
-A technical publication is only as valuable as its accuracy. To maintain absolute integrity, every guide on Gcloud Cafe adheres to a transparent 4-part taxonomy:
+A technical publication is only as valuable as its accuracy. To maintain absolute integrity, every guide on GCloud Cafe adheres to a transparent 4-part taxonomy:
 
 1. **🧪 Lab Experimentation:** All tutorials, configurations, and scripts are tested in local Kubernetes clusters (`kind`, `minikube`), Red Hat OpenShift Local (`CRC`), or cloud sandboxes with exact reproducible manifests.
 2. **📖 Upstream Standards:** Grounded directly in official CNCF, Google Cloud, AWS, or RFC specifications.
@@ -33,7 +33,7 @@ A technical publication is only as valuable as its accuracy. To maintain absolut
 
 ### 👥 Behind the Publication
 
-Gcloud Cafe was founded by **Tharun Vempati**, a GCP Professional Cloud Architect and DevOps Specialist with verified credentials across Google Cloud, Kubernetes (CKA), and Red Hat OpenShift (EX280). 
+GCloud Cafe was founded by **Tharun Vempati**, a GCP Professional Cloud Architect and DevOps Specialist with verified credentials across Google Cloud, Kubernetes (CKA), and Red Hat OpenShift (EX280). 
 
 - 💻 **GitHub:** [github.com/tharun15](https://github.com/tharun15)
 - 💼 **LinkedIn:** [linkedin.com/in/tharunvempati](https://www.linkedin.com/in/tharunvempati)
