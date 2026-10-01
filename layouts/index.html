@@ -12,16 +12,6 @@
     {{ end }}
   {{ end }}
 
-
-  <!-- Breadcrumbs -->
-  <div class="bytedepth-container pt-6 pb-4 hidden sm:block">
-    <nav class="text-sm font-medium text-slate-600 dark:text-slate-300 flex items-center gap-2" aria-label="Breadcrumb">
-      <a href="{{ site.Home.RelPermalink }}" class="text-inherit hover:text-red-600 dark:hover:text-red-500 no-underline transition-colors">Home</a>
-      <span class="text-slate-400 dark:text-slate-600 text-xs" aria-hidden="true">/</span>
-      <span class="text-slate-900 dark:text-white font-semibold" aria-current="page">Articles</span>
-    </nav>
-  </div>
-
   <!-- Featured Hero Section -->
   {{ partial "components/blog-hero" (dict "Featured" $featured "Posts" $posts) }}
 

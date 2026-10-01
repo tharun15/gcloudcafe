@@ -25,26 +25,22 @@ describe('Homepage & Site-Wide Usability Heuristics & Accessibility Suite', () =
     expect(aboutHtml).toContain('Behind the publication');
   });
 
-  it('Issue 8: enhances breadcrumbs font size to 14px (text-sm) and adds aria-current="page" across site', () => {
+  it('Issue 8: eliminates redundant breadcrumbs on top-level pages to save vertical space while preserving rich breadcrumbs on deep articles', () => {
     const indexHtml = fs.readFileSync(path.join(rootDir, 'layouts/index.html'), 'utf8');
-    expect(indexHtml).toContain('class="text-sm font-medium');
-    expect(indexHtml).toContain('aria-current="page"');
-    expect(indexHtml).toContain('pt-6 pb-4');
+    expect(indexHtml).not.toContain('aria-label="Breadcrumb"');
 
     const blogListHtml = fs.readFileSync(path.join(rootDir, 'layouts/blog/list.html'), 'utf8');
-    expect(blogListHtml).toContain('text-sm font-medium');
-    expect(blogListHtml).toContain('pt-6 pb-4');
-    expect(blogListHtml).toContain('aria-current="page"');
+    expect(blogListHtml).not.toContain('aria-label="Breadcrumb"');
 
     const aboutHtml = fs.readFileSync(path.join(rootDir, 'layouts/about/list.html'), 'utf8');
-    expect(aboutHtml).toContain('text-sm font-medium');
-    expect(aboutHtml).toContain('pt-6 pb-4');
-    expect(aboutHtml).toContain('aria-current="page"');
+    expect(aboutHtml).not.toContain('aria-label="Breadcrumb"');
 
     const seriesHtml = fs.readFileSync(path.join(rootDir, 'layouts/series/list.html'), 'utf8');
-    expect(seriesHtml).toContain('text-sm font-medium');
-    expect(seriesHtml).toContain('pt-6 pb-4');
-    expect(seriesHtml).toContain('aria-current="page"');
+    expect(seriesHtml).not.toContain('aria-label="Breadcrumb"');
+
+    const blogSingleHtml = fs.readFileSync(path.join(rootDir, 'layouts/blog/single.html'), 'utf8');
+    expect(blogSingleHtml).toContain('aria-label="breadcrumb"');
+    expect(blogSingleHtml).toContain('text-sm font-medium');
   });
 
   it('Issue 9: optimizes Browse All Topics grid padding, text size, and removes inline styles', () => {
