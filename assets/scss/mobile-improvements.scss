@@ -51,6 +51,18 @@ input[type="reset"],
     max-height: 80px !important;
   }
 
+  @media (min-width: 768px) {
+    &.desktop-responsive-thumb {
+      width: 100% !important;
+      height: 100% !important;
+      min-width: 0 !important;
+      max-width: none !important;
+      min-height: 0 !important;
+      max-height: none !important;
+    }
+  }
+
+
   picture,
   img {
     display: block !important;
