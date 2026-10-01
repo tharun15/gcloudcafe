@@ -288,7 +288,7 @@
                           {{ if $childActive }}
                             bg-red-50/80 dark:bg-red-500/10 text-red-600 dark:text-red-400 border-red-200/80 dark:border-red-500/25 font-bold
                           {{ else }}
-                            bg-slate-50/80 dark:bg-slate-850/50 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 border-slate-200/60 dark:border-slate-800/60
+                            bg-slate-50/90 dark:bg-slate-800/60 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700/80 hover:text-slate-900 dark:hover:text-white border-slate-200/70 dark:border-slate-700/60
                           {{ end }}">
                   <span class="w-6 h-6 rounded-md flex items-center justify-center text-xs shrink-0 {{ if $isAbout }}bg-blue-500/10 text-blue-600 dark:text-blue-400{{ else }}bg-emerald-500/10 text-emerald-600 dark:text-emerald-400{{ end }}">
                     {{ if $isAbout }}
@@ -321,7 +321,7 @@
               Language / Lingua
             </span>
           </div>
-          <div class="p-1 rounded-xl bg-slate-100 dark:bg-slate-850/80 border border-slate-200/70 dark:border-slate-800/70 grid grid-cols-2 gap-1">
+          <div class="p-1 rounded-xl bg-slate-100 dark:bg-slate-800/90 border border-slate-200/70 dark:border-slate-700/70 grid grid-cols-2 gap-1">
             {{ $currentPage := . }}
             {{ $currentLang := site.Language.Lang }}
             {{ range site.Home.AllTranslations }}
@@ -336,9 +336,9 @@
               <a href="{{ $targetUrl }}"
                  class="py-2 px-3 rounded-lg text-xs font-semibold text-center no-underline transition-all flex items-center justify-center gap-1.5 min-h-[38px]
                         {{ if $isCurrent }}
-                          bg-white dark:bg-slate-750 text-slate-900 dark:text-white shadow-xs font-bold
+                          bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs font-bold border border-slate-200/50 dark:border-slate-700/80
                         {{ else }}
-                          text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white
+                          text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white
                         {{ end }}">
                 <i class="fa-solid fa-globe text-[10px] {{ if $isCurrent }}text-red-500 dark:text-red-400{{ else }}text-slate-400 dark:text-slate-500{{ end }}"></i>
                 <span>{{ $langObj.LanguageName }}</span>
