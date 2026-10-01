@@ -1,10 +1,10 @@
-<header class="bytedepth-header sticky top-0 z-40 transition-all duration-300 backdrop-blur-xl bg-white/80 dark:bg-[#0b101d]/85 border-b border-slate-200/70 dark:border-slate-800/70">
-  <div class="bytedepth-container flex items-center justify-between h-16">
+<header class="bytedepth-header sticky top-0 z-40 transition-all duration-300 backdrop-blur-xl bg-white/85 dark:bg-[#0b101d]/90 border-b border-slate-200/80 dark:border-slate-800/80">
+  <div class="bytedepth-container flex items-center justify-between h-[68px] sm:h-18">
     
     <!-- Brand Logo -->
-    <div class="flex items-center gap-3 shrink-0">
-      <a class="navbar-brand flex items-center gap-2.5 no-underline group" href="{{ site.Home.RelPermalink }}" aria-label="Gcloudcafe Home">
-        <div class="relative flex items-center justify-center transition-transform duration-200 group-hover:scale-105">
+    <div class="flex items-center gap-2.5 sm:gap-3 shrink-0">
+      <a class="navbar-brand flex items-center gap-2 sm:gap-2.5 no-underline group" href="{{ site.Home.RelPermalink }}" aria-label="Gcloudcafe Home">
+        <div class="relative flex items-center justify-center transition-transform duration-200 group-hover:scale-105 shrink-0">
           {{ partial "logo" }}
         </div>
         <div class="flex flex-col">
@@ -117,17 +117,17 @@
       {{ end }}
     </nav>
 
-    <!-- Right Action Utilities: Search + Lang + Theme -->
+    <!-- Right Action Utilities (Touch-Optimized 44×44px Min Hit Targets) -->
     <div class="flex items-center gap-2 sm:gap-2.5 shrink-0">
       
       <!-- Quick Search Pill (Ctrl+K) -->
       <button
         type="button"
         data-target="search-modal"
-        class="search-trigger group flex items-center justify-center sm:justify-between gap-2 sm:gap-2.5 px-2.5 sm:px-3 rounded-xl text-xs font-medium text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white bg-slate-100/70 dark:bg-slate-900/60 hover:bg-slate-200/70 dark:hover:bg-slate-800/80 border border-slate-200/70 dark:border-slate-800/70 hover:border-slate-300 dark:hover:border-slate-700 transition-all cursor-pointer whitespace-nowrap shrink-0 h-9 shadow-2xs hover:shadow-xs active:scale-[0.99] w-9 sm:w-44 lg:w-48"
+        class="search-trigger group flex items-center justify-center sm:justify-between gap-2 px-2.5 sm:px-3 rounded-xl text-xs font-medium text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white bg-slate-100/80 dark:bg-slate-900/70 hover:bg-slate-200/80 dark:hover:bg-slate-800/80 border border-slate-200/80 dark:border-slate-800/80 transition-all cursor-pointer whitespace-nowrap shrink-0 min-h-[44px] min-w-[44px] h-11 w-11 sm:h-10 sm:w-44 lg:w-48 shadow-2xs hover:shadow-xs active:scale-95"
         aria-label="Search & Menu (Ctrl+K)">
         <div class="flex items-center gap-2">
-          <i class="fa-solid fa-magnifying-glass text-[12px] sm:text-[11px] text-slate-400 group-hover:text-primary transition-colors shrink-0"></i>
+          <i class="fa-solid fa-magnifying-glass text-[13px] sm:text-[11px] text-slate-500 dark:text-slate-400 group-hover:text-primary transition-colors shrink-0"></i>
           <span class="sr-only">Search &amp; Menu</span>
           <span class="hidden sm:inline text-slate-500 dark:text-slate-400 group-hover:text-slate-800 dark:group-hover:text-slate-200 transition-colors">Search...</span>
         </div>
@@ -136,12 +136,12 @@
         </kbd>
       </button>
 
-      <!-- Bookmarks Drawer Trigger Button -->
+      <!-- Bookmarks Drawer Trigger Button (Desktop / Tablet only — on mobile, available in drawer) -->
       <button
         type="button"
         data-bookmarks-drawer-trigger
         id="bookmarks-drawer-trigger"
-        class="relative h-9 px-2 sm:px-2.5 rounded-xl flex items-center justify-center gap-1.5 text-slate-700 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white bg-slate-100/70 dark:bg-slate-900/60 hover:bg-slate-200/70 dark:hover:bg-slate-800/80 border border-slate-200/70 dark:border-slate-800/70 hover:border-slate-300 dark:hover:border-slate-700 transition-all cursor-pointer shadow-2xs group"
+        class="hidden sm:inline-flex relative min-h-[44px] min-w-[44px] h-10 px-2.5 rounded-xl items-center justify-center gap-1.5 text-slate-700 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white bg-slate-100/80 dark:bg-slate-900/70 hover:bg-slate-200/80 dark:hover:bg-slate-800/80 border border-slate-200/80 dark:border-slate-800/80 transition-all cursor-pointer shadow-2xs group"
         aria-label="View Saved Articles"
         title="Saved Articles">
         <i class="fa-regular fa-bookmark text-sm text-slate-500 dark:text-slate-400 group-hover:text-red-500 transition-colors"></i>
@@ -161,14 +161,15 @@
       <!-- Theme Toggle Button -->
       {{ partial "components/theme-switcher" (dict "Class" "flex items-center") }}
 
-
-      <!-- Mobile Menu Toggle Button -->
+      <!-- Mobile Menu Toggle Button (Touch-Optimized 44×44px Target) -->
       <button
         type="button"
-        class="md:hidden h-9 w-9 flex items-center justify-center rounded-xl text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200/70 dark:border-slate-800/70 bg-slate-100/70 dark:bg-slate-900/60 cursor-pointer transition-colors"
-        onclick="document.getElementById('mobile-nav-drawer')?.classList.toggle('hidden')"
-        aria-label="Toggle Navigation Menu">
-        <i class="fa-solid fa-bars text-sm"></i>
+        id="mobile-menu-toggle-btn"
+        class="md:hidden min-h-[44px] min-w-[44px] h-11 w-11 flex items-center justify-center rounded-xl text-slate-800 dark:text-slate-100 hover:text-red-600 dark:hover:text-red-400 hover:bg-slate-200/80 dark:hover:bg-slate-700/80 border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800/90 cursor-pointer transition-all shadow-xs active:scale-95 ml-0.5"
+        aria-label="Toggle Navigation Menu"
+        aria-expanded="false"
+        aria-controls="mobile-nav-drawer">
+        <i id="mobile-menu-icon" class="fa-solid fa-bars text-base transition-transform duration-200"></i>
       </button>
 
     </div>
@@ -176,8 +177,8 @@
   </div>
 
   <!-- Mobile Drawer Menu -->
-  <div id="mobile-nav-drawer" class="hidden md:hidden bytedepth-container pb-4 pt-1">
-    <div class="p-4 rounded-2xl bg-white/95 dark:bg-[#0c1220]/95 backdrop-blur-xl border border-slate-200 dark:border-slate-800 shadow-xl space-y-3">
+  <div id="mobile-nav-drawer" class="hidden md:hidden bytedepth-container pb-4 pt-1 transition-all duration-200">
+    <div class="p-4 sm:p-5 rounded-2xl bg-white/95 dark:bg-[#0c1220]/95 backdrop-blur-xl border border-slate-200 dark:border-slate-800 shadow-2xl space-y-3">
       <div class="space-y-1">
         {{ range site.Menus.main }}
           {{ $menuClean := .URL | relLangURL | strings.TrimRight "/" }}
@@ -190,7 +191,7 @@
           {{ end }}
 
           {{ if .HasChildren }}
-            <div class="pt-1 pb-1">
+            <div class="pt-1.5 pb-1">
               <span class="block px-4 py-1 text-[11px] font-mono font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
                 {{ .Name }}
               </span>
@@ -200,7 +201,7 @@
                   {{ $childActive := or (eq $childClean $pageClean) (hasPrefix (printf "%s/" $pageClean) (printf "%s/" $childClean)) }}
                   {{ $isAbout := or (eq .Name "About") (eq .Name "Chi Siamo") }}
                   <a href="{{ .URL | relLangURL }}"
-                     class="flex items-center gap-3 px-3.5 py-2 rounded-xl text-sm font-semibold transition-all no-underline
+                     class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-all no-underline min-h-[44px]
                             {{ if $childActive }}
                               bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400 font-bold
                             {{ else }}
@@ -221,7 +222,7 @@
           {{ else }}
             {{ $isPulse := or (eq .Name "Pulse") (eq .Name "Cloud Pulse") }}
             <a href="{{ .URL | relLangURL }}"
-               class="flex items-center justify-between px-4 py-2.5 rounded-xl text-sm font-bold transition-all no-underline
+               class="flex items-center justify-between px-4 py-3 rounded-xl text-base font-bold transition-all no-underline min-h-[48px]
                       {{ if $active }}
                         bg-slate-100 dark:bg-slate-800 text-slate-950 dark:text-white
                       {{ else }}
@@ -229,7 +230,7 @@
                       {{ end }}">
               <span>{{ .Name }}</span>
               {{ if $isPulse }}
-                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+                <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
                   <span class="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
                   LIVE
                 </span>
@@ -244,10 +245,10 @@
         type="button"
         data-bookmarks-drawer-trigger
         onclick="document.getElementById('mobile-nav-drawer')?.classList.add('hidden')"
-        class="w-full flex items-center justify-between px-4 py-2.5 rounded-xl text-sm font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all cursor-pointer">
+        class="w-full flex items-center justify-between px-4 py-3 rounded-xl text-base font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all cursor-pointer min-h-[48px]">
         <div class="flex items-center gap-2.5">
           <span class="w-6 h-6 rounded-md flex items-center justify-center text-xs bg-red-500/10 text-red-600 dark:text-red-400">
-            <i class="fa-solid fa-bookmark text-[10px]"></i>
+            <i class="fa-solid fa-bookmark text-[11px]"></i>
           </span>
           <span>Saved Articles</span>
         </div>
@@ -276,7 +277,7 @@
               {{ end }}
             {{ end }}
             <a href="{{ $targetUrl }}"
-               class="px-3 py-2 rounded-xl text-xs font-semibold text-center no-underline transition-all flex items-center justify-center gap-1.5 {{ if $isCurrent }}bg-gradient-to-r from-red-600 to-rose-600 text-white font-bold shadow-xs{{ else }}bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700{{ end }}">
+               class="px-3 py-2.5 rounded-xl text-xs font-semibold text-center no-underline transition-all flex items-center justify-center gap-1.5 min-h-[44px] {{ if $isCurrent }}bg-gradient-to-r from-red-600 to-rose-600 text-white font-bold shadow-xs{{ else }}bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700{{ end }}">
               <i class="fa-solid fa-globe text-[10px]"></i>
               <span>{{ $langObj.LanguageName }}</span>
             </a>
@@ -286,4 +287,45 @@
 
     </div>
   </div>
+
+  <!-- Mobile Drawer Toggle Script -->
+  <script>
+    (function() {
+      var toggleBtn = document.getElementById('mobile-menu-toggle-btn');
+      var drawer = document.getElementById('mobile-nav-drawer');
+      var menuIcon = document.getElementById('mobile-menu-icon');
+      if (!toggleBtn || !drawer) return;
+
+      toggleBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        var isHidden = drawer.classList.contains('hidden');
+        if (isHidden) {
+          drawer.classList.remove('hidden');
+          toggleBtn.setAttribute('aria-expanded', 'true');
+          if (menuIcon) {
+            menuIcon.classList.remove('fa-bars');
+            menuIcon.classList.add('fa-xmark');
+          }
+        } else {
+          drawer.classList.add('hidden');
+          toggleBtn.setAttribute('aria-expanded', 'false');
+          if (menuIcon) {
+            menuIcon.classList.remove('fa-xmark');
+            menuIcon.classList.add('fa-bars');
+          }
+        }
+      });
+
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && !drawer.classList.contains('hidden')) {
+          drawer.classList.add('hidden');
+          toggleBtn.setAttribute('aria-expanded', 'false');
+          if (menuIcon) {
+            menuIcon.classList.remove('fa-xmark');
+            menuIcon.classList.add('fa-bars');
+          }
+        }
+      });
+    })();
+  </script>
 </header>
