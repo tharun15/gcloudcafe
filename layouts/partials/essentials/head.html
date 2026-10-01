@@ -35,9 +35,14 @@
 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
 {{ end }}
 
-<!-- Google AdSense -->
+<!-- Google AdSense (Restricted to valid, public indexable content pages) -->
+{{ $is404 := or (eq .Kind "404") (eq .Type "404") }}
+{{ $isAdmin := in (slice "admin-articles" "community-admin" "pulse-admin") .Type }}
+{{ $isNoIndex := findRE "noindex" (or .Params.robots "") }}
+{{ if not (or $is404 $isAdmin $isNoIndex) }}
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9590261566406863"
      crossorigin="anonymous"></script>
+{{ end }}
 
 <!-- Canonical URL (Fixes Semrush Duplicate/Indexation Errors) -->
 <link rel="canonical" href="{{ .Permalink }}" />

@@ -7,7 +7,7 @@ draft: false
 
 # Cookie Policy
 
-**Last updated: July 25, 2025**
+**Last updated: October 1, 2026**
 
 This Cookie Policy explains how **Gcloudcafe** (https://gcloudcafe.com) uses cookies and similar tracking technologies when you visit our website. It should be read alongside our [Privacy Policy](/privacy-policy/).
 

@@ -7,7 +7,7 @@ draft: false
 
 # Privacy Policy
 
-**Last updated: August 15, 2026**
+**Last updated: October 1, 2026**
 
 This Privacy Policy describes how **Gcloud Cafe** ("we", "us", or "our"), accessible from [https://gcloudcafe.com](https://gcloudcafe.com), collects, uses, and discloses information when you visit or interact with our website.
 
@@ -38,7 +38,7 @@ This data is used strictly for analyzing trends, administering the site, trackin
 
 Gcloud Cafe uses cookies, web beacons, and similar tracking technologies to enhance user experience, store visitor preferences, and record user-specific information on which pages the visitor accesses.
 
-You can learn more about how we use cookies in our dedicated [Cookie Policy](/pages/cookie-policy/).
+You can learn more about how we use cookies in our dedicated [Cookie Policy](/cookie-policy/).
 
 ---
 

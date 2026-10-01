@@ -1,0 +1,32 @@
+{{ define "main" }}
+  <section class="section-sm text-center py-20">
+    <div class="container">
+      <div class="row justify-center">
+        <div class="sm:col-10 md:col-8 lg:col-6">
+          <span
+            class="text-[7rem] sm:text-[8rem] block font-bold text-dark dark:text-darkmode-dark leading-none mb-4">
+            404
+          </span>
+          <h1 class="h2 mb-4">
+            {{ if eq site.Language.Lang "it" }}Pagina non trovata{{ else }}Page not found{{ end }}
+          </h1>
+          <div class="content text-slate-600 dark:text-slate-400">
+            <p>
+              {{ if eq site.Language.Lang "it" }}
+                La pagina che stai cercando potrebbe essere stata rimossa, rinominata o temporaneamente non disponibile.
+              {{ else }}
+                The page you are looking for might have been removed, had its name changed, or is temporarily unavailable.
+              {{ end }}
+            </p>
+          </div>
+          <a
+            href="{{ site.Home.RelPermalink }}"
+            class="btn btn-primary mt-8 inline-flex items-center gap-2">
+            <i class="fa-solid fa-house text-xs"></i>
+            <span>{{ if eq site.Language.Lang "it" }}Torna alla home{{ else }}Back to home{{ end }}</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+{{ end }}

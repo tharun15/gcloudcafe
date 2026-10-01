@@ -1,6 +1,13 @@
 # GCloud Cafe — AI Agent & Search Engine Directives
 # https://gcloudcafe.com
 
+# Explicit Permission for Google AdSense Crawler & Googlebot
+User-agent: Mediapartners-Google
+Allow: /
+
+User-agent: Googlebot
+Allow: /
+
 User-agent: *
 Allow: /
 Disallow: /pulse-admin/

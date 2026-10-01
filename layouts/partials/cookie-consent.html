@@ -1,4 +1,4 @@
-<!-- Modern Glassmorphic Cookie & Privacy Consent Banner (GDPR / CCPA Compliant) -->
+<!-- Modern Glassmorphic Cookie & Privacy Consent Banner (GDPR / CCPA & Google AdSense Compliant) -->
 <div id="cookie-consent-banner" class="fixed bottom-4 left-4 right-4 sm:right-auto sm:max-w-md z-50 transition-all duration-500 transform translate-y-full opacity-0 hidden">
   <div class="bg-white/95 dark:bg-[#0c1220]/95 backdrop-blur-md border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-2xl space-y-4">
     
@@ -10,10 +10,10 @@
         </div>
         <div>
           <div class="text-sm font-bold text-slate-900 dark:text-white leading-tight">
-            We value your privacy
+            {{ if eq site.Language.Lang "it" }}Rispettiamo la tua privacy{{ else }}We value your privacy{{ end }}
           </div>
           <p class="text-[11px] font-mono text-slate-500 dark:text-slate-400 m-0">
-            GDPR & Privacy Preferences
+            {{ if eq site.Language.Lang "it" }}GDPR & Preferenze Privacy{{ else }}GDPR & Privacy Preferences{{ end }}
           </p>
         </div>
       </div>
@@ -23,18 +23,22 @@
       </button>
     </div>
 
-    <!-- Message Copy -->
+    <!-- Message Copy with Direct Policy Links -->
     <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed m-0">
-      We use cookies to analyze site traffic, personalize content, and enhance your Cloud Pulse newsroom experience. By clicking <strong>"Accept All"</strong>, you consent to our privacy practices.
+      {{ if eq site.Language.Lang "it" }}
+      Utilizziamo i cookie per analizzare il traffico, personalizzare annunci e contenuti e migliorare l'esperienza su Cloud Pulse. Facendo clic su <strong>"Accetta Tutti"</strong>, acconsenti all'uso dei cookie e delle tecnologie pubblicitarie. Leggi la nostra <a href="{{ `privacy-policy/` | relLangURL }}" class="underline text-red-600 dark:text-red-400 font-semibold hover:opacity-80">Privacy Policy</a> e l'<a href="{{ `cookie-policy/` | relLangURL }}" class="underline text-red-600 dark:text-red-400 font-semibold hover:opacity-80">Informativa sui Cookie</a>.
+      {{ else }}
+      We use cookies to analyze traffic, personalize ads and content, and enhance your experience. By clicking <strong>"Accept All"</strong>, you consent to our privacy practices and advertising partners. Read our <a href="{{ `privacy-policy/` | relLangURL }}" class="underline text-red-600 dark:text-red-400 font-semibold hover:opacity-80">Privacy Policy</a> and <a href="{{ `cookie-policy/` | relLangURL }}" class="underline text-red-600 dark:text-red-400 font-semibold hover:opacity-80">Cookie Policy</a>.
+      {{ end }}
     </p>
 
     <!-- Action Control Buttons -->
     <div class="flex items-center justify-end gap-2 pt-2 border-t border-slate-200 dark:border-slate-800">
       <button id="cookie-essential-only" class="px-3.5 py-1.5 rounded-lg text-xs font-mono font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-300 dark:border-slate-700 transition-all cursor-pointer">
-        Essential Only
+        {{ if eq site.Language.Lang "it" }}Solo Essenziali{{ else }}Essential Only{{ end }}
       </button>
       <button id="cookie-accept-all" class="px-4 py-1.5 rounded-lg text-xs font-mono font-bold text-white shadow-xs transition-all border-none cursor-pointer" style="background-color: #dc2626 !important;">
-        <i class="fa-solid fa-check mr-1.5"></i> Accept All
+        <i class="fa-solid fa-check mr-1.5"></i> {{ if eq site.Language.Lang "it" }}Accetta Tutti{{ else }}Accept All{{ end }}
       </button>
     </div>
 
