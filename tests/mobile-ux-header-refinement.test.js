@@ -47,9 +47,11 @@ describe('Mobile View & Header Refinement Suite', () => {
       expect(headerHtml).toContain('components/theme-switcher" (dict "Class" "hidden sm:inline-flex items-center"');
     });
 
-    it('places theme toggle inside the mobile drawer for easy appearance switching', () => {
-      expect(headerHtml).toContain('Dark / Light Mode');
+    it('places full-row theme toggle inside the mobile drawer for easy appearance switching', () => {
+      expect(headerHtml).toContain('FullRow" true');
       expect(headerHtml).toContain('ID" "mobile-theme-switcher"');
+      expect(themeHtml).toContain('Dark / Light Mode');
+      expect(themeHtml).toContain('Tap anywhere to switch theme');
     });
 
     it('preserves full bookmarks drawer access inside the mobile drawer menu', () => {

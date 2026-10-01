@@ -311,21 +311,8 @@
           Preferences
         </span>
 
-        <!-- Mobile Appearance Toggle -->
-        <div class="flex items-center justify-between px-3.5 py-2.5 rounded-xl bg-slate-50/90 dark:bg-slate-850/60 border border-slate-200/70 dark:border-slate-800/70 min-h-[48px]">
-          <div class="flex items-center gap-2.5">
-            <span class="w-7 h-7 rounded-lg flex items-center justify-center text-xs bg-amber-500/10 text-amber-600 dark:text-amber-400 shrink-0">
-              <i class="fa-solid fa-circle-half-stroke text-[11px]"></i>
-            </span>
-            <div>
-              <span class="text-xs font-bold text-slate-800 dark:text-slate-200 block leading-tight">Dark / Light Mode</span>
-              <span class="text-[10px] font-mono text-slate-400 dark:text-slate-500 block leading-tight mt-0.5">Toggle theme</span>
-            </div>
-          </div>
-          <div>
-            {{ partial "components/theme-switcher" (dict "Class" "flex items-center" "ID" "mobile-theme-switcher") }}
-          </div>
-        </div>
+        <!-- Mobile Appearance Toggle (Full-Row Interactive Switcher CTA) -->
+        {{ partial "components/theme-switcher" (dict "FullRow" true "ID" "mobile-theme-switcher") }}
 
         <!-- Mobile Language Switcher (Segmented Control) -->
         <div class="pt-0.5">
