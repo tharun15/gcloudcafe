@@ -38,9 +38,13 @@
         {{ $isCurrent := eq $currentLang $langObj.Lang }}
         {{ $targetUrl := .RelPermalink }}
         {{ if and (ne $currentPage.Kind "404") (ne $currentPage.Type "404") }}
-          {{ range $currentPage.Translations }}
-            {{ if eq .Language.Lang $langObj.Lang }}
-              {{ $targetUrl = .RelPermalink }}
+          {{ if $isCurrent }}
+            {{ $targetUrl = $currentPage.RelPermalink }}
+          {{ else }}
+            {{ range $currentPage.Translations }}
+              {{ if eq .Language.Lang $langObj.Lang }}
+                {{ $targetUrl = .RelPermalink }}
+              {{ end }}
             {{ end }}
           {{ end }}
         {{ end }}
