@@ -1,7 +1,7 @@
 ---
 title: "Terms of Service"
-meta_title: "Terms of Service – Gcloudcafe"
-description: "Read the Terms of Service for Gcloudcafe, a cloud certification and DevOps learning blog."
+meta_title: "Terms of Service – GCloud Cafe"
+description: "Read the Terms of Service for GCloud Cafe, a cloud certification and DevOps learning blog."
 draft: false
 ---
 
@@ -9,7 +9,7 @@ draft: false
 
 **Last updated: July 25, 2025**
 
-Please read these Terms of Service ("Terms") carefully before using **Gcloudcafe** (https://gcloudcafe.com) operated by Gcloudcafe ("we", "us", or "our").
+Please read these Terms of Service ("Terms") carefully before using **GCloud Cafe** (https://gcloudcafe.com) operated by GCloud Cafe ("we", "us", or "our").
 
 By accessing or using this website, you agree to be bound by these Terms. If you disagree with any part of the Terms, please do not use this website.
 
@@ -17,19 +17,19 @@ By accessing or using this website, you agree to be bound by these Terms. If you
 
 ## 1. Use of Content
 
-All articles, guides, tutorials, and other content published on Gcloudcafe are provided for **informational and educational purposes only**. The content is created to help readers prepare for cloud certifications and explore DevOps and platform engineering topics.
+All articles, guides, tutorials, and other content published on GCloud Cafe are provided for **informational and educational purposes only**. The content is created to help readers prepare for cloud certifications and explore DevOps and platform engineering topics.
 
 You may read, share, and link to our content for personal and non-commercial purposes, provided you give appropriate credit and a link back to the original article. You may not reproduce substantial portions of our content on other websites, publications, or products without written permission.
 
 ## 2. Intellectual Property
 
-The Gcloudcafe name, logo, and all original written content are the intellectual property of Gcloudcafe. Third-party trademarks, product names, and logos (e.g., Google Cloud, Red Hat OpenShift) mentioned on this site belong to their respective owners and are used for identification and educational purposes only. Gcloudcafe is not affiliated with, endorsed by, or sponsored by those organisations.
+The GCloud Cafe name, logo, and all original written content are the intellectual property of GCloud Cafe. Third-party trademarks, product names, and logos (e.g., Google Cloud, Red Hat OpenShift) mentioned on this site belong to their respective owners and are used for identification and educational purposes only. GCloud Cafe is not affiliated with, endorsed by, or sponsored by those organisations.
 
 ## 3. Advertising
 
 This website participates in the **Google AdSense** program. Google, as a third-party vendor, uses cookies to serve ads based on your prior visits to this site and other websites. You may opt out of personalised advertising by visiting [Google's Ads Settings](https://www.google.com/settings/ads). For more information about how Google uses data, please visit [Google's Privacy & Terms](https://policies.google.com/technologies/partner-sites).
 
-Ads displayed on Gcloudcafe are clearly labelled. We do not control the content of third-party advertisements.
+Ads displayed on GCloud Cafe are clearly labelled. We do not control the content of third-party advertisements.
 
 ## 4. Affiliate Links
 
@@ -37,7 +37,7 @@ Some posts may contain affiliate or referral links. Where this is the case, it w
 
 ## 5. Disclaimer of Warranties
 
-The information on Gcloudcafe is provided **"as is"** without any representation or warranty, express or implied. Exam syllabi, cloud platform features, and certification requirements change over time. Always verify information against the official vendor documentation and exam objectives before acting on it.
+The information on GCloud Cafe is provided **"as is"** without any representation or warranty, express or implied. Exam syllabi, cloud platform features, and certification requirements change over time. Always verify information against the official vendor documentation and exam objectives before acting on it.
 
 We make no guarantees that:
 - Content is always current, accurate, or complete.
@@ -46,7 +46,7 @@ We make no guarantees that:
 
 ## 6. Limitation of Liability
 
-To the fullest extent permitted by law, Gcloudcafe shall not be liable for any indirect, incidental, special, or consequential damages arising from your use of, or inability to use, this website or its content.
+To the fullest extent permitted by law, GCloud Cafe shall not be liable for any indirect, incidental, special, or consequential damages arising from your use of, or inability to use, this website or its content.
 
 ## 7. External Links
 

@@ -11,7 +11,7 @@ logo_height = "54px"
 # if logo_webp set false, will not generate WEBP version of logo | default is true
 logo_webp = true
 # logo text will only show when logo is missing.
-logo_text = "Gcloudcafe"
+logo_text = "GCloud Cafe"
 # navbar fixed to top
 navbar_fixed = true
 # theme-mode
@@ -86,8 +86,8 @@ show_categories = true
 # seo meta data for OpenGraph / Twitter Card
 # seo module: https://github.com/gethugothemes/hugo-modules/tree/master/seo-tools/basic-seo
 [metadata]
-keywords = ["Gcloudcafe", "Kubernetes", "Openshift", "AWS", "Azure", "GCP"]
-description = "Your go-to source for practical tips on passing cloud certifications, up-to-date news on cloud technologies"
+keywords = ["GCloud Cafe", "Kubernetes", "OpenShift", "Google Cloud", "AWS", "DevOps", "Zero-Trust", "TLS"]
+description = "Reproducible, practitioner-led engineering deep dives on Kubernetes, Google Cloud, Red Hat OpenShift, Zero-Trust TLS, and production infrastructure architectures."
 author = "Tharun Vempati"
 twitter = "tharun26"
 image = "images/og-image.png"

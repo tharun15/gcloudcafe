@@ -1,7 +1,7 @@
 ---
 title: "Privacy Policy"
-meta_title: "Privacy Policy — Gcloud Cafe"
-description: "Read the official Privacy Policy for Gcloud Cafe. Understand our data handling practices, cookie policies, and Google AdSense advertising disclosures."
+meta_title: "Privacy Policy — GCloud Cafe"
+description: "Read the official Privacy Policy for GCloud Cafe. Understand our data handling practices, cookie policies, and Google AdSense advertising disclosures."
 draft: false
 ---
 
@@ -9,7 +9,7 @@ draft: false
 
 **Last updated: August 15, 2026**
 
-This Privacy Policy describes how **Gcloud Cafe** ("we", "us", or "our"), accessible from [https://gcloudcafe.com](https://gcloudcafe.com), collects, uses, and discloses information when you visit or interact with our website.
+This Privacy Policy describes how **GCloud Cafe** ("we", "us", or "our"), accessible from [https://gcloudcafe.com](https://gcloudcafe.com), collects, uses, and discloses information when you visit or interact with our website.
 
 If you have additional questions or require more information about our Privacy Policy, do not hesitate to contact us at [contact@gcloudcafe.com](mailto:contact@gcloudcafe.com) or via our [Contact Page](/contact/).
 
@@ -23,7 +23,7 @@ While using our website, we may collect personal information that you voluntaril
 - **Comments & Feedback:** Information you post when leaving comments or feedback on articles.
 
 ### B. Automatically Collected Usage Data & Log Files
-Like most standard websites, Gcloud Cafe follows standard log file procedures. Information collected automatically includes:
+Like most standard websites, GCloud Cafe follows standard log file procedures. Information collected automatically includes:
 - Internet Protocol (IP) addresses
 - Browser type, language, and operating system
 - Internet Service Provider (ISP)
@@ -36,7 +36,7 @@ This data is used strictly for analyzing trends, administering the site, trackin
 
 ## 2. Cookies & Tracking Technologies
 
-Gcloud Cafe uses cookies, web beacons, and similar tracking technologies to enhance user experience, store visitor preferences, and record user-specific information on which pages the visitor accesses.
+GCloud Cafe uses cookies, web beacons, and similar tracking technologies to enhance user experience, store visitor preferences, and record user-specific information on which pages the visitor accesses.
 
 You can learn more about how we use cookies in our dedicated [Cookie Policy](/pages/cookie-policy/).
 
@@ -44,7 +44,7 @@ You can learn more about how we use cookies in our dedicated [Cookie Policy](/pa
 
 ## 3. Google AdSense & Third-Party Advertising Disclosures
 
-Gcloud Cafe participates in the **Google AdSense** advertising network to serve advertisements to visitors.
+GCloud Cafe participates in the **Google AdSense** advertising network to serve advertisements to visitors.
 
 ### Google AdSense & DoubleClick DART Cookies
 - **Third-Party Vendors:** Google, as a third-party vendor, uses cookies to serve advertisements on [https://gcloudcafe.com](https://gcloudcafe.com).
@@ -54,15 +54,15 @@ Gcloud Cafe participates in the **Google AdSense** advertising network to serve 
   - Users can also opt out of a third-party vendor's use of cookies for personalized advertising by visiting **[AboutAds.info Choices](https://www.aboutads.info/choices/)** or the **[Network Advertising Initiative (NAI) Opt-Out](https://optout.networkadvertising.org/)**.
 
 ### Third-Party Ad Servers
-Third-party ad servers or ad networks use technologies like cookies, JavaScript, or Web Beacons in their respective advertisements and links that appear on Gcloud Cafe, which are sent directly to users' browsers. They automatically receive your IP address when this occurs. These technologies are used to measure the effectiveness of their advertising campaigns and/or to personalize the advertising content that you see.
+Third-party ad servers or ad networks use technologies like cookies, JavaScript, or Web Beacons in their respective advertisements and links that appear on GCloud Cafe, which are sent directly to users' browsers. They automatically receive your IP address when this occurs. These technologies are used to measure the effectiveness of their advertising campaigns and/or to personalize the advertising content that you see.
 
-*Note: Gcloud Cafe has no access to or control over these cookies that are used by third-party advertisers.*
+*Note: GCloud Cafe has no access to or control over these cookies that are used by third-party advertisers.*
 
 ---
 
 ## 4. Third-Party Privacy Policies
 
-Gcloud Cafe's Privacy Policy does not apply to other advertisers or external websites. Thus, we advise you to consult the respective Privacy Policies of these third-party ad servers for more detailed information:
+GCloud Cafe's Privacy Policy does not apply to other advertisers or external websites. Thus, we advise you to consult the respective Privacy Policies of these third-party ad servers for more detailed information:
 - **Google Privacy & Terms:** [https://policies.google.com/technologies/ads](https://policies.google.com/technologies/ads)
 - **Google Analytics Opt-Out:** [https://tools.google.com/dlpage/gaoptout](https://tools.google.com/dlpage/gaoptout)
 
@@ -96,7 +96,7 @@ Under the California Consumer Privacy Act (CCPA) and California Privacy Rights A
 
 Protecting children's privacy online is especially important. We encourage parents and guardians to observe, participate in, and/or monitor and guide their online activity.
 
-Gcloud Cafe does not knowingly collect any Personal Identifiable Information from children under the age of 13. If you think that your child provided this kind of information on our website, we strongly encourage you to contact us immediately and we will do our best efforts to promptly remove such information from our records.
+GCloud Cafe does not knowingly collect any Personal Identifiable Information from children under the age of 13. If you think that your child provided this kind of information on our website, we strongly encourage you to contact us immediately and we will do our best efforts to promptly remove such information from our records.
 
 ---
 

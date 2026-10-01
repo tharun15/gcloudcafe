@@ -7,33 +7,29 @@ url = "/"
 weight = 1
 
 [[main]]
+name = "Guide"
+url = "/blog"
+weight = 2
+
+[[main]]
 name = "Serie"
 url = "/series"
-weight = 2
+weight = 3
 
 [[main]]
 name = "Pulse"
 url = "/pulse"
-weight = 3
-
-[[main]]
-name = "Company"
-identifier = "company"
-url = "#"
 weight = 4
 
 [[main]]
 name = "Chi Siamo"
-parent = "company"
 url = "/about"
-weight = 1
+weight = 5
 
 [[main]]
 name = "Contatti"
-parent = "company"
 url = "/contact"
-weight = 2
-
+weight = 6
 
 # footer menu
 [[footer]]
@@ -42,31 +38,41 @@ url = "/"
 weight = 1
 
 [[footer]]
-name = "Blog"
+name = "Guide"
 url = "/blog"
 weight = 2
 
 [[footer]]
+name = "Serie"
+url = "/series"
+weight = 3
+
+[[footer]]
+name = "Pulse"
+url = "/pulse"
+weight = 4
+
+[[footer]]
 name = "Chi Siamo"
 url = "/about"
-weight = 3
+weight = 5
 
 [[footer]]
 name = "Contatti"
 url = "/contact"
-weight = 4
+weight = 6
 
 [[footer]]
 name = "Privacy Policy"
 url = "/privacy-policy"
-weight = 5
+weight = 7
 
 [[footer]]
 name = "Termini di Servizio"
 url = "/terms-of-service"
-weight = 6
+weight = 8
 
 [[footer]]
 name = "Cookie Policy"
 url = "/cookie-policy"
-weight = 7
+weight = 9

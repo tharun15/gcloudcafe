@@ -1,0 +1,10 @@
+# Legacy / Demo URL Redirects & SEO Preservation
+/blog/intro-to-google-cloud/    /blog/cka-exam-readiness/     301!
+/blog/post-1/                   /blog/                        301!
+/blog/post-2/                   /blog/                        301!
+/blog/post-3/                   /blog/                        301!
+/blog/post-4/                   /blog/                        301!
+/post-1/                        /blog/                        301!
+/authors/ramya/                 /authors/                     301!
+/authors/john-doe/              /authors/                     301!
+/sections/*                     /                             301!

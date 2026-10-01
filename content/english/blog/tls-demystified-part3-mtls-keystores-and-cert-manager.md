@@ -571,5 +571,5 @@ Many modern Kubernetes ingress controllers (e.g. `ingress-nginx`, Envoy, Traefik
 - **[NIST SP 800-207](https://csrc.nist.gov/publications/detail/sp/800-207/final):** *Zero Trust Architecture*.
 - **[NIST SP 800-52 Rev. 2](https://csrc.nist.gov/publications/detail/sp/800-52/rev-2/final):** *Guidelines for the Selection, Configuration, and Use of TLS Implementations*.
 - **[cert-manager Documentation](https://cert-manager.io/docs/):** *Cloud-Native Certificate Management for Kubernetes*.
-- **[Gcloudcafe TLS Series (Part 1)](/blog/tls-demystified-part1-cryptography-keys-csr-ca-explained/):** *Keys, CSRs & Chain of Trust Explained*.
-- **[Gcloudcafe TLS Series (Part 2)](/blog/tls-demystified-part2-handshake-ciphers-and-troubleshooting/):** *The Modern Handshake (TLS 1.2 vs 1.3), Ciphers & Troubleshooting*.
+- **[GCloud Cafe TLS Series (Part 1)](/blog/tls-demystified-part1-cryptography-keys-csr-ca-explained/):** *Keys, CSRs & Chain of Trust Explained*.
+- **[GCloud Cafe TLS Series (Part 2)](/blog/tls-demystified-part2-handshake-ciphers-and-troubleshooting/):** *The Modern Handshake (TLS 1.2 vs 1.3), Ciphers & Troubleshooting*.

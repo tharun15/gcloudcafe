@@ -4,7 +4,7 @@
       
       <!-- Brand Column -->
       <div class="space-y-3">
-        <a class="navbar-brand flex items-center gap-2.5 no-underline group" href="{{ site.Home.RelPermalink }}" aria-label="Gcloudcafe Home">
+        <a class="navbar-brand flex items-center gap-2.5 no-underline group" href="{{ site.Home.RelPermalink }}" aria-label="GCloud Cafe Home">
           <div class="relative flex items-center justify-center">
             {{ partial "logo" }}
           </div>
@@ -59,7 +59,7 @@
         <ul class="space-y-2.5 text-xs font-medium list-none p-0 m-0">
           <li>
             <a href="{{ `authors/` | relLangURL }}" class="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white no-underline transition-colors">
-              Authors
+              {{ if eq site.Language.Lang "it" }}Autori{{ else }}Authors{{ end }}
             </a>
           </li>
           <li>
@@ -69,17 +69,17 @@
           </li>
           <li>
             <a href="{{ `blog/` | relLangURL }}" class="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white no-underline transition-colors">
-              Articles
+              {{ if eq site.Language.Lang "it" }}Guide{{ else }}Guides{{ end }}
             </a>
           </li>
           <li>
             <a href="{{ `about/` | relLangURL }}" class="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white no-underline transition-colors">
-              About
+              {{ if eq site.Language.Lang "it" }}Chi Siamo{{ else }}About{{ end }}
             </a>
           </li>
           <li>
             <a href="{{ `contact/` | relLangURL }}" class="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white no-underline transition-colors">
-              Contact
+              {{ if eq site.Language.Lang "it" }}Contatti{{ else }}Contact{{ end }}
             </a>
           </li>
         </ul>
@@ -120,7 +120,7 @@
     <!-- Bottom Copyright & Legal Links -->
     <div class="pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono text-slate-500 dark:text-slate-400">
       <p class="m-0">
-        © 2026 GCloudCafe. All rights reserved.
+        © 2026 GCloud Cafe. All rights reserved.
       </p>
       <div class="flex items-center gap-6">
         <a href="{{ `privacy-policy/` | relLangURL }}" class="hover:text-slate-900 dark:hover:text-white no-underline text-inherit transition-colors">

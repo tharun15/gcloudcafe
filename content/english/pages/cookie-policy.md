@@ -1,7 +1,7 @@
 ---
 title: "Cookie Policy"
-meta_title: "Cookie Policy – Gcloudcafe"
-description: "Learn how Gcloudcafe uses cookies, including Google AdSense advertising cookies, and how you can manage your preferences."
+meta_title: "Cookie Policy – GCloud Cafe"
+description: "Learn how GCloud Cafe uses cookies, including Google AdSense advertising cookies, and how you can manage your preferences."
 draft: false
 ---
 
@@ -9,7 +9,7 @@ draft: false
 
 **Last updated: July 25, 2025**
 
-This Cookie Policy explains how **Gcloudcafe** (https://gcloudcafe.com) uses cookies and similar tracking technologies when you visit our website. It should be read alongside our [Privacy Policy](/privacy-policy/).
+This Cookie Policy explains how **GCloud Cafe** (https://gcloudcafe.com) uses cookies and similar tracking technologies when you visit our website. It should be read alongside our [Privacy Policy](/privacy-policy/).
 
 ---
 
@@ -41,7 +41,7 @@ Analytics data is aggregated and anonymised where possible. You can opt out by i
 
 ### 3. Advertising Cookies (Google AdSense)
 
-Gcloudcafe participates in the **Google AdSense** program. Google and its partners use cookies to:
+GCloud Cafe participates in the **Google AdSense** program. Google and its partners use cookies to:
 
 - Show ads based on your previous visits to this site and other sites across the web.
 - Measure ad performance and prevent the same ad from being shown too many times.
@@ -62,7 +62,7 @@ For more information about how Google uses data when you use our site, see [Goog
 
 ### 4. Third-Party Cookies
 
-Some pages on Gcloudcafe may embed content from or link to third-party services (for example, YouTube videos, GitHub). These third parties may set their own cookies. We do not control these cookies; please refer to the respective third-party privacy policies.
+Some pages on GCloud Cafe may embed content from or link to third-party services (for example, YouTube videos, GitHub). These third parties may set their own cookies. We do not control these cookies; please refer to the respective third-party privacy policies.
 
 ---
 
