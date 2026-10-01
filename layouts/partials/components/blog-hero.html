@@ -32,7 +32,9 @@
 
   <style>
     .hero-cinematic-img picture,
-    .hero-cinematic-img img {
+    .hero-cinematic-img img,
+    .companion-thumb picture,
+    .companion-thumb img {
       display: block !important;
       width: 100% !important;
       height: 100% !important;
@@ -154,7 +156,7 @@
         <!-- =================================================================== -->
         <!-- STAGE 2 (RIGHT 5 COLS): TRENDING DEEP DIVES & COMPANION ARENA       -->
         <!-- =================================================================== -->
-        <aside class="lg:col-span-5 flex flex-col justify-between space-y-3 mt-2 lg:mt-0">
+        <aside class="lg:col-span-5 flex flex-col justify-between space-y-3 mt-6 lg:mt-0">
           
           <!-- Section Eyebrow Header -->
           <div class="flex items-center justify-between pb-2 border-b border-slate-200 dark:border-slate-800">
@@ -182,7 +184,7 @@
                  class="group/comp p-3 sm:p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0c1220] hover:border-slate-300 dark:hover:border-slate-700/80 hover:shadow-xs transition-all duration-200 no-underline flex gap-3 sm:gap-3.5 items-center flex-grow">
                 
                 <!-- Companion Thumbnail (16:10 Aspect, Crisp Object Cover) -->
-                <div class="w-22 sm:w-28 h-18 sm:h-22 rounded-lg overflow-hidden shrink-0 relative bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800/80">
+                <div class="companion-thumb w-24 sm:w-28 h-20 sm:h-20 rounded-lg overflow-hidden shrink-0 relative bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800/80">
                   {{ with $companion.Params.image }}
                     {{ partial "image" (dict "Src" . "Context" $companion "Alt" $companion.Title "Class" "w-full h-full object-cover group-hover/comp:scale-105 transition-transform duration-300" "Loading" "lazy") }}
                   {{ else }}
@@ -198,7 +200,7 @@
                 </div>
 
                 <!-- Companion Info -->
-                <div class="flex flex-col justify-between flex-grow min-w-0 h-full py-0.5">
+                <div class="flex flex-col justify-between flex-1 min-w-0 h-full py-0.5">
                   <div>
                     <div class="flex items-center justify-between gap-1.5 mb-1">
                       <span class="font-mono text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 truncate">

@@ -76,4 +76,30 @@ describe('Mobile View & Header Refinement Suite', () => {
       expect(headerHtml).toContain('Escape');
     });
   });
+  describe('5. Technical Deep Dives (Trending Companions) Mobile Fitting & Thumbnails', () => {
+    const scssContent = fs.readFileSync(path.join(rootDir, 'assets/scss/mobile-improvements.scss'), 'utf8');
+
+    it('ensures companion thumbnails have valid locked Tailwind classes and companion-thumb class', () => {
+      expect(heroHtml).toContain('companion-thumb');
+      expect(heroHtml).toContain('w-24 sm:w-28 h-20 sm:h-20');
+      expect(heroHtml).not.toContain('w-22');
+      expect(heroHtml).not.toContain('h-18');
+    });
+
+    it('ensures companion picture and img are locked to cover without blowing up container', () => {
+      expect(heroHtml).toContain('.companion-thumb picture');
+      expect(heroHtml).toContain('.companion-thumb img');
+    });
+
+    it('verifies companion-thumb CSS rules exist in mobile-improvements.scss', () => {
+      expect(scssContent).toContain('.companion-thumb');
+      expect(scssContent).toContain('min-width: 96px !important;');
+      expect(scssContent).toContain('max-width: 96px !important;');
+      expect(scssContent).toContain('flex-shrink: 0 !important;');
+    });
+
+    it('ensures companion text container uses flex-1 min-w-0 to fit seamlessly on mobile', () => {
+      expect(heroHtml).toContain('flex-1 min-w-0 h-full py-0.5');
+    });
+  });
 });

@@ -30,6 +30,37 @@ input[type="reset"],
   justify-content: center;
 }
 
+/* Ensure trending companion thumbnails retain locked dimensions on mobile without aspect blowout */
+.companion-thumb {
+  width: 96px !important;
+  height: 80px !important;
+  min-width: 96px !important;
+  max-width: 96px !important;
+  min-height: 80px !important;
+  max-height: 80px !important;
+  flex-shrink: 0 !important;
+  overflow: hidden !important;
+  position: relative !important;
+
+  @media (min-width: 640px) {
+    width: 112px !important;
+    height: 80px !important;
+    min-width: 112px !important;
+    max-width: 112px !important;
+    min-height: 80px !important;
+    max-height: 80px !important;
+  }
+
+  picture,
+  img {
+    display: block !important;
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+  }
+}
+
+
 /* ============================================
    MOBILE TYPOGRAPHY & READABILITY
    ============================================ */
