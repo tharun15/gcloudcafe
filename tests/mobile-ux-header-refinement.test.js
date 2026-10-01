@@ -42,8 +42,14 @@ describe('Mobile View & Header Refinement Suite', () => {
   });
 
   describe('3. Decluttering Mobile Header & Screen', () => {
-    it('hides redundant bookmark button on mobile header to prevent cramped controls', () => {
-      expect(headerHtml).toMatch(/data-bookmarks-drawer-trigger[\s\S]*?hidden sm:inline-flex/);
+    it('switches saved articles button to mobile header and hides theme toggle on mobile header', () => {
+      expect(headerHtml).toMatch(/data-bookmarks-drawer-trigger[\s\S]*?min-h-\[44px\] min-w-\[44px\] h-11 w-11 sm:h-10 sm:w-10/);
+      expect(headerHtml).toContain('components/theme-switcher" (dict "Class" "hidden sm:inline-flex items-center"');
+    });
+
+    it('places theme toggle inside the mobile drawer for easy appearance switching', () => {
+      expect(headerHtml).toContain('Dark / Light Mode');
+      expect(headerHtml).toContain('ID" "mobile-theme-switcher"');
     });
 
     it('preserves full bookmarks drawer access inside the mobile drawer menu', () => {

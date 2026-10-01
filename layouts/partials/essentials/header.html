@@ -136,19 +136,19 @@
         </kbd>
       </button>
 
-      <!-- Bookmarks Drawer Trigger Button (Desktop / Tablet only — on mobile, available in drawer) -->
+      <!-- Bookmarks Drawer Trigger Button (Visible on Mobile & Desktop, Touch-Optimized 44×44px) -->
       <button
         type="button"
         data-bookmarks-drawer-trigger
         id="bookmarks-drawer-trigger"
-        class="hidden sm:inline-flex relative min-h-[44px] min-w-[44px] h-10 px-2.5 rounded-xl items-center justify-center gap-1.5 text-slate-700 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white bg-slate-100/80 dark:bg-slate-900/70 hover:bg-slate-200/80 dark:hover:bg-slate-800/80 border border-slate-200/80 dark:border-slate-800/80 transition-all cursor-pointer shadow-2xs group"
+        class="flex relative min-h-[44px] min-w-[44px] h-11 w-11 sm:h-10 sm:w-10 rounded-xl items-center justify-center text-slate-700 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white bg-slate-100/80 dark:bg-slate-900/70 hover:bg-slate-200/80 dark:hover:bg-slate-800/80 border border-slate-200/80 dark:border-slate-800/80 transition-all cursor-pointer shadow-2xs group"
         aria-label="View Saved Articles"
         title="Saved Articles">
         <i class="fa-regular fa-bookmark text-sm text-slate-500 dark:text-slate-400 group-hover:text-red-500 transition-colors"></i>
         <span
           id="bookmarks-header-count"
           data-bookmarks-badge
-          class="hidden px-1.5 py-0.2 text-[10px] font-bold font-mono rounded-full bg-red-500 text-white leading-tight min-w-[18px] text-center shadow-xs">
+          class="hidden absolute -top-1 -right-1 px-1.5 py-0.2 text-[10px] font-bold font-mono rounded-full bg-red-500 text-white leading-tight min-w-[18px] text-center shadow-xs">
           0
         </span>
       </button>
@@ -159,7 +159,7 @@
       </div>
 
       <!-- Theme Toggle Button -->
-      {{ partial "components/theme-switcher" (dict "Class" "flex items-center") }}
+      {{ partial "components/theme-switcher" (dict "Class" "hidden sm:inline-flex items-center" "ID" "desktop-theme-switcher") }}
 
       <!-- Mobile Menu Toggle Button (Touch-Optimized 44×44px Target) -->
       <button
@@ -258,6 +258,19 @@
           0
         </span>
       </button>
+
+      <!-- Mobile Theme Toggle (Dark / Light Mode) -->
+      <div class="flex items-center justify-between px-4 py-2.5 rounded-xl bg-slate-100/70 dark:bg-slate-800/60 border border-slate-200/70 dark:border-slate-800/70 min-h-[48px]">
+        <div class="flex items-center gap-2.5">
+          <span class="w-6 h-6 rounded-md flex items-center justify-center text-xs bg-amber-500/10 text-amber-600 dark:text-amber-400">
+            <i class="fa-solid fa-circle-half-stroke text-[11px]"></i>
+          </span>
+          <span class="text-sm font-bold text-slate-700 dark:text-slate-200">Dark / Light Mode</span>
+        </div>
+        <div>
+          {{ partial "components/theme-switcher" (dict "Class" "flex items-center" "ID" "mobile-theme-switcher") }}
+        </div>
+      </div>
 
       <!-- Mobile Language Switcher -->
       <div class="pt-3 border-t border-slate-200 dark:border-slate-800">
