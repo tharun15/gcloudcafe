@@ -615,7 +615,7 @@ kbd {
 }
 
 .ticker-archive-link {
-  @apply hidden md:flex items-center gap-1.5 px-3 py-1.5 bg-[#060a15] border-l border-slate-800/90 z-20 shrink-0 text-[11px] font-mono font-semibold text-slate-400 hover:text-cyan-400 transition-colors no-underline shadow-[-4px_0_12px_rgba(0,0,0,0.5)];
+  @apply hidden md:flex items-center gap-1.5 px-3 py-1.5 bg-slate-100/90 dark:bg-[#060a15] border-l border-slate-200/90 dark:border-slate-800/90 z-20 shrink-0 text-[11px] font-mono font-semibold text-slate-500 dark:text-slate-400 hover:text-red-600 dark:hover:text-cyan-400 transition-colors no-underline shadow-sm dark:shadow-[-4px_0_12px_rgba(0,0,0,0.5)];
 }
 
 .ticker-symbol {
