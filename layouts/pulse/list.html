@@ -86,11 +86,11 @@
         </div>
 
         <!-- Row 2: Streamlined Dual-Rail Filter Deck -->
-        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3 p-2.5 rounded-xl bg-slate-50/80 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800">
+        <div class="p-3 sm:p-3.5 rounded-2xl bg-slate-50/80 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800 space-y-2.5">
           
           <!-- Cloud Providers Rail -->
-          <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5" id="pulse-provider-chips">
-            <span class="text-[10px] font-mono uppercase tracking-wider text-slate-400 dark:text-slate-500 font-bold shrink-0 px-1">
+          <div class="flex items-center gap-2 flex-wrap" id="pulse-provider-chips">
+            <span class="text-[10px] sm:text-[11px] font-mono uppercase tracking-wider text-slate-400 dark:text-slate-500 font-bold shrink-0 px-0.5">
               Cloud:
             </span>
             <button data-pulse-provider="all" class="pulse-filter-chip is-active">
@@ -110,11 +110,12 @@
             </button>
           </div>
 
-          <div class="hidden lg:block w-px h-5 bg-slate-200 dark:bg-slate-800 shrink-0"></div>
+          <!-- Subtle Divider between Cloud and Topic -->
+          <div class="h-px bg-slate-200/60 dark:bg-slate-800/60"></div>
 
           <!-- Engineering Domain Topics Rail -->
-          <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5" id="pulse-domain-chips">
-            <span class="text-[10px] font-mono uppercase tracking-wider text-slate-400 dark:text-slate-500 font-bold shrink-0 px-1">
+          <div class="flex items-center gap-2 flex-wrap" id="pulse-domain-chips">
+            <span class="text-[10px] sm:text-[11px] font-mono uppercase tracking-wider text-slate-400 dark:text-slate-500 font-bold shrink-0 px-0.5">
               Topic:
             </span>
             <button data-pulse-domain="all" class="pulse-filter-chip is-active">
