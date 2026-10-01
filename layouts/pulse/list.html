@@ -1,50 +1,56 @@
 {{ define "main" }}
-  <!-- Breadcrumbs -->
-  <div class="bytedepth-container pt-6 pb-3">
-    <nav class="flex items-center gap-2 text-sm font-medium text-slate-600 dark:text-slate-300" aria-label="Breadcrumb">
-      <a href="{{ site.Home.RelPermalink }}" class="text-slate-700 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-500 no-underline transition-colors flex items-center gap-1.5">
-        <i class="fa-solid fa-house text-xs text-slate-400 dark:text-slate-500" aria-hidden="true"></i>
-        <span>Home</span>
-      </a>
-      <span class="text-slate-300 dark:text-slate-700">/</span>
-      <span class="text-slate-900 dark:text-white font-semibold" aria-current="page">Cloud Pulse</span>
-    </nav>
-  </div>
+  <!-- Main Newsroom Dashboard Section (Unified High-Impact Telemetry Canvas) -->
+  <section id="cloud-pulse-section" class="pulse-hero-backdrop pt-4 sm:pt-6 pb-16">
+    <div class="bytedepth-container">
 
-  <!-- Hero Banner (ByteDepth Standard - Compact & High-Impact) -->
-  <div class="bytedepth-container pt-2 pb-6 border-b border-slate-200 dark:border-slate-800 mb-6">
-    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
-      <div class="max-w-3xl">
-        <span class="font-mono text-xs font-black uppercase tracking-widest text-red-600 dark:text-red-500 flex items-center gap-2 mb-2">
-          <span class="inline-block w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
-          LIVE NEWSROOM FEED · UPDATED DAILY
-        </span>
-        <h1 class="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-slate-900 dark:text-white mb-2">
-          Cloud Pulse <span class="text-slate-400 dark:text-slate-500 font-normal text-2xl sm:text-3xl lg:text-4xl">| Micro-News &amp; Trends</span>
+      <!-- Telemetry Newsroom Header (Compact & High-Impact) -->
+      <div class="mb-4 sm:mb-5">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
+          {{/* Live Status Pill with EKG Heartbeat Waveform */}}
+          <div class="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-red-500/10 dark:bg-red-500/15 border border-red-500/25 dark:border-red-500/35 shadow-2xs">
+            <span class="relative flex h-2 w-2">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-2 w-2 bg-red-600"></span>
+            </span>
+            <span class="font-mono text-[11px] font-black uppercase tracking-wider text-red-600 dark:text-red-400">
+              LIVE CLOUD NEWSROOM
+            </span>
+            <span class="text-slate-300 dark:text-slate-700 select-none">·</span>
+            
+            {{/* Animated SVG Oscilloscope / Heartbeat Frequency Line */}}
+            <svg class="pulse-waveform-svg h-3 w-12 text-red-500/80 dark:text-red-400" viewBox="0 0 56 14" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M0 7h12l3-5 5 11 4-9 3 5 4-2h15" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="pulse-waveform-line"/>
+            </svg>
+
+            <span class="hidden sm:inline font-mono text-[10px] font-bold text-slate-500 dark:text-slate-400">
+              UPDATED DAILY
+            </span>
+          </div>
+
+          {{/* Telemetry Meta Indicator */}}
+          <div class="hidden sm:flex items-center gap-2 font-mono text-[11px] text-slate-500 dark:text-slate-400">
+            <span class="inline-block w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span>REAL-TIME INTELLIGENCE</span>
+          </div>
+        </div>
+
+        {{/* High-Contrast Bold Headline with Clear Subtitle */}}
+        <h1 class="text-2xl sm:text-3xl lg:text-[32px] font-black tracking-tight text-slate-900 dark:text-white mb-1.5 leading-[1.15]">
+          Cloud Pulse
+          <span class="font-bold text-lg sm:text-xl lg:text-2xl block sm:inline mt-0.5 sm:mt-0 sm:ml-2">
+            <span class="text-red-600 dark:text-red-500 font-mono font-normal">/</span> <span class="bg-gradient-to-r from-red-600 via-rose-500 to-amber-600 dark:from-red-400 dark:via-rose-300 dark:to-amber-300 bg-clip-text text-transparent">Micro-News &amp; Architecture Shifts</span>
+          </span>
         </h1>
-        <p class="text-sm sm:text-base text-slate-600 dark:text-slate-400 leading-relaxed max-w-2xl mb-0">
-          Daily curated cloud release notes, architectural shifts, and DevOps updates synthesized into crisp 2-bullet engineering takeaways. Upvote what matters most to your team.
+
+        <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed max-w-3xl mb-0">
+          Curated cloud release notes &amp; architectural shifts synthesized into crisp 2-bullet engineering takeaways. Upvote what matters most to your team.
         </p>
       </div>
 
-      {{/* Live Telemetry Pill */}}
-      <div class="hidden sm:flex items-center gap-2 font-mono text-xs text-slate-500 dark:text-slate-400 shrink-0">
-        <span class="px-2.5 py-1 rounded-lg bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-200 dark:border-emerald-800/60 text-emerald-700 dark:text-emerald-300 font-bold flex items-center gap-1.5 shadow-2xs">
-          <i class="fa-solid fa-bolt-lightning text-amber-500"></i>
-          <span>Live Micro-Feed</span>
-        </span>
-      </div>
-    </div>
-  </div>
-
-  <!-- Main Newsroom Dashboard Section (Full-Width 12-Column Canvas) -->
-  <section id="cloud-pulse-section" class="pb-20">
-    <div class="bytedepth-container">
-
-      <!-- Streamlined Command & Filter Deck -->
-      <div class="space-y-3 mb-8">
+      <!-- Integrated Glassmorphic Command & Filter Deck -->
+      <div class="p-3 sm:p-4 rounded-2xl bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border border-slate-200/90 dark:border-slate-800/90 shadow-sm space-y-3 mb-5">
         
-        <!-- Row 1: Unified Search & Sort Deck -->
+        <!-- Row 1: Unified Search & Sort Controls -->
         <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
           
           {{/* Instant Search Bar */}}
@@ -57,7 +63,7 @@
               id="pulse-search-input" 
               placeholder="Search 36+ cloud updates (e.g. EKS, BigQuery, mTLS, Llama)..." 
               autocomplete="off"
-              class="w-full pl-9 pr-9 py-2 text-xs font-mono rounded-xl bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-hidden focus:ring-1 focus:ring-red-500 focus:border-red-500 transition-all shadow-xs"
+              class="w-full pl-9 pr-9 py-2 text-xs font-mono rounded-xl bg-slate-50/90 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-hidden focus:ring-1 focus:ring-red-500 focus:border-red-500 transition-all shadow-2xs"
             />
             <button 
               id="pulse-search-clear" 
@@ -70,11 +76,12 @@
 
           {{/* Quick Stats & Sort Controls */}}
           <div class="flex items-center justify-between sm:justify-end gap-3 text-xs font-mono">
-            <span id="pulse-result-count" class="font-bold text-slate-700 dark:text-slate-300 text-xs shrink-0">
-              Showing all updates
-            </span>
+            <div class="flex items-center gap-1.5 font-bold text-slate-700 dark:text-slate-300 text-xs shrink-0">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+              <span id="pulse-result-count">Showing all updates</span>
+            </div>
 
-            <div id="pulse-sort-controls" class="flex items-center gap-1 bg-slate-100 dark:bg-slate-800/80 p-0.5 rounded-xl border border-slate-200/80 dark:border-slate-700/80 shrink-0">
+            <div id="pulse-sort-controls" class="flex items-center gap-1 bg-slate-100/80 dark:bg-slate-800/80 p-0.5 rounded-xl border border-slate-200/80 dark:border-slate-700/80 shrink-0">
               <button type="button" data-pulse-sort="trending" class="pulse-sort-btn px-2.5 py-1 rounded-lg text-xs font-semibold cursor-pointer transition-all bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-2xs font-bold" title="Sort by community votes">
                 <i class="fa-solid fa-fire text-amber-500 text-[10px]"></i> Trending
               </button>
@@ -85,13 +92,15 @@
           </div>
         </div>
 
+        <!-- Subtle Divider between Search and Filters -->
+        <div class="h-px bg-slate-200/70 dark:bg-slate-800/70"></div>
+
         <!-- Row 2: Streamlined Dual-Rail Filter Deck -->
-        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3 p-2.5 rounded-xl bg-slate-50/80 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800">
-          
+        <div class="space-y-2.5">
           <!-- Cloud Providers Rail -->
-          <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5" id="pulse-provider-chips">
-            <span class="text-[10px] font-mono uppercase tracking-wider text-slate-400 dark:text-slate-500 font-bold shrink-0 px-1">
-              Cloud:
+          <div class="flex items-center gap-2 flex-wrap" id="pulse-provider-chips">
+            <span class="inline-flex items-center gap-1.5 text-[10px] sm:text-[11px] font-mono uppercase tracking-wider text-slate-400 dark:text-slate-500 font-bold shrink-0 px-0.5">
+              <i class="fa-solid fa-cloud text-slate-400 dark:text-slate-500 text-[10px]"></i> Cloud:
             </span>
             <button data-pulse-provider="all" class="pulse-filter-chip is-active">
               All
@@ -110,12 +119,13 @@
             </button>
           </div>
 
-          <div class="hidden lg:block w-px h-5 bg-slate-200 dark:bg-slate-800 shrink-0"></div>
+          <!-- Subtle Divider between Cloud and Topic -->
+          <div class="h-px bg-slate-200/50 dark:bg-slate-800/50"></div>
 
           <!-- Engineering Domain Topics Rail -->
-          <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5" id="pulse-domain-chips">
-            <span class="text-[10px] font-mono uppercase tracking-wider text-slate-400 dark:text-slate-500 font-bold shrink-0 px-1">
-              Topic:
+          <div class="flex items-center gap-2 flex-wrap" id="pulse-domain-chips">
+            <span class="inline-flex items-center gap-1.5 text-[10px] sm:text-[11px] font-mono uppercase tracking-wider text-slate-400 dark:text-slate-500 font-bold shrink-0 px-0.5">
+              <i class="fa-solid fa-layer-group text-slate-400 dark:text-slate-500 text-[10px]"></i> Topic:
             </span>
             <button data-pulse-domain="all" class="pulse-filter-chip is-active">
               All Topics

@@ -1965,29 +1965,29 @@
         }
       }
 
-      var out = '<div class="space-y-3 my-1">';
+      var out = '<div class="space-y-2.5 my-2">';
       if (whatChanged) {
-        out += '<div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 shadow-xs">' +
-                 '<div class="flex items-center gap-1.5 mb-2">' +
-                   '<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded font-mono text-[10px] font-bold uppercase tracking-wider bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">' +
+        out += '<div class="p-3.5 rounded-r-xl rounded-l-xs bg-emerald-50/70 dark:bg-emerald-950/20 border-l-[3px] border-l-emerald-500 border-t border-r border-b border-emerald-200/60 dark:border-emerald-900/40 shadow-2xs">' +
+                 '<div class="flex items-center gap-1.5 mb-1.5">' +
+                   '<span class="inline-flex items-center gap-1.5 px-1.5 py-0.5 rounded font-mono text-[10px] font-black uppercase tracking-wider bg-emerald-500/15 text-emerald-700 dark:text-emerald-300">' +
                      '<span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>' +
                      '<span>What Changed</span>' +
                    '</span>' +
                  '</div>' +
-                 '<p class="text-xs sm:text-[13px] text-slate-700 dark:text-slate-200 leading-relaxed font-normal mb-0">' +
+                 '<p class="text-xs sm:text-[13px] text-slate-800 dark:text-slate-200 leading-relaxed font-normal mb-0">' +
                    escapeHtml(whatChanged) +
                  '</p>' +
                '</div>';
       }
       if (impact) {
-        out += '<div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 shadow-xs">' +
-                 '<div class="flex items-center gap-1.5 mb-2">' +
-                   '<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded font-mono text-[10px] font-bold uppercase tracking-wider bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">' +
-                     '<i class="fa-regular fa-lightbulb text-[10px] text-amber-500"></i>' +
+        out += '<div class="p-3.5 rounded-r-xl rounded-l-xs bg-amber-50/70 dark:bg-amber-950/20 border-l-[3px] border-l-amber-500 border-t border-r border-b border-amber-200/60 dark:border-amber-900/40 shadow-2xs">' +
+                 '<div class="flex items-center gap-1.5 mb-1.5">' +
+                   '<span class="inline-flex items-center gap-1.5 px-1.5 py-0.5 rounded font-mono text-[10px] font-black uppercase tracking-wider bg-amber-500/15 text-amber-700 dark:text-amber-300">' +
+                     '<i class="fa-solid fa-bolt text-[10px] text-amber-500"></i>' +
                      '<span>Why It Matters</span>' +
                    '</span>' +
                  '</div>' +
-                 '<p class="text-xs sm:text-[13px] text-slate-600 dark:text-slate-400 leading-relaxed font-normal mb-0">' +
+                 '<p class="text-xs sm:text-[13px] text-slate-700 dark:text-slate-300 leading-relaxed font-normal mb-0">' +
                    escapeHtml(impact) +
                  '</p>' +
                '</div>';
@@ -2083,7 +2083,7 @@
         '</button>';
 
         var cardTransitionName = 'pulse-card-' + escapeHtml(String(p.id).replace(/[^a-zA-Z0-9_-]/g, ''));
-        html += '<div id="pulse-' + escapeHtml(p.id) + '" data-pulse-id="' + escapeHtml(p.id) + '" style="view-transition-name: ' + cardTransitionName + ';" class="cloud-pulse-card scroll-mt-28 bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-slate-800 rounded-xl p-6 shadow-sm hover:shadow-md flex flex-col justify-between transition-all hover:border-slate-300 dark:hover:border-slate-700 group">' +
+        html += '<div id="pulse-' + escapeHtml(p.id) + '" data-pulse-id="' + escapeHtml(p.id) + '" style="view-transition-name: ' + cardTransitionName + ';" class="cloud-pulse-card scroll-mt-28 bg-white dark:bg-[#0c1220] border border-slate-200/90 dark:border-slate-800/90 rounded-2xl p-5 sm:p-6 shadow-xs flex flex-col justify-between transition-all group">' +
           '<div>' +
             '<div class="flex items-center justify-between gap-2 mb-3">' +
               rankBadge +

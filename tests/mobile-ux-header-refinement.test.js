@@ -59,8 +59,8 @@ describe('Mobile View & Header Refinement Suite', () => {
       expect(headerHtml).toContain('Saved Articles');
     });
 
-    it('hides redundant breadcrumbs on mobile homepage to save vertical space', () => {
-      expect(indexHtml).toContain('pt-6 pb-4 hidden sm:block');
+    it('eliminates redundant breadcrumbs on homepage to save vertical space across all viewports', () => {
+      expect(indexHtml).not.toContain('aria-label="Breadcrumb"');
     });
 
     it('refines spotlight hero card padding and limits tags on mobile', () => {
