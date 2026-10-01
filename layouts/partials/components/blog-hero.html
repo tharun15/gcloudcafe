@@ -32,7 +32,9 @@
 
   <style>
     .hero-cinematic-img picture,
-    .hero-cinematic-img img {
+    .hero-cinematic-img img,
+    .companion-thumb picture,
+    .companion-thumb img {
       display: block !important;
       width: 100% !important;
       height: 100% !important;
@@ -80,7 +82,7 @@
           </div>
 
           <!-- Editorial Details -->
-          <div class="p-5 sm:p-6 lg:p-7 flex flex-col justify-between flex-grow">
+          <div class="p-4 sm:p-6 lg:p-7 flex flex-col justify-between flex-grow">
             <div>
               <!-- Eyebrow & Meta -->
               <div class="flex items-center justify-between gap-2 mb-2.5">
@@ -103,22 +105,31 @@
               </h1>
 
               <!-- Teaser -->
-              <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed font-normal mb-4 line-clamp-2">
+              <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed font-normal mb-3.5 line-clamp-2">
                 {{ $teaser }}
               </p>
 
-              <!-- Hashtags -->
-              <div class="flex flex-wrap gap-1.5 mb-4">
-                {{ range first 3 ($tags | default (slice)) }}
-                  <span class="border border-slate-200 dark:border-slate-800 px-2 py-0.5 rounded-md font-mono text-[11px] text-slate-600 dark:text-slate-400 bg-slate-50 dark:bg-slate-900/40">
-                    #{{ . }}
-                  </span>
-                {{ end }}
-              </div>
+              <!-- Hashtags (Clean on mobile) -->
+              {{ with $tags }}
+                <div class="flex flex-wrap gap-1.5 mb-3 sm:mb-4">
+                  {{ range first 2 . }}
+                    <span class="border border-slate-200 dark:border-slate-800 px-2 py-0.5 rounded-md font-mono text-[10px] sm:text-[11px] text-slate-600 dark:text-slate-400 bg-slate-50 dark:bg-slate-900/40">
+                      #{{ . }}
+                    </span>
+                  {{ end }}
+                  {{ if gt (len .) 2 }}
+                    {{ range after 2 (first 3 .) }}
+                      <span class="hidden sm:inline-flex border border-slate-200 dark:border-slate-800 px-2 py-0.5 rounded-md font-mono text-[11px] text-slate-600 dark:text-slate-400 bg-slate-50 dark:bg-slate-900/40">
+                        #{{ . }}
+                      </span>
+                    {{ end }}
+                  {{ end }}
+                </div>
+              {{ end }}
             </div>
 
             <!-- Author & Action Footer -->
-            <div class="pt-4 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between gap-3 mt-auto">
+            <div class="pt-3.5 sm:pt-4 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between gap-3 mt-auto">
               <div class="flex items-center gap-2.5 min-w-0">
                 {{ if $authorImage }}
                   <img src="{{ $authorImage | relURL }}" alt="{{ $authorName }}" class="w-8 h-8 rounded-full object-cover shrink-0 border border-slate-200 dark:border-slate-700 shadow-xs" loading="lazy" onerror="this.onerror=null; this.src='{{ `/images/avatar.png` | relURL }}';">
@@ -133,7 +144,7 @@
                 </div>
               </div>
 
-              <a href="{{ $page.RelPermalink }}" class="inline-flex items-center gap-1.5 font-mono text-xs font-bold text-red-600 dark:text-red-500 group-hover:translate-x-1 transition-all no-underline">
+              <a href="{{ $page.RelPermalink }}" class="inline-flex items-center gap-1.5 font-mono text-xs font-bold text-red-600 dark:text-red-500 group-hover:translate-x-1 transition-all no-underline shrink-0">
                 <span>Read Masterclass</span>
                 <i class="fa-solid fa-arrow-right text-[10px]"></i>
               </a>
@@ -145,10 +156,10 @@
         <!-- =================================================================== -->
         <!-- STAGE 2 (RIGHT 5 COLS): TRENDING DEEP DIVES & COMPANION ARENA       -->
         <!-- =================================================================== -->
-        <aside class="lg:col-span-5 flex flex-col justify-between space-y-3.5">
+        <aside class="lg:col-span-5 flex flex-col justify-between space-y-3 mt-6 lg:mt-0">
           
           <!-- Section Eyebrow Header -->
-          <div class="flex items-center justify-between pb-2.5 border-b border-slate-200 dark:border-slate-800">
+          <div class="flex items-center justify-between pb-2 border-b border-slate-200 dark:border-slate-800">
             <div class="flex items-center gap-2">
               <span class="inline-flex items-center justify-center w-5 h-5 rounded-md bg-amber-500/10 text-amber-500 text-xs">
                 <i class="fa-solid fa-fire-flame-curved"></i>
@@ -164,16 +175,16 @@
           </div>
 
           <!-- 3 Companion Cards Stack -->
-          <div class="flex flex-col gap-3 flex-grow justify-between">
+          <div class="flex flex-col gap-2.5 sm:gap-3 flex-grow justify-between">
             {{ range $idx, $companion := $topCompanions }}
               {{ $compCat := index ($companion.Params.categories | default (slice "Cloud")) 0 }}
               {{ $compTeaser := $companion.Params.description | default $companion.Summary | plainify | truncate 95 }}
               
               <a href="{{ $companion.RelPermalink }}" 
-                 class="group/comp p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0c1220] hover:border-slate-300 dark:hover:border-slate-700/80 hover:shadow-xs transition-all duration-200 no-underline flex gap-3.5 items-center flex-grow">
+                 class="group/comp p-3 sm:p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0c1220] hover:border-slate-300 dark:hover:border-slate-700/80 hover:shadow-xs transition-all duration-200 no-underline flex gap-3 sm:gap-3.5 items-center flex-grow">
                 
                 <!-- Companion Thumbnail (16:10 Aspect, Crisp Object Cover) -->
-                <div class="w-24 sm:w-28 h-20 sm:h-22 rounded-lg overflow-hidden shrink-0 relative bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800/80">
+                <div class="companion-thumb w-24 sm:w-28 h-20 sm:h-20 rounded-lg overflow-hidden shrink-0 relative bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800/80">
                   {{ with $companion.Params.image }}
                     {{ partial "image" (dict "Src" . "Context" $companion "Alt" $companion.Title "Class" "w-full h-full object-cover group-hover/comp:scale-105 transition-transform duration-300" "Loading" "lazy") }}
                   {{ else }}
@@ -189,7 +200,7 @@
                 </div>
 
                 <!-- Companion Info -->
-                <div class="flex flex-col justify-between flex-grow min-w-0 h-full py-0.5">
+                <div class="flex flex-col justify-between flex-1 min-w-0 h-full py-0.5">
                   <div>
                     <div class="flex items-center justify-between gap-1.5 mb-1">
                       <span class="font-mono text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 truncate">
