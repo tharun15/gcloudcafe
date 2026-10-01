@@ -1,6 +1,6 @@
 {{ define "main" }}
   <!-- Breadcrumbs -->
-  <div class="bytedepth-container pt-6 pb-3">
+  <div class="bytedepth-container pt-3 pb-1">
     <nav class="flex items-center gap-2 text-sm font-medium text-slate-600 dark:text-slate-300" aria-label="Breadcrumb">
       <a href="{{ site.Home.RelPermalink }}" class="text-slate-700 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-500 no-underline transition-colors flex items-center gap-1.5">
         <i class="fa-solid fa-house text-xs text-slate-400 dark:text-slate-500" aria-hidden="true"></i>
@@ -11,70 +11,54 @@
     </nav>
   </div>
 
-  <!-- Hero Banner (High-Impact Cloud Telemetry Newsroom) -->
-  <div class="pulse-hero-backdrop border-b border-slate-200/80 dark:border-slate-800/80 mb-8">
-    <div class="bytedepth-container pt-3 pb-8">
+  <!-- Hero Banner (High-Impact Cloud Telemetry Newsroom - Compact & Direct) -->
+  <div class="pulse-hero-backdrop border-b border-slate-200/80 dark:border-slate-800/80 mb-5">
+    <div class="bytedepth-container pt-1 pb-5">
       <div class="max-w-4xl">
         
         {{/* Live Status Pill with EKG Heartbeat Waveform */}}
-        <div class="inline-flex items-center gap-2.5 px-3 py-1 rounded-full bg-red-500/10 dark:bg-red-500/15 border border-red-500/25 dark:border-red-500/35 mb-3.5 shadow-2xs">
+        <div class="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-red-500/10 dark:bg-red-500/15 border border-red-500/25 dark:border-red-500/35 mb-2 shadow-2xs">
           <span class="relative flex h-2 w-2">
             <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75"></span>
             <span class="relative inline-flex rounded-full h-2 w-2 bg-red-600"></span>
           </span>
-          <span class="font-mono text-xs font-black uppercase tracking-wider text-red-600 dark:text-red-400">
+          <span class="font-mono text-[11px] font-black uppercase tracking-wider text-red-600 dark:text-red-400">
             LIVE CLOUD NEWSROOM
           </span>
           <span class="text-slate-300 dark:text-slate-700 select-none">·</span>
           
           {{/* Animated SVG Oscilloscope / Heartbeat Frequency Line */}}
-          <svg class="pulse-waveform-svg h-3.5 w-14 text-red-500/80 dark:text-red-400" viewBox="0 0 56 14" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <svg class="pulse-waveform-svg h-3 w-12 text-red-500/80 dark:text-red-400" viewBox="0 0 56 14" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
             <path d="M0 7h12l3-5 5 11 4-9 3 5 4-2h15" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="pulse-waveform-line"/>
           </svg>
 
-          <span class="hidden sm:inline font-mono text-[11px] font-bold text-slate-500 dark:text-slate-400">
+          <span class="hidden sm:inline font-mono text-[10px] font-bold text-slate-500 dark:text-slate-400">
             UPDATED DAILY
           </span>
         </div>
 
         {{/* High-Contrast Bold Headline with Clear Subtitle */}}
-        <h1 class="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-slate-900 dark:text-white mb-3 leading-[1.12]">
+        <h1 class="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight text-slate-900 dark:text-white mb-2 leading-[1.12]">
           Cloud Pulse
-          <span class="text-slate-800 dark:text-slate-100 font-bold text-xl sm:text-2xl lg:text-3xl block sm:inline mt-1.5 sm:mt-0 sm:ml-2">
+          <span class="text-slate-800 dark:text-slate-100 font-bold text-lg sm:text-xl lg:text-2xl block sm:inline mt-1 sm:mt-0 sm:ml-2">
             <span class="text-red-600 dark:text-red-500 font-mono font-normal">/</span> Micro-News &amp; Architecture Shifts
           </span>
         </h1>
 
-        <p class="text-sm sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed max-w-3xl mb-0">
+        <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed max-w-3xl mb-0">
           Daily curated cloud release notes, architectural shifts, and DevOps updates synthesized into crisp 2-bullet engineering takeaways. Upvote what matters most to your team.
         </p>
-
-        {{/* Real-Time Newsroom Telemetry Strip */}}
-        <div class="mt-4 pt-4 border-t border-slate-200/70 dark:border-slate-800/70 flex flex-wrap items-center gap-2.5 text-xs font-mono">
-          <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200/80 dark:border-emerald-800/60 text-emerald-800 dark:text-emerald-300 font-bold shadow-2xs">
-            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping"></span>
-            <span>Live Telemetry Active</span>
-          </div>
-          <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/60 text-slate-700 dark:text-slate-300 font-semibold shadow-2xs">
-            <i class="fa-solid fa-layer-group text-slate-400"></i>
-            <span>36+ Approved Pulses</span>
-          </div>
-          <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-amber-50 dark:bg-amber-950/40 border border-amber-200/80 dark:border-amber-800/60 text-amber-800 dark:text-amber-300 font-semibold shadow-2xs">
-            <i class="fa-solid fa-fire text-amber-500"></i>
-            <span>Hot: Kubernetes · Agentic AI · Zero-Trust</span>
-          </div>
-        </div>
 
       </div>
     </div>
   </div>
 
   <!-- Main Newsroom Dashboard Section (Full-Width 12-Column Canvas) -->
-  <section id="cloud-pulse-section" class="pb-20">
+  <section id="cloud-pulse-section" class="pb-16">
     <div class="bytedepth-container">
 
       <!-- Streamlined Command & Filter Deck -->
-      <div class="space-y-3 mb-8">
+      <div class="space-y-2.5 mb-5">
         
         <!-- Row 1: Unified Search & Sort Deck -->
         <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
