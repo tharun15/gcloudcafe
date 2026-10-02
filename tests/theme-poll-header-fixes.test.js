@@ -91,8 +91,8 @@ describe('Fixes: Dark Mode Persistence, Question of the Week, and Header Subscri
     it('ensures homepage retains newsletter subscription form near the bottom of the page', () => {
       const indexHtml = fs.readFileSync(path.join(rootDir, 'layouts/index.html'), 'utf8');
       expect(indexHtml).toContain('data-supabase-subscribe');
-      expect(indexHtml).toContain('Engineering insights, twice a month');
-      expect(indexHtml).toContain('Subscribe');
+      expect(indexHtml).toContain('newsletter_heading');
+      expect(indexHtml).toContain('newsletter_submit');
     });
   });
 });

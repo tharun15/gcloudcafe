@@ -248,7 +248,7 @@ describe('Bookmarks Storage & Management Engine', () => {
       const singleFile = path.join(rootDir, 'layouts/blog/single.html');
       const singleContent = fs.readFileSync(singleFile, 'utf8');
       expect(singleContent).toContain('data-bookmark-btn');
-      expect(singleContent).toContain('Save for later');
+      expect(singleContent).toContain('save_for_later');
     });
   });
 });
