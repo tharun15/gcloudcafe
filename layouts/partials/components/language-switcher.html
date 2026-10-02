@@ -1,6 +1,15 @@
 {{ $currentPage := . }}
 {{ $currentLang := site.Language.Lang }}
-{{ $siteLanguages := site.Home.AllTranslations }}
+
+{{/*
+  Build a lookup map: lang -> translated RelPermalink for the CURRENT page.
+  .Translations returns all OTHER language versions of this page.
+  We add the current page itself so every language has a fallback.
+*/}}
+{{ $translationMap := dict $currentLang $currentPage.RelPermalink }}
+{{ range $currentPage.Translations }}
+  {{ $translationMap = merge $translationMap (dict .Language.Lang .RelPermalink) }}
+{{ end }}
 
 <div class="relative inline-flex items-center shrink-0 group/lang py-0.5" data-lang-switcher>
   <!-- Minimalist Pill Trigger Button -->
@@ -33,19 +42,15 @@
         </span>
         <span class="text-[9px] font-mono px-1.5 py-0.2 rounded bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400">i18n</span>
       </div>
-      {{ range $siteLanguages }}
+      {{ range site.Sites }}
         {{ $langObj := .Language }}
         {{ $isCurrent := eq $currentLang $langObj.Lang }}
-        {{ $targetUrl := .RelPermalink }}
+        {{/* Use the translation map for this page's URL in this language; fall back to the language home */}}
+        {{ $targetUrl := .Home.RelPermalink }}
         {{ if and (ne $currentPage.Kind "404") (ne $currentPage.Type "404") }}
-          {{ if $isCurrent }}
-            {{ $targetUrl = $currentPage.RelPermalink }}
-          {{ else }}
-            {{ range $currentPage.Translations }}
-              {{ if eq .Language.Lang $langObj.Lang }}
-                {{ $targetUrl = .RelPermalink }}
-              {{ end }}
-            {{ end }}
+          {{ $mapped := index $translationMap $langObj.Lang }}
+          {{ if $mapped }}
+            {{ $targetUrl = $mapped }}
           {{ end }}
         {{ end }}
 

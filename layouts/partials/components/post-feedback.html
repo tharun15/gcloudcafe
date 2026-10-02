@@ -56,7 +56,7 @@
     <!-- Share Bar & Copy Link -->
     <div class="pt-6 border-t border-border/40 dark:border-darkmode-border/40 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
       <div class="flex items-center gap-2">
-        <span class="text-xs font-bold uppercase tracking-wider text-text/90 dark:text-darkmode-text/90">Share this guide:</span>
+        <span class="text-xs font-bold uppercase tracking-wider text-text/90 dark:text-darkmode-text/90">{{ i18n "share_this_guide" }}</span>
       </div>
 
       <div class="flex flex-wrap items-center gap-2">
@@ -65,16 +65,16 @@
           target="_blank"
           rel="noopener noreferrer"
           class="inline-flex items-center gap-2 rounded-xl bg-[#0a66c2] hover:bg-[#004182] text-white px-4 py-2 text-xs font-bold shadow-xs transition-all hover:scale-105 active:scale-95 whitespace-nowrap cursor-pointer no-underline"
-          aria-label="Share on LinkedIn">
-          <i class="fa-brands fa-linkedin text-sm"></i> Share on LinkedIn
+          aria-label="{{ i18n `share_on_linkedin` }}">
+          <i class="fa-brands fa-linkedin text-sm"></i> {{ i18n "share_on_linkedin" }}
         </a>
 
         <button
           type="button"
           data-copy-permalink="{{ .Permalink }}"
           class="btn btn-primary btn-sm flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-semibold shadow-xs cursor-pointer"
-          aria-label="Copy Link">
-          <i class="fa-regular fa-copy"></i> Copy Link
+          aria-label="{{ i18n `copy_link` }}">
+          <i class="fa-regular fa-copy"></i> {{ i18n "copy_link" }}
         </button>
       </div>
     </div>
