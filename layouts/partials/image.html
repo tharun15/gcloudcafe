@@ -249,7 +249,8 @@
             {{ end }} {{ $class }} img"
             alt="{{ $alt }}"
             width="{{ $image.Width }}"
-            height="{{ $image.Height }}" />
+            height="{{ $image.Height }}"
+            onerror="this.onerror=null; this.closest('picture')?.querySelectorAll('source').forEach(function(s){s.remove();}); this.src='{{ $image.RelPermalink | default (add `/` $cleanPath) }}';" />
         </picture>
       {{ end }}
       <!-- end image processing -->

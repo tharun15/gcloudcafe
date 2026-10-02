@@ -120,17 +120,20 @@
     <!-- Bottom Copyright & Legal Links -->
     <div class="pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono text-slate-500 dark:text-slate-400">
       <p class="m-0">
-        © 2026 GCloudCafe. All rights reserved.
+        {{ i18n "footer_copyright" | default "© 2026 GCloudCafe. All rights reserved." }}
       </p>
       <div class="flex items-center gap-6">
         <a href="{{ `privacy-policy/` | relLangURL }}" class="hover:text-slate-900 dark:hover:text-white no-underline text-inherit transition-colors">
-          Privacy
+          {{ i18n "footer_privacy" | default "Privacy" }}
         </a>
         <a href="{{ `terms-of-service/` | relLangURL }}" class="hover:text-slate-900 dark:hover:text-white no-underline text-inherit transition-colors">
-          Terms
+          {{ i18n "footer_terms" | default "Terms" }}
+        </a>
+        <a href="{{ `disclaimer/` | relLangURL }}" class="hover:text-slate-900 dark:hover:text-white no-underline text-inherit transition-colors">
+          {{ i18n "footer_disclaimer" | default "Disclaimer" }}
         </a>
         <a href="{{ `cookie-policy/` | relLangURL }}" class="hover:text-slate-900 dark:hover:text-white no-underline text-inherit transition-colors">
-          Cookies
+          {{ i18n "footer_cookies" | default "Cookies" }}
         </a>
       </div>
     </div>

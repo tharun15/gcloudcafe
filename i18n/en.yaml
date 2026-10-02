@@ -12,3 +12,56 @@ search_initial_message: Type something to search..
 search_navigate: to navigate
 search_select: to select
 search_close: to close
+
+# Blog Hero (homepage featured section)
+spotlight_story: Spotlight Story
+min_read: min read
+read_masterclass: Read Masterclass
+trending_deep_dives: Trending Deep Dives
+view_all_articles: View all articles
+read: Read
+
+# Homepage sections
+start_here_heading: Start Here · Choose Your Engineering Track
+view_all_tracks: View all tracks
+explore_track: Explore track
+view_all_articles_btn: View all articles
+loading_articles: Loading articles...
+browse_all_topics: Browse all topics
+
+# Homepage track descriptions
+track_kubernetes_desc: Deep dives on pod networking, EX280 exam prep, and enterprise container orchestration.
+track_cloud_desc: BigQuery storage building blocks, distributed system reliability, and cloud design patterns.
+track_security_desc: 'Cryptographic keys, CSRs, mTLS handshakes, ciphers, and cert-manager automation.'
+track_series_desc: End-to-end masterclasses arranged in sequential episodes with production-grade labs.
+
+# Newsletter section
+newsletter_label: NEWSLETTER
+newsletter_heading: Engineering insights, twice a month
+newsletter_desc: Deep dives on cloud architecture, distributed systems, Kubernetes, and security. Written by practitioners, not content teams.
+newsletter_placeholder: you@company.com
+newsletter_submit: Subscribe
+newsletter_footer: 'Curated architecture & DevOps insights. Zero spam, unsubscribe anytime.'
+
+# Blog single page
+breadcrumb_articles: Articles
+save_for_later: Save for later
+copy_link: Copy Link
+share_on_linkedin: Share on LinkedIn
+tags_label: 'Tags:'
+share_label: 'Share:'
+on_this_page: On This Page
+continue_reading: Continue Reading
+related_articles_heading: Related Articles & Guides
+prev_in_series: Previous in Series
+next_in_series: Next in Series
+track_completed: Track Completed · Next Steps
+series_finished: You finished this series! Explore other Masterclass Tracks →
+share_this_guide: 'Share this guide:'
+footer_privacy: Privacy
+footer_terms: Terms
+footer_cookies: Cookies
+footer_copyright: '© 2026 GCloudCafe. All rights reserved.'
+footer_disclaimer: Disclaimer
+weekly_poll_heading: "What's your take this week?"
+weekly_poll_subheading: 'Drop your vote and see where other engineers stand. No fluff—just real opinions from teams building in production.'

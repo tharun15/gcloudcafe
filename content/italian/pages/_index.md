@@ -1,3 +1,5 @@
 ---
-title: "Pagine Informative"
+_build:
+  render: never
+  list: never
 ---

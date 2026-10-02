@@ -60,10 +60,10 @@
             data-article-url="{{ $page.RelPermalink }}"
             data-article-title="{{ $page.Title }}"
             data-article-category="{{ $firstCat }}"
-            data-article-readtime="{{ $page.ReadingTime }} min read"
+            data-article-readtime="{{ $page.ReadingTime }} {{ i18n `min_read` }}"
             class="w-7 h-7 rounded-lg flex items-center justify-center text-slate-400 hover:text-red-500 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
             aria-label="Save {{ $page.Title }} for later"
-            title="Save for later">
+            title="{{ i18n `save_for_later` }}">
             <i class="fa-regular fa-bookmark text-xs"></i>
           </button>
         </div>

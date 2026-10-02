@@ -12,3 +12,56 @@ search_initial_message: Inizia a digitare per cercare...
 search_navigate: per navigare
 search_select: per selezionare
 search_close: per chiudere
+
+# Blog Hero (sezione articolo in evidenza — homepage)
+spotlight_story: Articolo in Evidenza
+min_read: min di lettura
+read_masterclass: Leggi il Masterclass
+trending_deep_dives: Approfondimenti di Tendenza
+view_all_articles: Vedi tutti gli articoli
+read: Leggi
+
+# Sezioni Homepage
+start_here_heading: Inizia Qui · Scegli il Tuo Percorso di Ingegneria
+view_all_tracks: Vedi tutti i percorsi
+explore_track: Esplora percorso
+view_all_articles_btn: Vedi tutti gli articoli
+loading_articles: Caricamento articoli...
+browse_all_topics: Sfoglia tutti gli argomenti
+
+# Descrizioni percorsi homepage
+track_kubernetes_desc: Approfondimenti su pod networking, preparazione esame EX280 e orchestrazione container enterprise.
+track_cloud_desc: Blocchi fondamentali di storage BigQuery, affidabilità dei sistemi distribuiti e pattern di progettazione cloud.
+track_security_desc: 'Chiavi crittografiche, CSR, handshake mTLS, cifrari e automazione cert-manager.'
+track_series_desc: Masterclass end-to-end suddivisi in episodi sequenziali con laboratori di livello produzione.
+
+# Sezione Newsletter
+newsletter_label: NEWSLETTER
+newsletter_heading: Approfondimenti di ingegneria, due volte al mese
+newsletter_desc: Analisi approfondite su architettura cloud, sistemi distribuiti, Kubernetes e sicurezza. Scritto da professionisti, non da redazioni di contenuto.
+newsletter_placeholder: tu@azienda.com
+newsletter_submit: Iscriviti
+newsletter_footer: 'Approfondimenti curati su architettura e DevOps. Zero spam, cancellati quando vuoi.'
+
+# Pagina articolo singolo
+breadcrumb_articles: Articoli
+save_for_later: Salva per dopo
+copy_link: Copia Link
+share_on_linkedin: Condividi su LinkedIn
+tags_label: 'Tag:'
+share_label: 'Condividi:'
+on_this_page: In Questa Pagina
+continue_reading: Continua a Leggere
+related_articles_heading: Articoli e Guide Correlati
+prev_in_series: Precedente nella Serie
+next_in_series: Successivo nella Serie
+track_completed: Percorso Completato · Prossimi Passi
+series_finished: Hai completato questa serie! Esplora altri Masterclass →
+share_this_guide: 'Condividi questa guida:'
+footer_privacy: Privacy
+footer_terms: Termini
+footer_cookies: Cookie
+footer_copyright: '© 2026 GCloudCafe. Tutti i diritti riservati.'
+footer_disclaimer: Disclaimer
+weekly_poll_heading: 'Qual è la tua opinione questa settimana?'
+weekly_poll_subheading: 'Esprimi il tuo voto e scopri cosa ne pensano gli altri ingegneri. Opinioni reali dai team che costruiscono in produzione.'

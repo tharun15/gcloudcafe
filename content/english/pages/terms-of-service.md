@@ -7,7 +7,7 @@ draft: false
 
 # Terms of Service
 
-**Last updated: July 25, 2025**
+**Last updated: October 1, 2026**
 
 Please read these Terms of Service ("Terms") carefully before using **Gcloudcafe** (https://gcloudcafe.com) operated by Gcloudcafe ("we", "us", or "our").
 

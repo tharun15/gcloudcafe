@@ -60,7 +60,7 @@
                   <span class="w-3.5 h-3.5 rounded-full bg-amber-400/20 text-amber-600 dark:text-amber-400 flex items-center justify-center text-[9px]" aria-hidden="true">
                     <i class="fa-solid fa-star"></i>
                   </span>
-                  <span class="tracking-wider uppercase">Spotlight Story</span>
+                  <span class="tracking-wider uppercase">{{ i18n "spotlight_story" }}</span>
                 </span>
                 <span class="text-slate-300 dark:text-slate-700 select-none">·</span>
                 <a href="{{ `categories/` | relLangURL }}{{ $firstCat | urlize | lower }}/" 
@@ -69,7 +69,7 @@
                 </a>
                 <span class="text-slate-300 dark:text-slate-700 select-none">·</span>
                 <span class="text-xs font-mono text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
-                  <i class="fa-regular fa-clock text-[10px]"></i> {{ $page.ReadingTime }} min read
+                  <i class="fa-regular fa-clock text-[10px]"></i> {{ $page.ReadingTime }} {{ i18n "min_read" }}
                 </span>
               </div>
 
@@ -121,7 +121,7 @@
               </div>
 
               <a href="{{ $page.RelPermalink }}" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-mono font-bold bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:hover:bg-slate-100 dark:text-slate-950 transition-all no-underline shadow-xs hover:shadow-md shrink-0 group/cta">
-                <span>Read Masterclass</span>
+                <span>{{ i18n "read_masterclass" }}</span>
                 <i class="fa-solid fa-arrow-right text-[10px] group-hover/cta:translate-x-0.5 transition-transform"></i>
               </a>
             </div>
@@ -163,11 +163,11 @@
               <i class="fa-solid fa-fire-flame-curved"></i>
             </span>
             <h2 class="font-mono text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-white m-0">
-              Trending Deep Dives
+              {{ i18n "trending_deep_dives" }}
             </h2>
           </div>
           <a href="{{ `blog/` | relLangURL }}" class="font-mono text-xs text-red-600 dark:text-red-500 hover:underline flex items-center gap-1 no-underline font-semibold">
-            <span>View all articles</span>
+            <span>{{ i18n "view_all_articles" }}</span>
             <i class="fa-solid fa-arrow-right text-[10px]"></i>
           </a>
         </div>
@@ -197,7 +197,7 @@
                 </span>
 
                 <span class="hidden md:inline-block absolute bottom-2.5 right-2.5 px-2 py-0.5 rounded-full font-mono text-[10px] font-bold bg-slate-950/80 text-slate-300 backdrop-blur-xs">
-                  {{ $companion.ReadingTime }}m read
+                  {{ $companion.ReadingTime }}m {{ i18n "read" }}
                 </span>
               </div>
 
@@ -209,7 +209,7 @@
                       {{ $compCat }}
                     </span>
                     <span class="md:hidden font-mono text-[10px] text-slate-400 dark:text-slate-500 shrink-0">
-                      {{ $companion.ReadingTime }}m read
+                      {{ $companion.ReadingTime }}m {{ i18n "read" }}
                     </span>
                   </div>
 
@@ -225,7 +225,7 @@
                 <div class="pt-2 md:pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between font-mono text-xs text-slate-400 dark:text-slate-500">
                   <span class="text-[11px]">{{ $companion.Date.Format "Jan 02, 2006" }}</span>
                   <span class="text-red-600 dark:text-red-400 group-hover/comp:translate-x-1 transition-transform text-[11px] font-bold flex items-center gap-1">
-                    <span>Read</span>
+                    <span>{{ i18n "read" }}</span>
                     <i class="fa-solid fa-arrow-right text-[9px]"></i>
                   </span>
                 </div>
