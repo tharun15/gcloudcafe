@@ -35,22 +35,22 @@ describe('Language Switcher — URL correctness', () => {
   it('EN homepage switcher renders links for BOTH EN and IT languages', () => {
     const html = fs.readFileSync(path.join(publicDir, 'index.html'), 'utf-8');
     const switcherStart = html.indexOf('data-lang-switcher');
-    const block = html.slice(switcherStart, switcherStart + 3000);
+    const block = html.slice(switcherStart, switcherStart + 6000);
     const links = block.match(/<a[^>]+href=[^>]+>/g) || [];
 
     expect(links.length, `Expected 2 switcher links, got: ${JSON.stringify(links)}`).toBe(2);
-    expect(links.some(a => a.includes('hreflang=en')), 'EN link missing hreflang=en').toBe(true);
+    expect(links.some(a => a.includes('hreflang="en"') || a.includes('hreflang=en')), 'EN link missing hreflang=en').toBe(true);
     expect(links.some(a => a.includes('/it/')), 'IT link should point to /it/').toBe(true);
   });
 
   it('IT homepage switcher renders links for BOTH EN and IT languages', () => {
     const html = fs.readFileSync(path.join(publicDir, 'it/index.html'), 'utf-8');
     const switcherStart = html.indexOf('data-lang-switcher');
-    const block = html.slice(switcherStart, switcherStart + 3000);
+    const block = html.slice(switcherStart, switcherStart + 6000);
     const links = block.match(/<a[^>]+href=[^>]+>/g) || [];
 
     expect(links.length, `Expected 2 switcher links, got: ${JSON.stringify(links)}`).toBe(2);
-    expect(links.some(a => a.includes('hreflang=en')), 'EN link missing from IT homepage switcher').toBe(true);
+    expect(links.some(a => a.includes('hreflang="en"') || a.includes('hreflang=en')), 'EN link missing from IT homepage switcher').toBe(true);
     expect(links.some(a => a.includes('/it/')), 'IT link should stay on /it/').toBe(true);
   });
 
@@ -58,7 +58,7 @@ describe('Language Switcher — URL correctness', () => {
     const articleSlug = 'cka-exam-readiness';
     const html = fs.readFileSync(path.join(publicDir, `it/blog/${articleSlug}/index.html`), 'utf-8');
     const switcherStart = html.indexOf('data-lang-switcher');
-    const block = html.slice(switcherStart, switcherStart + 3000);
+    const block = html.slice(switcherStart, switcherStart + 6000);
     const links = block.match(/<a[^>]+href=[^>]+>/g) || [];
 
     expect(links.length, `Expected 2 switcher links, got: ${JSON.stringify(links)}`).toBe(2);

@@ -11,9 +11,11 @@ describe('Google AdSense Program Policy Compliance & Trust Pages Suite', () => {
       'content/english/pages/privacy-policy.md',
       'content/english/pages/terms-of-service.md',
       'content/english/pages/cookie-policy.md',
+      'content/english/pages/disclaimer.md',
       'content/italian/pages/privacy-policy.md',
       'content/italian/pages/terms-of-service.md',
       'content/italian/pages/cookie-policy.md',
+      'content/italian/pages/disclaimer.md',
     ];
 
     for (const relPath of requiredFiles) {
@@ -33,9 +35,11 @@ describe('Google AdSense Program Policy Compliance & Trust Pages Suite', () => {
       'privacy-policy/index.html',
       'terms-of-service/index.html',
       'cookie-policy/index.html',
+      'disclaimer/index.html',
       'it/privacy-policy/index.html',
       'it/terms-of-service/index.html',
       'it/cookie-policy/index.html',
+      'it/disclaimer/index.html',
     ];
 
     for (const relPath of publicPages) {
