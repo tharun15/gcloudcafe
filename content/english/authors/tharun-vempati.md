@@ -28,9 +28,14 @@ social:
   - name: linkedin
     icon: fa-brands fa-linkedin
     link: https://www.linkedin.com/in/tharunvempati
+
+aliases:
+  - /authors/ramya/
+  - /authors/sam-wilson/
+  - /authors/william-jacob/
 ---
 
-I am **Tharun Vempati**, a GCP Professional Cloud Architect and DevOps Specialist with a strong foundation in Java/backend systems, container orchestration, and automated infrastructure delivery. I am the founder and primary author at **Gcloudcafe**.
+I am **Tharun Vempati**, a GCP Professional Cloud Architect and DevOps Specialist with a strong foundation in Java/backend systems, container orchestration, and automated infrastructure delivery. I am the founder and primary author at **GCloud Cafe**.
 
 ### ☁️ Engineering Focus & Background
 - **Cloud Architecture & Multi-Cloud:** Architecting resilient, cost-effective infrastructure across Google Cloud Platform (GCP), Amazon Web Services (AWS), and Microsoft Azure.

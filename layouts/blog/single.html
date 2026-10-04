@@ -72,6 +72,12 @@
               <i class="fa-regular fa-calendar text-primary"></i>
               {{ time.Format ":date_long" .PublishDate }}
             </li>
+            {{ if and .Lastmod (ne .Lastmod .PublishDate) }}
+            <li class="inline-flex items-center gap-1.5 text-xs text-emerald-600 dark:text-emerald-400 font-mono">
+              <i class="fa-solid fa-rotate text-[11px]"></i>
+              <span>Updated {{ time.Format ":date_long" .Lastmod }}</span>
+            </li>
+            {{ end }}
             <li class="inline-flex items-center gap-1.5 text-xs text-text/80 dark:text-darkmode-text/80">
               <i class="fa-regular fa-clock text-primary"></i>
               {{ .ReadingTime }} {{ i18n "min_read" }}
@@ -196,6 +202,51 @@
                 aria-label="Share on LinkedIn">
                 <i class="fa-brands fa-linkedin text-sm"></i> {{ i18n "share_on_linkedin" }}
               </a>
+            </div>
+          </div>
+
+                    <!-- Compact Author Presence Box (Section 12) -->
+          <div class="my-10 p-5 sm:p-6 rounded-2xl border border-slate-200/90 dark:border-slate-800/90 bg-white dark:bg-[#0c1220] shadow-2xs">
+            <div class="flex items-center sm:items-start gap-4 sm:gap-5 flex-col sm:flex-row text-center sm:text-left">
+              <img src="{{ `/images/authors/profilepic_tharun.png` | relURL }}"
+                   alt="{{ $authorName }}"
+                   width="64"
+                   height="64"
+                   class="author-avatar w-16 h-16 rounded-2xl object-cover border border-slate-200 dark:border-slate-700 shadow-xs shrink-0" style="width: 64px !important; height: 64px !important; max-width: 64px !important;"
+                   loading="lazy"
+                   decoding="async"
+                   onerror="this.onerror=null; this.src='{{ `/images/avatar.png` | relURL }}';" />
+              <div class="flex-1 min-w-0">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1 mb-1.5">
+                  <h3 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white m-0">
+                    {{ $authorName }}
+                  </h3>
+                  <span class="font-mono text-[11px] text-slate-500 dark:text-slate-400">
+                    GCP PCA · CNCF CKA · Red Hat EX280
+                  </span>
+                </div>
+                <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed mb-3">
+                  {{ if eq site.Language.Lang "it" }}
+                    Ingegnere con esperienza in sistemi backend Java, orchestrazione Kubernetes e automazione cloud. Questo articolo si basa su test di laboratorio reali e considerazioni pratiche di produzione.
+                  {{ else }}
+                    Backend and DevOps engineer focused on Kubernetes, OpenShift, Google Cloud, and zero-trust security. All tutorials are tested in reproducible labs with production-minded reasoning.
+                  {{ end }}
+                </p>
+                <div class="flex items-center justify-center sm:justify-start gap-3">
+                  <a href="{{ `authors/` | relLangURL }}{{ $authorSlug | urlize }}/" class="font-mono text-xs font-semibold text-slate-700 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-400 no-underline inline-flex items-center gap-1 transition-colors">
+                    <span>{{ if eq site.Language.Lang "it" }}Profilo Autore{{ else }}Author Profile{{ end }}</span>
+                    <span class="text-[10px]">→</span>
+                  </a>
+                  <span class="text-slate-300 dark:text-slate-700">·</span>
+                  <a href="https://www.linkedin.com/in/tharunvempati" target="_blank" rel="noopener noreferrer" class="font-mono text-xs font-semibold text-[#0a66c2] hover:opacity-80 transition-opacity no-underline inline-flex items-center gap-1">
+                    <i class="fa-brands fa-linkedin text-xs"></i> LinkedIn
+                  </a>
+                  <span class="text-slate-300 dark:text-slate-700">·</span>
+                  <a href="https://github.com/tharun15" target="_blank" rel="noopener noreferrer" class="font-mono text-xs font-semibold text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors no-underline inline-flex items-center gap-1">
+                    <i class="fa-brands fa-github text-xs"></i> GitHub
+                  </a>
+                </div>
+              </div>
             </div>
           </div>
 
