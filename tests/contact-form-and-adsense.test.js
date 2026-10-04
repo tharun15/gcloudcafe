@@ -31,7 +31,8 @@ describe('Contact Form Experience, Dual-Persistence & AdSense Certification Guar
     // Success feedback card elements
     expect(enHtml).toMatch(/id=(["']?)contact-success-state\1/);
     expect(enHtml).toMatch(/id=(["']?)contact-success-email\1/);
-    expect(enHtml).toMatch(/id=(["']?)contact-success-id\1/);
+    // Ensures internal technical IDs or database confirmation badges are not exposed to the user
+    expect(enHtml).not.toContain('Database Confirmed');
     expect(enHtml).toMatch(/id=(["']?)contact-reset-btn\1/);
     expect(enHtml).toContain('Thank you for contacting us');
 

@@ -94,17 +94,11 @@
                 </h2>
                 <p class="text-sm text-slate-600 dark:text-slate-300 max-w-md mx-auto leading-relaxed m-0">
                   {{ if eq site.Language.Lang "it" }}
-                  Grazie per averci contattato! Abbiamo registrato la tua richiesta nel nostro database. Il team editoriale di GCloudCafe ti risponderà entro <strong>24–48 ore lavorative</strong> all'indirizzo <span id="contact-success-email" class="font-semibold text-slate-900 dark:text-white"></span>.
+                  Grazie per averci contattato! Abbiamo ricevuto la tua richiesta. Il team editoriale di GCloudCafe ti risponderà entro <strong>24–48 ore lavorative</strong> all'indirizzo <span id="contact-success-email" class="font-semibold text-slate-900 dark:text-white"></span>.
                   {{ else }}
                   Thank you for contacting us! We have received your message. Our engineering and editorial team will review it and reach out to you within <strong>24–48 business hours</strong> at <span id="contact-success-email" class="font-semibold text-slate-900 dark:text-white"></span>.
                   {{ end }}
                 </p>
-              </div>
-
-              <!-- Storage & Confirmation Metadata Tag -->
-              <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-[11px] font-mono text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
-                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                <span>Ref ID: <span id="contact-success-id"></span> · Database Confirmed</span>
               </div>
 
               <!-- Reset / Send Another Button -->
@@ -233,7 +227,6 @@
       var form = document.getElementById("interactive-contact-form");
       var successState = document.getElementById("contact-success-state");
       var confirmedEmail = document.getElementById("contact-success-email");
-      var confirmedId = document.getElementById("contact-success-id");
       var resetBtn = document.getElementById("contact-reset-btn");
       var submitBtn = document.getElementById("contact-submit-btn");
       var submitBtnText = document.getElementById("contact-submit-btn-text");
@@ -344,7 +337,6 @@
         .finally(function () {
           // Transition to Success Feedback Card
           if (confirmedEmail) confirmedEmail.textContent = email;
-          if (confirmedId) confirmedId.textContent = submissionId.toUpperCase();
 
           form.classList.add("hidden");
           successState.classList.remove("hidden");
