@@ -15,24 +15,12 @@
     display: block;
     margin: 0 auto;
   }
-  .mermaid .nodeLabel,
-  .mermaid .nodeLabel span,
-  .mermaid .nodeLabel div,
-  .mermaid .label foreignObject {
-    font-size: 16px !important;
-    font-weight: 600 !important;
-    line-height: 1.45 !important;
+  .mermaid text {
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
   }
-  .mermaid .cluster-label span,
-  .mermaid .cluster-label {
-    font-size: 17px !important;
-    font-weight: 700 !important;
-    letter-spacing: 0.02em;
-  }
-  .mermaid .edgeLabel,
-  .mermaid .edgeLabel span {
-    font-size: 14px !important;
-    font-weight: 600 !important;
+  .mermaid .cluster rect {
+    rx: 8px !important;
+    ry: 8px !important;
   }
 </style>
 <script type="module">
@@ -43,27 +31,31 @@
       const { default: mermaid } = await import('https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs');
       mermaid.initialize({
         startOnLoad: true,
-        theme: isDark ? 'dark' : 'default',
+        theme: isDark ? 'dark' : 'neutral',
         securityLevel: 'loose',
         fontFamily: 'Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-        fontSize: 18,
+        fontSize: 15,
         themeVariables: {
-          fontSize: '18px',
+          fontSize: '15px',
           fontFamily: 'Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+          primaryTextColor: isDark ? '#f1f5f9' : '#0f172a',
+          secondaryTextColor: isDark ? '#cbd5e1' : '#334155',
+          tertiaryTextColor: isDark ? '#94a3b8' : '#475569',
+          lineColor: isDark ? '#94a3b8' : '#475569',
         },
         flowchart: {
           useMaxWidth: true,
-          htmlLabels: true,
+          htmlLabels: false,
           curve: 'basis',
-          nodeSpacing: 50,
-          rankSpacing: 50,
-          padding: 22
+          nodeSpacing: 40,
+          rankSpacing: 45,
+          padding: 24
         },
         sequence: {
           useMaxWidth: true,
-          actorFontSize: 18,
-          messageFontSize: 16,
-          noteFontSize: 15
+          actorFontSize: 16,
+          messageFontSize: 15,
+          noteFontSize: 14
         }
       });
       mermaid.run({
