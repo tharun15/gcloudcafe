@@ -1,38 +1,31 @@
 {{ define "main" }}
-
   {{ $posts := sort .RegularPages "Date" "desc" }}
-  {{ $featured := false }}
-  {{ if gt (len $posts) 0 }}
-    {{ $featured = index $posts 0 }}
-  {{ end }}
-  {{ partial "components/blog-hero" (dict
-    "Featured" $featured
-    "Eyebrow" "From the blog"
-    "Title" "Explore every post with richer context and easier discovery"
-    "BrowseLink" site.Home.RelPermalink
-    "BrowseLabel" "Back to home"
-    )
-  }}
 
-  <section class="section pt-0" aria-labelledby="blog-posts-heading">
-    <div class="container">
+  <section class="section pt-6 sm:pt-10 pb-16" aria-labelledby="blog-posts-heading">
+    <div class="bytedepth-container">
+      <div class="mb-8 max-w-3xl">
+        <p class="font-mono text-xs font-bold uppercase tracking-wider text-red-600 dark:text-red-400 mb-2">
+          {{ if eq site.Language.Lang "it" }}Archivio Ingegneristico{{ else }}Engineering Archive{{ end }}
+        </p>
+        <h1 id="blog-posts-heading" class="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 dark:text-white tracking-tight mb-2.5">
+          {{ .Title | default "Technical Articles & Practical Guides" }}
+        </h1>
+        <p class="text-slate-600 dark:text-slate-300 text-xs sm:text-sm md:text-base leading-relaxed">
+          {{ .Description | default "Practitioner-led architecture breakdowns, reproducible commands, and production guides." }}
+        </p>
+      </div>
+
+      <!-- Category Filter Chips -->
       <div class="mb-10">
-        <div class="mb-5 max-w-3xl">
-          <p class="blog-eyebrow">Discover by topic</p>
-          <h2 id="blog-posts-heading" class="mb-3">Filter by category</h2>
-          <p class="text-text dark:text-darkmode-text">
-            Jump into the topics you care about most, or browse the full archive below.
-          </p>
-        </div>
-        <nav class="blog-chip-group" aria-label="Filter posts by category">
-          <a class="blog-chip is-active" href="{{ .RelPermalink }}">
-            All posts
-            <span>{{ len .RegularPages }}</span>
+        <nav class="flex items-center gap-2 overflow-x-auto no-scrollbar py-1" aria-label="Filter posts by category">
+          <a class="px-3.5 py-1.5 rounded-full text-xs font-semibold no-underline transition-all bg-red-600 text-white shadow-2xs font-mono" href="{{ .RelPermalink }}">
+            <span>{{ if eq site.Language.Lang "it" }}Tutti{{ else }}All{{ end }}</span>
+            <span class="ml-1 opacity-80">({{ len .RegularPages }})</span>
           </a>
           {{ range site.Taxonomies.categories.ByCount }}
-            <a class="blog-chip" href="{{ .Page.RelPermalink }}">
-              {{ .Page.Title }}
-              <span>{{ .Count }}</span>
+            <a class="px-3.5 py-1.5 rounded-full text-xs font-medium no-underline transition-all bg-slate-100 hover:bg-slate-200 dark:bg-slate-800/80 dark:hover:bg-slate-700/80 text-slate-700 dark:text-slate-300 font-mono" href="{{ .Page.RelPermalink }}">
+              <span>{{ .Page.Title }}</span>
+              <span class="ml-1 text-slate-400 dark:text-slate-500">({{ .Count }})</span>
             </a>
           {{ end }}
         </nav>
@@ -41,11 +34,7 @@
       <div class="row gx-5 gy-5">
         <div class="lg:col-8">
           <div class="row">
-            {{ $listingPosts := $posts }}
-            {{ with $featured }}
-              {{ $listingPosts = where $posts ".RelPermalink" "!=" .RelPermalink }}
-            {{ end }}
-            {{ $paginator := .Paginate $listingPosts }}
+            {{ $paginator := .Paginate $posts }}
             {{ range $paginator.Pages }}
               <div class="md:col-6 mb-8">
                 {{ partial "components/blog-card" . }}
@@ -55,7 +44,7 @@
           {{ partial "components/pagination.html" . }}
         </div>
         <div class="lg:col-4">
-          {{ partial "components/blog-sidebar" (dict "Posts" $posts "Featured" $featured) }}
+          {{ partial "components/blog-sidebar" (dict "Posts" $posts) }}
         </div>
       </div>
     </div>

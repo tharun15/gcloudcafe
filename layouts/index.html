@@ -12,132 +12,7 @@
     {{ end }}
   {{ end }}
 
-  <!-- =================================================================== -->
-  <!-- 2. CLEAR HERO SECTION (Brand & Practitioner Positioning)             -->
-  <!-- =================================================================== -->
-  <section class="pt-6 sm:pt-10 pb-4 text-center" aria-label="Publication Overview">
-    <div class="bytedepth-container max-w-4xl mx-auto px-4">
-      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/80 text-[11px] font-mono font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-4 shadow-2xs">
-        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-        <span>{{ if eq site.Language.Lang "it" }}Pubblicazione Ingegneristica Indipendente{{ else }}Independent Engineering Journal{{ end }}</span>
-        <span class="text-slate-300 dark:text-slate-600">·</span>
-        <span>{{ if eq site.Language.Lang "it" }}Testato in Laboratorio{{ else }}Lab-Tested{{ end }}</span>
-      </div>
-      <h1 class="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 dark:text-white tracking-tight leading-[1.2] mb-3">
-        {{ if eq site.Language.Lang "it" }}
-          Guide pratiche su Kubernetes, OpenShift, GCP e DevOps — testate in laboratorio.
-        {{ else }}
-          Practical Kubernetes, OpenShift, GCP, and DevOps guides — tested in real labs.
-        {{ end }}
-      </h1>
-      <p class="text-xs sm:text-sm md:text-base text-slate-600 dark:text-slate-300 max-w-2xl mx-auto leading-relaxed mb-2">
-        {{ if eq site.Language.Lang "it" }}
-          Architetture chiare, comandi riproducibili e lezioni di produzione per cloud e platform engineer.
-        {{ else }}
-          Clear architecture explanations, reproducible commands, and production-minded lessons for cloud and platform engineers.
-        {{ end }}
-      </p>
-    </div>
-  </section>
-
-  <!-- =================================================================== -->
-  <!-- 3. THREE "START HERE" PATHS                                         -->
-  <!-- =================================================================== -->
-  <section class="py-5 sm:py-6" aria-label="Start Here Paths">
-    <div class="bytedepth-container">
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-5">
-        
-        <!-- Track 1: Kubernetes & OpenShift -->
-        <div class="rounded-2xl border border-slate-200/90 dark:border-slate-800/90 bg-white dark:bg-[#0c1220] p-4 sm:p-5 flex flex-col justify-between shadow-2xs hover:border-slate-300 dark:hover:border-slate-700 transition-all duration-200 group">
-          <div>
-            <div class="flex items-center gap-2.5 mb-2.5">
-              <span class="inline-flex items-center justify-center w-7 h-7 rounded-xl bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 text-xs">
-                <i class="fa-solid fa-dharmachakra"></i>
-              </span>
-              <span class="font-mono text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Track 01</span>
-            </div>
-            <h2 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white mb-1.5 group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors">
-              {{ if eq site.Language.Lang "it" }}Kubernetes &amp; OpenShift{{ else }}Kubernetes &amp; OpenShift{{ end }}
-            </h2>
-            <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed mb-3">
-              {{ if eq site.Language.Lang "it" }}
-                Orchestrazione container, ingress controller, rollout progressivi e amministrazione OpenShift EX280/CKA.
-              {{ else }}
-                Container orchestration, ingress architecture, rolling rollouts, and Red Hat EX280 &amp; CKA administration.
-              {{ end }}
-            </p>
-          </div>
-          <div class="pt-2 border-t border-slate-100 dark:border-slate-800/80">
-            <a href="{{ `blog/passing-ex280-exam-part-2-technical-side/` | relLangURL }}" class="text-xs font-mono font-semibold text-slate-800 dark:text-slate-200 hover:text-red-600 dark:hover:text-red-400 no-underline inline-flex items-center gap-1.5 transition-colors">
-              <span>{{ if eq site.Language.Lang "it" }}Guida EX280 Parte 2{{ else }}EX280 Exam Guide (Pt 2){{ end }}</span>
-              <span class="text-[10px] transition-transform duration-200 group-hover:translate-x-1">→</span>
-            </a>
-          </div>
-        </div>
-
-        <!-- Track 2: Cloud Security, TLS & mTLS -->
-        <div class="rounded-2xl border border-slate-200/90 dark:border-slate-800/90 bg-white dark:bg-[#0c1220] p-4 sm:p-5 flex flex-col justify-between shadow-2xs hover:border-slate-300 dark:hover:border-slate-700 transition-all duration-200 group">
-          <div>
-            <div class="flex items-center gap-2.5 mb-2.5">
-              <span class="inline-flex items-center justify-center w-7 h-7 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs">
-                <i class="fa-solid fa-shield-halved"></i>
-              </span>
-              <span class="font-mono text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Track 02</span>
-            </div>
-            <h2 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white mb-1.5 group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors">
-              {{ if eq site.Language.Lang "it" }}Sicurezza Cloud, TLS &amp; mTLS{{ else }}Cloud Security, TLS &amp; mTLS{{ end }}
-            </h2>
-            <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed mb-3">
-              {{ if eq site.Language.Lang "it" }}
-                Fondamenti di crittografia, autenticazione zero-trust nei service mesh e gestione automatica con cert-manager.
-              {{ else }}
-                Cryptographic primitives, zero-trust service mesh authentication, private keys, and cert-manager automation.
-              {{ end }}
-            </p>
-          </div>
-          <div class="pt-2 border-t border-slate-100 dark:border-slate-800/80">
-            <a href="{{ `blog/tls-demystified-part1-cryptography-keys-csr-ca-explained/` | relLangURL }}" class="text-xs font-mono font-semibold text-slate-800 dark:text-slate-200 hover:text-red-600 dark:hover:text-red-400 no-underline inline-flex items-center gap-1.5 transition-colors">
-              <span>{{ if eq site.Language.Lang "it" }}Guida TLS &amp; mTLS{{ else }}TLS Demystified Guide{{ end }}</span>
-              <span class="text-[10px] transition-transform duration-200 group-hover:translate-x-1">→</span>
-            </a>
-          </div>
-        </div>
-
-        <!-- Track 3: GCP Architecture & Data Engineering -->
-        <div class="rounded-2xl border border-slate-200/90 dark:border-slate-800/90 bg-white dark:bg-[#0c1220] p-4 sm:p-5 flex flex-col justify-between shadow-2xs hover:border-slate-300 dark:hover:border-slate-700 transition-all duration-200 group">
-          <div>
-            <div class="flex items-center gap-2.5 mb-2.5">
-              <span class="inline-flex items-center justify-center w-7 h-7 rounded-xl bg-sky-500/10 text-sky-600 dark:text-sky-400 text-xs">
-                <i class="fa-solid fa-server"></i>
-              </span>
-              <span class="font-mono text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Track 03</span>
-            </div>
-            <h2 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white mb-1.5 group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors">
-              {{ if eq site.Language.Lang "it" }}Architettura GCP &amp; Data Engineering{{ else }}GCP Architecture &amp; Data Engineering{{ end }}
-            </h2>
-            <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed mb-3">
-              {{ if eq site.Language.Lang "it" }}
-                Pipeline streaming e batch, ingestione Pub/Sub verso Dataflow e Storage Write API di BigQuery.
-              {{ else }}
-                Streaming and batch pipelines, Pub/Sub to Dataflow ingestion, BigQuery Storage Write API, and cloud design.
-              {{ end }}
-            </p>
-          </div>
-          <div class="pt-2 border-t border-slate-100 dark:border-slate-800/80">
-            <a href="{{ `blog/gcp-data-engineering-streaming-batch-ingestion-pubsub-dataflow/` | relLangURL }}" class="text-xs font-mono font-semibold text-slate-800 dark:text-slate-200 hover:text-red-600 dark:hover:text-red-400 no-underline inline-flex items-center gap-1.5 transition-colors">
-              <span>{{ if eq site.Language.Lang "it" }}Ingestione GCP Pub/Sub &amp; Dataflow{{ else }}GCP Streaming &amp; Batch Guide{{ end }}</span>
-              <span class="text-[10px] transition-transform duration-200 group-hover:translate-x-1">→</span>
-            </a>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </section>
-
-  <!-- =================================================================== -->
-  <!-- 4. FEATURED ARTICLE / RECENT ARTICLES WIRE (2-Column Medium Split)  -->
-  <!-- =================================================================== -->
+  <!-- Featured Hero Section (Directly into Content-First Medium Split) -->
   {{ partial "components/blog-hero" (dict "Featured" $featured "Posts" $posts) }}
 
   {{ $gridPosts := $posts }}
@@ -145,9 +20,7 @@
     {{ $gridPosts = where $posts ".RelPermalink" "!=" .RelPermalink }}
   {{ end }}
 
-  <!-- =================================================================== -->
-  <!-- 5. LATEST TECHNICAL ARTICLES (3-Column Clean Grid)                  -->
-  <!-- =================================================================== -->
+  <!-- Main Articles & Topics Filter Tabs -->
   <section class="pb-16 pt-2 sm:pt-4" aria-labelledby="articles-heading">
     <div class="bytedepth-container">
       <!-- Section Heading: Engineering Library -->
@@ -244,9 +117,7 @@
       </div>
       {{ end }}
 
-      <!-- =================================================================== -->
-      <!-- 6. TOPIC / CATEGORY EXPLORATION (Browse all topics Section)         -->
-      <!-- =================================================================== -->
+      <!-- Browse all topics Section (Issue 4 & 9 Resolved) -->
       <div class="mt-14 mb-8">
         <h3 class="font-mono text-xs font-bold text-slate-500 dark:text-slate-400 tracking-wider block mb-4">
           {{ i18n "browse_all_topics" }}
@@ -283,9 +154,7 @@
         </div>
       </div>
 
-      <!-- =================================================================== -->
-      <!-- 7. SHORT AUTHOR CREDIBILITY SECTION (Section 12)                    -->
-      <!-- =================================================================== -->
+      <!-- Short Author Credibility Section -->
       <div class="mt-14 mb-4">
         <div class="rounded-2xl border border-slate-200/90 dark:border-slate-800/90 bg-white dark:bg-[#0c1220] p-6 sm:p-8 shadow-xs">
           <div class="flex flex-col sm:flex-row items-center sm:items-start gap-5 sm:gap-6 text-center sm:text-left">
@@ -346,9 +215,7 @@
     </div>
   </section>
 
-  <!-- =================================================================== -->
-  <!-- 8. NEWSLETTER SUBSCRIPTION (Section 4 & 11)                         -->
-  <!-- =================================================================== -->
+  <!-- Newsletter Section -->
   <section class="border-t border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-[#070b14]/50 py-14 sm:py-18 text-center" aria-labelledby="newsletter-heading">
     <div class="bytedepth-container">
       <span class="font-mono text-xs font-bold uppercase tracking-widest text-red-600 dark:text-red-500 block mb-2.5">

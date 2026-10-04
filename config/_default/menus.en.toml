@@ -7,24 +7,32 @@ url = "/"
 weight = 1
 
 [[main]]
-name = "Topics"
-url = "/blog"
+name = "Series"
+url = "/series"
 weight = 2
 
 [[main]]
-name = "Series"
-url = "/series"
+name = "Pulse"
+url = "/pulse"
 weight = 3
 
 [[main]]
-name = "About"
-url = "/about"
+name = "Company"
+identifier = "company"
+url = "#"
 weight = 4
 
 [[main]]
-name = "Subscribe"
-url = "/subscribe"
-weight = 5
+name = "About"
+parent = "company"
+url = "/about"
+weight = 1
+
+[[main]]
+name = "Contact"
+parent = "company"
+url = "/contact"
+weight = 2
 
 
 # footer menu
