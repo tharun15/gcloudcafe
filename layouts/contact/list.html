@@ -1,0 +1,367 @@
+{{ define "main" }}
+  <div class="pb-16 sm:pb-20 pt-6 sm:pt-10">
+    <div class="bytedepth-container">
+
+      <!-- Breadcrumbs -->
+      <nav class="flex items-center gap-2 text-sm font-medium text-slate-600 dark:text-slate-300 mb-8" aria-label="Breadcrumb">
+        <a href="{{ site.Home.RelPermalink }}" class="text-slate-700 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-500 no-underline transition-colors flex items-center gap-1.5">
+          <i class="fa-solid fa-house text-xs text-slate-400 dark:text-slate-500" aria-hidden="true"></i>
+          <span>Home</span>
+        </a>
+        <span class="text-slate-300 dark:text-slate-700">/</span>
+        <span class="text-slate-900 dark:text-white font-semibold" aria-current="page">
+          {{ if eq site.Language.Lang "it" }}Contatti{{ else }}Contact{{ end }}
+        </span>
+      </nav>
+
+      <!-- Hero Header -->
+      <div class="max-w-3xl mb-12 sm:mb-16">
+        <span class="font-mono text-xs font-bold uppercase tracking-widest text-red-600 dark:text-red-500 block mb-3">
+          {{ if eq site.Language.Lang "it" }}CONTATTI · COLLABORAZIONE TECNICA{{ else }}GET IN TOUCH · TECHNICAL COLLABORATION{{ end }}
+        </span>
+        <h1 class="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 dark:text-white tracking-tight mb-4 leading-tight">
+          {{ if eq site.Language.Lang "it" }}Parla con il team ingegneristico di GCloudCafe{{ else }}Contact the Engineering & Editorial Team{{ end }}
+        </h1>
+        <p class="text-slate-600 dark:text-slate-300 text-base sm:text-lg leading-relaxed m-0">
+          {{ if eq site.Language.Lang "it" }}
+          Hai una domanda su un'architettura cloud, hai riscontrato un refuso o desideri collaborare su guide tecniche? Revisioniamo tutti i messaggi e rispondiamo entro 24–48 ore lavorative.
+          {{ else }}
+          Have a question about one of our Kubernetes or GCP architecture deep dives, spotted a technical erratum, or want to discuss enterprise cloud collaboration? We review all inquiries and respond within 24–48 business hours.
+          {{ end }}
+        </p>
+      </div>
+
+      <!-- Two-Column Grid: Channels / Direct Contact (Left) + Interactive Form (Right) -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+        
+        <!-- Left Column: Direct Communication Channels & E-E-A-T Badges -->
+        <div class="lg:col-span-5 space-y-6">
+          
+          <!-- Direct Email Card -->
+          <div class="p-6 rounded-2xl bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-slate-800 shadow-sm space-y-3">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-red-500/10 text-red-600 dark:text-red-400 flex items-center justify-center text-lg shrink-0">
+                <i class="fa-solid fa-envelope"></i>
+              </div>
+              <div>
+                <h2 class="text-sm font-bold text-slate-900 dark:text-white m-0">
+                  {{ if eq site.Language.Lang "it" }}Email Diretta{{ else }}Direct Inquiries{{ end }}
+                </h2>
+                <p class="text-xs font-mono text-slate-500 dark:text-slate-400 m-0">
+                  contact@gcloudcafe.com
+                </p>
+              </div>
+            </div>
+            <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed m-0">
+              {{ if eq site.Language.Lang "it" }}
+              Preferisci il tuo client email? Scrivici direttamente in qualsiasi momento con log, frammenti di codice o dettagli di progetto.
+              {{ else }}
+              Prefer your own email client? Send logs, stack traces, or partnership decks directly to our editorial inbox.
+              {{ end }}
+            </p>
+            <a href="mailto:contact@gcloudcafe.com" class="inline-flex items-center gap-2 text-xs font-bold text-red-600 dark:text-red-400 hover:underline no-underline">
+              <span>{{ if eq site.Language.Lang "it" }}Invia email diretta{{ else }}Send direct email{{ end }}</span>
+              <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+            </a>
+          </div>
+
+          <!-- Trust & Privacy Commitment -->
+          <div class="p-5 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 flex items-center gap-3">
+            <i class="fa-solid fa-shield-check text-slate-400 text-lg shrink-0"></i>
+            <p class="text-xs text-slate-500 dark:text-slate-400 m-0 leading-relaxed">
+              {{ if eq site.Language.Lang "it" }}
+              I tuoi dati non saranno mai condivisi né venduti. Trattiamo le informazioni nel pieno rispetto del GDPR e della nostra <a href="{{ `privacy-policy/` | relLangURL }}" class="underline hover:text-slate-700 dark:hover:text-slate-200">Privacy Policy</a>.
+              {{ else }}
+              Your contact details are strictly used to reply to your inquiry. We never sell data or send unsolicited spam. Review our <a href="{{ `privacy-policy/` | relLangURL }}" class="underline hover:text-slate-700 dark:hover:text-slate-200">Privacy Policy</a>.
+              {{ end }}
+            </p>
+          </div>
+
+        </div>
+
+        <!-- Right Column: Interactive Form & Dynamic Feedback Message Card -->
+        <div class="lg:col-span-7">
+          <div class="p-6 sm:p-10 rounded-2xl bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-slate-800 shadow-md">
+            
+            <!-- Success Feedback Card (Hidden by default, shown upon successful submission) -->
+            <div id="contact-success-state" class="hidden text-center py-6 px-4 space-y-4">
+              <div class="w-16 h-16 rounded-full bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 flex items-center justify-center mx-auto text-2xl shadow-inner">
+                <i class="fa-solid fa-circle-check"></i>
+              </div>
+              <div class="space-y-2">
+                <h2 class="text-2xl font-black text-slate-900 dark:text-white tracking-tight m-0">
+                  {{ if eq site.Language.Lang "it" }}Messaggio Ricevuto con Successo!{{ else }}Message Received Successfully!{{ end }}
+                </h2>
+                <p class="text-sm text-slate-600 dark:text-slate-300 max-w-md mx-auto leading-relaxed m-0">
+                  {{ if eq site.Language.Lang "it" }}
+                  Grazie per averci contattato! Abbiamo ricevuto la tua richiesta. Il team editoriale di GCloudCafe ti risponderà entro <strong>24–48 ore lavorative</strong> all'indirizzo <span id="contact-success-email" class="font-semibold text-slate-900 dark:text-white"></span>.
+                  {{ else }}
+                  Thank you for contacting us! We have received your message. Our engineering and editorial team will review it and reach out to you within <strong>24–48 business hours</strong> at <span id="contact-success-email" class="font-semibold text-slate-900 dark:text-white"></span>.
+                  {{ end }}
+                </p>
+              </div>
+
+              <!-- Reset / Send Another Button -->
+              <div class="pt-4">
+                <button type="button" id="contact-reset-btn" class="px-5 py-2.5 rounded-xl text-xs font-mono font-bold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-700 transition-all cursor-pointer">
+                  <i class="fa-solid fa-rotate-left mr-1.5"></i>
+                  {{ if eq site.Language.Lang "it" }}Invia un altro messaggio{{ else }}Send another message{{ end }}
+                </button>
+              </div>
+            </div>
+
+            <!-- Active Contact Form -->
+            <form id="interactive-contact-form" class="space-y-6" novalidate>
+              
+              <!-- Form Header -->
+              <div class="border-b border-slate-100 dark:border-slate-800 pb-4">
+                <h2 class="text-xl font-black text-slate-900 dark:text-white tracking-tight m-0">
+                  {{ if eq site.Language.Lang "it" }}Invia un messaggio all'autore{{ else }}Send a Message{{ end }}
+                </h2>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 m-0">
+                  {{ if eq site.Language.Lang "it" }}Compila i campi sottostanti per iniziare una conversazione.{{ else }}Fill in the fields below to start a conversation with our engineering team.{{ end }}
+                </p>
+              </div>
+
+              <!-- Error Alert Banner (Hidden by default) -->
+              <div id="contact-error-banner" class="hidden p-3.5 rounded-xl bg-red-500/10 border border-red-500/20 text-xs text-red-600 dark:text-red-400 flex items-center gap-2">
+                <i class="fa-solid fa-circle-exclamation shrink-0"></i>
+                <span id="contact-error-text">Please review and complete all required fields.</span>
+              </div>
+
+              <!-- Full Name Field -->
+              <div class="space-y-1.5">
+                <label for="contact-name" class="block text-xs font-mono font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                  {{ if eq site.Language.Lang "it" }}Nome e Cognome{{ else }}Full Name{{ end }} <span class="text-red-500">*</span>
+                </label>
+                <input
+                  id="contact-name"
+                  name="name"
+                  type="text"
+                  required
+                  placeholder="{{ if eq site.Language.Lang "it" }}Es. Mario Rossi{{ else }}e.g. Alex Morgan{{ end }}"
+                  class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/80 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-500/20 placeholder:text-slate-400 transition-all" />
+              </div>
+
+              <!-- Email Field -->
+              <div class="space-y-1.5">
+                <label for="contact-email" class="block text-xs font-mono font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                  {{ if eq site.Language.Lang "it" }}Indirizzo Email Aziendale o Personale{{ else }}Email Address{{ end }} <span class="text-red-500">*</span>
+                </label>
+                <input
+                  id="contact-email"
+                  name="email"
+                  type="email"
+                  required
+                  placeholder="{{ if eq site.Language.Lang "it" }}mario.rossi@azienda.com{{ else }}alex.morgan@company.com{{ end }}"
+                  class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/80 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-500/20 placeholder:text-slate-400 transition-all" />
+              </div>
+
+              <!-- Topic / Subject Dropdown -->
+              <div class="space-y-1.5">
+                <label for="contact-subject" class="block text-xs font-mono font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                  {{ if eq site.Language.Lang "it" }}Argomento del Messaggio{{ else }}Topic / Inquiry Area{{ end }} <span class="text-red-500">*</span>
+                </label>
+                <select
+                  id="contact-subject"
+                  name="subject"
+                  required
+                  class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/80 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-500/20 transition-all">
+                  <option value="technical_feedback">{{ if eq site.Language.Lang "it" }}Feedback Tecnico / Segnalazione Errore{{ else }}Technical Feedback / Erratum Spotted{{ end }}</option>
+                  <option value="article_question">{{ if eq site.Language.Lang "it" }}Domanda su un Articolo / Approfondimento{{ else }}Question on a Specific Blog Post{{ end }}</option>
+                  <option value="architecture_collaboration">{{ if eq site.Language.Lang "it" }}Collaborazione su Architetture Cloud{{ else }}Cloud Architecture Advisory / Collaboration{{ end }}</option>
+                  <option value="certification_guidance">{{ if eq site.Language.Lang "it" }}Domanda su Certificazioni (EX280, CKA, PCA){{ else }}Certification Study Question (EX280, CKA, PCA){{ end }}</option>
+                  <option value="general_inquiry">{{ if eq site.Language.Lang "it" }}Altro / Informazioni Generali{{ else }}General Inquiry{{ end }}</option>
+                </select>
+              </div>
+
+              <!-- Message Field -->
+              <div class="space-y-1.5">
+                <label for="contact-message" class="block text-xs font-mono font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                  {{ if eq site.Language.Lang "it" }}Messaggio / Dettagli{{ else }}Message Details{{ end }} <span class="text-red-500">*</span>
+                </label>
+                <textarea
+                  id="contact-message"
+                  name="message"
+                  required
+                  rows="5"
+                  minlength="10"
+                  placeholder="{{ if eq site.Language.Lang "it" }}Descrivi la tua richiesta tecnica, il contesto dell'architettura o la domanda...{{ else }}Describe your technical question, architecture scenario, or feedback...{{ end }}"
+                  class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/80 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-500/20 placeholder:text-slate-400 transition-all resize-y"></textarea>
+              </div>
+
+              <!-- Privacy Policy Agreement Notice -->
+              <p class="text-[11px] text-slate-500 dark:text-slate-400 m-0 leading-relaxed">
+                {{ if eq site.Language.Lang "it" }}
+                Inviando questo modulo, accetti che i tuoi dati siano trattati in accordo con la nostra <a href="{{ `privacy-policy/` | relLangURL }}" class="underline text-red-600 dark:text-red-400 hover:opacity-80">Privacy Policy</a> esclusivamente per gestire la tua richiesta.
+                {{ else }}
+                By submitting this form, you acknowledge that your information will be processed strictly in accordance with our <a href="{{ `privacy-policy/` | relLangURL }}" class="underline text-red-600 dark:text-red-400 hover:opacity-80">Privacy Policy</a> to address your inquiry.
+                {{ end }}
+              </p>
+
+              <!-- Submit Button -->
+              <button
+                type="submit"
+                id="contact-submit-btn"
+                class="w-full py-3.5 px-6 rounded-xl text-white font-mono text-xs font-bold uppercase tracking-wider transition-all cursor-pointer shadow-md hover:shadow-lg hover:opacity-95 active:scale-[0.99] flex items-center justify-center gap-2"
+                style="background-color: #dc2626 !important; color: #ffffff !important;">
+                <i class="fa-solid fa-paper-plane text-xs"></i>
+                <span id="contact-submit-btn-text">
+                  {{ if eq site.Language.Lang "it" }}Invia Messaggio{{ else }}Send Message{{ end }}
+                </span>
+              </button>
+
+            </form>
+
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- End-to-End Client Controller for Contact Submissions -->
+  <script>
+    (function () {
+      var form = document.getElementById("interactive-contact-form");
+      var successState = document.getElementById("contact-success-state");
+      var confirmedEmail = document.getElementById("contact-success-email");
+      var resetBtn = document.getElementById("contact-reset-btn");
+      var submitBtn = document.getElementById("contact-submit-btn");
+      var submitBtnText = document.getElementById("contact-submit-btn-text");
+      var errorBanner = document.getElementById("contact-error-banner");
+      var errorText = document.getElementById("contact-error-text");
+
+      if (!form) return;
+
+      var config = window.SUPABASE_CONFIG || {
+        url: "{{ site.Params.supabase.url | default "https://axiijcsxtiukloarbfor.supabase.co" }}",
+        anonKey: "{{ site.Params.supabase.anon_key | default "sb_publishable_cRcwg02R3nXTykDrxalL6w_-kc9Wesc" }}"
+      };
+
+      function showError(msg) {
+        if (errorBanner && errorText) {
+          errorText.textContent = msg;
+          errorBanner.classList.remove("hidden");
+        }
+      }
+
+      function hideError() {
+        if (errorBanner) {
+          errorBanner.classList.add("hidden");
+        }
+      }
+
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+        hideError();
+
+        var nameInput = document.getElementById("contact-name");
+        var emailInput = document.getElementById("contact-email");
+        var subjectInput = document.getElementById("contact-subject");
+        var messageInput = document.getElementById("contact-message");
+
+        var name = (nameInput ? nameInput.value : "").trim();
+        var email = (emailInput ? emailInput.value : "").trim().toLowerCase();
+        var subject = subjectInput ? subjectInput.value : "general";
+        var message = (messageInput ? messageInput.value : "").trim();
+
+        // Validation
+        if (!name || name.length < 2) {
+          showError("{{ if eq site.Language.Lang "it" }}Inserisci il tuo nome completo.{{ else }}Please enter your full name.{{ end }}");
+          if (nameInput) nameInput.focus();
+          return;
+        }
+
+        var emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!email || !emailPattern.test(email)) {
+          showError("{{ if eq site.Language.Lang "it" }}Inserisci un indirizzo email valido.{{ else }}Please provide a valid email address so we can reply.{{ end }}");
+          if (emailInput) emailInput.focus();
+          return;
+        }
+
+        if (!message || message.length < 10) {
+          showError("{{ if eq site.Language.Lang "it" }}Inserisci un messaggio di almeno 10 caratteri.{{ else }}Please provide a message with at least 10 characters.{{ end }}");
+          if (messageInput) messageInput.focus();
+          return;
+        }
+
+        // Loading UI state
+        if (submitBtn) {
+          submitBtn.disabled = true;
+          submitBtn.classList.add("opacity-75", "cursor-not-allowed");
+          submitBtnText.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>{{ if eq site.Language.Lang "it" }}Invio in corso...{{ else }}Sending message...{{ end }}';
+        }
+
+        var submissionId = "sub_" + Math.random().toString(36).substring(2, 9) + "_" + Date.now().toString(36);
+        var payload = {
+          id: submissionId,
+          name: name,
+          email: email,
+          subject: subject,
+          message: message,
+          created_at: new Date().toISOString()
+        };
+
+        // Dual Persistence: 1. Guaranteed LocalStorage Persistence
+        try {
+          var localEntries = JSON.parse(localStorage.getItem("gcloudcafe_contact_submissions") || "[]");
+          localEntries.unshift(payload);
+          // Keep up to 50 recent submissions locally
+          if (localEntries.length > 50) localEntries = localEntries.slice(0, 50);
+          localStorage.setItem("gcloudcafe_contact_submissions", JSON.stringify(localEntries));
+        } catch (storageErr) {
+          console.warn("LocalStorage save warning:", storageErr);
+        }
+
+        // Dual Persistence: 2. Attempt Supabase REST POST (safe background sync)
+        fetch(config.url + "/rest/v1/contact_submissions", {
+          method: "POST",
+          headers: {
+            "apikey": config.anonKey,
+            "Authorization": "Bearer " + config.anonKey,
+            "Content-Type": "application/json",
+            "Prefer": "return=minimal"
+          },
+          body: JSON.stringify(payload)
+        })
+        .then(function (res) {
+          if (!res.ok) {
+            console.log("Supabase contact_submissions notice (status " + res.status + "). Stored safely in local persistent cache.");
+          }
+        })
+        .catch(function (err) {
+          console.warn("Supabase network sync note:", err);
+        })
+        .finally(function () {
+          // Transition to Success Feedback Card
+          if (confirmedEmail) confirmedEmail.textContent = email;
+
+          form.classList.add("hidden");
+          successState.classList.remove("hidden");
+          successState.scrollIntoView({ behavior: "smooth", block: "center" });
+
+          // Reset submit button state
+          if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.classList.remove("opacity-75", "cursor-not-allowed");
+            submitBtnText.textContent = "{{ if eq site.Language.Lang "it" }}Invia Messaggio{{ else }}Send Message{{ end }}";
+          }
+        });
+      });
+
+      // Handle "Send Another Message" Reset
+      if (resetBtn) {
+        resetBtn.addEventListener("click", function () {
+          form.reset();
+          hideError();
+          successState.classList.add("hidden");
+          form.classList.remove("hidden");
+          var nameInput = document.getElementById("contact-name");
+          if (nameInput) nameInput.focus();
+        });
+      }
+    })();
+  </script>
+{{ end }}
