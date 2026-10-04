@@ -9864,6 +9864,13 @@
 
   /* ── Modern Developer Terminal Decorator for Code Blocks ── */
   function initDevTerminalBlocks() {
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str).replace(/[&<>"']/g, function (s) {
+        return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[s];
+      });
+    }
+
     var codeBlocks = document.querySelectorAll('.content pre > code');
     if (!codeBlocks.length) return;
 
