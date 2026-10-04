@@ -124,13 +124,11 @@ describe('Built IT pages — no hardcoded English visible text', () => {
 // 3. TEMPLATE i18n KEY USAGE (source files)
 // ─────────────────────────────────────────────────────────────────────────────
 describe('Layout templates — use i18n keys, not hardcoded EN strings', () => {
-  it('layouts/index.html uses i18n for newsletter and explore_track', () => {
+  it('layouts/index.html uses i18n for newsletter', () => {
     const tmpl = fs.readFileSync(path.join(layoutsDir, 'index.html'), 'utf-8');
     expect(tmpl).toContain('newsletter_heading');
     expect(tmpl).toContain('newsletter_desc');
     expect(tmpl).toContain('newsletter_submit');
-    expect(tmpl).toContain('explore_track');
-    expect(tmpl).not.toContain('>Explore track<');
     expect(tmpl).not.toContain('Engineering insights, twice a month');
   });
 

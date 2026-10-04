@@ -55,16 +55,9 @@
     {{ end }}
   {{ end }}
 
-  {{/* Extract Top 3 Companion Articles from the remaining post feed */}}
-  {{ $allPosts := $root.Posts | default (where site.RegularPages "Section" "blog") }}
-  {{ $companions := where $allPosts "Permalink" "!=" $page.Permalink }}
-  {{ $topCompanions := first 3 $companions }}
-
   <style>
     .hero-blueprint-img picture,
-    .hero-blueprint-img img,
-    .companion-thumb picture,
-    .companion-thumb img {
+    .hero-blueprint-img img {
       display: block !important;
       width: 100% !important;
       height: 100% !important;
@@ -72,11 +65,11 @@
     }
   </style>
 
-  <section class="pb-10 pt-4 sm:pt-6" aria-labelledby="featured-post-title">
+  <section class="pb-6 pt-4 sm:pt-6" aria-labelledby="featured-post-title">
     <div class="bytedepth-container">
       
       <!-- =================================================================== -->
-      <!-- STAGE 1: ARCHITECTURAL COMMAND CENTER HERO (Content-Dominant 75/25) -->
+      <!-- SPOTLIGHT HERO: ARCHITECTURAL COMMAND CENTER (Content-First 75/25)  -->
       <!-- =================================================================== -->
       <article class="rounded-2xl sm:rounded-3xl border border-slate-200/90 dark:border-slate-800/90 bg-white dark:bg-[#0c1220] shadow-sm hover:shadow-xl hover:border-slate-300 dark:hover:border-slate-700/80 transition-all duration-300 overflow-hidden group">
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-0 items-stretch">
@@ -224,107 +217,6 @@
 
         </div>
       </article>
-
-      <!-- =================================================================== -->
-      <!-- STAGE 2: HIGH-DENSITY CONTENT-FIRST TRENDING DEEP DIVES             -->
-      <!-- =================================================================== -->
-      <div class="mt-10 pt-8 border-t border-slate-200/80 dark:border-slate-800/80">
-        
-        <!-- Section Header -->
-        <div class="flex items-center justify-between mb-5">
-          <div class="flex items-center gap-2">
-            <span class="inline-flex items-center justify-center w-5 h-5 rounded-md bg-amber-500/10 text-amber-500 text-xs">
-              <i class="fa-solid fa-fire-flame-curved"></i>
-            </span>
-            <h2 class="font-mono text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-white m-0">
-              {{ i18n "trending_deep_dives" }}
-            </h2>
-          </div>
-          <a href="{{ `blog/` | relLangURL }}" class="font-mono text-xs text-red-600 dark:text-red-500 hover:underline flex items-center gap-1 no-underline font-semibold">
-            <span>{{ i18n "view_all_articles" }}</span>
-            <i class="fa-solid fa-arrow-right text-[10px]"></i>
-          </a>
-        </div>
-
-        <!-- 3-Column High-Density Content-First Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {{ range $idx, $companion := $topCompanions }}
-            {{ $compCat := index ($companion.Params.categories | default (slice "Cloud")) 0 }}
-            {{ $compTeaser := $companion.Params.description | default $companion.Summary | plainify | truncate 130 }}
-
-            <a href="{{ $companion.RelPermalink }}" 
-               class="group/comp flex flex-row md:flex-col justify-between rounded-2xl border border-slate-200/90 dark:border-slate-800/90 bg-white dark:bg-[#0c1220] hover:border-red-500/50 dark:hover:border-red-500/50 hover:shadow-xl transition-all duration-300 no-underline overflow-hidden p-3.5 sm:p-4 md:p-5 gap-3.5 sm:gap-4 md:gap-0">
-              
-              <!-- Desktop Header Row: Category/Rank on left, Compact Squircle on right -->
-              <div class="hidden md:flex items-start justify-between w-full mb-3">
-                <div class="space-y-1">
-                  <div class="flex items-center gap-2">
-                    <span class="px-2 py-0.5 rounded-full font-mono text-[9px] font-black bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
-                      #0{{ add $idx 1 }} TRENDING
-                    </span>
-                    <span class="font-mono text-[10px] text-slate-400 dark:text-slate-500 font-semibold">
-                      {{ $companion.ReadingTime }}m {{ i18n "read" }}
-                    </span>
-                  </div>
-                  <span class="font-mono text-xs font-bold uppercase tracking-wider text-red-600 dark:text-red-400 block truncate">
-                    {{ $compCat }}
-                  </span>
-                </div>
-
-                <!-- Desktop Squircle -->
-                <div class="w-14 h-14 rounded-xl overflow-hidden bg-slate-900 border border-slate-200 dark:border-slate-800 shrink-0 group-hover/comp:scale-105 transition-transform duration-300">
-                  {{ with $companion.Params.image }}
-                    {{ partial "image" (dict "Src" . "Context" $companion "Alt" $companion.Title "Class" "w-full h-full object-cover" "Loading" "lazy") }}
-                  {{ end }}
-                </div>
-              </div>
-
-              <!-- Mobile Thumbnail Frame (Shown on mobile only) -->
-              <div class="companion-thumb md:hidden w-24 sm:w-28 h-20 sm:h-20 overflow-hidden relative bg-slate-950 rounded-xl shrink-0">
-                {{ with $companion.Params.image }}
-                  {{ partial "image" (dict "Src" . "Context" $companion "Alt" $companion.Title "Class" "w-full h-full object-cover" "Loading" "lazy") }}
-                {{ end }}
-                <span class="absolute top-1.5 left-1.5 px-1.5 py-0.5 rounded-full font-mono text-[8px] font-black bg-slate-950/85 text-amber-400 border border-amber-400/20">
-                  #0{{ add $idx 1 }}
-                </span>
-              </div>
-
-              <!-- Card Details -->
-              <div class="flex flex-col justify-between flex-1 min-w-0 h-full py-0.5 md:py-0">
-                <div>
-                  <!-- Mobile Category Tag -->
-                  <div class="md:hidden flex items-center justify-between gap-1.5 mb-1">
-                    <span class="font-mono text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-red-600 dark:text-red-400 truncate">
-                      {{ $compCat }}
-                    </span>
-                    <span class="font-mono text-[10px] text-slate-400 dark:text-slate-500 shrink-0">
-                      {{ $companion.ReadingTime }}m {{ i18n "read" }}
-                    </span>
-                  </div>
-
-                  <h3 class="text-sm sm:text-base md:text-lg font-bold text-slate-900 dark:text-white leading-snug line-clamp-2 mb-1.5 md:mb-2 group-hover/comp:text-red-600 dark:group-hover/comp:text-red-500 transition-colors">
-                    {{ $companion.Title }}
-                  </h3>
-
-                  <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 leading-relaxed font-normal line-clamp-2 md:line-clamp-3 mb-2 md:mb-4">
-                    {{ $compTeaser }}
-                  </p>
-                </div>
-
-                <div class="pt-2 md:pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between font-mono text-xs text-slate-400 dark:text-slate-500 mt-auto">
-                  <span class="text-[11px]">{{ $companion.Date.Format "Jan 02, 2006" }}</span>
-                  <span class="text-red-600 dark:text-red-400 group-hover/comp:translate-x-1 transition-transform text-[11px] md:text-xs font-bold flex items-center gap-1">
-                    <span>{{ i18n "read" }}</span>
-                    <i class="fa-solid fa-arrow-right text-[9px]"></i>
-                  </span>
-                </div>
-              </div>
-
-            </a>
-          {{ end }}
-        </div>
-
-      </div>
 
     </div>
   </section>
