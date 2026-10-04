@@ -65,58 +65,6 @@
             </a>
           </div>
 
-          <!-- Response Time SLA Card -->
-          <div class="p-6 rounded-2xl bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-slate-800 shadow-sm space-y-3">
-            <div class="flex items-center gap-3">
-              <div class="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-lg shrink-0">
-                <i class="fa-solid fa-clock"></i>
-              </div>
-              <div>
-                <h2 class="text-sm font-bold text-slate-900 dark:text-white m-0">
-                  {{ if eq site.Language.Lang "it" }}Tempi di Risposta Garantiti{{ else }}Editorial SLA & Response Time{{ end }}
-                </h2>
-                <p class="text-xs font-mono text-emerald-600 dark:text-emerald-400 m-0 font-semibold">
-                  24–48 Business Hours
-                </p>
-              </div>
-            </div>
-            <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed m-0">
-              {{ if eq site.Language.Lang "it" }}
-              Tutti i messaggi inviati tramite questo modulo vengono instradati direttamente agli ingegneri curatori di GCloudCafe.
-              {{ else }}
-              Every inquiry is triaged directly by senior engineers, ensuring thorough and technically precise follow-ups.
-              {{ end }}
-            </p>
-          </div>
-
-          <!-- Errata & GitHub Discussions Card -->
-          <div class="p-6 rounded-2xl bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-slate-800 shadow-sm space-y-3">
-            <div class="flex items-center gap-3">
-              <div class="w-10 h-10 rounded-xl bg-slate-500/10 text-slate-700 dark:text-slate-300 flex items-center justify-center text-lg shrink-0">
-                <i class="fa-brands fa-github"></i>
-              </div>
-              <div>
-                <h2 class="text-sm font-bold text-slate-900 dark:text-white m-0">
-                  {{ if eq site.Language.Lang "it" }}Segnalazione Errata & GitHub{{ else }}Public Errata & GitHub Issues{{ end }}
-                </h2>
-                <p class="text-xs font-mono text-slate-500 dark:text-slate-400 m-0">
-                  github.com/tharun15/gcloudcafe
-                </p>
-              </div>
-            </div>
-            <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed m-0">
-              {{ if eq site.Language.Lang "it" }}
-              Hai notato un errore di battitura, un comando CLI non aggiornato o un flag deprecato? Apri una Issue o una PR trasparente.
-              {{ else }}
-              Spotted a typo, an outdated CLI flag, or an edge-case bug in a manifest? Open a public issue or pull request directly on GitHub.
-              {{ end }}
-            </p>
-            <a href="https://github.com/tharun15/gcloudcafe/issues" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 text-xs font-bold text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white no-underline transition-colors">
-              <span>{{ if eq site.Language.Lang "it" }}Apri Issue su GitHub{{ else }}Open GitHub Issue{{ end }}</span>
-              <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
-            </a>
-          </div>
-
           <!-- Trust & Privacy Commitment -->
           <div class="p-5 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 flex items-center gap-3">
             <i class="fa-solid fa-shield-check text-slate-400 text-lg shrink-0"></i>
