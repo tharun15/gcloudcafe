@@ -84,30 +84,27 @@ describe('Mobile View & Header Refinement Suite', () => {
       expect(headerHtml).toContain('Escape');
     });
   });
-  describe('5. Technical Deep Dives (Trending Companions) Mobile Fitting & Thumbnails', () => {
+  describe('5. Content-First Architectural Command Center & Gallery Mobile Fitting', () => {
     const scssContent = fs.readFileSync(path.join(rootDir, 'assets/scss/mobile-improvements.scss'), 'utf8');
+    const cardHtml = fs.readFileSync(path.join(rootDir, 'layouts/partials/components/blog-card.html'), 'utf8');
 
-    it('ensures companion thumbnails have valid locked Tailwind classes and companion-thumb class', () => {
-      expect(heroHtml).toContain('companion-thumb');
-      expect(heroHtml).toContain('w-24 sm:w-28 h-20 sm:h-20');
-      expect(heroHtml).not.toContain('w-22');
-      expect(heroHtml).not.toContain('h-18');
+    it('ensures spotlight hero maintains refined blueprint preview container', () => {
+      expect(heroHtml).toContain('hero-blueprint-img');
+      expect(heroHtml).toContain('.hero-blueprint-img picture');
+      expect(heroHtml).toContain('.hero-blueprint-img img');
     });
 
-    it('ensures companion picture and img are locked to cover without blowing up container', () => {
-      expect(heroHtml).toContain('.companion-thumb picture');
-      expect(heroHtml).toContain('.companion-thumb img');
+    it('ensures blog card gallery implements compact squircle preview', () => {
+      expect(cardHtml).toContain('w-14 h-14 rounded-xl overflow-hidden');
     });
 
-    it('verifies companion-thumb CSS rules exist in mobile-improvements.scss', () => {
+    it('verifies responsive mobile CSS rules exist in mobile-improvements.scss', () => {
       expect(scssContent).toContain('.companion-thumb');
-      expect(scssContent).toContain('min-width: 96px !important;');
-      expect(scssContent).toContain('max-width: 96px !important;');
       expect(scssContent).toContain('flex-shrink: 0 !important;');
     });
 
-    it('ensures companion text container uses flex-1 min-w-0 to fit seamlessly on mobile', () => {
-      expect(heroHtml).toContain('flex-1 min-w-0 h-full py-0.5');
+    it('ensures clean spotlight hero transitions directly into gallery without redundant trending bloat', () => {
+      expect(heroHtml).not.toContain('TRENDING DEEP DIVES');
     });
   });
 });

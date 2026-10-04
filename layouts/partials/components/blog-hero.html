@@ -22,19 +22,45 @@
       {{ end }}
     {{ end }}
   {{ end }}
-  {{ $teaser := $page.Params.description | default $page.Summary | plainify | truncate 190 }}
+  {{ $teaser := $page.Params.description | default $page.Summary | plainify | truncate 220 }}
   {{ $firstCat := index ($categories | default (slice "Architecture")) 0 }}
 
-  {{/* Extract Top 3 Companion Articles from the remaining post feed */}}
-  {{ $allPosts := $root.Posts | default (where site.RegularPages "Section" "blog") }}
-  {{ $companions := where $allPosts "Permalink" "!=" $page.Permalink }}
-  {{ $topCompanions := first 3 $companions }}
+  {{/* Dynamic / Frontmatter Architectural Takeaways */}}
+  {{ $takeaways := $page.Params.takeaways }}
+  {{ if not $takeaways }}
+    {{ if in $tags "Dataflow" }}
+      {{ $takeaways = slice 
+        "Direct BigQuery subscriptions vs Apache Beam worker pool tradeoffs"
+        "Decoupled ingestion with Transactional Outbox pattern & Dead-Letter Queues"
+        "Cost & latency benchmarks: Storage Write API vs legacy streaming sinks"
+      }}
+    {{ else if or (in $categories "Kubernetes") (in $tags "Kubernetes") (in $tags "OpenShift") }}
+      {{ $takeaways = slice 
+        "Production-grade Ingress, TLS termination, and mTLS mesh security"
+        "Zero-downtime rolling deployments with Pod Disruption Budgets & probe tuning"
+        "Live incident triage: OOMKilled, CrashLoopBackOff, and network policy enforcement"
+      }}
+    {{ else if or (in $categories "Security") (in $tags "TLS") }}
+      {{ $takeaways = slice 
+        "Cryptographic primitives: Private keys, CSR generation, and Public CA chains"
+        "Automated certificate lifecycle management and zero-downtime renewals via cert-manager"
+        "Zero-Trust microservice mTLS enforcement without latency degradation"
+      }}
+    {{ else }}
+      {{ $takeaways = slice 
+        "Production-tested architectures designed for zero-downtime scale"
+        "Battle-tested trade-off comparisons with latency and cost metrics"
+        "Step-by-step hands-on blueprints reproducible in live environments"
+      }}
+    {{ end }}
+  {{ end }}
+
+  {{ $allPosts := $root.Posts | default (sort (where site.RegularPages "Section" "blog") "Date" "desc") }}
+  {{ $recentPosts := where $allPosts ".RelPermalink" "!=" $page.RelPermalink | first 3 }}
 
   <style>
-    .hero-cinematic-img picture,
-    .hero-cinematic-img img,
-    .companion-thumb picture,
-    .companion-thumb img {
+    .hero-blueprint-img picture,
+    .hero-blueprint-img img {
       display: block !important;
       width: 100% !important;
       height: 100% !important;
@@ -42,198 +68,211 @@
     }
   </style>
 
-  <section class="pb-10 pt-4 sm:pt-6" aria-labelledby="featured-post-title">
+  <section class="pb-6 pt-3 sm:pt-5" aria-labelledby="featured-post-title">
     <div class="bytedepth-container">
       
       <!-- =================================================================== -->
-      <!-- STAGE 1: CINEMATIC EDITORIAL HERO (Linear / Vercel Minimalist Style)-->
+      <!-- EDITORIAL 2-COLUMN HERO SPLIT (Content-First / Medium Aesthetic)     -->
+      <!-- Part 1 (Left): Spotlight Lead Story (No CTA Button, Medium style)    -->
+      <!-- Part 2 (Right): Recent Articles Wire                              -->
       <!-- =================================================================== -->
-      <article class="rounded-2xl sm:rounded-3xl border border-slate-200/90 dark:border-slate-800/90 bg-white dark:bg-[#0c1220] shadow-sm hover:shadow-xl hover:border-slate-300 dark:hover:border-slate-700/80 transition-all duration-300 overflow-hidden group">
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-0 lg:gap-8 items-stretch">
-          
-          <!-- Editorial Details (Left 7 Cols) -->
-          <div class="lg:col-span-7 p-4 sm:p-6 lg:p-7 flex flex-col justify-between flex-grow">
-            <div>
-              <!-- Eyebrow & Metadata -->
-              <div class="flex items-center gap-2 mb-3 sm:mb-4 flex-wrap">
-                <span class="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-amber-500/10 dark:bg-amber-400/15 border border-amber-400/30 text-amber-700 dark:text-amber-300 font-mono text-[11px] font-bold shadow-2xs">
-                  <span class="w-3.5 h-3.5 rounded-full bg-amber-400/20 text-amber-600 dark:text-amber-400 flex items-center justify-center text-[9px]" aria-hidden="true">
-                    <i class="fa-solid fa-star"></i>
-                  </span>
-                  <span class="tracking-wider uppercase">{{ i18n "spotlight_story" }}</span>
-                </span>
-                <span class="text-slate-300 dark:text-slate-700 select-none">·</span>
-                <a href="{{ `categories/` | relLangURL }}{{ $firstCat | urlize | lower }}/" 
-                   class="font-mono text-xs font-bold text-slate-600 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-500 uppercase tracking-wider no-underline transition-colors">
-                  {{ $firstCat }}
-                </a>
-                <span class="text-slate-300 dark:text-slate-700 select-none">·</span>
-                <span class="text-xs font-mono text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
-                  <i class="fa-regular fa-clock text-[10px]"></i> {{ $page.ReadingTime }} {{ i18n "min_read" }}
-                </span>
-              </div>
-
-              <!-- Headline -->
-              <h1 id="featured-post-title" class="text-2xl sm:text-3xl lg:text-[32px] font-black text-slate-900 dark:text-white leading-[1.2] tracking-tight mb-3 hover:text-red-600 dark:hover:text-red-500 transition-colors">
-                <a href="{{ $page.RelPermalink }}" class="no-underline text-current hover:text-red-600 dark:hover:text-red-500">
-                  {{ $page.Title }}
-                </a>
-              </h1>
-
-              <!-- Teaser Summary -->
-              <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed font-normal mb-4 line-clamp-3">
-                {{ $teaser }}
-              </p>
-
-              <!-- Hashtags (Clean on mobile) -->
-              {{ with $tags }}
-                <div class="flex flex-wrap gap-1.5 mb-4">
-                  {{ range first 2 . }}
-                    <span class="border border-slate-200 dark:border-slate-800 px-2 py-0.5 rounded-md font-mono text-[10px] sm:text-[11px] text-slate-600 dark:text-slate-400 bg-slate-50 dark:bg-slate-900/40">
-                      #{{ . }}
-                    </span>
-                  {{ end }}
-                  {{ if gt (len .) 2 }}
-                    {{ range after 2 (first 4 .) }}
-                      <span class="hidden sm:inline-flex border border-slate-200 dark:border-slate-800 px-2 py-0.5 rounded-md font-mono text-[11px] text-slate-600 dark:text-slate-400 bg-slate-50 dark:bg-slate-900/40">
-                        #{{ . }}
-                      </span>
-                    {{ end }}
-                  {{ end }}
-                </div>
-              {{ end }}
-            </div>
-
-            <!-- Author & Action Footer -->
-            <div class="pt-4 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between gap-3 mt-auto">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6 items-stretch">
+        
+        <!-- PART 1: SPOTLIGHT LEAD STORY (Col 1 to 7/8 on Desktop) -->
+        <article class="lg:col-span-7 xl:col-span-8 rounded-2xl sm:rounded-3xl border border-slate-200/90 dark:border-slate-800/90 bg-white dark:bg-[#0c1220] p-4 sm:p-6 lg:p-7 flex flex-col justify-between shadow-xs hover:border-slate-300 dark:hover:border-slate-700 transition-all duration-300 group">
+          <div>
+            <!-- Top Header: Author + Date + Spotlight Pill (Medium Style) -->
+            <div class="flex items-center justify-between gap-3 mb-4 flex-wrap">
               <div class="flex items-center gap-2.5 min-w-0">
                 {{ if $authorImage }}
-                  <img src="{{ $authorImage | relURL }}" alt="{{ $authorName }}" class="w-8 h-8 rounded-full object-cover shrink-0 border border-slate-200 dark:border-slate-700 shadow-xs" width="32" height="32" decoding="async" loading="lazy" onerror="this.onerror=null; this.src='{{ `/images/avatar.png` | relURL }}';">
+                  <img src="{{ $authorImage | relURL }}" alt="{{ $authorName }}" class="w-7 h-7 sm:w-8 sm:h-8 rounded-full object-cover shrink-0 border border-slate-200 dark:border-slate-700 shadow-xs" width="32" height="32" decoding="async" loading="lazy" onerror="this.onerror=null; this.src='{{ `/images/avatar.png` | relURL }}';">
                 {{ else }}
-                  <div class="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-800 text-slate-900 dark:text-white font-bold text-xs flex items-center justify-center shrink-0 border border-slate-200 dark:border-slate-700">
+                  <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-slate-200 dark:bg-slate-800 text-slate-900 dark:text-white font-bold text-xs flex items-center justify-center shrink-0">
                     {{ substr $authorName 0 1 }}
                   </div>
                 {{ end }}
-                <div class="min-w-0">
-                  <span class="font-bold text-slate-900 dark:text-white block text-xs truncate">{{ $authorName }}</span>
-                  <span class="text-[11px] font-mono text-slate-500 dark:text-slate-400 block truncate">{{ $page.Date.Format "Jan 02, 2006" }}</span>
+                <div class="flex items-center gap-1.5 text-xs font-medium text-slate-900 dark:text-white truncate">
+                  <span class="font-bold">{{ $authorName }}</span>
+                  <span class="text-slate-400 dark:text-slate-600">·</span>
+                  <span class="font-mono text-slate-500 dark:text-slate-400">{{ $page.Date.Format "Jan 02, 2006" }}</span>
                 </div>
               </div>
+              
+              <!-- Spotlight Badge -->
+              <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-amber-500/10 dark:bg-amber-400/15 border border-amber-400/30 text-amber-700 dark:text-amber-300 font-mono text-[10px] sm:text-[11px] font-bold shrink-0">
+                <i class="fa-solid fa-star text-[9px] text-amber-500"></i>
+                <span class="tracking-wider uppercase">{{ i18n "spotlight_story" }}</span>
+              </span>
+            </div>
 
-              <a href="{{ $page.RelPermalink }}" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-mono font-bold bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:hover:bg-slate-100 dark:text-slate-950 transition-all no-underline shadow-xs hover:shadow-md shrink-0 group/cta">
-                <span>{{ i18n "read_masterclass" }}</span>
-                <i class="fa-solid fa-arrow-right text-[10px] group-hover/cta:translate-x-0.5 transition-transform"></i>
-              </a>
+            <!-- Content Row: Headline & Teaser (Left) + Compact Preview Thumbnail (Right) -->
+            <div class="grid grid-cols-1 sm:grid-cols-12 gap-4 sm:gap-6 items-start mb-4 sm:mb-5">
+              <div class="sm:col-span-8">
+                <h1 id="featured-post-title" class="text-xl sm:text-2xl lg:text-[25px] font-black text-slate-900 dark:text-white leading-[1.22] tracking-tight mb-2.5 group-hover:text-red-600 dark:group-hover:text-red-500 transition-colors">
+                  <a href="{{ $page.RelPermalink }}" class="no-underline text-current hover:text-red-600 dark:hover:text-red-500">
+                    {{ $page.Title }}
+                  </a>
+                </h1>
+                <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed font-normal line-clamp-3 mb-0">
+                  {{ $teaser }}
+                </p>
+              </div>
+
+              <!-- Preview Blueprint Image (Medium Style Right Thumbnail) -->
+              <div class="sm:col-span-4 shrink-0">
+                <div class="rounded-xl overflow-hidden shadow-xs border border-slate-200/80 dark:border-slate-800 aspect-[16/11] bg-slate-950 hero-blueprint-img group/preview">
+                  <a href="{{ $page.RelPermalink }}" class="block w-full h-full relative no-underline overflow-hidden" aria-label="Read blueprint: {{ $page.Title }}">
+                    {{ with $page.Params.image }}
+                      {{ partial "image" (dict "Src" . "Context" $page "Alt" $page.Title "Class" "w-full h-full object-cover group-hover/preview:scale-105 transition-transform duration-500 ease-out" "Loading" "eager" "FetchPriority" "high") }}
+                    {{ else }}
+                      <div class="w-full h-full flex items-center justify-center p-3 bg-slate-900 text-slate-400 font-mono text-xs text-center">
+                        {{ $page.Title }}
+                      </div>
+                    {{ end }}
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            <!-- Architectural Key Decisions Box (Pure Content Value) -->
+            <div class="mb-4 sm:mb-5 p-3 sm:p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800/80">
+              <div class="flex items-center gap-2 mb-2">
+                <span class="font-mono text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 flex items-center gap-1.5">
+                  <i class="fa-solid fa-microchip text-sky-500 text-[10px]"></i>
+                  {{ if eq site.Language.Lang "it" }}Punti Chiave dell'Architettura{{ else }}Key Architecture Decisions &amp; Takeaways{{ end }}
+                </span>
+              </div>
+              <ul class="space-y-1.5 m-0 p-0 list-none text-xs text-slate-700 dark:text-slate-300 font-medium">
+                {{ range $takeaways }}
+                  <li class="flex items-start gap-2 leading-relaxed">
+                    <i class="fa-solid fa-check text-emerald-500 text-[10px] mt-1 shrink-0"></i>
+                    <span class="line-clamp-1">{{ . }}</span>
+                  </li>
+                {{ end }}
+              </ul>
             </div>
           </div>
 
-          <!-- Cinematic Artwork Frame (Right 5 Cols) -->
-          <div class="lg:col-span-5 relative overflow-hidden bg-slate-950 hero-cinematic-img min-h-[220px] sm:min-h-[280px] lg:min-h-full">
-            <a href="{{ $page.RelPermalink }}" class="block w-full h-full relative group/img no-underline overflow-hidden" aria-label="Read spotlight: {{ $page.Title }}">
-              {{ with $page.Params.series }}
-                <!-- Series Episode Pill -->
-                <span class="absolute top-3.5 right-3.5 z-30 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-950/85 backdrop-blur-md border border-white/20 text-slate-200 font-mono text-[10px] font-bold shadow-md pointer-events-none">
-                  <i class="fa-solid fa-layer-group text-sky-400 text-[9px]"></i>
-                  <span>Part {{ $page.Params.series_order | default "1" }}</span>
-                </span>
-              {{ end }}
-
-              {{ with $page.Params.image }}
-                {{ partial "image" (dict "Src" . "Context" $page "Alt" $page.Title "Class" "w-full h-full object-cover group-hover/img:scale-105 transition-transform duration-500 ease-out" "Loading" "eager" "FetchPriority" "high") }}
-              {{ else }}
-                <div class="w-full h-full flex items-center justify-center p-8 bg-slate-900 text-slate-400 font-mono text-sm text-center">
-                  {{ $page.Title }}
+          <!-- Bottom Meta Bar: Category · Read Time · Tags · Bookmark (NO BUTTON) -->
+          <div class="pt-3.5 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between gap-3 text-xs text-slate-500 dark:text-slate-400 mt-auto">
+            <div class="flex items-center gap-2.5 sm:gap-3 flex-wrap min-w-0">
+              <a href="{{ `categories/` | relLangURL }}{{ $firstCat | urlize | lower }}/" 
+                 class="font-mono text-[11px] font-bold text-slate-800 dark:text-slate-200 hover:text-red-600 dark:hover:text-red-400 uppercase tracking-wider no-underline transition-colors truncate">
+                {{ $firstCat }}
+              </a>
+              <span class="text-slate-300 dark:text-slate-700">·</span>
+              <span class="font-mono text-[11px] flex items-center gap-1 shrink-0">
+                <i class="fa-regular fa-clock text-[10px]"></i> {{ $page.ReadingTime }} {{ i18n "min_read" }}
+              </span>
+              {{ with $tags }}
+                <span class="text-slate-300 dark:text-slate-700 hidden sm:inline">·</span>
+                <div class="hidden sm:flex items-center gap-1.5 truncate">
+                  {{ range first 2 . }}
+                    <span class="hidden sm:inline-flex font-mono text-[10px] text-slate-500 dark:text-slate-400">#{{ . }}</span>
+                  {{ end }}
                 </div>
               {{ end }}
-            </a>
+            </div>
+
+            <!-- Medium Style Bookmark Action -->
+            <button
+              type="button"
+              data-bookmark-btn
+              data-article-url="{{ $page.RelPermalink }}"
+              data-article-title="{{ $page.Title }}"
+              data-article-category="{{ $firstCat }}"
+              data-article-readtime="{{ $page.ReadingTime }} {{ i18n `min_read` }}"
+              class="w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 hover:text-red-500 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer shrink-0"
+              aria-label="Save {{ $page.Title }} for later"
+              title="{{ i18n `save_for_later` }}">
+              <i class="fa-regular fa-bookmark text-sm"></i>
+            </button>
+          </div>
+        </article>
+
+        <!-- PART 2: RECENT ARTICLES LIST (Col 8 to 12 on Desktop) -->
+        <aside class="lg:col-span-5 xl:col-span-4 rounded-2xl sm:rounded-3xl border border-slate-200/90 dark:border-slate-800/90 bg-white dark:bg-[#0c1220] p-4 sm:p-6 flex flex-col justify-between shadow-xs" aria-label="Recent articles">
+          <div>
+            <!-- Section Header -->
+            <div class="flex items-center justify-between pb-3.5 mb-2 border-b border-slate-100 dark:border-slate-800/80">
+              <div class="flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" aria-hidden="true"></span>
+                <h2 class="font-mono text-xs sm:text-[13px] font-bold uppercase tracking-wider text-slate-900 dark:text-white m-0">
+                  {{ if eq site.Language.Lang "it" }}Articoli Recenti{{ else }}Recent Articles{{ end }}
+                </h2>
+              </div>
+              <a href="{{ `blog/` | relLangURL }}" class="font-mono text-[11px] font-bold text-slate-500 hover:text-red-600 dark:text-slate-400 dark:hover:text-red-400 no-underline transition-colors flex items-center gap-1">
+                <span>{{ if eq site.Language.Lang "it" }}Tutti{{ else }}All{{ end }}</span>
+                <i class="fa-solid fa-arrow-right text-[9px]"></i>
+              </a>
+            </div>
+
+            <!-- Vertical List of Recent Articles (Content First) -->
+            <div class="divide-y divide-slate-100 dark:divide-slate-800/70">
+              {{ range $recentPosts }}
+                {{ $rPost := . }}
+                {{ $rCat := index ($rPost.Params.categories | default (slice "Cloud")) 0 }}
+                <article class="py-3.5 first:pt-2 last:pb-1 flex items-start justify-between gap-3 group">
+                  <div class="min-w-0 flex-1">
+                    <!-- Category & Read Time -->
+                    <div class="flex items-center gap-2 mb-1">
+                      <span class="font-mono text-[10px] font-bold uppercase text-red-600 dark:text-red-400 tracking-wider">
+                        {{ $rCat }}
+                      </span>
+                      <span class="text-slate-300 dark:text-slate-700">·</span>
+                      <span class="font-mono text-[10px] text-slate-400">
+                        {{ $rPost.ReadingTime }} {{ i18n "min_read" }}
+                      </span>
+                    </div>
+
+                    <!-- Headline -->
+                    <h3 class="text-xs sm:text-[13px] font-bold text-slate-900 dark:text-white group-hover:text-red-600 dark:group-hover:text-red-500 transition-colors line-clamp-2 leading-snug m-0">
+                      <a href="{{ $rPost.RelPermalink }}" class="no-underline text-current hover:text-red-600 dark:hover:text-red-500">
+                        {{ $rPost.Title }}
+                      </a>
+                    </h3>
+
+                    <!-- Date & Bookmark Action -->
+                    <div class="flex items-center justify-between gap-2 mt-1.5 text-[11px] font-mono text-slate-400">
+                      <span>{{ $rPost.Date.Format "Jan 02, 2006" }}</span>
+                      <button
+                        type="button"
+                        data-bookmark-btn
+                        data-article-url="{{ $rPost.RelPermalink }}"
+                        data-article-title="{{ $rPost.Title }}"
+                        data-article-category="{{ $rCat }}"
+                        data-article-readtime="{{ $rPost.ReadingTime }} {{ i18n `min_read` }}"
+                        class="text-slate-400 hover:text-red-500 transition-colors cursor-pointer"
+                        aria-label="Save {{ $rPost.Title }} for later"
+                        title="{{ i18n `save_for_later` }}">
+                        <i class="fa-regular fa-bookmark text-[11px]"></i>
+                      </button>
+                    </div>
+                  </div>
+
+                  <!-- Mini Squircle Preview Thumbnail -->
+                  <a href="{{ $rPost.RelPermalink }}" class="w-12 h-12 sm:w-14 sm:h-14 rounded-xl overflow-hidden bg-slate-900 border border-slate-200 dark:border-slate-800 shrink-0 group-hover:scale-105 transition-transform duration-300 relative shadow-2xs no-underline" aria-label="Read {{ $rPost.Title }}">
+                    {{ with $rPost.Params.image }}
+                      {{ partial "image" (dict "Src" . "Context" $rPost "Alt" $rPost.Title "Class" "w-full h-full object-cover" "Loading" "lazy") }}
+                    {{ else }}
+                      <div class="w-full h-full flex items-center justify-center p-1 text-[10px] font-mono text-slate-500">
+                        {{ substr $rCat 0 3 }}
+                      </div>
+                    {{ end }}
+                  </a>
+                </article>
+              {{ end }}
+            </div>
           </div>
 
-        </div>
-      </article>
-
-      <!-- =================================================================== -->
-      <!-- STAGE 2: CURATED TRENDING DEEP DIVES (Balanced 3-Column Grid)        -->
-      <!-- =================================================================== -->
-      <div class="mt-10 pt-8 border-t border-slate-200/80 dark:border-slate-800/80">
-        
-        <!-- Section Header -->
-        <div class="flex items-center justify-between mb-5">
-          <div class="flex items-center gap-2">
-            <span class="inline-flex items-center justify-center w-5 h-5 rounded-md bg-amber-500/10 text-amber-500 text-xs">
-              <i class="fa-solid fa-fire-flame-curved"></i>
-            </span>
-            <h2 class="font-mono text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-white m-0">
-              {{ i18n "trending_deep_dives" }}
-            </h2>
-          </div>
-          <a href="{{ `blog/` | relLangURL }}" class="font-mono text-xs text-red-600 dark:text-red-500 hover:underline flex items-center gap-1 no-underline font-semibold">
-            <span>{{ i18n "view_all_articles" }}</span>
-            <i class="fa-solid fa-arrow-right text-[10px]"></i>
-          </a>
-        </div>
-
-        <!-- 3-Column Grid With Room To Breathe -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {{ range $idx, $companion := $topCompanions }}
-            {{ $compCat := index ($companion.Params.categories | default (slice "Cloud")) 0 }}
-            {{ $compTeaser := $companion.Params.description | default $companion.Summary | plainify | truncate 110 }}
-
-            <a href="{{ $companion.RelPermalink }}" 
-               class="group/comp flex flex-row md:flex-col justify-between rounded-2xl border border-slate-200/90 dark:border-slate-800/90 bg-white dark:bg-[#0c1220] hover:border-slate-300 dark:hover:border-slate-700/80 hover:shadow-md transition-all duration-300 no-underline overflow-hidden p-3.5 sm:p-4 md:p-0 gap-3.5 sm:gap-4 md:gap-0">
-              
-              <!-- Thumbnail Frame (Compact on mobile, 16:10 on md+) -->
-              <div class="companion-thumb desktop-responsive-thumb w-24 sm:w-28 h-20 sm:h-20 md:w-full md:h-auto md:aspect-[16/10] overflow-hidden relative bg-slate-950 rounded-xl md:rounded-none shrink-0">
-                {{ with $companion.Params.image }}
-                  {{ partial "image" (dict "Src" . "Context" $companion "Alt" $companion.Title "Class" "w-full h-full object-cover group-hover/comp:scale-105 transition-transform duration-500" "Loading" "lazy") }}
-                {{ else }}
-                  <div class="w-full h-full flex items-center justify-center bg-slate-800 text-slate-400 font-mono text-[10px] text-center p-2">
-                    {{ substr $companion.Title 0 20 }}...
-                  </div>
-                {{ end }}
-                
-                <!-- Rank Index Badge -->
-                <span class="absolute top-2 left-2 md:top-2.5 md:left-2.5 px-2 py-0.5 rounded-full font-mono text-[9px] font-black bg-slate-950/85 text-amber-400 border border-amber-400/20 backdrop-blur-xs">
-                  #0{{ add $idx 1 }} TRENDING
-                </span>
-
-                <span class="hidden md:inline-block absolute bottom-2.5 right-2.5 px-2 py-0.5 rounded-full font-mono text-[10px] font-bold bg-slate-950/80 text-slate-300 backdrop-blur-xs">
-                  {{ $companion.ReadingTime }}m {{ i18n "read" }}
-                </span>
-              </div>
-
-              <!-- Card Details -->
-              <div class="flex flex-col justify-between flex-1 min-w-0 h-full py-0.5 md:p-5">
-                <div>
-                  <div class="flex items-center justify-between gap-1.5 mb-1.5 md:mb-2">
-                    <span class="font-mono text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-red-600 dark:text-red-400 truncate">
-                      {{ $compCat }}
-                    </span>
-                    <span class="md:hidden font-mono text-[10px] text-slate-400 dark:text-slate-500 shrink-0">
-                      {{ $companion.ReadingTime }}m {{ i18n "read" }}
-                    </span>
-                  </div>
-
-                  <h3 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white leading-snug line-clamp-2 mb-1.5 md:mb-2 group-hover/comp:text-red-600 dark:group-hover/comp:text-red-500 transition-colors">
-                    {{ $companion.Title }}
-                  </h3>
-
-                  <p class="hidden sm:block text-xs text-slate-500 dark:text-slate-400 leading-relaxed font-normal line-clamp-2 mb-3 md:mb-4">
-                    {{ $compTeaser }}
-                  </p>
-                </div>
-
-                <div class="pt-2 md:pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between font-mono text-xs text-slate-400 dark:text-slate-500">
-                  <span class="text-[11px]">{{ $companion.Date.Format "Jan 02, 2006" }}</span>
-                  <span class="text-red-600 dark:text-red-400 group-hover/comp:translate-x-1 transition-transform text-[11px] font-bold flex items-center gap-1">
-                    <span>{{ i18n "read" }}</span>
-                    <i class="fa-solid fa-arrow-right text-[9px]"></i>
-                  </span>
-                </div>
-              </div>
-
+          <!-- Bottom Footer Link -->
+          <div class="pt-3 border-t border-slate-100 dark:border-slate-800/80 mt-2">
+            <a href="{{ `blog/` | relLangURL }}" class="flex items-center justify-center gap-1.5 w-full py-2 rounded-xl text-xs font-mono font-bold text-slate-700 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-400 bg-slate-50 dark:bg-slate-900/40 hover:bg-slate-100 dark:hover:bg-slate-800/60 transition-colors no-underline">
+              <span>{{ if eq site.Language.Lang "it" }}Esplora tutti gli articoli{{ else }}Browse all articles{{ end }}</span>
+              <i class="fa-solid fa-arrow-right text-[10px]"></i>
             </a>
-          {{ end }}
-        </div>
+          </div>
+        </aside>
 
       </div>
 

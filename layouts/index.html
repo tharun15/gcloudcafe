@@ -15,128 +15,28 @@
   <!-- Featured Hero Section -->
   {{ partial "components/blog-hero" (dict "Featured" $featured "Posts" $posts) }}
 
-  <!-- Start Here: Engineering Pathways Discovery Bar -->
-  <section class="pt-4 pb-6" aria-labelledby="start-here-heading">
+  {{ $gridPosts := $posts }}
+  {{ with $featured }}
+    {{ $gridPosts = where $posts ".RelPermalink" "!=" .RelPermalink }}
+  {{ end }}
+
+  <!-- Main Articles & Topics Filter Tabs (Direct Gallery Transition) -->
+  <section class="pb-16 pt-2 sm:pt-4" aria-labelledby="articles-heading">
     <div class="bytedepth-container">
-      <div class="flex items-center justify-between mb-3">
-        <div class="flex items-center gap-2">
-          <span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-red-600/10 text-red-600 dark:text-red-500 text-[10px]">
-            <i class="fa-solid fa-compass"></i>
+      <!-- Section Heading: Engineering Library -->
+      <div class="flex items-center justify-between mb-4 sm:mb-6">
+        <div class="flex items-center gap-2.5">
+          <span class="inline-flex items-center justify-center w-6 h-6 rounded-lg bg-red-600/10 text-red-600 dark:text-red-500 text-xs">
+            <i class="fa-solid fa-layer-group"></i>
           </span>
-          <h2 id="start-here-heading" class="font-mono text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 m-0">
-            {{ i18n "start_here_heading" }}
+          <h2 id="articles-heading" class="font-mono text-xs sm:text-sm font-bold uppercase tracking-wider text-slate-900 dark:text-white m-0">
+            {{ if eq site.Language.Lang "it" }}Tutti gli Articoli{{ else }}Latest Architecture Articles{{ end }}
           </h2>
         </div>
-        <a href="{{ `series/` | relLangURL }}" class="font-mono text-xs text-red-600 dark:text-red-500 hover:underline flex items-center gap-1 no-underline font-semibold">
-          <span>{{ i18n "view_all_tracks" }}</span>
-          <i class="fa-solid fa-arrow-right text-[10px]"></i>
-        </a>
+        <span class="font-mono text-xs text-slate-500 dark:text-slate-400">
+          {{ len $gridPosts }} {{ if eq site.Language.Lang "it" }}articoli{{ else }}articles{{ end }}
+        </span>
       </div>
-
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
-        <!-- Path 1: Kubernetes & OpenShift -->
-        <a href="{{ `categories/kubernetes/` | relLangURL }}" class="p-3.5 rounded-xl bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-slate-800 hover:border-red-500/60 dark:hover:border-red-500/60 shadow-xs hover:shadow-md transition-all no-underline group flex flex-col justify-between">
-          <div>
-            <div class="flex items-center justify-between gap-2 mb-2">
-              <span class="w-7 h-7 rounded-lg bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center text-xs shrink-0">
-                <i class="fa-brands fa-docker"></i>
-              </span>
-              <span class="text-[10px] font-mono font-semibold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
-                Clusters
-              </span>
-            </div>
-            <h3 class="text-sm font-bold text-slate-900 dark:text-white group-hover:text-red-600 dark:group-hover:text-red-500 transition-colors mb-1">
-              Kubernetes & OpenShift
-            </h3>
-            <p class="text-xs text-slate-500 dark:text-slate-400 leading-snug m-0 line-clamp-2">
-              {{ i18n "track_kubernetes_desc" }}
-            </p>
-          </div>
-          <div class="mt-3 pt-2.5 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-[11px] font-mono font-semibold text-slate-500 dark:text-slate-400 group-hover:text-red-600 dark:group-hover:text-red-400">
-            <span>{{ i18n "explore_track" }}</span>
-            <i class="fa-solid fa-chevron-right text-[9px] group-hover:translate-x-0.5 transition-transform"></i>
-          </div>
-        </a>
-
-        <!-- Path 2: Cloud Architecture -->
-        <a href="{{ `categories/google-cloud/` | relLangURL }}" class="p-3.5 rounded-xl bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-slate-800 hover:border-red-500/60 dark:hover:border-red-500/60 shadow-xs hover:shadow-md transition-all no-underline group flex flex-col justify-between">
-          <div>
-            <div class="flex items-center justify-between gap-2 mb-2">
-              <span class="w-7 h-7 rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center text-xs shrink-0">
-                <i class="fa-solid fa-cloud"></i>
-              </span>
-              <span class="text-[10px] font-mono font-semibold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
-                GCP & AWS
-              </span>
-            </div>
-            <h3 class="text-sm font-bold text-slate-900 dark:text-white group-hover:text-red-600 dark:group-hover:text-red-500 transition-colors mb-1">
-              Cloud Architecture
-            </h3>
-            <p class="text-xs text-slate-500 dark:text-slate-400 leading-snug m-0 line-clamp-2">
-              {{ i18n "track_cloud_desc" }}
-            </p>
-          </div>
-          <div class="mt-3 pt-2.5 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-[11px] font-mono font-semibold text-slate-500 dark:text-slate-400 group-hover:text-red-600 dark:group-hover:text-red-400">
-            <span>{{ i18n "explore_track" }}</span>
-            <i class="fa-solid fa-chevron-right text-[9px] group-hover:translate-x-0.5 transition-transform"></i>
-          </div>
-        </a>
-
-        <!-- Path 3: Zero-Trust & TLS -->
-        <a href="{{ `categories/security/` | relLangURL }}" class="p-3.5 rounded-xl bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-slate-800 hover:border-red-500/60 dark:hover:border-red-500/60 shadow-xs hover:shadow-md transition-all no-underline group flex flex-col justify-between">
-          <div>
-            <div class="flex items-center justify-between gap-2 mb-2">
-              <span class="w-7 h-7 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-xs shrink-0">
-                <i class="fa-solid fa-shield-halved"></i>
-              </span>
-              <span class="text-[10px] font-mono font-semibold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
-                Security
-              </span>
-            </div>
-            <h3 class="text-sm font-bold text-slate-900 dark:text-white group-hover:text-red-600 dark:group-hover:text-red-500 transition-colors mb-1">
-              TLS & Zero-Trust
-            </h3>
-            <p class="text-xs text-slate-500 dark:text-slate-400 leading-snug m-0 line-clamp-2">
-              {{ i18n "track_security_desc" }}
-            </p>
-          </div>
-          <div class="mt-3 pt-2.5 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-[11px] font-mono font-semibold text-slate-500 dark:text-slate-400 group-hover:text-red-600 dark:group-hover:text-red-400">
-            <span>{{ i18n "explore_track" }}</span>
-            <i class="fa-solid fa-chevron-right text-[9px] group-hover:translate-x-0.5 transition-transform"></i>
-          </div>
-        </a>
-
-        <!-- Path 4: Multi-Part Series & Labs -->
-        <a href="{{ `series/` | relLangURL }}" class="p-3.5 rounded-xl bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-slate-800 hover:border-red-500/60 dark:hover:border-red-500/60 shadow-xs hover:shadow-md transition-all no-underline group flex flex-col justify-between">
-          <div>
-            <div class="flex items-center justify-between gap-2 mb-2">
-              <span class="w-7 h-7 rounded-lg bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center text-xs shrink-0">
-                <i class="fa-solid fa-layer-group"></i>
-              </span>
-              <span class="text-[10px] font-mono font-semibold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
-                Labs
-              </span>
-            </div>
-            <h3 class="text-sm font-bold text-slate-900 dark:text-white group-hover:text-red-600 dark:group-hover:text-red-500 transition-colors mb-1">
-              Curated Series &amp; Labs
-            </h3>
-            <p class="text-xs text-slate-500 dark:text-slate-400 leading-snug m-0 line-clamp-2">
-              {{ i18n "track_series_desc" }}
-            </p>
-          </div>
-          <div class="mt-3 pt-2.5 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-[11px] font-mono font-semibold text-slate-500 dark:text-slate-400 group-hover:text-red-600 dark:group-hover:text-red-400">
-            <span>{{ i18n "explore_track" }}</span>
-            <i class="fa-solid fa-chevron-right text-[9px] group-hover:translate-x-0.5 transition-transform"></i>
-          </div>
-        </a>
-      </div>
-    </div>
-  </section>
-
-  <!-- Main Articles & Topics Filter Tabs -->
-  <section class="pb-16 pt-2" aria-labelledby="articles-heading">
-    <div class="bytedepth-container">
-      <h2 id="articles-heading" class="sr-only">Articles & Topics</h2>
 
       <!-- Horizontal Category Tabs (ByteDepth Reference) -->
       {{ $categories := site.Taxonomies.categories }}
