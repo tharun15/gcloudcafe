@@ -22,8 +22,38 @@
       {{ end }}
     {{ end }}
   {{ end }}
-  {{ $teaser := $page.Params.description | default $page.Summary | plainify | truncate 190 }}
+  {{ $teaser := $page.Params.description | default $page.Summary | plainify | truncate 220 }}
   {{ $firstCat := index ($categories | default (slice "Architecture")) 0 }}
+
+  {{/* Dynamic / Frontmatter Architectural Takeaways */}}
+  {{ $takeaways := $page.Params.takeaways }}
+  {{ if not $takeaways }}
+    {{ if in $tags "Dataflow" }}
+      {{ $takeaways = slice 
+        "Direct BigQuery subscriptions vs Apache Beam worker pool tradeoffs"
+        "Decoupled ingestion with Transactional Outbox pattern & Dead-Letter Queues"
+        "Cost & latency benchmarks: Storage Write API vs legacy streaming sinks"
+      }}
+    {{ else if or (in $categories "Kubernetes") (in $tags "Kubernetes") (in $tags "OpenShift") }}
+      {{ $takeaways = slice 
+        "Production-grade Ingress, TLS termination, and mTLS mesh security"
+        "Zero-downtime rolling deployments with Pod Disruption Budgets & probe tuning"
+        "Live incident triage: OOMKilled, CrashLoopBackOff, and network policy enforcement"
+      }}
+    {{ else if or (in $categories "Security") (in $tags "TLS") }}
+      {{ $takeaways = slice 
+        "Cryptographic primitives: Private keys, CSR generation, and Public CA chains"
+        "Automated certificate lifecycle management and zero-downtime renewals via cert-manager"
+        "Zero-Trust microservice mTLS enforcement without latency degradation"
+      }}
+    {{ else }}
+      {{ $takeaways = slice 
+        "Production-tested architectures designed for zero-downtime scale"
+        "Battle-tested trade-off comparisons with latency and cost metrics"
+        "Step-by-step hands-on blueprints reproducible in live environments"
+      }}
+    {{ end }}
+  {{ end }}
 
   {{/* Extract Top 3 Companion Articles from the remaining post feed */}}
   {{ $allPosts := $root.Posts | default (where site.RegularPages "Section" "blog") }}
@@ -31,8 +61,8 @@
   {{ $topCompanions := first 3 $companions }}
 
   <style>
-    .hero-cinematic-img picture,
-    .hero-cinematic-img img,
+    .hero-blueprint-img picture,
+    .hero-blueprint-img img,
     .companion-thumb picture,
     .companion-thumb img {
       display: block !important;
@@ -46,15 +76,15 @@
     <div class="bytedepth-container">
       
       <!-- =================================================================== -->
-      <!-- STAGE 1: CINEMATIC EDITORIAL HERO (Linear / Vercel Minimalist Style)-->
+      <!-- STAGE 1: ARCHITECTURAL COMMAND CENTER HERO (Content-Dominant 75/25) -->
       <!-- =================================================================== -->
       <article class="rounded-2xl sm:rounded-3xl border border-slate-200/90 dark:border-slate-800/90 bg-white dark:bg-[#0c1220] shadow-sm hover:shadow-xl hover:border-slate-300 dark:hover:border-slate-700/80 transition-all duration-300 overflow-hidden group">
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-0 lg:gap-8 items-stretch">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-0 items-stretch">
           
-          <!-- Editorial Details (Left 7 Cols) -->
-          <div class="lg:col-span-7 p-4 sm:p-6 lg:p-7 flex flex-col justify-between flex-grow">
+          <!-- Editorial & High-Density Content Column (8 of 12 Cols = 67-75% visual weight) -->
+          <div class="lg:col-span-8 p-4 sm:p-6 lg:p-7 flex flex-col justify-between flex-grow">
             <div>
-              <!-- Eyebrow & Metadata -->
+              <!-- Eyebrow & Metadata Header -->
               <div class="flex items-center gap-2 mb-3 sm:mb-4 flex-wrap">
                 <span class="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-amber-500/10 dark:bg-amber-400/15 border border-amber-400/30 text-amber-700 dark:text-amber-300 font-mono text-[11px] font-bold shadow-2xs">
                   <span class="w-3.5 h-3.5 rounded-full bg-amber-400/20 text-amber-600 dark:text-amber-400 flex items-center justify-center text-[9px]" aria-hidden="true">
@@ -71,21 +101,52 @@
                 <span class="text-xs font-mono text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
                   <i class="fa-regular fa-clock text-[10px]"></i> {{ $page.ReadingTime }} {{ i18n "min_read" }}
                 </span>
+                <span class="text-slate-300 dark:text-slate-700 select-none hidden sm:inline">·</span>
+                <span class="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-md font-mono text-[10px] font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                  <i class="fa-solid fa-shield-halved text-[9px]"></i> Production Blueprint
+                </span>
               </div>
 
-              <!-- Headline -->
-              <h1 id="featured-post-title" class="text-2xl sm:text-3xl lg:text-[32px] font-black text-slate-900 dark:text-white leading-[1.2] tracking-tight mb-3 hover:text-red-600 dark:hover:text-red-500 transition-colors">
+              <!-- Main High-Contrast Headline -->
+              <h1 id="featured-post-title" class="text-2xl sm:text-3xl lg:text-[34px] font-black text-slate-900 dark:text-white leading-[1.18] tracking-tight mb-3 hover:text-red-600 dark:hover:text-red-500 transition-colors">
                 <a href="{{ $page.RelPermalink }}" class="no-underline text-current hover:text-red-600 dark:hover:text-red-500">
                   {{ $page.Title }}
                 </a>
               </h1>
 
-              <!-- Teaser Summary -->
-              <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed font-normal mb-4 line-clamp-3">
+              <!-- Architectural Premise / Teaser -->
+              <p class="text-sm sm:text-[15px] text-slate-600 dark:text-slate-300 leading-relaxed font-normal mb-4">
                 {{ $teaser }}
               </p>
 
-              <!-- Hashtags (Clean on mobile) -->
+              <!-- Futuristic "Inside This Teardown" Architectural Takeaways Card -->
+              <div class="my-4 p-3.5 sm:p-4 rounded-xl bg-slate-50 dark:bg-slate-900/70 border border-slate-200/90 dark:border-slate-800/80">
+                <div class="flex items-center justify-between mb-2.5">
+                  <div class="flex items-center gap-2">
+                    <span class="flex gap-1" aria-hidden="true">
+                      <span class="w-2 h-2 rounded-full bg-rose-500/70"></span>
+                      <span class="w-2 h-2 rounded-full bg-amber-500/70"></span>
+                      <span class="w-2 h-2 rounded-full bg-emerald-500/70"></span>
+                    </span>
+                    <span class="font-mono text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">
+                      {{ if eq site.Language.Lang "it" }}Punti Chiave dell'Architettura{{ else }}Architectural Takeaways &amp; Trade-offs{{ end }}
+                    </span>
+                  </div>
+                  <span class="font-mono text-[10px] text-emerald-600 dark:text-emerald-400 font-bold px-2 py-0.5 rounded-full bg-emerald-500/10">
+                    Key Decisions
+                  </span>
+                </div>
+                <ul class="space-y-1.5 m-0 p-0 list-none text-xs sm:text-[13px] text-slate-700 dark:text-slate-300 font-medium">
+                  {{ range $takeaways }}
+                    <li class="flex items-start gap-2 leading-relaxed">
+                      <i class="fa-solid fa-check text-emerald-500 text-[11px] mt-1 shrink-0"></i>
+                      <span>{{ . }}</span>
+                    </li>
+                  {{ end }}
+                </ul>
+              </div>
+
+              <!-- Tech Stack Tags -->
               {{ with $tags }}
                 <div class="flex flex-wrap gap-1.5 mb-4">
                   {{ range first 2 . }}
@@ -120,39 +181,52 @@
                 </div>
               </div>
 
-              <a href="{{ $page.RelPermalink }}" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-mono font-bold bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:hover:bg-slate-100 dark:text-slate-950 transition-all no-underline shadow-xs hover:shadow-md shrink-0 group/cta">
+              <a href="{{ $page.RelPermalink }}" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-mono font-bold bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:hover:bg-slate-100 dark:text-slate-950 transition-all no-underline shadow-xs hover:shadow-md shrink-0 group/cta">
                 <span>{{ i18n "read_masterclass" }}</span>
                 <i class="fa-solid fa-arrow-right text-[10px] group-hover/cta:translate-x-0.5 transition-transform"></i>
               </a>
             </div>
           </div>
 
-          <!-- Cinematic Artwork Frame (Right 5 Cols) -->
-          <div class="lg:col-span-5 relative overflow-hidden bg-slate-950 hero-cinematic-img min-h-[220px] sm:min-h-[280px] lg:min-h-full">
-            <a href="{{ $page.RelPermalink }}" class="block w-full h-full relative group/img no-underline overflow-hidden" aria-label="Read spotlight: {{ $page.Title }}">
-              {{ with $page.Params.series }}
-                <!-- Series Episode Pill -->
-                <span class="absolute top-3.5 right-3.5 z-30 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-950/85 backdrop-blur-md border border-white/20 text-slate-200 font-mono text-[10px] font-bold shadow-md pointer-events-none">
-                  <i class="fa-solid fa-layer-group text-sky-400 text-[9px]"></i>
-                  <span>Part {{ $page.Params.series_order | default "1" }}</span>
-                </span>
-              {{ end }}
+          <!-- Compact Architectural Blueprint Accent (4 of 12 Cols = Refined ~25-30% visual weight) -->
+          <div class="lg:col-span-4 p-5 sm:p-6 lg:p-7 flex flex-col justify-center items-center bg-slate-50/50 dark:bg-[#080d1a]/50 border-t lg:border-t-0 lg:border-l border-slate-100 dark:border-slate-800/80">
+            <div class="w-full max-w-sm rounded-2xl overflow-hidden shadow-md border border-slate-200/80 dark:border-slate-700/60 relative group/preview aspect-[16/10] sm:aspect-[16/10] lg:aspect-[4/3] bg-slate-950 hero-blueprint-img">
+              <a href="{{ $page.RelPermalink }}" class="block w-full h-full relative no-underline overflow-hidden" aria-label="Read blueprint: {{ $page.Title }}">
+                {{ with $page.Params.series }}
+                  <!-- Series Episode Pill -->
+                  <span class="absolute top-2.5 right-2.5 z-20 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-950/85 backdrop-blur-md border border-white/20 text-slate-200 font-mono text-[10px] font-bold shadow-md pointer-events-none">
+                    <i class="fa-solid fa-layer-group text-sky-400 text-[9px]"></i>
+                    <span>Part {{ $page.Params.series_order | default "1" }}</span>
+                  </span>
+                {{ end }}
 
-              {{ with $page.Params.image }}
-                {{ partial "image" (dict "Src" . "Context" $page "Alt" $page.Title "Class" "w-full h-full object-cover group-hover/img:scale-105 transition-transform duration-500 ease-out" "Loading" "eager" "FetchPriority" "high") }}
-              {{ else }}
-                <div class="w-full h-full flex items-center justify-center p-8 bg-slate-900 text-slate-400 font-mono text-sm text-center">
-                  {{ $page.Title }}
+                {{ with $page.Params.image }}
+                  {{ partial "image" (dict "Src" . "Context" $page "Alt" $page.Title "Class" "w-full h-full object-cover group-hover/preview:scale-105 transition-transform duration-500 ease-out opacity-90 group-hover/preview:opacity-100" "Loading" "eager" "FetchPriority" "high") }}
+                {{ else }}
+                  <div class="w-full h-full flex items-center justify-center p-6 bg-slate-900 text-slate-400 font-mono text-xs text-center">
+                    {{ $page.Title }}
+                  </div>
+                {{ end }}
+
+                <!-- Bottom Glass Caption -->
+                <div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-slate-950/90 via-slate-950/60 to-transparent p-3 pt-6 flex items-center justify-between text-white pointer-events-none">
+                  <span class="font-mono text-[10px] font-bold flex items-center gap-1.5 text-slate-200">
+                    <i class="fa-solid fa-diagram-project text-sky-400 text-[10px]"></i> Architecture Blueprint
+                  </span>
+                  <span class="font-mono text-[10px] text-slate-300 flex items-center gap-1">
+                    <span>Preview</span>
+                    <i class="fa-solid fa-arrow-up-right-from-square text-[8px]"></i>
+                  </span>
                 </div>
-              {{ end }}
-            </a>
+              </a>
+            </div>
           </div>
 
         </div>
       </article>
 
       <!-- =================================================================== -->
-      <!-- STAGE 2: CURATED TRENDING DEEP DIVES (Balanced 3-Column Grid)        -->
+      <!-- STAGE 2: HIGH-DENSITY CONTENT-FIRST TRENDING DEEP DIVES             -->
       <!-- =================================================================== -->
       <div class="mt-10 pt-8 border-t border-slate-200/80 dark:border-slate-800/80">
         
@@ -172,59 +246,74 @@
           </a>
         </div>
 
-        <!-- 3-Column Grid With Room To Breathe -->
+        <!-- 3-Column High-Density Content-First Grid -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {{ range $idx, $companion := $topCompanions }}
             {{ $compCat := index ($companion.Params.categories | default (slice "Cloud")) 0 }}
-            {{ $compTeaser := $companion.Params.description | default $companion.Summary | plainify | truncate 110 }}
+            {{ $compTeaser := $companion.Params.description | default $companion.Summary | plainify | truncate 130 }}
 
             <a href="{{ $companion.RelPermalink }}" 
-               class="group/comp flex flex-row md:flex-col justify-between rounded-2xl border border-slate-200/90 dark:border-slate-800/90 bg-white dark:bg-[#0c1220] hover:border-slate-300 dark:hover:border-slate-700/80 hover:shadow-md transition-all duration-300 no-underline overflow-hidden p-3.5 sm:p-4 md:p-0 gap-3.5 sm:gap-4 md:gap-0">
+               class="group/comp flex flex-row md:flex-col justify-between rounded-2xl border border-slate-200/90 dark:border-slate-800/90 bg-white dark:bg-[#0c1220] hover:border-red-500/50 dark:hover:border-red-500/50 hover:shadow-xl transition-all duration-300 no-underline overflow-hidden p-3.5 sm:p-4 md:p-5 gap-3.5 sm:gap-4 md:gap-0">
               
-              <!-- Thumbnail Frame (Compact on mobile, 16:10 on md+) -->
-              <div class="companion-thumb desktop-responsive-thumb w-24 sm:w-28 h-20 sm:h-20 md:w-full md:h-auto md:aspect-[16/10] overflow-hidden relative bg-slate-950 rounded-xl md:rounded-none shrink-0">
-                {{ with $companion.Params.image }}
-                  {{ partial "image" (dict "Src" . "Context" $companion "Alt" $companion.Title "Class" "w-full h-full object-cover group-hover/comp:scale-105 transition-transform duration-500" "Loading" "lazy") }}
-                {{ else }}
-                  <div class="w-full h-full flex items-center justify-center bg-slate-800 text-slate-400 font-mono text-[10px] text-center p-2">
-                    {{ substr $companion.Title 0 20 }}...
+              <!-- Desktop Header Row: Category/Rank on left, Compact Squircle on right -->
+              <div class="hidden md:flex items-start justify-between w-full mb-3">
+                <div class="space-y-1">
+                  <div class="flex items-center gap-2">
+                    <span class="px-2 py-0.5 rounded-full font-mono text-[9px] font-black bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
+                      #0{{ add $idx 1 }} TRENDING
+                    </span>
+                    <span class="font-mono text-[10px] text-slate-400 dark:text-slate-500 font-semibold">
+                      {{ $companion.ReadingTime }}m {{ i18n "read" }}
+                    </span>
                   </div>
-                {{ end }}
-                
-                <!-- Rank Index Badge -->
-                <span class="absolute top-2 left-2 md:top-2.5 md:left-2.5 px-2 py-0.5 rounded-full font-mono text-[9px] font-black bg-slate-950/85 text-amber-400 border border-amber-400/20 backdrop-blur-xs">
-                  #0{{ add $idx 1 }} TRENDING
-                </span>
+                  <span class="font-mono text-xs font-bold uppercase tracking-wider text-red-600 dark:text-red-400 block truncate">
+                    {{ $compCat }}
+                  </span>
+                </div>
 
-                <span class="hidden md:inline-block absolute bottom-2.5 right-2.5 px-2 py-0.5 rounded-full font-mono text-[10px] font-bold bg-slate-950/80 text-slate-300 backdrop-blur-xs">
-                  {{ $companion.ReadingTime }}m {{ i18n "read" }}
+                <!-- Desktop Squircle -->
+                <div class="w-14 h-14 rounded-xl overflow-hidden bg-slate-900 border border-slate-200 dark:border-slate-800 shrink-0 group-hover/comp:scale-105 transition-transform duration-300">
+                  {{ with $companion.Params.image }}
+                    {{ partial "image" (dict "Src" . "Context" $companion "Alt" $companion.Title "Class" "w-full h-full object-cover" "Loading" "lazy") }}
+                  {{ end }}
+                </div>
+              </div>
+
+              <!-- Mobile Thumbnail Frame (Shown on mobile only) -->
+              <div class="companion-thumb md:hidden w-24 sm:w-28 h-20 sm:h-20 overflow-hidden relative bg-slate-950 rounded-xl shrink-0">
+                {{ with $companion.Params.image }}
+                  {{ partial "image" (dict "Src" . "Context" $companion "Alt" $companion.Title "Class" "w-full h-full object-cover" "Loading" "lazy") }}
+                {{ end }}
+                <span class="absolute top-1.5 left-1.5 px-1.5 py-0.5 rounded-full font-mono text-[8px] font-black bg-slate-950/85 text-amber-400 border border-amber-400/20">
+                  #0{{ add $idx 1 }}
                 </span>
               </div>
 
               <!-- Card Details -->
-              <div class="flex flex-col justify-between flex-1 min-w-0 h-full py-0.5 md:p-5">
+              <div class="flex flex-col justify-between flex-1 min-w-0 h-full py-0.5 md:py-0">
                 <div>
-                  <div class="flex items-center justify-between gap-1.5 mb-1.5 md:mb-2">
+                  <!-- Mobile Category Tag -->
+                  <div class="md:hidden flex items-center justify-between gap-1.5 mb-1">
                     <span class="font-mono text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-red-600 dark:text-red-400 truncate">
                       {{ $compCat }}
                     </span>
-                    <span class="md:hidden font-mono text-[10px] text-slate-400 dark:text-slate-500 shrink-0">
+                    <span class="font-mono text-[10px] text-slate-400 dark:text-slate-500 shrink-0">
                       {{ $companion.ReadingTime }}m {{ i18n "read" }}
                     </span>
                   </div>
 
-                  <h3 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white leading-snug line-clamp-2 mb-1.5 md:mb-2 group-hover/comp:text-red-600 dark:group-hover/comp:text-red-500 transition-colors">
+                  <h3 class="text-sm sm:text-base md:text-lg font-bold text-slate-900 dark:text-white leading-snug line-clamp-2 mb-1.5 md:mb-2 group-hover/comp:text-red-600 dark:group-hover/comp:text-red-500 transition-colors">
                     {{ $companion.Title }}
                   </h3>
 
-                  <p class="hidden sm:block text-xs text-slate-500 dark:text-slate-400 leading-relaxed font-normal line-clamp-2 mb-3 md:mb-4">
+                  <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 leading-relaxed font-normal line-clamp-2 md:line-clamp-3 mb-2 md:mb-4">
                     {{ $compTeaser }}
                   </p>
                 </div>
 
-                <div class="pt-2 md:pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between font-mono text-xs text-slate-400 dark:text-slate-500">
+                <div class="pt-2 md:pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between font-mono text-xs text-slate-400 dark:text-slate-500 mt-auto">
                   <span class="text-[11px]">{{ $companion.Date.Format "Jan 02, 2006" }}</span>
-                  <span class="text-red-600 dark:text-red-400 group-hover/comp:translate-x-1 transition-transform text-[11px] font-bold flex items-center gap-1">
+                  <span class="text-red-600 dark:text-red-400 group-hover/comp:translate-x-1 transition-transform text-[11px] md:text-xs font-bold flex items-center gap-1">
                     <span>{{ i18n "read" }}</span>
                     <i class="fa-solid fa-arrow-right text-[9px]"></i>
                   </span>
