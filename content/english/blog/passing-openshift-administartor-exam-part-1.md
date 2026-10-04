@@ -30,7 +30,7 @@ When the exam finally started, I instantly realized **why** the external camera 
 In hindsight, it made perfect sense — but trust me, discovering it on exam day is *not* how you want to find out.
 
 *(This is the exam environment set up with camera placement that worked for me.)*
-![My Exam Setup showing external camera placement](/images/post3-envsetup-1.png)
+![My Exam Setup showing external camera placement](/images/post3-envsetup-1.webp)
 
 ---
 
@@ -49,7 +49,7 @@ The USB hub becomes essential because you’ll need to connect multiple devices 
 This is used to **create the Red Hat Remote Exam bootable image**. You’ll boot into this environment during the exam, so make sure it’s empty or backed up first.
 
 *(Exam Essentials.)*
-![Exam essentials](/images/post3-essentials-2.png)
+![Exam essentials](/images/post3-essentials-2.webp)
 
 ---
 

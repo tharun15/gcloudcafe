@@ -30,7 +30,7 @@ Quando l'esame è finalmente iniziato, ho capito all'istante **perché** la foto
 Col senno di poi ha perfettamente senso — ma scoprirlo la mattina stessa dell'esame non è certo il modo ideale per iniziare la giornata.
 
 *(Questa è la configurazione della postazione con il posizionamento della fotocamera che ha funzionato per me.)*
-![Postazione d'esame con posizionamento della fotocamera esterna](/images/post3-envsetup-1.png)
+![Postazione d'esame con posizionamento della fotocamera esterna](/images/post3-envsetup-1.webp)
 
 ---
 
@@ -49,7 +49,7 @@ L'hub USB diventa indispensabile poiché dovrai collegare più dispositivi conte
 Serve per **creare l'immagine avviabile di Red Hat Remote Exam**. Durante la prova effettuerai il boot direttamente in questo ambiente Linux dedicato, quindi assicurati che sia vuota o che i dati siano stati salvati.
 
 *(Dispositivi essenziali per la prova.)*
-![Elementi essenziali per l'esame](/images/post3-essentials-2.png)
+![Elementi essenziali per l'esame](/images/post3-essentials-2.webp)
 
 ---
 
