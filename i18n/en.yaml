@@ -16,7 +16,7 @@ search_close: to close
 # Blog Hero (homepage featured section)
 spotlight_story: Spotlight Story
 min_read: min read
-read_masterclass: Read Masterclass
+read_masterclass: Read article
 trending_deep_dives: Trending Deep Dives
 view_all_articles: View all articles
 read: Read
@@ -33,7 +33,7 @@ browse_all_topics: Browse all topics
 track_kubernetes_desc: Deep dives on pod networking, EX280 exam prep, and enterprise container orchestration.
 track_cloud_desc: BigQuery storage building blocks, distributed system reliability, and cloud design patterns.
 track_security_desc: 'Cryptographic keys, CSRs, mTLS handshakes, ciphers, and cert-manager automation.'
-track_series_desc: End-to-end masterclasses arranged in sequential episodes with production-grade labs.
+track_series_desc: Comprehensive guides arranged in sequential episodes with production-grade labs.
 
 # Newsletter section
 newsletter_label: NEWSLETTER
@@ -56,7 +56,7 @@ related_articles_heading: Related Articles & Guides
 prev_in_series: Previous in Series
 next_in_series: Next in Series
 track_completed: Track Completed · Next Steps
-series_finished: You finished this series! Explore other Masterclass Tracks →
+series_finished: You finished this series! Explore other engineering tracks →
 share_this_guide: 'Share this guide:'
 footer_privacy: Privacy
 footer_terms: Terms

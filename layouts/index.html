@@ -30,11 +30,11 @@
             <i class="fa-solid fa-layer-group"></i>
           </span>
           <h2 id="articles-heading" class="font-mono text-xs sm:text-sm font-bold uppercase tracking-wider text-slate-900 dark:text-white m-0">
-            {{ if eq site.Language.Lang "it" }}Tutti gli Articoli &amp; Masterclass{{ else }}Latest Architecture Articles &amp; Masterclasses{{ end }}
+            {{ if eq site.Language.Lang "it" }}Tutti gli Articoli{{ else }}Latest Architecture Articles{{ end }}
           </h2>
         </div>
         <span class="font-mono text-xs text-slate-500 dark:text-slate-400">
-          {{ len $gridPosts }} {{ if eq site.Language.Lang "it" }}articoli{{ else }}deep dives{{ end }}
+          {{ len $gridPosts }} {{ if eq site.Language.Lang "it" }}articoli{{ else }}articles{{ end }}
         </span>
       </div>
 

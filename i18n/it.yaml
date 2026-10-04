@@ -16,7 +16,7 @@ search_close: per chiudere
 # Blog Hero (sezione articolo in evidenza — homepage)
 spotlight_story: Articolo in Evidenza
 min_read: min di lettura
-read_masterclass: Leggi il Masterclass
+read_masterclass: Leggi articolo
 trending_deep_dives: Approfondimenti di Tendenza
 view_all_articles: Vedi tutti gli articoli
 read: Leggi
@@ -33,7 +33,7 @@ browse_all_topics: Sfoglia tutti gli argomenti
 track_kubernetes_desc: Approfondimenti su pod networking, preparazione esame EX280 e orchestrazione container enterprise.
 track_cloud_desc: Blocchi fondamentali di storage BigQuery, affidabilità dei sistemi distribuiti e pattern di progettazione cloud.
 track_security_desc: 'Chiavi crittografiche, CSR, handshake mTLS, cifrari e automazione cert-manager.'
-track_series_desc: Masterclass end-to-end suddivisi in episodi sequenziali con laboratori di livello produzione.
+track_series_desc: Guide complete suddivise in episodi sequenziali con laboratori di livello produzione.
 
 # Sezione Newsletter
 newsletter_label: NEWSLETTER
@@ -56,7 +56,7 @@ related_articles_heading: Articoli e Guide Correlati
 prev_in_series: Precedente nella Serie
 next_in_series: Successivo nella Serie
 track_completed: Percorso Completato · Prossimi Passi
-series_finished: Hai completato questa serie! Esplora altri Masterclass →
+series_finished: Hai completato questa serie! Esplora altri percorsi →
 share_this_guide: 'Condividi questa guida:'
 footer_privacy: Privacy
 footer_terms: Termini
