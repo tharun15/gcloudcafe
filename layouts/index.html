@@ -12,16 +12,18 @@
     {{ end }}
   {{ end }}
 
-  <!-- Featured Hero Section (Directly into Content-First Medium Split) -->
-  {{ partial "components/blog-hero" (dict "Featured" $featured "Posts" $posts) }}
+  <!-- Section 1: Featured Hero Section (Subtly framed with bottom border & soft background) -->
+  <section class="border-b border-slate-200/80 dark:border-slate-800/80 bg-slate-50/50 dark:bg-transparent pt-3 sm:pt-5 pb-8 sm:pb-10" aria-label="Featured Story and Recent Articles">
+    {{ partial "components/blog-hero" (dict "Featured" $featured "Posts" $posts) }}
+  </section>
 
   {{ $gridPosts := $posts }}
   {{ with $featured }}
     {{ $gridPosts = where $posts ".RelPermalink" "!=" .RelPermalink }}
   {{ end }}
 
-  <!-- Main Articles & Topics Filter Tabs -->
-  <section class="pb-16 pt-2 sm:pt-4" aria-labelledby="articles-heading">
+  <!-- Section 2: Main Articles & Topics Filter Tabs -->
+  <section class="py-10 sm:py-14 bg-white dark:bg-transparent" aria-labelledby="articles-heading">
     <div class="bytedepth-container">
       <!-- Section Heading: Engineering Library -->
       <div class="flex items-center justify-between mb-4 sm:mb-6 max-w-4xl mx-auto">
@@ -59,7 +61,7 @@
         </div>
       </div>
 
-      <!-- 1-Column Articles Feed (Medium Style, Never Cramped) -->
+      <!-- 1-Column Articles Feed (Medium Style, Clear Borders and Depth) -->
       <div class="flex flex-col space-y-5 sm:space-y-6 max-w-4xl mx-auto">
         {{ if eq (len $gridPosts) 0 }}
           <div class="text-center py-16 bg-white dark:bg-[#0c1220] rounded-xl border border-slate-200 dark:border-slate-800">
@@ -84,7 +86,7 @@
 
       <!-- View All Articles Button (In-Place Seamless Loader) -->
       {{ if gt (len $gridPosts) 9 }}
-      <div class="mt-12 mb-16 text-center" id="view-all-articles-container">
+      <div class="mt-12 mb-14 text-center" id="view-all-articles-container">
         <a class="inline-flex items-center justify-center gap-2 px-6 py-2.5 btn-secondary rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-[#0c1220] text-slate-800 dark:text-slate-200 hover:border-slate-400 dark:hover:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800/80 text-sm font-semibold transition-all no-underline shadow-xs cursor-pointer group"
            id="btn-load-more-articles"
            href="{{ `blog/` | relLangURL }}"
@@ -105,8 +107,8 @@
       </div>
       {{ end }}
 
-      <!-- Browse all topics Section (Issue 4 & 9 Resolved) -->
-      <div class="mt-14 mb-8 max-w-4xl mx-auto">
+      <!-- Section 3: Browse all topics Section (Framed with subtle top divider border) -->
+      <div class="mt-14 pt-10 border-t border-slate-200/80 dark:border-slate-800/80 mb-8 max-w-4xl mx-auto">
         <h3 class="font-mono text-xs font-bold text-slate-500 dark:text-slate-400 tracking-wider block mb-4">
           {{ i18n "browse_all_topics" }}
         </h3>
@@ -142,9 +144,9 @@
         </div>
       </div>
 
-      <!-- Short Author Credibility Section -->
-      <div class="mt-14 mb-4 max-w-4xl mx-auto">
-        <div class="rounded-2xl border border-slate-200/90 dark:border-slate-800/90 bg-white dark:bg-[#0c1220] p-6 sm:p-8 shadow-xs">
+      <!-- Section 4: Author Credibility Section (Framed cleanly) -->
+      <div class="mt-12 mb-4 max-w-4xl mx-auto">
+        <div class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0c1220] p-6 sm:p-8 shadow-xs">
           <div class="flex flex-col sm:flex-row items-center sm:items-start gap-5 sm:gap-6 text-center sm:text-left">
             <img src="{{ `/images/authors/profilepic_tharun.png` | relURL }}"
                  alt="Tharun Vempati"
@@ -203,8 +205,8 @@
     </div>
   </section>
 
-  <!-- Newsletter Section -->
-  <section class="border-t border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-[#070b14]/50 py-14 sm:py-18 text-center" aria-labelledby="newsletter-heading">
+  <!-- Section 5: Newsletter Section (Distinct contrasting background with top border) -->
+  <section class="border-t border-slate-200 dark:border-slate-800 bg-slate-100/70 dark:bg-[#070b14]/50 py-14 sm:py-18 text-center" aria-labelledby="newsletter-heading">
     <div class="bytedepth-container">
       <span class="font-mono text-xs font-bold uppercase tracking-widest text-red-600 dark:text-red-500 block mb-2.5">
         NEWSLETTER
