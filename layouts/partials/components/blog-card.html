@@ -52,7 +52,7 @@
       </a>
     </div>
 
-    <!-- Main Content Area: Headline + Excerpt on Left, Balanced Thumbnail on Right (Medium Style) -->
+    <!-- Main Content Area: Headline + Highlighted Second Text (Left), Balanced Thumbnail (Right) -->
     <div class="flex items-start justify-between gap-4 sm:gap-6 mb-3 sm:mb-4">
       <div class="flex-1 min-w-0">
         <!-- Big Bold Readable Headline -->
@@ -62,10 +62,12 @@
           </a>
         </h3>
 
-        <!-- Clear, Highly Legible Technical Teaser -->
-        <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 line-clamp-2 sm:line-clamp-3 leading-relaxed mb-3 font-normal">
-          {{ $teaser }}
-        </p>
+        <!-- Appropriately Highlighted Second Text (Architectural Subdeck) -->
+        <div class="pl-3 border-l-2 border-red-500/70 dark:border-red-500/80 bg-slate-50/80 dark:bg-slate-900/60 py-1.5 px-3 rounded-r-lg mb-3">
+          <p class="text-xs sm:text-sm text-slate-700 dark:text-slate-200 leading-relaxed font-medium line-clamp-2 sm:line-clamp-3 mb-0">
+            {{ $teaser }}
+          </p>
+        </div>
 
         <!-- Hashtags Strip -->
         <div class="flex flex-wrap gap-1.5">
@@ -77,7 +79,7 @@
         </div>
       </div>
 
-      <!-- Preview Thumbnail (w-14 h-14 rounded-xl overflow-hidden on Mobile to Never Dominate; sm:w-28 sm:h-20 on Desktop) -->
+      <!-- Preview Thumbnail (w-14 h-14 rounded-xl overflow-hidden on Mobile; sm:w-28 sm:h-20 on Desktop) -->
       <a class="block w-14 h-14 rounded-xl overflow-hidden sm:w-28 sm:h-20 md:w-36 md:h-24 bg-slate-900 border border-slate-200 dark:border-slate-800 shrink-0 group-hover:scale-105 transition-transform duration-300 relative shadow-xs no-underline"
          href="{{ $page.RelPermalink }}"
          aria-label="Read: {{ $page.Title }}">

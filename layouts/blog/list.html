@@ -1,22 +1,12 @@
 {{ define "main" }}
   {{ $posts := sort .RegularPages "Date" "desc" }}
 
-  <section class="section pt-6 sm:pt-10 pb-16" aria-labelledby="blog-posts-heading">
+  <section class="section pt-4 sm:pt-6 pb-16" aria-labelledby="blog-posts-heading">
     <div class="bytedepth-container">
-      <div class="mb-8 max-w-3xl">
-        <p class="font-mono text-xs font-bold uppercase tracking-wider text-red-600 dark:text-red-400 mb-2">
-          {{ if eq site.Language.Lang "it" }}Archivio Ingegneristico{{ else }}Engineering Archive{{ end }}
-        </p>
-        <h1 id="blog-posts-heading" class="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 dark:text-white tracking-tight mb-2.5">
-          {{ .Title | default "Technical Articles & Practical Guides" }}
-        </h1>
-        <p class="text-slate-600 dark:text-slate-300 text-xs sm:text-sm md:text-base leading-relaxed">
-          {{ .Description | default "Practitioner-led architecture breakdowns, reproducible commands, and production guides." }}
-        </p>
-      </div>
+      <h1 id="blog-posts-heading" class="sr-only">{{ .Title | default "Articles" }}</h1>
 
-      <!-- Category Filter Chips -->
-      <div class="mb-10">
+      <!-- Category Filter Chips (Straight to Content) -->
+      <div class="mb-8">
         <nav class="flex items-center gap-2 overflow-x-auto no-scrollbar py-1" aria-label="Filter posts by category">
           <a class="px-3.5 py-1.5 rounded-full text-xs font-semibold no-underline transition-all bg-red-600 text-white shadow-2xs font-mono" href="{{ .RelPermalink }}">
             <span>{{ if eq site.Language.Lang "it" }}Tutti{{ else }}All{{ end }}</span>
