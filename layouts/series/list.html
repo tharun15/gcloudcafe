@@ -66,52 +66,10 @@
     {{ if $isDev }}{{ $devopsCount = add $devopsCount 1 }}{{ end }}
   {{ end }}
 
-  <!-- Section Header: Clean Practitioner Header Aligned with Site Theme -->
-  <div class="border-b border-slate-200/80 dark:border-slate-800/80 bg-slate-50/50 dark:bg-transparent pt-6 sm:pt-8 pb-8 sm:pb-10">
+  <!-- Series Content Hub (Straight to Content) -->
+  <section class="pt-4 sm:pt-6 pb-12 sm:pb-16 bg-white dark:bg-transparent" aria-labelledby="series-tracks-heading">
     <div class="bytedepth-container">
-      <div class="max-w-4xl">
-        <div class="flex items-center gap-2 mb-2.5">
-          <span class="inline-flex items-center justify-center w-6 h-6 rounded-lg bg-red-600/10 text-red-600 dark:text-red-500 text-xs">
-            <i class="fa-solid fa-layer-group"></i>
-          </span>
-          <span class="font-mono text-xs font-bold uppercase tracking-wider text-red-600 dark:text-red-500">
-            ENGINEERING CURRICULUM
-          </span>
-        </div>
-
-        <h1 class="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight text-slate-900 dark:text-white mb-2.5">
-          Structured Learning Tracks
-        </h1>
-        <p class="text-xs sm:text-sm md:text-base text-slate-600 dark:text-slate-300 leading-relaxed max-w-2xl mb-4 font-normal">
-          Multi-part technical series designed for platform and cloud engineers. Each track connects theoretical systems architecture with reproducible, hands-on production labs.
-        </p>
-
-        <!-- Subtle Curriculum Metas -->
-        <div class="flex items-center gap-2.5 sm:gap-3 flex-wrap text-xs font-mono text-slate-500 dark:text-slate-400">
-          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-slate-800 shadow-2xs">
-            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-            <span class="font-bold text-slate-900 dark:text-white">{{ $allCount }}</span> Tracks
-          </span>
-          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-slate-800 shadow-2xs">
-            <i class="fa-solid fa-book-open text-sky-500 text-[11px]"></i>
-            <span class="font-bold text-slate-900 dark:text-white">{{ len $seriesPosts }}</span> Lessons
-          </span>
-          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-slate-800 shadow-2xs">
-            <i class="fa-solid fa-flask text-emerald-500 text-[11px]"></i>
-            <span class="font-bold text-emerald-600 dark:text-emerald-400">{{ $totalLabsCount }}</span> Labs
-          </span>
-          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-slate-800 shadow-2xs">
-            <i class="fa-regular fa-clock text-amber-500 text-[11px]"></i>
-            ~{{ $totalSeriesMinutes }} min
-          </span>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Series Content Hub -->
-  <section class="py-10 sm:py-14 bg-white dark:bg-transparent">
-    <div class="bytedepth-container">
+      <h1 id="series-tracks-heading" class="sr-only">Structured Learning Tracks &amp; Engineering Series</h1>
 
       {{/* Spotlight Featured Track (Professional & Minimalist) */}}
       {{ range $groupedSeries }}
