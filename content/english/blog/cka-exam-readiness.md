@@ -8,6 +8,9 @@ categories: ["Kubernetes", "CKA"]
 author: "tharun-vempati"
 tags: ["kubernetes", "cka", "certification", "devops", "cloud-native"]
 draft: false
+
+aliases:
+  - /blog/intro-to-google-cloud/
 ---
 Does this sound familiar? You schedule your CKA exam, then as the date approaches, anxiety kicks in. "Am I really prepared? Maybe I need another 10 days..." So you reschedule. Ten days later, the same doubts return, and the cycle continues.
 

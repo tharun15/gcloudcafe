@@ -6,7 +6,6 @@
   {{ $allCount := len $groupedSeries }}
 
   {{/* 2. Dynamically determine Spotlight Featured Series */}}
-  {{/* Priority 1: The series that contains the latest post marked featured: true */}}
   {{ $featuredPosts := where (sort $seriesPosts "Date" "desc") ".Params.featured" true }}
   {{ $featuredSeriesKey := "" }}
   {{ range $featuredPosts }}
@@ -67,60 +66,12 @@
     {{ if $isDev }}{{ $devopsCount = add $devopsCount 1 }}{{ end }}
   {{ end }}
 
-  <!-- Series Hero Header (ByteDepth Series Standard) -->
-  <div class="bytedepth-container pt-8 pb-8 border-b border-slate-200 dark:border-slate-800 mb-10">
-    <div class="max-w-4xl">
-      <div class="flex flex-wrap items-center justify-between gap-3 mb-3">
-        <span class="font-mono text-xs font-black uppercase tracking-widest text-red-600 dark:text-red-500 flex items-center gap-2">
-          <i class="fa-solid fa-layer-group text-[11px]"></i>
-          ENGINEERING TRACKS &amp; HANDS-ON SERIES
-        </span>
-        <div class="flex items-center gap-3 font-mono text-xs text-slate-500 dark:text-slate-400">
-          <span class="inline-flex items-center gap-1.5">
-            <span class="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-            <span>{{ $allCount }} Curated Learning Tracks</span>
-          </span>
-          <span class="text-slate-300 dark:text-slate-700">·</span>
-          <span class="inline-flex items-center gap-1 text-slate-600 dark:text-slate-300">
-            <i class="fa-solid fa-flask text-emerald-600 dark:text-emerald-400 text-[10px]"></i>
-            <span>{{ $totalLabsCount }} Production Labs</span>
-          </span>
-        </div>
-      </div>
-      <h1 class="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-slate-900 dark:text-white mb-4">
-        Engineering Learning Tracks
-      </h1>
-      <p class="text-sm sm:text-base text-slate-600 dark:text-slate-400 leading-relaxed max-w-3xl mb-6">
-        Structured, multi-part engineering tracks taking you from foundational concepts to production-ready cloud architecture. Follow each track from Episode 1 to master the domain with hands-on labs and architectural blueprints.
-      </p>
-
-      {{/* Platform Stats Bar */}}
-      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
-        <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800">
-          <span class="block font-mono text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Curated Tracks</span>
-          <span class="text-lg font-black text-slate-900 dark:text-white">{{ $allCount }} Tracks</span>
-        </div>
-        <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800">
-          <span class="block font-mono text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Total Lessons</span>
-          <span class="text-lg font-black text-slate-900 dark:text-white">{{ len $seriesPosts }} Lessons</span>
-        </div>
-        <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800">
-          <span class="block font-mono text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Hands-On Labs</span>
-          <span class="text-lg font-black text-emerald-600 dark:text-emerald-400">{{ $totalLabsCount }} Labs</span>
-        </div>
-        <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800">
-          <span class="block font-mono text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Total Curriculum</span>
-          <span class="text-lg font-black text-slate-900 dark:text-white">~{{ $totalSeriesMinutes }} min</span>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Series Content Hub -->
-  <section class="pb-16">
+  <!-- Series Content Hub (Straight to Content) -->
+  <section class="pt-4 sm:pt-6 pb-12 sm:pb-16 bg-white dark:bg-transparent" aria-labelledby="series-tracks-heading">
     <div class="bytedepth-container">
+      <h1 id="series-tracks-heading" class="sr-only">Structured Learning Tracks &amp; Engineering Series</h1>
 
-      {{/* Spotlight Hero Banner (Dynamically Featured Series) */}}
+      {{/* Spotlight Featured Track (Professional & Minimalist) */}}
       {{ range $groupedSeries }}
         {{ if eq .Key $featuredSeriesKey }}
           {{ $sorted := sort .Pages ".Params.series_order" "asc" }}
@@ -141,7 +92,6 @@
             {{ $coverImage = $part1.Params.image }}
           {{ end }}
 
-          {{/* Series Category derivation */}}
           {{ $primaryCat := "Engineering Track" }}
           {{ range $part1.Params.categories }}
             {{ if ne . "Certifications" }}
@@ -149,148 +99,122 @@
             {{ end }}
           {{ end }}
 
-          <div class="mb-14 rounded-2xl bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-slate-800 shadow-sm relative overflow-hidden transition-all duration-300">
-            {{/* Subtle top gradient accent */}}
-            <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-red-600 via-amber-500 to-red-600"></div>
+          <div class="mb-12 rounded-2xl bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden group">
+            <div class="p-5 sm:p-7 lg:p-8">
+              <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
 
-            <div class="p-6 sm:p-8 lg:p-10">
-              <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start">
-
-                {{/* Left Column: Visual Poster & Fast Stats (5 cols) */}}
-                <div class="lg:col-span-5 flex flex-col gap-4">
-                  <div class="relative group overflow-hidden rounded-xl border border-slate-200 dark:border-slate-800 shadow-xs aspect-[16/10] lg:aspect-[4/3] bg-slate-100 dark:bg-slate-900">
-                    <a href="{{ $part1.RelPermalink }}" class="block w-full h-full no-underline">
+                {{/* Left Column: Visual Preview & Highlights (5 cols) */}}
+                <div class="lg:col-span-5 flex flex-col gap-3.5">
+                  <div class="relative group/cover overflow-hidden rounded-xl border border-slate-200 dark:border-slate-800 shadow-xs aspect-[16/10] bg-slate-950">
+                    <a href="{{ $part1.RelPermalink }}" class="block w-full h-full no-underline" aria-label="Start track: {{ .Key }}">
                       {{ if $coverImage }}
                         <img src="{{ $coverImage | relURL }}" 
                              alt="{{ .Key }}" 
-                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
+                             class="w-full h-full object-cover group-hover/cover:scale-105 transition-transform duration-500" 
                              loading="eager">
                       {{ else }}
-                        <div class="w-full h-full flex items-center justify-center bg-slate-100 dark:bg-slate-900 text-slate-800 dark:text-slate-200 font-bold text-lg p-6 text-center">
+                        <div class="w-full h-full flex items-center justify-center bg-slate-900 text-slate-200 font-bold text-base p-6 text-center">
                           {{ .Key }}
                         </div>
                       {{ end }}
                     </a>
 
-                    {{/* Over-Image Spotlight Badges */}}
-                    <div class="absolute top-3 left-3 flex items-center gap-2">
-                      <span class="bg-slate-900/90 text-white backdrop-blur-md px-2.5 py-1 rounded font-mono text-[10px] font-bold uppercase tracking-wider border border-white/20 flex items-center gap-1.5 shadow-sm">
-                        <i class="fa-solid fa-fire text-amber-400"></i> Featured Track
+                    <div class="absolute top-3 left-3">
+                      <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-amber-500/90 text-slate-950 font-mono text-xs font-bold uppercase tracking-wider shadow-sm">
+                        <i class="fa-solid fa-star text-[10px]"></i> Spotlight Track
                       </span>
                     </div>
 
                     <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between pointer-events-none">
-                      <span class="bg-black/85 text-white backdrop-blur-md px-2.5 py-1 rounded font-mono text-[10px] font-bold border border-white/15 flex items-center gap-1.5">
-                        <i class="fa-solid fa-layer-group text-red-400"></i> {{ $totalParts }} Episodes
+                      <span class="bg-black/80 text-white backdrop-blur-md px-2.5 py-0.5 rounded font-mono text-xs font-medium border border-white/10">
+                        {{ $totalParts }} Parts
                       </span>
-                      <span class="bg-black/85 text-amber-300 backdrop-blur-md px-2.5 py-1 rounded font-mono text-[10px] font-bold border border-white/15 flex items-center gap-1.5">
-                        <i class="fa-regular fa-clock"></i> ~{{ $totalMin }} min total
+                      <span class="bg-black/80 text-amber-300 backdrop-blur-md px-2.5 py-0.5 rounded font-mono text-xs font-medium border border-white/10">
+                        ~{{ $totalMin }} min
                       </span>
                     </div>
                   </div>
 
-                  {{/* Track Highlights Card */}}
-                  <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 text-xs space-y-2">
-                    <div class="flex items-center justify-between text-slate-600 dark:text-slate-400">
-                      <span class="font-mono text-[11px] font-bold uppercase tracking-wider">Track Difficulty</span>
-                      <span class="font-semibold text-slate-900 dark:text-white flex items-center gap-1">
-                        <i class="fa-solid fa-gauge-high text-amber-500 text-[10px]"></i> Intermediate to Advanced
-                      </span>
-                    </div>
-                    <div class="flex items-center justify-between text-slate-600 dark:text-slate-400">
-                      <span class="font-mono text-[11px] font-bold uppercase tracking-wider">Hands-On Practice</span>
-                      <span class="font-semibold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
-                        <i class="fa-solid fa-circle-check text-[10px]"></i> Step-by-Step Labs &amp; Code
-                      </span>
-                    </div>
+                  {{/* Concise highlights box */}}
+                  <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 text-xs flex items-center justify-between">
+                    <span class="font-mono text-xs text-slate-500 dark:text-slate-400">Track Curriculum</span>
+                    <span class="font-semibold text-slate-900 dark:text-white flex items-center gap-1.5">
+                      <i class="fa-solid fa-circle-check text-emerald-500 text-xs"></i> Lab-Tested &amp; Hands-On
+                    </span>
                   </div>
                 </div>
 
-                {{/* Right Column: Series Information & Linear Syllabus Stepper (7 cols) */}}
+                {{/* Right Column: Track Description & Curriculum Flow (7 cols) */}}
                 <div class="lg:col-span-7 flex flex-col justify-between">
                   <div>
-                    {{/* Top Badges */}}
-                    <div class="flex flex-wrap items-center gap-2 mb-3">
-                      <span class="px-2.5 py-1 rounded font-mono text-[11px] font-bold uppercase tracking-wider bg-red-100 text-red-800 dark:bg-red-950/70 dark:text-red-300 border border-red-200 dark:border-red-800/60">
+                    <div class="flex items-center gap-2 mb-2">
+                      <span class="px-2.5 py-0.5 rounded-full font-mono text-xs font-bold uppercase tracking-wider bg-red-100 text-red-700 dark:bg-red-950/60 dark:text-red-300">
                         {{ $primaryCat }}
                       </span>
-                      <span class="px-2.5 py-1 rounded font-mono text-[11px] font-bold text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center gap-1.5">
-                        <i class="fa-solid fa-graduation-cap text-slate-500"></i> Hands-on Series
-                      </span>
-
                     </div>
 
-                    {{/* Track Title */}}
-                    <h2 class="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 dark:text-white tracking-tight mb-3">
+                    <h2 class="text-xl sm:text-2xl lg:text-[26px] font-black text-slate-900 dark:text-white tracking-tight mb-2.5 leading-snug">
                       <a href="{{ $part1.RelPermalink }}" class="no-underline text-inherit hover:text-red-600 dark:hover:text-red-500 transition-colors">
                         {{ .Key }}
                       </a>
                     </h2>
 
-                    {{/* Track Description */}}
-                    <p class="text-slate-600 dark:text-slate-400 text-sm sm:text-base leading-relaxed mb-6 font-normal">
-                      {{ with $part1.Params.series_description }}
-                        {{ . }}
-                      {{ else }}
-                        {{ $part1.Params.description | default $part1.Summary | plainify | truncate 240 }}
-                      {{ end }}
-                    </p>
+                    <!-- Highlighted Second Text (Editorial Subdeck) -->
+                    <div class="pl-3 border-l-2 border-red-500/70 dark:border-red-500/80 bg-slate-50/80 dark:bg-slate-900/60 py-1.5 px-3 rounded-r-lg mb-4">
+                      <p class="text-xs sm:text-sm text-slate-700 dark:text-slate-200 leading-relaxed font-medium mb-0">
+                        {{ with $part1.Params.series_description }}
+                          {{ . }}
+                        {{ else }}
+                          {{ $part1.Params.description | default $part1.Summary | plainify | truncate 220 }}
+                        {{ end }}
+                      </p>
+                    </div>
 
-                    {{/* Interactive Curriculum Syllabus (Stepped Roadmap) */}}
-                    <div class="space-y-3 mb-6">
-                      <div class="flex items-center justify-between">
-                        <span class="font-mono text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 flex items-center gap-2">
-                          <i class="fa-solid fa-list-check text-red-600 dark:text-red-500"></i>
+                    <!-- Curriculum Syllabus Flow (Stepped Roadmap) -->
+                    <div class="space-y-2 mb-5">
+                      <div class="flex items-center justify-between mb-1.5">
+                        <span class="font-mono text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 flex items-center gap-1.5">
+                          <i class="fa-solid fa-list-check text-red-600 dark:text-red-500 text-xs"></i>
                           Curriculum Syllabus &amp; Learning Flow:
                         </span>
-                        <span class="font-mono text-[11px] text-slate-500 dark:text-slate-400">
-                          {{ $totalParts }} Step{{ if gt $totalParts 1 }}s{{ end }} · Sequential Path
+                        <span class="font-mono text-xs text-slate-500 dark:text-slate-400">
+                          {{ $totalParts }} Step{{ if gt $totalParts 1 }}s{{ end }}
                         </span>
                       </div>
 
-                      <div class="divide-y divide-slate-200/70 dark:divide-slate-800/80 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/60 overflow-hidden">
+                      <div class="divide-y divide-slate-200/70 dark:divide-slate-800/70 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-900/40 overflow-hidden">
                         {{ range $idx, $ep := $sorted }}
                           {{ $isLab := or (in (lower $ep.Title) "lab") (in (lower $ep.Title) "hands-on") }}
                           <a href="{{ $ep.RelPermalink }}" 
-                             class="group/ep block p-3.5 sm:p-4 hover:bg-white dark:hover:bg-slate-800/80 transition-all no-underline">
-                            <div class="flex items-start gap-3.5">
-                              {{/* Step badge */}}
-                              <span class="shrink-0 w-7 h-7 rounded-lg bg-slate-200 dark:bg-slate-800 group-hover/ep:bg-red-600 group-hover/ep:text-white text-slate-700 dark:text-slate-300 font-mono text-xs font-bold flex items-center justify-center transition-colors">
+                             class="group/ep block p-3 hover:bg-white dark:hover:bg-slate-800/80 transition-all no-underline">
+                            <div class="flex items-center gap-3">
+                              <span class="shrink-0 w-6 h-6 rounded-md bg-slate-200 dark:bg-slate-700 group-hover/ep:bg-red-600 group-hover/ep:text-white text-slate-700 dark:text-slate-300 font-mono text-xs font-bold flex items-center justify-center transition-colors">
                                 {{ printf "%02d" (add $idx 1) }}
                               </span>
 
-                              <div class="min-w-0 flex-1">
-                                <div class="flex flex-wrap items-center gap-2 mb-1">
-                                  <span class="font-mono text-[11px] font-bold text-red-600 dark:text-red-500 uppercase tracking-wider">
-                                    Part {{ add $idx 1 }}
-                                  </span>
-                                  {{ if $isLab }}
-                                    <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-mono font-bold bg-emerald-100 dark:bg-emerald-950/70 text-emerald-800 dark:text-emerald-300 border border-emerald-300/40">
-                                      <i class="fa-solid fa-flask text-[8px]"></i> Production Lab
-                                    </span>
-                                  {{ else }}
-                                    <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-mono font-bold bg-blue-100 dark:bg-blue-950/70 text-blue-800 dark:text-blue-300 border border-blue-300/40">
-                                      <i class="fa-solid fa-shapes text-[8px]"></i> Core Architecture
-                                    </span>
-                                  {{ end }}
-                                  <span class="font-mono text-[11px] text-slate-500 dark:text-slate-400 ml-auto flex items-center gap-1">
-                                    <i class="fa-regular fa-clock text-[10px]"></i> {{ $ep.ReadingTime }} min
+                              <div class="min-w-0 flex-1 flex items-center justify-between gap-2">
+                                <div class="truncate">
+                                  <span class="text-xs sm:text-sm font-semibold text-slate-900 dark:text-white group-hover/ep:text-red-600 dark:group-hover/ep:text-red-500 transition-colors">
+                                    {{ $ep.Title }}
                                   </span>
                                 </div>
-
-                                <h4 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white group-hover/ep:text-red-600 dark:group-hover/ep:text-red-500 transition-colors leading-snug mb-1">
-                                  {{ $ep.Title }}
-                                </h4>
-
-                                <p class="text-xs text-slate-600 dark:text-slate-400 line-clamp-1 mb-0 font-normal">
-                                  {{ $ep.Params.description | default $ep.Summary | plainify | truncate 130 }}
-                                </p>
+                                <div class="flex items-center gap-2 shrink-0">
+                                  {{ if $isLab }}
+                                    <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-emerald-100 dark:bg-emerald-950/70 text-emerald-800 dark:text-emerald-300">
+                                      Production Lab
+                                    </span>
+                                  {{ else }}
+                                    <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-blue-100 dark:bg-blue-950/70 text-blue-800 dark:text-blue-300">
+                                      Core Architecture
+                                    </span>
+                                  {{ end }}
+                                  <span class="font-mono text-xs text-slate-400">
+                                    {{ $ep.ReadingTime }}m
+                                  </span>
+                                </div>
                               </div>
 
-                              {{/* Action arrow indicator */}}
-                              <div class="shrink-0 self-center pl-1 text-slate-400 group-hover/ep:text-red-600 dark:group-hover/ep:text-red-500 group-hover/ep:translate-x-1 transition-all">
-                                <i class="fa-solid fa-arrow-right text-xs"></i>
-                              </div>
+                              <i class="fa-solid fa-arrow-right text-xs text-slate-400 group-hover/ep:text-red-600 dark:group-hover/ep:text-red-500 group-hover/ep:translate-x-1 transition-all shrink-0"></i>
                             </div>
                           </a>
                         {{ end }}
@@ -298,27 +222,13 @@
                     </div>
                   </div>
 
-                  {{/* Spotlight Action Footer */}}
-                  <div class="flex flex-wrap items-center gap-3 pt-4 border-t border-slate-200 dark:border-slate-800">
+                  <!-- Footer Action -->
+                  <div class="flex items-center gap-3 pt-4 border-t border-slate-200 dark:border-slate-800">
                     <a href="{{ $part1.RelPermalink }}" 
-                       class="px-5 py-2.5 rounded-lg bg-red-600 hover:bg-red-700 text-white font-mono text-xs font-bold uppercase tracking-wider transition-all inline-flex items-center gap-2 no-underline shadow-sm hover:shadow-md hover:-translate-y-0.5 cursor-pointer">
-                      <i class="fa-solid fa-play text-xs"></i>
-                      <span>Start Track (Part 1)</span>
+                       class="px-5 py-2.5 rounded-lg bg-red-600 hover:bg-red-700 text-white font-mono text-xs font-bold uppercase tracking-wider transition-all inline-flex items-center gap-2 no-underline shadow-xs cursor-pointer">
+                      <span>Start Track</span>
+                      <i class="fa-solid fa-arrow-right text-xs"></i>
                     </a>
-
-                    {{ if gt $totalParts 1 }}
-                      {{ $latestPart := index $sorted (sub $totalParts 1) }}
-                      <a href="{{ $latestPart.RelPermalink }}"
-                         class="px-4 py-2.5 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-mono text-xs font-bold uppercase tracking-wider transition-all inline-flex items-center gap-2 no-underline border border-slate-200 dark:border-slate-700 cursor-pointer">
-                        <i class="fa-solid fa-terminal text-xs text-red-600 dark:text-red-500"></i>
-                        <span>Jump to Latest Lab (Part {{ $totalParts }})</span>
-                      </a>
-                    {{ end }}
-
-                    <div class="ml-auto hidden sm:flex items-center gap-2 font-mono text-xs text-slate-500 dark:text-slate-400">
-                      <i class="fa-solid fa-shield-halved text-emerald-600 dark:text-emerald-400"></i>
-                      <span>Production-Tested Engineering Labs</span>
-                    </div>
                   </div>
                 </div>
 
@@ -329,46 +239,42 @@
       {{ end }}
 
       <!-- Section Title & Domain Filter Pills for All Tracks -->
-      <div class="mb-8 pb-4 border-b border-slate-200 dark:border-slate-800 flex flex-col md:flex-row md:items-end justify-between gap-4">
+      <div class="mb-8 pb-4 border-b border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <span class="font-mono text-xs font-bold uppercase tracking-widest text-red-600 dark:text-red-500 flex items-center gap-1.5 mb-1.5">
-            <i class="fa-solid fa-compass text-[11px]"></i>
-            CURRICULUM DIRECTORY
-          </span>
-          <h2 class="text-2xl sm:text-3xl font-black tracking-tight text-slate-900 dark:text-white">
-            All Learning Tracks &amp; Series
+          <h2 class="text-xl sm:text-2xl font-black tracking-tight text-slate-900 dark:text-white m-0">
+            All Learning Tracks
           </h2>
           <p class="font-mono text-xs text-slate-500 dark:text-slate-400 mt-1 mb-0">
-            Browse multi-part technical guides with step-by-step reproducible labs.
+            Select a domain to filter multi-part series
           </p>
         </div>
 
-        {{/* Domain Filter Pills */}}
+        <!-- Domain Filter Pills (Matching Site Standard) -->
         <div class="flex flex-wrap items-center gap-2" role="tablist" aria-label="Learning track domains">
           <button type="button" 
                   data-series-filter="all"
-                  class="series-filter-btn px-3 py-1.5 rounded-lg font-mono text-xs font-bold transition-all border border-transparent bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-xs cursor-pointer"
+                  class="series-filter-btn px-3.5 py-1.5 rounded-full font-mono text-xs font-bold transition-all border border-transparent bg-red-600 text-white shadow-2xs cursor-pointer"
                   aria-selected="true"
                   role="tab">
             All Tracks ({{ $allCount }})
           </button>
           <button type="button" 
                   data-series-filter="google-cloud"
-                  class="series-filter-btn px-3 py-1.5 rounded-lg font-mono text-xs font-bold transition-all border border-slate-200 dark:border-slate-700 bg-slate-100 text-slate-600 dark:bg-slate-800/80 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white cursor-pointer"
+                  class="series-filter-btn px-3.5 py-1.5 rounded-full font-mono text-xs font-medium transition-all border border-slate-200 dark:border-slate-700 bg-slate-100 text-slate-600 dark:bg-slate-800/80 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 cursor-pointer"
                   aria-selected="false"
                   role="tab">
             Google Cloud ({{ $gcpCount }})
           </button>
           <button type="button" 
                   data-series-filter="security"
-                  class="series-filter-btn px-3 py-1.5 rounded-lg font-mono text-xs font-bold transition-all border border-slate-200 dark:border-slate-700 bg-slate-100 text-slate-600 dark:bg-slate-800/80 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white cursor-pointer"
+                  class="series-filter-btn px-3.5 py-1.5 rounded-full font-mono text-xs font-medium transition-all border border-slate-200 dark:border-slate-700 bg-slate-100 text-slate-600 dark:bg-slate-800/80 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 cursor-pointer"
                   aria-selected="false"
                   role="tab">
             Security &amp; PKI ({{ $secCount }})
           </button>
           <button type="button" 
                   data-series-filter="devops"
-                  class="series-filter-btn px-3 py-1.5 rounded-lg font-mono text-xs font-bold transition-all border border-slate-200 dark:border-slate-700 bg-slate-100 text-slate-600 dark:bg-slate-800/80 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white cursor-pointer"
+                  class="series-filter-btn px-3.5 py-1.5 rounded-full font-mono text-xs font-medium transition-all border border-slate-200 dark:border-slate-700 bg-slate-100 text-slate-600 dark:bg-slate-800/80 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 cursor-pointer"
                   aria-selected="false"
                   role="tab">
             Containers &amp; DevOps ({{ $devopsCount }})
@@ -376,7 +282,7 @@
         </div>
       </div>
 
-      <!-- Series Grid (Series Curriculum Card Architecture) -->
+      <!-- Series Grid (Clean Modern Cards with Depth & Hover States) -->
       <div id="series-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
         {{ range $groupedSeries }}
           {{ $sorted := sort .Pages ".Params.series_order" "asc" }}
@@ -397,7 +303,6 @@
             {{ $coverImage = $part1.Params.image }}
           {{ end }}
 
-          {{/* Determine card domain tags for filtering */}}
           {{ $cardIsGcp := false }}
           {{ $cardIsSec := false }}
           {{ $cardIsDev := false }}
@@ -430,92 +335,81 @@
 
           <div data-series-card 
                data-domains="{{ delimit $cardDomains " " }}"
-               class="series-card flex flex-col h-full rounded-2xl bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm hover:shadow-xl hover:border-slate-300 dark:hover:border-slate-700 hover:-translate-y-1 transition-all duration-300 group">
+               class="series-card flex flex-col h-full rounded-2xl bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-slate-800 overflow-hidden shadow-xs hover:shadow-lg hover:border-slate-300 dark:hover:border-slate-700 transition-all duration-300 group">
             
-            {{/* Series Poster Card Media */}}
-            <a href="{{ $part1.RelPermalink }}" class="relative block aspect-[16/10] overflow-hidden bg-slate-100 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 no-underline">
+            <!-- Series Card Thumbnail Header -->
+            <a href="{{ $part1.RelPermalink }}" class="relative block aspect-[16/10] overflow-hidden bg-slate-900 border-b border-slate-200 dark:border-slate-800 no-underline">
               {{ if $coverImage }}
                 <img src="{{ $coverImage | relURL }}" 
                      alt="{{ .Key }}" 
                      class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
                      loading="lazy">
               {{ else }}
-                <div class="w-full h-full flex items-center justify-center bg-slate-100 dark:bg-slate-900 text-slate-800 dark:text-slate-200 font-bold text-sm p-4 text-center">
+                <div class="w-full h-full flex items-center justify-center bg-slate-900 text-slate-200 font-bold text-sm p-4 text-center">
                   {{ .Key }}
                 </div>
               {{ end }}
               
-              {{/* Over-Image Badges */}}
-              <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex items-end p-3.5">
+              <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end p-3.5">
                 <div class="flex items-center justify-between w-full">
-                  <div class="flex items-center gap-1.5 flex-wrap">
-                    <span class="px-2 py-0.5 rounded font-mono text-[10px] font-bold uppercase tracking-wider bg-slate-900/90 text-white border border-white/20">
-                      {{ $totalParts }} Parts
-                    </span>
-                    <span class="px-2 py-0.5 rounded bg-black/80 text-amber-300 font-mono text-[10px] font-bold border border-white/20 flex items-center gap-1">
-                      <i class="fa-regular fa-clock text-[9px]"></i> {{ $totalMin }} min
-                    </span>
-                  </div>
-
-                  {{ if eq .Key $featuredSeriesKey }}
-                    <span class="px-2 py-0.5 rounded bg-red-600 text-white font-mono text-[10px] font-bold flex items-center gap-1 shadow-xs">
-                      <i class="fa-solid fa-fire text-[9px] text-amber-300"></i> Spotlight
-                    </span>
-                  {{ end }}
+                  <span class="px-2 py-0.5 rounded font-mono text-[10px] font-bold uppercase tracking-wider bg-slate-900/90 text-white border border-white/20">
+                    {{ $totalParts }} Parts
+                  </span>
+                  <span class="px-2 py-0.5 rounded bg-black/80 text-amber-300 font-mono text-[10px] font-bold border border-white/20 flex items-center gap-1">
+                    <i class="fa-regular fa-clock text-[9px]"></i> {{ $totalMin }}m
+                  </span>
                 </div>
               </div>
             </a>
 
-            {{/* Series Card Body */}}
-            <div class="p-5 sm:p-6 flex flex-col flex-grow justify-between">
+            <!-- Series Card Body -->
+            <div class="p-5 flex flex-col flex-grow justify-between">
               <div>
-                {{/* Category Tag */}}
-                <div class="mb-2.5">
-                  <span class="inline-block px-2 py-0.5 rounded font-mono text-[10px] font-bold uppercase tracking-wider bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700">
+                <div class="flex items-center justify-between gap-2 mb-2">
+                  <span class="inline-block px-2.5 py-0.5 rounded-full font-mono text-xs font-bold uppercase tracking-wider bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
                     {{ $primaryCardCat }}
                   </span>
                 </div>
 
-                {{/* Title */}}
-                <h3 class="text-lg font-black tracking-tight text-slate-900 dark:text-white mb-2 group-hover:text-red-600 dark:group-hover:text-red-500 transition-colors line-clamp-2 leading-snug">
+                <h3 class="text-base sm:text-lg font-bold tracking-tight text-slate-900 dark:text-white mb-2 group-hover:text-red-600 dark:group-hover:text-red-500 transition-colors line-clamp-2 leading-snug">
                   <a href="{{ $part1.RelPermalink }}" class="no-underline text-inherit">
                     {{ .Key }}
                   </a>
                 </h3>
 
-                {{/* Description */}}
-                <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 line-clamp-2 mb-4 leading-relaxed font-normal">
-                  {{ with $part1.Params.series_description }}
-                    {{ . }}
-                  {{ else }}
-                    {{ $part1.Params.description | default $part1.Summary | plainify | truncate 120 }}
-                  {{ end }}
-                </p>
+                <!-- Highlighted Subdeck -->
+                <div class="pl-2.5 border-l-2 border-red-500/70 dark:border-red-500/80 bg-slate-50/60 dark:bg-slate-900/40 py-1 px-2.5 rounded-r-lg mb-3">
+                  <p class="text-xs text-slate-700 dark:text-slate-300 line-clamp-2 mb-0 leading-relaxed font-medium">
+                    {{ with $part1.Params.series_description }}
+                      {{ . }}
+                    {{ else }}
+                      {{ $part1.Params.description | default $part1.Summary | plainify | truncate 120 }}
+                    {{ end }}
+                  </p>
+                </div>
 
-                {{/* Interactive Playlist Accordion */}}
-                <details class="series-card-drawer group/drawer mb-4 border border-slate-200 dark:border-slate-800 rounded-xl p-3 bg-slate-50 dark:bg-slate-900/50 transition-colors">
-                  <summary class="flex items-center justify-between font-mono text-[11px] font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 cursor-pointer select-none">
+                <!-- Syllabus Accordion -->
+                <details class="series-card-drawer group/drawer mb-4 border border-slate-200 dark:border-slate-800 rounded-xl p-2.5 bg-slate-50/50 dark:bg-slate-900/40 transition-colors">
+                  <summary class="flex items-center justify-between font-mono text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 cursor-pointer select-none">
                     <span class="flex items-center gap-1.5">
-                      <i class="fa-solid fa-list-ol text-red-600 dark:text-red-500 text-[11px]"></i>
+                      <i class="fa-solid fa-list-ol text-red-600 dark:text-red-500 text-xs"></i>
                       <span>Syllabus &amp; Lessons ({{ $totalParts }})</span>
                     </span>
-                    <span class="transition-transform duration-300 group-open/drawer:rotate-180 text-slate-400">
-                      <i class="fa-solid fa-chevron-down text-[10px]"></i>
-                    </span>
+                    <i class="fa-solid fa-chevron-down text-xs text-slate-400 transition-transform duration-300 group-open/drawer:rotate-180"></i>
                   </summary>
 
-                  <div class="mt-3 pt-2.5 border-t border-slate-200 dark:border-slate-800 space-y-1.5">
+                  <div class="mt-2.5 pt-2 border-t border-slate-200 dark:border-slate-800 space-y-1">
                     {{ range $idx, $p := $sorted }}
-                      <a href="{{ $p.RelPermalink }}" class="flex items-center justify-between p-2 rounded-lg hover:bg-white dark:hover:bg-slate-800 text-slate-800 dark:text-slate-200 no-underline transition-all group/item border border-transparent hover:border-slate-200 dark:hover:border-slate-700">
-                        <div class="flex items-center gap-2.5 min-w-0 pr-2">
-                          <span class="w-5 h-5 rounded-md flex items-center justify-center font-mono text-[10px] font-bold shrink-0 bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 group-hover/item:bg-red-600 group-hover/item:text-white transition-colors">
+                      <a href="{{ $p.RelPermalink }}" class="flex items-center justify-between p-1.5 rounded-lg hover:bg-white dark:hover:bg-slate-800 text-slate-800 dark:text-slate-200 no-underline transition-all group/item">
+                        <div class="flex items-center gap-2 min-w-0 pr-2">
+                          <span class="w-4 h-4 rounded flex items-center justify-center font-mono text-[10px] font-bold shrink-0 bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 group-hover/item:bg-red-600 group-hover/item:text-white transition-colors">
                             {{ printf "%02d" (add $idx 1) }}
                           </span>
-                          <span class="truncate text-xs font-semibold group-hover/item:text-red-600 dark:group-hover/item:text-red-500 transition-colors">
+                          <span class="truncate text-xs font-medium group-hover/item:text-red-600 dark:group-hover/item:text-red-500 transition-colors">
                             {{ $p.Title }}
                           </span>
                         </div>
-                        <span class="font-mono text-[10px] text-slate-400 shrink-0">
+                        <span class="font-mono text-xs text-slate-400 shrink-0">
                           {{ $p.ReadingTime }}m
                         </span>
                       </a>
@@ -524,13 +418,13 @@
                 </details>
               </div>
 
-              {{/* Footer CTA Button */}}
-              <div class="pt-3.5 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between gap-3">
-                <a href="{{ $part1.RelPermalink }}" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white font-mono text-xs font-bold transition-all no-underline shadow-xs hover:shadow-sm cursor-pointer">
+              <!-- Footer CTA -->
+              <div class="pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between gap-3 mt-auto">
+                <a href="{{ $part1.RelPermalink }}" class="inline-flex items-center gap-1.5 text-xs font-mono font-bold text-red-600 dark:text-red-400 hover:underline no-underline group-hover:translate-x-0.5 transition-transform">
                   <span>Start Track</span>
-                  <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                  <i class="fa-solid fa-arrow-right text-xs"></i>
                 </a>
-                <span class="font-mono text-xs text-slate-500 dark:text-slate-400">
+                <span class="font-mono text-xs text-slate-400">
                   {{ $totalParts }} Parts · ~{{ $totalMin }}m
                 </span>
               </div>
@@ -539,10 +433,10 @@
         {{ end }}
       </div>
 
-      {{/* Filter Empty State */}}
+      <!-- Empty State -->
       <div id="series-empty-state" class="hidden text-center py-16 px-4 rounded-2xl border border-dashed border-slate-300 dark:border-slate-800 mt-6">
-        <i class="fa-solid fa-filter-circle-xmark text-4xl text-slate-400 dark:text-slate-600 mb-3"></i>
-        <h3 class="text-base font-bold text-slate-800 dark:text-slate-200 mb-1">No series found in this domain</h3>
+        <i class="fa-solid fa-filter-circle-xmark text-3xl text-slate-400 mb-2"></i>
+        <h3 class="text-sm font-bold text-slate-800 dark:text-slate-200 mb-1">No series found in this domain</h3>
         <p class="text-xs text-slate-500 dark:text-slate-400 max-w-sm mx-auto">Try selecting another domain or view "All Tracks" to explore the full curriculum.</p>
       </div>
 
@@ -562,14 +456,14 @@
 
           // Reset all filter buttons
           filterButtons.forEach(function (b) {
-            b.classList.remove('bg-slate-900', 'text-white', 'dark:bg-white', 'dark:text-slate-900', 'border-transparent', 'shadow-xs');
+            b.classList.remove('bg-red-600', 'text-white', 'border-transparent', 'shadow-2xs');
             b.classList.add('bg-slate-100', 'text-slate-600', 'dark:bg-slate-800/80', 'dark:text-slate-300', 'border-slate-200', 'dark:border-slate-700');
             b.setAttribute('aria-selected', 'false');
           });
 
           // Activate clicked button
           this.classList.remove('bg-slate-100', 'text-slate-600', 'dark:bg-slate-800/80', 'dark:text-slate-300', 'border-slate-200', 'dark:border-slate-700');
-          this.classList.add('bg-slate-900', 'text-white', 'dark:bg-white', 'dark:text-slate-900', 'border-transparent', 'shadow-xs');
+          this.classList.add('bg-red-600', 'text-white', 'border-transparent', 'shadow-2xs');
           this.setAttribute('aria-selected', 'true');
 
           // Filter card visibility
