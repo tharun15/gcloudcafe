@@ -10,11 +10,11 @@
 {{ end }}
 {{ $categories := $page.Params.categories }}
 {{ $tags := $page.Params.tags }}
-{{ $teaser := $page.Params.description | default $page.Summary | plainify | truncate 150 }}
+{{ $teaser := $page.Params.description | default $page.Summary | plainify | truncate 180 }}
 {{ $firstCat := index ($categories | default (slice "Cloud")) 0 }}
 {{ $firstCatLower := $firstCat | lower }}
 
-{{/* Pastel category badges */}}
+{{/* Category badges */}}
 {{ $badgeBg := "bg-blue-100 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300" }}
 {{ if or (strings.Contains $firstCatLower "devops") (strings.Contains $firstCatLower "kubernetes") (strings.Contains $firstCatLower "openshift") }}
   {{ $badgeBg = "bg-emerald-100 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300" }}
@@ -26,94 +26,97 @@
 
 <article class="relative flex flex-col justify-between h-full rounded-2xl overflow-hidden
                 bg-white dark:bg-[#0c1220] border border-slate-200/90 dark:border-slate-800/90
-                hover:shadow-xl hover:border-red-500/50 dark:hover:border-red-500/50 transition-all duration-300 p-5 sm:p-6 group">
+                hover:shadow-lg hover:border-slate-300 dark:hover:border-slate-700 transition-all duration-300 p-4 sm:p-6 group">
   
   <div>
-    <!-- Top Row: Category Badge + Read Time + Bookmark on left; Compact Squircle on right -->
-    <div class="flex items-start justify-between gap-3 mb-3.5">
-      <div class="flex flex-col gap-1.5 min-w-0">
-        <div class="flex items-center gap-2 flex-wrap">
-          <a href="{{ `categories/` | relLangURL }}{{ $firstCat | urlize | lower }}/"
-             class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-mono font-bold uppercase tracking-wider {{ $badgeBg }} no-underline hover:opacity-90 transition-opacity truncate">
-            {{ $firstCat | humanize }}
-          </a>
-          <span class="text-[11px] font-mono text-slate-500 dark:text-slate-400 whitespace-nowrap">
-            {{ $page.ReadingTime }} min read
-          </span>
+    <!-- Top Row: Author Avatar + Name + Date (Left) + Category Badge (Right) - Medium Style -->
+    <div class="flex items-center justify-between gap-3 mb-3 sm:mb-4">
+      <div class="flex items-center gap-2.5 min-w-0">
+        {{ if $authorImage }}
+          <img src="{{ $authorImage | relURL }}" alt="{{ $authorName }}" class="w-6 h-6 rounded-full object-cover shrink-0" width="24" height="24" decoding="async" loading="lazy" onerror="this.onerror=null; this.src='{{ `/images/avatar.png` | relURL }}';">
+        {{ else }}
+          <div class="w-6 h-6 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-white font-bold text-xs flex items-center justify-center shrink-0">
+            {{ substr $authorName 0 1 }}
+          </div>
+        {{ end }}
+        <div class="flex items-center gap-1.5 text-xs font-medium text-slate-800 dark:text-slate-200 truncate">
+          <span class="font-semibold">{{ $authorName }}</span>
+          <span class="text-slate-400 dark:text-slate-600">·</span>
+          <span class="font-mono text-slate-500 dark:text-slate-400">{{ $page.Date.Format "Jan 02, 2006" }}</span>
         </div>
       </div>
 
-      <!-- Compact 56x56 Squircle Blueprint Thumbnail + Bookmark -->
-      <div class="flex items-center gap-2 shrink-0">
-        <button
-          type="button"
-          data-bookmark-btn
-          data-article-url="{{ $page.RelPermalink }}"
-          data-article-title="{{ $page.Title }}"
-          data-article-category="{{ $firstCat }}"
-          data-article-readtime="{{ $page.ReadingTime }} {{ i18n `min_read` }}"
-          class="w-7 h-7 rounded-lg flex items-center justify-center text-slate-400 hover:text-red-500 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
-          aria-label="Save {{ $page.Title }} for later"
-          title="{{ i18n `save_for_later` }}">
-          <i class="fa-regular fa-bookmark text-xs"></i>
-        </button>
-
-        <a class="block w-14 h-14 rounded-xl overflow-hidden bg-slate-900 border border-slate-200 dark:border-slate-800 shrink-0 group-hover:scale-105 transition-transform duration-300 relative shadow-xs no-underline"
-           href="{{ $page.RelPermalink }}"
-           aria-label="Read: {{ $page.Title }}">
-          {{ with $page.Params.image }}
-            {{ partial "image" (dict "Src" . "Context" $page "Alt" $page.Title "Class" "w-full h-full object-cover" "Loading" "lazy") }}
-          {{ else }}
-            <div class="flex items-center justify-center h-full bg-slate-900 p-2 text-center font-mono text-xs text-slate-400">
-              {{ substr $firstCat 0 4 }}
-            </div>
-          {{ end }}
-        </a>
-      </div>
+      <a href="{{ `categories/` | relLangURL }}{{ $firstCat | urlize | lower }}/"
+         class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-mono font-bold uppercase tracking-wider {{ $badgeBg }} no-underline hover:opacity-90 transition-opacity shrink-0">
+        {{ $firstCat | humanize }}
+      </a>
     </div>
 
-    <!-- Big Bold Headline -->
-    <h3 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white group-hover:text-red-600 dark:group-hover:text-red-500 transition-colors line-clamp-2 leading-snug mb-2.5">
-      <a href="{{ $page.RelPermalink }}" class="no-underline text-current hover:text-red-600 dark:hover:text-red-500">
-        {{ $page.Title }}
+    <!-- Main Content Area: Headline + Excerpt on Left, Balanced Thumbnail on Right (Medium Style) -->
+    <div class="flex items-start justify-between gap-4 sm:gap-6 mb-3 sm:mb-4">
+      <div class="flex-1 min-w-0">
+        <!-- Big Bold Readable Headline -->
+        <h3 class="text-base sm:text-xl lg:text-[22px] font-bold text-slate-900 dark:text-white group-hover:text-red-600 dark:group-hover:text-red-500 transition-colors line-clamp-2 leading-snug mb-2">
+          <a href="{{ $page.RelPermalink }}" class="no-underline text-current hover:text-red-600 dark:hover:text-red-500">
+            {{ $page.Title }}
+          </a>
+        </h3>
+
+        <!-- Clear, Highly Legible Technical Teaser -->
+        <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 line-clamp-2 sm:line-clamp-3 leading-relaxed mb-3 font-normal">
+          {{ $teaser }}
+        </p>
+
+        <!-- Hashtags Strip -->
+        <div class="flex flex-wrap gap-1.5">
+          {{ range first 3 ($tags | default (slice)) }}
+            <span class="border border-slate-200 dark:border-slate-800 px-2 py-0.5 rounded text-xs font-mono text-slate-600 dark:text-slate-400 bg-slate-50 dark:bg-slate-900/40">
+              #{{ . }}
+            </span>
+          {{ end }}
+        </div>
+      </div>
+
+      <!-- Preview Thumbnail (w-14 h-14 rounded-xl overflow-hidden on Mobile to Never Dominate; sm:w-28 sm:h-20 on Desktop) -->
+      <a class="block w-14 h-14 rounded-xl overflow-hidden sm:w-28 sm:h-20 md:w-36 md:h-24 bg-slate-900 border border-slate-200 dark:border-slate-800 shrink-0 group-hover:scale-105 transition-transform duration-300 relative shadow-xs no-underline"
+         href="{{ $page.RelPermalink }}"
+         aria-label="Read: {{ $page.Title }}">
+        {{ with $page.Params.image }}
+          {{ partial "image" (dict "Src" . "Context" $page "Alt" $page.Title "Class" "w-full h-full object-cover" "Loading" "lazy") }}
+        {{ else }}
+          <div class="flex items-center justify-center h-full bg-slate-900 p-2 text-center font-mono text-xs text-slate-400">
+            {{ substr $firstCat 0 4 }}
+          </div>
+        {{ end }}
       </a>
-    </h3>
-
-    <!-- Generous 3-Line Technical Teaser -->
-    <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 line-clamp-3 leading-relaxed mb-4 font-normal">
-      {{ $teaser }}
-    </p>
-
-    <!-- Hashtags Strip -->
-    <div class="flex flex-wrap gap-1.5 mb-4">
-      {{ range first 3 ($tags | default (slice)) }}
-        <span class="border border-slate-200 dark:border-slate-800 px-2.5 py-0.5 rounded text-xs font-mono text-slate-600 dark:text-slate-400 bg-slate-50 dark:bg-slate-900/40">
-          #{{ . }}
-        </span>
-      {{ end }}
     </div>
   </div>
 
-  <!-- Card Footer: Author + Date + Read Action -->
-  <div class="pt-3.5 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between mt-auto">
-    <div class="flex items-center gap-2">
-      {{ if $authorImage }}
-        <img src="{{ $authorImage | relURL }}" alt="{{ $authorName }}" class="w-6 h-6 rounded-full object-cover" width="24" height="24" decoding="async" loading="lazy" onerror="this.onerror=null; this.src='{{ `/images/avatar.png` | relURL }}';">
-      {{ else }}
-        <div class="w-6 h-6 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-white font-bold text-xs flex items-center justify-center">
-          {{ substr $authorName 0 1 }}
-        </div>
-      {{ end }}
-      <span class="text-xs font-medium text-slate-900 dark:text-slate-200">{{ $authorName }}</span>
+  <!-- Card Footer: Reading Time + Bookmark + Read Action -->
+  <div class="pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between gap-3 text-xs text-slate-500 dark:text-slate-400 mt-auto">
+    <div class="flex items-center gap-2 sm:gap-3 flex-wrap min-w-0">
+      <span class="font-mono text-xs flex items-center gap-1">
+        <i class="fa-regular fa-clock text-xs"></i> {{ $page.ReadingTime }} min read
+      </span>
     </div>
 
-    <div class="flex items-center gap-3">
-      <span class="text-xs font-mono text-slate-500 dark:text-slate-400">
-        {{ $page.Date.Format "Jan 02, 2006" }}
-      </span>
+    <div class="flex items-center gap-3 shrink-0">
+      <button
+        type="button"
+        data-bookmark-btn
+        data-article-url="{{ $page.RelPermalink }}"
+        data-article-title="{{ $page.Title }}"
+        data-article-category="{{ $firstCat }}"
+        data-article-readtime="{{ $page.ReadingTime }} {{ i18n `min_read` }}"
+        class="w-7 h-7 rounded-lg flex items-center justify-center text-slate-400 hover:text-red-500 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+        aria-label="Save {{ $page.Title }} for later"
+        title="{{ i18n `save_for_later` }}">
+        <i class="fa-regular fa-bookmark text-xs"></i>
+      </button>
+
       <a href="{{ $page.RelPermalink }}" class="text-red-600 dark:text-red-400 text-xs font-bold no-underline flex items-center gap-1 group-hover:translate-x-1 transition-transform">
         <span>Read</span>
-        <i class="fa-solid fa-arrow-right text-[9px]"></i>
+        <i class="fa-solid fa-arrow-right text-xs"></i>
       </a>
     </div>
   </div>
