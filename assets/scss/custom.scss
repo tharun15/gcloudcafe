@@ -557,11 +557,16 @@ kbd {
 }
 
 .ticker-rotator-item {
-  transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  transition: opacity 0.7s cubic-bezier(0.25, 1, 0.5, 1), transform 0.7s cubic-bezier(0.25, 1, 0.5, 1);
+  will-change: opacity, transform;
 }
 
 .ticker-item {
-  @apply inline-flex items-center gap-2 max-w-full truncate no-underline;
+  @apply inline-flex items-center gap-2.5 w-full min-w-0 no-underline;
 }
 
 .ticker-tag {
