@@ -2422,8 +2422,19 @@
     fetchPulses();
   }
 
-  /* ── 9b. Live Pulse Micro-Blog Marquee Ticker ── */
+  /* ── 9b. Live Pulse Micro-Blog Headline Rotator ── */
   function initPulseTicker() {
+    var container = document.getElementById("pulse-rotator-bar");
+    if (!container) return;
+
+    // Check if reader previously dismissed the ticker
+    try {
+      if (localStorage.getItem("gcloudcafe_pulse_ticker_dismissed") === "true") {
+        container.style.display = "none";
+        return;
+      }
+    } catch(e) {}
+
     var marquee = document.querySelector("[data-pulse-ticker-marquee]");
     if (!marquee) return;
 
@@ -2442,6 +2453,103 @@
       return { label: raw, cls: "ticker-tag-default" };
     }
 
+    var currentIndex = 0;
+    var totalSlides = 0;
+    var isPaused = false;
+    var rotateInterval = null;
+    var ROTATE_DELAY = 7000;
+
+    function getSlides() {
+      return marquee.querySelectorAll("[data-ticker-slide]");
+    }
+
+    function showSlide(index) {
+      var slides = getSlides();
+      totalSlides = slides.length;
+      if (totalSlides === 0) return;
+
+      currentIndex = (index + totalSlides) % totalSlides;
+      slides.forEach(function(slide, idx) {
+        if (idx === currentIndex) {
+          slide.classList.remove("opacity-0", "translate-y-2", "pointer-events-none");
+          slide.classList.add("opacity-100", "translate-y-0", "pointer-events-auto");
+          slide.setAttribute("aria-hidden", "false");
+        } else {
+          slide.classList.remove("opacity-100", "translate-y-0", "pointer-events-auto");
+          slide.classList.add("opacity-0", "translate-y-2", "pointer-events-none");
+          slide.setAttribute("aria-hidden", "true");
+        }
+      });
+    }
+
+    function nextSlide() {
+      showSlide(currentIndex + 1);
+    }
+
+    function prevSlide() {
+      showSlide(currentIndex - 1);
+    }
+
+    function startAutoRotate() {
+      if (rotateInterval) clearInterval(rotateInterval);
+      rotateInterval = setInterval(function() {
+        if (!isPaused) {
+          nextSlide();
+        }
+      }, ROTATE_DELAY);
+    }
+
+    function togglePause() {
+      isPaused = !isPaused;
+      var icon = document.getElementById("ticker-pause-icon");
+      var pauseBtn = document.getElementById("ticker-btn-pause");
+      if (icon) {
+        if (isPaused) {
+          icon.className = "fa-solid fa-play text-[10px]";
+          if (pauseBtn) pauseBtn.setAttribute("aria-label", "Play pulse rotation");
+        } else {
+          icon.className = "fa-solid fa-pause text-[10px]";
+          if (pauseBtn) pauseBtn.setAttribute("aria-label", "Pause pulse rotation");
+        }
+      }
+    }
+
+    // Interactive button controls
+    var prevBtn = document.getElementById("ticker-btn-prev");
+    var nextBtn = document.getElementById("ticker-btn-next");
+    var pauseBtn = document.getElementById("ticker-btn-pause");
+    var dismissBtn = document.getElementById("ticker-btn-dismiss");
+
+    if (prevBtn) prevBtn.addEventListener("click", function() { prevSlide(); });
+    if (nextBtn) nextBtn.addEventListener("click", function() { nextSlide(); });
+    if (pauseBtn) pauseBtn.addEventListener("click", function() { togglePause(); });
+    if (dismissBtn) {
+      dismissBtn.addEventListener("click", function() {
+        container.style.opacity = "0";
+        container.style.maxHeight = "0";
+        container.style.height = "0";
+        container.style.overflow = "hidden";
+        setTimeout(function() { container.style.display = "none"; }, 300);
+        try {
+          localStorage.setItem("gcloudcafe_pulse_ticker_dismissed", "true");
+        } catch(e) {}
+        if (rotateInterval) clearInterval(rotateInterval);
+      });
+    }
+
+    // Auto-pause on hover for peaceful reading
+    container.addEventListener("mouseenter", function() { isPaused = true; });
+    container.addEventListener("mouseleave", function() {
+      var icon = document.getElementById("ticker-pause-icon");
+      if (!icon || icon.classList.contains("fa-pause")) {
+        isPaused = false;
+      }
+    });
+
+    // Start auto-rotation for pre-rendered slides
+    startAutoRotate();
+
+    // Supabase Live Sync (1-to-1 parity with newsroom feed)
     var queryUrl = config.url + "/rest/v1/cloud_pulses?status=eq.approved&order=created_at.desc&limit=30";
     fetch(queryUrl, {
       headers: {
@@ -2453,29 +2561,32 @@
     .then(function(data) {
       if (!Array.isArray(data) || data.length === 0) return;
 
-      // Maintain strict 1-to-1 parity with Pulse newsroom feed by using identical ranking
       var sorted = sortCohortByScore(data).slice(0, 10);
       var itemsHtml = "";
-      sorted.forEach(function(item) {
+      sorted.forEach(function(item, idx) {
         var tagMeta = getTagMeta(item.tags);
         var safeTitle = escapeHtml(item.title || "Cloud Pulse Update");
         var pulsePostLink = "/pulse/#pulse-" + encodeURIComponent(item.id || "");
-        itemsHtml += '<a href="' + pulsePostLink + '" class="ticker-item group/item inline-flex items-center gap-2 px-3.5 py-1 whitespace-nowrap transition-colors hover:bg-slate-800/60 no-underline">'
-          + '<span class="ticker-tag ' + tagMeta.cls + '">$' + escapeHtml(tagMeta.label) + '</span>'
-          + '<span class="ticker-title font-sans font-medium text-[12px] text-slate-200 group-hover/item:text-cyan-300 transition-colors">' + safeTitle + '</span>'
-          + '<span class="ticker-divider text-slate-700 select-none ml-2">/</span>'
-          + '</a>';
+        var isFirst = idx === 0;
+        itemsHtml += '<div class="ticker-rotator-item absolute inset-0 flex items-center gap-2.5 transition-all duration-500 '
+          + (isFirst ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 translate-y-2 pointer-events-none')
+          + '" data-ticker-slide="' + idx + '" aria-hidden="' + (isFirst ? 'false' : 'true') + '">'
+          + '<a href="' + pulsePostLink + '" class="ticker-item group/item inline-flex items-center gap-2 max-w-full truncate no-underline">'
+          + '<span class="ticker-tag ' + tagMeta.cls + '">' + escapeHtml(tagMeta.label) + '</span>'
+          + '<span class="ticker-title font-sans font-medium text-[12px] sm:text-xs text-slate-700 dark:text-slate-200 group-hover/item:text-red-600 dark:group-hover/item:text-cyan-300 transition-colors truncate">' + safeTitle + '</span>'
+          + '</a>'
+          + '</div>';
       });
 
-      // Seamless duplicate loop for 60fps marquee
-      marquee.innerHTML = itemsHtml + itemsHtml;
+      marquee.innerHTML = itemsHtml;
+      showSlide(0);
     })
     .catch(function(err) {
-      // Fallback is already rendered in static HTML
+      // Pre-rendered static slides remain in place
     });
   }
 
-  /* ── Newsroom Candidate Approval Dashboard & Gemini AI Studio ── */
+    /* ── Newsroom Candidate Approval Dashboard & Gemini AI Studio ── */
   function initPulseAdminApprovalSystem() {
     var passcodeBtn = document.getElementById("admin-login-btn");
     var passcodeInput = document.getElementById("admin-passcode-input");
