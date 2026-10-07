@@ -35,19 +35,19 @@
         {{ if $authorImage }}
           <img src="{{ $authorImage | relURL }}" alt="{{ $authorName }}" class="w-6 h-6 rounded-full object-cover shrink-0" width="24" height="24" decoding="async" loading="lazy" onerror="this.onerror=null; this.src='{{ `/images/avatar.png` | relURL }}';">
         {{ else }}
-          <div class="w-6 h-6 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-white font-bold text-xs flex items-center justify-center shrink-0">
+          <div class="w-7 h-7 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-white font-bold text-xs flex items-center justify-center shrink-0">
             {{ substr $authorName 0 1 }}
           </div>
         {{ end }}
-        <div class="flex items-center gap-1.5 text-xs font-medium text-slate-800 dark:text-slate-200 truncate">
-          <span class="font-semibold">{{ $authorName }}</span>
+        <div class="flex items-center gap-1.5 text-xs sm:text-sm font-medium text-slate-800 dark:text-slate-200 truncate">
+          <span class="font-semibold text-[13.5px] sm:text-sm text-slate-900 dark:text-white">{{ $authorName }}</span>
           <span class="text-slate-400 dark:text-slate-600">·</span>
-          <span class="font-mono text-slate-500 dark:text-slate-400">{{ $page.Date.Format "Jan 02, 2006" }}</span>
+          <span class="font-mono text-xs sm:text-[13px] text-slate-500 dark:text-slate-400">{{ $page.Date.Format "Jan 02, 2006" }}</span>
         </div>
       </div>
 
       <a href="{{ `categories/` | relLangURL }}{{ $firstCat | urlize | lower }}/"
-         class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-mono font-bold uppercase tracking-wider {{ $badgeBg }} no-underline hover:opacity-90 transition-opacity shrink-0">
+         class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] sm:text-xs font-mono font-bold uppercase tracking-wider {{ $badgeBg }} no-underline hover:opacity-90 transition-opacity shrink-0">
         {{ $firstCat | humanize }}
       </a>
     </div>
@@ -63,8 +63,8 @@
         </h3>
 
         <!-- Appropriately Highlighted Second Text (Architectural Subdeck) -->
-        <div class="pl-3 border-l-2 border-red-500/70 dark:border-red-500/80 bg-slate-50/80 dark:bg-slate-900/60 py-1.5 px-3 rounded-r-lg mb-3">
-          <p class="text-xs sm:text-sm text-slate-700 dark:text-slate-200 leading-relaxed font-medium line-clamp-2 sm:line-clamp-3 mb-0">
+        <div class="pl-3.5 border-l-2 border-red-500/70 dark:border-red-500/80 bg-slate-50/80 dark:bg-slate-900/60 py-2 px-3.5 rounded-r-lg mb-3">
+          <p class="text-[14px] sm:text-[15px] text-slate-700 dark:text-slate-200 leading-relaxed font-medium line-clamp-2 sm:line-clamp-3 mb-0">
             {{ $teaser }}
           </p>
         </div>
@@ -72,7 +72,7 @@
         <!-- Hashtags Strip -->
         <div class="flex flex-wrap gap-1.5">
           {{ range first 3 ($tags | default (slice)) }}
-            <span class="border border-slate-200 dark:border-slate-800 px-2 py-0.5 rounded text-xs font-mono text-slate-600 dark:text-slate-400 bg-slate-50 dark:bg-slate-900/40">
+            <span class="border border-slate-200 dark:border-slate-800 px-2.5 py-0.5 rounded text-[11.5px] sm:text-xs font-mono text-slate-600 dark:text-slate-400 bg-slate-50 dark:bg-slate-900/40">
               #{{ . }}
             </span>
           {{ end }}
@@ -95,9 +95,9 @@
   </div>
 
   <!-- Card Footer: Reading Time + Bookmark + Read Action -->
-  <div class="pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between gap-3 text-xs text-slate-500 dark:text-slate-400 mt-auto">
+  <div class="pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between gap-3 text-xs sm:text-[13px] text-slate-500 dark:text-slate-400 mt-auto">
     <div class="flex items-center gap-2 sm:gap-3 flex-wrap min-w-0">
-      <span class="font-mono text-xs flex items-center gap-1">
+      <span class="font-mono text-xs sm:text-[12.5px] flex items-center gap-1">
         <i class="fa-regular fa-clock text-xs"></i> {{ $page.ReadingTime }} min read
       </span>
     </div>
@@ -116,7 +116,7 @@
         <i class="fa-regular fa-bookmark text-xs"></i>
       </button>
 
-      <a href="{{ $page.RelPermalink }}" class="text-red-600 dark:text-red-400 text-xs font-bold no-underline flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+      <a href="{{ $page.RelPermalink }}" class="text-red-600 dark:text-red-400 text-xs sm:text-[13px] font-bold no-underline flex items-center gap-1 group-hover:translate-x-1 transition-transform">
         <span>Read</span>
         <i class="fa-solid fa-arrow-right text-xs"></i>
       </a>
