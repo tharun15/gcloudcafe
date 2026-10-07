@@ -193,16 +193,39 @@
                   {{ end }}
                 </div>
 
-                <!-- Footer Action -->
-                <div class="flex items-center justify-between gap-4">
-                  <a href="{{ $part1.RelPermalink }}" 
-                     class="px-5 py-2.5 rounded-lg bg-red-600 hover:bg-red-700 text-white font-mono text-xs font-bold uppercase tracking-wider transition-all inline-flex items-center gap-2 no-underline shadow-xs cursor-pointer">
-                    <span>Start Track</span>
-                    <i class="fa-solid fa-arrow-right text-xs"></i>
-                  </a>
-                  <span class="text-xs font-mono text-slate-500 dark:text-slate-400">
-                    Step 1 of {{ $totalParts }}
-                  </span>
+                <!-- Footer Action: Author Mention Pushed to Last Row -->
+                <div class="flex items-center justify-between gap-4 flex-wrap sm:flex-nowrap">
+                  {{ $spAuthorSlug := $part1.Params.author | default "tharun-vempati" }}
+                  {{ $spAuthorName := $spAuthorSlug | humanize | title }}
+                  {{ $spAuthorImg := "" }}
+                  {{ with site.GetPage (printf "authors/%s" $spAuthorSlug) }}
+                    {{ $spAuthorName = .Title }}
+                    {{ with .Params.image }}{{ $spAuthorImg = . }}{{ end }}
+                  {{ end }}
+                  <div class="flex items-center gap-2.5 min-w-0">
+                    {{ if $spAuthorImg }}
+                      <img src="{{ $spAuthorImg | relURL }}" alt="{{ $spAuthorName }}" class="w-6 h-6 rounded-full object-cover shrink-0" width="24" height="24" decoding="async" loading="lazy">
+                    {{ else }}
+                      <div class="w-6 h-6 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-white font-bold text-xs flex items-center justify-center shrink-0">
+                        {{ substr $spAuthorName 0 1 }}
+                      </div>
+                    {{ end }}
+                    <div class="flex items-center gap-1.5 text-xs sm:text-[13px] font-medium text-slate-800 dark:text-slate-200 truncate">
+                      <span class="font-semibold text-slate-900 dark:text-white">{{ $spAuthorName }}</span>
+                      <span class="text-slate-400 dark:text-slate-600">·</span>
+                      <span class="font-mono text-slate-500 dark:text-slate-400">Track Author</span>
+                    </div>
+                  </div>
+                  <div class="flex items-center gap-3 shrink-0">
+                    <span class="text-xs font-mono text-slate-500 dark:text-slate-400">
+                      Step 1 of {{ $totalParts }}
+                    </span>
+                    <a href="{{ $part1.RelPermalink }}" 
+                       class="px-5 py-2.5 rounded-lg bg-red-600 hover:bg-red-700 text-white font-mono text-xs font-bold uppercase tracking-wider transition-all inline-flex items-center gap-2 no-underline shadow-xs cursor-pointer">
+                      <span>Start Track</span>
+                      <i class="fa-solid fa-arrow-right text-xs"></i>
+                    </a>
+                  </div>
                 </div>
               </div>
 
@@ -369,15 +392,34 @@
                   </div>
                 </details>
 
-                <!-- Footer Action -->
-                <div class="flex items-center justify-between gap-3 pt-2">
-                  <a href="{{ $part1.RelPermalink }}" class="inline-flex items-center gap-1.5 text-xs font-mono font-bold text-red-600 dark:text-red-400 hover:underline no-underline group-hover:translate-x-0.5 transition-transform">
-                    <span>Start Track</span>
-                    <i class="fa-solid fa-arrow-right text-xs"></i>
-                  </a>
-                  <span class="font-mono text-[11px] text-slate-400">
-                    {{ $totalParts }} Parts · ~{{ $totalMin }}m
-                  </span>
+                <!-- Footer Action: Author Mention Pushed to Last Row -->
+                <div class="flex items-center justify-between gap-3 pt-2.5 border-t border-slate-100 dark:border-slate-800/80 mt-2 flex-wrap sm:flex-nowrap">
+                  {{ $sAuthorSlug := $part1.Params.author | default "tharun-vempati" }}
+                  {{ $sAuthorName := $sAuthorSlug | humanize | title }}
+                  {{ $sAuthorImg := "" }}
+                  {{ with site.GetPage (printf "authors/%s" $sAuthorSlug) }}
+                    {{ $sAuthorName = .Title }}
+                    {{ with .Params.image }}{{ $sAuthorImg = . }}{{ end }}
+                  {{ end }}
+                  <div class="flex items-center gap-2 min-w-0">
+                    {{ if $sAuthorImg }}
+                      <img src="{{ $sAuthorImg | relURL }}" alt="{{ $sAuthorName }}" class="w-5 h-5 rounded-full object-cover shrink-0" width="20" height="20" decoding="async" loading="lazy">
+                    {{ else }}
+                      <div class="w-5 h-5 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-white font-bold text-[10px] flex items-center justify-center shrink-0">
+                        {{ substr $sAuthorName 0 1 }}
+                      </div>
+                    {{ end }}
+                    <span class="font-medium text-xs text-slate-800 dark:text-slate-200 truncate">{{ $sAuthorName }}</span>
+                  </div>
+                  <div class="flex items-center gap-3 shrink-0">
+                    <span class="font-mono text-[11px] text-slate-400">
+                      {{ $totalParts }} Parts · ~{{ $totalMin }}m
+                    </span>
+                    <a href="{{ $part1.RelPermalink }}" class="inline-flex items-center gap-1.5 text-xs font-mono font-bold text-red-600 dark:text-red-400 hover:underline no-underline group-hover:translate-x-0.5 transition-transform">
+                      <span>Start Track</span>
+                      <i class="fa-solid fa-arrow-right text-xs"></i>
+                    </a>
+                  </div>
                 </div>
               </div>
 

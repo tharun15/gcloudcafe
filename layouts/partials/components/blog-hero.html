@@ -78,46 +78,39 @@
       <!-- =================================================================== -->
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6 items-stretch">
         
-        <!-- PART 1: SPOTLIGHT LEAD STORY (Col 1 to 7/8 on Desktop) -->
-        <article class="lg:col-span-7 xl:col-span-8 rounded-2xl sm:rounded-3xl border border-slate-200/90 dark:border-slate-800/90 bg-white dark:bg-[#0c1220] p-4 sm:p-6 lg:p-7 flex flex-col justify-between shadow-xs hover:border-slate-300 dark:hover:border-slate-700 transition-all duration-300 group">
+        <!-- PART 1: SPOTLIGHT LEAD STORY (Content First: Headline on Top, Subtle Spotlight Glow, Author on Bottom) -->
+        <article class="lg:col-span-7 xl:col-span-8 rounded-2xl sm:rounded-3xl border border-amber-500/25 dark:border-amber-400/20 bg-white dark:bg-[#0c1220] p-4 sm:p-6 lg:p-7 flex flex-col justify-between shadow-xs hover:border-amber-500/40 dark:hover:border-amber-400/30 transition-all duration-300 group relative">
           <div>
-            <!-- Top Header: Author + Date + Spotlight Pill (Medium Style) -->
-            <div class="flex items-center justify-between gap-3 mb-3.5 sm:mb-4 flex-wrap">
-              <div class="flex items-center gap-2.5 min-w-0">
-                {{ if $authorImage }}
-                  <img src="{{ $authorImage | relURL }}" alt="{{ $authorName }}" class="w-8 h-8 rounded-full object-cover shrink-0 border border-slate-200 dark:border-slate-700 shadow-xs" width="32" height="32" decoding="async" loading="lazy" onerror="this.onerror=null; this.src='{{ `/images/avatar.png` | relURL }}';">
-                {{ else }}
-                  <div class="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-800 text-slate-900 dark:text-white font-bold text-xs flex items-center justify-center shrink-0">
-                    {{ substr $authorName 0 1 }}
-                  </div>
-                {{ end }}
-                <div class="flex items-center gap-1.5 text-sm font-medium text-slate-900 dark:text-white truncate">
-                  <span class="font-bold text-[13.5px] sm:text-sm text-slate-900 dark:text-white">{{ $authorName }}</span>
-                  <span class="text-slate-400 dark:text-slate-600">·</span>
-                  <span class="font-mono text-xs sm:text-[13px] text-slate-500 dark:text-slate-400">{{ $page.Date.Format "Jan 02, 2006" }}</span>
-                </div>
-              </div>
-              
-              <!-- Spotlight Badge -->
-              <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-amber-500/10 dark:bg-amber-400/15 border border-amber-400/30 text-amber-700 dark:text-amber-300 font-mono text-[11px] sm:text-xs font-bold shrink-0">
-                <i class="fa-solid fa-star text-[10px] text-amber-500"></i>
-                <span class="tracking-wider uppercase">{{ i18n "spotlight_story" }}</span>
-              </span>
-            </div>
-
             <!-- Content Row: Headline & Teaser (Left) + Balanced Preview Thumbnail (Right) -->
             <div class="grid grid-cols-1 sm:grid-cols-12 gap-3.5 sm:gap-6 items-start mb-4 sm:mb-5">
               <div class="sm:col-span-8">
+                <!-- Headline as First Line of Post (Pure Data First, Zero Clutter) -->
                 <h1 id="featured-post-title" class="text-xl sm:text-2xl lg:text-[25px] font-black text-slate-900 dark:text-white leading-[1.24] tracking-tight mb-2 sm:mb-2.5 group-hover:text-red-600 dark:group-hover:text-red-500 transition-colors">
                   <a href="{{ $page.RelPermalink }}" class="no-underline text-current hover:text-red-600 dark:hover:text-red-500">
                     {{ $page.Title }}
                   </a>
                 </h1>
+
                 <!-- Appropriately Highlighted Second Text (Architectural Subdeck) -->
                 <div class="pl-3.5 border-l-2 border-red-500/70 dark:border-red-500/80 bg-slate-50/80 dark:bg-slate-900/60 py-2 px-3.5 rounded-r-lg mb-0">
                   <p class="text-[14px] sm:text-[15px] text-slate-700 dark:text-slate-200 leading-relaxed font-medium line-clamp-3 mb-0">
                     {{ $teaser }}
                   </p>
+                </div>
+
+                <!-- Category Badge & Topic Tags (Organized in Content Body to Declutter Footer) -->
+                <div class="flex flex-wrap items-center gap-2 mt-3 mb-0">
+                  <a href="{{ `categories/` | relLangURL }}{{ $firstCat | urlize | lower }}/" 
+                     class="px-2.5 py-0.5 rounded-md text-[11px] sm:text-xs font-mono font-bold uppercase tracking-wider bg-sky-50 text-sky-700 dark:bg-sky-950/60 dark:text-sky-300 no-underline hover:bg-sky-100 dark:hover:bg-sky-900/60 transition-colors">
+                    {{ $firstCat }}
+                  </a>
+                  {{ with $tags }}
+                    <div class="flex items-center gap-1.5">
+                      {{ range first 2 . }}
+                        <span class="hidden sm:inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-mono font-medium bg-slate-100 text-slate-600 dark:bg-slate-800/80 dark:text-slate-300">#{{ . }}</span>
+                      {{ end }}
+                    </div>
+                  {{ end }}
                 </div>
               </div>
 
@@ -156,40 +149,44 @@
             </div>
           </div>
 
-          <!-- Bottom Meta Bar: Category · Read Time · Tags · Bookmark (Touch-Friendly) -->
+          <!-- Bottom Meta Bar: Author Info (Left) + Reading Time & Save Post Button (Right) -->
           <div class="pt-3.5 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between gap-3 text-xs sm:text-[13px] text-slate-500 dark:text-slate-400 mt-auto">
-            <div class="flex items-center gap-2.5 sm:gap-3 flex-wrap min-w-0">
-              <a href="{{ `categories/` | relLangURL }}{{ $firstCat | urlize | lower }}/" 
-                 class="font-mono text-[12px] sm:text-[13px] font-bold text-slate-800 dark:text-slate-200 hover:text-red-600 dark:hover:text-red-400 uppercase tracking-wider no-underline transition-colors truncate">
-                {{ $firstCat }}
-              </a>
-              <span class="text-slate-300 dark:text-slate-700">·</span>
-              <span class="font-mono text-[12px] sm:text-[12.5px] flex items-center gap-1 shrink-0">
-                <i class="fa-regular fa-clock text-xs"></i> {{ $page.ReadingTime }} {{ i18n "min_read" }}
-              </span>
-              {{ with $tags }}
-                <span class="text-slate-300 dark:text-slate-700 hidden sm:inline">·</span>
-                <div class="hidden sm:flex items-center gap-1.5 truncate">
-                  {{ range first 2 . }}
-                    <span class="hidden sm:inline-flex font-mono text-[11.5px] sm:text-xs text-slate-500 dark:text-slate-400">#{{ . }}</span>
-                  {{ end }}
+            <!-- Author Details Pushed to the Last Row -->
+            <div class="flex items-center gap-2.5 shrink-0">
+              {{ if $authorImage }}
+                <img src="{{ $authorImage | relURL }}" alt="{{ $authorName }}" class="w-8 h-8 rounded-full object-cover shrink-0 border border-slate-200 dark:border-slate-700 shadow-xs" width="32" height="32" decoding="async" loading="lazy" onerror="this.onerror=null; this.src='{{ `/images/avatar.png` | relURL }}';">
+              {{ else }}
+                <div class="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-800 text-slate-900 dark:text-white font-bold text-xs flex items-center justify-center shrink-0">
+                  {{ substr $authorName 0 1 }}
                 </div>
               {{ end }}
+              <div class="flex items-center gap-1.5 text-xs sm:text-[13px] font-medium text-slate-900 dark:text-white whitespace-nowrap">
+                <span class="font-bold text-[13px] sm:text-[13.5px] text-slate-900 dark:text-white">{{ $authorName }}</span>
+                <span class="text-slate-400 dark:text-slate-600">·</span>
+                <span class="font-mono text-xs sm:text-[12.5px] text-slate-500 dark:text-slate-400">{{ $page.Date.Format "Jan 02, 2006" }}</span>
+              </div>
             </div>
 
-            <!-- Medium Style Bookmark Action -->
-            <button
-              type="button"
-              data-bookmark-btn
-              data-article-url="{{ $page.RelPermalink }}"
-              data-article-title="{{ $page.Title }}"
-              data-article-category="{{ $firstCat }}"
-              data-article-readtime="{{ $page.ReadingTime }} {{ i18n `min_read` }}"
-              class="w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 hover:text-red-500 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer shrink-0"
-              aria-label="Save {{ $page.Title }} for later"
-              title="{{ i18n `save_for_later` }}">
-              <i class="fa-regular fa-bookmark text-sm"></i>
-            </button>
+            <!-- Reading Time & Save Post Button (Spacious & Cleanly Contained) -->
+            <div class="flex items-center gap-2.5 sm:gap-3 shrink-0">
+              <span class="font-mono text-[11.5px] sm:text-xs flex items-center gap-1 shrink-0 whitespace-nowrap text-slate-500 dark:text-slate-400">
+                <i class="fa-regular fa-clock text-xs"></i> {{ $page.ReadingTime }} {{ i18n "min_read" }}
+              </span>
+
+              <!-- Bookmark Action -->
+              <button
+                type="button"
+                data-bookmark-btn
+                data-article-url="{{ $page.RelPermalink }}"
+                data-article-title="{{ $page.Title }}"
+                data-article-category="{{ $firstCat }}"
+                data-article-readtime="{{ $page.ReadingTime }} {{ i18n `min_read` }}"
+                class="w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 hover:text-red-500 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer shrink-0"
+                aria-label="Save {{ $page.Title }} for later"
+                title="{{ i18n `save_for_later` }}">
+                <i class="fa-regular fa-bookmark text-sm"></i>
+              </button>
+            </div>
           </div>
         </article>
 
