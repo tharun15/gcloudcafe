@@ -227,6 +227,13 @@ function evaluatePulseHousekeeping(approvedPulses = [], pendingPulses = [], opti
       return;
     }
 
+    // Rule 4: Stale news older than 45 days (unless high viral evergreen score >= 20)
+    if (ageDays >= 45 && score < 20) {
+      approvedToPrune.push({ ...p, pruneReason: 'stale_aging', score, ageDays });
+      stats.stale_aging++;
+      return;
+    }
+
     retainedCandidates.push({ ...p, score, ageDays });
   });
 
