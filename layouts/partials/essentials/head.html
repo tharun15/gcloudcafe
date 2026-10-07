@@ -40,7 +40,7 @@
 {{ $isAdmin := in (slice "admin-articles" "community-admin" "pulse-admin") .Type }}
 {{ $isNoIndex := findRE "noindex" (or .Params.robots "") }}
 {{ if not (or $is404 $isAdmin $isNoIndex) }}
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9590261566406863"
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2923963189049867"
      crossorigin="anonymous"></script>
 {{ end }}
 

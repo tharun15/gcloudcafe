@@ -54,7 +54,7 @@ describe('Google AdSense Program Policy Compliance & Trust Pages Suite', () => {
     const adsTxtPath = path.join(rootDir, 'static/ads.txt');
     expect(fs.existsSync(adsTxtPath)).toBe(true);
     const content = fs.readFileSync(adsTxtPath, 'utf-8');
-    expect(content).toMatch(/google\.com,\s*pub-9590261566406863,\s*DIRECT,\s*f08c47fec0942fa0/);
+    expect(content).toMatch(/google\.com,\s*pub-2923963189049867,\s*DIRECT,\s*f08c47fec0942fa0/);
   });
 
   it('verifies robots.txt explicitly allows Mediapartners-Google crawler and Googlebot', () => {
@@ -66,7 +66,7 @@ describe('Google AdSense Program Policy Compliance & Trust Pages Suite', () => {
   });
 
   it('verifies AdSense script is present on public pages but gated from 404 and admin pages', () => {
-    const pubSnippet = 'ca-pub-9590261566406863';
+    const pubSnippet = 'ca-pub-2923963189049867';
 
     // Present on home and article pages
     const homeHtml = fs.readFileSync(path.join(publicDir, 'index.html'), 'utf-8');
