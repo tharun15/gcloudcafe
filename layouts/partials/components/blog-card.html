@@ -38,23 +38,8 @@
                 bg-white dark:bg-[#0c1220] border border-slate-200/90 dark:border-slate-800/90
                 hover:shadow-lg hover:border-slate-300 dark:hover:border-slate-700 transition-all duration-300 p-4 sm:p-5 group">
   <div>
-    <!-- Top Row: Author Avatar + Name + Date (Left) + Category Badge (Right) -->
+    <!-- Top Row: Category Badge (Content First) -->
     <div class="flex items-center justify-between gap-3 mb-3">
-      <div class="flex items-center gap-2.5 min-w-0">
-        {{ if $authorImage }}
-          <img src="{{ $authorImage | relURL }}" alt="{{ $authorName }}" class="w-6 h-6 rounded-full object-cover shrink-0" width="24" height="24" decoding="async" loading="lazy" onerror="this.onerror=null; this.src='{{ `/images/avatar.png` | relURL }}';">
-        {{ else }}
-          <div class="w-6 h-6 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-white font-bold text-xs flex items-center justify-center shrink-0">
-            {{ substr $authorName 0 1 }}
-          </div>
-        {{ end }}
-        <div class="flex items-center gap-1.5 text-xs sm:text-[13px] font-medium text-slate-800 dark:text-slate-200 truncate">
-          <span class="font-semibold text-slate-900 dark:text-white">{{ $authorName }}</span>
-          <span class="text-slate-400 dark:text-slate-600">·</span>
-          <span class="font-mono text-slate-500 dark:text-slate-400">{{ $page.Date.Format "Jan 02, 2006" }}</span>
-        </div>
-      </div>
-
       <a href="{{ `categories/` | relLangURL }}{{ $firstCat | urlize | lower }}/"
          class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] sm:text-xs font-mono font-bold uppercase tracking-wider {{ $badgeBg }} no-underline hover:opacity-90 transition-opacity shrink-0">
         {{ $firstCat | humanize }}
@@ -98,15 +83,29 @@
     </div>
   </div>
 
-  <!-- Card Footer: Reading Time + Bookmark + Read Action -->
-  <div class="pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between gap-3 text-xs sm:text-[13px] text-slate-500 dark:text-slate-400 mt-auto">
-    <div class="flex items-center gap-2 sm:gap-3 flex-wrap min-w-0">
+  <!-- Card Footer: Author Mention Pushed to Last Row + Read Time + Bookmark + Read Action -->
+  <div class="pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between gap-3 text-xs sm:text-[13px] text-slate-500 dark:text-slate-400 mt-auto flex-wrap sm:flex-nowrap">
+    <!-- Author Details (Last Row) -->
+    <div class="flex items-center gap-2 min-w-0 shrink-0">
+      {{ if $authorImage }}
+        <img src="{{ $authorImage | relURL }}" alt="{{ $authorName }}" class="w-6 h-6 rounded-full object-cover shrink-0" width="24" height="24" decoding="async" loading="lazy" onerror="this.onerror=null; this.src='{{ `/images/avatar.png` | relURL }}';">
+      {{ else }}
+        <div class="w-6 h-6 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-white font-bold text-xs flex items-center justify-center shrink-0">
+          {{ substr $authorName 0 1 }}
+        </div>
+      {{ end }}
+      <div class="flex items-center gap-1.5 text-xs sm:text-[13px] font-medium text-slate-800 dark:text-slate-200 whitespace-nowrap">
+        <span class="font-semibold text-slate-900 dark:text-white truncate">{{ $authorName }}</span>
+        <span class="text-slate-400 dark:text-slate-600">·</span>
+        <span class="font-mono text-slate-500 dark:text-slate-400">{{ $page.Date.Format "Jan 02" }}</span>
+      </div>
+    </div>
+
+    <div class="flex items-center gap-2.5 sm:gap-3 shrink-0 ml-auto">
       <span class="font-mono text-xs sm:text-[12.5px] flex items-center gap-1">
         <i class="fa-regular fa-clock text-xs"></i> {{ $page.ReadingTime }} min read
       </span>
-    </div>
 
-    <div class="flex items-center gap-3 shrink-0">
       <button
         type="button"
         data-bookmark-btn
@@ -137,23 +136,8 @@
                 hover:shadow-lg hover:border-slate-300 dark:hover:border-slate-700 transition-all duration-300 p-4 sm:p-6 group">
   
   <div>
-    <!-- Top Row: Author Avatar + Name + Date (Left) + Category Badge (Right) - Medium Style -->
-    <div class="flex items-center justify-between gap-3 mb-3 sm:mb-4">
-      <div class="flex items-center gap-2.5 min-w-0">
-        {{ if $authorImage }}
-          <img src="{{ $authorImage | relURL }}" alt="{{ $authorName }}" class="w-6 h-6 rounded-full object-cover shrink-0" width="24" height="24" decoding="async" loading="lazy" onerror="this.onerror=null; this.src='{{ `/images/avatar.png` | relURL }}';">
-        {{ else }}
-          <div class="w-6 h-6 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-white font-bold text-xs flex items-center justify-center shrink-0">
-            {{ substr $authorName 0 1 }}
-          </div>
-        {{ end }}
-        <div class="flex items-center gap-1.5 text-xs sm:text-sm font-medium text-slate-800 dark:text-slate-200 truncate">
-          <span class="font-semibold text-[13.5px] sm:text-sm text-slate-900 dark:text-white">{{ $authorName }}</span>
-          <span class="text-slate-400 dark:text-slate-600">·</span>
-          <span class="font-mono text-xs sm:text-[13px] text-slate-500 dark:text-slate-400">{{ $page.Date.Format "Jan 02, 2006" }}</span>
-        </div>
-      </div>
-
+    <!-- Top Row: Category Badge (Content First) -->
+    <div class="flex items-center justify-between gap-3 mb-2.5 sm:mb-3">
       <a href="{{ `categories/` | relLangURL }}{{ $firstCat | urlize | lower }}/"
          class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] sm:text-xs font-mono font-bold uppercase tracking-wider {{ $badgeBg }} no-underline hover:opacity-90 transition-opacity shrink-0">
         {{ $firstCat | humanize }}
@@ -202,15 +186,30 @@
     </div>
   </div>
 
-  <!-- Card Footer: Reading Time + Bookmark + Read Action -->
-  <div class="pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between gap-3 text-xs sm:text-[13px] text-slate-500 dark:text-slate-400 mt-auto">
-    <div class="flex items-center gap-2 sm:gap-3 flex-wrap min-w-0">
+  <!-- Card Footer: Author Mention Pushed to Last Row + Reading Time + Bookmark + Read Action -->
+  <div class="pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between gap-3 text-xs sm:text-[13px] text-slate-500 dark:text-slate-400 mt-auto flex-wrap sm:flex-nowrap">
+    <!-- Author Details (Pushed to Last Row) -->
+    <div class="flex items-center gap-2.5 min-w-0 shrink-0">
+      {{ if $authorImage }}
+        <img src="{{ $authorImage | relURL }}" alt="{{ $authorName }}" class="w-6 h-6 rounded-full object-cover shrink-0" width="24" height="24" decoding="async" loading="lazy" onerror="this.onerror=null; this.src='{{ `/images/avatar.png` | relURL }}';">
+      {{ else }}
+        <div class="w-6 h-6 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-white font-bold text-xs flex items-center justify-center shrink-0">
+          {{ substr $authorName 0 1 }}
+        </div>
+      {{ end }}
+      <div class="flex items-center gap-1.5 text-xs sm:text-[13px] font-medium text-slate-800 dark:text-slate-200 whitespace-nowrap">
+        <span class="font-semibold text-slate-900 dark:text-white truncate">{{ $authorName }}</span>
+        <span class="text-slate-400 dark:text-slate-600">·</span>
+        <span class="font-mono text-slate-500 dark:text-slate-400 shrink-0">{{ $page.Date.Format "Jan 02, 2006" }}</span>
+      </div>
+    </div>
+
+    <!-- Right Actions: Reading Time + Bookmark + Read Action -->
+    <div class="flex items-center gap-2.5 sm:gap-3 shrink-0 ml-auto">
       <span class="font-mono text-xs sm:text-[12.5px] flex items-center gap-1">
         <i class="fa-regular fa-clock text-xs"></i> {{ $page.ReadingTime }} min read
       </span>
-    </div>
 
-    <div class="flex items-center gap-3 shrink-0">
       <button
         type="button"
         data-bookmark-btn
