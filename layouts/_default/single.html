@@ -83,7 +83,7 @@
           <div class="row">
             {{ range . }}
               <div class="lg:col-4 md:col-6 mb-14">
-                {{ partial "components/blog-card" . }}
+                {{ partial "components/blog-card" (dict "Page" . "Layout" "grid") }}
               </div>
             {{ end }}
           </div>
