@@ -2435,6 +2435,42 @@
       anonKey: "sb_publishable_cRcwg02R3nXTykDrxalL6w_-kc9Wesc"
     };
 
+    var READ_STORAGE_KEY = "gcloudcafe_read_pulse_ids";
+
+    function getReadPulseMap() {
+      try {
+        var raw = localStorage.getItem(READ_STORAGE_KEY);
+        if (raw) return JSON.parse(raw);
+      } catch (e) {}
+      return {};
+    }
+
+    function markPulseAsRead(pulseId) {
+      if (!pulseId) return;
+      try {
+        var map = getReadPulseMap();
+        map[String(pulseId)] = Date.now();
+        localStorage.setItem(READ_STORAGE_KEY, JSON.stringify(map));
+      } catch (e) {}
+    }
+
+    function formatTimeAgo(dateStr) {
+      if (!dateStr) return "Recently";
+      var d = new Date(dateStr);
+      if (isNaN(d.getTime())) return "Recently";
+      var diffSec = Math.floor((Date.now() - d.getTime()) / 1000);
+      if (diffSec < 60) return "just now";
+      var diffMin = Math.floor(diffSec / 60);
+      if (diffMin < 60) return diffMin + "m ago";
+      var diffHours = Math.floor(diffMin / 60);
+      if (diffHours < 24) return diffHours + "h ago";
+      var diffDays = Math.floor(diffHours / 24);
+      if (diffDays === 1) return "yesterday";
+      if (diffDays < 7) return diffDays + "d ago";
+      var months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+      return months[d.getMonth()] + " " + d.getDate();
+    }
+
     function getTagMeta(tags) {
       var raw = (Array.isArray(tags) && tags[0]) ? tags[0].replace(/^#/, "").toUpperCase() : "CLOUD";
       if (raw === "GOOGLECLOUD" || raw === "GCP") return { label: "GCP", cls: "ticker-tag-gcp" };
@@ -2455,6 +2491,19 @@
       return marquee.querySelectorAll("[data-ticker-slide]");
     }
 
+    function renderAllCaughtUp() {
+      if (rotateInterval) {
+        clearInterval(rotateInterval);
+        rotateInterval = null;
+      }
+      marquee.innerHTML = '<div class="ticker-rotator-item is-active w-full flex items-center justify-between text-slate-600 dark:text-slate-300 px-1">'
+        + '<a href="/pulse/" class="inline-flex items-center gap-2 text-[13px] sm:text-[14px] text-emerald-600 dark:text-emerald-400 font-medium hover:underline no-underline">'
+        + '<span class="text-emerald-500 font-bold">✓</span>'
+        + '<span>All caught up! Explore Cloud Pulse Newsroom →</span>'
+        + '</a>'
+        + '</div>';
+    }
+
     function showSlide(nextIndex) {
       var slides = getSlides();
       totalSlides = slides.length;
@@ -2464,17 +2513,15 @@
       currentIndex = (nextIndex + totalSlides) % totalSlides;
 
       slides.forEach(function(slide, idx) {
+        slide.classList.remove("is-active", "is-prev", "is-next", "opacity-100", "opacity-0", "translate-y-0", "translate-y-2", "-translate-y-2", "pointer-events-auto", "pointer-events-none");
         if (idx === currentIndex) {
-          slide.classList.remove("opacity-0", "-translate-y-2", "pointer-events-none");
-          slide.classList.add("opacity-100", "translate-y-0", "pointer-events-auto");
+          slide.classList.add("is-active");
           slide.setAttribute("aria-hidden", "false");
         } else if (idx === prevIndex) {
-          slide.classList.remove("opacity-100", "translate-y-0", "pointer-events-auto");
-          slide.classList.add("opacity-0", "-translate-y-2", "pointer-events-none");
+          slide.classList.add("is-prev");
           slide.setAttribute("aria-hidden", "true");
         } else {
-          slide.classList.remove("opacity-100", "translate-y-0", "pointer-events-auto", "-translate-y-2");
-          slide.classList.add("opacity-0", "translate-y-2", "pointer-events-none");
+          slide.classList.add("is-next");
           slide.setAttribute("aria-hidden", "true");
         }
       });
@@ -2497,8 +2544,61 @@
     container.addEventListener("mouseenter", function() { isPaused = true; });
     container.addEventListener("mouseleave", function() { isPaused = false; });
 
-    // Start auto-rotation for static slides
-    startAutoRotate();
+    // Handle "Mark as read" click via event delegation
+    marquee.addEventListener("click", function(e) {
+      var markBtn = e.target.closest("[data-pulse-mark-read]");
+      if (!markBtn) return;
+      e.preventDefault();
+      e.stopPropagation();
+
+      var pulseId = markBtn.getAttribute("data-pulse-mark-read");
+      if (pulseId) {
+        markPulseAsRead(pulseId);
+      }
+
+      var slide = markBtn.closest("[data-ticker-slide]");
+      if (slide) {
+        slide.style.transition = "opacity 0.25s ease, transform 0.25s ease";
+        slide.style.opacity = "0";
+        slide.style.transform = "translateX(24px)";
+        setTimeout(function() {
+          if (slide.parentNode) slide.parentNode.removeChild(slide);
+          var remaining = getSlides();
+          if (remaining.length === 0) {
+            renderAllCaughtUp();
+          } else {
+            remaining.forEach(function(s, idx) {
+              s.setAttribute("data-ticker-slide", idx);
+            });
+            showSlide(currentIndex % remaining.length);
+          }
+        }, 260);
+      }
+    });
+
+    // Clean up read slides from pre-rendered static HTML
+    function filterReadStaticSlides() {
+      var readMap = getReadPulseMap();
+      var slides = getSlides();
+      slides.forEach(function(s) {
+        var id = s.getAttribute("data-pulse-id");
+        if (id && readMap[String(id)]) {
+          s.remove();
+        }
+      });
+      var remaining = getSlides();
+      if (remaining.length === 0) {
+        renderAllCaughtUp();
+      } else {
+        remaining.forEach(function(s, idx) {
+          s.setAttribute("data-ticker-slide", idx);
+        });
+        showSlide(0);
+        startAutoRotate();
+      }
+    }
+
+    filterReadStaticSlides();
 
     // Supabase Live Sync (1-to-1 parity with newsroom feed)
     var queryUrl = config.url + "/rest/v1/cloud_pulses?status=eq.approved&order=created_at.desc&limit=30";
@@ -2513,24 +2613,45 @@
       if (!Array.isArray(data) || data.length === 0) return;
 
       var sorted = sortCohortByScore(data).slice(0, 10);
+      var readMap = getReadPulseMap();
+      var unreadSorted = sorted.filter(function(item) {
+        return !readMap[String(item.id)];
+      });
+
+      if (unreadSorted.length === 0) {
+        renderAllCaughtUp();
+        return;
+      }
+
+      // Display top 3 unread pulses one by one
+      var top3 = unreadSorted.slice(0, 3);
       var itemsHtml = "";
-      sorted.forEach(function(item, idx) {
+      top3.forEach(function(item, idx) {
         var tagMeta = getTagMeta(item.tags);
         var safeTitle = escapeHtml(item.title || "Cloud Pulse Update");
         var pulsePostLink = "/pulse/#pulse-" + encodeURIComponent(item.id || "");
         var isFirst = idx === 0;
-        itemsHtml += '<div class="ticker-rotator-item absolute inset-0 flex items-center gap-2.5 transition-all duration-700 ease-out '
-          + (isFirst ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 translate-y-2 pointer-events-none')
-          + '" data-ticker-slide="' + idx + '" aria-hidden="' + (isFirst ? 'false' : 'true') + '">'
-          + '<a href="' + pulsePostLink + '" class="ticker-item group/item inline-flex items-center gap-2 w-full min-w-0 no-underline">'
+        var timeAgo = formatTimeAgo(item.created_at || item.updated_at);
+        var pulseId = item.id ? String(item.id) : "";
+
+        itemsHtml += '<div class="ticker-rotator-item absolute inset-0 flex items-center justify-between gap-2.5 '
+          + (isFirst ? 'is-active' : 'is-next')
+          + '" data-ticker-slide="' + idx + '" data-pulse-id="' + escapeHtml(pulseId) + '" aria-hidden="' + (isFirst ? 'false' : 'true') + '">'
+          + '<a href="' + pulsePostLink + '" class="ticker-item group/item inline-flex items-center gap-2 sm:gap-2.5 min-w-0 flex-1 no-underline">'
           + '<span class="ticker-tag ' + tagMeta.cls + ' shrink-0">' + escapeHtml(tagMeta.label) + '</span>'
-          + '<span class="ticker-title font-sans font-medium text-[12px] sm:text-xs text-slate-700 dark:text-slate-200 group-hover/item:text-red-600 dark:group-hover/item:text-cyan-300 transition-colors truncate">' + safeTitle + '</span>'
+          + '<span class="ticker-title font-sans font-medium text-[14px] sm:text-[14.5px] md:text-[15px] text-slate-800 dark:text-slate-100 group-hover/item:text-red-600 dark:group-hover/item:text-cyan-300 transition-colors truncate">' + safeTitle + '</span>'
+          + '<span class="ticker-time-badge text-[11.5px] sm:text-[12px] font-mono text-slate-500 dark:text-slate-400 shrink-0 hidden xs:inline-flex items-center gap-1">' + escapeHtml(timeAgo) + '</span>'
           + '</a>'
+          + '<button type="button" class="ticker-mark-read-btn inline-flex items-center gap-1 px-2 py-0.5 text-[11.5px] sm:text-[12px] font-mono text-slate-500 dark:text-slate-400 hover:text-emerald-700 dark:hover:text-emerald-300 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 rounded border border-slate-200/60 dark:border-slate-800/60 transition-colors shrink-0" data-pulse-mark-read="' + escapeHtml(pulseId) + '" title="Mark as read (hide from ticker)" aria-label="Mark as read">'
+          + '<i class="fa-solid fa-check text-[10px]"></i>'
+          + '<span class="hidden sm:inline">Mark as read</span>'
+          + '</button>'
           + '</div>';
       });
 
       marquee.innerHTML = itemsHtml;
       showSlide(0);
+      startAutoRotate();
     })
     .catch(function(err) {
       // Pre-rendered static slides remain in place

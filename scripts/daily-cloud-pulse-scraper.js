@@ -1,4 +1,4 @@
-const { createSmartFallbackHook } = require('./auto-publish-cloud-pulse.js');
+const { createSmartFallbackHook, executePulseHousekeeping } = require('./auto-publish-cloud-pulse.js');
 /**
  * Autonomous Cloud Pulse Newsroom Scraper & Gemini AI Synthesizer
  * 
@@ -220,6 +220,15 @@ Context: ${item.summary}`;
 
 async function runScraper() {
   console.log("🚀 Starting Gcloudcafe Daily Cloud Pulse Newsroom Scraper...");
+  
+  // 1. Run autonomous housekeeping to prune downvoted, stale, or overflow pulses
+  try {
+    console.log("🧹 Running autonomous housekeeping to maintain clean Cloud Pulse database...");
+    await executePulseHousekeeping();
+  } catch (hkErr) {
+    console.warn("Housekeeping notice:", hkErr.message);
+  }
+
   const apiKey = await getGeminiApiKey();
   if (apiKey) {
     console.log("✓ Gemini AI active for smart news synthesis.");
