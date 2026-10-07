@@ -97,6 +97,21 @@
                     {{ $teaser }}
                   </p>
                 </div>
+
+                <!-- Category Badge & Topic Tags (Organized in Content Body to Declutter Footer) -->
+                <div class="flex flex-wrap items-center gap-2 mt-3 mb-0">
+                  <a href="{{ `categories/` | relLangURL }}{{ $firstCat | urlize | lower }}/" 
+                     class="px-2.5 py-0.5 rounded-md text-[11px] sm:text-xs font-mono font-bold uppercase tracking-wider bg-sky-50 text-sky-700 dark:bg-sky-950/60 dark:text-sky-300 no-underline hover:bg-sky-100 dark:hover:bg-sky-900/60 transition-colors">
+                    {{ $firstCat }}
+                  </a>
+                  {{ with $tags }}
+                    <div class="flex items-center gap-1.5">
+                      {{ range first 2 . }}
+                        <span class="hidden sm:inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-mono font-medium bg-slate-100 text-slate-600 dark:bg-slate-800/80 dark:text-slate-300">#{{ . }}</span>
+                      {{ end }}
+                    </div>
+                  {{ end }}
+                </div>
               </div>
 
               <!-- Preview Blueprint Image (Sleek, Constrained on Mobile; Proportional on Desktop) -->
@@ -134,8 +149,8 @@
             </div>
           </div>
 
-          <!-- Bottom Meta Bar: Author Info (Left) + Category · Read Time · Tags · Bookmark (Right) -->
-          <div class="pt-3.5 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between gap-3 text-xs sm:text-[13px] text-slate-500 dark:text-slate-400 mt-auto flex-wrap sm:flex-nowrap">
+          <!-- Bottom Meta Bar: Author Info (Left) + Reading Time & Save Post Button (Right) -->
+          <div class="pt-3.5 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between gap-3 text-xs sm:text-[13px] text-slate-500 dark:text-slate-400 mt-auto">
             <!-- Author Details Pushed to the Last Row -->
             <div class="flex items-center gap-2.5 shrink-0">
               {{ if $authorImage }}
@@ -152,24 +167,11 @@
               </div>
             </div>
 
-            <!-- Category · Reading Time · Tags · Bookmark Action -->
-            <div class="flex items-center gap-2 sm:gap-2.5 shrink-0">
-              <a href="{{ `categories/` | relLangURL }}{{ $firstCat | urlize | lower }}/" 
-                 class="font-mono text-[11.5px] sm:text-xs font-bold text-slate-800 dark:text-slate-200 hover:text-red-600 dark:hover:text-red-400 uppercase tracking-wider no-underline transition-colors whitespace-nowrap">
-                {{ $firstCat }}
-              </a>
-              <span class="text-slate-300 dark:text-slate-700">·</span>
-              <span class="font-mono text-[11.5px] sm:text-xs flex items-center gap-1 shrink-0 whitespace-nowrap">
+            <!-- Reading Time & Save Post Button (Spacious & Cleanly Contained) -->
+            <div class="flex items-center gap-2.5 sm:gap-3 shrink-0">
+              <span class="font-mono text-[11.5px] sm:text-xs flex items-center gap-1 shrink-0 whitespace-nowrap text-slate-500 dark:text-slate-400">
                 <i class="fa-regular fa-clock text-xs"></i> {{ $page.ReadingTime }} {{ i18n "min_read" }}
               </span>
-              {{ with $tags }}
-                <span class="text-slate-300 dark:text-slate-700 hidden lg:inline">·</span>
-                <div class="hidden lg:flex items-center gap-1.5 whitespace-nowrap">
-                  {{ range first 2 . }}
-                    <span class="hidden sm:inline-flex font-mono text-[11.5px] sm:text-xs text-slate-500 dark:text-slate-400">#{{ . }}</span>
-                  {{ end }}
-                </div>
-              {{ end }}
 
               <!-- Bookmark Action -->
               <button
@@ -179,7 +181,7 @@
                 data-article-title="{{ $page.Title }}"
                 data-article-category="{{ $firstCat }}"
                 data-article-readtime="{{ $page.ReadingTime }} {{ i18n `min_read` }}"
-                class="w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 hover:text-red-500 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer shrink-0 ml-0.5"
+                class="w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 hover:text-red-500 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer shrink-0"
                 aria-label="Save {{ $page.Title }} for later"
                 title="{{ i18n `save_for_later` }}">
                 <i class="fa-regular fa-bookmark text-sm"></i>
