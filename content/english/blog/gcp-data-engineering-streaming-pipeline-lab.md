@@ -1,7 +1,7 @@
 ---
-title: "Data Engineering on GCP (Part 4): Building the Production Real-Time Streaming Pipeline (Hands-On Lab)"
-meta_title: "GCP Streaming Pipeline Lab: Pub/Sub, Dataflow & BigQuery Storage Write API"
-description: "A production hands-on GCP data engineering lab: build an event-driven streaming pipeline with Pub/Sub, Apache Beam on Dataflow, dead-letter quarantines, watermarking, and the BigQuery Storage Write API."
+title: "Data Engineering on GCP (Part 4): Building a Production-Ready Real-Time Streaming Pipeline"
+meta_title: "GCP Streaming Pipeline Lab: Pub/Sub, Dataflow, and BigQuery"
+description: "Build a resilient GCP streaming pipeline with Pub/Sub, Apache Beam on Dataflow, raw-event landing, quarantine handling, event-time windows, and BigQuery Storage Write API sinks."
 date: 2026-10-07
 image: "/images/gcp-streaming-pipeline-lab.jpg"
 categories: ["Google Cloud", "Architecture"]
@@ -15,187 +15,83 @@ series_description: "A practical architecture and hands-on guide to Google Cloud
 series_image: "/images/series-images/gcp-data-engineering-series-poster.jpg"
 ---
 
-# Data Engineering on GCP (Part 4): Building the Production Real-Time Streaming Pipeline (Hands-On Lab)
+# Data Engineering on GCP (Part 4): Building a Production-Ready Real-Time Streaming Pipeline
 
-In [Part 3 of this series](/blog/gcp-data-engineering-streaming-batch-ingestion-pubsub-dataflow/), we mapped the architectural trade-offs of modern real-time ingestion. We established why synchronous database inserts fail under load, why producers must never depend directly on analytical endpoints, and how Google Cloud Pub/Sub, Dataflow, and the BigQuery Storage Write API form a decoupled, fault-tolerant ingestion topology.
+In [Part 3 of this series](/blog/gcp-data-engineering-streaming-batch-ingestion-pubsub-dataflow/), we compared the main approaches to real-time ingestion. This lab turns that architecture into a working pipeline for **Offvia**, a regional airline-booking platform.
 
-Now, we roll up our sleeves and build it.
+The goal is practical: keep checkout independent from analytics, retain an immutable raw copy of every event, validate records safely, quarantine bad payloads, and stream clean data into BigQuery.
 
-In this hands-on lab, we will implement the real-time ingestion backbone for **Offvia**, our regional airline booking platform. We will set up a multi-tier streaming architecture that ingests high-velocity booking events, isolates malformed "poison-pill" payloads into an automated dead-letter quarantine without stalling the pipeline, enforces event-time watermarking, and writes clean, validated records to partitioned BigQuery tables using the high-performance Storage Write API.
+## What We Are Building
 
-<div class="p-6 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 my-8 shadow-xs space-y-3">
-<div class="flex items-center gap-2 font-bold text-slate-900 dark:text-white text-base">
-<span>🧪</span> Lab Objectives & Architecture Blueprint
-</div>
-<p class="text-sm text-slate-800 dark:text-slate-200 leading-relaxed m-0">
-By the end of this lab, you will have constructed:
-</p>
-<ul class="text-xs sm:text-sm text-slate-700 dark:text-slate-300 space-y-1.5 pl-5 list-disc m-0">
-<li><strong>Zero-Code Bronze Landing:</strong> A direct Pub/Sub BigQuery subscription capturing raw, unmodified JSON events and metadata without maintaining a worker cluster.</li>
-<li><strong>Stateful Silver Pipeline:</strong> An Apache Beam pipeline executing on Google Cloud Dataflow with custom error handling, event-time timestamp extraction, and fixed-window processing.</li>
-<li><strong>Quarantine Dead-Letter Pattern:</strong> An automated quarantine route separating corrupt or schema-incompatible payloads into a dedicated triage table.</li>
-<li><strong>Storage Write API Integration:</strong> Direct streaming sinks into partitioned BigQuery tables with proto-schema enforcement.</li>
-<li><strong>Chaos Testing:</strong> Synthetic event injection verifying pipeline resilience against out-of-order events, network lag, and schema corruption.</li>
-</ul>
-</div>
+```mermaid
+flowchart TD
+    classDef client fill:#f8fafc,stroke:#64748b,stroke-width:2px,color:#0f172a;
+    classDef pubsub fill:#f0f9ff,stroke:#0284c7,stroke-width:2px,color:#0369a1;
+    classDef dataflow fill:#fffbeb,stroke:#d97706,stroke-width:2px,color:#92400e;
+    classDef bq fill:#f0fdf4,stroke:#16a34a,stroke-width:2px,color:#15803d;
+    classDef error fill:#fff1f2,stroke:#e11d48,stroke-width:2px,color:#9f1239;
 
----
+    Booking["Flight Booking Service
+(Producer)"]:::client
+    Topic["Cloud Pub/Sub: booking-events-topic
+(Decoupled Message Buffer)"]:::pubsub
 
-## 1. The Scenario & Failure Modes
+    subgraph DualConsumer ["DUAL-CONSUMER STREAMING INGESTION ARCHITECTURE"]
+        direction TB
 
-During peak booking windows—such as flash sales or weather-induced flight rebookings—Offvia experiences bursts exceeding 15,000 transactions per second. 
+        subgraph BronzePath ["1. Zero-Compute Raw Audit Path"]
+            BQSub["Pub/Sub BigQuery Subscription
+(Serverless Exporter)"]:::pubsub
+            BronzeTable[("BigQuery Bronze: raw_bookings
+Immutable raw event log")]:::bq
+        end
 
-In legacy architectures, engineers frequently make three architectural mistakes that lead to 3:00 AM production outages:
+        subgraph SilverPath ["2. Real-Time Processing & Triage Path"]
+            Beam["Cloud Dataflow (Apache Beam)
+Validation & event-time watermarking"]:::dataflow
+            SilverTable[("BigQuery Silver: fact_bookings
+Partitioned & clustered analytical facts")]:::bq
+            QuarantineTable[("BigQuery Quarantine: poisoned_events
+Malformed JSON & rule violations")]:::error
+        end
+    end
 
-1. **The Shared-Database Anti-Pattern:** The checkout microservice writes both the operational transaction and the analytics event to the primary PostgreSQL or Cloud Spanner database. Analytical reporting queries subsequently saturate CPU slots and starve connection pools needed for paying travelers.
-2. **The Direct Synchronous Sink Trap:** The application service opens a connection to BigQuery's legacy REST streaming endpoint (`tabledata.insertAll`). When BigQuery experiences temporary regional latency, worker threads block, the web servers run out of socket descriptors, and checkout requests time out.
-3. **The Poison-Pill Crash Loop:** An upstream mobile app client releases a faulty update emitting an integer for a passenger name field (`"passenger_name": 10492`). A streaming worker attempting to parse the record encounters an unhandled type exception, crashes, restarts, reads the exact same message from the queue, and crashes again in an infinite loop.
+    Booking -->|"Publish JSON / Avro"| Topic
+    Topic -->|"Direct push"| BQSub
+    BQSub -->|"Append raw JSON + metadata"| BronzeTable
 
-Our architecture resolves every single one of these failure modes by enforcing decoupled message buffering, runner-level dead-letter routing, and asynchronous analytical writes.
-
----
-
-## 2. The Mental Model: The Airport Baggage Screening Terminal
-
-To understand how each piece of Google Cloud's streaming stack interacts, consider an automated airport baggage inspection terminal:
-
-<div class="p-6 rounded-2xl bg-sky-50 dark:bg-sky-950/60 border-2 border-sky-300 dark:border-sky-600/70 my-8 shadow-xs space-y-3">
-<div class="flex items-center gap-2 font-bold text-sky-950 dark:text-sky-100 text-base">
-<span>🧳</span> Mental Model: The Baggage Sorting Concourse
-</div>
-<p class="text-sm text-sky-900 dark:text-sky-200 leading-relaxed m-0">
-<strong>1. The Check-in Desk & Belt (Pub/Sub):</strong> The check-in agent weighs your bag, slaps a barcoded tag on it, drops it onto the primary conveyor belt, and immediately addresses the next traveler. The check-in desk does not wait for the plane to be loaded. The conveyor belt serves as an elastic shock absorber.
-</p>
-<p class="text-sm text-sky-900 dark:text-sky-200 leading-relaxed m-0">
-<strong>2. The Raw Cargo Hold (Direct BigQuery Subscription):</strong> As bags slide past, an automated photographic scanner snapshots every piece of luggage exactly as it entered the facility and stores the image in an archive vault. If anything goes wrong downstream, you have an untampered historical record.
-</p>
-<p class="text-sm text-sky-900 dark:text-sky-200 leading-relaxed m-0">
-<strong>3. The Automated Inspection & Routing Sorter (Dataflow / Apache Beam):</strong> Robotic scanners examine the barcodes, inspect weights, group bags by destination flight gate, and filter out baggage with torn or missing tags onto a secondary inspection spur (The Quarantine Dead-Letter Chute) without stopping the main conveyor line.
-</p>
-<p class="text-sm text-sky-900 dark:text-sky-200 leading-relaxed m-0">
-<strong>4. The High-Speed Loading Bay (BigQuery Storage Write API):</strong> Rather than loading bags one passenger at a time through a narrow side door, specialized automated cargo loaders pack validated luggage into structured containers and slide them directly into the aircraft fuselage via optimized gRPC streams.
-</p>
-</div>
-
----
-
-## 3. Architecture Blueprint: Bronze, Silver & Quarantine
-
-Our streaming architecture follows the modern Medallion pipeline pattern tailored for real-time cloud data warehouses:
-
-```text
-                               ┌────────────────────────────────────────────────────────┐
-                               │             FLIGHT BOOKING MICROSERVICE                │
-                               └───────────────────────────┬────────────────────────────┘
-                                                           │ (1) Publish Event (Avro/JSON)
-                                                           ▼
-                               ┌────────────────────────────────────────────────────────┐
-                               │           GOOGLE CLOUD PUB/SUB TOPIC                   │
-                               │           (booking-events-topic)                       │
-                               └─────────────┬────────────────────────────┬─────────────┘
-                                             │                            │
-                     (2a) Direct BigQuery Sub│                            │ (2b) Pull Stream
-                                             ▼                            ▼
-                 ┌──────────────────────────────────────┐   ┌───────────────────────────┐
-                 │    PUB/SUB BIGQUERY SUBSCRIPTION     │   │      GOOGLE CLOUD         │
-                 │      (Zero-Worker Raw Landing)       │   │        DATAFLOW           │
-                 └───────────────────┬──────────────────┘   │     (Apache Beam)         │
-                                     │                      └─────────────┬─────────────┘
-                                     │ Writes Raw JSON                    │
-                                     ▼                                    │
-                 ┌──────────────────────────────────────┐                 │ (3) Windowing, Parsing,
-                 │         BRONZE DATASET               │                 │     & Schema Validation
-                 │   (offvia_bronze.raw_bookings)       │                 │
-                 └──────────────────────────────────────┘                 ├──────────────────────┐
-                                                                          │ Valid Payload        │ Malformed / Parse Error
-                                                                          ▼                      ▼
-                                                        ┌──────────────────────┐  ┌──────────────────────┐
-                                                        │ STORAGE WRITE API    │  │ DEAD-LETTER SINK     │
-                                                        │ (Committed Stream)   │  │ (Quarantine Table)   │
-                                                        └──────────┬───────────┘  └──────────┬───────────┘
-                                                                   │                         │
-                                                                   ▼                         ▼
-                                                        ┌──────────────────────┐  ┌──────────────────────┐
-                                                        │    SILVER DATASET    │  │  QUARANTINE DATASET  │
-                                                        │  (Clean Bookings)    │  │  (Failed Triage)     │
-                                                        └──────────────────────┘  └──────────────────────┘
+    Topic -->|"Pull streaming subscription"| Beam
+    Beam -->|"Valid events (Storage Write API)"| SilverTable
+    Beam -.->|"Quarantine tag (poison pills)"| QuarantineTable
 ```
 
----
+This is a **dual-consumer** design.
 
-## 4. 🚨 5 Fatal Streaming Misconceptions Every Data Engineer Must Unlearn
+The bronze subscription gives operations and data teams an independent raw record of every published event. Dataflow is responsible for business validation, event-time handling, and writing the cleaned analytical representation.
 
-<div class="grid grid-cols-1 md:grid-cols-2 gap-4 my-8">
-<div class="p-5 rounded-2xl bg-rose-50/70 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-800/60 shadow-xs space-y-2">
-<div class="flex items-center gap-2 font-bold text-rose-900 dark:text-rose-200 text-sm">
-<span>❌</span> Myth 1: Pub/Sub Always Guarantees Global FIFO Order
-</div>
-<p class="text-xs text-rose-950 dark:text-rose-300 leading-relaxed m-0">
-<strong>The Reality:</strong> Without explicit Ordering Keys, Pub/Sub distributes messages across thousands of parallel storage partitions. Messages are delivered out of order. To enforce sequencing, you must specify an ordering key (e.g., <code>booking_id</code>) and publish to the same region.
-</p>
-</div>
+## Why the Separation Matters
 
-<div class="p-5 rounded-2xl bg-rose-50/70 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-800/60 shadow-xs space-y-2">
-<div class="flex items-center gap-2 font-bold text-rose-900 dark:text-rose-200 text-sm">
-<span>❌</span> Myth 2: A Pub/Sub DLQ Catches All Dataflow Worker Bugs
-</div>
-<p class="text-xs text-rose-950 dark:text-rose-300 leading-relaxed m-0">
-<strong>The Reality:</strong> A Pub/Sub Dead-Letter Queue only triggers when a subscriber client continuously nacks or fails to acknowledge a message within the ack deadline. If a Dataflow pipeline unhandled exception causes worker restarts, you exhaust Compute Engine quotas before Pub/Sub DLQ intervention. You must handle exceptions within Beam `DoFn` transforms.
-</p>
-</div>
+A booking request should finish after its operational transaction and event publication succeed. It should not wait for an analytical warehouse write.
 
-<div class="p-5 rounded-2xl bg-rose-50/70 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-800/60 shadow-xs space-y-2">
-<div class="flex items-center gap-2 font-bold text-rose-900 dark:text-rose-200 text-sm">
-<span>❌</span> Myth 3: Streaming Ingestion Means Processing Time Windows
-</div>
-<p class="text-xs text-rose-950 dark:text-rose-300 leading-relaxed m-0">
-<strong>The Reality:</strong> Basing financial aggregations or hourly passenger counts on the machine time when the server received the event (Processing Time) corrupts metrics during network partitions. Robust analytics requires Event Time watermarks paired with an allowed lateness threshold.
-</p>
-</div>
+Pub/Sub absorbs traffic bursts and lets each downstream consumer scale independently. This design prevents three common incidents:
 
-<div class="p-5 rounded-2xl bg-rose-50/70 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-800/60 shadow-xs space-y-2">
-<div class="flex items-center gap-2 font-bold text-rose-900 dark:text-rose-200 text-sm">
-<span>❌</span> Myth 4: BigQuery Storage Write API Requires One Stream Per Thread
-</div>
-<p class="text-xs text-rose-950 dark:text-rose-300 leading-relaxed m-0">
-<strong>The Reality:</strong> BigQuery's Storage Write API uses gRPC HTTP/2 multiplexing. A single persistent stream can handle thousands of concurrent write requests. Creating and destroying streams per HTTP request causes socket exhaustion and exceeds BigQuery connection quotas.
-</p>
-</div>
-</div>
+- **Operational database contention:** reporting workloads do not share the booking database connection pool.
+- **Synchronous analytics dependencies:** temporary BigQuery latency does not block customer checkout threads.
+- **Poison-pill restart loops:** malformed records go to quarantine instead of repeatedly crashing workers.
 
----
+## Before You Start
 
-## 5. Parameter & Ingestion Route Cheat Sheet
-
-Before writing pipeline code, review this architectural comparison across Google Cloud's ingestion options:
-
-| Ingestion Mechanism | Target Latency | Compute Overhead | Transformation Power | Exactly-Once Semantics | Primary Use Case |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| **Pub/Sub BigQuery Sub** | 1 - 3 seconds | Zero (Fully Serverless) | None (Schema mapping / JSON extraction) | Yes (Cloud Managed) | Raw Bronze landing, audit logging, zero-ops event capture |
-| **Apache Beam / Dataflow** | 500ms - 2 seconds | Managed Worker Pool | Full (Windowing, Joins, Watermarks, Python/Java) | Yes (End-to-End Checkpointing) | Silver tier transformation, anomaly detection, aggregations |
-| **Storage Write API (Direct)**| 200ms - 1 second | Application-Hosted | Custom application logic | Yes (Committed stream with offset tracking) | Microservices streaming domain events directly to BigQuery |
-| **BigQuery Batch Load** | Minutes to Hours | Free Shared Quotas | High (SQL staging queries) | Yes (Atomic Table Replace) | Nightly historical snapshots, partner CSV dumps |
-
----
-
-## 6. Step-by-Step Hands-On Lab
-
-### Prerequisites & Environment Setup
-
-Ensure you have the Google Cloud CLI installed and authenticated with your target development project:
+Set the target project and region. Keep BigQuery datasets, Dataflow, and Cloud Storage staging resources in compatible locations.
 
 ```bash
-# 1. Authenticate with Google Cloud
 gcloud auth login
 gcloud auth application-default login
 
-# 2. Set environment variables
-export PROJECT_ID="offvia-prod-data" # Replace with your GCP Project ID
+export PROJECT_ID="YOUR_PROJECT_ID"
 export REGION="us-central1"
 
-gcloud config set project ${PROJECT_ID}
+gcloud config set project "${PROJECT_ID}"
 
-# 3. Enable required Google Cloud APIs
 gcloud services enable \
   pubsub.googleapis.com \
   dataflow.googleapis.com \
@@ -204,26 +100,26 @@ gcloud services enable \
   storage.googleapis.com
 ```
 
----
-
-### Step 1: Provision BigQuery Storage Datasets & Schemas
-
-We will construct three dedicated datasets: `offvia_bronze` for raw landing, `offvia_silver` for validated analytical tables, and `offvia_quarantine` for poisoned payloads.
+Install Apache Beam with its Google Cloud dependencies:
 
 ```bash
-# Create Datasets
-bq mk --location=${REGION} --dataset ${PROJECT_ID}:offvia_bronze
-bq mk --location=${REGION} --dataset ${PROJECT_ID}:offvia_silver
-bq mk --location=${REGION} --dataset ${PROJECT_ID}:offvia_quarantine
+python3 -m pip install --upgrade "apache-beam[gcp]"
 ```
 
-Next, define the table schemas. Notice how the Silver table is partitioned by `event_timestamp` and clustered by `origin_airport` and `destination_airport`:
+## Create Datasets and Tables
+
+Separate bronze, silver, and quarantine datasets make retention, ownership, and access policies easier to manage.
+
+```bash
+bq --location="${REGION}" mk --dataset "${PROJECT_ID}:offvia_bronze"
+bq --location="${REGION}" mk --dataset "${PROJECT_ID}:offvia_silver"
+bq --location="${REGION}" mk --dataset "${PROJECT_ID}:offvia_quarantine"
+```
+
+Create the destination tables. The silver table is partitioned by business event date and clustered by the fields most commonly used in route-based filters.
 
 ```sql
--- Execute via bq query or BigQuery Console
-
--- 1. Silver Validated Bookings Table
-CREATE TABLE IF NOT EXISTS `offvia-prod-data.offvia_silver.fact_bookings` (
+CREATE TABLE IF NOT EXISTS `YOUR_PROJECT_ID.offvia_silver.fact_bookings` (
   booking_id STRING NOT NULL,
   passenger_id STRING NOT NULL,
   flight_number STRING NOT NULL,
@@ -233,244 +129,244 @@ CREATE TABLE IF NOT EXISTS `offvia-prod-data.offvia_silver.fact_bookings` (
   currency STRING NOT NULL,
   booking_status STRING NOT NULL,
   event_timestamp TIMESTAMP NOT NULL,
-  ingestion_timestamp TIMESTAMP NOT NULL
+  ingestion_timestamp TIMESTAMP NOT NULL,
+  source_message_id STRING NOT NULL
 )
 PARTITION BY DATE(event_timestamp)
 CLUSTER BY origin_airport, destination_airport
 OPTIONS (
-  description = "Clean, validated, partitioned real-time flight bookings stream"
+  description = "Validated real-time booking events"
 );
 
--- 2. Quarantine Dead-Letter Table
-CREATE TABLE IF NOT EXISTS `offvia-prod-data.offvia_quarantine.poisoned_events` (
+CREATE TABLE IF NOT EXISTS `YOUR_PROJECT_ID.offvia_quarantine.poisoned_events` (
   raw_payload STRING NOT NULL,
   error_reason STRING NOT NULL,
   error_stage STRING NOT NULL,
-  received_timestamp TIMESTAMP NOT NULL
+  received_timestamp TIMESTAMP NOT NULL,
+  source_message_id STRING
 )
 PARTITION BY DATE(received_timestamp)
 OPTIONS (
-  description = "Quarantined payloads failing schema validation or JSON parsing"
+  description = "Events rejected by parsing or validation"
 );
-```
 
----
-
-### Step 2: Configure Pub/Sub Topics & the Direct BigQuery Subscription
-
-Create the main event ingest topic:
-
-```bash
-gcloud pubsub topics create booking-events-topic
-```
-
-Now, deploy the **Zero-Worker Bronze Ingestion Subscription**. This subscription writes messages directly from Pub/Sub into BigQuery without requiring a Compute Engine or Dataflow instance:
-
-```bash
-# First, create the Bronze destination table with Pub/Sub metadata schema
-bq query --use_legacy_sql=false '
-CREATE TABLE IF NOT EXISTS `offvia-prod-data.offvia_bronze.raw_bookings` (
+CREATE TABLE IF NOT EXISTS `YOUR_PROJECT_ID.offvia_bronze.raw_bookings` (
   subscription_name STRING,
   message_id STRING,
   publish_time TIMESTAMP,
   data STRING,
   attributes JSON
-);'
-
-# Grant the Google-managed Pub/Sub service account write permissions on the dataset
-export PUBSUB_SA="service-$(gcloud projects describe ${PROJECT_ID} --format='value(projectNumber)')@gcp-sa-pubsub.iam.gserviceaccount.com"
-
-gcloud projects add-iam-policy-binding ${PROJECT_ID} \
-  --member="serviceAccount:${PUBSUB_SA}" \
-  --role="roles/bigquery.dataEditor"
-
-gcloud projects add-iam-policy-binding ${PROJECT_ID} \
-  --member="serviceAccount:${PUBSUB_SA}" \
-  --role="roles/bigquery.metadataViewer"
-
-# Create the BigQuery subscription with write-metadata enabled
-gcloud pubsub subscriptions create booking-events-bronze-sub \
-  --topic=booking-events-topic \
-  --bigquery-table=${PROJECT_ID}:offvia_bronze.raw_bookings \
-  --write-metadata \
-  --drop-unknown-fields=false
+)
+OPTIONS (
+  description = "Immutable raw Pub/Sub event landing table"
+);
 ```
 
-<div class="p-4 rounded-xl bg-amber-50/70 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/60 my-6 text-xs text-amber-900 dark:text-amber-200">
-<strong>⚠️ Production Tip:</strong> Always set <code>--write-metadata</code> on direct BigQuery subscriptions. This automatically attaches <code>message_id</code> and <code>publish_time</code> to every record, giving you an immutable audit trail to prove message arrival times if data discrepancies arise later.
-</div>
+Replace `YOUR_PROJECT_ID` before executing the SQL.
 
----
+## Create Pub/Sub Routes
 
-### Step 3: Write the Production Apache Beam Streaming Pipeline (Python)
-
-Create a dedicated subscriber for our Dataflow pipeline:
+Create one topic and two subscriptions. Each subscription has its own delivery cursor, so the bronze and Dataflow consumers do not compete for messages.
 
 ```bash
+gcloud pubsub topics create booking-events-topic
+
 gcloud pubsub subscriptions create booking-events-dataflow-sub \
   --topic=booking-events-topic \
   --ack-deadline=60
 ```
 
-Now, create the pipeline script: `stream_bookings_pipeline.py`.
+For the bronze sink, grant the Pub/Sub service agent write access to the bronze dataset.
 
-Notice how we implement:
-- **`TaggedOutput` for Poison-Pill Isolation:** Any malformed JSON or negative fare value is redirected to the `quarantine` output tag instead of raising an uncaught exception.
-- **Event-Time Timestamping:** We extract the application-level `booking_time` and attach it as the element's event timestamp.
-- **Fixed-Windowing:** Elements are grouped into 1-minute event-time windows with a 5-minute allowed lateness boundary.
-- **Storage Write API Sink:** We use `METHOD_STORAGE_WRITE_API` for maximum throughput.
+```bash
+export PROJECT_NUMBER="$(gcloud projects describe "${PROJECT_ID}" --format='value(projectNumber)')"
+export PUBSUB_SERVICE_AGENT="service-${PROJECT_NUMBER}@gcp-sa-pubsub.iam.gserviceaccount.com"
+
+bq add-iam-policy-binding \
+  --member="serviceAccount:${PUBSUB_SERVICE_AGENT}" \
+  --role="roles/bigquery.dataEditor" \
+  "${PROJECT_ID}:offvia_bronze"
+```
+
+Now create the direct BigQuery subscription:
+
+```bash
+gcloud pubsub subscriptions create booking-events-bronze-sub \
+  --topic=booking-events-topic \
+  --bigquery-table="${PROJECT_ID}.offvia_bronze.raw_bookings" \
+  --write-metadata
+```
+
+`--write-metadata` preserves the subscription name, message ID, publish time, and attributes alongside the original payload. This makes reconciliation and incident investigation much easier.
+
+## The Beam Pipeline
+
+Save the following file as `stream_bookings_pipeline.py`.
+
+The pipeline treats expected invalid input as data rather than as an unhandled exception. It also stores the Pub/Sub message ID in silver and quarantine records, which makes debugging and replay safer.
 
 ```python
-"""
-Offvia Production Real-Time Streaming Ingestion Pipeline.
-Consumes flight booking events from Pub/Sub, validates schemas,
-quarantines poison pills, and writes to BigQuery via the Storage Write API.
-"""
-
+import argparse
 import json
 import logging
-import argparse
-from datetime import datetime
+from datetime import datetime, timezone
+from decimal import Decimal, InvalidOperation
 
 import apache_beam as beam
 from apache_beam import pvalue
-from apache_beam.options.pipeline_options import PipelineOptions, StandardOptions, GoogleCloudOptions
+from apache_beam.options.pipeline_options import PipelineOptions, StandardOptions
 from apache_beam.transforms.window import FixedWindows
 
 
 class ValidateAndEnrichBookingFn(beam.DoFn):
-    """
-    Validates booking schema, extracts event time, and tags invalid
-    records for quarantine diversion.
-    """
-    TAG_QUARANTINE = "quarantine"
+    QUARANTINE = "quarantine"
 
-    def process(self, element):
-        raw_text = element.decode("utf-8")
-        now_iso = datetime.utcnow().isoformat()
+    def process(self, message):
+        raw_payload = message.data.decode("utf-8", errors="replace")
+        received_at = datetime.now(timezone.utc).isoformat()
+        message_id = message.message_id
 
-        # Step 1: JSON Parse Validation
-        try:
-            payload = json.loads(raw_text)
-        except Exception as err:
-            logging.warning(f"Malformed JSON payload: {err}")
-            yield pvalue.TaggedOutput(
-                self.TAG_QUARANTINE,
+        def reject(stage, reason):
+            return pvalue.TaggedOutput(
+                self.QUARANTINE,
                 {
-                    "raw_payload": raw_text,
-                    "error_reason": f"JSONDecodeError: {str(err)}",
-                    "error_stage": "PARSE_JSON",
-                    "received_timestamp": now_iso
-                }
+                    "raw_payload": raw_payload,
+                    "error_reason": reason,
+                    "error_stage": stage,
+                    "received_timestamp": received_at,
+                    "source_message_id": message_id,
+                },
             )
+
+        try:
+            payload = json.loads(raw_payload)
+        except json.JSONDecodeError as exc:
+            yield reject("PARSE_JSON", str(exc))
             return
 
-        # Step 2: Required Field & Data Type Validation
-        required_fields = ["booking_id", "passenger_id", "flight_number", 
-                           "origin", "destination", "fare", "event_time"]
-        missing = [f for f in required_fields if f not in payload]
+        required = {
+            "booking_id",
+            "passenger_id",
+            "flight_number",
+            "origin",
+            "destination",
+            "fare",
+            "event_time",
+        }
+
+        missing = sorted(required - payload.keys())
+
         if missing:
-            yield pvalue.TaggedOutput(
-                self.TAG_QUARANTINE,
-                {
-                    "raw_payload": raw_text,
-                    "error_reason": f"Missing required fields: {', '.join(missing)}",
-                    "error_stage": "SCHEMA_VALIDATION",
-                    "received_timestamp": now_iso
-                }
+            yield reject(
+                "SCHEMA_VALIDATION",
+                f"Missing required fields: {', '.join(missing)}",
             )
             return
 
-        # Step 3: Domain Rules (e.g., Non-negative Fares)
         try:
-            fare_val = float(payload["fare"])
-            if fare_val <= 0.0:
-                raise ValueError(f"Invalid fare amount: {fare_val}")
-        except ValueError as val_err:
-            yield pvalue.TaggedOutput(
-                self.TAG_QUARANTINE,
-                {
-                    "raw_payload": raw_text,
-                    "error_reason": str(val_err),
-                    "error_stage": "BUSINESS_RULE_VALIDATION",
-                    "received_timestamp": now_iso
-                }
+            fare = Decimal(str(payload["fare"]))
+
+            if fare <= Decimal("0"):
+                raise ValueError("fare must be greater than zero")
+
+        except (InvalidOperation, ValueError, TypeError) as exc:
+            yield reject(
+                "BUSINESS_RULE_VALIDATION",
+                f"Invalid fare: {exc}",
             )
             return
 
-        # Step 4: Parse Event Time & Construct Clean Silver Record
         try:
-            event_dt = datetime.fromisoformat(payload["event_time"].replace("Z", "+00:00"))
-            event_timestamp_epoch = event_dt.timestamp()
-        except Exception:
-            event_timestamp_epoch = datetime.utcnow().timestamp()
+            event_time = datetime.fromisoformat(
+                str(payload["event_time"]).replace("Z", "+00:00")
+            )
 
-        silver_record = {
+            if event_time.tzinfo is None:
+                raise ValueError("event_time must include an offset or Z")
+
+        except (ValueError, TypeError) as exc:
+            yield reject(
+                "EVENT_TIME_VALIDATION",
+                f"Invalid event_time: {exc}",
+            )
+            return
+
+        record = {
             "booking_id": str(payload["booking_id"]),
             "passenger_id": str(payload["passenger_id"]),
             "flight_number": str(payload["flight_number"]),
             "origin_airport": str(payload["origin"]),
             "destination_airport": str(payload["destination"]),
-            "fare_amount": str(round(fare_val, 2)),
+            "fare_amount": str(fare),
             "currency": str(payload.get("currency", "USD")),
             "booking_status": str(payload.get("status", "CONFIRMED")),
-            "event_timestamp": datetime.utcfromtimestamp(event_timestamp_epoch).isoformat(),
-            "ingestion_timestamp": now_iso
+            "event_timestamp": event_time.isoformat(),
+            "ingestion_timestamp": received_at,
+            "source_message_id": message_id,
         }
 
-        # Attach event timestamp to Beam windowing system
-        yield beam.window.TimestampedValue(silver_record, event_timestamp_epoch)
+        yield beam.window.TimestampedValue(
+            record,
+            event_time.timestamp(),
+        )
 
 
 def run():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--subscription", required=True, help="Full Pub/Sub subscription path")
-    parser.add_argument("--silver_table", required=True, help="BigQuery silver destination table")
-    parser.add_argument("--quarantine_table", required=True, help="BigQuery quarantine destination table")
+
+    parser.add_argument("--subscription", required=True)
+    parser.add_argument("--silver_table", required=True)
+    parser.add_argument("--quarantine_table", required=True)
+
     known_args, pipeline_args = parser.parse_known_args()
 
-    pipeline_options = PipelineOptions(pipeline_args)
-    pipeline_options.view_as(StandardOptions).streaming = True
+    options = PipelineOptions(pipeline_args)
+    options.view_as(StandardOptions).streaming = True
 
-    with beam.Pipeline(options=pipeline_options) as p:
-        # 1. Ingest raw bytes from Pub/Sub
-        messages = p | "ReadFromPubSub" >> beam.io.ReadFromPubSub(subscription=known_args.subscription)
-
-        # 2. Branch: Validate or Quarantine
-        results = (
-            messages 
-            | "ValidateAndEnrich" >> beam.ParDo(ValidateAndEnrichBookingFn()).with_outputs(
-                ValidateAndEnrichBookingFn.TAG_QUARANTINE,
-                main="valid_bookings"
+    with beam.Pipeline(options=options) as pipeline:
+        messages = (
+            pipeline
+            | "Read Pub/Sub"
+            >> beam.io.ReadFromPubSub(
+                subscription=known_args.subscription,
+                with_attributes=True,
             )
         )
 
-        valid_bookings = results.valid_bookings
-        quarantined_bookings = results.quarantine
+        outputs = (
+            messages
+            | "Validate booking"
+            >> beam.ParDo(
+                ValidateAndEnrichBookingFn()
+            ).with_outputs(
+                ValidateAndEnrichBookingFn.QUARANTINE,
+                main="valid",
+            )
+        )
 
-        # 3. Apply 1-Minute Fixed Windows with 5-Minute Allowed Lateness
-        windowed_silver = (
-            valid_bookings 
-            | "FixedWindow1Min" >> beam.WindowInto(
+        windowed = (
+            outputs.valid
+            | "One-minute event-time windows"
+            >> beam.WindowInto(
                 FixedWindows(60),
-                allowed_lateness=300
+                allowed_lateness=300,
             )
         )
 
-        # 4. Sink to Silver via Storage Write API
-        windowed_silver | "WriteSilverToBigQuery" >> beam.io.WriteToBigQuery(
+        windowed | "Write silver" >> beam.io.WriteToBigQuery(
             table=known_args.silver_table,
             method=beam.io.WriteToBigQuery.Method.STORAGE_WRITE_API,
+            create_disposition=beam.io.BigQueryDisposition.CREATE_NEVER,
             write_disposition=beam.io.BigQueryDisposition.WRITE_APPEND,
-            create_disposition=beam.io.BigQueryDisposition.CREATE_NEVER
+            triggering_frequency=5,
         )
 
-        # 5. Sink to Quarantine Dead-Letter Table
-        quarantined_bookings | "WriteQuarantineToBigQuery" >> beam.io.WriteToBigQuery(
+        outputs.quarantine | "Write quarantine" >> beam.io.WriteToBigQuery(
             table=known_args.quarantine_table,
             method=beam.io.WriteToBigQuery.Method.STORAGE_WRITE_API,
+            create_disposition=beam.io.BigQueryDisposition.CREATE_NEVER,
             write_disposition=beam.io.BigQueryDisposition.WRITE_APPEND,
-            create_disposition=beam.io.BigQueryDisposition.CREATE_NEVER
+            triggering_frequency=5,
         )
 
 
@@ -479,178 +375,157 @@ if __name__ == "__main__":
     run()
 ```
 
----
+## A Note on Event-Time Windows
 
-### Step 4: Execute Pipeline on Dataflow Runner
+The `WindowInto` transform above assigns event-time window metadata to records. It does not change the individual rows written to BigQuery by itself.
 
-Create a temporary Cloud Storage bucket for pipeline staging:
+Windows become meaningful when a later transform aggregates, joins, or emits results based on event time. The five-minute allowed lateness setting means that an event can still be accepted for up to five minutes after the watermark has passed the end of its window.
+
+That threshold should be based on observed producer delay, mobile network behavior, and the cost of correcting late analytical results.
+
+## Submit the Dataflow Job
+
+Create a staging bucket:
 
 ```bash
-gcloud storage buckets create gs://${PROJECT_ID}-dataflow-staging \
-  --location=${REGION}
+gcloud storage buckets create "gs://${PROJECT_ID}-dataflow-staging" \
+  --location="${REGION}"
 ```
 
-Submit the streaming pipeline job to Google Cloud Dataflow:
+Submit the streaming pipeline:
 
 ```bash
 python3 stream_bookings_pipeline.py \
   --runner=DataflowRunner \
-  --project=${PROJECT_ID} \
-  --region=${REGION} \
-  --temp_location=gs://${PROJECT_ID}-dataflow-staging/temp \
-  --staging_location=gs://${PROJECT_ID}-dataflow-staging/staging \
-  --subscription=projects/${PROJECT_ID}/subscriptions/booking-events-dataflow-sub \
-  --silver_table=${PROJECT_ID}:offvia_silver.fact_bookings \
-  --quarantine_table=${PROJECT_ID}:offvia_quarantine.poisoned_events \
-  --job_name=offvia-streaming-ingestion-v1 \
+  --project="${PROJECT_ID}" \
+  --region="${REGION}" \
+  --temp_location="gs://${PROJECT_ID}-dataflow-staging/temp" \
+  --staging_location="gs://${PROJECT_ID}-dataflow-staging/staging" \
+  --subscription="projects/${PROJECT_ID}/subscriptions/booking-events-dataflow-sub" \
+  --silver_table="${PROJECT_ID}:offvia_silver.fact_bookings" \
+  --quarantine_table="${PROJECT_ID}:offvia_quarantine.poisoned_events" \
+  --job_name="offvia-streaming-ingestion-v1" \
   --max_num_workers=3 \
   --enable_streaming_engine
 ```
 
-<div class="p-4 rounded-xl bg-sky-50 dark:bg-sky-950/60 border border-sky-300 dark:border-sky-700/60 my-6 text-xs text-sky-950 dark:text-sky-200">
-<strong>💡 In Plain English:</strong> Enabling <code>--enable_streaming_engine</code> moves state storage and watermark computation off your Compute Engine worker VMs and onto Google Cloud's managed streaming backend. This reduces worker CPU usage, minimizes memory pressure, and drastically cuts costs.
-</div>
+Streaming Engine moves parts of streaming execution from worker VMs into the managed Dataflow backend. It can reduce worker resource pressure, but it is not an automatic cost-saving guarantee. Test with representative traffic and inspect cost metrics before making a production assumption.
 
----
+## Test Good and Bad Events
 
-### Step 5: Synthetic Traffic & Chaos Injection
-
-Now, let's test our pipeline resilience by publishing three distinct event payloads:
-1. **A valid booking event.**
-2. **A poison-pill event with a negative fare.**
-3. **A corrupted, non-JSON payload.**
+Publish one valid booking, one business-rule violation, and one malformed JSON payload.
 
 ```bash
-# 1. Publish Valid Event
 gcloud pubsub topics publish booking-events-topic --message='{
   "booking_id": "BK-90210",
   "passenger_id": "PAX-4821",
   "flight_number": "OF-104",
   "origin": "JFK",
   "destination": "LHR",
-  "fare": 749.50,
+  "fare": "749.50",
   "currency": "USD",
   "status": "CONFIRMED",
   "event_time": "2026-10-07T14:10:00Z"
 }'
+```
 
-# 2. Publish Business Rule Violation (Negative Fare)
+```bash
 gcloud pubsub topics publish booking-events-topic --message='{
   "booking_id": "BK-90211",
   "passenger_id": "PAX-7712",
   "flight_number": "OF-208",
   "origin": "SFO",
   "destination": "HND",
-  "fare": -50.00,
-  "currency": "USD",
-  "status": "CONFIRMED",
+  "fare": "-50.00",
   "event_time": "2026-10-07T14:10:05Z"
 }'
-
-# 3. Publish Corrupt Poison-Pill (Truncated raw JSON)
-gcloud pubsub topics publish booking-events-topic --message='{"booking_id": "BK-90212", "passenger_id": "PAX-9988", "unclosed_json...'
 ```
 
----
+```bash
+gcloud pubsub topics publish booking-events-topic \
+  --message='{"booking_id":"BK-90212", "unclosed_json...'
+```
 
-### Step 6: Verify Segregation in BigQuery
-
-Within seconds, check all three destinations in BigQuery:
+## Verify Each Tier
 
 ```sql
--- 1. Verify Bronze Raw Stream (Received ALL three messages unmodified)
-SELECT 
-  message_id, 
-  publish_time, 
-  SUBSTR(data, 1, 60) AS raw_preview
-FROM `offvia-prod-data.offvia_bronze.raw_bookings`
+SELECT
+  message_id,
+  publish_time,
+  SUBSTR(data, 1, 100) AS raw_preview
+FROM `YOUR_PROJECT_ID.offvia_bronze.raw_bookings`
 ORDER BY publish_time DESC
-LIMIT 5;
+LIMIT 10;
+```
 
--- 2. Verify Silver Validated Table (Only BK-90210 exists!)
-SELECT 
-  booking_id, 
-  flight_number, 
-  origin_airport, 
-  destination_airport, 
-  fare_amount, 
-  event_timestamp
-FROM `offvia-prod-data.offvia_silver.fact_bookings`
+```sql
+SELECT
+  booking_id,
+  flight_number,
+  origin_airport,
+  destination_airport,
+  fare_amount,
+  event_timestamp,
+  source_message_id
+FROM `YOUR_PROJECT_ID.offvia_silver.fact_bookings`
 WHERE booking_id = 'BK-90210';
-
--- 3. Verify Quarantine Dead-Letter Table (BK-90211 and Corrupt JSON were safely caught!)
-SELECT 
-  error_stage, 
-  error_reason, 
-  raw_payload, 
-  received_timestamp
-FROM `offvia-prod-data.offvia_quarantine.poisoned_events`
-ORDER BY received_timestamp DESC;
 ```
 
-#### What to Look For in the Output:
-- **Zero Pipeline Crashes:** The Dataflow pipeline never restarts or halts execution.
-- **Bronze Completeness:** All 3 events exist in `offvia_bronze.raw_bookings`.
-- **Silver Integrity:** `offvia_silver.fact_bookings` strictly contains clean, validated records ready for analytical dashboards and revenue accounting.
-- **Actionable Quarantine:** `offvia_quarantine.poisoned_events` shows exact root-cause diagnostics (`JSONDecodeError` and `Invalid fare amount: -50.0`), allowing engineering teams to fix bugs and replay quarantined payloads safely.
-
----
-
-## 7. ⚠️ 3 Critical Production Gotchas
-
-<div class="p-6 rounded-2xl bg-amber-50/70 dark:bg-amber-950/30 border border-amber-300 dark:border-amber-800/60 my-8 shadow-xs space-y-3">
-<div class="flex items-center gap-2 font-bold text-amber-950 dark:text-amber-100 text-sm">
-<span>⚠️</span> 1. The Python Dataflow Pickling Trap
-</div>
-<p class="text-xs text-amber-900 dark:text-amber-200 leading-relaxed m-0">
-Never initialize non-serializable objects (such as database connection pools, gRPC stubs, or open HTTP sessions) in the constructor (<code>__init__</code>) of an Apache Beam <code>DoFn</code>. Beam serializes the DoFn object on your local machine and ships it across the network to Dataflow workers. If a class contains an open network socket, serialization crashes with a <code>TypeError: cannot pickle '_thread.lock' object</code>. Always initialize clients lazily inside the <code>setup()</code> or <code>start_bundle()</code> lifecycle methods.
-</p>
-</div>
-
-<div class="p-6 rounded-2xl bg-amber-50/70 dark:bg-amber-950/30 border border-amber-300 dark:border-amber-800/60 my-8 shadow-xs space-y-3">
-<div class="flex items-center gap-2 font-bold text-amber-950 dark:text-amber-100 text-sm">
-<span>⚠️</span> 2. BigQuery Storage Write API Quota Backoff
-</div>
-<p class="text-xs text-amber-900 dark:text-amber-200 leading-relaxed m-0">
-While the Storage Write API offers extraordinary scale, projects face default throughput limits per region (typically 50,000 requests/second). If your pipeline experiences sudden traffic spikes and receives <code>RESOURCE_EXHAUSTED</code> status codes, ensure your client or Beam pipeline utilizes exponential backoff with randomized jitter to prevent self-inflicted retry storms.
-</p>
-</div>
-
-<div class="p-6 rounded-2xl bg-amber-50/70 dark:bg-amber-950/30 border border-amber-300 dark:border-amber-800/60 my-8 shadow-xs space-y-3">
-<div class="flex items-center gap-2 font-bold text-amber-950 dark:text-amber-100 text-sm">
-<span>⚠️</span> 3. Missing IAM Permissions on Pub/Sub BigQuery Subscriptions
-</div>
-<p class="text-xs text-amber-900 dark:text-amber-200 leading-relaxed m-0">
-When configuring a direct Pub/Sub BigQuery subscription, granting <code>roles/bigquery.dataEditor</code> alone is insufficient if your destination table resides in another project or if column-level security is enforced. You must also grant <code>roles/bigquery.metadataViewer</code> to the Google-managed Pub/Sub service account (<code>service-PROJECT_NUMBER@gcp-sa-pubsub.iam.gserviceaccount.com</code>), or messages will remain stuck in unacknowledged status.
-</p>
-</div>
-
----
-
-## 8. Summary & Architecture Reference
-
-Building a resilient streaming data platform on Google Cloud is not about adding complexity; it is about establishing distinct boundaries for buffering, transformation, and storage:
-
-```text
-┌────────────────────────────────────────────────────────────────────────────────────────┐
-│                        OFFVIA PRODUCTION STREAMING PRINCIPLES                          │
-├──────────────────────────┬─────────────────────────────┬───────────────────────────────┤
-│ ARCHITECTURAL LAYER      │ SERVICE IMPLEMENTATION      │ PRODUCTION RESPONSIBILITY     │
-├──────────────────────────┼─────────────────────────────┼───────────────────────────────┤
-│ Ingestion Buffer         │ Cloud Pub/Sub               │ Decouple producers instantly  │
-│ Zero-Ops Bronze Landing  │ Direct BigQuery Sub         │ Immutable raw audit archive   │
-│ Transformation & Schema  │ Dataflow (Apache Beam)      │ Validate, window & quarantine │
-│ High-Speed Ingestion Sink│ BigQuery Storage Write API  │ Multiplexed analytical writes │
-│ Serving Layer            │ Partitioned BigQuery Fact   │ Sub-second dashboard queries  │
-└──────────────────────────┴─────────────────────────────┴───────────────────────────────┘
+```sql
+SELECT
+  error_stage,
+  error_reason,
+  raw_payload,
+  received_timestamp,
+  source_message_id
+FROM `YOUR_PROJECT_ID.offvia_quarantine.poisoned_events`
+ORDER BY received_timestamp DESC
+LIMIT 10;
 ```
 
-In **Part 5**, we will tackle data transformation orchestration at scale: building automated data quality gates, scheduled dbt pipelines, and lineage monitoring across Google Cloud Dataplex.
+Expected behavior:
 
-***
+- Bronze receives all three messages.
+- Silver contains only `BK-90210`.
+- Quarantine contains the negative-fare record and malformed JSON.
+- The Dataflow job remains healthy because expected data errors are isolated instead of thrown as worker failures.
 
-**Official References:**
-- [Google Cloud Pub/Sub BigQuery Subscriptions Documentation](https://cloud.google.com/pubsub/docs/bigquery)
-- [BigQuery Storage Write API Overview](https://cloud.google.com/bigquery/docs/write-api)
-- [Apache Beam Python Streaming Guide](https://beam.apache.org/documentation/programming-guide/#windowing)
-- [Google Cloud Dataflow Streaming Engine](https://cloud.google.com/dataflow/docs/guides/streaming-engine)
+Allow for normal propagation delays across asynchronous services before treating a test as failed.
+
+## Production Decisions to Make Explicit
+
+- **Delivery semantics:** Pub/Sub and streaming pipelines are commonly at-least-once at system boundaries. Design downstream tables and consumers to tolerate duplicate events.
+- **Storage Write API semantics:** The API supports exactly-once writes when committed streams and explicit offsets are used. Do not describe the entire architecture as end-to-end exactly-once solely because a Beam sink uses Storage Write API.
+- **Replay strategy:** Retain bronze data long enough for backfills. Define whether replayed silver events are deduplicated, merged, or written to a separate recovery flow.
+- **Schema evolution:** Version event contracts. Adding optional fields is safer than changing a field type or changing its business meaning.
+- **Quarantine ownership:** Alert on quarantine rate and classify failures by `error_stage`. A quarantine table only adds value when a team owns investigation, correction, and replay.
+- **Least privilege:** Use a dedicated Dataflow worker service account in production. Prefer dataset- or table-level permissions over broad project-wide roles.
+- **Observability:** Monitor Pub/Sub oldest unacknowledged message age, Dataflow system lag, watermark movement, BigQuery write failures, and quarantine volume.
+
+## Common Misconceptions
+
+### “Pub/Sub guarantees global FIFO order”
+
+Pub/Sub does not provide global ordering across all messages. Ordering keys provide ordered delivery only for messages sharing the same key and ordering configuration.
+
+### “A Pub/Sub dead-letter topic catches validation errors”
+
+A Pub/Sub dead-letter topic helps with delivery failures. Parsing and domain validation failures should be handled inside the Beam pipeline and routed to a deliberate quarantine sink.
+
+### “Adding windows makes a sink event-time correct”
+
+Windows alone do not alter the records written to BigQuery. Event-time correctness for aggregates depends on timestamps, watermarks, allowed lateness, triggers, and an explicit late-data policy.
+
+### “Storage Write API always means exactly-once”
+
+Exactly-once behavior requires a suitable committed-stream and offset design. End-to-end deduplication is still an architectural responsibility.
+
+## Official References
+
+- [Create BigQuery subscriptions](https://cloud.google.com/pubsub/docs/create-bigquery-subscription)
+- [Pub/Sub message ordering](https://cloud.google.com/pubsub/docs/ordering)
+- [Pub/Sub dead-letter topics](https://cloud.google.com/pubsub/docs/dead-letter-topics)
+- [Apache Beam windowing and triggers](https://beam.apache.org/documentation/programming-guide/#windowing)
+- [Apache Beam BigQuery I/O](https://beam.apache.org/documentation/io/built-in/google-bigquery/)
+- [BigQuery Storage Write API](https://cloud.google.com/bigquery/docs/write-api)
+- [Dataflow Streaming Engine](https://cloud.google.com/dataflow/docs/streaming-engine)
