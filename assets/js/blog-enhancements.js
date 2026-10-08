@@ -1476,18 +1476,28 @@
 
   function sortCohortByScore(list) {
     return (list || []).slice().sort(function(a, b) {
-      // Priority 1: Manual approvals always take higher precedence over auto-published posts
+      var dateA = new Date(a.created_at || a.updated_at || 0).getTime();
+      var dateB = new Date(b.created_at || b.updated_at || 0).getTime();
+      var timeDiff = dateB - dateA;
+
+      // Priority 1: Freshness window. If one post is significantly fresher (>12h gap),
+      // recency takes priority so breaking news from today is never buried by yesterday's posts.
+      if (Math.abs(timeDiff) > 12 * 60 * 60 * 1000) {
+        return timeDiff;
+      }
+
+      // Priority 2: Within the contemporary 12h window, manual admin curation takes precedence
       var manualA = isManualApprovedPulse(a) ? 1 : 0;
       var manualB = isManualApprovedPulse(b) ? 1 : 0;
       if (manualB !== manualA) return manualB - manualA;
 
-      // Priority 2: Community vote score
+      // Priority 3: Community vote score
       var scoreA = typeof a.score === "number" ? a.score : ((a.upvotes || 0) - (a.downvotes || 0));
       var scoreB = typeof b.score === "number" ? b.score : ((b.upvotes || 0) - (b.downvotes || 0));
       if (scoreB !== scoreA) return scoreB - scoreA;
 
-      // Priority 3: Recency
-      return new Date(b.created_at || 0) - new Date(a.created_at || 0);
+      // Priority 4: Recency tie-breaker
+      return timeDiff;
     });
   }
 
@@ -2476,6 +2486,7 @@
       if (raw === "GOOGLECLOUD" || raw === "GCP") return { label: "GCP", cls: "ticker-tag-gcp" };
       if (raw === "KUBERNETES" || raw === "K8S" || raw === "CNCF") return { label: "K8S", cls: "ticker-tag-k8s" };
       if (raw === "AWS") return { label: "AWS", cls: "ticker-tag-aws" };
+      if (raw === "AZURE" || raw === "MICROSOFT") return { label: "AZURE", cls: "ticker-tag-azure" };
       if (raw === "OPENSHIFT" || raw === "REDHAT") return { label: "OPENSHIFT", cls: "ticker-tag-redhat" };
       if (raw === "SECURITY" || raw === "TLS") return { label: "SECURITY", cls: "ticker-tag-security" };
       return { label: raw, cls: "ticker-tag-default" };

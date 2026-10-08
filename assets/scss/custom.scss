@@ -616,6 +616,10 @@ kbd {
   @apply bg-amber-500/10 text-amber-800 dark:text-amber-300 border border-amber-500/25;
 }
 
+.ticker-tag-azure {
+  @apply bg-blue-500/10 text-blue-700 dark:text-blue-300 border border-blue-500/25;
+}
+
 .ticker-tag-security {
   @apply bg-purple-500/10 text-purple-700 dark:text-purple-300 border border-purple-500/25;
 }
