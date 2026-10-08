@@ -11,6 +11,8 @@ featured: true
 draft: false
 series: "Data Engineering on Google Cloud"
 series_order: 1
+series_description: "A practical architecture and hands-on guide to Google Cloud data engineering: Cloud Storage landing, BigLake external connections, partitioned and clustered BigQuery tables, streaming ingestion pipelines, and Medallion transformations with Dataform and dbt."
+series_image: "/images/series-images/gcp-data-engineering-series-poster.jpg"
 ---
 
 # Data Engineering on GCP: The Core Storage & Access Building Blocks Demystified
