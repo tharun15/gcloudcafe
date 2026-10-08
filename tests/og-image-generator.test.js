@@ -155,6 +155,6 @@ Body text.`);
 
     expect(headContent).toContain('dynamicOgRel := printf "images/og/%s.png" $slug');
     expect(headContent).toContain('fileExists $dynamicOgStatic');
-    expect(headContent).toContain('with .Params.og_image');
+    expect(headContent).toContain('if .Params.og_image');
   });
 });

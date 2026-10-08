@@ -26,3 +26,4 @@ yarn.lock
 *.token
 
 # Trigger GitHub Actions Rebuild
+.superpowers/
