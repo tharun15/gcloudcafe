@@ -1,5 +1,24 @@
 [
   {
+    "id": "e8ee37e0-473e-4dac-9721-c52e739809df",
+    "title": "IdeaBot: Streamlining Corporate Innovation & Breakthroughs",
+    "content": "🎯 What Changed: Red Hat introduces IdeaBot, a new solution designed to structure and accelerate corporate innovation initiatives.\n💡 Engineering Impact: This initiative empowers engineering and product teams to align emerging technology investments directly with business impact, streamlining the evaluation and integration of breakthrough ideas into strategic roadmaps.",
+    "tags": [
+      "#OpenShift",
+      "#RedHat",
+      "#DevOps"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-10-08T11:52:33.832086+00:00",
+    "link_url": "https://www.redhat.com/en/blog/breathing-life-corporate-innovation-ideabot",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 35.7h without manual admin curation.",
+    "updated_at": "2026-10-08T21:09:20.494Z"
+  },
+  {
     "id": "32674d95-13ca-49cf-bd29-5bf7d7da1110",
     "title": "Azure Deploys AI Across Datacenter Operations and Hardware Lifecycle",
     "content": "🎯 What Changed: Microsoft revealed its framework applying AI across Azure's physical infrastructure lifecycle, optimizing everything from hardware supply chains to fleet telemetry and operations.\n💡 Engineering Impact: Workloads gain improved uptime and capacity predictability, as automated AI models preempt hardware failures and optimize regional capacity allocation before tenant environments are impacted.",
@@ -264,24 +283,5 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T03:59:26.783766+00:00"
-  },
-  {
-    "id": "e04faf63-8d75-4e26-953d-38ff53dd78ec",
-    "title": "Ansible Automates Zero Trust Network Security",
-    "content": "🎯 What Changed: Red Hat highlights Ansible's capabilities for building and automating zero-trust network architectures.\n💡 Engineering Impact: This enables organizations to enforce least privilege, automate network segmentation, and unify security policies across hybrid, multi-vendor environments, significantly improving breach containment strategies against sophisticated AI threats.",
-    "tags": [
-      "#OpenShift",
-      "#RedHat",
-      "#DevOps"
-    ],
-    "upvotes": 1,
-    "downvotes": 0,
-    "score": 1,
-    "author": "Cloud Newsroom Bot",
-    "created_at": "2026-10-06T11:52:51.520684+00:00",
-    "link_url": "https://www.redhat.com/en/blog/building-zero-trust-networks-red-hat-ansible",
-    "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 585.0h without manual admin curation.",
-    "updated_at": "2026-10-06T18:06:22.206+00:00"
   }
 ]
