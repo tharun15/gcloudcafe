@@ -1,5 +1,24 @@
 [
   {
+    "id": "32674d95-13ca-49cf-bd29-5bf7d7da1110",
+    "title": "Azure Deploys AI Across Datacenter Operations and Hardware Lifecycle",
+    "content": "🎯 What Changed: Microsoft revealed its framework applying AI across Azure's physical infrastructure lifecycle, optimizing everything from hardware supply chains to fleet telemetry and operations.\n💡 Engineering Impact: Workloads gain improved uptime and capacity predictability, as automated AI models preempt hardware failures and optimize regional capacity allocation before tenant environments are impacted.",
+    "tags": [
+      "#Azure",
+      "#CloudArchitecture",
+      "#CloudNews"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-10-08T11:52:43.216665+00:00",
+    "link_url": "https://azure.microsoft.com/en-us/blog/ai-transformation-across-the-infrastructure-lifecycle-from-supply-chain-to-fleet-operations/",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 29.9h without manual admin curation.",
+    "updated_at": "2026-10-08T15:22:52.165Z"
+  },
+  {
     "id": "08cec857-c314-488c-ab43-3bcad1fea7b4",
     "title": "Claude Haiku 5.5 is now available on AWS GovCloud (US)",
     "content": "🎯 What Changed: AWS has made Claude Haiku 5.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
@@ -264,24 +283,5 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 585.0h without manual admin curation.",
     "updated_at": "2026-10-06T18:06:22.206+00:00"
-  },
-  {
-    "id": "f0bf3c32-a35c-4d6b-b514-d75aa4903c2f",
-    "title": "AWS Advanced Ruby Driver Wrapper is generally available",
-    "content": "🎯 What Changed: AWS has made its Advanced Ruby Driver Wrapper generally available, enhancing connectivity for Amazon RDS and Aurora PostgreSQL/MySQL databases.\n💡 Engineering Impact: This driver dramatically reduces database switchover and failover times, boosting application availability. It also streamlines authentication via AWS Secrets Manager and IAM, integrating effortlessly with ActiveRecord for minimal code impact.",
-    "tags": [
-      "#AWS",
-      "#CloudArchitecture",
-      "#CloudNews"
-    ],
-    "upvotes": 1,
-    "downvotes": 0,
-    "score": 1,
-    "author": "Cloud Newsroom Bot",
-    "created_at": "2026-10-06T11:52:45.482099+00:00",
-    "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/10/aws-ruby-driver-wrapper-available/",
-    "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 590.5h without manual admin curation.",
-    "updated_at": "2026-10-06T23:39:37.222+00:00"
   }
 ]
