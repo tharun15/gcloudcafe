@@ -129,7 +129,20 @@
 
 {{ $imageURL := "" }}
 {{ $imageExt := "png" }}
-{{ with .Params.image }}
+{{ $slug := "" }}
+{{ with .File }}
+  {{ $slug = .BaseFileName }}
+{{ end }}
+{{ $dynamicOgRel := printf "images/og/%s.png" $slug }}
+{{ $dynamicOgStatic := printf "static/%s" $dynamicOgRel }}
+
+{{ with .Params.og_image }}
+  {{ $imageURL = . | absURL }}
+  {{ $imageExt = path.Ext . | strings.TrimPrefix "." }}
+{{ else if and $slug (fileExists $dynamicOgStatic) }}
+  {{ $imageURL = $dynamicOgRel | absURL }}
+  {{ $imageExt = "png" }}
+{{ else with .Params.image }}
   {{ $imageURL = . | absURL }}
   {{ $imageExt = path.Ext . | strings.TrimPrefix "." }}
 {{ else }}

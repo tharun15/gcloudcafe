@@ -148,4 +148,13 @@ Body text.`);
     fs.rmSync(testMdDir, { recursive: true, force: true });
     fs.rmSync(testOutDir, { recursive: true, force: true });
   });
+
+  it('ensures Hugo head.html template contains dynamic OG card logic', () => {
+    const headPath = path.resolve(__dirname, '../layouts/partials/essentials/head.html');
+    const headContent = fs.readFileSync(headPath, 'utf8');
+
+    expect(headContent).toContain('dynamicOgRel := printf "images/og/%s.png" $slug');
+    expect(headContent).toContain('fileExists $dynamicOgStatic');
+    expect(headContent).toContain('with .Params.og_image');
+  });
 });
