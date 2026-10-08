@@ -1,7 +1,7 @@
 ---
-title: "Data Engineering on GCP (Part 5): Medallion Architecture & Transformations with Dataform and dbt"
-meta_title: "GCP Data Engineering: Dataform, dbt, and Medallion Architecture"
-description: "Architect a robust BigQuery transformation layer with Dataform and dbt. Learn Bronze-to-Gold Medallion design, incremental deduplication, and automated data quality assertions."
+title: "Data Engineering on GCP (Part 5): Medallion Architecture with Dataform and dbt"
+meta_title: "GCP Data Engineering: Medallion Architecture, Dataform, and dbt"
+description: "Build a reliable BigQuery transformation layer with Medallion architecture, Dataform or dbt, incremental processing, deduplication, and practical data-quality controls."
 date: 2026-10-08
 image: "/images/gcp-dataform-dbt-transformations.jpg"
 categories: ["Google Cloud", "Architecture"]
@@ -15,253 +15,157 @@ series_description: "A practical architecture and hands-on guide to Google Cloud
 series_image: "/images/series-images/gcp-data-engineering-series-poster.jpg"
 ---
 
-In [Part 3](/blog/gcp-data-engineering-streaming-batch-ingestion-pubsub-dataflow/) and [Part 4](/blog/gcp-data-engineering-streaming-pipeline-lab/) of this series, we engineered a resilient streaming ingestion pipeline for **Offvia**, our regional airline-booking platform. Millions of raw reservation events, flight cancellations, and seat changes now land continuously into BigQuery and Cloud Storage with sub-minute latency.
+In [Part 3](/blog/gcp-data-engineering-streaming-batch-ingestion-pubsub-dataflow/) and [Part 4](/blog/gcp-data-engineering-streaming-pipeline-lab/), we built Offvia’s streaming ingestion path. Reservation events, cancellations, and seat updates now arrive in BigQuery and Cloud Storage continuously.
 
-On paper, the ingestion engineers have won. The pipeline is green.
+That is a good start—not the finish line.
 
-Then Monday morning arrives.
+On Monday morning, an executive dashboard reports **negative gross ticket sales** for Sunday. It also claims that flight `OF-302` carried 400 passengers on an Airbus A320 with 180 seats. The streaming pipeline is healthy. The data is not.
 
-At 8:30 AM, Offvia’s Vice President of Commercial Operations opens the executive revenue dashboard. The top card shows total gross ticket sales for Sunday: **-$284,500.00**. Further down, route profitability for flight `OF-302` (Frankfurt to London Heathrow) is reporting 400 passengers seated on an Airbus A320 with only 180 physical chairs. 
+Nothing “mysterious” happened in ingestion. It accepted what it was designed to accept: raw records from distributed producers. During a flash sale, Offvia saw duplicate retries, malformed refund payloads, and a fragile nightly stored procedure that attempted a full rebuild. The result was an expensive failure and untrustworthy reporting.
 
-What went wrong?
+This article explains how to turn raw BigQuery landing data into dependable analytics with a **Medallion transformation layer**:
 
-The ingestion pipeline did exactly what it was programmed to do: it ingested raw payloads without altering them. But during Sunday's flash sale, three things occurred simultaneously:
-1. **Network Retries & At-Least-Once Duplication:** Distributed clients resent booking confirmations, producing duplicate booking records with identical business IDs but slightly different arrival timestamps.
-2. **Schema Drift & Corrupted Payloads:** A partner travel agency began sending refund events where the `refund_amount` field was populated as a negative number in the gross ticket revenue column.
-3. **Monolithic Stored Procedure Failure:** An 850-line legacy SQL stored procedure scheduled at 4:00 AM attempted to rebuild the entire reporting table from scratch. It ran for 52 minutes, exceeded its query memory slot quota, failed silently half-way through a `CREATE OR REPLACE TABLE` operation, and billed $1,400 in BigQuery on-demand analysis scan costs without writing a single clean row.
+- Bronze for immutable raw events
+- Silver for typed, deduplicated, conformed data
+- Gold for business-ready marts
+- Dataform or dbt for dependency-aware SQL workflows
+- Incremental processing that handles late arrivals without repeatedly scanning all history
+- Data-quality checks and quarantine paths that stop bad metrics from reaching dashboards
 
-Raw ingestion is only half the battle. If your data warehouse is a dumping ground of unstructured JSON, unverified types, and unversioned SQL scripts, your analytics will fail. 
+> **Important distinction:** Dataform and dbt orchestrate and generate warehouse SQL. For BigQuery models, the actual transformation compute runs in BigQuery—not in Dataform or dbt itself. Dataform compiles workflow code, resolves dependencies, and runs the resulting actions in BigQuery. [Dataform overview](https://cloud.google.com/dataform/docs/overview)
 
-In this architectural guide, we dissect how to build a production-grade **Medallion Transformation Layer** on Google Cloud. We will explore how to model data from **Bronze (Raw)** to **Silver (Conformed)** and **Gold (Curated Marts)**, evaluate the architectural trade-offs between **Google Cloud Dataform** and **dbt (data build tool)**, implement incremental deduplication with dual-timestamp watermarks, and enforce automated data quality assertions before corrupted numbers ever reach a dashboard.
+## The restaurant analogy
 
----
-
-## 🍳 The Non-Technical Story: The Restaurant Kitchen Pipeline
-
-To understand modern data warehouse transformation, look at how a high-volume restaurant kitchen operates during dinner rush.
+A high-volume restaurant does not plate dinner directly from the delivery dock.
 
 ```text
-[Loading Dock] ────────► [Prep Station] ────────► [Hot Line / Plating] ────────► [Dining Room]
- (Raw Crates)             (Washing & Dicing)       (Cooked Specialties)          (Guests / BI)
-  BRONZE LAYER               SILVER LAYER               GOLD LAYER                CONSUMPTION
+[Loading dock]  ──>  [Prep station]  ──>  [Hot line]  ──>  [Dining room]
+    Bronze              Silver              Gold           Consumers
 ```
 
-1. **The Loading Dock (Bronze Layer):** Crates of raw vegetables, uninspected fish, and bulk meat arrive directly from delivery trucks. Some items still have dirt on them; an occasional tomato is bruised; duplicate invoices arrive in the box. The kitchen staff does **not** cook directly from the unloading dock, nor do they invite paying dinner guests to eat out of the shipping crates.
-2. **The Prep Station (Silver Layer):** Line cooks wash the produce, peel potatoes, slice onions into uniform dice, discard spoiled items, and weigh standard portions into labeled containers. Everything is clean, verified, and standardized into uniform cooking units.
-3. **The Hot Line & Plating Station (Gold Layer):** The sous chef combines the prepped ingredients into finished dishes: a pan-seared sea bass with roasted potatoes and reduction sauce. The food is plated, garnished, and brought to the dining room.
+- **Bronze — loading dock:** Preserve what arrived. Records can be duplicated, malformed, late, or not yet understood.
+- **Silver — prep station:** Parse, cast, validate, deduplicate, standardize names and codes, and isolate exceptions.
+- **Gold — hot line:** Deliver tables designed for a specific consumer: finance, operations, customer support, or BI.
 
-In data engineering:
-- **Bronze is your loading dock:** Immutable, raw, append-only payloads landed by Pub/Sub and Cloud Storage.
-- **Silver is your prep station:** Cleaned, deduplicated, type-cast, and standardized tables with schema enforcement.
-- **Gold is your plated dish:** Aggregated, business-ready star schemas and dimensional marts designed for sub-second executive dashboards and financial audits.
+The point is not the names Bronze, Silver, and Gold. The point is a deliberate contract between layers: raw data remains recoverable, conformed data becomes reusable, and business data becomes safe to consume.
 
-> **💡 In Plain English:** Never point your business dashboards (Looker, Tableau, Metabase) directly at your raw ingestion tables. If you serve unwashed data straight from the loading dock, your consumers will end up with data poisoning.
+> **Rule:** Do not connect executive dashboards directly to raw ingestion tables. Raw data is evidence, not a reporting contract.
 
----
-
-## 🏛️ Core Transformation Engines: Stored Procedures vs. Dataform vs. dbt
-
-Historically, data teams transformed data inside warehouses using monolithic SQL stored procedures (`CREATE OR REPLACE PROCEDURE ...`). In modern cloud engineering, stored procedures have been largely superseded by declarative transformation frameworks: **Google Cloud Dataform** and **dbt (data build tool)**.
-
-Let's examine how these three transformation mechanisms operate under the hood.
-
-<div class="my-8 overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm">
-  <div class="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-slate-200 dark:divide-slate-800">
-    <div class="p-6 bg-rose-50/50 dark:bg-rose-950/20">
-      <div class="flex items-center gap-2 font-mono text-xs font-bold uppercase tracking-wider text-rose-600 dark:text-rose-400 mb-2">
-        <span class="w-2 h-2 rounded-full bg-rose-500"></span> Legacy Stored Procedures
-      </div>
-      <h3 class="text-base font-bold text-slate-900 dark:text-white mb-2">Imperative Scripts</h3>
-      <p class="text-xs text-slate-600 dark:text-slate-300 mb-4 leading-relaxed">
-        Sequences of procedural SQL statements executing inside BigQuery. Hardcoded dependencies, no version control, and manual transaction management.
-      </p>
-      <ul class="text-xs space-y-1.5 text-slate-500 dark:text-slate-400 font-mono">
-        <li>❌ Untestable in CI/CD</li>
-        <li>❌ No automated lineage</li>
-        <li>❌ High operational fragility</li>
-      </ul>
-    </div>
-    <div class="p-6 bg-sky-50/50 dark:bg-sky-950/20">
-      <div class="flex items-center gap-2 font-mono text-xs font-bold uppercase tracking-wider text-sky-600 dark:text-sky-400 mb-2">
-        <span class="w-2 h-2 rounded-full bg-sky-500"></span> Google Cloud Dataform
-      </div>
-      <h3 class="text-base font-bold text-slate-900 dark:text-white mb-2">Serverless GCP Native</h3>
-      <p class="text-xs text-slate-600 dark:text-slate-300 mb-4 leading-relaxed">
-        Declarative SQLX framework fully managed by Google Cloud. Compiles dependency graphs, verifies schemas, and executes via native BigQuery jobs without runners.
-      </p>
-      <ul class="text-xs space-y-1.5 text-slate-600 dark:text-slate-300 font-mono">
-        <li>✅ Zero infrastructure to host</li>
-        <li>✅ Native GCP IAM & Workspaces</li>
-        <li>✅ Built-in assertions & lineage</li>
-      </ul>
-    </div>
-    <div class="p-6 bg-amber-50/50 dark:bg-amber-950/20">
-      <div class="flex items-center gap-2 font-mono text-xs font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400 mb-2">
-        <span class="w-2 h-2 rounded-full bg-amber-500"></span> dbt (data build tool)
-      </div>
-      <h3 class="text-base font-bold text-slate-900 dark:text-white mb-2">Multi-Cloud Standard</h3>
-      <p class="text-xs text-slate-600 dark:text-slate-300 mb-4 leading-relaxed">
-        Jinja-templated SQL framework with a massive open-source ecosystem, rich semantic layer, and multi-warehouse portability (BigQuery, Snowflake, Databricks).
-      </p>
-      <ul class="text-xs space-y-1.5 text-slate-600 dark:text-slate-300 font-mono">
-        <li>✅ Industry-standard community</li>
-        <li>✅ Advanced package ecosystem</li>
-        <li>⚠️ Requires runner (Cloud Run / K8s)</li>
-      </ul>
-    </div>
-  </div>
-</div>
-
-### How Declarative DAG Compilation Works
-
-Unlike stored procedures, where you must manually sequence execution order (`CALL Step1(); CALL Step2();`), both Dataform and dbt use **declarative dependency graphs**.
-
-When you write a SQL model in Dataform:
-```sql
--- definitions/gold/fct_daily_bookings.sqlx
-config {
-  type: "incremental",
-  schema: "gold_marts",
-  dependencies: ["stg_flights", "stg_passengers"]
-}
-
-SELECT
-  b.booking_id,
-  f.flight_number,
-  p.full_name,
-  b.total_amount
-FROM ${ref("stg_bookings")} b
-JOIN ${ref("stg_flights")} f ON b.flight_id = f.flight_id
-JOIN ${ref("stg_passengers")} p ON b.passenger_id = p.passenger_id
-```
-
-The framework does not immediately run this SQL. Instead, it executes an **Abstract Syntax Tree (AST) compilation phase**:
-1. **Reference Resolution:** It scans all `${ref("...")}` function calls.
-2. **DAG Construction:** It creates a topological graph of nodes and directed edges.
-3. **Dry-Run Validation:** It dispatches metadata dry-run queries to BigQuery to validate that column names, data types, and partition keys exist without scanning table data or incurring query billing costs.
-4. **Parallel Execution:** It identifies independent branches of the graph and dispatches concurrent BigQuery jobs, maximizing slot utilization.
-
----
-
-## 🚨 5 Fatal Misconceptions in Warehouse Transformations
-
-<div class="grid grid-cols-1 md:grid-cols-2 gap-4 my-8">
-  <div class="p-5 rounded-xl border border-rose-200 dark:border-rose-900/60 bg-rose-50/40 dark:bg-rose-950/20">
-    <div class="flex items-center gap-2 text-rose-600 dark:text-rose-400 font-bold text-xs uppercase font-mono mb-1">
-      <i class="fa-solid fa-triangle-exclamation"></i> Misconception 1
-    </div>
-    <h4 class="text-sm font-bold text-slate-900 dark:text-white mb-1">"ELT means Looker can do all joins on the fly"</h4>
-    <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
-      Dumping un-modeled raw tables into BigQuery and expecting BI tools to join 50 million rows on every dashboard refresh wastes thousands of dollars in query slots and causes 45-second dashboard load latencies.
-    </p>
-  </div>
-  <div class="p-5 rounded-xl border border-rose-200 dark:border-rose-900/60 bg-rose-50/40 dark:bg-rose-950/20">
-    <div class="flex items-center gap-2 text-rose-600 dark:text-rose-400 font-bold text-xs uppercase font-mono mb-1">
-      <i class="fa-solid fa-triangle-exclamation"></i> Misconception 2
-    </div>
-    <h4 class="text-sm font-bold text-slate-900 dark:text-white mb-1">"Dataform and dbt process data on their own servers"</h4>
-    <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
-      Neither tool ever touches your data. They only generate and dispatch compiled SQL DDL/DML statements. 100% of the data transformation, filtering, and aggregation compute occurs inside BigQuery's distributed Dremel engine.
-    </p>
-  </div>
-  <div class="p-5 rounded-xl border border-rose-200 dark:border-rose-900/60 bg-rose-50/40 dark:bg-rose-950/20">
-    <div class="flex items-center gap-2 text-rose-600 dark:text-rose-400 font-bold text-xs uppercase font-mono mb-1">
-      <i class="fa-solid fa-triangle-exclamation"></i> Misconception 3
-    </div>
-    <h4 class="text-sm font-bold text-slate-900 dark:text-white mb-1">"Incremental models automatically prune target partitions"</h4>
-    <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
-      If your target table is partitioned by <code>booking_date</code> but your incremental merge condition only compares <code>booking_id</code> without specifying a target partition boundary, BigQuery must scan the entire target table to locate matching keys.
-    </p>
-  </div>
-  <div class="p-5 rounded-xl border border-rose-200 dark:border-rose-900/60 bg-rose-50/40 dark:bg-rose-950/20">
-    <div class="flex items-center gap-2 text-rose-600 dark:text-rose-400 font-bold text-xs uppercase font-mono mb-1">
-      <i class="fa-solid fa-triangle-exclamation"></i> Misconception 4
-    </div>
-    <h4 class="text-sm font-bold text-slate-900 dark:text-white mb-1">"A failing assertion should halt the entire pipeline"</h4>
-    <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
-      Hard pipeline failures on minor data flaws cause severe SLA breaches. A resilient architecture diverts offending rows to an isolated quarantine dataset while allowing healthy operational data to proceed to Gold marts.
-    </p>
-  </div>
-</div>
-
----
-
-## 🔄 The Medallion Data Lifecycle Pipeline
-
-Below is the complete architectural flow for Offvia's Medallion transformation pipeline, mapping data from raw ingestion to downstream consumption.
+## The architecture
 
 ```text
-┌────────────────────────────────────────────────────────────────────────────────────────┐
-│                                 1. BRONZE (RAW LANDING)                                │
-│  - Dataset: offvia_bronze                                                              │
-│  - Storage: Partitioned by _PARTITIONDATE (ingested_at), Clustered by source_system    │
-│  - Format: Append-only raw JSON payloads, unvalidated strings, duplicate events       │
-└───────────────────────────────────────────┬────────────────────────────────────────────┘
-                                            │
-                                            ▼
-┌────────────────────────────────────────────────────────────────────────────────────────┐
-│                        2. COMPILATION & DATA QUALITY ENGINE                            │
-│  - Orchestrator: Google Cloud Dataform / dbt Core                                      │
-│  - Pre-flight: BigQuery Dry-Run compile & schema validation                           │
-│  - Assertions: Unique keys, non-null booking_id, positive payment values               │
-└───────────────────────────────────────────┬────────────────────────────────────────────┘
-                                            │
-                                            ▼
-┌────────────────────────────────────────────────────────────────────────────────────────┐
-│                             3. SILVER (CONFORMED & CLEANED)                            │
-│  - Dataset: offvia_silver                                                              │
-│  - Incremental Deduplication: QUALIFY ROW_NUMBER() OVER (...) = 1                      │
-│  - Structure: Normalized Relational Tables (bookings, flights, passengers, aircraft)   │
-│  - Dimensions: Slowly Changing Dimensions (SCD Type 2 for passenger frequent flyer tier)│
-└───────────────────────────────────────────┬────────────────────────────────────────────┘
-                                            │
-                                            ▼
-┌────────────────────────────────────────────────────────────────────────────────────────┐
-│                             4. GOLD (BUSINESS DATA MARTS)                              │
-│  - Dataset: offvia_gold                                                                │
-│  - Modeling: Dimensional Star Schema / One Big Table (OBT)                             │
-│  - Performance: Partitioned by event_date, Clustered by route & carrier                │
-│  - Targets: fct_daily_route_profitability, fct_turnaround_delays, dim_customers        │
-└───────────────────────────────────────────┬────────────────────────────────────────────┘
-                                            │
-                                            ▼
-┌────────────────────────────────────────────────────────────────────────────────────────┐
-│                                5. CONSUMPTION LAYER                                    │
-│  - BI Dashboards: Looker Studio (Direct Query / BI Engine cache)                       │
-│  - Analytics Engineering: Ad-hoc BigQuery SQL Workspaces                               │
-│  - Reverse ETL: Syncing VIP passenger status back to operational check-in desks       │
-└────────────────────────────────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────────┐
+│ BRONZE: offvia_bronze                                                 │
+│ Immutable, append-only records; raw JSON; arrival metadata; replayable│
+└───────────────────────────────┬──────────────────────────────────────┘
+                                │
+                                ▼
+┌──────────────────────────────────────────────────────────────────────┐
+│ TRANSFORMATION CONTROL PLANE                                          │
+│ Dataform or dbt: Git, dependency graph, SQL compilation, tests, runs │
+└───────────────────────────────┬──────────────────────────────────────┘
+                                │
+                                ▼
+┌──────────────────────────────────────────────────────────────────────┐
+│ SILVER: offvia_silver                                                 │
+│ Typed, deduplicated, validated entities and event tables              │
+│ Plus: offvia_quarantine for rows needing investigation                │
+└───────────────────────────────┬──────────────────────────────────────┘
+                                │
+                                ▼
+┌──────────────────────────────────────────────────────────────────────┐
+│ GOLD: offvia_gold                                                     │
+│ Facts, dimensions, aggregates, semantic reporting contracts           │
+└───────────────────────────────┬──────────────────────────────────────┘
+                                │
+                                ▼
+┌──────────────────────────────────────────────────────────────────────┐
+│ CONSUMPTION                                                           │
+│ Looker / Looker Studio / BI Engine / ad-hoc analysis / reverse ETL   │
+└──────────────────────────────────────────────────────────────────────┘
 ```
 
----
+A healthy implementation also has operational boundaries:
 
-## ⚙️ Incremental Processing & The Dual-Timestamp Watermark
+- Separate service accounts and dataset permissions by environment.
+- Source-controlled SQL, reviewed through pull requests.
+- A repeatable full-refresh and backfill process.
+- Observability for freshness, volumes, quality failures, and BigQuery cost.
+- A quarantine destination and an explicit owner for remediation.
 
-The single most critical design decision in warehouse transformation is how to process data **incrementally**.
+## Dataform, dbt, or stored procedures?
 
-In month 1, Offvia had 500,000 bookings. Running a full table rebuild (`CREATE OR REPLACE TABLE`) every morning took 18 seconds and cost pennies.  
-By month 12, Offvia had accumulated 95 million booking records. Rebuilding the entire table every hour scanned **180 GB per run**, costing over $1,200 per month in wasted BigQuery scan fees.
+Stored procedures remain useful for a small number of procedural tasks: administrative operations, tightly scoped transactions, or exceptional warehouse maintenance. They are not automatically bad. The problem is using one giant procedure as the entire transformation platform.
 
-### The Incremental Solution
+Dataform and dbt instead let you define individual data assets and their relationships. A call such as `${ref("stg_bookings")}` in Dataform, or `{{ ref("stg_bookings") }}` in dbt, declares a dependency. The framework builds the directed acyclic graph (DAG), runs upstream models first, and exposes lineage.
 
-Incremental models process only rows that were added or modified since the last pipeline execution. But doing this safely requires understanding **Dual-Timestamp Watermarks**.
+| Dimension | BigQuery stored procedures | Google Cloud Dataform | dbt Core / dbt Cloud |
+|---|---|---|---|
+| Primary style | Imperative SQL scripting | SQLX plus optional JavaScript | SQL plus Jinja templating |
+| Dependency graph | Manual or external orchestration | Native `ref()` graph | Native `ref()` graph |
+| Transformation runtime | BigQuery | BigQuery | Your warehouse, such as BigQuery |
+| Managed service | BigQuery only | Managed Google Cloud service | Core needs a runner; Cloud is managed SaaS |
+| Data-quality tests | Hand-written SQL | Built-in assertions and custom assertions | YAML tests and custom tests |
+| Portability | BigQuery-specific | BigQuery-focused | Broad adapter ecosystem |
+| Best fit | Targeted procedural work | BigQuery-first teams wanting minimal platform overhead | Multi-platform estates or teams invested in dbt packages and conventions |
 
-Every record in Offvia carries two distinct timestamps:
-1. **Event Time (`booking_timestamp`):** When the passenger clicked "Pay Now" on their phone in Berlin.
-2. **Ingestion Time (`ingested_at`):** When Google Cloud Pub/Sub and BigQuery actually received and committed the record into the Bronze table.
+### What Dataform actually does
 
-<div class="my-6 p-4 rounded-xl border border-sky-200 dark:border-sky-800 bg-sky-50/50 dark:bg-sky-950/30 text-xs text-slate-700 dark:text-slate-300">
-  <div class="font-bold text-sky-800 dark:text-sky-300 uppercase tracking-wider font-mono mb-1">
-    <i class="fa-solid fa-lightbulb"></i> Architectural Rule of Thumb: Ingestion Time vs. Event Time
-  </div>
-  <strong>Incremental pipeline filters must ALWAYS query on Ingestion Time (<code>ingested_at</code>), NEVER on Event Time.</strong> If a mobile app goes offline during a flight and uploads yesterday's booking 14 hours late, filtering on event time will permanently skip that record. Filtering on ingestion time guarantees that late-arriving events are picked up on the very next pipeline run.
-</div>
+Dataform uses SQLX and configuration to define tables, views, incremental tables, assertions, dependencies, documentation, and workflow operations. It compiles those definitions into BigQuery SQL, resolves missing or circular dependencies, builds the dependency graph, and runs the resulting actions in BigQuery. It can also integrate with Git and schedule workflows through workflow configurations. [Dataform overview](https://cloud.google.com/dataform/docs/overview)
 
-### Dataform SQLX Incremental Model Implementation
+One correction to a common description: compilation is not a guarantee that every referenced BigQuery column or type has been validated through a free warehouse dry run. Treat Dataform compilation as code and dependency validation. Validate query semantics and cost separately with BigQuery query validation, CI checks, controlled executions, and sensible test data.
 
-Here is how Offvia implements incremental deduplication in Dataform (`definitions/silver/stg_bookings.sqlx`):
+### A practical decision
+
+Choose **Dataform** when the warehouse is BigQuery, native Google Cloud IAM and a managed console workflow matter, and you want the fewest moving parts.
+
+Choose **dbt** when portability, its package ecosystem, standardized analytics-engineering practices, or an existing dbt platform are important. On BigQuery, dbt supports incremental strategies such as `merge` and `insert_overwrite`; choose the strategy around the table’s update pattern and partition design. [dbt BigQuery configurations](https://docs.getdbt.com/reference/resource-configs/bigquery-configs)
+
+Use **stored procedures** sparingly as supporting tools, not as a replacement for model-level lineage, testing, review, and deployment practices.
+
+## Bronze: preserve the evidence
+
+Bronze is not “bad data.” It is a defensible historical record of what the platform received.
+
+For an event table such as `offvia_bronze.raw_booking_events`, retain at least:
+
+- `raw_payload`: the original JSON payload or raw record
+- `ingested_at`: a trustworthy arrival timestamp assigned by the platform
+- `source_system`: producer or partner identifier
+- `event_id` or message identifier, when available
+- `message_published_at`: producer-side publish time, when available
+- `schema_version`: payload contract version
+- tracing fields such as a Pub/Sub message ID or correlation ID
+
+Partition Bronze by an ingestion-derived date and set an appropriate retention policy. Cluster only when query patterns justify it. Do not overwrite it as part of normal transformations; its job is replayability and auditability.
+
+## Silver: make data trustworthy and reusable
+
+Silver models turn opaque payloads into typed records. This is where you:
+
+- Extract JSON fields.
+- Use `SAFE_CAST` and safe parsing for untrusted input.
+- Normalize currency codes, status values, airport identifiers, and time zones.
+- Deduplicate deliveries.
+- Separate records that cannot meet the conformed contract.
+- Preserve operational metadata such as `ingested_at`, source, and original event IDs.
+
+### Use two timestamps for two questions
+
+`event_timestamp` answers: **When did the business event occur?**
+
+`ingested_at` answers: **When did our platform receive this record?**
+
+For incremental extraction, prefer a reliable arrival or change timestamp such as `ingested_at`; otherwise, a late event can be permanently missed. For business reporting, partitioning, and historical analysis, use the business event date where it reflects the intended grain.
+
+This does **not** mean “filter only with `ingested_at > MAX(ingested_at)` forever.” That exclusive watermark pattern can fail when data arrives late, a run partially fails, timestamps collide, or corrections update older business dates. Production pipelines need an overlap window and an idempotent merge or partition rebuild strategy.
+
+### A safer incremental Dataform pattern
+
+The following model uses a three-day **ingestion lookback**. It re-reads a bounded overlap of Bronze, keeps the newest delivered version per `booking_id`, and lets Dataform merge using the declared `uniqueKey`. The lookback makes retries and delayed arrivals recoverable; the deduplication makes reprocessing safe.
 
 ```sql
+-- definitions/silver/stg_bookings.sqlx
 config {
   type: "incremental",
   schema: "offvia_silver",
@@ -275,179 +179,164 @@ config {
     uniqueKey: ["booking_id"],
     nonNull: ["booking_id", "passenger_id", "flight_id", "booking_timestamp"],
     rowConditions: [
-      'total_amount >= 0',
-      'currency IN ("EUR", "USD", "GBP")'
+      "total_amount >= 0",
+      "currency IN ('EUR', 'USD', 'GBP')"
     ]
   }
 }
 
--- 1. Identify the latest watermark from the destination table
-WITH watermark AS (
-  ${when(incremental(), 
-    `SELECT COALESCE(MAX(ingested_at), TIMESTAMP("1970-01-01")) AS max_ingested_at FROM ${self()}`,
-    `SELECT TIMESTAMP("1970-01-01") AS max_ingested_at`
-  )}
-),
-
--- 2. Extract only newly arrived micro-batches from Bronze
-raw_incremental AS (
+WITH source_rows AS (
   SELECT
     JSON_VALUE(raw_payload, '$.booking_id') AS booking_id,
     JSON_VALUE(raw_payload, '$.passenger_id') AS passenger_id,
     JSON_VALUE(raw_payload, '$.flight_id') AS flight_id,
-    TIMESTAMP(JSON_VALUE(raw_payload, '$.booking_timestamp')) AS booking_timestamp,
+    SAFE_CAST(JSON_VALUE(raw_payload, '$.booking_timestamp') AS TIMESTAMP) AS booking_timestamp,
     SAFE_CAST(JSON_VALUE(raw_payload, '$.total_amount') AS NUMERIC) AS total_amount,
     JSON_VALUE(raw_payload, '$.currency') AS currency,
     JSON_VALUE(raw_payload, '$.booking_status') AS booking_status,
+    JSON_VALUE(raw_payload, '$.origin_airport') AS origin_airport,
+    JSON_VALUE(raw_payload, '$.destination_airport') AS destination_airport,
     ingested_at
-  FROM ${ref("raw_bookings")}, watermark
-  WHERE ingested_at > watermark.max_ingested_at
-    -- Lookback window buffer to capture distributed clock skew
-    AND ingested_at >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 3 DAY)
+  FROM ${ref("raw_bookings")}
+  WHERE
+    ${when(
+      incremental(),
+      "ingested_at >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 3 DAY)",
+      "TRUE"
+    )}
+),
+
+valid_candidates AS (
+  SELECT *
+  FROM source_rows
+  WHERE booking_id IS NOT NULL
+    AND booking_timestamp IS NOT NULL
+),
+
+deduplicated AS (
+  SELECT * EXCEPT (row_number)
+  FROM (
+    SELECT
+      *,
+      ROW_NUMBER() OVER (
+        PARTITION BY booking_id
+        ORDER BY booking_timestamp DESC, ingested_at DESC
+      ) AS row_number
+    FROM valid_candidates
+  )
+  WHERE row_number = 1
 )
 
--- 3. Deduplicate multiple deliveries of the same booking_id
-SELECT * EXCEPT(row_num)
-FROM (
-  SELECT
-    *,
-    ROW_NUMBER() OVER(
-      PARTITION BY booking_id 
-      ORDER BY booking_timestamp DESC, ingested_at DESC
-    ) AS row_num
-  FROM raw_incremental
-)
-WHERE row_num = 1
+SELECT *
+FROM deduplicated
 ```
 
-### How Dataform Compiles This Under the Hood
+Dataform supports incremental tables and applies incremental logic after the first full build. Its documentation recommends expressing the incremental subset in the model’s conditional `WHERE` clause. [Create tables in Dataform](https://cloud.google.com/dataform/docs/create-tables)
 
-When Dataform executes this model on an incremental run, it generates a native BigQuery `MERGE` statement:
+### The important caveats
+
+1. **Select the winner deliberately.** Ordering by `booking_timestamp DESC, ingested_at DESC` assumes the latest event timestamp represents the desired booking state. A stronger approach uses an immutable producer revision, sequence number, or event version when the source provides one.
+
+2. **Keep rejected rows.** `SAFE_CAST` prevents a job failure, but it can silently produce `NULL`. Send malformed or invalid records to `offvia_quarantine.invalid_booking_events`, including the raw payload, reason codes, and `ingested_at`.
+
+3. **Do not confuse assertions with quarantine.** Dataform assertions find violating rows and fail when their query returns rows. They are excellent signals and release gates; they do not themselves route rows to a quarantine table. Build quarantine explicitly upstream, then assert that the published Silver and Gold contracts are clean. [Test data quality in Dataform](https://cloud.google.com/dataform/docs/assertions)
+
+4. **Choose your assertion policy.** A failed assertion is not automatically a reason to let a bad Gold mart publish. For critical financial metrics, fail the publication or promote only a previously approved version. For noncritical anomalies, alert, quarantine, and keep the last known good table available. This is a business SLA decision.
+
+## Incremental models: correctness before cost
+
+An incremental model is a maintenance strategy, not a magic performance switch.
+
+For a BigQuery `MERGE` that updates or deletes rows, cost includes bytes read by the DML plus the size of the target data or target partitions affected. On partitioned tables, limiting the scanned partitions reduces the relevant target component. [BigQuery DML pricing behavior](https://cloud.google.com/bigquery/docs/reference/standard-sql/dml-syntax)
+
+### Partition pruning in a merge
+
+When the target is partitioned by `booking_date`, constrain the target side to the range that can actually change:
 
 ```sql
-MERGE `offvia_silver.stg_bookings` T
-USING (
-  -- Compiled incremental SELECT statement with deduplication
-) S
+MERGE `project.offvia_silver.stg_bookings` AS T
+USING `project.offvia_work.stg_bookings_delta` AS S
 ON T.booking_id = S.booking_id
+AND T.booking_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 7 DAY)
 WHEN MATCHED THEN
-  UPDATE SET 
+  UPDATE SET
     passenger_id = S.passenger_id,
     flight_id = S.flight_id,
+    booking_timestamp = S.booking_timestamp,
     total_amount = S.total_amount,
+    currency = S.currency,
     booking_status = S.booking_status,
     ingested_at = S.ingested_at
 WHEN NOT MATCHED THEN
-  INSERT (booking_id, passenger_id, flight_id, booking_timestamp, total_amount, currency, booking_status, ingested_at)
-  VALUES (S.booking_id, S.passenger_id, S.flight_id, S.booking_timestamp, S.total_amount, S.currency, S.booking_status, S.ingested_at);
+  INSERT (
+    booking_id, passenger_id, flight_id, booking_timestamp,
+    total_amount, currency, booking_status, ingested_at
+  )
+  VALUES (
+    S.booking_id, S.passenger_id, S.flight_id, S.booking_timestamp,
+    S.total_amount, S.currency, S.booking_status, S.ingested_at
+  );
 ```
 
----
+This is only correct if the seven-day target window matches the actual correction and late-arrival policy. Do not add a target date predicate merely to save money if it makes older corrections insert duplicates or fail to update. BigQuery supports partition pruning for `MERGE` when the partitioning column is filtered in an applicable source filter, search condition, or merge condition. [Update partitioned tables with DML](https://cloud.google.com/bigquery/docs/using-dml-with-partitioned-tables)
 
-## 📊 Comparison Cheat Sheet: Dataform vs. dbt vs. Stored Procedures
+For date-partitioned facts, consider a bounded **partition-rebuild** pattern rather than row-level merging: rebuild the affected recent partitions using `insert_overwrite` in dbt or an equivalent atomic replace strategy. This often fits append-heavy event data better than frequent updates against a very large target.
 
-<div class="my-6 overflow-x-auto">
-  <table class="w-full text-left border-collapse text-xs">
-    <thead>
-      <tr class="border-b border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200">
-        <th class="p-3 font-mono">Architecture Dimension</th>
-        <th class="p-3 font-mono">BigQuery Stored Procedures</th>
-        <th class="p-3 font-mono">Google Cloud Dataform</th>
-        <th class="p-3 font-mono">dbt (dbt-core / dbt Cloud)</th>
-      </tr>
-    </thead>
-    <tbody class="divide-y divide-slate-200 dark:divide-slate-800 text-slate-600 dark:text-slate-300">
-      <tr>
-        <td class="p-3 font-bold text-slate-900 dark:text-white">Execution Runtime</td>
-        <td class="p-3">BigQuery Scripting Engine</td>
-        <td class="p-3 text-sky-600 dark:text-sky-400 font-semibold">Serverless GCP API (No VMs)</td>
-        <td class="p-3">Self-hosted container / dbt Cloud VM</td>
-      </tr>
-      <tr>
-        <td class="p-3 font-bold text-slate-900 dark:text-white">Authoring Language</td>
-        <td class="p-3">Procedural SQL (`BEGIN...END`)</td>
-        <td class="p-3">SQLX (SQL + JavaScript blocks)</td>
-        <td class="p-3">SQL + Jinja2 templating</td>
-      </tr>
-      <tr>
-        <td class="p-3 font-bold text-slate-900 dark:text-white">DAG Dependency Lineage</td>
-        <td class="p-3">Manual ordering / Airflow tasks</td>
-        <td class="p-3">Automated via `${ref()}`</td>
-        <td class="p-3">Automated via `{{ ref() }}`</td>
-      </tr>
-      <tr>
-        <td class="p-3 font-bold text-slate-900 dark:text-white">Infrastructure Cost</td>
-        <td class="p-3">$0 infrastructure (BigQuery slots only)</td>
-        <td class="p-3 text-emerald-600 dark:text-emerald-400 font-semibold">$0 infrastructure (Free GCP service)</td>
-        <td class="p-3">Compute runner costs / SaaS license</td>
-      </tr>
-      <tr>
-        <td class="p-3 font-bold text-slate-900 dark:text-white">Multi-Cloud Portability</td>
-        <td class="p-3">None (GCP BigQuery specific)</td>
-        <td class="p-3">None (Google Cloud exclusive)</td>
-        <td class="p-3 text-emerald-600 dark:text-emerald-400 font-semibold">High (Snowflake, Databricks, Redshift)</td>
-      </tr>
-      <tr>
-        <td class="p-3 font-bold text-slate-900 dark:text-white">Security & IAM</td>
-        <td class="p-3">Dataset-level IAM</td>
-        <td class="p-3">Native GCP IAM & Service Accounts</td>
-        <td class="p-3">OAuth / GCP Service Account JSON keys</td>
-      </tr>
-      <tr>
-        <td class="p-3 font-bold text-slate-900 dark:text-white">Built-in Quality Assertions</td>
-        <td class="p-3">Manual `IF/ELSE` raise statements</td>
-        <td class="p-3">Declarative `assertions` block in SQLX</td>
-        <td class="p-3">Declarative schema tests in `.yml`</td>
-      </tr>
-    </tbody>
-  </table>
-</div>
+### Late arrivals must invalidate Gold
 
----
+A Silver model can correctly absorb a late booking while Gold remains wrong if Gold only refreshes today’s partition. The pipeline must propagate the set of affected business dates—for example, `DATE(booking_timestamp)` or `flight_date`—and rebuild those Gold partitions.
 
-## 🏆 Designing the Gold Layer: Star Schema vs. One Big Table (OBT)
+A robust operating policy usually includes:
 
-Once data is cleaned, validated, and deduplicated in the Silver layer, how should you model the **Gold Layer**?
+- A normal rolling lookback, such as three to seven days.
+- A scheduled wider reconciliation, such as monthly, for known source behavior.
+- An explicit targeted backfill path for exceptional historical corrections.
+- A data-freshness monitor that detects missing or delayed source delivery.
 
-In traditional data warehousing, the Kimball **Star Schema** (Fact tables joined with Dimension tables) was the undisputed industry standard. However, in distributed cloud columnar databases like BigQuery, engineers must evaluate the trade-off between Star Schemas and **One Big Table (OBT)**.
+## Quality checks that protect reporting
 
-<div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-8">
-  <div class="p-6 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm">
-    <div class="font-mono text-xs font-bold uppercase tracking-wider text-primary mb-2">Pattern A</div>
-    <h4 class="text-base font-bold text-slate-900 dark:text-white mb-2">Kimball Star Schema</h4>
-    <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed mb-4">
-      Separate centralized Fact tables (<code>fct_bookings</code>) and normalized Dimension tables (<code>dim_passengers</code>, <code>dim_airports</code>, <code>dim_aircraft</code>).
-    </p>
-    <ul class="text-xs space-y-2 text-slate-500 dark:text-slate-400">
-      <li><strong>Pros:</strong> Zero data redundancy, simple updates, handles Slowly Changing Dimensions (SCD Type 2) cleanly.</li>
-      <li><strong>Cons:</strong> Queries require multi-table <code>JOIN</code> operations, utilizing shuffle slots in BigQuery.</li>
-      <li><strong>Best For:</strong> Complex enterprise models with hundreds of shared dimensions and frequent dimension updates.</li>
-    </ul>
-  </div>
+Data-quality checks should be layered, cheap enough to run, and meaningful to the business.
 
-  <div class="p-6 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm">
-    <div class="font-mono text-xs font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 mb-2">Pattern B</div>
-    <h4 class="text-base font-bold text-slate-900 dark:text-white mb-2">One Big Table (OBT)</h4>
-    <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed mb-4">
-      Pre-joining dimensions into a single wide table with nested and repeated fields (<code>ARRAY&lt;STRUCT&gt;</code>) during transformation.
-    </p>
-    <ul class="text-xs space-y-2 text-slate-500 dark:text-slate-400">
-      <li><strong>Pros:</strong> Zero runtime joins, lightning-fast dashboard queries, ideal for BigQuery BI Engine cache.</li>
-      <li><strong>Cons:</strong> Denormalized data duplication, complex backfill operations when dimension attributes change.</li>
-      <li><strong>Best For:</strong> High-concurrency dashboard reporting and self-service BI exploration in Looker Studio.</li>
-    </ul>
-  </div>
-</div>
+| Layer | Examples | Action when it fails |
+|---|---|---|
+| Bronze | Unexpected source volume, schema-version change, malformed JSON rate | Alert; preserve input; investigate producer contract |
+| Silver | Non-null IDs, valid timestamps, allowed currency/status, one canonical version per key | Quarantine invalid rows; fail critical contract checks |
+| Gold | Revenue is non-negative where required, passenger count does not exceed capacity, complete date coverage | Block or roll back publication of affected mart; alert data owner |
 
-### Gold Model in Dataform: Route Daily Performance Mart
-
-Here is Offvia's Gold data mart aggregating flight performance, seat occupancy, and revenue by route (`definitions/gold/fct_daily_route_profitability.sqlx`):
+### Example: capacity assertion
 
 ```sql
+-- definitions/assertions/assert_route_capacity.sqlx
+config {
+  type: "assertion",
+  schema: "offvia_quality"
+}
+
+SELECT
+  flight_date,
+  flight_id,
+  total_passengers_booked,
+  seat_capacity
+FROM ${ref("fct_daily_route_profitability")}
+WHERE total_passengers_booked > seat_capacity
+```
+
+A Dataform assertion is a query that must return zero rows; any returned row is a failure. Assertions can be declared in a model configuration or written as dedicated SQLX assertion files. [Test data quality in Dataform](https://cloud.google.com/dataform/docs/assertions)
+
+Avoid expensive “check the entire history every hour” tests. Scope checks to changed partitions where possible, and schedule full reconciliations at a frequency that matches risk and budget.
+
+## Gold: model for consumers
+
+Gold is not just “another cleaned table.” It is a product with a declared grain, ownership, quality contract, and performance expectations.
+
+For Offvia, a route-performance mart could have **one row per flight** or **one row per route per day**. Do not mix the two. The model below uses one row per flight because it groups by `flight_id`; call it a flight-performance mart, then aggregate separately if route/day is the intended dashboard grain.
+
+```sql
+-- definitions/gold/fct_flight_performance.sqlx
 config {
   type: "table",
   schema: "offvia_gold",
-  name: "fct_daily_route_profitability",
+  name: "fct_flight_performance",
   bigquery: {
     partitionBy: "flight_date",
     clusterBy: ["carrier_code", "origin_airport", "destination_airport"]
@@ -468,15 +357,16 @@ WITH flight_bookings AS (
     COUNT(DISTINCT b.booking_id) AS total_passengers_booked,
     COALESCE(SUM(b.total_amount), 0) AS total_gross_revenue,
     COALESCE(AVG(b.total_amount), 0) AS average_ticket_price
-  FROM ${ref("stg_flights")} f
-  LEFT JOIN ${ref("stg_bookings")} b 
-    ON f.flight_id = b.flight_id 
-    AND b.booking_status IN ("CONFIRMED", "CHECKED_IN")
+  FROM ${ref("stg_flights")} AS f
+  LEFT JOIN ${ref("stg_bookings")} AS b
+    ON f.flight_id = b.flight_id
+   AND b.booking_status IN ("CONFIRMED", "CHECKED_IN")
   GROUP BY 1, 2, 3, 4, 5, 6, 7, 8
 )
 
 SELECT
   flight_date,
+  flight_id,
   carrier_code,
   flight_number,
   origin_airport,
@@ -487,7 +377,7 @@ SELECT
   ROUND(SAFE_DIVIDE(total_passengers_booked, seat_capacity) * 100, 2) AS seat_occupancy_percentage,
   total_gross_revenue,
   average_ticket_price,
-  CASE 
+  CASE
     WHEN SAFE_DIVIDE(total_passengers_booked, seat_capacity) >= 0.85 THEN "HIGH_PROFIT"
     WHEN SAFE_DIVIDE(total_passengers_booked, seat_capacity) >= 0.60 THEN "BREAK_EVEN"
     ELSE "UNDERPERFORMING"
@@ -496,89 +386,48 @@ SELECT
 FROM flight_bookings
 ```
 
----
+### Star schema or One Big Table?
 
-## ⚠️ Common Production Gotchas
+| Pattern | Strengths | Trade-offs | Use it when |
+|---|---|---|---|
+| Star schema | Reusable dimensions, clean historical modeling, reduced duplication | Consumers may need joins; semantic governance matters | Many domains share dimensions, or slowly changing dimensions are important |
+| One Big Table (OBT) | Easy BI consumption, fewer runtime joins, predictable dashboard queries | Duplicates attributes and makes dimension corrections/backfills heavier | A specific dashboard or exploration workload needs a stable denormalized contract |
 
-### 1. The BigQuery `MERGE` Statement Slot Starvation
-When you execute an incremental Dataform or dbt model, BigQuery compiles the logic into a `MERGE` DML statement. A `MERGE` statement must read the target table, join it with the source batch, identify matched keys, and write the updated partitions.  
-If you run incremental merges every 5 minutes on massive tables without partition boundaries in the `ON` clause, BigQuery slots will saturate, queueing other analytical jobs and driving up billing costs.  
-*Rule:* Always include a partition filter in your `MERGE` predicate:
-```sql
--- Target partition pruning in MERGE
-ON T.booking_id = S.booking_id
-AND T.booking_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 7 DAY)
-```
+BigQuery can serve both patterns well. A practical compromise is to maintain conformed dimensions and facts in Silver/Gold, then publish purpose-built wide reporting tables only where dashboard latency, simplicity, or concurrency makes them valuable.
 
-### 2. Handling Late-Arriving Streaming Events
-If an offline airline terminal syncs seat changes from 4 days ago, but your incremental model only queries source data where `ingested_at > max(last_ingested_at)` with a 1-day partition lookback, the record will update the Silver table, but any downstream Gold tables aggregating by `flight_date` will not know they need to refresh historical partitions.  
-*Remedy:* Use **watermark lookback buffers** in your orchestrator, or trigger targeted partition refreshes using Dataform tags and execution parameters.
+## Production checklist
 
-### 3. Assertion Cost Explosions
-Writing a data quality assertion like:
-```sql
-assertions: {
-  uniqueKey: ["passenger_id", "passport_hash"]
-}
-```
-If this assertion runs on the entire historical dataset on every single hourly compilation, BigQuery scans terabytes of immutable data just to verify historical rows that have not changed in six months.  
-*Remedy:* Scope assertions to active or recently ingested partitions using custom SQL assertions rather than blanket table-wide checks.
+Before calling the transformation layer production-ready, verify these points:
 
----
+- Bronze is immutable, replayable, and carries ingestion metadata.
+- Every Silver entity has an explicit key, grain, deduplication rule, and late-arrival policy.
+- Malformed and rejected records go to a queryable quarantine dataset with reason codes.
+- Incremental models use a bounded overlap window and are idempotent.
+- `MERGE` or partition replacement scans only the partitions that can legitimately change.
+- Late-arriving events cause downstream business-date partitions to refresh.
+- Gold tables declare their grain in documentation and enforce business invariants.
+- Critical assertion failures prevent bad data from becoming the new published reporting state.
+- SQL, tests, schedules, permissions, and deployment configuration are version-controlled and reviewed.
+- Dashboards query Gold tables or governed semantic models—not Bronze.
+- Cost, freshness, volume, assertion failures, and quarantine rates are monitored.
 
-## 🎯 Architectural Decision Matrix: Choosing Dataform vs. dbt
+## Final takeaways
 
-When should a Google Cloud engineering team choose Dataform over dbt, or vice-versa?
+The transformation layer is where an ingestion platform becomes a trusted data platform.
 
-```text
-                                  DO YOU REQUIRE
-                         MULTI-CLOUD WAREHOUSE PORTABILITY?
-                                       │
-                       ┌───────────────┴───────────────┐
-                      YES                              NO
-                       │                               │
-                       ▼                               ▼
-                 [CHOOSE dbt]               ARE YOU FULLY COMMITTED TO
-            (dbt-core on Cloud Run /         BIGQUERY AND GOOGLE CLOUD?
-              Cloud Composer / GKE)                    │
-                                       ┌───────────────┴───────────────┐
-                                      YES                              NO
-                                       │                               │
-                                       ▼                               ▼
-                              [CHOOSE DATAFORM]                   [CHOOSE dbt]
-                            (Zero-infra, Native IAM,          (Future-proof against
-                             Native Cloud Console)             multi-cloud mandates)
-```
+Offvia’s negative revenue and impossible seat count are not primarily SQL problems. They are contract problems: raw retries were treated as bookings, malformed values were allowed into revenue logic, and a monolithic rebuild had no safe deployment or validation boundary.
 
-1. **Choose Google Cloud Dataform if:**
-   - Your entire data warehouse is hosted on BigQuery.
-   - You want zero operational overhead: no Docker containers to maintain, no Python environments to debug, and no Kubernetes worker pools to patch.
-   - You require seamless native Google Cloud IAM authentication and fine-grained service account isolation.
-   - You want out-of-the-box browser-based development workspaces with built-in Git integration in the Google Cloud Console.
+A Medallion design makes those boundaries explicit. Bronze retains evidence. Silver creates reliable, reusable entities. Gold publishes business contracts. Dataform or dbt turns individual SQL models into a reviewable, dependency-aware workflow, while BigQuery performs the heavy compute.
 
-2. **Choose dbt (dbt-core or dbt Cloud) if:**
-   - Your enterprise runs a hybrid or multi-cloud data architecture (e.g., BigQuery alongside Snowflake or Databricks).
-   - You rely heavily on dbt's extensive ecosystem of community packages (`dbt-utils`, `dbt-expectations`, `codegen`).
-   - You already have an established engineering platform team orchestrating containerized jobs with Cloud Composer / Airflow.
+In Part 6, we will build this foundation: create a Dataform repository, define Bronze-to-Silver-to-Gold SQLX models, add assertions and quarantine handling, and automate execution through a production-friendly release workflow.
 
----
+## Official references
 
-## 🚀 What's Next in the Series?
-
-Now that we have architected the **Medallion Transformation Foundation** and analyzed the mechanics of Dataform, dbt, incremental deduplication, and quality assertions, it is time to build it.
-
-In **Part 6 (Hands-On Lab)**, we will get our hands dirty in the terminal:
-- Initializing a real **Google Cloud Dataform Repository** and workspace connected to Git.
-- Writing production SQLX definitions for Bronze, Silver, and Gold datasets.
-- Configuring automated data quality assertions (`uniqueKey`, `rowConditions`).
-- Setting up automated workflow configurations and scheduling transformations with Cloud Composer and Cloud Workflows.
-
----
-
-## 📚 Official References & Specifications
-
-- [Google Cloud Dataform Overview & Architecture](https://cloud.google.com/dataform/docs/overview)
-- [Developing with SQLX in Dataform](https://cloud.google.com/dataform/docs/sqlx-overview)
-- [BigQuery Data Manipulation Language (DML) MERGE Syntax](https://cloud.google.com/bigquery/docs/reference/standard-sql/dml-syntax#merge_statement)
-- [dbt (data build tool) BigQuery Adapter Documentation](https://docs.getdbt.com/docs/core/connect-data-platform/bigquery-setup)
-- [Google Cloud Medallion Architecture Patterns](https://cloud.google.com/architecture)
+- [Dataform overview and architecture](https://cloud.google.com/dataform/docs/overview)
+- [Create tables and incremental tables in Dataform](https://cloud.google.com/dataform/docs/create-tables)
+- [Test data quality with Dataform assertions](https://cloud.google.com/dataform/docs/assertions)
+- [BigQuery `MERGE` syntax](https://cloud.google.com/bigquery/docs/reference/standard-sql/dml-syntax#merge_statement)
+- [Update partitioned BigQuery tables with DML](https://cloud.google.com/bigquery/docs/using-dml-with-partitioned-tables)
+- [dbt BigQuery adapter setup](https://docs.getdbt.com/docs/core/connect-data-platform/bigquery-setup)
+- [dbt BigQuery configurations](https://docs.getdbt.com/reference/resource-configs/bigquery-configs)
+- [Configure dbt incremental models](https://docs.getdbt.com/docs/build/incremental-models)
