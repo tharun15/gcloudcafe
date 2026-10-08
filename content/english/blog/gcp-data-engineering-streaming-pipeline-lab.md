@@ -520,6 +520,12 @@ Windows alone do not alter the records written to BigQuery. Event-time correctne
 
 Exactly-once behavior requires a suitable committed-stream and offset design. End-to-end deduplication is still an architectural responsibility.
 
+## What's Next in the Series?
+
+Now that our streaming ingestion pipeline is delivering raw and quarantined events into BigQuery, how do we transform raw payloads into clean, deduplicated, and business-ready analytical data marts?
+
+Continue to [Part 5: Medallion Architecture & Transformations with Dataform and dbt](/blog/gcp-data-engineering-transformations-dataform-dbt/) to design the warehouse transformation layer.
+
 ## Official References
 
 - [Create BigQuery subscriptions](https://cloud.google.com/pubsub/docs/create-bigquery-subscription)
