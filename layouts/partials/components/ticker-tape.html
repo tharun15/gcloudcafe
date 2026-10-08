@@ -33,6 +33,9 @@
         {{ else if (eq $upperTag "AWS") }}
           {{ $tagLabel = "AWS" }}
           {{ $tagClass = "ticker-tag-aws" }}
+        {{ else if or (eq $upperTag "AZURE") (eq $upperTag "MICROSOFT") }}
+          {{ $tagLabel = "AZURE" }}
+          {{ $tagClass = "ticker-tag-azure" }}
         {{ else if or (eq $upperTag "OPENSHIFT") (eq $upperTag "REDHAT") }}
           {{ $tagLabel = "OPENSHIFT" }}
           {{ $tagClass = "ticker-tag-redhat" }}
