@@ -6,7 +6,7 @@
 /**
  * Escapes characters for safe XML/SVG embedding
  */
-export function escapeXml(str) {
+function escapeXml(str) {
   if (!str) return '';
   return String(str)
     .replace(/&/g, '&amp;')
@@ -19,7 +19,7 @@ export function escapeXml(str) {
 /**
  * Breaks long strings into multiple lines respecting word boundaries
  */
-export function wrapText(text, maxCharsPerLine = 36, maxLines = 3) {
+function wrapText(text, maxCharsPerLine = 36, maxLines = 3) {
   if (!text) return [];
   const words = text.trim().split(/\s+/);
   const lines = [];
@@ -61,7 +61,7 @@ export function wrapText(text, maxCharsPerLine = 36, maxLines = 3) {
 /**
  * Resolves category theme (accent color, label, borders)
  */
-export function getCategoryTheme(tags = [], categories = []) {
+function getCategoryTheme(tags = [], categories = []) {
   const combined = [
     ...(Array.isArray(categories) ? categories : []),
     ...(Array.isArray(tags) ? tags : [])
@@ -131,7 +131,7 @@ export function getCategoryTheme(tags = [], categories = []) {
 /**
  * Generates the complete 1200x630 SVG string
  */
-export function buildOgSvg(metadata = {}) {
+function buildOgSvg(metadata = {}) {
   const title = metadata.title || 'GCloudCafe Technical Guide';
   const description = metadata.description || 'Deep architectural deep dives, production benchmarks, and cloud engineering.';
   const author = metadata.author || 'Tharun Vempati';
@@ -139,9 +139,7 @@ export function buildOgSvg(metadata = {}) {
   const readingTime = metadata.readingTime || '8 min read';
   const theme = getCategoryTheme(metadata.tags, metadata.categories);
 
-  // Wrap title (max 3 lines of 36 chars)
   const titleLines = wrapText(title, 36, 3);
-  // Wrap description (max 2 lines of 62 chars)
   const descLines = wrapText(description, 62, 2);
 
   const titleFontSize = titleLines.length > 2 ? 48 : 54;
@@ -235,7 +233,6 @@ export function buildOgSvg(metadata = {}) {
 
     <!-- Author Avatar Circle -->
     <circle cx="20" cy="18" r="18" fill="#1e293b" stroke="#38bdf8" stroke-width="1.5" />
-    <!-- Initials / Silhouette -->
     <text x="20" y="24" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="14" font-weight="bold" fill="#38bdf8">TV</text>
 
     <!-- Author & Post Meta -->
@@ -254,3 +251,10 @@ export function buildOgSvg(metadata = {}) {
   </g>
 </svg>`;
 }
+
+module.exports = {
+  escapeXml,
+  wrapText,
+  getCategoryTheme,
+  buildOgSvg
+};

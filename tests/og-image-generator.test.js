@@ -1,4 +1,6 @@
 import { describe, it, expect } from 'vitest';
+import fs from 'fs';
+import path from 'path';
 import { Resvg } from '@resvg/resvg-js';
 import {
   escapeXml,
@@ -6,6 +8,12 @@ import {
   getCategoryTheme,
   buildOgSvg
 } from '../scripts/lib/og-card-template.js';
+import {
+  parseFrontmatter,
+  calculateReadingTime,
+  generateCardForFile,
+  batchGenerateOgCards
+} from '../scripts/generate-og-cards.js';
 
 describe('Resvg Rasterization Core', () => {
   it('renders a simple SVG into a 1200x630 PNG buffer', () => {
@@ -67,9 +75,77 @@ describe('OG Template Helpers', () => {
     expect(svg).toContain('8 min read');
     expect(svg).toContain('gcloudcafe.com');
 
-    // Test that resvg can render this SVG without syntax errors
     const resvg = new Resvg(svg, { fitTo: { mode: 'width', value: 1200 } });
     const png = resvg.render().asPng();
     expect(png.length).toBeGreaterThan(1000);
+  });
+});
+
+describe('OG Card Batch Generator', () => {
+  it('parses markdown frontmatter correctly', () => {
+    const raw = `---
+title: "Sample Article Title"
+meta_title: "Custom Meta Title"
+description: "Sample Description"
+tags: ["GCP", "BigQuery"]
+categories: ["Google Cloud"]
+date: 2026-10-08
+author: tharun-vempati
+---
+Content body with some text here...`;
+
+    const meta = parseFrontmatter(raw);
+    expect(meta.title).toBe('Sample Article Title');
+    expect(meta.description).toBe('Sample Description');
+    expect(meta.tags).toEqual(['GCP', 'BigQuery']);
+    expect(meta.categories).toEqual(['Google Cloud']);
+    expect(meta.author).toBe('Tharun Vempati');
+    expect(meta.date).toBe('Oct 08, 2026');
+  });
+
+  it('calculates reading time from word count', () => {
+    const shortText = 'word '.repeat(300);
+    expect(calculateReadingTime(shortText)).toBe('2 min read');
+
+    const longText = 'word '.repeat(2200);
+    expect(calculateReadingTime(longText)).toBe('11 min read');
+  });
+
+  it('generates card for single file and caches appropriately', () => {
+    const testMdDir = path.resolve(__dirname, '../dist/test-content');
+    const testOutDir = path.resolve(__dirname, '../dist/test-og');
+    fs.mkdirSync(testMdDir, { recursive: true });
+    fs.mkdirSync(testOutDir, { recursive: true });
+
+    const mdFile = path.join(testMdDir, 'test-article.md');
+    fs.writeFileSync(mdFile, `---
+title: "Test Incremental Card Generation"
+description: "Verifying that incremental caching works properly."
+tags: ["GCP"]
+date: 2026-10-08
+author: tharun-vempati
+---
+Body text.`);
+
+    // First run generates file
+    const res1 = generateCardForFile(mdFile, { outputDir: testOutDir, force: false });
+    expect(res1.generated).toBe(true);
+
+    const expectedPng = path.join(testOutDir, 'test-article.png');
+    expect(fs.existsSync(expectedPng)).toBe(true);
+    const pngBuffer = fs.readFileSync(expectedPng);
+    expect(pngBuffer.subarray(0, 4).toString('hex')).toBe('89504e47');
+
+    // Second run without force should skip (incremental)
+    const res2 = generateCardForFile(mdFile, { outputDir: testOutDir, force: false });
+    expect(res2.skipped).toBe(true);
+
+    // Third run with force should regenerate
+    const res3 = generateCardForFile(mdFile, { outputDir: testOutDir, force: true });
+    expect(res3.generated).toBe(true);
+
+    // Cleanup
+    fs.rmSync(testMdDir, { recursive: true, force: true });
+    fs.rmSync(testOutDir, { recursive: true, force: true });
   });
 });
