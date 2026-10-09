@@ -12,8 +12,8 @@
     {{ end }}
   {{ end }}
 
-  <!-- Section 1: Featured Hero Section (Subtly framed with bottom border & soft background) -->
-  <section class="border-b border-slate-200/80 dark:border-slate-800/80 bg-slate-50/50 dark:bg-transparent pt-3 sm:pt-5 pb-6 sm:pb-8" aria-label="Featured Architecture Guide">
+  <!-- Section 1: Featured Hero Section (Seamless canvas, full vertical alignment) -->
+  <section class="border-b border-slate-200/60 dark:border-slate-800/60 pt-4 sm:pt-6 pb-8 sm:pb-10" aria-label="Featured Architecture Guide">
     {{ partial "components/blog-hero" (dict "Featured" $featured "Posts" $posts) }}
   </section>
 
@@ -23,11 +23,11 @@
   {{ end }}
 
   <!-- Section 2: Main Articles & Topics Filter Tabs -->
-  <section class="pt-6 sm:pt-8 pb-12 sm:pb-16 bg-white dark:bg-transparent" aria-labelledby="articles-heading">
+  <section class="pt-8 sm:pt-10 pb-14 sm:pb-18 bg-white dark:bg-transparent" aria-labelledby="articles-heading">
     <div class="bytedepth-container">
       <!-- Section Heading & Topic Filter Navigation -->
-      <div class="max-w-4xl mx-auto mb-6 sm:mb-8">
-        <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-3 sm:gap-4 pb-3 border-b border-slate-200 dark:border-slate-800">
+      <div class="w-full mb-6 sm:mb-8">
+        <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-3 sm:gap-4 pb-3.5 border-b border-slate-200 dark:border-slate-800">
           <div>
             <h2 id="articles-heading" class="text-base sm:text-lg font-bold tracking-tight text-slate-900 dark:text-white m-0">
               {{ if eq site.Language.Lang "it" }}Tutti gli Articoli{{ else }}Latest Architecture Articles{{ end }}
@@ -39,7 +39,7 @@
 
           <!-- Horizontal Category Filter Tabs -->
           {{ $categories := site.Taxonomies.categories }}
-          <div class="flex items-center gap-4 sm:gap-6 overflow-x-auto no-scrollbar py-0.5">
+          <div class="flex items-center gap-3 sm:gap-5 overflow-x-auto no-scrollbar py-0.5">
             <span class="sr-only">Topics</span>
             <a href="{{ `blog/` | relLangURL }}"
                class="category-tab-active font-semibold text-xs sm:text-sm text-red-600 dark:text-red-500 shrink-0 no-underline">
@@ -59,7 +59,7 @@
       </div>
 
       <!-- 1-Column Articles Feed (Clean Editorial Stream) -->
-      <div class="flex flex-col space-y-4 sm:space-y-5 max-w-4xl mx-auto">
+      <div class="flex flex-col space-y-4 sm:space-y-5 w-full">
         {{ if eq (len $gridPosts) 0 }}
           <div class="text-center py-16 bg-white dark:bg-[#0c1220] rounded-xl border border-slate-200 dark:border-slate-800">
             <p class="text-slate-600 dark:text-slate-400 font-semibold">No additional articles found.</p>
@@ -105,7 +105,7 @@
       {{ end }}
 
       <!-- Section 3: Browse all topics Section (Framed with subtle top divider border) -->
-      <div class="mt-14 pt-10 border-t border-slate-200/80 dark:border-slate-800/80 mb-8 max-w-4xl mx-auto">
+      <div class="mt-14 pt-10 border-t border-slate-200/80 dark:border-slate-800/80 mb-8 w-full">
         <h3 class="font-mono text-xs font-bold text-slate-500 dark:text-slate-400 tracking-wider block mb-4">
           {{ i18n "browse_all_topics" }}
         </h3>
@@ -142,7 +142,7 @@
       </div>
 
       <!-- Section 4: Author Credibility Section (Framed cleanly) -->
-      <div class="mt-12 mb-4 max-w-4xl mx-auto">
+      <div class="mt-12 mb-4 w-full">
         <div class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0c1220] p-6 sm:p-8 shadow-xs">
           <div class="flex flex-col sm:flex-row items-center sm:items-start gap-5 sm:gap-6 text-center sm:text-left">
             <img src="{{ `/images/authors/profilepic_tharun.png` | relURL }}"
