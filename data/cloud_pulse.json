@@ -1,5 +1,24 @@
 [
   {
+    "id": "b622b88c-b379-4757-89cc-c7baab6cdd9e",
+    "title": "AWS Network Firewall adds wildcard support for container attribute filters",
+    "content": "🎯 What Changed: AWS Network Firewall now supports wildcard matching in container attribute-based inspection filters for Amazon EKS and Amazon ECS workloads.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
+    "tags": [
+      "#AWS",
+      "#CloudArchitecture",
+      "#CloudNews"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-10-09T04:20:43.958855+00:00",
+    "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/10/aws-network-firewall-container-attributes-wildcard",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 43.8h without manual admin curation.",
+    "updated_at": "2026-10-09T05:18:15.973Z"
+  },
+  {
     "id": "e8ee37e0-473e-4dac-9721-c52e739809df",
     "title": "IdeaBot: Streamlining Corporate Innovation & Breakthroughs",
     "content": "🎯 What Changed: Red Hat introduces IdeaBot, a new solution designed to structure and accelerate corporate innovation initiatives.\n💡 Engineering Impact: This initiative empowers engineering and product teams to align emerging technology investments directly with business impact, streamlining the evaluation and integration of breakthrough ideas into strategic roadmaps.",
@@ -264,24 +283,5 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T03:59:45.591638+00:00"
-  },
-  {
-    "id": "46fd5625-4fda-4793-a2ab-d6b627f3f4df",
-    "title": "AlloyDB: A unified database engine for hybrid search",
-    "content": "Google Cloud has introduced a unified engine for AlloyDB that integrates vector search and full-text search into",
-    "tags": [
-      "#GoogleCloud",
-      "#GCP",
-      "#CloudNews"
-    ],
-    "upvotes": 3,
-    "downvotes": 0,
-    "score": 3,
-    "author": "Cloud Newsroom Bot",
-    "created_at": "2026-10-07T03:59:26.783766+00:00",
-    "link_url": "https://cloud.google.com/blog/products/databases/simplify-ai-search-with-alloydb-hybrid-search-and-rrf/",
-    "status": "approved",
-    "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
-    "updated_at": "2026-10-07T03:59:26.783766+00:00"
   }
 ]
