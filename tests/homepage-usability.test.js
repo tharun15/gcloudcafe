@@ -56,14 +56,15 @@ describe('Homepage & Site-Wide Usability Heuristics & Accessibility Suite', () =
     expect(headerHtml).toContain('Search &amp; Menu');
   });
 
-  it('maintains ticker-tape directly below header per user preference with pause on hover', () => {
+  it('maintains ticker-tape on top of header per user preference with pause on hover', () => {
     const baseofHtml = fs.readFileSync(path.join(rootDir, 'layouts/_default/baseof.html'), 'utf8');
     const headerIndex = baseofHtml.indexOf('essentials/header.html');
     const tickerIndex = baseofHtml.indexOf('components/ticker-tape.html');
     const mainIndex = baseofHtml.indexOf('<main id="main-content"');
 
-    expect(tickerIndex).toBeGreaterThan(headerIndex);
+    expect(tickerIndex).toBeLessThan(headerIndex);
     expect(tickerIndex).toBeLessThan(mainIndex);
+    expect(tickerIndex).toBeGreaterThanOrEqual(0);
   });
 
   it('renders a creative, non-danger data-first presentation for the Featured hero story', () => {
@@ -86,5 +87,20 @@ describe('Homepage & Site-Wide Usability Heuristics & Accessibility Suite', () =
     expect(scss).toContain('.btn-primary');
     expect(scss).toContain('.btn-secondary');
     expect(scss).toContain('.btn-ghost');
+  });
+
+  it('enables seamless in-place category filtering on the homepage without navigating away', () => {
+    const indexHtml = fs.readFileSync(path.join(rootDir, 'layouts/index.html'), 'utf8');
+    const jsContent = fs.readFileSync(path.join(rootDir, 'assets/js/blog-enhancements.js'), 'utf8');
+
+    expect(indexHtml).toContain('id="homepage-category-filters"');
+    expect(indexHtml).toContain('data-category-filter="all"');
+    expect(indexHtml).toContain('data-category-filter="{{ $catSlug }}"');
+    expect(indexHtml).toContain('data-article-card="true"');
+    expect(indexHtml).toContain('data-categories=');
+    expect(indexHtml).toContain('id="articles-feed-count"');
+
+    expect(jsContent).toContain('function initHomepageCategoryFilters()');
+    expect(jsContent).toContain('initHomepageCategoryFilters();');
   });
 });

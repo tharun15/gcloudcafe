@@ -1378,6 +1378,126 @@
     });
   }
 
+  /* ── 15. Homepage In-Place Category Filtering ── */
+  function initHomepageCategoryFilters() {
+    var filterContainer = document.getElementById("homepage-category-filters");
+    if (!filterContainer) return;
+
+    var filterLinks = filterContainer.querySelectorAll("[data-category-filter]");
+    var feedContainer = document.getElementById("homepage-articles-feed");
+    var emptyState = document.getElementById("articles-filter-empty");
+    var countEl = document.getElementById("articles-feed-count");
+    var loadMoreContainer = document.getElementById("view-all-articles-container");
+    var resetBtn = document.getElementById("btn-filter-reset-all");
+
+    if (!filterLinks.length || !feedContainer) return;
+
+    var allCards = feedContainer.querySelectorAll("[data-article-card='true']");
+    var initialTotalCount = allCards.length;
+
+    function applyFilter(categorySlug) {
+      var normSlug = (categorySlug || "all").toLowerCase().trim();
+      var matchCount = 0;
+
+      // 1. Update active tab UI inside segmented control
+      filterLinks.forEach(function (link) {
+        var linkCat = (link.getAttribute("data-category-filter") || "").toLowerCase().trim();
+        var isActive = linkCat === normSlug;
+
+        if (isActive) {
+          link.classList.add("category-tab-active", "bg-white", "dark:bg-slate-900", "text-slate-900", "dark:text-white", "shadow-2xs", "font-semibold");
+          link.classList.remove("text-slate-600", "dark:text-slate-400", "font-medium", "hover:bg-white/80", "dark:hover:bg-slate-900/80");
+        } else {
+          link.classList.remove("category-tab-active", "bg-white", "dark:bg-slate-900", "text-slate-900", "dark:text-white", "shadow-2xs", "font-semibold");
+          link.classList.add("text-slate-600", "dark:text-slate-400", "font-medium", "hover:bg-white/80", "dark:hover:bg-slate-900/80");
+        }
+      });
+
+      // 2. Filter cards
+      allCards.forEach(function (card) {
+        var cardCats = (card.getAttribute("data-categories") || "").toLowerCase();
+        var isExtra = card.getAttribute("data-extra-article") === "true";
+
+        if (normSlug === "all") {
+          // If 'all', reveal cards up to index 9, extra cards stay hidden unless expanded
+          if (!isExtra) {
+            card.style.display = "";
+            card.classList.remove("opacity-0", "translate-y-4");
+            card.classList.add("opacity-100", "translate-y-0");
+            matchCount++;
+          } else {
+            // Keep hidden or shown depending on if load more was clicked
+            if (loadMoreContainer && loadMoreContainer.style.display === "none") {
+              card.style.display = "";
+              card.classList.remove("opacity-0", "translate-y-4");
+              card.classList.add("opacity-100", "translate-y-0");
+              matchCount++;
+            } else {
+              card.style.display = "none";
+              card.classList.add("opacity-0", "translate-y-4");
+            }
+          }
+        } else {
+          // Check if card category matches
+          var matches = cardCats.indexOf(normSlug) !== -1;
+          if (matches) {
+            card.style.display = "";
+            card.classList.remove("opacity-0", "translate-y-4");
+            card.classList.add("opacity-100", "translate-y-0");
+            matchCount++;
+          } else {
+            card.style.display = "none";
+          }
+        }
+      });
+
+      // 3. Update count label
+      if (countEl) {
+        if (normSlug === "all") {
+          countEl.textContent = initialTotalCount + " engineering guides & blueprints";
+        } else {
+          var displayCat = normSlug.replace(/-/g, " ");
+          displayCat = displayCat.charAt(0).toUpperCase() + displayCat.slice(1);
+          countEl.textContent = matchCount + " engineering guide" + (matchCount === 1 ? "" : "s") + " in " + displayCat;
+        }
+      }
+
+      // 4. Handle Load More button visibility
+      if (loadMoreContainer) {
+        if (normSlug === "all") {
+          loadMoreContainer.style.display = "";
+        } else {
+          loadMoreContainer.style.display = "none";
+        }
+      }
+
+      // 5. Handle empty state
+      if (emptyState) {
+        if (matchCount === 0) {
+          emptyState.classList.remove("hidden");
+        } else {
+          emptyState.classList.add("hidden");
+        }
+      }
+    }
+
+    // Attach click listeners to filter links
+    filterLinks.forEach(function (link) {
+      link.addEventListener("click", function (e) {
+        e.preventDefault();
+        var cat = link.getAttribute("data-category-filter") || "all";
+        applyFilter(cat);
+      });
+    });
+
+    if (resetBtn) {
+      resetBtn.addEventListener("click", function (e) {
+        e.preventDefault();
+        applyFilter("all");
+      });
+    }
+  }
+
   function init() {
     initCloudDecisionCalculators();
     initHeaderScroll();
@@ -1395,6 +1515,7 @@
     initPulseTicker();
     initTaglineTypewriter();
     initLoadMoreArticles();
+    initHomepageCategoryFilters();
   }
 
   /* ── 9. Cloud Pulse Micro-News & Upvote System ── */
