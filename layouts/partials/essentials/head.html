@@ -133,7 +133,14 @@
 {{ with .File }}
   {{ $slug = .BaseFileName }}
 {{ end }}
+{{ $lang := .Language.Lang }}
 {{ $dynamicOgRel := printf "images/og/%s.png" $slug }}
+{{ if eq $lang "it" }}
+  {{ $dynamicOgItRel := printf "images/og/it/%s.png" $slug }}
+  {{ if fileExists (printf "static/%s" $dynamicOgItRel) }}
+    {{ $dynamicOgRel = $dynamicOgItRel }}
+  {{ end }}
+{{ end }}
 {{ $dynamicOgStatic := printf "static/%s" $dynamicOgRel }}
 
 {{ if .Params.og_image }}

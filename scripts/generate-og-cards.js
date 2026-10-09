@@ -157,14 +157,17 @@ function batchGenerateOgCards(options = {}) {
   const rootDir = options.rootDir || path.resolve(__dirname, '..');
   const outputDir = options.outputDir || path.join(rootDir, 'static/images/og');
   const contentDirs = options.contentDirs || [
-    path.join(rootDir, 'content/english/blog'),
-    path.join(rootDir, 'content/italian/blog')
+    { dir: path.join(rootDir, 'content/english/blog'), outDir: outputDir },
+    { dir: path.join(rootDir, 'content/italian/blog'), outDir: path.join(outputDir, 'it') }
   ];
   const force = options.force || false;
 
   const stats = { generated: 0, skipped: 0, errors: 0 };
 
-  contentDirs.forEach(dir => {
+  contentDirs.forEach(source => {
+    const dir = typeof source === 'string' ? source : source.dir;
+    const targetOutDir = typeof source === 'string' ? outputDir : (source.outDir || outputDir);
+
     if (!fs.existsSync(dir)) return;
     const files = fs.readdirSync(dir);
 
@@ -173,7 +176,7 @@ function batchGenerateOgCards(options = {}) {
       const fullPath = path.join(dir, file);
 
       try {
-        const res = generateCardForFile(fullPath, { outputDir, force });
+        const res = generateCardForFile(fullPath, { outputDir: targetOutDir, force });
         if (res.generated) stats.generated++;
         else if (res.skipped) stats.skipped++;
       } catch (err) {
