@@ -129,9 +129,22 @@
 
 {{ $imageURL := "" }}
 {{ $imageExt := "png" }}
-{{ with .Params.image }}
-  {{ $imageURL = . | absURL }}
-  {{ $imageExt = path.Ext . | strings.TrimPrefix "." }}
+{{ $slug := "" }}
+{{ with .File }}
+  {{ $slug = .BaseFileName }}
+{{ end }}
+{{ $dynamicOgRel := printf "images/og/%s.png" $slug }}
+{{ $dynamicOgStatic := printf "static/%s" $dynamicOgRel }}
+
+{{ if .Params.og_image }}
+  {{ $imageURL = .Params.og_image | absURL }}
+  {{ $imageExt = path.Ext .Params.og_image | strings.TrimPrefix "." }}
+{{ else if and $slug (fileExists $dynamicOgStatic) }}
+  {{ $imageURL = $dynamicOgRel | absURL }}
+  {{ $imageExt = "png" }}
+{{ else if .Params.image }}
+  {{ $imageURL = .Params.image | absURL }}
+  {{ $imageExt = path.Ext .Params.image | strings.TrimPrefix "." }}
 {{ else }}
   {{ $imageURL = "images/og-share.png" | absURL }}
 {{ end }}

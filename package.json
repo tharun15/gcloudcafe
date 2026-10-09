@@ -6,7 +6,9 @@
   "author": "zeon.studio",
   "scripts": {
     "dev": "hugo server",
-    "build": "hugo --gc --minify --forceSyncStatic",
+    "build": "npm run og:generate && hugo --gc --minify --forceSyncStatic",
+    "og:generate": "node scripts/generate-og-cards.js",
+    "og:generate:force": "node scripts/generate-og-cards.js --force",
     "preview": "hugo server --disableFastRender --navigateToChanged --templateMetrics --templateMetricsHints --watch --forceSyncStatic -e production --minify",
     "dev:example": "cd exampleSite && hugo server",
     "build:example": "cd exampleSite && hugo --gc --minify --templateMetrics --templateMetricsHints --forceSyncStatic",
@@ -24,6 +26,7 @@
     "newsletter:preview": "node scripts/weekly-newsletter-digest.js --dry-run"
   },
   "devDependencies": {
+    "@resvg/resvg-js": "^2.6.2",
     "@tailwindcss/forms": "^0.5.9",
     "@tailwindcss/typography": "^0.5.15",
     "autoprefixer": "^10.4.20",
