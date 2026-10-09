@@ -153,8 +153,8 @@
         </span>
       </button>
 
-      <!-- Desktop Language Switcher -->
-      <div class="hidden sm:inline-flex">
+      <!-- Desktop Language Switcher (Hidden to reduce friction & declutter navigation) -->
+      <div class="hidden" style="display: none !important;" aria-hidden="true">
         {{ partial "components/language-switcher" . }}
       </div>
 
@@ -314,8 +314,9 @@
         <!-- Mobile Appearance Toggle (Full-Row Interactive Switcher CTA) -->
         {{ partial "components/theme-switcher" (dict "FullRow" true "ID" "mobile-theme-switcher") }}
 
-        <!-- Mobile Language Switcher (Segmented Control) -->
-        <div class="pt-0.5">
+        <!-- Mobile Language Switcher (Hidden to reduce friction & declutter navigation) -->
+        <div class="hidden" style="display: none !important;" aria-hidden="true">
+          <!-- Mobile Language Switcher (Segmented Control) -->
           <div class="flex items-center justify-between mb-1.5 px-2">
             <span class="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
               Language / Lingua
