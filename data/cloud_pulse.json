@@ -1,46 +1,8 @@
 [
   {
-    "id": "1a8facdb-0f4f-42d7-9bf4-9c21cbea6c5b",
-    "title": "Azure Leads Gartner 2026 MQ for Industrial AIoT Platforms",
-    "content": "🎯 What Changed: Azure was named a Leader in the 2026 Gartner Magic Quadrant for Global Industrial AIoT Platforms.\n💡 Engineering Impact: This validates Azure's robust capabilities for deploying scalable, secure, and intelligent AIoT solutions in industrial environments. Engineers can confidently leverage Azure's services for advanced analytics, predictive maintenance, and operational efficiency, streamlining complex industrial transformations.",
-    "tags": [
-      "#Azure",
-      "#CloudArchitecture",
-      "#CloudNews"
-    ],
-    "upvotes": 1,
-    "downvotes": 0,
-    "score": 1,
-    "author": "Cloud Newsroom Bot",
-    "created_at": "2026-10-09T11:44:37.917693+00:00",
-    "link_url": "https://azure.microsoft.com/en-us/blog/microsoft-named-a-leader-in-the-2026-gartner-magic-quadrant-for-global-industrial-aiot-platforms/",
-    "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 53.6h without manual admin curation.",
-    "updated_at": "2026-10-09T15:05:05.546Z"
-  },
-  {
-    "id": "b622b88c-b379-4757-89cc-c7baab6cdd9e",
-    "title": "AWS Network Firewall adds wildcard support for container attribute filters",
-    "content": "🎯 What Changed: AWS Network Firewall now supports wildcard matching in container attribute-based inspection filters for Amazon EKS and Amazon ECS workloads.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
-    "tags": [
-      "#AWS",
-      "#CloudArchitecture",
-      "#CloudNews"
-    ],
-    "upvotes": 1,
-    "downvotes": 0,
-    "score": 1,
-    "author": "Cloud Newsroom Bot",
-    "created_at": "2026-10-09T04:20:43.958855+00:00",
-    "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/10/aws-network-firewall-container-attributes-wildcard",
-    "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 43.8h without manual admin curation.",
-    "updated_at": "2026-10-09T05:18:15.973Z"
-  },
-  {
-    "id": "e8ee37e0-473e-4dac-9721-c52e739809df",
-    "title": "IdeaBot: Streamlining Corporate Innovation & Breakthroughs",
-    "content": "🎯 What Changed: Red Hat introduces IdeaBot, a new solution designed to structure and accelerate corporate innovation initiatives.\n💡 Engineering Impact: This initiative empowers engineering and product teams to align emerging technology investments directly with business impact, streamlining the evaluation and integration of breakthrough ideas into strategic roadmaps.",
+    "id": "1391c0ce-c5e4-4a8c-873e-b499f06b0f1d",
+    "title": "OpenShift Pen Drive: Streamlined Analysis for Disconnected Clusters",
+    "content": "🎯 What Changed: Red Hat introduces 'Pen drive,' a new single-Podman image tool for streamlined analysis of disconnected OpenShift clusters.\n💡 Engineering Impact: Engineers can now proactively identify and resolve issues in air-gapped OpenShift deployments, minimizing configuration drift and reducing the risk of production incidents during Day-2 operations.",
     "tags": [
       "#OpenShift",
       "#RedHat",
@@ -50,68 +12,11 @@
     "downvotes": 0,
     "score": 1,
     "author": "Cloud Newsroom Bot",
-    "created_at": "2026-10-08T11:52:33.832086+00:00",
-    "link_url": "https://www.redhat.com/en/blog/breathing-life-corporate-innovation-ideabot",
+    "created_at": "2026-10-09T11:44:33.445922+00:00",
+    "link_url": "https://www.redhat.com/en/blog/actionable-disconnected-cluster-analysis-available-now-pen-drive-powered-red-hat-lightspeed",
     "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 35.7h without manual admin curation.",
-    "updated_at": "2026-10-08T21:09:20.494Z"
-  },
-  {
-    "id": "32674d95-13ca-49cf-bd29-5bf7d7da1110",
-    "title": "Azure Deploys AI Across Datacenter Operations and Hardware Lifecycle",
-    "content": "🎯 What Changed: Microsoft revealed its framework applying AI across Azure's physical infrastructure lifecycle, optimizing everything from hardware supply chains to fleet telemetry and operations.\n💡 Engineering Impact: Workloads gain improved uptime and capacity predictability, as automated AI models preempt hardware failures and optimize regional capacity allocation before tenant environments are impacted.",
-    "tags": [
-      "#Azure",
-      "#CloudArchitecture",
-      "#CloudNews"
-    ],
-    "upvotes": 1,
-    "downvotes": 0,
-    "score": 1,
-    "author": "Cloud Newsroom Bot",
-    "created_at": "2026-10-08T11:52:43.216665+00:00",
-    "link_url": "https://azure.microsoft.com/en-us/blog/ai-transformation-across-the-infrastructure-lifecycle-from-supply-chain-to-fleet-operations/",
-    "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 29.9h without manual admin curation.",
-    "updated_at": "2026-10-08T15:22:52.165Z"
-  },
-  {
-    "id": "08cec857-c314-488c-ab43-3bcad1fea7b4",
-    "title": "Claude Haiku 5.5 is now available on AWS GovCloud (US)",
-    "content": "🎯 What Changed: AWS has made Claude Haiku 5.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
-    "tags": [
-      "#AWS",
-      "#CloudArchitecture",
-      "#CloudNews"
-    ],
-    "upvotes": 1,
-    "downvotes": 0,
-    "score": 1,
-    "author": "Cloud Newsroom Bot",
-    "created_at": "2026-10-08T04:18:08.865741+00:00",
-    "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/10/claude-haiku-5-5-aws-govcloud/",
-    "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 19.8h without manual admin curation.",
-    "updated_at": "2026-10-08T05:14:51.411Z"
-  },
-  {
-    "id": "6bbf4990-856c-4b69-ba02-2fa3f48a45f5",
-    "title": "AWS IAM Identity Center Secures Identity Store Access",
-    "content": "🎯 What Changed: IAM Identity Center now supports network access controls for its Identity Store, allowing restriction of API access based on network origin.\n💡 Engineering Impact: This enables architects to enforce stricter security postures by limiting Identity Store API and SCIM API access to specific VPC endpoints or IP ranges. It enhances compliance and reduces the attack surface for workforce identity management.",
-    "tags": [
-      "#AWS",
-      "#CloudArchitecture",
-      "#CloudNews"
-    ],
-    "upvotes": 1,
-    "downvotes": 0,
-    "score": 1,
-    "author": "Cloud Newsroom Bot",
-    "created_at": "2026-10-07T09:28:53.035923+00:00",
-    "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/10/aws-identity-store-network-controls/",
-    "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 600.4h without manual admin curation.",
-    "updated_at": "2026-10-07T09:29:12.011+00:00"
+    "eligibility_reason": "[Auto-Published] Published automatically after 59.2h without manual admin curation.",
+    "updated_at": "2026-10-09T20:40:09.191Z"
   },
   {
     "id": "0b6826b6-fc4c-4621-8f9b-bbbea3de16aa",
@@ -130,7 +35,8 @@
     "link_url": "https://kubernetes.io/blog/2026/09/16/kubernetes-v1-37-hardening-container-storage/",
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
-    "updated_at": "2026-10-07T09:28:48.441634+00:00"
+    "updated_at": "2026-10-07T09:28:48.441634+00:00",
+    "ageDays": 2.466202789351852
   },
   {
     "id": "81213fff-57d4-4c0b-90eb-c84beeb18d4d",
@@ -149,7 +55,8 @@
     "link_url": "https://kubernetes.io/blog/2026/09/21/kubernetes-v1-37-pvc-last-used-time/",
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
-    "updated_at": "2026-10-07T09:28:42.008666+00:00"
+    "updated_at": "2026-10-07T09:28:42.008666+00:00",
+    "ageDays": 2.4662772453703705
   },
   {
     "id": "1ec5647f-ce95-4be3-ba87-6aa974960da7",
@@ -168,7 +75,8 @@
     "link_url": "https://kubernetes.io/blog/2026/09/22/sig-apps-spotlight/",
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
-    "updated_at": "2026-10-07T09:28:37.111692+00:00"
+    "updated_at": "2026-10-07T09:28:37.111692+00:00",
+    "ageDays": 2.4663339236111113
   },
   {
     "id": "88a2ed59-fb47-488b-b07c-d6be1de35d0b",
@@ -187,7 +95,8 @@
     "link_url": "https://kubernetes.io/blog/2026/10/05/scaling-kubernetes-workloads-with-node-swap/",
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
-    "updated_at": "2026-10-07T09:28:31.276024+00:00"
+    "updated_at": "2026-10-07T09:28:31.276024+00:00",
+    "ageDays": 2.4664014583333334
   },
   {
     "id": "202f8734-234e-4bd5-9a67-8535691f131a",
@@ -206,26 +115,8 @@
     "link_url": "https://kubernetes.io/blog/2026/10/06/kubernetes-cgroups-v2-shift/",
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
-    "updated_at": "2026-10-07T09:28:24.859911+00:00"
-  },
-  {
-    "id": "ef388ea5-f237-48d0-8242-1f1b2ddb0d9f",
-    "title": "GLM 5.3 by Z.ai is now generally available on Amazon Bedrock",
-    "content": "🎯 What Changed: ). Wait, the format is ` Why it matters: <Sentence 2.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
-    "tags": [
-      "#AWS",
-      "#CloudArchitecture",
-      "#CloudNews"
-    ],
-    "upvotes": 1,
-    "downvotes": 0,
-    "score": 1,
-    "author": "Cloud Newsroom Bot",
-    "created_at": "2026-10-07T04:06:42.873971+00:00",
-    "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/10/amazon-bedrock-glm-5-3/",
-    "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 596.0h without manual admin curation.",
-    "updated_at": "2026-10-07T05:04:13.905+00:00"
+    "updated_at": "2026-10-07T09:28:24.859911+00:00",
+    "ageDays": 2.4664757291666666
   },
   {
     "id": "37fcb780-d57d-4ba9-875a-7665dd9cd981",
@@ -244,7 +135,8 @@
     "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/10/redshift-iceberg-materialized-views",
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
-    "updated_at": "2026-10-07T04:06:30.331436+00:00"
+    "updated_at": "2026-10-07T04:06:30.331436+00:00",
+    "ageDays": 2.6900235069444443
   },
   {
     "id": "521c6dfa-7eb3-4834-87fb-7ac338d90f9d",
@@ -263,7 +155,8 @@
     "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/10/AWS-Certificate-Manager-ACME-Privatelink",
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
-    "updated_at": "2026-10-07T04:00:33.151279+00:00"
+    "updated_at": "2026-10-07T04:00:33.151279+00:00",
+    "ageDays": 2.694157534722222
   },
   {
     "id": "b1f2627d-7930-4c4b-ab57-de042bac55c3",
@@ -282,6 +175,127 @@
     "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/10/aws-batch-job-cloudwatch-metrics/",
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
-    "updated_at": "2026-10-07T04:00:00.696536+00:00"
+    "updated_at": "2026-10-07T04:00:00.696536+00:00",
+    "ageDays": 2.694533171296296
+  },
+  {
+    "id": "bf22f4dd-2d54-4b4c-9038-ea09aadef8a2",
+    "title": "Introducing Google Cloud Modernize, transforming for (and with) AI",
+    "content": "Google Cloud has launched Google Cloud Modernize, a comprehensive transformation portfolio that leverages AI to accelerate enterprise legacy",
+    "tags": [
+      "#GoogleCloud",
+      "#GCP",
+      "#CloudNews"
+    ],
+    "upvotes": 3,
+    "downvotes": 0,
+    "score": 3,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-10-07T03:59:45.591638+00:00",
+    "link_url": "https://cloud.google.com/blog/products/infrastructure-modernization/google-cloud-modernize-accelerate-transformation-with-ai/",
+    "status": "approved",
+    "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
+    "updated_at": "2026-10-07T03:59:45.591638+00:00",
+    "ageDays": 2.6947079976851853
+  },
+  {
+    "id": "46fd5625-4fda-4793-a2ab-d6b627f3f4df",
+    "title": "AlloyDB: A unified database engine for hybrid search",
+    "content": "Google Cloud has introduced a unified engine for AlloyDB that integrates vector search and full-text search into",
+    "tags": [
+      "#GoogleCloud",
+      "#GCP",
+      "#CloudNews"
+    ],
+    "upvotes": 3,
+    "downvotes": 0,
+    "score": 3,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-10-07T03:59:26.783766+00:00",
+    "link_url": "https://cloud.google.com/blog/products/databases/simplify-ai-search-with-alloydb-hybrid-search-and-rrf/",
+    "status": "approved",
+    "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
+    "updated_at": "2026-10-07T03:59:26.783766+00:00",
+    "ageDays": 2.6949256828703705
+  },
+  {
+    "id": "09900f5e-4d21-4d5e-84a6-f5eec4459b40",
+    "title": "AWS Lambda now supports direct read configuration for Amazon S3 Files",
+    "content": "🎯 What Changed: AWS Lambda now supports direct configuration for S3 file reads, allowing functions to explicitly choose between S3 Files high-performance storage or standard S3 bucket access. This introduces a new control point for data sourcing.\n\n💡 Why It Matters: This enables engineers to optimize Lambda function performance and cost by aligning data access with the appropriate S3 storage tier. It provides critical architectural flexibility for data-intensive serverless applications.",
+    "tags": [
+      "#AWS",
+      "#CloudArchitecture",
+      "#CloudNews"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 2,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-09-12T09:07:10.082273+00:00",
+    "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/09/aws-lambda-direct-read-s3files/",
+    "status": "approved",
+    "eligibility_reason": "Official AWS Release: Ingested & AI synthesized for Admin Approval Queue.",
+    "updated_at": "2026-09-12T09:07:10.082273+00:00",
+    "ageDays": 27.481230092592593
+  },
+  {
+    "id": "57b1b07d-9511-4a40-b351-2ec2866364b4",
+    "title": "Kubernetes v1.37: Introducing Node Lifecycle Conditions",
+    "content": "🎯 What Changed: Kubernetes v1.37 introduces Node Lifecycle Conditions, providing a standardized, unified API for expressing a node's operational state beyond existing disparate signals like readiness or taints.\n\n💡 Why It Matters: This simplifies node management and automation, enabling more robust scheduling decisions, improved cluster autoscaling, and consistent handling of node health across diverse environments.",
+    "tags": [
+      "#Kubernetes",
+      "#CNCF",
+      "#CloudNative"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 2,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-09-12T09:07:09.525138+00:00",
+    "link_url": "https://kubernetes.io/blog/2026/09/09/kubernetes-v1-37-node-lifecycle-conditions/",
+    "status": "approved",
+    "eligibility_reason": "Official Kubernetes Release: Ingested & AI synthesized for Admin Approval Queue.",
+    "updated_at": "2026-09-12T09:07:09.525138+00:00",
+    "ageDays": 27.48123653935185
+  },
+  {
+    "id": "1a8facdb-0f4f-42d7-9bf4-9c21cbea6c5b",
+    "title": "Azure Leads Gartner 2026 MQ for Industrial AIoT Platforms",
+    "content": "🎯 What Changed: Azure was named a Leader in the 2026 Gartner Magic Quadrant for Global Industrial AIoT Platforms.\n💡 Engineering Impact: This validates Azure's robust capabilities for deploying scalable, secure, and intelligent AIoT solutions in industrial environments. Engineers can confidently leverage Azure's services for advanced analytics, predictive maintenance, and operational efficiency, streamlining complex industrial transformations.",
+    "tags": [
+      "#Azure",
+      "#CloudArchitecture",
+      "#CloudNews"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-10-09T11:44:37.917693+00:00",
+    "link_url": "https://azure.microsoft.com/en-us/blog/microsoft-named-a-leader-in-the-2026-gartner-magic-quadrant-for-global-industrial-aiot-platforms/",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 53.6h without manual admin curation.",
+    "updated_at": "2026-10-09T15:05:05.546+00:00",
+    "ageDays": 0.37188015046296297
+  },
+  {
+    "id": "b622b88c-b379-4757-89cc-c7baab6cdd9e",
+    "title": "AWS Network Firewall adds wildcard support for container attribute filters",
+    "content": "🎯 What Changed: AWS Network Firewall now supports wildcard matching in container attribute-based inspection filters for Amazon EKS and Amazon ECS workloads.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
+    "tags": [
+      "#AWS",
+      "#CloudArchitecture",
+      "#CloudNews"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-10-09T04:20:43.958855+00:00",
+    "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/10/aws-network-firewall-container-attributes-wildcard",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 43.8h without manual admin curation.",
+    "updated_at": "2026-10-09T05:18:15.973+00:00",
+    "ageDays": 0.6801435648148149
   }
 ]
