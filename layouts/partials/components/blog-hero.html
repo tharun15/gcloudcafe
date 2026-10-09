@@ -37,22 +37,19 @@
 
   <div class="bytedepth-container" aria-labelledby="featured-post-title">
     <!-- Full-Width Flagship Hero Card (Editorial Split: 8-Col Story Left, 4-Col Blueprint Right) -->
-    <article class="w-full rounded-2xl sm:rounded-3xl border border-slate-200/90 dark:border-slate-800/90 bg-white dark:bg-[#0c1220] p-4 sm:p-6 lg:p-7 shadow-xs hover:border-slate-300 dark:hover:border-slate-700 transition-all duration-300 group relative spotlight-hero">
+    <article class="w-full rounded-2xl sm:rounded-3xl border border-slate-200/90 dark:border-slate-800/90 border-l-[3px] sm:border-l-4 border-l-amber-500/80 dark:border-l-amber-400/80 bg-white dark:bg-[#0c1220] p-4 sm:p-6 lg:p-7 shadow-xs hover:border-slate-300 dark:hover:border-slate-700 transition-all duration-300 group relative spotlight-hero">
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 items-center">
         
         <!-- Left: Flagship Headline, Expanded Editorial Narrative & Meta Details -->
         <div class="lg:col-span-8 flex flex-col justify-between h-full">
           <div>
-            <!-- Category & Editorial Badge Line -->
-            <div class="flex items-center gap-2.5 mb-2.5">
+            <!-- Category Line -->
+            <div class="flex items-center gap-2 mb-2.5">
               <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] sm:text-xs font-mono font-bold uppercase tracking-wider bg-red-50 text-red-700 dark:bg-red-950/50 dark:text-red-400">
                 {{ $firstCat }}
               </span>
-              <span class="text-slate-300 dark:text-slate-700">·</span>
-              <span class="text-xs font-mono font-semibold tracking-wide text-slate-500 dark:text-slate-400 uppercase">Featured Architecture</span>
-              <span class="hidden sm:inline-flex items-center gap-1.5 text-xs font-mono text-slate-400 dark:text-slate-500 ml-1">
-                <span>·</span>
-                <span>Production Blueprint</span>
+              <span class="hidden sm:inline-flex items-center">
+                <span class="w-1.5 h-1.5 rounded-full bg-amber-500 dark:bg-amber-400" title="Flagship Article"></span>
               </span>
             </div>
 
