@@ -22,11 +22,8 @@
       {{ end }}
     {{ end }}
   {{ end }}
-  {{ $teaser := $page.Params.description | default $page.Summary | plainify | truncate 240 }}
+  {{ $teaser := $page.Params.description | default $page.Summary | plainify | truncate 280 }}
   {{ $firstCat := index ($categories | default (slice "Architecture")) 0 }}
-
-  {{ $allPosts := $root.Posts | default (sort (where site.RegularPages "Section" "blog") "Date" "desc") }}
-  {{ $recentPosts := where $allPosts ".RelPermalink" "!=" $page.RelPermalink | first 3 }}
 
   <style>
     .hero-blueprint-img picture,
@@ -38,63 +35,42 @@
     }
   </style>
 
-  <section class="pb-6 pt-3 sm:pt-5" aria-labelledby="featured-post-title">
-    <div class="bytedepth-container">
-      
-      <!-- =================================================================== -->
-      <!-- EDITORIAL 2-COLUMN HERO SPLIT (Content-First / Refined Typography)  -->
-      <!-- Part 1 (Left): Spotlight Lead Deep Dive                             -->
-      <!-- Part 2 (Right): Recent Articles Wire                                -->
-      <!-- =================================================================== -->
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 items-stretch">
+  <div class="bytedepth-container" aria-labelledby="featured-post-title">
+    <!-- Full-Width Flagship Hero Card (Editorial Split: 8-Col Story Left, 4-Col Blueprint Right) -->
+    <article class="w-full rounded-2xl sm:rounded-3xl border border-slate-200/90 dark:border-slate-800/90 bg-white dark:bg-[#0c1220] p-4 sm:p-6 lg:p-7 shadow-xs hover:border-slate-300 dark:hover:border-slate-700 transition-all duration-300 group relative spotlight-hero">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 items-center">
         
-        <!-- PART 1: SPOTLIGHT LEAD STORY -->
-        <article class="lg:col-span-7 xl:col-span-8 rounded-2xl sm:rounded-3xl border border-slate-200/90 dark:border-slate-800/90 bg-white dark:bg-[#0c1220] p-4 sm:p-6 lg:p-7 flex flex-col justify-between shadow-xs hover:border-slate-300 dark:hover:border-slate-700 transition-all duration-300 group relative spotlight-hero">
+        <!-- Left: Flagship Headline, Expanded Editorial Narrative & Meta Details -->
+        <div class="lg:col-span-8 flex flex-col justify-between h-full">
           <div>
-            <!-- Category & Badge Line (Quiet & Authoritative) -->
-            <div class="flex items-center gap-2 mb-3">
+            <!-- Category & Editorial Badge Line -->
+            <div class="flex items-center gap-2.5 mb-2.5">
               <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] sm:text-xs font-mono font-bold uppercase tracking-wider bg-red-50 text-red-700 dark:bg-red-950/50 dark:text-red-400">
                 {{ $firstCat }}
               </span>
               <span class="text-slate-300 dark:text-slate-700">·</span>
-              <span class="text-xs font-mono text-slate-500 dark:text-slate-400">Featured Architecture</span>
-              {{ with $tags }}
-                <div class="hidden sm:inline-flex items-center gap-1.5 ml-1">
-                  {{ range first 2 . }}
-                    <span class="text-xs font-mono text-slate-400 dark:text-slate-500">#{{ . }}</span>
-                  {{ end }}
-                </div>
-              {{ end }}
+              <span class="text-xs font-mono font-semibold tracking-wide text-slate-500 dark:text-slate-400 uppercase">Featured Architecture</span>
+              <span class="hidden sm:inline-flex items-center gap-1.5 text-xs font-mono text-slate-400 dark:text-slate-500 ml-1">
+                <span>·</span>
+                <span>Production Blueprint</span>
+              </span>
             </div>
 
-            <!-- Blueprint Image (Generous, Widescreen, Top Banner) -->
-            <div class="rounded-xl overflow-hidden shadow-xs border border-slate-200/80 dark:border-slate-800 aspect-[16/9] sm:aspect-[21/9] bg-slate-950 hero-blueprint-img group/preview mb-5">
-              <a href="{{ $page.RelPermalink }}" class="block w-full h-full relative no-underline overflow-hidden" aria-label="Read blueprint: {{ $page.Title }}">
-                {{ with $page.Params.image }}
-                  {{ partial "image" (dict "Src" . "Context" $page "Alt" $page.Title "Class" "w-full h-full object-cover group-hover/preview:scale-[1.02] transition-transform duration-500 ease-out" "Loading" "eager" "FetchPriority" "high") }}
-                {{ else }}
-                  <div class="w-full h-full flex items-center justify-center p-3 bg-slate-900 text-slate-400 font-mono text-xs text-center">
-                    {{ $page.Title }}
-                  </div>
-                {{ end }}
-              </a>
-            </div>
-
-            <!-- Headline: Large, Unhurried, Pure Typography -->
-            <h1 id="featured-post-title" class="text-2xl sm:text-3xl lg:text-[28px] font-extrabold text-slate-900 dark:text-white leading-[1.28] tracking-tight mb-3 group-hover:text-red-600 dark:group-hover:text-red-500 transition-colors">
+            <!-- Big, Commanding Headline with Generous Breathing Room -->
+            <h1 id="featured-post-title" class="text-xl sm:text-2xl lg:text-[27px] xl:text-[29px] font-extrabold text-slate-900 dark:text-white leading-[1.26] tracking-tight mb-2.5 group-hover:text-red-600 dark:group-hover:text-red-500 transition-colors">
               <a href="{{ $page.RelPermalink }}" class="no-underline text-current hover:text-red-600 dark:hover:text-red-500">
                 {{ $page.Title }}
               </a>
             </h1>
 
-            <!-- Teaser: Unboxed, Breathing Editorial Narrative -->
-            <p class="text-[15px] sm:text-[16px] text-slate-600 dark:text-slate-300 leading-relaxed font-normal mb-5 line-clamp-3">
+            <!-- Unboxed Editorial Teaser Summary -->
+            <p class="text-sm sm:text-[15px] lg:text-[15.5px] text-slate-600 dark:text-slate-300 leading-relaxed font-normal mb-4 sm:mb-5">
               {{ $teaser }}
             </p>
           </div>
 
-          <!-- Bottom Meta Bar: Author Details + Read Time + Bookmark -->
-          <div class="pt-4 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between gap-3 text-xs sm:text-[13px] text-slate-500 dark:text-slate-400 mt-auto">
+          <!-- Bottom Meta Bar: Author Info + Date + Reading Time + Bookmark -->
+          <div class="pt-3.5 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between gap-3 text-xs sm:text-[13px] text-slate-500 dark:text-slate-400">
             <div class="flex items-center gap-2.5 shrink-0">
               {{ if $authorImage }}
                 <img src="{{ $authorImage | relURL }}" alt="{{ $authorName }}" class="w-8 h-8 rounded-full object-cover shrink-0 border border-slate-200 dark:border-slate-700 shadow-xs" width="32" height="32" decoding="async" loading="lazy" onerror="this.onerror=null; this.src='{{ `/images/avatar.png` | relURL }}';">
@@ -129,94 +105,24 @@
               </button>
             </div>
           </div>
-        </article>
+        </div>
 
-        <!-- PART 2: RECENT ARTICLES LIST -->
-        <aside class="lg:col-span-5 xl:col-span-4 rounded-2xl sm:rounded-3xl border border-slate-200/90 dark:border-slate-800/90 bg-white dark:bg-[#0c1220] p-5 sm:p-6 flex flex-col justify-between shadow-xs" aria-label="Recent articles">
-          <div>
-            <!-- Section Header -->
-            <div class="flex items-center justify-between pb-3.5 mb-2 border-b border-slate-100 dark:border-slate-800/80">
-              <div class="flex items-center gap-2">
-                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" aria-hidden="true"></span>
-                <h2 class="font-mono text-[12.5px] sm:text-[13.5px] font-bold uppercase tracking-wider text-slate-900 dark:text-white m-0">
-                  {{ if eq site.Language.Lang "it" }}Articoli Recenti{{ else }}Recent Articles{{ end }}
-                </h2>
-              </div>
-              <a href="{{ `blog/` | relLangURL }}" class="font-mono text-xs sm:text-[13px] font-bold text-slate-500 hover:text-red-600 dark:text-slate-400 dark:hover:text-red-400 no-underline transition-colors flex items-center gap-1">
-                <span>{{ if eq site.Language.Lang "it" }}Tutti{{ else }}All{{ end }}</span>
-                <i class="fa-solid fa-arrow-right text-[10px]"></i>
-              </a>
-            </div>
-
-            <!-- Vertical List of Recent Articles (Content First) -->
-            <div class="divide-y divide-slate-100 dark:divide-slate-800/70">
-              {{ range $recentPosts }}
-                {{ $rPost := . }}
-                {{ $rCat := index ($rPost.Params.categories | default (slice "Cloud")) 0 }}
-                <article class="py-3.5 first:pt-2 last:pb-1 flex items-start justify-between gap-3 group">
-                  <div class="min-w-0 flex-1">
-                    <!-- Category & Read Time -->
-                    <div class="flex items-center gap-2 mb-1">
-                      <span class="font-mono text-[11px] sm:text-xs font-bold uppercase text-red-600 dark:text-red-400 tracking-wider">
-                        {{ $rCat }}
-                      </span>
-                      <span class="text-slate-300 dark:text-slate-700">·</span>
-                      <span class="font-mono text-[11.5px] sm:text-xs text-slate-500 dark:text-slate-400">
-                        {{ $rPost.ReadingTime }} {{ i18n "min_read" }}
-                      </span>
-                    </div>
-
-                    <!-- Headline -->
-                    <h3 class="text-[14px] sm:text-[15px] font-bold text-slate-900 dark:text-white group-hover:text-red-600 dark:group-hover:text-red-500 transition-colors line-clamp-2 leading-snug m-0">
-                      <a href="{{ $rPost.RelPermalink }}" class="no-underline text-current hover:text-red-600 dark:hover:text-red-500">
-                        {{ $rPost.Title }}
-                      </a>
-                    </h3>
-
-                    <!-- Date & Bookmark Action -->
-                    <div class="flex items-center justify-between gap-2 mt-2 text-xs font-mono text-slate-400">
-                      <span class="text-[11.5px] sm:text-xs text-slate-500 dark:text-slate-400">{{ $rPost.Date.Format "Jan 02, 2006" }}</span>
-                      <button
-                        type="button"
-                        data-bookmark-btn
-                        data-article-url="{{ $rPost.RelPermalink }}"
-                        data-article-title="{{ $rPost.Title }}"
-                        data-article-category="{{ $rCat }}"
-                        data-article-readtime="{{ $rPost.ReadingTime }} {{ i18n `min_read` }}"
-                        class="text-slate-400 hover:text-red-500 transition-colors cursor-pointer"
-                        aria-label="Save {{ $rPost.Title }} for later"
-                        title="{{ i18n `save_for_later` }}">
-                        <i class="fa-regular fa-bookmark text-xs"></i>
-                      </button>
-                    </div>
-                  </div>
-
-                  <!-- Mini Squircle Preview Thumbnail -->
-                  <a href="{{ $rPost.RelPermalink }}" class="w-12 h-12 sm:w-14 sm:h-14 rounded-xl overflow-hidden bg-slate-900 border border-slate-200 dark:border-slate-800 shrink-0 group-hover:scale-105 transition-transform duration-300 relative shadow-2xs no-underline" aria-label="Read {{ $rPost.Title }}">
-                    {{ with $rPost.Params.image }}
-                      {{ partial "image" (dict "Src" . "Context" $rPost "Alt" $rPost.Title "Class" "w-full h-full object-cover" "Loading" "lazy") }}
-                    {{ else }}
-                      <div class="w-full h-full flex items-center justify-center p-1 text-xs font-mono text-slate-500">
-                        {{ substr $rCat 0 3 }}
-                      </div>
-                    {{ end }}
-                  </a>
-                </article>
+        <!-- Right: Compact Architectural Blueprint Artwork (Proportional 4-Col Fit) -->
+        <div class="lg:col-span-4 w-full">
+          <div class="rounded-xl overflow-hidden shadow-xs border border-slate-200/80 dark:border-slate-800 aspect-[16/10] sm:aspect-[16/10] bg-slate-950 hero-blueprint-img group/preview">
+            <a href="{{ $page.RelPermalink }}" class="block w-full h-full relative no-underline overflow-hidden" aria-label="Read blueprint: {{ $page.Title }}">
+              {{ with $page.Params.image }}
+                {{ partial "image" (dict "Src" . "Context" $page "Alt" $page.Title "Class" "w-full h-full object-cover group-hover/preview:scale-[1.03] transition-transform duration-500 ease-out" "Loading" "eager" "FetchPriority" "high") }}
+              {{ else }}
+                <div class="w-full h-full flex items-center justify-center p-3 bg-slate-900 text-slate-400 font-mono text-xs text-center">
+                  {{ $page.Title }}
+                </div>
               {{ end }}
-            </div>
-          </div>
-
-          <!-- Bottom Footer Link -->
-          <div class="pt-3 border-t border-slate-100 dark:border-slate-800/80 mt-2">
-            <a href="{{ `blog/` | relLangURL }}" class="flex items-center justify-center gap-1.5 w-full py-2.5 rounded-xl text-xs sm:text-[13px] font-mono font-bold text-slate-700 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-400 bg-slate-50 dark:bg-slate-900/40 hover:bg-slate-100 dark:hover:bg-slate-800/60 transition-colors no-underline">
-              <span>{{ if eq site.Language.Lang "it" }}Esplora tutti gli articoli{{ else }}Browse all articles{{ end }}</span>
-              <i class="fa-solid fa-arrow-right text-xs"></i>
             </a>
           </div>
-        </aside>
+        </div>
 
       </div>
-
-    </div>
-  </section>
+    </article>
+  </div>
 {{ end }}

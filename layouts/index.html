@@ -12,8 +12,8 @@
     {{ end }}
   {{ end }}
 
-  <!-- Section 1: Featured Hero Section (Subtly framed with bottom border & soft background) -->
-  <section class="border-b border-slate-200/80 dark:border-slate-800/80 bg-slate-50/50 dark:bg-transparent pt-4 sm:pt-6 pb-10 sm:pb-14" aria-label="Featured Story and Recent Articles">
+  <!-- Section 1: Featured Hero Section (Seamless canvas, full vertical alignment) -->
+  <section class="border-b border-slate-200/60 dark:border-slate-800/60 pt-2 sm:pt-3 pb-4 sm:pb-5" aria-label="Featured Architecture Guide">
     {{ partial "components/blog-hero" (dict "Featured" $featured "Posts" $posts) }}
   </section>
 
@@ -23,46 +23,43 @@
   {{ end }}
 
   <!-- Section 2: Main Articles & Topics Filter Tabs -->
-  <section class="py-12 sm:py-16 bg-white dark:bg-transparent" aria-labelledby="articles-heading">
+  <section class="pt-4 sm:pt-5 pb-12 sm:pb-16 bg-white dark:bg-transparent" aria-labelledby="articles-heading">
     <div class="bytedepth-container">
-      <!-- Section Heading: Engineering Library -->
-      <div class="flex items-center justify-between mb-4 sm:mb-6 max-w-4xl mx-auto">
-        <div class="flex items-center gap-2.5">
-          <span class="inline-flex items-center justify-center w-6 h-6 rounded-lg bg-red-600/10 text-red-600 dark:text-red-500 text-xs">
-            <i class="fa-solid fa-layer-group"></i>
-          </span>
-          <h2 id="articles-heading" class="font-mono text-xs sm:text-sm font-bold uppercase tracking-wider text-slate-900 dark:text-white m-0">
-            {{ if eq site.Language.Lang "it" }}Tutti gli Articoli{{ else }}Latest Architecture Articles{{ end }}
-          </h2>
-        </div>
-        <span class="font-mono text-xs text-slate-500 dark:text-slate-400">
-          {{ len $gridPosts }} {{ if eq site.Language.Lang "it" }}articoli{{ else }}articles{{ end }}
-        </span>
-      </div>
+      <!-- Section Heading & Topic Filter Navigation -->
+      <div class="w-full mb-4 sm:mb-5">
+        <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-3 sm:gap-4 pb-3.5 border-b border-slate-200 dark:border-slate-800">
+          <div>
+            <h2 id="articles-heading" class="text-base sm:text-lg font-bold tracking-tight text-slate-900 dark:text-white m-0">
+              {{ if eq site.Language.Lang "it" }}Tutti gli Articoli{{ else }}Latest Architecture Articles{{ end }}
+            </h2>
+            <p class="font-mono text-xs text-slate-500 dark:text-slate-400 mt-1 m-0">
+              {{ len $gridPosts }} {{ if eq site.Language.Lang "it" }}articoli di ingegneria{{ else }}engineering guides &amp; blueprints{{ end }}
+            </p>
+          </div>
 
-      <!-- Horizontal Category Tabs -->
-      {{ $categories := site.Taxonomies.categories }}
-      <div class="border-b border-slate-200 dark:border-slate-800 mb-8 sm:mb-10 max-w-4xl mx-auto">
-        <div class="flex items-center gap-6 sm:gap-8 overflow-x-auto no-scrollbar py-1">
-          <span class="sr-only">Topics</span>
-          <a href="{{ `blog/` | relLangURL }}"
-             class="category-tab-active pb-3 -mb-px shrink-0 text-sm no-underline flex items-center gap-1.5 text-red-600 dark:text-red-500 border-b-2 border-red-600 dark:border-red-500 font-bold">
-            <span>All</span>
-          </a>
-          {{ $primaryCats := slice "kubernetes" "security" "google-cloud" "devops" "openshift" "certifications" }}
-          {{ range $catSlug := $primaryCats }}
-            {{ with site.GetPage (printf "/categories/%s" $catSlug) }}
-              <a href="{{ .RelPermalink }}"
-                 class="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white font-medium pb-3 -mb-px shrink-0 text-sm no-underline transition-colors flex items-center gap-1.5">
-                <span>{{ .Title }}</span>
-              </a>
+          <!-- Horizontal Category Filter Tabs -->
+          {{ $categories := site.Taxonomies.categories }}
+          <div class="flex items-center gap-3 sm:gap-5 overflow-x-auto no-scrollbar py-0.5">
+            <span class="sr-only">Topics</span>
+            <a href="{{ `blog/` | relLangURL }}"
+               class="category-tab-active font-semibold text-xs sm:text-sm text-red-600 dark:text-red-500 shrink-0 no-underline">
+              <span>All</span>
+            </a>
+            {{ $primaryCats := slice "kubernetes" "security" "google-cloud" "devops" "openshift" "certifications" }}
+            {{ range $catSlug := $primaryCats }}
+              {{ with site.GetPage (printf "/categories/%s" $catSlug) }}
+                <a href="{{ .RelPermalink }}"
+                   class="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white font-medium text-xs sm:text-sm shrink-0 no-underline transition-colors">
+                  <span>{{ .Title }}</span>
+                </a>
+              {{ end }}
             {{ end }}
-          {{ end }}
+          </div>
         </div>
       </div>
 
-      <!-- 1-Column Articles Feed (Medium Style, Clear Borders and Depth) -->
-      <div class="flex flex-col space-y-6 sm:space-y-8 max-w-4xl mx-auto">
+      <!-- 1-Column Articles Feed (Clean Editorial Stream) -->
+      <div class="flex flex-col space-y-4 sm:space-y-5 w-full">
         {{ if eq (len $gridPosts) 0 }}
           <div class="text-center py-16 bg-white dark:bg-[#0c1220] rounded-xl border border-slate-200 dark:border-slate-800">
             <p class="text-slate-600 dark:text-slate-400 font-semibold">No additional articles found.</p>
@@ -108,7 +105,7 @@
       {{ end }}
 
       <!-- Section 3: Browse all topics Section (Framed with subtle top divider border) -->
-      <div class="mt-14 pt-10 border-t border-slate-200/80 dark:border-slate-800/80 mb-8 max-w-4xl mx-auto">
+      <div class="mt-14 pt-10 border-t border-slate-200/80 dark:border-slate-800/80 mb-8 w-full">
         <h3 class="font-mono text-xs font-bold text-slate-500 dark:text-slate-400 tracking-wider block mb-4">
           {{ i18n "browse_all_topics" }}
         </h3>
@@ -145,7 +142,7 @@
       </div>
 
       <!-- Section 4: Author Credibility Section (Framed cleanly) -->
-      <div class="mt-12 mb-4 max-w-4xl mx-auto">
+      <div class="mt-12 mb-4 w-full">
         <div class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0c1220] p-6 sm:p-8 shadow-xs">
           <div class="flex flex-col sm:flex-row items-center sm:items-start gap-5 sm:gap-6 text-center sm:text-left">
             <img src="{{ `/images/authors/profilepic_tharun.png` | relURL }}"
