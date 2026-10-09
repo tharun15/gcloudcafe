@@ -32,24 +32,29 @@
             <h2 id="articles-heading" class="text-base sm:text-lg font-bold tracking-tight text-slate-900 dark:text-white m-0">
               {{ if eq site.Language.Lang "it" }}Tutti gli Articoli{{ else }}Latest Architecture Articles{{ end }}
             </h2>
-            <p class="font-mono text-xs text-slate-500 dark:text-slate-400 mt-1 m-0">
+            <p class="font-mono text-xs text-slate-500 dark:text-slate-400 mt-1 m-0" id="articles-feed-count">
               {{ len $gridPosts }} {{ if eq site.Language.Lang "it" }}articoli di ingegneria{{ else }}engineering guides &amp; blueprints{{ end }}
             </p>
           </div>
 
-          <!-- Horizontal Category Filter Tabs -->
+          <!-- Horizontal Category Filter Segmented Control (In-Place Instant Filter) -->
           {{ $categories := site.Taxonomies.categories }}
-          <div class="flex items-center gap-3 sm:gap-5 overflow-x-auto no-scrollbar py-0.5">
+          <div class="inline-flex items-center gap-1 p-1 rounded-full bg-slate-100/90 dark:bg-slate-800/80 border border-slate-200/70 dark:border-slate-700/70 overflow-x-auto no-scrollbar max-w-full"
+               id="homepage-category-filters"
+               role="tablist"
+               aria-label="Filter articles by category">
             <span class="sr-only">Topics</span>
             <a href="{{ `blog/` | relLangURL }}"
-               class="category-tab-active font-semibold text-xs sm:text-sm text-red-600 dark:text-red-500 shrink-0 no-underline">
+               data-category-filter="all"
+               class="category-tab-active inline-flex items-center px-3.5 py-1.5 rounded-full text-xs font-semibold no-underline bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-2xs shrink-0 cursor-pointer">
               <span>All</span>
             </a>
             {{ $primaryCats := slice "kubernetes" "security" "google-cloud" "devops" "openshift" "certifications" }}
             {{ range $catSlug := $primaryCats }}
               {{ with site.GetPage (printf "/categories/%s" $catSlug) }}
                 <a href="{{ .RelPermalink }}"
-                   class="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white font-medium text-xs sm:text-sm shrink-0 no-underline transition-colors">
+                   data-category-filter="{{ $catSlug }}"
+                   class="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/80 dark:hover:bg-slate-900/80 transition-all shrink-0 no-underline cursor-pointer">
                   <span>{{ .Title }}</span>
                 </a>
               {{ end }}
@@ -59,19 +64,30 @@
       </div>
 
       <!-- 1-Column Articles Feed (Clean Editorial Stream) -->
-      <div class="flex flex-col space-y-4 sm:space-y-5 w-full">
+      <div class="flex flex-col space-y-4 sm:space-y-5 w-full" id="homepage-articles-feed">
         {{ if eq (len $gridPosts) 0 }}
           <div class="text-center py-16 bg-white dark:bg-[#0c1220] rounded-xl border border-slate-200 dark:border-slate-800">
             <p class="text-slate-600 dark:text-slate-400 font-semibold">No additional articles found.</p>
           </div>
         {{ else }}
           {{ range $idx, $post := $gridPosts }}
+            {{ $postCats := slice }}
+            {{ range $post.Params.categories }}
+              {{ $postCats = $postCats | append (. | urlize | lower) }}
+            {{ end }}
+            {{ range $post.Params.tags }}
+              {{ $postCats = $postCats | append (. | urlize | lower) }}
+            {{ end }}
             {{ if lt $idx 9 }}
-              <div class="w-full">
+              <div class="w-full transition-all duration-300"
+                   data-article-card="true"
+                   data-categories="{{ delimit $postCats " " }}">
                 {{ partial "components/blog-card" $post }}
               </div>
             {{ else }}
               <div class="w-full opacity-0 translate-y-4 transition-all duration-500 ease-out"
+                   data-article-card="true"
+                   data-categories="{{ delimit $postCats " " }}"
                    data-extra-article="true"
                    style="display: none;">
                 {{ partial "components/blog-card" $post }}
@@ -79,6 +95,18 @@
             {{ end }}
           {{ end }}
         {{ end }}
+      </div>
+
+      <!-- Empty State for Filter with 0 Results -->
+      <div id="articles-filter-empty" class="hidden text-center py-14 bg-white dark:bg-[#0c1220] rounded-xl border border-slate-200/80 dark:border-slate-800/80 mt-2">
+        <p class="text-slate-600 dark:text-slate-400 text-sm mb-3">
+          {{ if eq site.Language.Lang "it" }}Nessun articolo trovato per questa categoria.{{ else }}No engineering articles found for this topic.{{ end }}
+        </p>
+        <button type="button"
+                id="btn-filter-reset-all"
+                class="px-4 py-2 rounded-lg bg-slate-900 text-white dark:bg-white dark:text-slate-900 text-xs font-semibold hover:opacity-90 transition-opacity cursor-pointer shadow-xs">
+          {{ if eq site.Language.Lang "it" }}Mostra tutti gli articoli{{ else }}Show All Articles{{ end }}
+        </button>
       </div>
 
       <!-- View All Articles Button (In-Place Seamless Loader) -->
@@ -202,8 +230,8 @@
     </div>
   </section>
 
-  <!-- Section 5: Newsletter Section (Distinct contrasting background with top border) -->
-  <section class="border-t border-slate-200 dark:border-slate-800 bg-slate-100/70 dark:bg-[#070b14]/50 py-14 sm:py-18 text-center" aria-labelledby="newsletter-heading">
+  <!-- Section 5: Newsletter Section (Clean seamless surface) -->
+  <section class="border-t border-slate-200/70 dark:border-slate-800/70 bg-slate-50/60 dark:bg-[#060a14]/60 py-14 sm:py-18 text-center" aria-labelledby="newsletter-heading">
     <div class="bytedepth-container">
       <span class="font-mono text-xs font-bold uppercase tracking-widest text-red-600 dark:text-red-500 block mb-2.5">
         NEWSLETTER

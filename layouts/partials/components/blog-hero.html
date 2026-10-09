@@ -24,6 +24,19 @@
   {{ end }}
   {{ $teaser := $page.Params.description | default $page.Summary | plainify | truncate 280 }}
   {{ $firstCat := index ($categories | default (slice "Architecture")) 0 }}
+  {{ $firstCatLower := $firstCat | lower }}
+
+  {{/* Category badge: Harmonized architectural tag */}}
+  {{ $heroBadgeBg := "bg-slate-100 text-slate-700 dark:bg-slate-800/80 dark:text-slate-300" }}
+  {{ if or (strings.Contains $firstCatLower "devops") (strings.Contains $firstCatLower "kubernetes") (strings.Contains $firstCatLower "openshift") }}
+    {{ $heroBadgeBg = "bg-emerald-50 text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-400" }}
+  {{ else if or (strings.Contains $firstCatLower "security") (strings.Contains $firstCatLower "tls") }}
+    {{ $heroBadgeBg = "bg-amber-50 text-amber-800 dark:bg-amber-950/50 dark:text-amber-400" }}
+  {{ else if or (strings.Contains $firstCatLower "google") (strings.Contains $firstCatLower "gcp") (strings.Contains $firstCatLower "cloud") }}
+    {{ $heroBadgeBg = "bg-sky-50 text-sky-700 dark:bg-sky-950/50 dark:text-sky-400" }}
+  {{ else if or (strings.Contains $firstCatLower "cert") (strings.Contains $firstCatLower "exam") }}
+    {{ $heroBadgeBg = "bg-purple-50 text-purple-700 dark:bg-purple-950/50 dark:text-purple-400" }}
+  {{ end }}
 
   <style>
     .hero-blueprint-img picture,
@@ -36,20 +49,20 @@
   </style>
 
   <div class="bytedepth-container" aria-labelledby="featured-post-title">
-    <!-- Full-Width Flagship Hero Card (Editorial Split: 8-Col Story Left, 4-Col Blueprint Right) -->
-    <article class="w-full rounded-2xl sm:rounded-3xl border border-slate-200/90 dark:border-slate-800/90 border-l-[3px] sm:border-l-4 border-l-amber-500/80 dark:border-l-amber-400/80 bg-white dark:bg-[#0c1220] p-4 sm:p-6 lg:p-7 shadow-xs hover:border-slate-300 dark:hover:border-slate-700 transition-all duration-300 group relative spotlight-hero">
+    <!-- Full-Width Flagship Hero Card (Editorial Split: 7-Col Story Left, 5-Col Blueprint Right) -->
+    <article class="w-full rounded-2xl sm:rounded-3xl border border-slate-200/90 dark:border-slate-800/90 bg-white dark:bg-[#0c1220] p-4 sm:p-6 lg:p-7 shadow-xs hover:border-slate-300 dark:hover:border-slate-700 transition-all duration-300 group relative spotlight-hero">
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 items-center">
         
         <!-- Left: Flagship Headline, Expanded Editorial Narrative & Meta Details -->
-        <div class="lg:col-span-8 flex flex-col justify-between h-full">
+        <div class="lg:col-span-7 flex flex-col justify-between h-full">
           <div>
             <!-- Category Line -->
-            <div class="flex items-center gap-2 mb-2.5">
-              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] sm:text-xs font-mono font-bold uppercase tracking-wider bg-red-50 text-red-700 dark:bg-red-950/50 dark:text-red-400">
+            <div class="flex items-center gap-2.5 mb-2.5">
+              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] sm:text-xs font-mono font-bold uppercase tracking-wider {{ $heroBadgeBg }}">
                 {{ $firstCat }}
               </span>
-              <span class="hidden sm:inline-flex items-center">
-                <span class="w-1.5 h-1.5 rounded-full bg-amber-500 dark:bg-amber-400" title="Flagship Article"></span>
+              <span class="hidden sm:inline-flex items-center text-xs font-mono text-slate-400 dark:text-slate-500">
+                · {{ if eq site.Language.Lang "it" }}Guida in Evidenza{{ else }}Featured Guide{{ end }}
               </span>
             </div>
 
@@ -104,8 +117,8 @@
           </div>
         </div>
 
-        <!-- Right: Compact Architectural Blueprint Artwork (Proportional 4-Col Fit) -->
-        <div class="lg:col-span-4 w-full">
+        <!-- Right: Architectural Blueprint Artwork (Proportional 5-Col Fit) -->
+        <div class="lg:col-span-5 w-full">
           <div class="rounded-xl overflow-hidden shadow-xs border border-slate-200/80 dark:border-slate-800 aspect-[16/10] sm:aspect-[16/10] bg-slate-950 hero-blueprint-img group/preview">
             <a href="{{ $page.RelPermalink }}" class="block w-full h-full relative no-underline overflow-hidden" aria-label="Read blueprint: {{ $page.Title }}">
               {{ with $page.Params.image }}

@@ -35,11 +35,11 @@
       {{ partialCached "announcement.html" . }}
     {{ end }}
 
-    <!-- header -->
-    {{ partial "essentials/header.html" . }}
-
     <!-- Live Cloud Pulse Telemetry Ticker -->
     {{ partial "components/ticker-tape.html" . }}
+
+    <!-- header -->
+    {{ partial "essentials/header.html" . }}
 
     {{ partial "search-modal.html" (dict "Context" . ) }}
 
