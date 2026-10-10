@@ -19,27 +19,63 @@
 <div class="space-y-6">
 
   {{/* ============================================================== */}}
-  {{/* CARD 1: FEATURED SERIES COMPANION (DIRECTLY LINKED TO HERO POST) */}}
+  {{/* SERIES LIVE SEARCH BAR (QUICK REAL-TIME DISCOVERY)              */}}
+  {{/* ============================================================== */}}
+  <div class="relative w-full">
+    <div class="relative flex items-center">
+      <i class="fa-solid fa-magnifying-glass absolute left-3.5 text-slate-400 dark:text-slate-500 text-xs pointer-events-none"></i>
+      <input
+        type="search"
+        id="sidebar-series-search"
+        placeholder="{{ if eq site.Language.Lang `it` }}Cerca serie e percorsi tecnici...{{ else }}Search series & learning tracks...{{ end }}"
+        class="w-full pl-9 pr-8 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0c1220] text-xs sm:text-[13px] text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-red-500 dark:focus:border-red-500 transition-all shadow-xs"
+        autocomplete="off"
+        aria-label="Search series and tracks"
+      />
+      <button
+        type="button"
+        id="sidebar-series-search-clear"
+        class="hidden absolute right-2.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-xs cursor-pointer p-1"
+        aria-label="Clear search">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+  </div>
+
+  {{/* ============================================================== */}}
+  {{/* CARD 1: FEATURED SERIES COMPANION (HERO LOCATION HIGHLIGHTED)   */}}
   {{/* ============================================================== */}}
   {{ range $groupedSeries }}
     {{ if eq .Key $featuredSeriesKey }}
       {{ $sorted := sort .Pages ".Params.series_order" "asc" }}
       {{ $part1 := index $sorted 0 }}
       {{ $totalParts := len $sorted }}
+      {{ $heroOrder := 0 }}
+      {{ range $idx, $p := $sorted }}
+        {{ if and $featured (eq $p.RelPermalink $featured.RelPermalink) }}
+          {{ $heroOrder = add $idx 1 }}
+        {{ end }}
+      {{ end }}
+      {{ if eq $heroOrder 0 }}{{ $heroOrder = $totalParts }}{{ end }}
+      {{ $percent := math.Round (mul (div (float $heroOrder) (float $totalParts)) 100) }}
+
       {{ $totalMin := 0 }}
       {{ range $sorted }}
         {{ $totalMin = add $totalMin .ReadingTime }}
       {{ end }}
 
-      <div class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0c1220] p-5 sm:p-6 shadow-xs relative overflow-hidden group">
+      <div class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0c1220] p-5 sm:p-6 shadow-xs relative overflow-hidden group"
+           data-series-card="true"
+           data-series-title="{{ .Key | lower }}"
+           data-series-desc="{{ $featured.Params.series_description | default `` | lower }}">
         <!-- Accent Glow Top Bar -->
         <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-red-500 via-sky-500 to-indigo-500"></div>
 
-        <!-- Header: Track Badge + Part Count -->
+        <!-- Header: Track Badge + Location In Series -->
         <div class="flex items-center justify-between gap-2 mb-3">
           <span class="inline-flex items-center gap-1.5 font-mono text-[10.5px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20">
             <i class="fa-solid fa-layer-group text-[9px]"></i>
-            {{ if eq site.Language.Lang "it" }}Serie in Evidenza{{ else }}Featured Track{{ end }}
+            {{ if eq site.Language.Lang "it" }}Percorso in Evidenza{{ else }}Active Architecture Track{{ end }}
           </span>
           <span class="font-mono text-xs text-slate-500 dark:text-slate-400 font-semibold">
             {{ $totalParts }} {{ if eq site.Language.Lang "it" }}Parti{{ else }}Parts{{ end }} · ~{{ $totalMin }}m
@@ -54,37 +90,66 @@
         </h3>
 
         <!-- Context Description -->
-        <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed font-normal mb-4">
+        <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed font-normal mb-3.5">
           {{ with $featured.Params.series_description }}
-            {{ . | truncate 130 }}
+            {{ . | truncate 135 }}
           {{ else }}
             {{ if eq site.Language.Lang "it" }}
-              Percorso completo pratico di ingegneria cloud dall'architettura alla produzione.
+              Percorso pratico di produzione: dai blocchi di archiviazione alle pipeline di streaming e lakehouse BigQuery.
             {{ else }}
               End-to-end production track: from storage foundations to streaming pipelines and lakehouses.
             {{ end }}
           {{ end }}
         </p>
 
+        <!-- Prominent Hero Location Indicator & Progress Bar -->
+        <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200/70 dark:border-slate-800/70 mb-4">
+          <div class="flex items-center justify-between font-mono text-[11px] mb-1.5">
+            <span class="font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
+              <span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
+              {{ if eq site.Language.Lang "it" }}Posizione Guida Hero{{ else }}Hero Guide Location{{ end }}
+            </span>
+            <span class="font-bold text-red-600 dark:text-red-400">
+              Part {{ $heroOrder }} of {{ $totalParts }}
+            </span>
+          </div>
+          <!-- Progress Track -->
+          <div class="w-full h-1.5 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
+            <div class="h-full bg-gradient-to-r from-red-600 to-red-500 rounded-full transition-all duration-500" style="width: {{ $percent }}%;"></div>
+          </div>
+        </div>
+
         <!-- Series Track Playlist Items -->
-        <div class="space-y-1.5 pt-3 border-t border-slate-100 dark:border-slate-800/80 mb-4">
-          <p class="font-mono text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-2">
-            {{ if eq site.Language.Lang "it" }}Naviga la serie completa{{ else }}Explore All Parts in Track{{ end }}
-          </p>
+        <div class="space-y-1.5 pt-2 border-t border-slate-100 dark:border-slate-800/80 mb-4">
+          <div class="flex items-center justify-between mb-2">
+            <p class="font-mono text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 m-0">
+              {{ if eq site.Language.Lang "it" }}Playlist Completa della Serie{{ else }}Complete Track Playlist{{ end }}
+            </p>
+            <span class="text-[10px] font-mono text-slate-400 dark:text-slate-500">
+              Click to jump
+            </span>
+          </div>
+
           {{ range $idx, $p := $sorted }}
             {{ $partNum := add $idx 1 }}
             {{ $isHero := and $featured (eq $p.RelPermalink $featured.RelPermalink) }}
             <a href="{{ $p.RelPermalink }}"
-               class="flex items-center gap-2.5 p-2 rounded-lg no-underline transition-all group/item {{ if $isHero }}bg-red-50/70 dark:bg-red-950/30 border border-red-200/60 dark:border-red-900/40{{ else }}hover:bg-slate-50 dark:hover:bg-slate-850{{ end }}">
-              <span class="w-5 h-5 rounded-md flex items-center justify-center font-mono text-[11px] font-bold shrink-0 {{ if $isHero }}bg-red-600 text-white{{ else }}bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 group-hover/item:bg-slate-200 dark:group-hover/item:bg-slate-700{{ end }}">
+               class="flex items-center gap-2.5 py-1.5 px-2 rounded-lg no-underline transition-all group/item {{ if $isHero }}bg-red-50 dark:bg-red-950/40 border border-red-300/80 dark:border-red-900/60 shadow-2xs{{ else }}hover:bg-slate-50 dark:hover:bg-slate-850{{ end }}">
+              
+              <!-- Number badge -->
+              <span class="w-5 h-5 rounded-md flex items-center justify-center font-mono text-[11px] font-bold shrink-0 {{ if $isHero }}bg-red-600 text-white shadow-2xs{{ else }}bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 group-hover/item:bg-slate-200 dark:group-hover/item:bg-slate-700{{ end }}">
                 {{ printf "%02d" $partNum }}
               </span>
-              <span class="text-xs font-medium text-slate-800 dark:text-slate-200 group-hover/item:text-red-600 dark:group-hover/item:text-red-400 transition-colors line-clamp-1 flex-1">
+
+              <!-- Part Title -->
+              <span class="text-xs font-medium {{ if $isHero }}font-bold text-red-950 dark:text-red-200{{ else }}text-slate-800 dark:text-slate-200{{ end }} group-hover/item:text-red-600 dark:group-hover/item:text-red-400 transition-colors line-clamp-1 flex-1">
                 {{ $p.Title }}
               </span>
+
+              <!-- Status Tag -->
               {{ if $isHero }}
-                <span class="shrink-0 text-[10px] font-mono font-bold uppercase px-1.5 py-0.5 rounded bg-red-600 text-white tracking-wider">
-                  {{ if eq site.Language.Lang "it" }}Attuale{{ else }}Hero{{ end }}
+                <span class="shrink-0 text-[9.5px] font-mono font-bold uppercase px-1.5 py-0.5 rounded bg-red-600 text-white tracking-wider">
+                  ★ {{ if eq site.Language.Lang "it" }}Hero{{ else }}Hero Guide{{ end }}
                 </span>
               {{ else }}
                 <span class="shrink-0 font-mono text-[11px] text-slate-400 dark:text-slate-500">
@@ -95,11 +160,15 @@
           {{ end }}
         </div>
 
-        <!-- Series Action Link -->
-        <div class="pt-2">
+        <!-- Series Action Links -->
+        <div class="pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs">
+          <a href="{{ $part1.RelPermalink }}"
+             class="font-mono text-[11.5px] font-semibold text-slate-600 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-400 no-underline transition-colors">
+            ← {{ if eq site.Language.Lang "it" }}Inizia da Parte 1{{ else }}Start from Part 1{{ end }}
+          </a>
           <a href="{{ `series/` | relLangURL }}"
-             class="inline-flex items-center gap-1.5 font-mono text-xs font-bold text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 no-underline transition-colors group/link">
-            <span>{{ if eq site.Language.Lang "it" }}Visualizza hub serie{{ else }}View Full Track in Series Hub{{ end }}</span>
+             class="font-mono text-[11.5px] font-bold text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 no-underline transition-colors group/link inline-flex items-center gap-1">
+            <span>{{ if eq site.Language.Lang "it" }}Hub Serie{{ else }}Series Hub{{ end }}</span>
             <span class="transition-transform group-hover/link:translate-x-1">→</span>
           </a>
         </div>
@@ -110,7 +179,7 @@
   {{/* ============================================================== */}}
   {{/* CARD 2: OTHER ARCHITECTURE SERIES (DISCOVERABILITY RAIL)      */}}
   {{/* ============================================================== */}}
-  <div class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0c1220] p-5 sm:p-6 shadow-xs">
+  <div class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0c1220] p-5 sm:p-6 shadow-xs" id="sidebar-other-tracks-card">
     <div class="flex items-center justify-between gap-2 mb-3.5 pb-2.5 border-b border-slate-100 dark:border-slate-800">
       <h3 class="font-mono text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-white flex items-center gap-1.5 m-0">
         <i class="fa-solid fa-compass text-slate-400 dark:text-slate-500 text-xs"></i>
@@ -122,7 +191,7 @@
       </a>
     </div>
 
-    <div class="space-y-3.5">
+    <div class="space-y-3.5" id="sidebar-other-tracks-list">
       {{ range $groupedSeries }}
         {{ if ne .Key $featuredSeriesKey }}
           {{ $otherSorted := sort .Pages ".Params.series_order" "asc" }}
@@ -133,7 +202,10 @@
             {{ $otherMin = add $otherMin .ReadingTime }}
           {{ end }}
 
-          <div class="group/track">
+          <div class="group/track transition-all"
+               data-series-card="true"
+               data-series-title="{{ .Key | lower }}"
+               data-series-desc="{{ $otherPart1.Params.series_description | default `` | lower }} {{ $otherPart1.Params.description | default `` | lower }}">
             <div class="flex items-center gap-2 mb-1">
               <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase tracking-wider bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300">
                 {{ $otherCount }} {{ if eq site.Language.Lang "it" }}Parti{{ else }}Parts{{ end }}
@@ -163,6 +235,11 @@
           </div>
         {{ end }}
       {{ end }}
+    </div>
+
+    <!-- Empty state for series search -->
+    <div id="sidebar-series-empty" class="hidden text-center py-6">
+      <p class="text-xs text-slate-500 dark:text-slate-400 m-0">No matching series found.</p>
     </div>
 
     <div class="pt-4 mt-3 border-t border-slate-100 dark:border-slate-800">
@@ -220,3 +297,60 @@
   </div>
 
 </div>
+
+<!-- Real-time Series Search Script -->
+<script>
+  (function() {
+    function initSeriesSearch() {
+      var searchInput = document.getElementById('sidebar-series-search');
+      var clearBtn = document.getElementById('sidebar-series-search-clear');
+      var cards = document.querySelectorAll('[data-series-card="true"]');
+      var emptyNotice = document.getElementById('sidebar-series-empty');
+      if (!searchInput || cards.length === 0) return;
+
+      searchInput.addEventListener('input', function() {
+        var query = searchInput.value.trim().toLowerCase();
+        if (query.length > 0) {
+          if (clearBtn) clearBtn.classList.remove('hidden');
+        } else {
+          if (clearBtn) clearBtn.classList.add('hidden');
+        }
+
+        var visibleCount = 0;
+        cards.forEach(function(card) {
+          var title = card.getAttribute('data-series-title') || '';
+          var desc = card.getAttribute('data-series-desc') || '';
+          var text = (title + ' ' + desc).toLowerCase();
+          if (!query || text.indexOf(query) !== -1) {
+            card.style.display = '';
+            visibleCount++;
+          } else {
+            card.style.display = 'none';
+          }
+        });
+
+        if (emptyNotice) {
+          if (visibleCount === 0) {
+            emptyNotice.classList.remove('hidden');
+          } else {
+            emptyNotice.classList.add('hidden');
+          }
+        }
+      });
+
+      if (clearBtn) {
+        clearBtn.addEventListener('click', function() {
+          searchInput.value = '';
+          searchInput.dispatchEvent(new Event('input'));
+          searchInput.focus();
+        });
+      }
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initSeriesSearch);
+    } else {
+      initSeriesSearch();
+    }
+  })();
+</script>
