@@ -9242,7 +9242,7 @@
       syncVoteToSupabase(optionId);
     }
 
-    // Render Results Mode with animated progress bars
+    // Render Results Mode with animated progress bars & high-legibility formatting
     function renderResultsState(userVote) {
       var allOptions = pollData.options.slice();
       if (pollData.otherOption) {
@@ -9253,10 +9253,11 @@
         return sum + (opt.votes || 0);
       }, 0);
 
-      var resultsHtml = '<div class="flex items-center justify-between pb-1 mb-2 text-xs font-mono text-slate-500 dark:text-slate-400">' +
+      var resultsHtml = '<div class="flex items-center justify-between pb-1.5 mb-2 text-xs font-mono text-slate-500 dark:text-slate-400">' +
         '<span class="flex items-center gap-1.5 font-bold text-slate-800 dark:text-slate-200">' +
           '<i class="fa-solid fa-chart-simple text-red-500 text-[11px]"></i> Results' +
         '</span>' +
+        '<span class="text-[11px] font-mono text-slate-500 dark:text-slate-400">' + (totalVotes === 1 ? '1 vote' : totalVotes + ' votes') + '</span>' +
       '</div>';
       allOptions.forEach(function (opt) {
         var votes = opt.votes || 0;
@@ -9264,28 +9265,28 @@
         var isUserChoice = userVote && userVote.optionId === opt.id;
 
         var cardBorderClass = isUserChoice
-          ? "border-red-500/70 bg-red-500/[0.04] dark:bg-red-500/[0.06] ring-1 ring-red-500/30"
-          : "border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0c1220]";
+          ? "border-red-500/80 bg-red-50/70 dark:bg-red-950/30 ring-1 ring-red-500/40"
+          : "border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/40";
 
         var barBg = isUserChoice
           ? "linear-gradient(90deg, #ef4444, #f59e0b)"
           : (votes > 0 ? "linear-gradient(90deg, #64748b, #475569)" : "transparent");
 
-        resultsHtml += '<div class="poll-result-card p-3.5 sm:p-4 rounded-xl border ' + cardBorderClass + ' transition-all">' +
-          '<div class="flex items-center justify-between gap-2 mb-1.5">' +
-            '<div class="flex items-center gap-2 flex-grow min-w-0">' +
-              '<span class="text-xs sm:text-sm font-bold text-slate-900 dark:text-slate-100 truncate">' +
+        resultsHtml += '<div class="poll-result-card p-3 sm:p-3.5 rounded-xl border ' + cardBorderClass + ' transition-all">' +
+          '<div class="flex items-start justify-between gap-3 mb-1.5">' +
+            '<div class="min-w-0 flex-grow pr-1 space-y-1">' +
+              '<div class="text-xs sm:text-sm font-bold text-slate-900 dark:text-slate-100 leading-snug break-words">' +
                 (opt.id === "other" ? '<i class="fa-regular fa-compass text-red-500 mr-1.5 text-xs"></i>' : '') +
                 escapeHtml(opt.text) +
-              '</span>' +
-              (isUserChoice ? '<span class="shrink-0 inline-flex items-center gap-1 text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20"><i class="fa-solid fa-check text-[9px]"></i> Your Choice</span>' : '') +
+              '</div>' +
+              (isUserChoice ? '<div><span class="inline-flex items-center gap-1 text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20"><i class="fa-solid fa-check text-[9px]"></i> Your Choice</span></div>' : '') +
             '</div>' +
-            '<span class="text-xs sm:text-sm font-mono font-black text-slate-900 dark:text-white shrink-0">' + percent + '%</span>' +
+            '<span class="text-xs sm:text-sm font-mono font-black text-slate-900 dark:text-white shrink-0 pt-0.5">' + percent + '%</span>' +
           '</div>' +
-          '<div class="w-full rounded-full my-2.5 overflow-hidden bg-slate-100 dark:bg-slate-800" style="height: 8px;">' +
+          '<div class="w-full rounded-full my-2 overflow-hidden bg-slate-200/80 dark:bg-slate-800" style="height: 7px;">' +
             '<div class="poll-progress-bar rounded-full" style="width: 0%; height: 100%; background: ' + barBg + '; transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);" data-target-width="' + percent + '%"></div>' +
           '</div>' +
-          (opt.description ? '<div class="text-[11px] text-slate-500 dark:text-slate-400 leading-normal truncate">' + escapeHtml(opt.description) + '</div>' : '') +
+          (opt.description ? '<div class="text-[11px] sm:text-xs text-slate-600 dark:text-slate-400 leading-relaxed break-words mt-1">' + escapeHtml(opt.description) + '</div>' : '') +
         '</div>';
       });
 

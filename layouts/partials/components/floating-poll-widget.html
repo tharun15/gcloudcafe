@@ -1,0 +1,258 @@
+{{/* Floating Community Poll Chat Widget Component (Homepage Non-Intrusive Popover) */}}
+{{ $polls := site.Data.weekly_polls }}
+{{ $currentWeekPoll := false }}
+
+{{/* Determine active poll based on current ISO week or fall back to week 39 / first available */}}
+{{ if $polls }}
+  {{ range $polls }}
+    {{ if or (eq .id "week-2026-39") (eq (int .weekNumber) 39) }}
+      {{ $currentWeekPoll = . }}
+    {{ end }}
+  {{ end }}
+  {{ if not $currentWeekPoll }}
+    {{ $currentWeekPoll = index $polls 0 }}
+  {{ end }}
+{{ end }}
+
+{{ if $currentWeekPoll }}
+<!-- Floating Community Poll Launcher & Chat-Style Popover -->
+<div id="floating-community-poll-container" class="fixed bottom-5 right-4 sm:bottom-6 sm:right-6 z-[60] select-none">
+
+  <!-- Floating Launcher Pill / Button (Intercom Chat Style) -->
+  <button
+    type="button"
+    id="floating-poll-launcher"
+    class="flex items-center gap-2.5 px-4 py-2.5 rounded-full bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-100 shadow-xl hover:shadow-2xl hover:border-slate-300 dark:hover:border-slate-700 transition-all duration-300 cursor-pointer active:scale-95 group focus:outline-none ring-1 ring-black/5 dark:ring-white/5"
+    aria-expanded="false"
+    aria-haspopup="dialog"
+    aria-controls="floating-poll-card"
+    aria-label="Open Question of the Week community poll">
+    
+    <!-- Live Pulsing Indicator -->
+    <span class="relative flex h-2.5 w-2.5 shrink-0" id="floating-poll-pulse-badge">
+      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+      <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-500"></span>
+    </span>
+
+    <i class="fa-solid fa-square-poll-vertical text-red-500 text-sm shrink-0 group-hover:scale-110 transition-transform"></i>
+
+    <!-- Text Label -->
+    <span class="text-xs font-bold tracking-tight text-slate-900 dark:text-white" id="floating-poll-launcher-text">
+      Question of the Week
+    </span>
+
+    <span class="hidden sm:inline-flex items-center px-2 py-0.5 text-[10px] font-mono font-bold rounded-full bg-red-50 dark:bg-red-950/50 text-red-600 dark:text-red-400 border border-red-200/80 dark:border-red-900/50">
+      Vote
+    </span>
+  </button>
+
+  <!-- Floating Poll Popover Card (Opaque, High-Legibility Dialog) -->
+  <div
+    id="floating-poll-card"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="floating-poll-question-heading"
+    class="invisible opacity-0 translate-y-4 scale-95 pointer-events-none transition-all duration-300 ease-out fixed bottom-20 right-4 sm:bottom-20 sm:right-6 rounded-2xl bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-slate-800 shadow-2xl z-50 flex flex-col overflow-hidden ring-1 ring-black/5 dark:ring-white/10"
+    style="width: min(480px, calc(100vw - 2rem)); max-height: min(580px, calc(100vh - 120px));">
+    
+    <!-- Active Weekly Poll Root Widget (Integrated directly with blog-enhancements.js system) -->
+    <div id="weekly-opinion-poll-widget"
+         class="weekly-opinion-poll-card flex flex-col h-full overflow-hidden bg-white dark:bg-[#0c1220]"
+         data-weekly-poll-id="{{ $currentWeekPoll.id }}"
+         data-weekly-poll-week="{{ $currentWeekPoll.weekNumber }}"
+         data-weekly-poll-year="{{ $currentWeekPoll.year }}"
+         data-weekly-poll-category="{{ $currentWeekPoll.category }}">
+
+      <!-- Embedded Active Poll JSON for zero-latency instant hydration -->
+      <script id="weekly-poll-active-data" type="application/json">{{ $currentWeekPoll | jsonify | safeJS }}</script>
+
+      <!-- Top Decorative Accent Strip -->
+      <div class="h-1 w-full bg-gradient-to-r from-red-600 via-amber-500 to-red-500 shrink-0"></div>
+
+      <!-- Header: Metadata, Countdown & Close Button -->
+      <div class="px-5 py-3.5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between gap-3 shrink-0 bg-slate-50 dark:bg-slate-900/60">
+        <div class="flex items-center gap-2 min-w-0">
+          <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-mono font-bold uppercase tracking-wider bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20">
+            <i class="fa-solid fa-compass-drafting text-[10px]"></i>
+            <span data-weekly-poll-badge>{{ $currentWeekPoll.badge | default "Question of the Week" }}</span>
+          </span>
+          <span class="text-[11px] font-mono text-slate-500 dark:text-slate-400 hidden sm:inline">
+            W{{ $currentWeekPoll.weekNumber }}
+          </span>
+        </div>
+
+        <div class="flex items-center gap-2 shrink-0">
+          <!-- Countdown Timer -->
+          <div id="weekly-poll-countdown-badge" class="inline-flex items-center gap-1.5 text-[10px] font-mono font-semibold text-amber-600 dark:text-amber-400 bg-amber-500/10 px-2.5 py-0.5 rounded-full border border-amber-500/20" title="Time remaining until next weekly question">
+            <i class="fa-regular fa-clock text-[9px]"></i>
+            <span><strong id="weekly-poll-countdown-timer" class="font-bold text-amber-700 dark:text-amber-300">--d --h</strong></span>
+          </div>
+
+          <!-- Close Popover Button -->
+          <button
+            type="button"
+            id="floating-poll-close-btn"
+            class="w-7 h-7 rounded-full flex items-center justify-center text-slate-400 hover:text-slate-700 dark:hover:text-white hover:bg-slate-200/80 dark:hover:bg-slate-800 transition-colors cursor-pointer border-0 bg-transparent"
+            aria-label="Close community poll dialog">
+            <i class="fa-solid fa-xmark text-sm"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Scrollable Question & Options Body -->
+      <div class="p-5 sm:p-6 overflow-y-auto flex-1 space-y-4 no-scrollbar bg-white dark:bg-[#0c1220]">
+        <!-- Question Title -->
+        <h3 id="floating-poll-question-heading" data-weekly-poll-question class="text-base sm:text-lg font-bold text-slate-900 dark:text-white tracking-tight leading-snug m-0">
+          {{ $currentWeekPoll.question }}
+        </h3>
+
+        <!-- Context Snippet -->
+        <p data-weekly-poll-context class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed m-0">
+          {{ $currentWeekPoll.context }}
+        </p>
+
+        <!-- Interactive Poll Container (Options cards dynamically bound by JS) -->
+        <div data-weekly-poll-container class="space-y-2.5 pt-1">
+          {{ range $index, $opt := $currentWeekPoll.options }}
+          <div class="poll-option-card p-3 sm:p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-900/40 hover:border-red-500/60 hover:bg-red-50/30 dark:hover:bg-red-950/20 transition-all cursor-pointer group flex items-start justify-between gap-3"
+               data-option-id="{{ $opt.id }}"
+               role="button"
+               tabindex="0"
+               aria-label="Vote for {{ $opt.text }}">
+            <div class="flex items-start gap-3 flex-grow min-w-0">
+              <span class="poll-radio-indicator w-4 h-4 rounded-full border-2 border-slate-400 dark:border-slate-600 group-hover:border-red-500 shrink-0 mt-0.5 transition-colors flex items-center justify-center">
+                <span class="w-1.5 h-1.5 rounded-full bg-transparent group-hover:bg-red-500/40"></span>
+              </span>
+              <div class="min-w-0 flex-grow">
+                <div class="text-xs sm:text-sm font-bold text-slate-900 dark:text-slate-100 leading-snug group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors break-words">
+                  {{ $opt.text }}
+                </div>
+                <div class="text-xs text-slate-500 dark:text-slate-400 mt-0.5 leading-relaxed break-words">
+                  {{ $opt.description }}
+                </div>
+              </div>
+            </div>
+          </div>
+          {{ end }}
+
+          {{ with $currentWeekPoll.otherOption }}
+          <div class="poll-option-card p-3 sm:p-3.5 rounded-xl border border-dashed border-slate-300 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-900/30 hover:border-red-500/70 hover:bg-red-50/30 dark:hover:bg-red-950/20 transition-all cursor-pointer group flex items-start justify-between gap-3"
+               data-option-id="other"
+               role="button"
+               tabindex="0"
+               aria-label="{{ .text }}">
+            <div class="flex items-start gap-3 flex-grow min-w-0">
+              <span class="poll-radio-indicator w-4 h-4 rounded-full border-2 border-slate-400 dark:border-slate-600 group-hover:border-red-500 shrink-0 mt-0.5 transition-colors flex items-center justify-center">
+                <span class="w-1.5 h-1.5 rounded-full bg-transparent group-hover:bg-red-500/40"></span>
+              </span>
+              <div class="min-w-0 flex-grow">
+                <div class="text-xs sm:text-sm font-bold text-slate-900 dark:text-slate-100 leading-snug group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors flex items-center gap-1.5 break-words">
+                  <i class="fa-regular fa-compass text-red-500 text-xs shrink-0"></i>
+                  <span>{{ .text }}</span>
+                </div>
+                <div class="text-xs text-slate-500 dark:text-slate-400 mt-0.5 leading-relaxed break-words">
+                  {{ .description }}
+                </div>
+              </div>
+            </div>
+          </div>
+          {{ end }}
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<!-- High-legibility CSS overrides to strictly prevent backdrop bleed-through -->
+<style>
+  #floating-poll-card {
+    background-color: #ffffff !important;
+  }
+  html.dark #floating-poll-card,
+  body.dark #floating-poll-card {
+    background-color: #0c1220 !important;
+  }
+</style>
+
+<!-- Client-side Interactive Controller for Floating Poll Chat Widget -->
+<script>
+  (function () {
+    function initFloatingPollWidget() {
+      var container = document.getElementById("floating-community-poll-container");
+      var launcher = document.getElementById("floating-poll-launcher");
+      var card = document.getElementById("floating-poll-card");
+      var closeBtn = document.getElementById("floating-poll-close-btn");
+      var pulseBadge = document.getElementById("floating-poll-pulse-badge");
+      var launcherText = document.getElementById("floating-poll-launcher-text");
+
+      if (!launcher || !card) return;
+
+      var isOpen = false;
+
+      function openCard() {
+        isOpen = true;
+        card.classList.remove("invisible", "opacity-0", "translate-y-4", "scale-95", "pointer-events-none");
+        card.classList.add("visible", "opacity-100", "translate-y-0", "scale-100", "pointer-events-auto");
+        launcher.setAttribute("aria-expanded", "true");
+      }
+
+      function closeCard() {
+        isOpen = false;
+        card.classList.remove("visible", "opacity-100", "translate-y-0", "scale-100", "pointer-events-auto");
+        card.classList.add("invisible", "opacity-0", "translate-y-4", "scale-95", "pointer-events-none");
+        launcher.setAttribute("aria-expanded", "false");
+      }
+
+      function toggleCard(e) {
+        if (e) e.stopPropagation();
+        if (isOpen) {
+          closeCard();
+        } else {
+          openCard();
+        }
+      }
+
+      launcher.addEventListener("click", toggleCard);
+
+      if (closeBtn) {
+        closeBtn.addEventListener("click", function (e) {
+          e.stopPropagation();
+          closeCard();
+        });
+      }
+
+      // Close when clicking outside of the card
+      document.addEventListener("click", function (e) {
+        if (isOpen && container && !container.contains(e.target)) {
+          closeCard();
+        }
+      });
+
+      // Close on Escape key press
+      document.addEventListener("keydown", function (e) {
+        if (isOpen && e.key === "Escape") {
+          closeCard();
+        }
+      });
+
+      // Check if user has already voted to adjust badge styling
+      var pollId = "{{ $currentWeekPoll.id }}";
+      try {
+        var vote = localStorage.getItem("gcloudcafe_weekly_poll_" + pollId);
+        if (vote) {
+          if (pulseBadge) pulseBadge.classList.add("hidden");
+          if (launcherText) launcherText.textContent = "Weekly Poll · Voted ✓";
+        }
+      } catch (e) {}
+    }
+
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", initFloatingPollWidget);
+    } else {
+      initFloatingPollWidget();
+    }
+  })();
+</script>
+{{ end }}
