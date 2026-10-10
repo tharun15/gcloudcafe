@@ -234,43 +234,36 @@
         {{ end }}
       {{ end }}
 
-      <!-- Section Title & Domain Filter Pills for All Tracks -->
-      <div class="max-w-4xl mx-auto mb-8 pb-4 border-b border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h2 class="text-xl sm:text-2xl font-black tracking-tight text-slate-900 dark:text-white m-0">
-            All Learning Tracks
-          </h2>
-          <p class="font-mono text-xs text-slate-500 dark:text-slate-400 mt-1 mb-0">
-            Select a domain to filter multi-part curriculum series
-          </p>
-        </div>
-
-        <!-- Domain Filter Pills (Matching Site Standard) -->
-        <div class="flex flex-wrap items-center gap-2" role="tablist" aria-label="Learning track domains">
+      <!-- Domain Filter Segmented Control (Matching Homepage Article Filters) -->
+      <div class="max-w-4xl mx-auto mb-8 pb-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-center sm:justify-start">
+        <h2 class="sr-only">All Learning Tracks</h2>
+        <div class="inline-flex items-center gap-1 p-1 rounded-full bg-slate-100/90 dark:bg-slate-800/80 border border-slate-200/70 dark:border-slate-700/70 overflow-x-auto no-scrollbar max-w-full"
+             role="tablist"
+             aria-label="Filter learning tracks by domain">
           <button type="button" 
                   data-series-filter="all"
-                  class="series-filter-btn px-3.5 py-1.5 rounded-full font-mono text-xs font-bold transition-all border border-transparent bg-red-600 text-white shadow-2xs cursor-pointer"
+                  class="series-filter-btn inline-flex items-center px-3.5 py-1.5 rounded-full text-xs font-semibold bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-2xs shrink-0 cursor-pointer transition-all border-0"
                   aria-selected="true"
                   role="tab">
             All Tracks ({{ $allCount }})
           </button>
           <button type="button" 
                   data-series-filter="google-cloud"
-                  class="series-filter-btn px-3.5 py-1.5 rounded-full font-mono text-xs font-medium transition-all border border-slate-200 dark:border-slate-700 bg-slate-100 text-slate-600 dark:bg-slate-800/80 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 cursor-pointer"
+                  class="series-filter-btn inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/80 dark:hover:bg-slate-900/80 transition-all shrink-0 cursor-pointer border-0 bg-transparent"
                   aria-selected="false"
                   role="tab">
             Google Cloud ({{ $gcpCount }})
           </button>
           <button type="button" 
                   data-series-filter="security"
-                  class="series-filter-btn px-3.5 py-1.5 rounded-full font-mono text-xs font-medium transition-all border border-slate-200 dark:border-slate-700 bg-slate-100 text-slate-600 dark:bg-slate-800/80 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 cursor-pointer"
+                  class="series-filter-btn inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/80 dark:hover:bg-slate-900/80 transition-all shrink-0 cursor-pointer border-0 bg-transparent"
                   aria-selected="false"
                   role="tab">
             Security &amp; PKI ({{ $secCount }})
           </button>
           <button type="button" 
                   data-series-filter="devops"
-                  class="series-filter-btn px-3.5 py-1.5 rounded-full font-mono text-xs font-medium transition-all border border-slate-200 dark:border-slate-700 bg-slate-100 text-slate-600 dark:bg-slate-800/80 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 cursor-pointer"
+                  class="series-filter-btn inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/80 dark:hover:bg-slate-900/80 transition-all shrink-0 cursor-pointer border-0 bg-transparent"
                   aria-selected="false"
                   role="tab">
             Containers &amp; DevOps ({{ $devopsCount }})
@@ -464,14 +457,14 @@
 
           // Reset all filter buttons
           filterButtons.forEach(function (b) {
-            b.classList.remove('bg-red-600', 'text-white', 'border-transparent', 'shadow-2xs');
-            b.classList.add('bg-slate-100', 'text-slate-600', 'dark:bg-slate-800/80', 'dark:text-slate-300', 'border-slate-200', 'dark:border-slate-700');
+            b.classList.remove('bg-white', 'dark:bg-slate-900', 'text-slate-900', 'dark:text-white', 'shadow-2xs', 'font-semibold');
+            b.classList.add('text-slate-600', 'dark:text-slate-400', 'font-medium', 'bg-transparent');
             b.setAttribute('aria-selected', 'false');
           });
 
           // Activate clicked button
-          this.classList.remove('bg-slate-100', 'text-slate-600', 'dark:bg-slate-800/80', 'dark:text-slate-300', 'border-slate-200', 'dark:border-slate-700');
-          this.classList.add('bg-red-600', 'text-white', 'border-transparent', 'shadow-2xs');
+          this.classList.remove('text-slate-600', 'dark:text-slate-400', 'font-medium', 'bg-transparent');
+          this.classList.add('bg-white', 'dark:bg-slate-900', 'text-slate-900', 'dark:text-white', 'shadow-2xs', 'font-semibold');
           this.setAttribute('aria-selected', 'true');
 
           // Filter card visibility
