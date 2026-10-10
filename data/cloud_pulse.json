@@ -1,5 +1,24 @@
 [
   {
+    "id": "c54dce0b-1b3b-4701-9533-8a58e93bcaa9",
+    "title": "OpenShift Boosts Edge AI: Streamlined MLOps for Inference",
+    "content": "🎯 What Changed: OpenShift now provides a robust platform for deploying and managing AI inference models directly at the network edge.\n💡 Engineering Impact: This enables engineers to overcome diverse hardware challenges and streamline MLOps pipelines, simplifying the deployment and lifecycle management of OCI-compliant AI models across vast edge fleets.",
+    "tags": [
+      "#OpenShift",
+      "#RedHat",
+      "#DevOps"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-10-10T11:02:33.946079+00:00",
+    "link_url": "https://www.redhat.com/en/blog/mlops-edge-running-ai-models-edge",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 76.9h without manual admin curation.",
+    "updated_at": "2026-10-10T14:19:59.951Z"
+  },
+  {
     "id": "1a75c2f1-6159-4c01-af12-229a4855e477",
     "title": "Amazon Bedrock now supports reasoning summaries for OpenAI models",
     "content": "🎯 What Changed: Amazon Bedrock now supports the reasoning.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
@@ -277,25 +296,5 @@
     "eligibility_reason": "[Auto-Published] Published automatically after 53.6h without manual admin curation.",
     "updated_at": "2026-10-09T15:05:05.546+00:00",
     "ageDays": 0.7206850810185185
-  },
-  {
-    "id": "1391c0ce-c5e4-4a8c-873e-b499f06b0f1d",
-    "title": "OpenShift Pen Drive: Streamlined Analysis for Disconnected Clusters",
-    "content": "🎯 What Changed: Red Hat introduces 'Pen drive,' a new single-Podman image tool for streamlined analysis of disconnected OpenShift clusters.\n💡 Engineering Impact: Engineers can now proactively identify and resolve issues in air-gapped OpenShift deployments, minimizing configuration drift and reducing the risk of production incidents during Day-2 operations.",
-    "tags": [
-      "#OpenShift",
-      "#RedHat",
-      "#DevOps"
-    ],
-    "upvotes": 1,
-    "downvotes": 0,
-    "score": 1,
-    "author": "Cloud Newsroom Bot",
-    "created_at": "2026-10-09T11:44:33.445922+00:00",
-    "link_url": "https://www.redhat.com/en/blog/actionable-disconnected-cluster-analysis-available-now-pen-drive-powered-red-hat-lightspeed",
-    "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 59.2h without manual admin curation.",
-    "updated_at": "2026-10-09T20:40:09.191+00:00",
-    "ageDays": 0.7207368402777777
   }
 ]
