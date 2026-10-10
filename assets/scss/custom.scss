@@ -1207,17 +1207,18 @@ table {
   gap: 0.35rem !important;
   white-space: nowrap !important;
   flex-shrink: 0 !important;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
+  font-family: inherit !important;
   font-size: 0.75rem !important;
-  font-weight: 700 !important;
+  font-weight: 500 !important;
   line-height: 1 !important;
   padding: 0.375rem 0.75rem !important;
-  border-radius: 0.5rem !important;
+  border-radius: 9999px !important;
   cursor: pointer !important;
   touch-action: manipulation !important;
   -webkit-tap-highlight-color: transparent !important;
   transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1) !important;
   text-decoration: none !important;
+  border: none !important;
 
   @media (max-width: 640px) {
     padding: 0.325rem 0.625rem !important;
@@ -1226,51 +1227,49 @@ table {
   }
 
   &:not(.is-active) {
-    background-color: #ffffff !important;
+    background-color: transparent !important;
     color: #475569 !important;
-    border: 1px solid #e2e8f0 !important;
 
     &:hover {
-      background-color: #f8fafc !important;
+      background-color: rgba(255, 255, 255, 0.8) !important;
       color: #0f172a !important;
-      border-color: #cbd5e1 !important;
     }
   }
 
   &.is-active {
-    background-color: #dc2626 !important;
-    color: #ffffff !important;
-    border: 1px solid #dc2626 !important;
-    box-shadow: 0 1px 3px 0 rgba(220, 38, 38, 0.3) !important;
+    background-color: #ffffff !important;
+    color: #dc2626 !important;
+    border-bottom: 2px solid #dc2626 !important;
+    font-weight: 700 !important;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
 
     * {
-      color: #ffffff !important;
+      color: #dc2626 !important;
     }
   }
 }
 
 :root.dark .pulse-filter-chip:not(.is-active),
 .dark .pulse-filter-chip:not(.is-active) {
-  background-color: #0c1220 !important;
+  background-color: transparent !important;
   color: #94a3b8 !important;
-  border: 1px solid #1e293b !important;
 
   &:hover {
-    background-color: #1e293b !important;
+    background-color: rgba(15, 23, 42, 0.8) !important;
     color: #ffffff !important;
-    border-color: #334155 !important;
   }
 }
 
 :root.dark .pulse-filter-chip.is-active,
 .dark .pulse-filter-chip.is-active {
-  background-color: #dc2626 !important;
-  color: #ffffff !important;
-  border: 1px solid #dc2626 !important;
-  box-shadow: 0 1px 3px 0 rgba(220, 38, 38, 0.3) !important;
+  background-color: #0f172a !important;
+  color: #f87171 !important;
+  border-bottom: 2px solid #dc2626 !important;
+  font-weight: 700 !important;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.3) !important;
 
   * {
-    color: #ffffff !important;
+    color: #f87171 !important;
   }
 }
 

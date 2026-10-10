@@ -27,12 +27,12 @@
     <div class="bytedepth-container">
       <!-- Section Heading & Topic Filter Navigation -->
       <div class="w-full mb-6 sm:mb-7">
-        <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-3 sm:gap-4 pb-3.5 border-b border-slate-200 dark:border-slate-800">
-          <div>
-            <h2 id="articles-heading" class="text-base sm:text-lg font-bold tracking-tight text-slate-900 dark:text-white m-0">
+        <div class="flex items-center justify-center sm:justify-start pb-3.5 border-b border-slate-200 dark:border-slate-800">
+          <div class="sr-only">
+            <h2 id="articles-heading" class="sr-only">
               {{ if eq site.Language.Lang "it" }}Tutti gli Articoli{{ else }}Latest Architecture Articles{{ end }}
             </h2>
-            <p class="font-mono text-xs text-slate-500 dark:text-slate-400 mt-1 m-0" id="articles-feed-count">
+            <p id="articles-feed-count" class="sr-only">
               {{ len $gridPosts }} {{ if eq site.Language.Lang "it" }}articoli di ingegneria{{ else }}engineering guides &amp; blueprints{{ end }}
             </p>
           </div>
