@@ -1,8 +1,8 @@
 [
   {
-    "id": "c54dce0b-1b3b-4701-9533-8a58e93bcaa9",
-    "title": "OpenShift Boosts Edge AI: Streamlined MLOps for Inference",
-    "content": "🎯 What Changed: OpenShift now provides a robust platform for deploying and managing AI inference models directly at the network edge.\n💡 Engineering Impact: This enables engineers to overcome diverse hardware challenges and streamline MLOps pipelines, simplifying the deployment and lifecycle management of OCI-compliant AI models across vast edge fleets.",
+    "id": "90d84576-ba89-415c-8662-804a9df89e4f",
+    "title": "Lightspeed Secures On-Prem RHEL: Enhanced Vulnerability Management",
+    "content": "🎯 What Changed: Red Hat Lightspeed now offers enhanced on-premise vulnerability monitoring and remediation for RHEL environments, ensuring data sovereignty.\n💡 Engineering Impact: This streamlines vulnerability discovery, prioritization, and remediation for RHEL fleets, reducing operational overhead. Engineers gain better situational awareness and maintain data sovereignty for critical on-premise systems.",
     "tags": [
       "#OpenShift",
       "#RedHat",
@@ -12,30 +12,11 @@
     "downvotes": 0,
     "score": 1,
     "author": "Cloud Newsroom Bot",
-    "created_at": "2026-10-10T11:02:33.946079+00:00",
-    "link_url": "https://www.redhat.com/en/blog/mlops-edge-running-ai-models-edge",
+    "created_at": "2026-10-10T11:02:29.586178+00:00",
+    "link_url": "https://www.redhat.com/en/blog/using-premise-red-hat-lightspeed-capabilities-monitor-vulnerabilities-and-apply-advisor-remediations",
     "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 76.9h without manual admin curation.",
-    "updated_at": "2026-10-10T14:19:59.951Z"
-  },
-  {
-    "id": "1a75c2f1-6159-4c01-af12-229a4855e477",
-    "title": "Amazon Bedrock now supports reasoning summaries for OpenAI models",
-    "content": "🎯 What Changed: Amazon Bedrock now supports the reasoning.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
-    "tags": [
-      "#AWS",
-      "#CloudArchitecture",
-      "#CloudNews"
-    ],
-    "upvotes": 1,
-    "downvotes": 0,
-    "score": 1,
-    "author": "Cloud Newsroom Bot",
-    "created_at": "2026-10-10T04:06:41.919261+00:00",
-    "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/10/amazon-bedrock-reasoning-summaries-openai/",
-    "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 67.6h without manual admin curation.",
-    "updated_at": "2026-10-10T05:02:25.996Z"
+    "eligibility_reason": "[Auto-Published] Published automatically after 82.4h without manual admin curation.",
+    "updated_at": "2026-10-10T19:53:16.267Z"
   },
   {
     "id": "0b6826b6-fc4c-4621-8f9b-bbbea3de16aa",
@@ -55,7 +36,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:48.441634+00:00",
-    "ageDays": 2.8150077199074075
+    "ageDays": 3.4336390046296295
   },
   {
     "id": "81213fff-57d4-4c0b-90eb-c84beeb18d4d",
@@ -75,7 +56,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:42.008666+00:00",
-    "ageDays": 2.815082175925926
+    "ageDays": 3.433713460648148
   },
   {
     "id": "1ec5647f-ce95-4be3-ba87-6aa974960da7",
@@ -95,7 +76,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:37.111692+00:00",
-    "ageDays": 2.815138854166667
+    "ageDays": 3.433770138888889
   },
   {
     "id": "88a2ed59-fb47-488b-b07c-d6be1de35d0b",
@@ -115,7 +96,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:31.276024+00:00",
-    "ageDays": 2.815206388888889
+    "ageDays": 3.433837673611111
   },
   {
     "id": "202f8734-234e-4bd5-9a67-8535691f131a",
@@ -135,7 +116,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:24.859911+00:00",
-    "ageDays": 2.815280659722222
+    "ageDays": 3.4339119444444446
   },
   {
     "id": "37fcb780-d57d-4ba9-875a-7665dd9cd981",
@@ -155,7 +136,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T04:06:30.331436+00:00",
-    "ageDays": 3.0388284375
+    "ageDays": 3.6574597222222223
   },
   {
     "id": "521c6dfa-7eb3-4834-87fb-7ac338d90f9d",
@@ -175,7 +156,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T04:00:33.151279+00:00",
-    "ageDays": 3.042962465277778
+    "ageDays": 3.66159375
   },
   {
     "id": "b1f2627d-7930-4c4b-ab57-de042bac55c3",
@@ -195,7 +176,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T04:00:00.696536+00:00",
-    "ageDays": 3.0433381018518517
+    "ageDays": 3.661969386574074
   },
   {
     "id": "bf22f4dd-2d54-4b4c-9038-ea09aadef8a2",
@@ -215,7 +196,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T03:59:45.591638+00:00",
-    "ageDays": 3.043512928240741
+    "ageDays": 3.662144212962963
   },
   {
     "id": "46fd5625-4fda-4793-a2ab-d6b627f3f4df",
@@ -235,7 +216,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T03:59:26.783766+00:00",
-    "ageDays": 3.043730613425926
+    "ageDays": 3.662361898148148
   },
   {
     "id": "09900f5e-4d21-4d5e-84a6-f5eec4459b40",
@@ -255,7 +236,7 @@
     "status": "approved",
     "eligibility_reason": "Official AWS Release: Ingested & AI synthesized for Admin Approval Queue.",
     "updated_at": "2026-09-12T09:07:10.082273+00:00",
-    "ageDays": 27.83003502314815
+    "ageDays": 28.448666307870372
   },
   {
     "id": "57b1b07d-9511-4a40-b351-2ec2866364b4",
@@ -275,14 +256,34 @@
     "status": "approved",
     "eligibility_reason": "Official Kubernetes Release: Ingested & AI synthesized for Admin Approval Queue.",
     "updated_at": "2026-09-12T09:07:09.525138+00:00",
-    "ageDays": 27.830041469907407
+    "ageDays": 28.44867275462963
   },
   {
-    "id": "1a8facdb-0f4f-42d7-9bf4-9c21cbea6c5b",
-    "title": "Azure Leads Gartner 2026 MQ for Industrial AIoT Platforms",
-    "content": "🎯 What Changed: Azure was named a Leader in the 2026 Gartner Magic Quadrant for Global Industrial AIoT Platforms.\n💡 Engineering Impact: This validates Azure's robust capabilities for deploying scalable, secure, and intelligent AIoT solutions in industrial environments. Engineers can confidently leverage Azure's services for advanced analytics, predictive maintenance, and operational efficiency, streamlining complex industrial transformations.",
+    "id": "c54dce0b-1b3b-4701-9533-8a58e93bcaa9",
+    "title": "OpenShift Boosts Edge AI: Streamlined MLOps for Inference",
+    "content": "🎯 What Changed: OpenShift now provides a robust platform for deploying and managing AI inference models directly at the network edge.\n💡 Engineering Impact: This enables engineers to overcome diverse hardware challenges and streamline MLOps pipelines, simplifying the deployment and lifecycle management of OCI-compliant AI models across vast edge fleets.",
     "tags": [
-      "#Azure",
+      "#OpenShift",
+      "#RedHat",
+      "#DevOps"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-10-10T11:02:33.946079+00:00",
+    "link_url": "https://www.redhat.com/en/blog/mlops-edge-running-ai-models-edge",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 76.9h without manual admin curation.",
+    "updated_at": "2026-10-10T14:19:59.951+00:00",
+    "ageDays": 0.36852899305555553
+  },
+  {
+    "id": "1a75c2f1-6159-4c01-af12-229a4855e477",
+    "title": "Amazon Bedrock now supports reasoning summaries for OpenAI models",
+    "content": "🎯 What Changed: Amazon Bedrock now supports the reasoning.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
+    "tags": [
+      "#AWS",
       "#CloudArchitecture",
       "#CloudNews"
     ],
@@ -290,11 +291,11 @@
     "downvotes": 0,
     "score": 1,
     "author": "Cloud Newsroom Bot",
-    "created_at": "2026-10-09T11:44:37.917693+00:00",
-    "link_url": "https://azure.microsoft.com/en-us/blog/microsoft-named-a-leader-in-the-2026-gartner-magic-quadrant-for-global-industrial-aiot-platforms/",
+    "created_at": "2026-10-10T04:06:41.919261+00:00",
+    "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/10/amazon-bedrock-reasoning-summaries-openai/",
     "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 53.6h without manual admin curation.",
-    "updated_at": "2026-10-09T15:05:05.546+00:00",
-    "ageDays": 0.7206850810185185
+    "eligibility_reason": "[Auto-Published] Published automatically after 67.6h without manual admin curation.",
+    "updated_at": "2026-10-10T05:02:25.996+00:00",
+    "ageDays": 0.6573256018518518
   }
 ]
