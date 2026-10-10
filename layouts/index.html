@@ -27,7 +27,7 @@
     <div class="bytedepth-container">
       <!-- Section Heading & Topic Filter Navigation -->
       <div class="w-full mb-6 sm:mb-7">
-        <div class="flex items-center justify-center sm:justify-start pb-3.5 border-b border-slate-200 dark:border-slate-800">
+        <div class="flex items-center justify-center sm:justify-start pb-3.5 border-b border-slate-200/60 dark:border-slate-800/60">
           <div class="sr-only">
             <h2 id="articles-heading" class="sr-only">
               {{ if eq site.Language.Lang "it" }}Tutti gli Articoli{{ else }}Latest Architecture Articles{{ end }}
@@ -39,7 +39,7 @@
 
           <!-- Horizontal Category Filter Segmented Control (In-Place Instant Filter) -->
           {{ $categories := site.Taxonomies.categories }}
-          <div class="inline-flex items-center gap-1 p-1 rounded-full bg-slate-100/90 dark:bg-slate-800/80 border border-slate-200/70 dark:border-slate-700/70 overflow-x-auto no-scrollbar max-w-full"
+          <div class="inline-flex items-center gap-1 p-1 rounded-full bg-slate-100/70 dark:bg-slate-850/60 border border-slate-200/60 dark:border-slate-800/60 overflow-x-auto no-scrollbar max-w-full"
                id="homepage-category-filters"
                role="tablist"
                aria-label="Filter articles by category">
@@ -54,7 +54,7 @@
               {{ with site.GetPage (printf "/categories/%s" $catSlug) }}
                 <a href="{{ .RelPermalink }}"
                    data-category-filter="{{ $catSlug }}"
-                   class="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/80 dark:hover:bg-slate-900/80 transition-all shrink-0 no-underline cursor-pointer">
+                   class="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/70 dark:hover:bg-slate-800/70 transition-all shrink-0 no-underline cursor-pointer">
                   <span>{{ .Title }}</span>
                 </a>
               {{ end }}
@@ -133,13 +133,13 @@
       {{ end }}
 
       <!-- Section 3: Browse all topics Section (Framed with subtle top divider border) -->
-      <div class="mt-14 pt-10 border-t border-slate-200/80 dark:border-slate-800/80 mb-8 w-full">
+      <div class="mt-14 pt-10 border-t border-slate-200/70 dark:border-slate-800/70 mb-8 w-full">
         <h3 class="font-mono text-xs font-bold text-slate-500 dark:text-slate-400 tracking-wider block mb-4">
           {{ i18n "browse_all_topics" }}
         </h3>
 
-        <div class="border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0c1220] rounded-xl overflow-hidden shadow-xs">
-          <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 divide-x divide-y divide-slate-200 dark:divide-slate-800">
+        <div class="border border-slate-200/70 dark:border-slate-800/70 bg-white dark:bg-[#0c1220] rounded-xl overflow-hidden">
+          <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 divide-x divide-y divide-slate-200/70 dark:divide-slate-800/70">
             {{ $catCounts := dict }}
             {{ range site.Taxonomies.categories }}
               {{ $catCounts = merge $catCounts (dict .Page.RelPermalink .Count) }}
@@ -160,7 +160,7 @@
             {{ range $topicList }}
               {{ $targetUrl := printf "categories/%s/" .slug | relLangURL }}
               {{ $count := index $catCounts $targetUrl | default (index $catCounts .slug) | default 0 }}
-              <a href="{{ $targetUrl }}" class="px-4 py-3 sm:py-3.5 text-sm sm:text-base font-semibold text-slate-900 dark:text-white hover:text-red-600 dark:hover:text-red-500 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-all no-underline flex items-center justify-between group">
+              <a href="{{ $targetUrl }}" class="px-4 py-3 sm:py-3.5 text-sm sm:text-base font-semibold text-slate-900 dark:text-white hover:text-red-600 dark:hover:text-red-500 hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-all no-underline flex items-center justify-between group">
                 <span>{{ .name }}</span>
                 <span class="text-xs font-mono font-semibold text-slate-400 dark:text-slate-500 group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors">{{ $count }}</span>
               </a>
@@ -171,13 +171,13 @@
 
       <!-- Section 4: Author Credibility Section (Framed cleanly) -->
       <div class="mt-12 mb-4 w-full">
-        <div class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0c1220] p-6 sm:p-8 shadow-xs">
+        <div class="rounded-2xl border border-slate-200/70 dark:border-slate-800/70 bg-white dark:bg-[#0c1220] p-6 sm:p-8">
           <div class="flex flex-col sm:flex-row items-center sm:items-start gap-5 sm:gap-6 text-center sm:text-left">
             <img src="{{ `/images/authors/profilepic_tharun.png` | relURL }}"
                  alt="Tharun Vempati"
                  width="80"
                  height="80"
-                 class="w-20 h-20 rounded-2xl object-cover border border-slate-200 dark:border-slate-700 shadow-xs shrink-0"
+                 class="w-20 h-20 rounded-2xl object-cover border border-slate-200/80 dark:border-slate-700/80 shadow-2xs shrink-0"
                  loading="lazy"
                  decoding="async"
                  onerror="this.onerror=null; this.src='{{ `/images/avatar.png` | relURL }}';" />

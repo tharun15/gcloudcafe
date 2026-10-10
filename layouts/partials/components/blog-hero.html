@@ -50,7 +50,7 @@
 
   <div class="bytedepth-container" aria-labelledby="featured-post-title">
     <!-- Full-Width Flagship Hero Card (Editorial Split: 7-Col Story Left, 5-Col Blueprint Right) -->
-    <article class="w-full rounded-2xl sm:rounded-3xl border border-slate-200/90 dark:border-slate-800/90 bg-white dark:bg-[#0c1220] p-4 sm:p-6 lg:p-7 shadow-xs hover:border-slate-300 dark:hover:border-slate-700 transition-all duration-300 group relative spotlight-hero">
+    <article class="w-full rounded-2xl border border-slate-200/70 dark:border-slate-800/80 bg-white dark:bg-[#0c1220] p-4 sm:p-6 lg:p-7 hover:border-slate-300 dark:hover:border-slate-700 transition-all duration-300 group relative spotlight-hero">
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 items-center">
         
         <!-- Left: Flagship Headline, Expanded Editorial Narrative & Meta Details -->
@@ -58,7 +58,7 @@
           <div>
             <!-- Category Line -->
             <div class="flex items-center gap-2.5 mb-2.5">
-              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] sm:text-xs font-mono font-bold uppercase tracking-wider {{ $heroBadgeBg }}">
+              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] sm:text-xs font-mono font-medium uppercase tracking-wider {{ $heroBadgeBg }}">
                 {{ $firstCat }}
               </span>
               <span class="hidden sm:inline-flex items-center text-xs font-mono text-slate-400 dark:text-slate-500">
@@ -67,23 +67,23 @@
             </div>
 
             <!-- Big, Commanding Headline with Generous Breathing Room -->
-            <h1 id="featured-post-title" class="text-xl sm:text-2xl lg:text-[27px] xl:text-[29px] font-extrabold text-slate-900 dark:text-white leading-[1.26] tracking-tight mb-2.5 group-hover:text-red-600 dark:group-hover:text-red-500 transition-colors">
+            <h1 id="featured-post-title" class="text-xl sm:text-2xl lg:text-[26px] xl:text-[28px] font-bold text-slate-900 dark:text-white leading-[1.28] tracking-tight mb-2.5 group-hover:text-red-600 dark:group-hover:text-red-500 transition-colors">
               <a href="{{ $page.RelPermalink }}" class="no-underline text-current hover:text-red-600 dark:hover:text-red-500">
                 {{ $page.Title }}
               </a>
             </h1>
 
             <!-- Unboxed Editorial Teaser Summary -->
-            <p class="text-sm sm:text-[15px] lg:text-[15.5px] text-slate-600 dark:text-slate-300 leading-relaxed font-normal mb-4 sm:mb-5">
+            <p class="text-sm sm:text-[14.5px] lg:text-[15px] text-slate-600 dark:text-slate-300 leading-relaxed font-normal mb-4 sm:mb-5">
               {{ $teaser }}
             </p>
           </div>
 
           <!-- Bottom Meta Bar: Author Info + Date + Reading Time + Bookmark -->
-          <div class="pt-3.5 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between gap-3 text-xs sm:text-[13px] text-slate-500 dark:text-slate-400">
+          <div class="pt-3.5 border-t border-slate-100 dark:border-slate-800/70 flex items-center justify-between gap-3 text-xs sm:text-[13px] text-slate-500 dark:text-slate-400">
             <div class="flex items-center gap-2.5 shrink-0">
               {{ if $authorImage }}
-                <img src="{{ $authorImage | relURL }}" alt="{{ $authorName }}" class="w-8 h-8 rounded-full object-cover shrink-0 border border-slate-200 dark:border-slate-700 shadow-xs" width="32" height="32" decoding="async" loading="lazy" onerror="this.onerror=null; this.src='{{ `/images/avatar.png` | relURL }}';">
+                <img src="{{ $authorImage | relURL }}" alt="{{ $authorName }}" class="w-8 h-8 rounded-full object-cover shrink-0 border border-slate-200/80 dark:border-slate-700/80 shadow-2xs" width="32" height="32" decoding="async" loading="lazy" onerror="this.onerror=null; this.src='{{ `/images/avatar.png` | relURL }}';">
               {{ else }}
                 <div class="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-800 text-slate-900 dark:text-white font-bold text-xs flex items-center justify-center shrink-0">
                   {{ substr $authorName 0 1 }}
@@ -119,10 +119,10 @@
 
         <!-- Right: Architectural Blueprint Artwork (Proportional 5-Col Fit) -->
         <div class="lg:col-span-5 w-full">
-          <div class="rounded-xl overflow-hidden shadow-xs border border-slate-200/80 dark:border-slate-800 aspect-[16/10] sm:aspect-[16/10] bg-slate-950 hero-blueprint-img group/preview">
+          <div class="rounded-xl overflow-hidden border border-slate-200/70 dark:border-slate-800/80 aspect-[16/10] sm:aspect-[16/10] bg-slate-950 hero-blueprint-img group/preview">
             <a href="{{ $page.RelPermalink }}" class="block w-full h-full relative no-underline overflow-hidden" aria-label="Read blueprint: {{ $page.Title }}">
               {{ with $page.Params.image }}
-                {{ partial "image" (dict "Src" . "Context" $page "Alt" $page.Title "Class" "w-full h-full object-cover group-hover/preview:scale-[1.03] transition-transform duration-500 ease-out" "Loading" "eager" "FetchPriority" "high") }}
+                {{ partial "image" (dict "Src" . "Context" $page "Alt" $page.Title "Class" "w-full h-full object-cover group-hover/preview:scale-[1.02] transition-transform duration-500 ease-out" "Loading" "eager" "FetchPriority" "high") }}
               {{ else }}
                 <div class="w-full h-full flex items-center justify-center p-3 bg-slate-900 text-slate-400 font-mono text-xs text-center">
                   {{ $page.Title }}
