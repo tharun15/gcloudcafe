@@ -25,6 +25,10 @@
   <!-- Section 2: Main Articles & Topics Filter Tabs -->
   <section class="pt-7 sm:pt-8 pb-14 sm:pb-18 bg-white dark:bg-transparent" aria-labelledby="articles-heading">
     <div class="bytedepth-container">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 xl:gap-12 items-start">
+        
+        <!-- Main Content Column: Filter Tabs, Articles Stream, Topics & Author (Col 8) -->
+        <div class="lg:col-span-8 w-full min-w-0">
       <!-- Section Heading & Topic Filter Navigation -->
       <div class="w-full mb-6 sm:mb-7">
         <div class="flex items-center justify-center sm:justify-start pb-3.5 border-b border-slate-200 dark:border-slate-800">
@@ -226,7 +230,14 @@
           </div>
         </div>
       </div>
+        </div>
 
+        <!-- Parallel Sticky Sidebar: Series Navigation & Discovery (Col 4) -->
+        <aside class="lg:col-span-4 w-full lg:border-l lg:border-slate-200/80 dark:lg:border-slate-800/80 lg:pl-8 xl:pl-10 lg:sticky lg:top-20 space-y-6" aria-label="Series and Curated Tracks">
+          {{ partial "components/homepage-sidebar" (dict "Featured" $featured "Posts" $posts) }}
+        </aside>
+
+      </div>
     </div>
   </section>
 

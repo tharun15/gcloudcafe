@@ -1047,6 +1047,12 @@ body {
   padding-right: 1.5rem !important;
 }
 
+@media (min-width: 1280px) {
+  .bytedepth-container {
+    max-width: 1200px !important;
+  }
+}
+
 .row {
   min-width: 0;
   max-width: 100%;
