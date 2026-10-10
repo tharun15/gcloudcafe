@@ -98,53 +98,57 @@
         <!-- Row 2: Streamlined Dual-Rail Filter Deck -->
         <div class="space-y-2.5">
           <!-- Cloud Providers Rail -->
-          <div class="flex items-center gap-2 flex-wrap" id="pulse-provider-chips">
+          <div class="flex items-center gap-2.5 flex-wrap" id="pulse-provider-chips">
             <span class="inline-flex items-center gap-1.5 text-[10px] sm:text-[11px] font-mono uppercase tracking-wider text-slate-400 dark:text-slate-500 font-bold shrink-0 px-0.5">
               <i class="fa-solid fa-cloud text-slate-400 dark:text-slate-500 text-[10px]"></i> Cloud:
             </span>
-            <button data-pulse-provider="all" class="pulse-filter-chip is-active">
-              All
-            </button>
-            <button data-pulse-provider="gcp" class="pulse-filter-chip">
-              <i class="fa-brands fa-google text-[10px]"></i> GCP
-            </button>
-            <button data-pulse-provider="aws" class="pulse-filter-chip">
-              <i class="fa-brands fa-aws text-[10px]"></i> AWS
-            </button>
-            <button data-pulse-provider="azure" class="pulse-filter-chip">
-              <i class="fa-brands fa-microsoft text-[10px]"></i> Azure
-            </button>
-            <button data-pulse-provider="openshift" class="pulse-filter-chip">
-              <i class="fa-brands fa-redhat text-[10px]"></i> Red Hat
-            </button>
+            <div class="inline-flex items-center gap-1 p-1 rounded-full bg-slate-100/90 dark:bg-slate-800/80 border border-slate-200/70 dark:border-slate-700/70 overflow-x-auto no-scrollbar max-w-full">
+              <button data-pulse-provider="all" class="pulse-filter-chip is-active">
+                All
+              </button>
+              <button data-pulse-provider="gcp" class="pulse-filter-chip">
+                <i class="fa-brands fa-google text-[10px]"></i> GCP
+              </button>
+              <button data-pulse-provider="aws" class="pulse-filter-chip">
+                <i class="fa-brands fa-aws text-[10px]"></i> AWS
+              </button>
+              <button data-pulse-provider="azure" class="pulse-filter-chip">
+                <i class="fa-brands fa-microsoft text-[10px]"></i> Azure
+              </button>
+              <button data-pulse-provider="openshift" class="pulse-filter-chip">
+                <i class="fa-brands fa-redhat text-[10px]"></i> Red Hat
+              </button>
+            </div>
           </div>
 
           <!-- Subtle Divider between Cloud and Topic -->
           <div class="h-px bg-slate-200/50 dark:bg-slate-800/50"></div>
 
           <!-- Engineering Domain Topics Rail -->
-          <div class="flex items-center gap-2 flex-wrap" id="pulse-domain-chips">
+          <div class="flex items-center gap-2.5 flex-wrap" id="pulse-domain-chips">
             <span class="inline-flex items-center gap-1.5 text-[10px] sm:text-[11px] font-mono uppercase tracking-wider text-slate-400 dark:text-slate-500 font-bold shrink-0 px-0.5">
               <i class="fa-solid fa-layer-group text-slate-400 dark:text-slate-500 text-[10px]"></i> Topic:
             </span>
-            <button data-pulse-domain="all" class="pulse-filter-chip is-active">
-              All Topics
-            </button>
-            <button data-pulse-domain="kubernetes" class="pulse-filter-chip">
-              <i class="fa-brands fa-docker text-[10px]"></i> Kubernetes
-            </button>
-            <button data-pulse-domain="devops" class="pulse-filter-chip">
-              <i class="fa-solid fa-code-branch text-[10px]"></i> DevOps
-            </button>
-            <button data-pulse-domain="security" class="pulse-filter-chip">
-              <i class="fa-solid fa-shield-halved text-[10px]"></i> Security
-            </button>
-            <button data-pulse-domain="ai" class="pulse-filter-chip">
-              <i class="fa-solid fa-brain text-[10px]"></i> AI &amp; LLMs
-            </button>
-            <button data-pulse-domain="databases" class="pulse-filter-chip">
-              <i class="fa-solid fa-database text-[10px]"></i> Databases
-            </button>
+            <div class="inline-flex items-center gap-1 p-1 rounded-full bg-slate-100/90 dark:bg-slate-800/80 border border-slate-200/70 dark:border-slate-700/70 overflow-x-auto no-scrollbar max-w-full">
+              <button data-pulse-domain="all" class="pulse-filter-chip is-active">
+                All Topics
+              </button>
+              <button data-pulse-domain="kubernetes" class="pulse-filter-chip">
+                <i class="fa-brands fa-docker text-[10px]"></i> Kubernetes
+              </button>
+              <button data-pulse-domain="devops" class="pulse-filter-chip">
+                <i class="fa-solid fa-code-branch text-[10px]"></i> DevOps
+              </button>
+              <button data-pulse-domain="security" class="pulse-filter-chip">
+                <i class="fa-solid fa-shield-halved text-[10px]"></i> Security
+              </button>
+              <button data-pulse-domain="ai" class="pulse-filter-chip">
+                <i class="fa-solid fa-brain text-[10px]"></i> AI &amp; LLMs
+              </button>
+              <button data-pulse-domain="databases" class="pulse-filter-chip">
+                <i class="fa-solid fa-database text-[10px]"></i> Databases
+              </button>
+            </div>
           </div>
         </div>
 

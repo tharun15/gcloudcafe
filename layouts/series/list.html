@@ -242,7 +242,7 @@
              aria-label="Filter learning tracks by domain">
           <button type="button" 
                   data-series-filter="all"
-                  class="series-filter-btn inline-flex items-center px-3.5 py-1.5 rounded-full text-xs font-semibold bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-2xs shrink-0 cursor-pointer transition-all border-0"
+                  class="series-filter-btn category-tab-active inline-flex items-center px-3.5 py-1.5 rounded-full text-xs font-semibold bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-2xs shrink-0 cursor-pointer transition-all border-0"
                   aria-selected="true"
                   role="tab">
             All Tracks ({{ $allCount }})
@@ -457,14 +457,14 @@
 
           // Reset all filter buttons
           filterButtons.forEach(function (b) {
-            b.classList.remove('bg-white', 'dark:bg-slate-900', 'text-slate-900', 'dark:text-white', 'shadow-2xs', 'font-semibold');
+            b.classList.remove('category-tab-active', 'bg-white', 'dark:bg-slate-900', 'text-slate-900', 'dark:text-white', 'shadow-2xs', 'font-semibold');
             b.classList.add('text-slate-600', 'dark:text-slate-400', 'font-medium', 'bg-transparent');
             b.setAttribute('aria-selected', 'false');
           });
 
           // Activate clicked button
           this.classList.remove('text-slate-600', 'dark:text-slate-400', 'font-medium', 'bg-transparent');
-          this.classList.add('bg-white', 'dark:bg-slate-900', 'text-slate-900', 'dark:text-white', 'shadow-2xs', 'font-semibold');
+          this.classList.add('category-tab-active', 'bg-white', 'dark:bg-slate-900', 'text-slate-900', 'dark:text-white', 'shadow-2xs', 'font-semibold');
           this.setAttribute('aria-selected', 'true');
 
           // Filter card visibility
