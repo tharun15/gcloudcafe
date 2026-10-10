@@ -1,22 +1,22 @@
 [
   {
-    "id": "1391c0ce-c5e4-4a8c-873e-b499f06b0f1d",
-    "title": "OpenShift Pen Drive: Streamlined Analysis for Disconnected Clusters",
-    "content": "🎯 What Changed: Red Hat introduces 'Pen drive,' a new single-Podman image tool for streamlined analysis of disconnected OpenShift clusters.\n💡 Engineering Impact: Engineers can now proactively identify and resolve issues in air-gapped OpenShift deployments, minimizing configuration drift and reducing the risk of production incidents during Day-2 operations.",
+    "id": "1a75c2f1-6159-4c01-af12-229a4855e477",
+    "title": "Amazon Bedrock now supports reasoning summaries for OpenAI models",
+    "content": "🎯 What Changed: Amazon Bedrock now supports the reasoning.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
     "tags": [
-      "#OpenShift",
-      "#RedHat",
-      "#DevOps"
+      "#AWS",
+      "#CloudArchitecture",
+      "#CloudNews"
     ],
     "upvotes": 1,
     "downvotes": 0,
     "score": 1,
     "author": "Cloud Newsroom Bot",
-    "created_at": "2026-10-09T11:44:33.445922+00:00",
-    "link_url": "https://www.redhat.com/en/blog/actionable-disconnected-cluster-analysis-available-now-pen-drive-powered-red-hat-lightspeed",
+    "created_at": "2026-10-10T04:06:41.919261+00:00",
+    "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/10/amazon-bedrock-reasoning-summaries-openai/",
     "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 59.2h without manual admin curation.",
-    "updated_at": "2026-10-09T20:40:09.191Z"
+    "eligibility_reason": "[Auto-Published] Published automatically after 67.6h without manual admin curation.",
+    "updated_at": "2026-10-10T05:02:25.996Z"
   },
   {
     "id": "0b6826b6-fc4c-4621-8f9b-bbbea3de16aa",
@@ -36,7 +36,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:48.441634+00:00",
-    "ageDays": 2.466202789351852
+    "ageDays": 2.8150077199074075
   },
   {
     "id": "81213fff-57d4-4c0b-90eb-c84beeb18d4d",
@@ -56,7 +56,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:42.008666+00:00",
-    "ageDays": 2.4662772453703705
+    "ageDays": 2.815082175925926
   },
   {
     "id": "1ec5647f-ce95-4be3-ba87-6aa974960da7",
@@ -76,7 +76,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:37.111692+00:00",
-    "ageDays": 2.4663339236111113
+    "ageDays": 2.815138854166667
   },
   {
     "id": "88a2ed59-fb47-488b-b07c-d6be1de35d0b",
@@ -96,7 +96,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:31.276024+00:00",
-    "ageDays": 2.4664014583333334
+    "ageDays": 2.815206388888889
   },
   {
     "id": "202f8734-234e-4bd5-9a67-8535691f131a",
@@ -116,7 +116,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:24.859911+00:00",
-    "ageDays": 2.4664757291666666
+    "ageDays": 2.815280659722222
   },
   {
     "id": "37fcb780-d57d-4ba9-875a-7665dd9cd981",
@@ -136,7 +136,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T04:06:30.331436+00:00",
-    "ageDays": 2.6900235069444443
+    "ageDays": 3.0388284375
   },
   {
     "id": "521c6dfa-7eb3-4834-87fb-7ac338d90f9d",
@@ -156,7 +156,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T04:00:33.151279+00:00",
-    "ageDays": 2.694157534722222
+    "ageDays": 3.042962465277778
   },
   {
     "id": "b1f2627d-7930-4c4b-ab57-de042bac55c3",
@@ -176,7 +176,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T04:00:00.696536+00:00",
-    "ageDays": 2.694533171296296
+    "ageDays": 3.0433381018518517
   },
   {
     "id": "bf22f4dd-2d54-4b4c-9038-ea09aadef8a2",
@@ -196,7 +196,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T03:59:45.591638+00:00",
-    "ageDays": 2.6947079976851853
+    "ageDays": 3.043512928240741
   },
   {
     "id": "46fd5625-4fda-4793-a2ab-d6b627f3f4df",
@@ -216,7 +216,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T03:59:26.783766+00:00",
-    "ageDays": 2.6949256828703705
+    "ageDays": 3.043730613425926
   },
   {
     "id": "09900f5e-4d21-4d5e-84a6-f5eec4459b40",
@@ -236,7 +236,7 @@
     "status": "approved",
     "eligibility_reason": "Official AWS Release: Ingested & AI synthesized for Admin Approval Queue.",
     "updated_at": "2026-09-12T09:07:10.082273+00:00",
-    "ageDays": 27.481230092592593
+    "ageDays": 27.83003502314815
   },
   {
     "id": "57b1b07d-9511-4a40-b351-2ec2866364b4",
@@ -256,7 +256,7 @@
     "status": "approved",
     "eligibility_reason": "Official Kubernetes Release: Ingested & AI synthesized for Admin Approval Queue.",
     "updated_at": "2026-09-12T09:07:09.525138+00:00",
-    "ageDays": 27.48123653935185
+    "ageDays": 27.830041469907407
   },
   {
     "id": "1a8facdb-0f4f-42d7-9bf4-9c21cbea6c5b",
@@ -276,26 +276,26 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 53.6h without manual admin curation.",
     "updated_at": "2026-10-09T15:05:05.546+00:00",
-    "ageDays": 0.37188015046296297
+    "ageDays": 0.7206850810185185
   },
   {
-    "id": "b622b88c-b379-4757-89cc-c7baab6cdd9e",
-    "title": "AWS Network Firewall adds wildcard support for container attribute filters",
-    "content": "🎯 What Changed: AWS Network Firewall now supports wildcard matching in container attribute-based inspection filters for Amazon EKS and Amazon ECS workloads.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
+    "id": "1391c0ce-c5e4-4a8c-873e-b499f06b0f1d",
+    "title": "OpenShift Pen Drive: Streamlined Analysis for Disconnected Clusters",
+    "content": "🎯 What Changed: Red Hat introduces 'Pen drive,' a new single-Podman image tool for streamlined analysis of disconnected OpenShift clusters.\n💡 Engineering Impact: Engineers can now proactively identify and resolve issues in air-gapped OpenShift deployments, minimizing configuration drift and reducing the risk of production incidents during Day-2 operations.",
     "tags": [
-      "#AWS",
-      "#CloudArchitecture",
-      "#CloudNews"
+      "#OpenShift",
+      "#RedHat",
+      "#DevOps"
     ],
     "upvotes": 1,
     "downvotes": 0,
     "score": 1,
     "author": "Cloud Newsroom Bot",
-    "created_at": "2026-10-09T04:20:43.958855+00:00",
-    "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/10/aws-network-firewall-container-attributes-wildcard",
+    "created_at": "2026-10-09T11:44:33.445922+00:00",
+    "link_url": "https://www.redhat.com/en/blog/actionable-disconnected-cluster-analysis-available-now-pen-drive-powered-red-hat-lightspeed",
     "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 43.8h without manual admin curation.",
-    "updated_at": "2026-10-09T05:18:15.973+00:00",
-    "ageDays": 0.6801435648148149
+    "eligibility_reason": "[Auto-Published] Published automatically after 59.2h without manual admin curation.",
+    "updated_at": "2026-10-09T20:40:09.191+00:00",
+    "ageDays": 0.7207368402777777
   }
 ]
