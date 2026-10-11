@@ -1,6 +1,6 @@
 ---
 title: "Data Engineering on GCP: Building the Production Storage & Access Layer (Hands-On Lab)"
-meta_title: "GCP Data Engineering Lab: Cloud Storage to Partitioned BigQuery"
+meta_title: "GCP Data Engineering Lab: Cloud Storage to BigQuery"
 description: "A practical, end-to-end GCP data engineering lab covering Cloud Storage, BigLake external connections, partitioned and clustered BigQuery, materialized views, Time Travel, and authorized views."
 date: 2026-09-30
 image: "/images/gcp-storage-pipeline-lab.jpg"
@@ -15,7 +15,6 @@ series_description: "A practical architecture and hands-on guide to Google Cloud
 series_image: "/images/series-images/gcp-data-engineering-series-poster.jpg"
 ---
 
-# Data Engineering on GCP: Building the Production Storage & Access Layer (Hands-On Lab)
 
 In [Part 1 of this series](/blog/gcp-data-engineering-storage-building-blocks/), we mapped the architectural evolution of **Offvia**, a regional flight booking engine that rapidly outgrew its transactional database. We analyzed why modern cloud analytics requires distinct storage primitives: from raw landing in Cloud Storage to columnar pruning in BigQuery, automatic aggregation in Materialized Views, and cryptographic isolation in Authorized Views.
 

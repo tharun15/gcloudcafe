@@ -1,6 +1,6 @@
 ---
 title: "CKA Exam Readiness: The Definitive Self-Assessment Checklist"
-meta_title: "Are You Really Ready for the CKA Exam? A Complete Readiness Guide"
+meta_title: "CKA Exam Readiness Guide: Self-Assessment Checklist"
 description: "A self-assessment guide to determine if you're truly ready for the Certified Kubernetes Administrator (CKA) exam"
 date: 2025-08-13
 image: "/images/blog1.png"

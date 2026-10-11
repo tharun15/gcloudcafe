@@ -1,6 +1,6 @@
 ---
 title: "EX280 – OpenShift Administrator Tips & Tricks (Part 1): Connecting to the Cluster and Configuring the HTPasswd Identity Provider"
-meta_title: "OpenShift EX280 Tips (Part 1): Cluster Auth & HTPasswd Setup"
+meta_title: "OpenShift EX280 Tips (Part 1): Cluster Auth & HTPasswd"
 date: 2025-11-03
 image: "/images/post5-dp-tips1.png"
 description: "Fast-track your Red Hat EX280 exam prep: Master connecting to the OpenShift cluster and configuring HTPasswd identity provider in under 20 minutes."

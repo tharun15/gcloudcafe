@@ -15,7 +15,6 @@ series_description: "Una guida architettuale pratica al data engineering su Goog
 series_image: "/images/series-images/gcp-data-engineering-series-poster.jpg"
 ---
 
-# Data Engineering su GCP: Costruire il Layer di Storage e Accesso in Produzione (Lab Pratico)
 
 Nella [Parte 1 di questa serie](/it/blog/gcp-data-engineering-storage-building-blocks/), abbiamo tracciato l'evoluzione architetturale di **Offvia**, un motore di prenotazione voli regionale che ha rapidamente superato i limiti del suo database transazionale. Abbiamo analizzato perché l'analisi dati cloud moderna richiede primitive di storage distinte: dal landing grezzo su Cloud Storage alla potatura colonnare in BigQuery, all'aggregazione automatica nelle Viste Materializzate, fino all'isolamento crittografico nelle Viste Autorizzate.
 

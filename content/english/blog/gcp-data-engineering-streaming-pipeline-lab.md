@@ -15,7 +15,6 @@ series_description: "A practical architecture and hands-on guide to Google Cloud
 series_image: "/images/series-images/gcp-data-engineering-series-poster.jpg"
 ---
 
-# Data Engineering on GCP (Part 4): Building a Production-Ready Real-Time Streaming Pipeline
 
 In [Part 3 of this series](/blog/gcp-data-engineering-streaming-batch-ingestion-pubsub-dataflow/), we compared the main approaches to real-time ingestion. This lab turns that architecture into a working pipeline for **Offvia**, a regional airline-booking platform.
 

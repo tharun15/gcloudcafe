@@ -10,7 +10,7 @@
 - [GCloud Cafe Home](https://gcloudcafe.com/): Practical cloud architecture tutorials, exam guides, and platform overview.
 - [Cloud Pulse Live Feed](https://gcloudcafe.com/pulse/): Real-time community-ranked cloud updates, CVE advisories, and micro-news feed.
 - [All Technical Articles](https://gcloudcafe.com/blog/): Complete technical article archive across Kubernetes, OpenShift, GCP, and TLS.
-- [Article Series](https://gcloudcafe.com/series/): Multi-part guided curriculum for EX280 and TLS Demystified.
+- [Article Series](https://gcloudcafe.com/series/): Multi-part guided curriculums for Data Engineering on GCP, EX280 OpenShift, and TLS Demystified.
 - [Categories Index](https://gcloudcafe.com/categories/): Browse technical guides by architectural domain.
 - [Engineering Newsletter](https://gcloudcafe.com/newsletter/): Bi-weekly technical dispatch for 1,000+ DevOps and cloud engineers.
 - [Author Profile — Tharun Vempati](https://gcloudcafe.com/authors/tharun-vempati/): Enterprise cloud architect, certified Kubernetes administrator, and author profile.
@@ -28,7 +28,13 @@
 - [Journey Through Generative AI: GCP Generative AI Leader Guide](https://gcloudcafe.com/blog/gcp-generative-ai-leader/): Gemini models, Vertex AI Studio, Model Garden, prompt techniques, and enterprise AI governance.
 
 ### 3. Google Cloud Architecture & Data Engineering
-- [GCP Data Engineering: Core Storage & Access Primitives Demystified](https://gcloudcafe.com/blog/gcp-data-engineering-storage-building-blocks/): Cloud Storage classes, BigQuery partitioning/clustering, materialized views, and authorized views.
+- [GCP Data Engineering (Part 1): Core Storage & Access Primitives Demystified](https://gcloudcafe.com/blog/gcp-data-engineering-storage-building-blocks/): Cloud Storage classes, BigQuery partitioning/clustering, materialized views, and authorized views.
+- [GCP Data Engineering (Part 2): Hands-On Storage & Access Pipeline Lab](https://gcloudcafe.com/blog/gcp-data-engineering-hands-on-storage-pipeline-lab/): End-to-end lab deploying partitioned BigQuery tables, raw Cloud Storage buckets, automated aggregation views, and row-level security.
+- [GCP Data Engineering (Part 3): Choosing a Reliable Real-Time Ingestion Path](https://gcloudcafe.com/blog/gcp-data-engineering-streaming-batch-ingestion-pubsub-dataflow/): Pub/Sub vs BigQuery Storage Write API vs Dataflow, architectural trade-offs, exactly-once delivery, and cost scaling.
+- [GCP Data Engineering (Part 4): Building a Production Streaming Pipeline Lab](https://gcloudcafe.com/blog/gcp-data-engineering-streaming-pipeline-lab/): Hands-on streaming lab with Pub/Sub, Dataflow Flex Templates, dead-letter queues (DLQ), and real-time BigQuery ingestion.
+- [GCP Data Engineering (Part 5): Medallion Architecture with Dataform and dbt](https://gcloudcafe.com/blog/gcp-data-engineering-transformations-dataform-dbt/): Bronze, Silver, and Gold lakehouse patterns, Dataform vs dbt on GCP, data quality assertions, and incremental models.
+- [GCP Data Engineering (Part 6): Medallion Lakehouse with Dataform Lab](https://gcloudcafe.com/blog/gcp-data-engineering-dataform-medallion-lab/): Production hands-on lab building SQLX incremental models, deduplication, quarantine tables, and release configurations.
+- [GCP Data Engineering (Part 7): Enterprise Pipeline Orchestration with Cloud Composer & Workflows](https://gcloudcafe.com/blog/gcp-data-engineering-pipeline-orchestration-composer-workflows/): Managed Airflow (Cloud Composer) vs Cloud Workflows decision matrix, cross-service dependency graphs, SLA alerts, and failure remediation.
 - [Renewing Google Cloud Professional Cloud Architect Without an Exam](https://gcloudcafe.com/blog/gcp-pca-renewal/): Continuing Education renewal roadmap, Skill Badge Challenge Labs, Terraform, and GKE architecture lessons.
 
 ### 4. Kubernetes & Red Hat OpenShift (EX280 / CKA)

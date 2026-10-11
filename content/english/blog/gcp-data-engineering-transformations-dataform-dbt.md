@@ -1,6 +1,6 @@
 ---
 title: "Data Engineering on GCP (Part 5): Medallion Architecture with Dataform and dbt"
-meta_title: "GCP Data Engineering: Medallion Architecture, Dataform, and dbt"
+meta_title: "GCP Data Engineering: Medallion Dataform & dbt Pipeline"
 description: "Build a reliable BigQuery transformation layer with Medallion architecture, Dataform or dbt, incremental processing, deduplication, and practical data-quality controls."
 date: 2026-10-08
 image: "/images/gcp-dataform-dbt-transformations.jpg"

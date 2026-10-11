@@ -99,9 +99,17 @@
 <!-- Title & Description (Guaranteed Fallback for Taxonomies and List Pages) -->
 {{ $pageTitle := "" }}
 {{ if .Params.meta_title }}
-  {{ $pageTitle = printf "%s | GCloud Cafe" .Params.meta_title }}
+  {{ if or (strings.Contains .Params.meta_title "GCloud Cafe") (gt (len .Params.meta_title) 48) }}
+    {{ $pageTitle = .Params.meta_title }}
+  {{ else }}
+    {{ $pageTitle = printf "%s | GCloud Cafe" .Params.meta_title }}
+  {{ end }}
 {{ else if .Title }}
-  {{ $pageTitle = printf "%s | GCloud Cafe" .Title }}
+  {{ if or (strings.Contains .Title "GCloud Cafe") (gt (len .Title) 48) }}
+    {{ $pageTitle = .Title }}
+  {{ else }}
+    {{ $pageTitle = printf "%s | GCloud Cafe" .Title }}
+  {{ end }}
 {{ else }}
   {{ $pageTitle = "GCloud Cafe | Practical Cloud Architecture, DevOps & Certifications" }}
 {{ end }}

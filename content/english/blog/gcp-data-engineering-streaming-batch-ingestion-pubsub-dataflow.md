@@ -1,6 +1,6 @@
 ---
 title: "Data Engineering on GCP (Part 3): Choosing a Reliable Real-Time Ingestion Path"
-meta_title: "GCP Ingestion Architecture: Pub/Sub, Dataflow & BigQuery Storage Write API"
+meta_title: "GCP Ingestion Architecture: Pub/Sub, Dataflow & Write API"
 description: "A practical guide to choosing between Pub/Sub BigQuery subscriptions, Dataflow, the BigQuery Storage Write API, and batch loads—without over-engineering the path."
 date: 2026-10-04
 image: "/images/gcp-data-engineering-streaming-batch-ingestion.jpg"

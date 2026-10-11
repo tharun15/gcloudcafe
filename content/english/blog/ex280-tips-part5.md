@@ -1,6 +1,6 @@
 ---
 title: "EX280 – OpenShift Administrator Tips & Tricks (Part 5): Developer Self Service"
-meta_title: "OpenShift EX280 Tips – Developer Self Service"
+meta_title: "OpenShift EX280 Tips (Part 5): Developer Self Service"
 date: 2025-11-09
 image: "/images/post9-dp-tips5.png"
 description: "Kickstarting the EX280 – OpenShift Administrator Tips & Tricks mini-series with a deep dive into Developer Self Service."

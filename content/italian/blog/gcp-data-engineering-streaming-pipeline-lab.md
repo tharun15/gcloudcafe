@@ -15,7 +15,6 @@ series_description: "Una guida architetturale pratica al data engineering su Goo
 series_image: "/images/series-images/gcp-data-engineering-series-poster.jpg"
 ---
 
-# Data Engineering su GCP (Parte 4): Costruire una Pipeline di Streaming in Tempo Reale Pronta per la Produzione
 
 Nella [Parte 3 di questa serie](/it/blog/gcp-data-engineering-streaming-batch-ingestion-pubsub-dataflow/), abbiamo confrontato i principali approcci all'ingestion in tempo reale. Questo lab trasforma quell'architettura in una pipeline pienamente funzionante per **Offvia**, una piattaforma regionale di prenotazione voli.
 

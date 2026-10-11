@@ -13,7 +13,6 @@ series: "Data Engineering su Google Cloud"
 series_order: 1
 ---
 
-# Data Engineering su GCP: I Blocchi Costruttivi di Storage e Accesso Spiegati Chiaramente
 
 Quando gli ingegneri del software costruiscono un'applicazione transazionale, il successo ha una definizione molto chiara:
 L'API riceve una richiesta, addebita una carta di credito, prenota un posto in un database operativo, invia un'email di conferma in formato PDF al cliente e genera una ricevuta contabile. Codice di stato HTTP: `200 OK`. Latenza: 42 millisecondi. Gli sviluppatori festeggiano: il lavoro è terminato.

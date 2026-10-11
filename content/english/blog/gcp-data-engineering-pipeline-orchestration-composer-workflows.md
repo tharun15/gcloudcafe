@@ -15,7 +15,6 @@ series_description: "A practical architecture and hands-on guide to Google Cloud
 series_image: "/images/series-images/gcp-data-engineering-series-poster.jpg"
 ---
 
-# Data Engineering on GCP (Part 7): Enterprise Pipeline Orchestration with Cloud Composer and Workflows
 
 At 03:45 on a Wednesday morning, Offvia’s automated revenue alert fired.
 

@@ -1,6 +1,6 @@
 ---
 title: "EX280 – OpenShift Administrator Tips & Tricks (Part 4): Deployments and Reliability"
-meta_title: "OpenShift EX280 Tips – Deployments and Reliability"
+meta_title: "OpenShift EX280 Tips (Part 4): Deployments & Reliability"
 date: 2025-11-09
 image: "/images/post8-dp-tips4.png"
 description: "Kickstarting the EX280 – OpenShift Administrator Tips & Tricks mini-series with a deep dive into Deployments and Reliability."

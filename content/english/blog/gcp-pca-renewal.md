@@ -106,7 +106,7 @@ And Challenge Labs are where things get interesting.
 
 ---
 
-# Normal Lab vs Challenge Lab
+## Normal Lab vs Challenge Lab
 
 If you have done Google Cloud labs before, you probably know how a normal lab works.
 
@@ -136,7 +136,7 @@ So let's get into the two activities.
 
 ---
 
-# Challenge 1: Implement a Landing Zone and Observability
+## Challenge 1: Implement a Landing Zone and Observability
 
 ⏱️ **Time: 1 hour 30 minutes**
 
@@ -219,7 +219,7 @@ Overall, though, I had no real issues with this challenge.
 
 ---
 
-# Challenge 2: Migrate Virtual Machines to Google Cloud
+## Challenge 2: Migrate Virtual Machines to Google Cloud
 
 ⏱️ **Time: 2 hours**
 
@@ -243,7 +243,7 @@ There are three main parts to the challenge.
 
 ---
 
-# Task 1: Migrate the Legacy VM
+### Task 1: Migrate the Legacy VM
 
 First, you migrate the **Cymbal Web** application from AWS to Google Cloud using **Migrate to Virtual Machines (M2VM)**.
 
@@ -251,7 +251,7 @@ You create the AWS source, configure the migration, start replication, and event
 
 My main advice here:
 
-## Have patience. 🙂
+#### Have patience. 🙂
 
 When I created the AWS source, it took around **10–15 minutes** before it became active.
 
@@ -271,7 +271,7 @@ So don't start changing things immediately just because the status isn't changin
 
 ---
 
-# Task 2: Containerize the VM and Deploy to GKE
+### Task 2: Containerize the VM and Deploy to GKE
 
 Once the application is running on Compute Engine, the next part is to modernize it.
 
@@ -321,7 +321,7 @@ Keep that in mind when looking at the remaining time on the lab clock.
 
 ---
 
-# Where My First Attempt Failed
+### Where My First Attempt Failed
 
 I went through Task 2.
 
@@ -371,7 +371,7 @@ But automated Challenge Lab validation can be strict about the exact configurati
 
 That leads to probably my biggest tip from this lab:
 
-## Read Every Small Requirement Carefully
+#### Read Every Small Requirement Carefully
 
 Don't assume that because the application works, the task will automatically pass validation.
 
@@ -379,7 +379,7 @@ Node counts, names, regions, ports, networking settings, and other small details
 
 ---
 
-# Second Attempt
+### Second Attempt
 
 The good thing?
 
@@ -403,7 +403,7 @@ Here, I could simply understand what might have gone wrong, try again, and move 
 
 ---
 
-# Task 3: Deploy the Container to Cloud Run
+### Task 3: Deploy the Container to Cloud Run
 
 The final task was comparatively straightforward.
 
@@ -432,7 +432,7 @@ It gives you a nice practical view of **migration and modernization**.
 
 ---
 
-## A Small Time-Saving Tip
+#### A Small Time-Saving Tip
 
 Remember that Skaffold operation I mentioned?
 
@@ -446,7 +446,7 @@ When you only have two hours for the lab, there is no point staring at a progres
 
 ---
 
-# What Happened After I Completed Both Activities?
+## What Happened After I Completed Both Activities?
 
 This part was surprisingly quick.
 
@@ -482,7 +482,7 @@ No additional certification exam fee.
 
 ---
 
-# And You Get Skill Badges Too
+## And You Get Skill Badges Too
 
 Another thing I like about this process is that you're not doing these activities only to make a renewal counter reach 100%.
 
@@ -506,7 +506,7 @@ That's a nice bonus.
 
 ---
 
-# Exam Renewal vs Continuing Education
+## Exam Renewal vs Continuing Education
 
 For me, this is really the biggest difference.
 
@@ -536,7 +536,7 @@ For someone who has already passed the PCA exam once, I personally find that a m
 
 ---
 
-# A Few Advantages I See
+## A Few Advantages I See
 
 After completing the process, these are the things I liked most:
 
@@ -558,7 +558,7 @@ And most importantly, I didn't spend weeks getting myself back into certificatio
 
 ---
 
-# Final Thoughts
+## Final Thoughts
 
 When I started thinking about my PCA renewal, I was expecting to go through another round of certification preparation and another online-proctored exam.
 

@@ -1,6 +1,6 @@
 ---
 title: "From Vertex AI to Gemini Enterprise Agent Platform: Build a Travel Intent Parser with Express Mode (Part 1)"
-meta_title: "Gemini Enterprise Agent Platform Express Mode Guide | GCloud Cafe"
+meta_title: "Gemini Enterprise Agent Platform: Express Mode Guide"
 description: "Explore Google Cloud Gemini Enterprise Agent Platform Express Mode, compare API keys with ADC, and build a schema-constrained travel-intent parser in Python."
 date: 2026-09-26
 last_modified: 2026-09-26
@@ -14,7 +14,6 @@ series: "Building Offvia with Gemini Enterprise Agent Platform"
 series_order: 1
 ---
 
-# From Vertex AI to Gemini Enterprise Agent Platform: Build a Travel Intent Parser with Express Mode (Part 1)
 
 Prototypes are easy. Production boundaries are not.
 

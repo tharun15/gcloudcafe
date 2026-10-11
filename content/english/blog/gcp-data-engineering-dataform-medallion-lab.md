@@ -15,7 +15,6 @@ series_description: "A practical architecture and hands-on guide to Google Cloud
 series_image: "/images/series-images/gcp-data-engineering-series-poster.jpg"
 ---
 
-# Data Engineering on GCP (Part 6): Building a Medallion Lakehouse with Dataform (Hands-On Lab)
 
 In [Part 4 of this series](/blog/gcp-data-engineering-streaming-pipeline-lab/), we built Offvia’s real-time streaming ingestion pipeline using Pub/Sub and Dataflow. Flight reservations, cancellations, and seat changes began streaming continuously into BigQuery.
 
