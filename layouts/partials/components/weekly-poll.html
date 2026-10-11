@@ -2,13 +2,44 @@
 {{ $polls := site.Data.weekly_polls }}
 {{ $currentWeekPoll := false }}
 
-{{/* Determine active poll based on current ISO week or fall back to week 39 / first available */}}
+{{/* Determine active poll dynamically based on current ISO week number */}}
 {{ if $polls }}
+  {{ $now := now }}
+  {{ $currentYear := $now.Year }}
+  {{ $w := int $now.Weekday }}
+  {{ $dayOfWeek := $w }}
+  {{ if eq $w 0 }}{{ $dayOfWeek = 7 }}{{ end }}
+  {{ $currentWeek := div (add (sub $now.YearDay $dayOfWeek) 10) 7 }}
+
+  {{/* 1. Try exact year and weekNumber match */}}
   {{ range $polls }}
-    {{ if or (eq .id "week-2026-39") (eq (int .weekNumber) 39) }}
+    {{ if and (eq (int .year) $currentYear) (eq (int .weekNumber) $currentWeek) }}
       {{ $currentWeekPoll = . }}
     {{ end }}
   {{ end }}
+
+  {{/* 2. Fallback to matching weekNumber across polls */}}
+  {{ if not $currentWeekPoll }}
+    {{ range $polls }}
+      {{ if eq (int .weekNumber) $currentWeek }}
+        {{ $currentWeekPoll = . }}
+      {{ end }}
+    {{ end }}
+  {{ end }}
+
+  {{/* 3. Wrap modulo over available polls if week exceeds range */}}
+  {{ if not $currentWeekPoll }}
+    {{ $firstPoll := index $polls 0 }}
+    {{ $pollCount := len $polls }}
+    {{ if gt $pollCount 0 }}
+      {{ $firstWeek := int ($firstPoll.weekNumber | default 35) }}
+      {{ $offset := mod (sub $currentWeek $firstWeek) $pollCount }}
+      {{ if lt $offset 0 }}{{ $offset = add $offset $pollCount }}{{ end }}
+      {{ $currentWeekPoll = index $polls $offset }}
+    {{ end }}
+  {{ end }}
+
+  {{/* 4. Default fallback */}}
   {{ if not $currentWeekPoll }}
     {{ $currentWeekPoll = index $polls 0 }}
   {{ end }}
