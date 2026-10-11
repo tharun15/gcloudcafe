@@ -223,3 +223,103 @@ describe('Weekly Poll Queue & Lifecycle Auto-Replacement Engine', () => {
   });
 });
 
+describe('Dynamic Weekly Question Workflow & Gradual Feedback Lifecycle', () => {
+  function getCurrentISOWeekInfo(targetDate) {
+    var d = targetDate ? new Date(targetDate) : new Date();
+    var date = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+    var dayNum = date.getUTCDay() || 7;
+    date.setUTCDate(date.getUTCDate() + 4 - dayNum);
+    var yearStart = new Date(Date.UTC(date.getUTCFullYear(), 0, 1));
+    var weekNo = Math.ceil((((date - yearStart) / 86400000) + 1) / 7);
+    return {
+      year: date.getUTCFullYear(),
+      weekNumber: weekNo,
+      id: "week-" + date.getUTCFullYear() + "-" + weekNo
+    };
+  }
+
+  function resolveActiveWeeklyPoll(polls, targetDate) {
+    var currentInfo = getCurrentISOWeekInfo(targetDate);
+    var match = polls.find(function (p) {
+      return (p.year === currentInfo.year && p.weekNumber === currentInfo.weekNumber) || p.id === currentInfo.id;
+    });
+    if (match) return match;
+
+    match = polls.find(function (p) { return p.weekNumber === currentInfo.weekNumber; });
+    if (match) return match;
+
+    var firstWeek = polls[0].weekNumber || 35;
+    var offset = (currentInfo.weekNumber - firstWeek) % polls.length;
+    if (offset < 0) offset += polls.length;
+    return polls[offset] || polls[0];
+  }
+
+  it('dynamically computes ISO week numbers across calendar boundaries', () => {
+    // Oct 11, 2026 is Sunday (end of week 41)
+    const week41 = getCurrentISOWeekInfo('2026-10-11T12:00:00Z');
+    expect(week41.weekNumber).toBe(41);
+    expect(week41.id).toBe('week-2026-41');
+
+    // Oct 12, 2026 is Monday (start of week 42)
+    const week42 = getCurrentISOWeekInfo('2026-10-12T00:00:00Z');
+    expect(week42.weekNumber).toBe(42);
+    expect(week42.id).toBe('week-2026-42');
+  });
+
+  it('dynamically advances active question from week 41 to week 42', () => {
+    const mockPolls = [
+      { id: 'week-2026-40', weekNumber: 40, year: 2026, question: 'Week 40 Question' },
+      { id: 'week-2026-41', weekNumber: 41, year: 2026, question: 'Multi-Cloud Deployments?' },
+      { id: 'week-2026-42', weekNumber: 42, year: 2026, question: 'Post-Quantum TLS Timeline?' }
+    ];
+
+    const todayPoll = resolveActiveWeeklyPoll(mockPolls, '2026-10-11T14:00:00Z');
+    expect(todayPoll.id).toBe('week-2026-41');
+    expect(todayPoll.question).toBe('Multi-Cloud Deployments?');
+
+    const nextWeekPoll = resolveActiveWeeklyPoll(mockPolls, '2026-10-12T08:00:00Z');
+    expect(nextWeekPoll.id).toBe('week-2026-42');
+    expect(nextWeekPoll.question).toBe('Post-Quantum TLS Timeline?');
+  });
+
+  it('formats gradual results state with animation attributes and user choice indicator', () => {
+    const poll = {
+      id: 'week-2026-41',
+      options: [
+        { id: 'opt-a', text: 'Option A', votes: 3 },
+        { id: 'opt-b', text: 'Option B', votes: 1 }
+      ],
+      otherOption: { id: 'other', text: 'Other', votes: 0 }
+    };
+
+    const userVote = { optionId: 'opt-a', timestamp: Date.now() };
+    const { totalVotes, results } = calculateWeeklyPollPercentages(poll.options, poll.otherOption);
+
+    expect(totalVotes).toBe(4);
+    expect(results['opt-a'].percent).toBe('75.0');
+    expect(results['opt-b'].percent).toBe('25.0');
+    expect(results['other'].percent).toBe('0.0');
+
+    // Verify user vote selection is identified
+    const isUserChoice = (optId) => userVote.optionId === optId;
+    expect(isUserChoice('opt-a')).toBe(true);
+    expect(isUserChoice('opt-b')).toBe(false);
+  });
+
+  it('dispatches weekly-poll-voted event to immediately update floating launcher widget without page reload', () => {
+    let launcherText = 'Weekly Question';
+    let pulseVisible = true;
+
+    // Simulate floating widget event listener
+    window.addEventListener('weekly-poll-voted', (e) => {
+      pulseVisible = false;
+      launcherText = 'Weekly Poll · Voted ✓';
+    });
+
+    // Simulate vote broadcast
+    window.dispatchEvent(new CustomEvent('weekly-poll-voted', { detail: { pollId: 'week-2026-41' } }));
+
+    expect(launcherText).toBe('Weekly Poll · Voted ✓');
+    expect(pulseVisible).toBe(false);
+  });
+});

@@ -8436,12 +8436,45 @@
       setTimeout(function () { toast.classList.add("hidden"); }, 3000);
     }
 
-    function getAdminActivePollId() {
+    function getCurrentISOWeekInfo(targetDate) {
+      var d = targetDate ? new Date(targetDate) : new Date();
+      var date = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+      var dayNum = date.getUTCDay() || 7;
+      date.setUTCDate(date.getUTCDate() + 4 - dayNum);
+      var yearStart = new Date(Date.UTC(date.getUTCFullYear(), 0, 1));
+      var weekNo = Math.ceil((((date - yearStart) / 86400000) + 1) / 7);
+      return {
+        year: date.getUTCFullYear(),
+        weekNumber: weekNo,
+        id: "week-" + date.getUTCFullYear() + "-" + weekNo
+      };
+    }
+
+    function getAdminActivePollId(polls) {
       try {
         var override = localStorage.getItem("gcloudcafe_admin_active_poll_id");
         if (override) return override;
       } catch (e) {}
-      return "week-2026-39";
+
+      var currentInfo = getCurrentISOWeekInfo();
+      if (Array.isArray(polls) && polls.length > 0) {
+        var match = polls.find(function (p) {
+          return (p.year === currentInfo.year && p.weekNumber === currentInfo.weekNumber) || p.id === currentInfo.id;
+        });
+        if (match) return match.id;
+
+        match = polls.find(function (p) { return p.weekNumber === currentInfo.weekNumber; });
+        if (match) return match.id;
+
+        var firstWeek = polls[0].weekNumber || 35;
+        var offset = (currentInfo.weekNumber - firstWeek) % polls.length;
+        if (offset < 0) offset += polls.length;
+        if (polls[offset]) return polls[offset].id;
+
+        return polls[0].id;
+      }
+
+      return currentInfo.id;
     }
 
     function loadPollsQueueData(callback) {
@@ -8479,7 +8512,7 @@
 
     function renderWeeklyPollsAdminQueue() {
       loadPollsQueueData(function (polls) {
-        var activePollId = getAdminActivePollId();
+        var activePollId = getAdminActivePollId(polls);
         var activePoll = polls.find(function (p) { return p.id === activePollId; }) || polls[0];
 
         if (weeklyPollsCountBadge) {
@@ -8959,9 +8992,10 @@
     var container = widget.querySelector("[data-weekly-poll-container]");
     if (!container) return;
 
+    var currentInfo = (typeof getCurrentISOWeekInfo === "function") ? getCurrentISOWeekInfo() : { year: 2026, weekNumber: 41, id: "week-2026-41" };
     var adminOverrideId = null;
     try { adminOverrideId = localStorage.getItem("gcloudcafe_admin_active_poll_id"); } catch (e) {}
-    var pollId = adminOverrideId || widget.getAttribute("data-weekly-poll-id") || "week-2026-39";
+    var pollId = adminOverrideId || widget.getAttribute("data-weekly-poll-id") || currentInfo.id;
     var storageKey = "gcloudcafe_weekly_poll_" + pollId;
 
     // Load active poll data from embedded JSON or fallback
@@ -9219,8 +9253,50 @@
     }
 
     // Cast vote and immediately show results
+    var isSubmittingVote = false;
     var castPredictionVote = function (optId) { return castWeeklyVote(optId); };
+
+    function updateFloatingPollLauncher() {
+      var pulseBadge = document.getElementById("floating-poll-pulse-badge");
+      var launcherText = document.getElementById("floating-poll-launcher-text");
+      if (pulseBadge) pulseBadge.classList.add("hidden");
+      if (launcherText) {
+        launcherText.textContent = "Weekly Poll · Voted ✓";
+        launcherText.classList.add("text-emerald-600", "dark:text-emerald-400");
+      }
+      try {
+        window.dispatchEvent(new CustomEvent("weekly-poll-voted", { detail: { pollId: pollId } }));
+      } catch (e) {}
+    }
+
+    // Cast vote with gradual, tactile feedback lifecycle
     function castWeeklyVote(optionId) {
+      if (isSubmittingVote) return;
+      isSubmittingVote = true;
+
+      // Phase 1: Immediate tactile selection feedback on clicked card
+      var clickedCard = container.querySelector('[data-option-id="' + optionId + '"]');
+      if (clickedCard) {
+        clickedCard.classList.add("ring-2", "ring-red-500", "border-red-500", "bg-red-50/90", "dark:bg-red-950/40");
+        var radioIndicator = clickedCard.querySelector(".poll-radio-indicator");
+        if (radioIndicator) {
+          radioIndicator.innerHTML = '<i class="fa-solid fa-circle-check text-[11px] text-red-500"></i>';
+          radioIndicator.classList.remove("border-slate-400", "dark:border-slate-600");
+          radioIndicator.classList.add("border-red-500", "bg-red-500/10");
+        }
+      }
+
+      var allCards = container.querySelectorAll("[data-option-id]");
+      allCards.forEach(function (c) {
+        c.style.pointerEvents = "none";
+        if (c !== clickedCard) {
+          c.style.transition = "opacity 0.3s ease, filter 0.3s ease";
+          c.style.opacity = "0.35";
+          c.style.filter = "grayscale(30%)";
+        }
+      });
+
+      // Phase 2: Save vote tallies & update launcher badge
       var tallies = getStoredTallies();
       tallies[optionId] = (tallies[optionId] || 0) + 1;
       saveTallies(tallies);
@@ -9236,14 +9312,28 @@
         localStorage.setItem(storageKey, JSON.stringify(voteRecord));
       } catch (e) {}
 
-      renderResultsState(voteRecord);
+      updateFloatingPollLauncher();
 
-      // Sync vote to Supabase across all sessions
+      // Sync vote to Supabase across all sessions in background
       syncVoteToSupabase(optionId);
+
+      // Phase 3: Gradual cross-fade transition into results
+      setTimeout(function () {
+        container.style.transition = "opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1), transform 0.35s cubic-bezier(0.4, 0, 0.2, 1)";
+        container.style.opacity = "0";
+        container.style.transform = "translateY(5px)";
+
+        setTimeout(function () {
+          renderResultsState(voteRecord, true);
+          container.style.opacity = "1";
+          container.style.transform = "translateY(0)";
+          isSubmittingVote = false;
+        }, 360);
+      }, 420);
     }
 
     // Render Results Mode with animated progress bars & high-legibility formatting
-    function renderResultsState(userVote) {
+    function renderResultsState(userVote, animateGradual) {
       var allOptions = pollData.options.slice();
       if (pollData.otherOption) {
         allOptions.push(pollData.otherOption);
@@ -9281,10 +9371,10 @@
               '</div>' +
               (isUserChoice ? '<div><span class="inline-flex items-center gap-1 text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20"><i class="fa-solid fa-check text-[9px]"></i> Your Choice</span></div>' : '') +
             '</div>' +
-            '<span class="text-xs sm:text-sm font-mono font-black text-slate-900 dark:text-white shrink-0 pt-0.5">' + percent + '%</span>' +
+            '<span class="poll-percent-label text-xs sm:text-sm font-mono font-black text-slate-900 dark:text-white shrink-0 pt-0.5" data-target-percent="' + percent + '">' + (animateGradual ? '0.0%' : percent + '%') + '</span>' +
           '</div>' +
           '<div class="w-full rounded-full my-2 overflow-hidden bg-slate-200/80 dark:bg-slate-800" style="height: 7px;">' +
-            '<div class="poll-progress-bar rounded-full" style="width: 0%; height: 100%; background: ' + barBg + '; transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);" data-target-width="' + percent + '%"></div>' +
+            '<div class="poll-progress-bar rounded-full" style="width: 0%; height: 100%; background: ' + barBg + '; transition: width 1.2s cubic-bezier(0.16, 1, 0.3, 1);" data-target-width="' + percent + '%"></div>' +
           '</div>' +
           (opt.description ? '<div class="text-[11px] sm:text-xs text-slate-600 dark:text-slate-400 leading-relaxed break-words mt-1">' + escapeHtml(opt.description) + '</div>' : '') +
         '</div>';
@@ -9292,7 +9382,7 @@
 
       container.innerHTML = resultsHtml;
 
-      // Force layout reflow so animation from 0% to target-width triggers smoothly for all options
+      // Phase 4: Gradual progress bar animation & numerical count-up
       setTimeout(function () {
         container.querySelectorAll(".poll-progress-bar").forEach(function (bar) {
           var target = bar.getAttribute("data-target-width");
@@ -9300,9 +9390,39 @@
             bar.style.width = target;
           }
         });
-      }, 30);
-    }
+      }, 50);
 
+      if (animateGradual) {
+        var duration = 1100;
+        var startTs = null;
+        var labelElements = [];
+        container.querySelectorAll(".poll-percent-label").forEach(function (el) {
+          var val = parseFloat(el.getAttribute("data-target-percent") || "0");
+          labelElements.push({ el: el, target: val });
+        });
+
+        function stepNumber(timestamp) {
+          if (!startTs) startTs = timestamp;
+          var elapsed = timestamp - startTs;
+          var progress = Math.min(elapsed / duration, 1);
+          var ease = 1 - Math.pow(1 - progress, 3);
+
+          labelElements.forEach(function (item) {
+            var curr = (item.target * ease).toFixed(1);
+            item.el.textContent = curr + "%";
+          });
+
+          if (progress < 1) {
+            requestAnimationFrame(stepNumber);
+          } else {
+            labelElements.forEach(function (item) {
+              item.el.textContent = item.target.toFixed(1) + "%";
+            });
+          }
+        }
+        requestAnimationFrame(stepNumber);
+      }
+    }
     // Live countdown to next weekly question (Resets Sunday 00:00 UTC)
     function startNextQuestionCountdown() {
       function updateCountdown() {
@@ -9354,7 +9474,8 @@
     var existingVote = getSavedUserVote();
     if (existingVote) {
       applyTallies(existingVote);
-      renderResultsState(existingVote);
+      renderResultsState(existingVote, false);
+      updateFloatingPollLauncher();
     } else {
       applyTallies(null);
       renderVotingState();
