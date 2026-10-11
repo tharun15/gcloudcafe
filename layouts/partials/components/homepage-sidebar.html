@@ -55,7 +55,7 @@
   {{/* ============================================================== */}}
   <div class="relative w-full">
     <div class="relative flex items-center">
-      <i class="fa-solid fa-magnifying-glass absolute left-3.5 text-slate-400 dark:text-slate-500 text-xs pointer-events-none" aria-hidden="true"></i>
+      <i class="fa-solid fa-magnifying-glass absolute left-3.5 text-slate-600 dark:text-slate-400 text-xs pointer-events-none" aria-hidden="true"></i>
       <input
         type="search"
         id="sidebar-series-search"
@@ -92,7 +92,7 @@
         class="sidebar-tab-btn flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-lg text-xs font-mono font-bold transition-all shadow-xs bg-white dark:bg-[#141e33] text-red-600 dark:text-red-400 border border-slate-200/80 dark:border-slate-700/80">
         <span class="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" aria-hidden="true"></span>
         <span class="truncate">{{ if eq site.Language.Lang "it" }}Percorso Attivo{{ else }}Active Track{{ end }}</span>
-        <span class="text-[10px] opacity-80 font-normal shrink-0">({{ $activeHeroOrder }}/{{ $activeTotalParts }})</span>
+        <span class="text-[10px] font-semibold text-slate-700 dark:text-slate-300 shrink-0">({{ $activeHeroOrder }}/{{ $activeTotalParts }})</span>
       </button>
       <button
         type="button"
@@ -103,7 +103,7 @@
         class="sidebar-tab-btn flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-lg text-xs font-mono font-bold transition-all text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white border border-transparent">
         <i class="fa-solid fa-layer-group text-[10px]" aria-hidden="true"></i>
         <span class="truncate">{{ if eq site.Language.Lang "it" }}Tutte le Serie{{ else }}All Tracks{{ end }}</span>
-        <span class="text-[10px] opacity-80 font-normal shrink-0">({{ len $groupedSeries }})</span>
+        <span class="text-[10px] font-semibold text-slate-700 dark:text-slate-300 shrink-0">({{ len $groupedSeries }})</span>
       </button>
     </div>
 
@@ -155,10 +155,10 @@
       <!-- Track Playlist -->
       <div class="space-y-1 pt-1 border-t border-slate-100 dark:border-slate-800/80">
         <div class="flex items-center justify-between py-1">
-          <p class="font-mono text-[10.5px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 m-0">
+          <p class="font-mono text-[10.5px] font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 m-0">
             {{ if eq site.Language.Lang "it" }}Playlist del Percorso{{ else }}Track Curriculum{{ end }}
           </p>
-          <span class="text-[10px] font-mono text-slate-400 dark:text-slate-500">
+          <span class="text-[10px] font-mono text-slate-600 dark:text-slate-400">
             {{ if eq site.Language.Lang "it" }}Clicca per aprire{{ else }}Click to jump{{ end }}
           </span>
         </div>
@@ -190,7 +190,7 @@
               </span>
 
               <!-- Duration & Visual Active Indicator -->
-              <span class="shrink-0 font-mono text-[11px] flex items-center gap-1.5 {{ if $isHero }}font-bold text-red-600 dark:text-red-400{{ else }}text-slate-400 dark:text-slate-500{{ end }}">
+              <span class="shrink-0 font-mono text-[11px] flex items-center gap-1.5 {{ if $isHero }}font-bold text-red-600 dark:text-red-400{{ else }}text-slate-600 dark:text-slate-400{{ end }}">
                 {{ if $isHero }}
                   <span class="w-1.5 h-1.5 rounded-full bg-red-500 shrink-0 shadow-xs" aria-hidden="true"></span>
                 {{ end }}
@@ -254,7 +254,7 @@
                 <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-mono font-bold uppercase tracking-wider {{ if $isCurrentActive }}bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20{{ else }}bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300{{ end }}">
                   {{ $otherCount }} {{ if eq site.Language.Lang "it" }}Parti{{ else }}Parts{{ end }}
                 </span>
-                <span class="font-mono text-[10.5px] text-slate-400 dark:text-slate-500">
+                <span class="font-mono text-[10.5px] text-slate-600 dark:text-slate-400">
                   ~{{ $otherMin }}m
                 </span>
               </div>

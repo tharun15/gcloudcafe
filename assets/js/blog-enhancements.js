@@ -1404,12 +1404,13 @@
         var linkCat = (link.getAttribute("data-category-filter") || "").toLowerCase().trim();
         var isActive = linkCat === normSlug;
 
+        link.setAttribute("aria-selected", isActive ? "true" : "false");
         if (isActive) {
           link.classList.add("category-tab-active", "bg-white", "dark:bg-slate-900", "text-slate-900", "dark:text-white", "shadow-2xs", "font-semibold");
-          link.classList.remove("text-slate-600", "dark:text-slate-400", "font-medium", "hover:bg-white/80", "dark:hover:bg-slate-900/80");
+          link.classList.remove("text-slate-700", "dark:text-slate-300", "text-slate-600", "dark:text-slate-400", "font-medium", "hover:bg-white/80", "dark:hover:bg-slate-900/80");
         } else {
           link.classList.remove("category-tab-active", "bg-white", "dark:bg-slate-900", "text-slate-900", "dark:text-white", "shadow-2xs", "font-semibold");
-          link.classList.add("text-slate-600", "dark:text-slate-400", "font-medium", "hover:bg-white/80", "dark:hover:bg-slate-900/80");
+          link.classList.add("text-slate-700", "dark:text-slate-300", "font-medium", "hover:bg-white/80", "dark:hover:bg-slate-900/80");
         }
       });
 
@@ -2646,15 +2647,19 @@
 
       slides.forEach(function(slide, idx) {
         slide.classList.remove("is-active", "is-prev", "is-next", "opacity-100", "opacity-0", "translate-y-0", "translate-y-2", "-translate-y-2", "pointer-events-auto", "pointer-events-none");
-        if (idx === currentIndex) {
+        var isCurrent = (idx === currentIndex);
+        if (isCurrent) {
           slide.classList.add("is-active");
           slide.setAttribute("aria-hidden", "false");
+          slide.querySelectorAll("a, button").forEach(function(el) { el.setAttribute("tabindex", "0"); });
         } else if (idx === prevIndex) {
           slide.classList.add("is-prev");
           slide.setAttribute("aria-hidden", "true");
+          slide.querySelectorAll("a, button").forEach(function(el) { el.setAttribute("tabindex", "-1"); });
         } else {
           slide.classList.add("is-next");
           slide.setAttribute("aria-hidden", "true");
+          slide.querySelectorAll("a, button").forEach(function(el) { el.setAttribute("tabindex", "-1"); });
         }
       });
     }
@@ -2671,6 +2676,86 @@
         }
       }, ROTATE_DELAY);
     }
+
+    // Wire up Mobile Complete Visibility Drawer
+    var mobileDrawer = document.getElementById("pulse-mobile-drawer");
+    var drawerTitle = document.getElementById("pulse-drawer-title");
+    var drawerTag = document.getElementById("pulse-drawer-tag");
+    var drawerTime = document.getElementById("pulse-drawer-time");
+    var drawerLink = document.getElementById("pulse-drawer-full-link");
+    var drawerCloseBtn = document.getElementById("pulse-drawer-close-btn");
+    var drawerMarkReadBtn = document.getElementById("pulse-drawer-mark-read-btn");
+    var currentDrawerPulseId = null;
+
+    function openMobileDrawer(slide) {
+      if (!mobileDrawer || !slide) return;
+      var title = slide.getAttribute("data-pulse-title") || (slide.querySelector(".ticker-title") ? slide.querySelector(".ticker-title").textContent.trim() : "");
+      var tag = slide.getAttribute("data-pulse-tag") || (slide.querySelector(".ticker-tag") ? slide.querySelector(".ticker-tag").textContent.trim() : "CLOUD");
+      var tagClass = slide.getAttribute("data-pulse-tag-class") || "ticker-tag-default";
+      var time = slide.getAttribute("data-pulse-time") || (slide.querySelector(".ticker-time-badge") ? slide.querySelector(".ticker-time-badge").textContent.trim() : "Recently");
+      var pulseId = slide.getAttribute("data-pulse-id");
+      var linkEl = slide.querySelector("a.ticker-item");
+      var link = linkEl ? linkEl.getAttribute("href") : "/pulse/";
+
+      currentDrawerPulseId = pulseId;
+      if (drawerTitle) drawerTitle.textContent = title;
+      if (drawerTag) {
+        drawerTag.textContent = tag;
+        drawerTag.className = "ticker-tag text-[10px] " + tagClass;
+      }
+      if (drawerTime) drawerTime.textContent = time;
+      if (drawerLink) drawerLink.setAttribute("href", link);
+
+      mobileDrawer.classList.remove("hidden");
+      isPaused = true;
+    }
+
+    function closeMobileDrawer() {
+      if (!mobileDrawer) return;
+      mobileDrawer.classList.add("hidden");
+      isPaused = false;
+    }
+
+    if (drawerCloseBtn) {
+      drawerCloseBtn.addEventListener("click", closeMobileDrawer);
+    }
+
+    if (drawerMarkReadBtn) {
+      drawerMarkReadBtn.addEventListener("click", function() {
+        if (currentDrawerPulseId) {
+          markPulseAsRead(currentDrawerPulseId);
+          var activeSlide = container.querySelector('[data-pulse-id="' + currentDrawerPulseId + '"]');
+          if (activeSlide) {
+            var readBtn = activeSlide.querySelector("[data-pulse-mark-read]");
+            if (readBtn) readBtn.click();
+          }
+        }
+        closeMobileDrawer();
+      });
+    }
+
+    // Delegate expand button click on mobile
+    marquee.addEventListener("click", function(e) {
+      var expandBtn = e.target.closest(".ticker-mobile-expand-btn");
+      if (expandBtn) {
+        e.preventDefault();
+        e.stopPropagation();
+        var slide = expandBtn.closest(".ticker-rotator-item");
+        if (mobileDrawer && !mobileDrawer.classList.contains("hidden")) {
+          closeMobileDrawer();
+        } else {
+          openMobileDrawer(slide);
+        }
+      }
+    });
+
+    document.addEventListener("click", function(e) {
+      if (mobileDrawer && !mobileDrawer.classList.contains("hidden")) {
+        if (!mobileDrawer.contains(e.target) && !container.contains(e.target)) {
+          closeMobileDrawer();
+        }
+      }
+    });
 
     // Auto-pause smoothly on hover so user can easily read and click
     container.addEventListener("mouseenter", function() { isPaused = true; });
@@ -2766,15 +2851,18 @@
         var timeAgo = formatTimeAgo(item.created_at || item.updated_at);
         var pulseId = item.id ? String(item.id) : "";
 
-        itemsHtml += '<div class="ticker-rotator-item absolute inset-0 flex items-center justify-between gap-2.5 '
+        itemsHtml += '<div class="ticker-rotator-item absolute inset-0 flex items-center justify-between gap-1.5 sm:gap-2 '
           + (isFirst ? 'is-active' : 'is-next')
-          + '" data-ticker-slide="' + idx + '" data-pulse-id="' + escapeHtml(pulseId) + '" aria-hidden="' + (isFirst ? 'false' : 'true') + '">'
-          + '<a href="' + pulsePostLink + '" class="ticker-item group/item inline-flex items-center gap-2 sm:gap-2.5 min-w-0 flex-1 no-underline">'
+          + '" data-ticker-slide="' + idx + '" data-pulse-id="' + escapeHtml(pulseId) + '" data-pulse-title="' + escapeHtml(safeTitle) + '" data-pulse-tag="' + escapeHtml(tagMeta.label) + '" data-pulse-tag-class="' + escapeHtml(tagMeta.cls) + '" data-pulse-time="' + escapeHtml(timeAgo) + '" aria-hidden="' + (isFirst ? 'false' : 'true') + '">'
+          + '<a href="' + pulsePostLink + '" class="ticker-item group/item inline-flex items-center gap-1.5 sm:gap-2.5 min-w-0 flex-1 no-underline" tabindex="' + (isFirst ? '0' : '-1') + '">'
           + '<span class="ticker-tag ' + tagMeta.cls + ' shrink-0">' + escapeHtml(tagMeta.label) + '</span>'
-          + '<span class="ticker-title font-sans font-medium text-[14px] sm:text-[14.5px] md:text-[15px] text-slate-800 dark:text-slate-100 group-hover/item:text-red-600 dark:group-hover/item:text-cyan-300 transition-colors truncate">' + safeTitle + '</span>'
-          + '<span class="ticker-time-badge text-[11.5px] sm:text-[12px] font-mono text-slate-500 dark:text-slate-400 shrink-0 hidden xs:inline-flex items-center gap-1">' + escapeHtml(timeAgo) + '</span>'
+          + '<span class="ticker-title font-sans font-medium text-[13.5px] sm:text-[14.5px] md:text-[15px] text-slate-800 dark:text-slate-100 group-hover/item:text-red-600 dark:group-hover/item:text-cyan-300 transition-colors truncate" title="' + escapeHtml(safeTitle) + '">' + safeTitle + '</span>'
+          + '<span class="ticker-time-badge text-[11px] sm:text-[12px] font-mono text-slate-500 dark:text-slate-400 shrink-0 hidden xs:inline-flex items-center gap-1">' + escapeHtml(timeAgo) + '</span>'
           + '</a>'
-          + '<button type="button" class="ticker-mark-read-btn inline-flex items-center gap-1 px-2 py-0.5 text-[11.5px] sm:text-[12px] font-mono text-slate-500 dark:text-slate-400 hover:text-emerald-700 dark:hover:text-emerald-300 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 rounded border border-slate-200/60 dark:border-slate-800/60 transition-colors shrink-0" data-pulse-mark-read="' + escapeHtml(pulseId) + '" title="Mark as read (hide from ticker)" aria-label="Mark as read">'
+          + '<button type="button" class="ticker-mobile-expand-btn sm:hidden inline-flex items-center justify-center w-6 h-6 text-slate-400 hover:text-slate-800 dark:hover:text-white rounded transition-colors shrink-0" aria-label="Expand complete headline" tabindex="' + (isFirst ? '0' : '-1') + '">'
+          + '<i class="fa-solid fa-chevron-down text-[10px]"></i>'
+          + '</button>'
+          + '<button type="button" class="ticker-mark-read-btn inline-flex items-center gap-1 px-2 py-0.5 text-[11px] sm:text-[12px] font-mono text-slate-500 dark:text-slate-400 hover:text-emerald-700 dark:hover:text-emerald-300 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 rounded border border-slate-200/60 dark:border-slate-800/60 transition-colors shrink-0" data-pulse-mark-read="' + escapeHtml(pulseId) + '" title="Mark as read (hide from ticker)" aria-label="Mark as read" tabindex="' + (isFirst ? '0' : '-1') + '">'
           + '<i class="fa-solid fa-check text-[10px]"></i>'
           + '<span class="hidden sm:inline">Mark as read</span>'
           + '</button>'
