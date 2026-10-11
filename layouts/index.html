@@ -43,14 +43,17 @@
               </div>
 
               <!-- Horizontal Category Filter Segmented Control -->
+              <span class="sr-only" id="topics-filter-label">Topics</span>
               {{ $categories := site.Taxonomies.categories }}
               <div class="inline-flex items-center gap-1 p-1 rounded-full bg-slate-100/90 dark:bg-slate-800/80 border border-slate-200/70 dark:border-slate-700/70 overflow-x-auto no-scrollbar max-w-full"
                    id="homepage-category-filters"
                    role="tablist"
+                   aria-labelledby="topics-filter-label"
                    aria-label="Filter articles by category">
-                <span class="sr-only">Topics</span>
                 <a href="{{ `blog/` | relLangURL }}"
                    data-category-filter="all"
+                   role="tab"
+                   aria-selected="true"
                    class="category-tab-active inline-flex items-center px-3.5 py-1.5 rounded-full text-xs font-semibold no-underline bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-2xs shrink-0 cursor-pointer">
                   <span>All</span>
                 </a>
@@ -59,7 +62,9 @@
                   {{ with site.GetPage (printf "/categories/%s" $catSlug) }}
                     <a href="{{ .RelPermalink }}"
                        data-category-filter="{{ $catSlug }}"
-                       class="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/80 dark:hover:bg-slate-900/80 transition-all shrink-0 no-underline cursor-pointer">
+                       role="tab"
+                       aria-selected="false"
+                       class="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-white/80 dark:hover:bg-slate-900/80 transition-all shrink-0 no-underline cursor-pointer">
                       <span>{{ .Title }}</span>
                     </a>
                   {{ end }}
@@ -121,7 +126,7 @@
                id="btn-load-more-articles"
                href="{{ `blog/` | relLangURL }}"
                role="button"
-               aria-label="Load remaining articles">
+               aria-label="{{ i18n "view_all_articles_btn" }}">
               <span class="btn-text inline-flex items-center gap-2">
                 <span>{{ i18n "view_all_articles_btn" }}</span>
                 <span class="text-xs transition-transform duration-200 group-hover:translate-x-1">→</span>
@@ -160,10 +165,10 @@
                       </p>
                     </div>
                     <div class="flex items-center justify-center gap-2">
-                      <a href="https://github.com/tharun15" target="_blank" rel="noopener noreferrer" class="text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors" aria-label="GitHub">
+                      <a href="https://github.com/tharun15" target="_blank" rel="noopener noreferrer" class="w-10 h-10 min-w-[40px] min-h-[40px] inline-flex items-center justify-center rounded-xl text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" aria-label="GitHub Profile">
                         <i class="fa-brands fa-github text-base"></i>
                       </a>
-                      <a href="https://www.linkedin.com/in/tharunvempati" target="_blank" rel="noopener noreferrer" class="text-[#0a66c2] hover:opacity-80 transition-opacity" aria-label="LinkedIn">
+                      <a href="https://www.linkedin.com/in/tharunvempati" target="_blank" rel="noopener noreferrer" class="w-10 h-10 min-w-[40px] min-h-[40px] inline-flex items-center justify-center rounded-xl text-[#0a66c2] hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" aria-label="LinkedIn Profile">
                         <i class="fa-brands fa-linkedin text-base"></i>
                       </a>
                     </div>
@@ -212,7 +217,7 @@
               <i class="fa-regular fa-envelope text-[9px]"></i>
               <span>{{ if eq site.Language.Lang "it" }}Newsletter Tecnica{{ else }}Engineering Digest{{ end }}</span>
             </span>
-            <span class="font-mono text-[10.5px] text-slate-400 dark:text-slate-500">
+            <span class="font-mono text-[10.5px] text-slate-600 dark:text-slate-400">
               {{ if eq site.Language.Lang "it" }}2x al mese{{ else }}2x / month{{ end }}
             </span>
           </div>
@@ -243,7 +248,7 @@
             </button>
           </form>
 
-          <div class="mt-2 pt-2 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-[10px] font-mono text-slate-400 dark:text-slate-500">
+          <div class="mt-2 pt-2 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-[10px] font-mono text-slate-600 dark:text-slate-400">
             <span class="flex items-center gap-1">
               <i class="fa-solid fa-shield-halved text-[9px] text-emerald-500"></i>
               <span>Zero spam · Unsubscribe anytime</span>
