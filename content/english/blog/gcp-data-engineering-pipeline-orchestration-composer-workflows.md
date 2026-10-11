@@ -1,7 +1,7 @@
 ---
-title: "Data Engineering on GCP (Part 7): Enterprise Pipeline Orchestration with Cloud Composer and Workflows (Hands-On Lab)"
-meta_title: "GCP Pipeline Orchestration: Cloud Composer, Airflow & Workflows"
-description: "Master production GCP data orchestration with Cloud Composer and Cloud Workflows: end-to-end Airflow DAGs, Dataform invocation operators, event-driven pipelines, SLA alerts, and failure recovery."
+title: "Data Engineering on GCP (Part 7): Enterprise Pipeline Orchestration with Cloud Composer and Workflows"
+meta_title: "GCP Pipeline Orchestration: Managed Airflow & Workflows"
+description: "Build a production-ready GCP data orchestration layer with Managed Service for Apache Airflow, Cloud Workflows, Dataform, and BigQuery."
 date: 2026-10-11
 image: "/images/gcp-composer-workflows-orchestration.jpg"
 categories: ["Google Cloud", "Architecture", "DevOps"]
@@ -15,130 +15,93 @@ series_description: "A practical architecture and hands-on guide to Google Cloud
 series_image: "/images/series-images/gcp-data-engineering-series-poster.jpg"
 ---
 
-# Data Engineering on GCP (Part 7): Enterprise Pipeline Orchestration with Cloud Composer and Workflows (Hands-On Lab)
+# Data Engineering on GCP (Part 7): Enterprise Pipeline Orchestration with Cloud Composer and Workflows
 
-At 03:45 AM on a Wednesday, the automated executive revenue alert at Offvia fired. The morning dashboard displayed a catastrophic 42% drop in flight booking revenue across European routes, with zero reservations logged for two partner carriers. 
+At 03:45 on a Wednesday morning, Offvia’s automated revenue alert fired.
 
-Ten minutes of forensic debugging revealed the culprit. The underlying booking data was not lost, nor was there a network outage. Instead, the partner carrier’s nightly batch file had arrived 18 minutes late due to an upstream storage delay. Offvia’s nightly Dataform SQLX transformation was scheduled on a static cron timer (`0 3 * * *`). It obediently launched at 03:00 AM, processed whatever data was currently in the Bronze tables, deduplicated against yesterday’s records, and published the Gold reporting mart. 
+The executive dashboard showed a 42% fall in European flight-booking revenue. Two partner carriers had recorded no reservations at all. The initial assumption was obvious: either the data had not arrived, the ingestion pipeline had failed, or something had broken downstream.
 
-When the late batch finally landed at 03:18 AM, the pipeline had already run. The Gold layer was frozen with partial data for the day.
+None of those things had happened.
 
-This incident demonstrates the fundamental rule of production data systems: **scheduling is not orchestration.** A cron timer only knows what time it is; it knows nothing about file arrival, upstream job completion, data quality thresholds, or retry dependencies. 
+The partner carrier’s nightly batch file eventually landed at 03:18—eighteen minutes late because of an upstream storage delay. But Offvia’s Dataform transformation was scheduled with a fixed cron expression, `0 3 * * *`. At 03:00, it started regardless of whether the expected input had arrived. It processed the Bronze data available at that moment, deduplicated it against the previous day, and published the Gold reporting mart.
 
-In this finale of our 7-part Google Cloud Data Engineering masterclass, we will unite everything we built across the series—Cloud Storage landing, BigLake external tables, Dataflow streaming pipelines, and Dataform Medallion transformations—into an enterprise-grade, failure-resilient orchestration graph using **Cloud Composer (Managed Apache Airflow 2)** and **Google Cloud Workflows**.
+When the late file finally landed, the pipeline had already completed. The Gold layer contained a partial view of the day, and the business had made decisions from incomplete data.
 
----
+This is a common production failure. It is also a useful reminder:
 
-## The Real-World Analogy: Airport Ground Operations vs. A Wall Clock
+**A cron schedule tells you when to start. It does not tell you whether you are ready to start.**
 
-To understand modern cloud data orchestration, imagine operating a busy international airport:
+In this final part of the series, we will connect the components built earlier—Cloud Storage landing zones ([Part 1](/blog/gcp-data-engineering-storage-building-blocks/)), BigLake external tables ([Part 2](/blog/gcp-data-engineering-hands-on-storage-pipeline-lab/)), streaming ingestion ([Part 3](/blog/gcp-data-engineering-streaming-batch-ingestion-pubsub-dataflow/) & [Part 4](/blog/gcp-data-engineering-streaming-pipeline-lab/)), and Dataform Medallion transformations ([Part 5](/blog/gcp-data-engineering-transformations-dataform-dbt/) & [Part 6](/blog/gcp-data-engineering-dataform-medallion-lab/))—into a resilient orchestration graph using **Managed Service for Apache Airflow** (formerly Cloud Composer) and **Google Cloud Workflows**.
 
-<div class="p-5 sm:p-6 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 my-8 shadow-xs">
-<div class="flex items-center gap-2.5 font-bold text-slate-900 dark:text-white text-base mb-2">
-<span class="text-xl">✈️</span>
-<span>The Airport Dispatch Analogy</span>
-</div>
-<p class="text-sm text-slate-700 dark:text-slate-300 leading-relaxed mb-0">
-A static cron schedule is like a flight departure announcement based solely on a clock: <em>"It is 09:00 AM, therefore Flight OF-104 is taking off."</em> If the passengers have not boarded, the fuel truck was delayed, or the runway has crosswinds, the flight departs anyway—disastrously empty or unsafe.<br><br>
-An <strong>orchestrator (Cloud Composer / Airflow)</strong> is the <strong>Air Traffic Control & Ground Operations Coordinator</strong>. It evaluates real-world preconditions: <em>Did the fuel truck finish? (Upstream Sensor)</em> ➔ <em>Are the cabin doors sealed? (Data Quality Assertion)</em> ➔ <em>Has the runway cleared? (Dependency Gate)</em>. Only when every verified condition passes does it grant pushback clearance. If an engine alert trips (Pipeline Error), it halts the sequence, routes the plane to a service bay (Quarantine), and notifies the operations tower (SLA Alerting).
-</p>
-</div>
+## Scheduling is not orchestration
 
----
+A cron timer is useful for one thing: starting work at a known time.
 
-## Cloud Composer vs. Cloud Workflows: The Decision Framework
+It does not know whether a file has arrived. It does not know whether an upstream job has completed. It cannot inspect data-quality results, wait for a streaming job to become healthy, trigger a backfill safely, or notify the right people when an SLA is missed.
 
-Google Cloud offers two primary services for orchestration: **Cloud Composer** and **Cloud Workflows**. Choosing the wrong tool can lead to excessive infrastructure costs or fragile pipeline logic.
+An orchestrator makes those dependencies explicit.
 
-<div class="overflow-x-auto my-8 rounded-xl border border-slate-200 dark:border-slate-800 shadow-xs">
-<table class="w-full text-left text-xs sm:text-sm text-slate-800 dark:text-slate-200 m-0">
-<thead class="bg-slate-100 dark:bg-slate-900/80 font-mono text-[11px] sm:text-xs uppercase tracking-wider text-slate-900 dark:text-white border-b border-slate-200 dark:border-slate-800">
-<tr>
-<th class="py-3 px-4">Evaluation Dimension</th>
-<th class="py-3 px-4 text-sky-700 dark:text-sky-400">Cloud Composer (Airflow 2.x)</th>
-<th class="py-3 px-4 text-amber-700 dark:text-amber-400">Google Cloud Workflows</th>
-</tr>
-</thead>
-<tbody class="divide-y divide-slate-100 dark:divide-slate-800 font-sans">
-<tr class="hover:bg-slate-50/50 dark:hover:bg-slate-900/40">
-<td class="py-3 px-4 font-semibold text-slate-900 dark:text-white">Underlying Engine</td>
-<td class="py-3 px-4">Managed Apache Airflow running on GKE Autopilot</td>
-<td class="py-3 px-4">Fully managed, serverless YAML/JSON state engine</td>
-</tr>
-<tr class="hover:bg-slate-50/50 dark:hover:bg-slate-900/40">
-<td class="py-3 px-4 font-semibold text-slate-900 dark:text-white">Pricing Model</td>
-<td class="py-3 px-4">Continuous cluster cost (Composer environment baseline)</td>
-<td class="py-3 px-4">Pay-per-execution step (fraction of a cent; free tier available)</td>
-</tr>
-<tr class="hover:bg-slate-50/50 dark:hover:bg-slate-900/40">
-<td class="py-3 px-4 font-semibold text-slate-900 dark:text-white">Cold Start Latency</td>
-<td class="py-3 px-4">15–60 seconds (Airflow Scheduler heartbeat & worker queue)</td>
-<td class="py-3 px-4">Sub-second (&lt; 100 milliseconds)</td>
-</tr>
-<tr class="hover:bg-slate-50/50 dark:hover:bg-slate-900/40">
-<td class="py-3 px-4 font-semibold text-slate-900 dark:text-white">Workflow Definition</td>
-<td class="py-3 px-4">Python scripts with custom classes, macros, and operators</td>
-<td class="py-3 px-4">Declarative YAML state machine definitions</td>
-</tr>
-<tr class="hover:bg-slate-50/50 dark:hover:bg-slate-900/40">
-<td class="py-3 px-4 font-semibold text-slate-900 dark:text-white">Best Use Case</td>
-<td class="py-3 px-4 font-medium text-sky-700 dark:text-sky-300">Complex batch graphs, cross-system ETL, backfilling, data lineage</td>
-<td class="py-3 px-4 font-medium text-amber-700 dark:text-amber-300">Event-driven triggers, GCS landing reactions, serverless APIs</td>
-</tr>
-</tbody>
-</table>
-</div>
+Instead of saying:
 
-### The Enterprise Pattern: The Hybrid Orchestration Topology
+> “Run ingestion at 01:00 and transformation at 02:00.”
 
-Production systems at scale combine both technologies:
-1. **Cloud Workflows** handles **event-driven reactions**: When a flight partner uploads an unexpected payload to `gs://offvia-landing-bucket/`, an Eventarc trigger calls a lightweight Cloud Workflow. It validates file integrity, publishes a notification message, and logs telemetry in sub-second time.
-2. **Cloud Composer** handles **global dependency governance**: The scheduled enterprise DAG runs nightly, coordinates across multiple data stores, triggers Dataform compilations, waits for BigQuery partition validation, handles backfills, and triggers operational alerts if SLAs are breached.
+you define:
 
----
+> “Run transformation only after ingestion succeeds and the required source manifest exists.”
 
-## 🚨 5 Fatal Misconceptions Every Data Engineer Must Unlearn
+That difference matters when volumes change, upstream systems are late, or a job occasionally takes longer than expected.
 
-<div class="grid grid-cols-1 md:grid-cols-2 gap-4 my-8">
-<div class="p-4 rounded-xl border border-red-200 dark:border-red-900/50 bg-red-50/40 dark:bg-red-950/20">
-<div class="font-bold text-xs uppercase font-mono tracking-wider text-red-700 dark:text-red-400 mb-1">
-❌ Misconception 1: "Dataform has release configs, so Airflow is redundant."
-</div>
-<p class="text-xs sm:text-[13px] text-slate-700 dark:text-slate-300 leading-relaxed m-0">
-<strong>Reality:</strong> Dataform release configurations can only orchestrate inside Dataform itself. They cannot wait for an upstream Cloud Storage file sensor, check a Dataflow streaming job metric, trigger an external machine learning model evaluation, or ping an on-call PagerDuty service.
-</p>
-</div>
-<div class="p-4 rounded-xl border border-red-200 dark:border-red-900/50 bg-red-50/40 dark:bg-red-950/20">
-<div class="font-bold text-xs uppercase font-mono tracking-wider text-red-700 dark:text-red-400 mb-1">
-❌ Misconception 2: "Airflow tasks should run heavy transformation logic in Python."
-</div>
-<p class="text-xs sm:text-[13px] text-slate-700 dark:text-slate-300 leading-relaxed m-0">
-<strong>Reality:</strong> Airflow is a control plane, not a compute engine. Loading gigabytes of data into Pandas inside an Airflow worker causes Out-Of-Memory (OOM) worker restarts and scheduler crashes. Airflow should only dispatch work to BigQuery, Dataform, or Dataflow, passing lightweight metadata (job IDs and table names).
-</p>
-</div>
-<div class="p-4 rounded-xl border border-red-200 dark:border-red-900/50 bg-red-50/40 dark:bg-red-950/20">
-<div class="font-bold text-xs uppercase font-mono tracking-wider text-red-700 dark:text-red-400 mb-1">
-❌ Misconception 3: "Scheduling pipelines with fixed time gaps guarantees dependency safety."
-</div>
-<p class="text-xs sm:text-[13px] text-slate-700 dark:text-slate-300 leading-relaxed m-0">
-<strong>Reality:</strong> Running Ingestion at 01:00 AM and Transformation at 02:00 AM is brittle. If ingestion takes 65 minutes on high-volume days, your transformation will process incomplete records. Use declarative task dependencies (<code>ingestion >> transformation</code>) or sensors instead of time buffers.
-</p>
-</div>
-<div class="p-4 rounded-xl border border-red-200 dark:border-red-900/50 bg-red-50/40 dark:bg-red-950/20">
-<div class="font-bold text-xs uppercase font-mono tracking-wider text-red-700 dark:text-red-400 mb-1">
-❌ Misconception 4: "Dataform compilation always executes the latest Git code automatically."
-</div>
-<p class="text-xs sm:text-[13px] text-slate-700 dark:text-slate-300 leading-relaxed m-0">
-<strong>Reality:</strong> In Google Cloud Dataform, compiling and executing are separate steps. An Airflow DAG must explicitly create a <code>CompilationResult</code> specifying the desired Git commit/branch before creating a <code>WorkflowInvocation</code>. Skipping compilation results in running stale, cached SQL definitions.
-</p>
-</div>
-</div>
+## An airport analogy
 
----
+Think of a busy airport.
 
-## The End-to-End Enterprise Orchestration Graph
+A static schedule is like announcing a departure solely because the clock says 09:00. If passengers have not boarded, fuel has not arrived, or the runway is unavailable, the aircraft still leaves.
 
-Below is the lifecycle orchestration graph we will implement for Offvia:
+An orchestrator behaves more like ground operations and air-traffic control. It checks the preconditions before allowing the next step:
+
+- Has the fuel truck finished?
+- Are the cabin doors sealed?
+- Has the runway cleared?
+- Has an engine warning been raised?
+
+Only when the required conditions pass does it authorize pushback.
+
+If something fails, the sequence stops, the aircraft is routed to maintenance, and the operations team is notified.
+
+That is the role of an orchestrator in a data platform.
+
+## Managed Airflow vs. Cloud Workflows
+
+Google Cloud provides two complementary orchestration services. They overlap in some use cases, but they are not interchangeable.
+
+| Dimension | Managed Service for Apache Airflow | Google Cloud Workflows |
+|---|---|---|
+| Core engine | Managed Apache Airflow, built on Google Kubernetes Engine | Fully managed, serverless workflow engine |
+| Definition style | Python DAGs, operators, sensors, macros, and plugins | Declarative YAML or JSON state machines |
+| Cost model | Depends on the environment generation; may include environment, compute, storage, and database charges | Charges are based on workflow execution; no charges while idle |
+| Latency profile | Scheduler and worker scheduling introduce some delay | Designed for fast, event-driven execution |
+| Strong fit | Complex batch graphs, dependencies, retries, backfills, cross-system ETL | Lightweight event reactions, API orchestration, GCS landing events |
+| Typical role | Central control plane for the data platform | Serverless glue between events and services |
+
+Managed Airflow is usually the better choice when you need a durable, observable control plane for many pipelines. Workflows is often a better fit for a focused, serverless reaction to an event—such as validating a newly uploaded partner file.
+
+The two are complementary, not competing.
+
+## A practical hybrid pattern
+
+A robust enterprise architecture often uses both services:
+
+1. **Cloud Workflows reacts to a landing event.**  
+   When a partner uploads a file to a Cloud Storage bucket, Eventarc triggers a workflow. The workflow validates the file, records telemetry, and publishes a notification.
+
+2. **Managed Airflow governs the end-to-end pipeline.**  
+   A scheduled DAG waits for the expected manifest, triggers Dataform transformations, validates the resulting partitions, publishes Gold marts, and raises operational alerts when something fails.
+
+This avoids using a large orchestration environment for every small event while still retaining central visibility and dependency control.
+
+## The Offvia orchestration graph
+
+The target pipeline looks like this:
 
 ```mermaid
 flowchart LR
@@ -147,32 +110,48 @@ flowchart LR
     classDef bq fill:#f0fdf4,stroke:#22c55e,stroke-width:2px,color:#14532d;
     classDef alert fill:#fef2f2,stroke:#ef4444,stroke-width:2px,color:#7f1d1d;
 
-    A["GCS Storage Sensor<br/>(Wait for Daily Batch)"]:::sensor --> B["Dataflow Job Sensor<br/>(Verify Ingestion Health)"]:::sensor
-    B --> C["Dataform Compilation<br/>(Compile Git Main)"]:::dataform
-    C --> D["Dataform Silver Invocation<br/>(Deduplicate & Quarantine)"]:::dataform
-    D --> E["Data Quality Assertion Gate<br/>(Check Zero Hard-Stops)"]:::dataform
-    E --> F["Dataform Gold Invocation<br/>(Publish Reporting Marts)"]:::dataform
-    F --> G["BigQuery Materialized Cache<br/>(Refresh BI Engine)"]:::bq
-    E -. Fail .-> H["Ops SLA Alert<br/>(Slack & PagerDuty Webhook)"]:::alert
+    A["GCS sensor<br/>Wait for daily batch manifest"]:::sensor
+    --> B["Dataflow health check<br/>Verify ingestion status"]:::sensor
+    --> C["Dataform compilation<br/>Compile selected Git revision"]:::dataform
+    --> D["Silver invocation<br/>Deduplicate and quarantine"]:::dataform
+    --> E["Data-quality gate<br/>Check assertion results"]:::bq
+    --> F["Gold invocation<br/>Publish reporting marts"]:::dataform
+    --> G["Post-publication validation<br/>Check Gold partition"]:::bq
+
+    E -. Failure .-> H["Operational alert<br/>Slack or PagerDuty webhook"]:::alert
 ```
 
----
+The important detail is that the failure edge is conceptual. In Airflow, a normal downstream task does **not** run after an upstream task fails. To make alerting reliable, use an `on_failure_callback`, an alerting service integrated with Cloud Monitoring, or a separately triggered alert workflow.
 
-## Hands-On Lab: Implementing the Pipeline in Cloud Composer
+## Hands-on lab
 
-In this hands-on lab, we will build Offvia’s master DAG using modern Apache Airflow 2 providers (`google-cloud-pipeline-components` and `apache-airflow-providers-google`).
+This lab builds a production-oriented master DAG for Offvia.
 
-### Step 1: Set Up Environment Variables and IAM Roles
+It uses:
 
-Ensure your Cloud Composer service account has permissions to invoke Dataform workflows and submit BigQuery jobs:
+- `GCSObjectExistenceSensor` to wait for a partner manifest.
+- Google Cloud Dataform operators to compile and invoke SQLX transformations.
+- BigQuery to validate the published Gold partition.
+- A failure callback to send an operational alert.
+
+### Step 1: Configure project variables
+
+Set the values you will use throughout the lab:
 
 ```bash
 export PROJECT_ID=$(gcloud config get-value project)
 export REGION="europe-west1"
 export COMPOSER_ENV="offvia-orchestrator"
 export COMPOSER_SA="composer-worker@${PROJECT_ID}.iam.gserviceaccount.com"
+```
 
-# Grant Dataform and BigQuery access to the Composer worker
+For a production environment, avoid hard-coding project IDs or credentials in DAG files. Inject them through environment variables, Airflow Connections, Secret Manager, or workload identity federation where appropriate.
+
+### Step 2: Grant required IAM roles
+
+The Composer worker service account needs permission to submit Dataform workflows and run BigQuery jobs.
+
+```bash
 gcloud projects add-iam-policy-binding "${PROJECT_ID}" \
   --member="serviceAccount:${COMPOSER_SA}" \
   --role="roles/dataform.editor"
@@ -186,73 +165,89 @@ gcloud projects add-iam-policy-binding "${PROJECT_ID}" \
   --role="roles/bigquery.dataEditor"
 ```
 
----
+Apply the principle of least privilege. In many production environments, `roles/bigquery.dataEditor` is broader than necessary; scope access to the relevant datasets where possible.
 
-### Step 2: Write the Production Airflow DAG
+### Step 3: Create the DAG
 
-Create a new file named `offvia_master_lakehouse_dag.py`. This DAG uses the official Google Cloud Dataform Airflow operators:
+Create a file named `offvia_master_lakehouse_dag.py`.
 
 ```python
-# Offvia Master Lakehouse Orchestrator DAG
-# Coordinates Cloud Storage verification, Dataform Medallion compilation & invocation,
-# and downstream BigQuery data quality validation.
+"""
+Offvia Master Lakehouse Orchestrator DAG.
 
+Coordinates:
+1. Verification that the daily partner manifest has landed.
+2. Compilation of the Dataform project from a selected Git revision.
+3. Execution of Silver transformations and assertions.
+4. Publication of Gold reporting marts.
+5. Post-publication validation of the Gold partition.
+"""
+
+import os
 from datetime import datetime, timedelta
+
 from airflow import DAG
+from airflow.operators.empty import EmptyOperator
+from airflow.providers.google.cloud.operators.bigquery import (
+    BigQueryInsertJobOperator,
+)
 from airflow.providers.google.cloud.operators.dataform import (
     DataformCreateCompilationResultOperator,
     DataformCreateWorkflowInvocationOperator,
 )
-from airflow.providers.google.cloud.sensors.gcs import GCSObjectExistenceSensor
-from airflow.providers.google.cloud.operators.bigquery import BigQueryInsertJobOperator
-from airflow.operators.empty import EmptyOperator
+from airflow.providers.google.cloud.sensors.gcs import (
+    GCSObjectExistenceSensor,
+)
 
-PROJECT_ID = "{{ var.value.gcp_project_id }}"
-REGION = "europe-west1"
+PROJECT_ID = os.environ.get("GCP_PROJECT_ID")
+REGION = os.environ.get("GCP_REGION", "europe-west1")
 REPOSITORY_ID = "offvia-lakehouse"
-GIT_BRANCH = "main"
+GIT_REVISION = "main"
 
 default_args = {
     "owner": "offvia-data-platform",
-    "depends_on_past": True,
-    "email_on_failure": True,
-    "email": ["data-alerts@offvia.com"],
     "retries": 2,
     "retry_delay": timedelta(minutes=3),
     "execution_timeout": timedelta(hours=1),
+    "on_failure_callback": lambda context: print(
+        "CRITICAL ALERT: "
+        f"Task {context['task_instance'].task_id} failed. "
+        f"Exception: {context.get('exception')}"
+    ),
 }
 
 with DAG(
     dag_id="offvia_master_lakehouse_pipeline",
     default_args=default_args,
     description="End-to-end Medallion Lakehouse pipeline coordinator",
-    schedule_interval="0 4 * * *",  # 04:00 AM UTC daily
+    schedule="0 4 * * *",
     start_date=datetime(2026, 10, 1),
     catchup=False,
     max_active_runs=1,
     tags=["production", "dataform", "medallion", "bigquery"],
 ) as dag:
 
-    start_task = EmptyOperator(task_id="pipeline_start")
+    pipeline_start = EmptyOperator(task_id="pipeline_start")
 
-    # 1. Sensor: Ensure daily flight partner raw manifest has landed in GCS
-    wait_for_raw_manifest = GCSObjectExistenceSensor(
+    wait_for_partner_manifest = GCSObjectExistenceSensor(
         task_id="wait_for_daily_partner_manifest",
         bucket="offvia-landing-bucket",
-        object="partners/manifests/{{ ds_nodash }}_batch_completed.json",
-        timeout=1800,  # 30 minute SLA timeout
+        object=(
+            "partners/manifests/"
+            "{{ ds_nodash }}_batch_completed.json"
+        ),
+        timeout=1800,
         poke_interval=60,
         mode="reschedule",
     )
 
-    # 2. Compile Dataform code against the target Git branch with environment overrides
     compile_dataform_project = DataformCreateCompilationResultOperator(
         task_id="compile_dataform_project",
         project_id=PROJECT_ID,
         region=REGION,
         repository_id=REPOSITORY_ID,
         compilation_result={
-            "git_commitish": GIT_BRANCH,
+            "git_commitish": GIT_REVISION,
             "code_compilation_config": {
                 "default_schema": "offvia_bronze",
                 "assertion_schema": "offvia_assertions",
@@ -260,15 +255,16 @@ with DAG(
         },
     )
 
-    # 3. Execute Silver Layer: Deduplication, Quarantine, and Assertions
-    run_silver_medallion = DataformCreateWorkflowInvocationOperator(
+    run_silver_transformations = DataformCreateWorkflowInvocationOperator(
         task_id="invoke_silver_transformations",
         project_id=PROJECT_ID,
         region=REGION,
         repository_id=REPOSITORY_ID,
         workflow_invocation={
             "compilation_result": (
-                "{{ task_instance.xcom_pull('compile_dataform_project')['name'] }}"
+                "{{ task_instance.xcom_pull("
+                "'compile_dataform_project'"
+                ")['name'] }}"
             ),
             "invocation_config": {
                 "included_tags": ["silver", "assertions"],
@@ -277,7 +273,6 @@ with DAG(
         },
     )
 
-    # 4. Execute Gold Layer: Aggregated Revenue & Operational Performance Marts
     run_gold_marts = DataformCreateWorkflowInvocationOperator(
         task_id="invoke_gold_reporting_marts",
         project_id=PROJECT_ID,
@@ -285,7 +280,9 @@ with DAG(
         repository_id=REPOSITORY_ID,
         workflow_invocation={
             "compilation_result": (
-                "{{ task_instance.xcom_pull('compile_dataform_project')['name'] }}"
+                "{{ task_instance.xcom_pull("
+                "'compile_dataform_project'"
+                ")['name'] }}"
             ),
             "invocation_config": {
                 "included_tags": ["gold"],
@@ -294,52 +291,69 @@ with DAG(
         },
     )
 
-    # 5. Refresh BigQuery BI Engine & Cache for executive dashboards
-    refresh_bi_cache = BigQueryInsertJobOperator(
-        task_id="refresh_bi_reporting_cache",
+    validate_gold_partition = BigQueryInsertJobOperator(
+        task_id="validate_gold_reporting_partition",
         configuration={
             "query": {
                 "query": """
-                    SELECT COUNT(*)
+                    SELECT
+                      COUNT(*) AS row_count
                     FROM `offvia_gold.mart_daily_route_profitability`
-                    WHERE flight_date = DATE('{{ ds }}');
+                    WHERE flight_date = DATE('{{ ds }}')
                 """,
                 "useLegacySql": False,
             }
         },
     )
 
-    end_task = EmptyOperator(task_id="pipeline_complete")
+    pipeline_complete = EmptyOperator(task_id="pipeline_complete")
 
-    # Define strict execution graph
     (
-        start_task
-        >> wait_for_raw_manifest
+        pipeline_start
+        >> wait_for_partner_manifest
         >> compile_dataform_project
-        >> run_silver_medallion
+        >> run_silver_transformations
         >> run_gold_marts
-        >> refresh_bi_cache
-        >> end_task
+        >> validate_gold_partition
+        >> pipeline_complete
     )
 ```
 
----
+### Why this version is safer
 
-### Step 3: Deploy and Test the DAG in Cloud Composer
+The original draft assigned a Jinja expression to a Python constant:
 
-1. Upload the DAG file directly to your Cloud Composer DAGs Google Cloud Storage bucket:
+```python
+PROJECT_ID = "{{ var.value.gcp_project_id }}"
+```
+
+That does not work as intended. Jinja templates are rendered when Airflow evaluates task arguments, not when Python imports the DAG module. The revised version reads the project ID from an environment variable instead.
+
+The revised DAG also avoids setting:
+
+```python
+"depends_on_past": True
+```
+
+That setting can be useful for strict sequential execution, but it interacts poorly with `catchup=False` and can make recovery confusing after a failed run. If you need run-to-run dependencies, make that decision deliberately and test the recovery path.
+
+## Deploy the DAG
+
+First, find the Cloud Storage prefix used by your Managed Airflow environment:
 
 ```bash
-# Retrieve Composer DAG bucket location
 DAGS_BUCKET=$(gcloud composer environments describe "${COMPOSER_ENV}" \
   --location="${REGION}" \
   --format="get(config.dagGcsPrefix)")
-
-# Copy DAG to Composer GCS bucket
-gsutil cp offvia_master_lakehouse_dag.py "${DAGS_BUCKET}/"
 ```
 
-2. Trigger an ad-hoc test run from the CLI without waiting for the nightly cron:
+Then copy the DAG file:
+
+```bash
+gcloud storage cp offvia_master_lakehouse_dag.py "${DAGS_BUCKET}/"
+```
+
+Trigger a manual test run:
 
 ```bash
 gcloud composer environments run "${COMPOSER_ENV}" \
@@ -347,64 +361,80 @@ gcloud composer environments run "${COMPOSER_ENV}" \
   dags trigger -- offvia_master_lakehouse_pipeline
 ```
 
-3. Monitor real-time task progression in the Airflow UI or via Cloud Logging:
+You can inspect DAG runs from the Airflow UI. For command-line monitoring, list recent DAG runs:
 
 ```bash
 gcloud composer environments run "${COMPOSER_ENV}" \
   --location="${REGION}" \
-  tasks states-for-dag-run -- offvia_master_lakehouse_pipeline $(date +%Y-%m-%d)
+  dags list-runs -- offvia_master_lakehouse_pipeline
 ```
 
----
+## Production gotchas
 
-## Production Gotchas to Keep in Mind
+### Use reschedule mode for sensors
 
-### 1. The `mode="poke"` Sensor Bottleneck in Airflow Workers
+A sensor in `poke` mode holds a worker slot while it waits. If several DAGs wait for files or long-running jobs, they can exhaust the worker pool and delay unrelated work.
 
-When using `GCSObjectExistenceSensor` or `WorkflowInvocationSensor`, setting `mode="poke"` keeps the Airflow worker slot locked during the entire wait period. If multiple DAGs wait for files, you will exhaust your worker slot pool, preventing other tasks from starting.
-
-Always set `mode="reschedule"`. In reschedule mode, the task checks once, releases the worker slot back to the cluster pool, and sleeps until the next interval.
-
-### 2. XCom Size Limits with Dataform Compilation Payloads
-
-The `DataformCreateCompilationResultOperator` returns metadata about the compiled project. Avoid storing full compiled execution graphs or JSON file contents into Airflow XComs. XComs in Composer are stored in the Airflow metadata database (Cloud SQL), which enforces a strict payload limit. Only pull the compilation resource `name` attribute between tasks.
-
-### 3. Graceful SLA Alerting on Assertion Failures
-
-When Dataform assertions fail (e.g., negative revenue detected), the `DataformCreateWorkflowInvocationOperator` raises an `AirflowException`. 
-
-Configure an `on_failure_callback` on your Airflow DAG to send rich incident context directly to your DevOps webhook:
+Use:
 
 ```python
-def notify_pagerduty_slack(context):
-    task_id = context['task_instance'].task_id
-    error_msg = context.get('exception')
-    # Dispatch alert with Cloud Run or Webhook URL
-    print(f"🚨 CRITICAL ALERT: Task {task_id} failed with error: {error_msg}")
-
-default_args["on_failure_callback"] = notify_pagerduty_slack
+mode="reschedule"
 ```
 
----
+The sensor checks once, releases the worker slot, and wakes again at the next poke interval.
 
-## 🏆 Complete 7-Part Architecture Retrospective
+### Keep XCom payloads small
 
-Congratulations! You have completed the entire **Data Engineering on Google Cloud** masterclass. Here is the complete production stack we built together:
+Do not place full compiled Dataform payloads, raw JSON files, or large result sets into XCom. Airflow stores XCom data in its metadata database, and large values create operational and performance problems.
 
-1. **[Part 1: Storage & Access Building Blocks Demystified](/blog/gcp-data-engineering-storage-building-blocks/)** — Designed zero-copy BigLake external tables and storage lifecycle management.
-2. **[Part 2: Building the Production Storage & Access Layer](/blog/gcp-data-engineering-hands-on-storage-pipeline-lab/)** — Implemented fine-grained column-level masking and storage transfer pipelines.
-3. **[Part 3: Choosing a Reliable Real-Time Ingestion Path](/blog/gcp-data-engineering-streaming-batch-ingestion-pubsub-dataflow/)** — Evaluated Pub/Sub, Kafka, BigQuery Direct Subscriptions, and Dataflow streaming.
-4. **[Part 4: Production Real-Time Streaming Pipeline](/blog/gcp-data-engineering-streaming-pipeline-lab/)** — Implemented Apache Beam windowing and Dead-Letter Queues (DLQ).
-5. **[Part 5: Medallion Architecture with Dataform and dbt](/blog/gcp-data-engineering-transformations-dataform-dbt/)** — Formulated the Bronze-Silver-Gold transformation contracts and data quality assertions.
-6. **[Part 6: Building a Medallion Lakehouse with Dataform](/blog/gcp-data-engineering-dataform-medallion-lab/)** — Implemented incremental SQLX models, partition pruning, and quarantine isolation.
-7. **Part 7: Enterprise Pipeline Orchestration with Cloud Composer and Workflows** — United all ingestion, transformation, and alerting steps into a hardened, production-grade DAG.
+Pass only the minimum required metadata between tasks, such as:
 
----
+```text
+projects/<project>/locations/<region>/repositories/<repository>/compilationResults/<id>
+```
 
-## Official References
+### Do not treat a query as a cache refresh
 
-- [Google Cloud Composer Documentation](https://cloud.google.com/composer/docs)
-- [Airflow Google Provider Dataform Operators](https://airflow.apache.org/docs/apache-airflow-providers-google/stable/operators/cloud/dataform.html)
-- [Google Cloud Workflows Overview](https://cloud.google.com/workflows/docs/overview)
-- [Airflow Sensors Best Practices](https://airflow.apache.org/docs/apache-airflow/stable/core-concepts/sensors.html)
-- [Eventarc and Cloud Workflows Integration](https://cloud.google.com/eventarc/docs/workflows/create-trigger-storage-console)
+A `SELECT COUNT(*)` statement validates that rows exist. It does not refresh BI Engine, Materialized Views, or any other cache.
+
+If you use BI Engine, manage acceleration and caching through the appropriate BigQuery and BI Engine configuration. If you use Materialized Views, refresh them explicitly or rely on their configured refresh strategy.
+
+### Alert on failure correctly
+
+This pattern will not work as intended:
+
+```python
+data_quality_gate >> send_alert
+```
+
+If `data_quality_gate` fails, Airflow marks downstream tasks as upstream failed rather than running them.
+
+Use one of these approaches instead:
+
+- Configure `on_failure_callback` on the DAG or individual tasks.
+- Use Cloud Monitoring alert policies based on Airflow or Cloud Logging metrics.
+- Create a separate alerting DAG triggered by a failure event.
+- Use a task with `trigger_rule="one_failed"` only when you understand the broader DAG topology and retry behaviour.
+
+## Series retrospective
+
+This series built a practical Google Cloud data platform:
+
+1. **[Part 1: Storage and access building blocks](/blog/gcp-data-engineering-storage-building-blocks/)** — Cloud Storage, lifecycle policies, and BigLake external tables.
+2. **[Part 2: Production storage and access layer](/blog/gcp-data-engineering-hands-on-storage-pipeline-lab/)** — Fine-grained access controls, masking, and storage transfer patterns.
+3. **[Part 3: Choosing a real-time ingestion path](/blog/gcp-data-engineering-streaming-batch-ingestion-pubsub-dataflow/)** — Pub/Sub, Kafka, BigQuery subscriptions, and Dataflow.
+4. **[Part 4: Real-time streaming pipeline](/blog/gcp-data-engineering-streaming-pipeline-lab/)** — Apache Beam processing, windowing, and dead-letter queues.
+5. **[Part 5: Medallion transformations](/blog/gcp-data-engineering-transformations-dataform-dbt/)** — Dataform and dbt contracts, transformations, and assertions.
+6. **[Part 6: Dataform Medallion Lakehouse](/blog/gcp-data-engineering-dataform-medallion-lab/)** — Incremental SQLX models, partition pruning, and quarantine isolation.
+7. **Part 7: Enterprise orchestration** — Managed Airflow, Cloud Workflows, dependency governance, alerting, and recovery.
+
+The central lesson is simple: build pipelines as explicit, observable dependency graphs—not as a sequence of timers.
+
+## Official references
+
+- [Managed Service for Apache Airflow documentation](https://cloud.google.com/composer/docs)
+- [Managed Service for Apache Airflow product page](https://cloud.google.com/products/managed-service-for-apache-airflow)
+- [Managed Service for Apache Airflow pricing](https://cloud.google.com/products/managed-service-for-apache-airflow/pricing)
+- [Google Cloud Workflows overview](https://cloud.google.com/workflows/docs/overview)
+- [Apache Airflow Google Dataform operators](https://airflow.apache.org/docs/apache-airflow-providers-google/stable/operators/cloud/dataform.html)
+- [Apache Airflow sensors](https://airflow.apache.org/docs/apache-airflow/stable/core-concepts/sensors.html)
