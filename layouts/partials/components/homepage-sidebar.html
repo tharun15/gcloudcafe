@@ -77,12 +77,12 @@
   {{/* ============================================================== */}}
   {{/* UNIFIED SERIES HUB CARD                                         */}}
   {{/* ============================================================== */}}
-  <div class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0c1220] p-4 sm:p-5 shadow-xs relative overflow-hidden group" id="sidebar-series-hub">
+  <div class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0c1220] p-3.5 sm:p-4 shadow-xs relative overflow-hidden group" id="sidebar-series-hub">
     <!-- Accent Glow Top Bar -->
     <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-red-500 via-sky-500 to-indigo-500"></div>
 
     <!-- Segmented View Controller Tabs -->
-    <div class="grid grid-cols-2 p-1 bg-slate-100 dark:bg-slate-900/90 rounded-xl mb-4 border border-slate-200/60 dark:border-slate-800/60" role="tablist" aria-label="Series Navigation Views">
+    <div class="grid grid-cols-2 p-1 bg-slate-100 dark:bg-slate-900/90 rounded-xl mb-3 border border-slate-200/60 dark:border-slate-800/60" role="tablist" aria-label="Series Navigation Views">
       <button
         type="button"
         id="sidebar-tab-active-btn"
@@ -163,7 +163,7 @@
           </span>
         </div>
 
-        <div class="space-y-1 max-h-[360px] overflow-y-auto pr-0.5 custom-scrollbar" id="sidebar-active-playlist">
+        <div class="space-y-1 max-h-[165px] overflow-y-auto pr-0.5 custom-scrollbar" id="sidebar-active-playlist">
           {{ range $idx, $p := $activeSorted }}
             {{ $partNum := add $idx 1 }}
             {{ $isHero := and $featured (eq $p.RelPermalink $featured.RelPermalink) }}
