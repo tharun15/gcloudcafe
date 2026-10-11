@@ -10447,91 +10447,87 @@ document.addEventListener('DOMContentLoaded', initDevTerminalBlocks);
 
   /* ── 15. Homepage Adaptive Series Hub & Scroll-Spy Reading Companion ── */
   function initSidebarSeriesHub() {
+    var container = document.getElementById('sidebar-series-hub');
+    if (!container) return;
+
     var tabActiveBtn = document.getElementById('sidebar-tab-active-btn');
     var tabAllBtn = document.getElementById('sidebar-tab-all-btn');
     var panelActive = document.getElementById('sidebar-tab-active-panel');
     var panelAll = document.getElementById('sidebar-tab-all-panel');
-    var switchToAllBtn = document.getElementById('sidebar-switch-to-all-btn');
-    var jumpToActiveBtn = document.getElementById('sidebar-jump-to-active-btn');
+    var tabActiveCounter = document.getElementById('sidebar-tab-active-counter');
 
-    var searchInput = document.getElementById('sidebar-series-search');
-    var clearBtn = document.getElementById('sidebar-series-search-clear');
-    var cards = document.querySelectorAll('#sidebar-all-tracks-list [data-series-card="true"]');
-    var emptyNotice = document.getElementById('sidebar-series-empty');
+    if (!tabActiveBtn || !tabAllBtn || !panelActive || !panelAll) return;
 
-    if (!panelActive && !panelAll) return;
-
-    function switchTab(target) {
-      if (!tabActiveBtn || !tabAllBtn || !panelActive || !panelAll) return;
-      var isAll = (target === 'all');
-
-      tabActiveBtn.setAttribute('aria-selected', !isAll);
-      tabAllBtn.setAttribute('aria-selected', isAll);
-
-      if (isAll) {
-        panelActive.classList.add('hidden');
-        panelAll.classList.remove('hidden');
-
-        tabAllBtn.classList.add('shadow-xs', 'bg-white', 'dark:bg-[#141e33]', 'text-red-600', 'dark:text-red-400', 'border-slate-200/80', 'dark:border-slate-700/80');
-        tabAllBtn.classList.remove('text-slate-600', 'dark:text-slate-400', 'border-transparent');
-
-        tabActiveBtn.classList.remove('shadow-xs', 'bg-white', 'dark:bg-[#141e33]', 'text-red-600', 'dark:text-red-400', 'border-slate-200/80', 'dark:border-slate-700/80');
-        tabActiveBtn.classList.add('text-slate-600', 'dark:text-slate-400', 'border-transparent');
-      } else {
-        panelAll.classList.add('hidden');
-        panelActive.classList.remove('hidden');
-
+    function switchTab(view) {
+      if (view === 'active') {
+        tabActiveBtn.setAttribute('aria-selected', 'true');
         tabActiveBtn.classList.add('shadow-xs', 'bg-white', 'dark:bg-[#141e33]', 'text-red-600', 'dark:text-red-400', 'border-slate-200/80', 'dark:border-slate-700/80');
         tabActiveBtn.classList.remove('text-slate-600', 'dark:text-slate-400', 'border-transparent');
 
+        tabAllBtn.setAttribute('aria-selected', 'false');
         tabAllBtn.classList.remove('shadow-xs', 'bg-white', 'dark:bg-[#141e33]', 'text-red-600', 'dark:text-red-400', 'border-slate-200/80', 'dark:border-slate-700/80');
         tabAllBtn.classList.add('text-slate-600', 'dark:text-slate-400', 'border-transparent');
+
+        panelActive.classList.remove('hidden');
+        panelAll.classList.add('hidden');
+      } else {
+        tabAllBtn.setAttribute('aria-selected', 'true');
+        tabAllBtn.classList.add('shadow-xs', 'bg-white', 'dark:bg-[#141e33]', 'text-red-600', 'dark:text-red-400', 'border-slate-200/80', 'dark:border-slate-700/80');
+        tabAllBtn.classList.remove('text-slate-600', 'dark:text-slate-400', 'border-transparent');
+
+        tabActiveBtn.setAttribute('aria-selected', 'false');
+        tabActiveBtn.classList.remove('shadow-xs', 'bg-white', 'dark:bg-[#141e33]', 'text-red-600', 'dark:text-red-400', 'border-slate-200/80', 'dark:border-slate-700/80');
+        tabActiveBtn.classList.add('text-slate-600', 'dark:text-slate-400', 'border-transparent');
+
+        panelAll.classList.remove('hidden');
+        panelActive.classList.add('hidden');
+
+        var searchInput = document.getElementById('sidebar-series-search');
+        if (searchInput) searchInput.focus();
       }
     }
 
-    if (tabActiveBtn) {
-      tabActiveBtn.addEventListener('click', function() { switchTab('active'); });
-    }
-    if (tabAllBtn) {
-      tabAllBtn.addEventListener('click', function() { switchTab('all'); });
-    }
-    if (switchToAllBtn) {
-      switchToAllBtn.addEventListener('click', function() { switchTab('all'); });
-    }
+    tabActiveBtn.addEventListener('click', function() { switchTab('active'); });
+    tabAllBtn.addEventListener('click', function() { switchTab('all'); });
+
+    document.querySelectorAll('.sidebar-switch-to-all-btn').forEach(function(btn) {
+      btn.addEventListener('click', function() { switchTab('all'); });
+    });
+
+    var jumpToActiveBtn = document.getElementById('sidebar-jump-to-active-btn');
     if (jumpToActiveBtn) {
       jumpToActiveBtn.addEventListener('click', function() { switchTab('active'); });
     }
 
-    // Real-time search handler
+    // Series Search inside All Tracks Tab
+    var searchInput = document.getElementById('sidebar-series-search');
+    var clearBtn = document.getElementById('sidebar-series-search-clear');
+    var seriesCards = document.querySelectorAll('#sidebar-all-tracks-list [data-series-card="true"]');
+    var emptyNotice = document.getElementById('sidebar-series-empty');
+
     if (searchInput) {
       searchInput.addEventListener('input', function() {
         var query = searchInput.value.trim().toLowerCase();
-        if (query.length > 0) {
-          if (clearBtn) clearBtn.classList.remove('hidden');
-          switchTab('all');
-        } else {
-          if (clearBtn) clearBtn.classList.add('hidden');
+        if (clearBtn) {
+          if (query.length > 0) clearBtn.classList.remove('hidden');
+          else clearBtn.classList.add('hidden');
         }
 
         var visibleCount = 0;
-        cards.forEach(function(card) {
-          var title = card.getAttribute('data-series-title') || '';
-          var desc = card.getAttribute('data-series-desc') || '';
-          var text = (title + ' ' + desc).toLowerCase();
-          if (!query || text.indexOf(query) !== -1) {
-            card.style.display = '';
+        seriesCards.forEach(function(card) {
+          var title = (card.getAttribute('data-series-title') || '').toLowerCase();
+          var desc = (card.getAttribute('data-series-desc') || '').toLowerCase();
+          if (!query || title.indexOf(query) !== -1 || desc.indexOf(query) !== -1) {
+            card.classList.remove('hidden');
             visibleCount++;
           } else {
-            card.style.display = 'none';
+            card.classList.add('hidden');
           }
         });
 
         if (emptyNotice) {
-          if (visibleCount === 0) {
-            emptyNotice.classList.remove('hidden');
-          } else {
-            emptyNotice.classList.add('hidden');
-          }
+          if (visibleCount === 0) emptyNotice.classList.remove('hidden');
+          else emptyNotice.classList.add('hidden');
         }
       });
 
@@ -10544,57 +10540,82 @@ document.addEventListener('DOMContentLoaded', initDevTerminalBlocks);
       }
     }
 
-    // Adaptive Scroll-Spy Reading Companion
-    if (!panelActive) return;
+    // Adaptive Reading Companion Multi-Track System
+    var defaultSeriesKey = (panelActive.getAttribute('data-default-series') || '').trim();
+    var allTrackViews = panelActive.querySelectorAll('.sidebar-track-view[data-track-series-name]');
+    var standaloneView = document.getElementById('sidebar-standalone-view');
+    var standaloneTitleLink = document.getElementById('sidebar-standalone-title-link');
+    var standaloneReadtime = document.getElementById('sidebar-standalone-readtime');
+    var standaloneJumpFlagshipBtn = document.getElementById('sidebar-standalone-jump-flagship-btn');
+    var standaloneBrowseTracksBtn = document.getElementById('sidebar-standalone-browse-tracks-btn');
 
-    var activeSeriesName = panelActive.getAttribute('data-active-series');
-    var totalParts = parseInt(panelActive.getAttribute('data-total-parts') || '0', 10);
-    if (!activeSeriesName || totalParts === 0) return;
-
-    var statusText = document.getElementById('sidebar-live-status-text');
-    var tabActiveCounter = document.getElementById('sidebar-tab-active-counter');
-    var progressCounter = document.getElementById('sidebar-progress-counter');
-    var progressBar = document.getElementById('sidebar-progress-bar');
-    var playlistItems = document.querySelectorAll('#sidebar-active-playlist .sidebar-track-item');
-    var quickJumpers = document.getElementById('sidebar-quick-jumpers');
-    var quickPrev = document.getElementById('sidebar-quick-prev');
-    var quickPrevTitle = document.getElementById('sidebar-quick-prev-title');
-    var quickNext = document.getElementById('sidebar-quick-next');
-    var quickNextTitle = document.getElementById('sidebar-quick-next-title');
-    var outOfTrackBanner = document.getElementById('sidebar-out-of-track-banner');
-    var outOfTrackTitle = document.getElementById('sidebar-out-of-track-title');
-    var outOfTrackJumpBtn = document.getElementById('sidebar-out-of-track-jump-btn');
-
-    var partMap = {};
-    playlistItems.forEach(function(item) {
-      var pNum = parseInt(item.getAttribute('data-track-part'), 10);
-      if (pNum) {
-        partMap[pNum] = {
-          element: item,
-          url: item.getAttribute('data-track-url') || item.getAttribute('href'),
-          title: item.getAttribute('data-track-title') || ('Part ' + pNum)
-        };
-      }
-    });
-
-    var initialOrder = parseInt(panelActive.getAttribute('data-active-order') || totalParts, 10);
-
-    function updateToPart(partNum) {
-      if (outOfTrackBanner) outOfTrackBanner.classList.add('hidden');
-
-      var suffix = (partNum === totalParts) ? ' ✓' : '';
-      var textVal = 'Part ' + partNum + ' of ' + totalParts + suffix;
-
-      if (statusText) statusText.textContent = textVal;
-      if (progressCounter) progressCounter.textContent = textVal;
-      if (tabActiveCounter) tabActiveCounter.textContent = '(' + partNum + '/' + totalParts + ')';
-
-      if (progressBar) {
-        var pct = Math.round((partNum / totalParts) * 100);
-        progressBar.style.width = pct + '%';
-      }
+    var trackMap = {};
+    allTrackViews.forEach(function(view) {
+      var sName = view.getAttribute('data-track-series-name') || '';
+      var sKey = sName.toLowerCase().trim();
+      var totalParts = parseInt(view.getAttribute('data-total-parts') || '0', 10);
+      var defaultOrder = parseInt(view.getAttribute('data-default-order') || '1', 10);
+      var playlistItems = view.querySelectorAll('.sidebar-track-item');
+      var partMap = {};
 
       playlistItems.forEach(function(item) {
+        var pNum = parseInt(item.getAttribute('data-track-part'), 10);
+        if (pNum) {
+          partMap[pNum] = {
+            element: item,
+            url: item.getAttribute('data-track-url') || item.getAttribute('href'),
+            title: item.getAttribute('data-track-title') || ('Part ' + pNum)
+          };
+        }
+      });
+
+      trackMap[sKey] = {
+        view: view,
+        seriesName: sName,
+        totalParts: totalParts,
+        defaultOrder: defaultOrder,
+        statusText: view.querySelector('.sidebar-live-status-text'),
+        progressCounter: view.querySelector('.sidebar-progress-counter'),
+        progressBar: view.querySelector('.sidebar-progress-bar'),
+        quickJumpers: view.querySelector('.sidebar-quick-jumpers'),
+        quickPrev: view.querySelector('.sidebar-quick-prev'),
+        quickPrevTitle: view.querySelector('.sidebar-quick-prev-title'),
+        quickNext: view.querySelector('.sidebar-quick-next'),
+        quickNextTitle: view.querySelector('.sidebar-quick-next-title'),
+        playlistItems: playlistItems,
+        partMap: partMap,
+        currentPart: null
+      };
+    });
+
+    function activateTrack(seriesName, partNum) {
+      var key = (seriesName || '').toLowerCase().trim();
+      var trackInfo = trackMap[key];
+      if (!trackInfo) return;
+
+      if (standaloneView) standaloneView.classList.add('hidden');
+
+      allTrackViews.forEach(function(v) {
+        if (v === trackInfo.view) v.classList.remove('hidden');
+        else v.classList.add('hidden');
+      });
+
+      if (tabActiveCounter) {
+        tabActiveCounter.textContent = '(' + partNum + '/' + trackInfo.totalParts + ')';
+      }
+
+      var suffix = (partNum === trackInfo.totalParts) ? ' ✓' : '';
+      var textVal = 'Part ' + partNum + ' of ' + trackInfo.totalParts + suffix;
+
+      if (trackInfo.statusText) trackInfo.statusText.textContent = textVal;
+      if (trackInfo.progressCounter) trackInfo.progressCounter.textContent = textVal;
+
+      if (trackInfo.progressBar) {
+        var pct = Math.round((partNum / trackInfo.totalParts) * 100);
+        trackInfo.progressBar.style.width = pct + '%';
+      }
+
+      trackInfo.playlistItems.forEach(function(item) {
         var pNum = parseInt(item.getAttribute('data-track-part'), 10);
         var badge = item.querySelector('.track-badge');
         var titleSpan = item.querySelector('.track-title');
@@ -10627,47 +10648,71 @@ document.addEventListener('DOMContentLoaded', initDevTerminalBlocks);
         }
       });
 
-      // Quick Jumpers Prev/Next
-      if (quickJumpers && quickPrev && quickNext) {
-        quickJumpers.classList.remove('hidden');
-        if (partNum > 1 && partMap[partNum - 1]) {
-          quickPrev.classList.remove('invisible', 'pointer-events-none');
-          quickPrev.setAttribute('href', partMap[partNum - 1].url);
-          if (quickPrevTitle) quickPrevTitle.textContent = 'Part ' + (partNum - 1);
-          quickPrev.title = partMap[partNum - 1].title;
+      if (trackInfo.quickJumpers && trackInfo.quickPrev && trackInfo.quickNext) {
+        trackInfo.quickJumpers.classList.remove('hidden');
+        if (partNum > 1 && trackInfo.partMap[partNum - 1]) {
+          trackInfo.quickPrev.classList.remove('invisible', 'pointer-events-none');
+          trackInfo.quickPrev.setAttribute('href', trackInfo.partMap[partNum - 1].url);
+          if (trackInfo.quickPrevTitle) trackInfo.quickPrevTitle.textContent = 'Part ' + (partNum - 1);
+          trackInfo.quickPrev.title = trackInfo.partMap[partNum - 1].title;
         } else {
-          quickPrev.classList.add('invisible', 'pointer-events-none');
+          trackInfo.quickPrev.classList.add('invisible', 'pointer-events-none');
         }
 
-        if (partNum < totalParts && partMap[partNum + 1]) {
-          quickNext.classList.remove('invisible', 'pointer-events-none');
-          quickNext.setAttribute('href', partMap[partNum + 1].url);
-          if (quickNextTitle) quickNextTitle.textContent = 'Part ' + (partNum + 1);
-          quickNext.title = partMap[partNum + 1].title;
+        if (partNum < trackInfo.totalParts && trackInfo.partMap[partNum + 1]) {
+          trackInfo.quickNext.classList.remove('invisible', 'pointer-events-none');
+          trackInfo.quickNext.setAttribute('href', trackInfo.partMap[partNum + 1].url);
+          if (trackInfo.quickNextTitle) trackInfo.quickNextTitle.textContent = 'Part ' + (partNum + 1);
+          trackInfo.quickNext.title = trackInfo.partMap[partNum + 1].title;
         } else {
-          quickNext.classList.add('invisible', 'pointer-events-none');
+          trackInfo.quickNext.classList.add('invisible', 'pointer-events-none');
         }
       }
     }
 
-    function setOutOfTrack(articleTitle) {
-      if (!outOfTrackBanner) return;
-      outOfTrackBanner.classList.remove('hidden');
-      if (outOfTrackTitle) outOfTrackTitle.textContent = articleTitle;
-      if (statusText) statusText.textContent = 'Viewing Feed';
+    function activateStandalone(articleTitle, articleUrl, readTime) {
+      allTrackViews.forEach(function(v) {
+        v.classList.add('hidden');
+      });
+
+      if (standaloneView) {
+        standaloneView.classList.remove('hidden');
+        if (standaloneTitleLink) {
+          standaloneTitleLink.textContent = articleTitle;
+          standaloneTitleLink.setAttribute('href', articleUrl || '#');
+        }
+        if (standaloneReadtime) {
+          standaloneReadtime.textContent = readTime ? ('~' + readTime + 'm read') : 'Independent Guide';
+        }
+      }
+
+      if (tabActiveCounter) {
+        tabActiveCounter.textContent = '(Guide)';
+      }
     }
 
-    var feedArticles = document.querySelectorAll('[data-feed-article="true"]');
-    if (!feedArticles || feedArticles.length === 0) return;
+    if (standaloneJumpFlagshipBtn) {
+      standaloneJumpFlagshipBtn.addEventListener('click', function() {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    }
+
+    if (standaloneBrowseTracksBtn) {
+      standaloneBrowseTracksBtn.addEventListener('click', function() {
+        switchTab('all');
+      });
+    }
 
     var focalLine = 220; // Reading focal line in pixels from top of viewport
 
     function evaluateActiveFeedCard() {
-      var activeTarget = null;
+      var feedArticles = document.querySelectorAll('[data-feed-article="true"]');
+      if (!feedArticles || feedArticles.length === 0) return;
 
-      // 1. First priority: find article directly intersecting the reading focal line
+      var activeTarget = null;
       for (var i = 0; i < feedArticles.length; i++) {
         var card = feedArticles[i];
+        if (card.offsetParent === null) continue;
         var rect = card.getBoundingClientRect();
         if (rect.top <= focalLine && rect.bottom > focalLine) {
           activeTarget = card;
@@ -10675,11 +10720,11 @@ document.addEventListener('DOMContentLoaded', initDevTerminalBlocks);
         }
       }
 
-      // 2. Second priority: if between cards or at top/bottom, find the visible card closest to focal line
       if (!activeTarget) {
         var closestDist = Infinity;
         for (var j = 0; j < feedArticles.length; j++) {
           var c = feedArticles[j];
+          if (c.offsetParent === null) continue;
           var r = c.getBoundingClientRect();
           if (r.bottom > 0 && r.top < window.innerHeight) {
             var dist = Math.abs(r.top - focalLine);
@@ -10696,11 +10741,14 @@ document.addEventListener('DOMContentLoaded', initDevTerminalBlocks);
       var seriesName = activeTarget.getAttribute('data-article-series') || '';
       var seriesOrder = parseInt(activeTarget.getAttribute('data-article-series-order') || '0', 10);
       var articleTitle = activeTarget.getAttribute('data-article-title') || '';
+      var articleUrl = activeTarget.getAttribute('data-article-url') || '';
+      var articleReadTime = activeTarget.getAttribute('data-article-readingtime') || '';
 
-      if (seriesName && seriesName.toLowerCase() === activeSeriesName.toLowerCase() && seriesOrder > 0) {
-        updateToPart(seriesOrder);
+      var sKey = seriesName.toLowerCase().trim();
+      if (sKey && trackMap[sKey]) {
+        activateTrack(seriesName, seriesOrder > 0 ? seriesOrder : 1);
       } else if (articleTitle) {
-        setOutOfTrack(articleTitle);
+        activateStandalone(articleTitle, articleUrl, articleReadTime);
       }
     }
 
@@ -10718,14 +10766,11 @@ document.addEventListener('DOMContentLoaded', initDevTerminalBlocks);
     window.addEventListener('scroll', onScroll, { passive: true });
     window.addEventListener('resize', onScroll, { passive: true });
 
-    if (outOfTrackJumpBtn) {
-      outOfTrackJumpBtn.addEventListener('click', function() {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      });
+    // Initialize with default series and order
+    if (defaultSeriesKey && trackMap[defaultSeriesKey.toLowerCase()]) {
+      var def = trackMap[defaultSeriesKey.toLowerCase()];
+      activateTrack(def.seriesName, def.defaultOrder);
     }
-
-    // Initialize with default order
-    updateToPart(initialOrder);
     evaluateActiveFeedCard();
   }
 

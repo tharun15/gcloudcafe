@@ -90,142 +90,196 @@
          role="tabpanel"
          aria-labelledby="sidebar-tab-active-btn"
          class="space-y-3"
-         data-active-series="{{ $featuredSeriesKey }}"
-         data-total-parts="{{ $activeTotalParts }}"
-         data-active-order="{{ $activeHeroOrder }}">
+         data-default-series="{{ $featuredSeriesKey }}">
       
-      <!-- Adaptive Eyebrow Header -->
-      <div class="flex items-center justify-between gap-2">
-        <span id="sidebar-live-status-pill" class="inline-flex items-center gap-1.5 font-mono text-[10.5px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20">
-          <span class="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" aria-hidden="true"></span>
-          <span id="sidebar-live-status-text">Part {{ $activeHeroOrder }} of {{ $activeTotalParts }}</span>
-        </span>
-        <span id="sidebar-active-readtime" class="font-mono text-xs text-slate-600 dark:text-slate-400 font-semibold">
-          {{ $activeTotalParts }} {{ if eq site.Language.Lang "it" }}Parti{{ else }}Parts{{ end }} · ~{{ $activeTotalMin }}m
-        </span>
-      </div>
-
-      <!-- Active Series Title -->
-      <h3 class="text-sm sm:text-[15px] font-bold text-slate-900 dark:text-white leading-snug tracking-tight m-0">
-        <a href="{{ if $activePart1 }}{{ $activePart1.RelPermalink }}{{ else }}#{{ end }}" class="no-underline text-current hover:text-red-600 dark:hover:text-red-500 transition-colors">
-          {{ $featuredSeriesKey }}
-        </a>
-      </h3>
-
-      <!-- Dynamic Progress Meter -->
-      <div class="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200/70 dark:border-slate-800/70">
-        <div class="flex items-center justify-between font-mono text-[11px] mb-1.5">
-          <span class="font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
-            <i class="fa-solid fa-compass text-red-500 text-[10px]" aria-hidden="true"></i>
-            <span id="sidebar-progress-label">{{ if eq site.Language.Lang "it" }}Posizione nel Percorso{{ else }}Track Position{{ end }}</span>
-          </span>
-          <span id="sidebar-progress-counter" class="font-bold text-red-600 dark:text-red-400">
-            Part {{ $activeHeroOrder }} of {{ $activeTotalParts }} {{ if eq $activeHeroOrder $activeTotalParts }}✓{{ end }}
-          </span>
-        </div>
-        <div class="w-full h-1.5 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
-          <div id="sidebar-progress-bar" class="h-full bg-gradient-to-r from-red-600 to-rose-500 rounded-full transition-all duration-300" style="width: {{ $activePercent }}%;"></div>
-        </div>
-      </div>
-
-      <!-- Quick Prev / Next Jumpers (Dynamic 1-click controls when viewing any part!) -->
-      <div id="sidebar-quick-jumpers" class="flex items-center justify-between gap-2 py-1.5 px-2.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-200/60 dark:border-slate-800/60 text-xs font-mono">
-        <a id="sidebar-quick-prev" href="#sidebar-series-hub" class="inline-flex items-center gap-1 text-slate-800 dark:text-slate-100 hover:text-red-600 dark:hover:text-red-400 no-underline truncate max-w-[48%]">
-          <span>←</span>
-          <span class="truncate" id="sidebar-quick-prev-title">{{ if eq site.Language.Lang "it" }}Parte Precedente{{ else }}Prev Part{{ end }}</span>
-        </a>
-        <span class="text-slate-300 dark:text-slate-700">|</span>
-        <a id="sidebar-quick-next" href="#sidebar-series-hub" class="inline-flex items-center gap-1 text-slate-800 dark:text-slate-100 hover:text-red-600 dark:hover:text-red-400 no-underline truncate max-w-[48%] ml-auto text-right">
-          <span class="truncate" id="sidebar-quick-next-title">{{ if eq site.Language.Lang "it" }}Parte Successiva{{ else }}Next Part{{ end }}</span>
-          <span>→</span>
-        </a>
-      </div>
-
-      <!-- Out-of-Track Notice (Shown dynamically when reading non-series posts) -->
-      <div id="sidebar-out-of-track-banner" class="hidden p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200/70 dark:border-slate-800/70">
-        <div class="flex items-center gap-2 mb-1">
-          <span class="w-1.5 h-1.5 rounded-full bg-emerald-500" aria-hidden="true"></span>
-          <span class="font-mono text-[10px] font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider">
-            {{ if eq site.Language.Lang "it" }}Articolo Autonomo in Evidenza{{ else }}Standalone Architecture Guide{{ end }}
-          </span>
-        </div>
-        <p id="sidebar-out-of-track-title" class="text-xs font-bold text-slate-900 dark:text-white line-clamp-1 m-0 mb-2">
-          <!-- Populated by JS -->
-        </p>
-        <button type="button" id="sidebar-out-of-track-jump-btn" class="w-full py-1.5 px-2 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-mono text-[11px] font-semibold flex items-center justify-center gap-1.5 transition-colors cursor-pointer border border-slate-200/60 dark:border-slate-700/60">
-          <i class="fa-solid fa-arrow-up text-[10px]" aria-hidden="true"></i>
-          <span>{{ if eq site.Language.Lang "it" }}Torna al Percorso Principale{{ else }}Jump Back to Active Track{{ end }}</span>
-        </button>
-      </div>
-
-      <!-- Track Curriculum (All parts cleanly displayed, NO inner scrollbar!) -->
-      <div class="space-y-1 pt-1 border-t border-slate-100 dark:border-slate-800/80">
-        <div class="flex items-center justify-between py-0.5">
-          <p class="font-mono text-[10.5px] font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 m-0">
-            {{ if eq site.Language.Lang "it" }}Programma del Percorso{{ else }}Track Curriculum{{ end }}
-          </p>
-          <span class="text-[10px] font-mono text-slate-600 dark:text-slate-400">
-            {{ if eq site.Language.Lang "it" }}Clicca per aprire{{ else }}Click to jump{{ end }}
-          </span>
-        </div>
-
-        <div class="space-y-1" id="sidebar-active-playlist">
-          {{ range $idx, $p := $activeSorted }}
-            {{ $partNum := add $idx 1 }}
-            {{ $isHero := and $featured (eq $p.RelPermalink $featured.RelPermalink) }}
-            
-            {{/* Clean Part Title for Sidebar Playlist */}}
-            {{ $partTitle := $p.Title }}
-            {{ $partTitle = replaceRE `^.*?(?:\([Pp]art\s*\d+\)|–\s*[Pp]art\s*\d+)[:\-–—]\s*` "" $partTitle }}
-            {{ $partTitle = replaceRE `\s*\([Pp]art\s*\d+\)$` "" $partTitle }}
-            {{ $partTitle = replaceRE `^(?:Data Engineering on GCP|mTLS for DevOps Engineers):\s*` "" $partTitle }}
-            {{ if eq (trim $partTitle " ") "" }}
-              {{ $partTitle = $p.Title }}
-            {{ end }}
-
-            <a href="{{ $p.RelPermalink }}"
-               data-track-part="{{ $partNum }}"
-               data-track-url="{{ $p.RelPermalink }}"
-               data-track-title="{{ $partTitle }}"
-               class="sidebar-track-item flex items-center gap-2 py-1.5 px-2 rounded-lg no-underline transition-all group/item {{ if $isHero }}is-active bg-red-50 dark:bg-red-950/40 border border-red-300/80 dark:border-red-900/60 shadow-2xs{{ else }}hover:bg-slate-50 dark:hover:bg-slate-850 border border-transparent{{ end }}">
-              
-              <!-- Number badge -->
-              <span class="track-badge w-5 h-5 rounded-md flex items-center justify-center font-mono text-[10.5px] font-bold shrink-0 {{ if $isHero }}bg-red-600 text-white shadow-2xs{{ else }}bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 group-hover/item:bg-slate-200 dark:group-hover/item:bg-slate-700{{ end }}">
-                {{ printf "%02d" $partNum }}
-              </span>
-
-              <!-- Part Title -->
-              <span class="track-title text-xs font-medium {{ if $isHero }}font-bold text-red-950 dark:text-red-200{{ else }}text-slate-800 dark:text-slate-200{{ end }} group-hover/item:text-red-600 dark:group-hover/item:text-red-400 transition-colors line-clamp-1 flex-1">
-                {{ $partTitle }}
-              </span>
-
-              <!-- Duration & Visual Active Indicator -->
-              <span class="shrink-0 font-mono text-[11px] flex items-center gap-1.5 {{ if $isHero }}font-bold text-red-600 dark:text-red-400{{ else }}text-slate-600 dark:text-slate-400{{ end }}">
-                <span class="track-dot w-1.5 h-1.5 rounded-full bg-red-500 shrink-0 shadow-xs {{ if not $isHero }}hidden{{ end }}" aria-hidden="true"></span>
-                <span>{{ $p.ReadingTime }}m</span>
-              </span>
-            </a>
+      {{ range $groupedSeries }}
+        {{ $sKey := .Key }}
+        {{ $sSorted := sort .Pages ".Params.series_order" "asc" }}
+        {{ $sPart1 := index $sSorted 0 }}
+        {{ $sTotalParts := len $sSorted }}
+        {{ $sHeroOrder := 0 }}
+        {{ $sTotalMin := 0 }}
+        {{ range $idx, $p := $sSorted }}
+          {{ $sTotalMin = add $sTotalMin .ReadingTime }}
+          {{ if and $featured (eq $p.RelPermalink $featured.RelPermalink) }}
+            {{ $sHeroOrder = add $idx 1 }}
           {{ end }}
-        </div>
-      </div>
-
-      <!-- Footer Quick Switch to other series -->
-      <div class="pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs">
-        {{ if $activePart1 }}
-          <a href="{{ $activePart1.RelPermalink }}"
-             class="font-mono text-[11px] font-semibold text-slate-600 dark:text-slate-400 hover:text-red-600 dark:hover:text-red-400 no-underline transition-colors">
-            ← {{ if eq site.Language.Lang "it" }}Inizia da Parte 1{{ else }}Start from Part 1{{ end }}
-          </a>
         {{ end }}
-        <button
-          type="button"
-          id="sidebar-switch-to-all-btn"
-          class="font-mono text-[11px] font-bold text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 cursor-pointer bg-transparent border-0 p-0 inline-flex items-center gap-1 transition-colors group/link">
-          <span>{{ if eq site.Language.Lang "it" }}Tutte le Serie ({{ len $groupedSeries }}){{ else }}Explore Other Tracks ({{ len $groupedSeries }}){{ end }}</span>
-          <span class="transition-transform group-hover/link:translate-x-0.5">→</span>
-        </button>
+        {{ if eq $sHeroOrder 0 }}{{ $sHeroOrder = $sTotalParts }}{{ end }}
+        {{ $sPercent := math.Round (mul (div (float $sHeroOrder) (float $sTotalParts)) 100) }}
+        {{ $isDefault := eq $sKey $featuredSeriesKey }}
+
+        <div class="sidebar-track-view space-y-3 {{ if not $isDefault }}hidden{{ end }}"
+             data-track-series-key="{{ $sKey | lower }}"
+             data-track-series-name="{{ $sKey }}"
+             data-total-parts="{{ $sTotalParts }}"
+             data-default-order="{{ $sHeroOrder }}">
+
+          <!-- Adaptive Eyebrow Header -->
+          <div class="flex items-center justify-between gap-2">
+            <span class="sidebar-live-status-pill inline-flex items-center gap-1.5 font-mono text-[10.5px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20">
+              <span class="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" aria-hidden="true"></span>
+              <span class="sidebar-live-status-text">Part {{ $sHeroOrder }} of {{ $sTotalParts }}</span>
+            </span>
+            <span class="font-mono text-xs text-slate-600 dark:text-slate-400 font-semibold">
+              {{ $sTotalParts }} {{ if eq site.Language.Lang "it" }}Parti{{ else }}Parts{{ end }} · ~{{ $sTotalMin }}m
+            </span>
+          </div>
+
+          <!-- Series Title -->
+          <h3 class="text-sm sm:text-[15px] font-bold text-slate-900 dark:text-white leading-snug tracking-tight m-0">
+            <a href="{{ $sPart1.RelPermalink }}" class="no-underline text-current hover:text-red-600 dark:hover:text-red-500 transition-colors">
+              {{ $sKey }}
+            </a>
+          </h3>
+
+          <!-- Dynamic Progress Meter -->
+          <div class="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200/70 dark:border-slate-800/70">
+            <div class="flex items-center justify-between font-mono text-[11px] mb-1.5">
+              <span class="font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
+                <i class="fa-solid fa-compass text-red-500 text-[10px]" aria-hidden="true"></i>
+                <span>{{ if eq site.Language.Lang "it" }}Posizione nel Percorso{{ else }}Track Position{{ end }}</span>
+              </span>
+              <span class="sidebar-progress-counter font-bold text-red-600 dark:text-red-400">
+                Part {{ $sHeroOrder }} of {{ $sTotalParts }} {{ if eq $sHeroOrder $sTotalParts }}✓{{ end }}
+              </span>
+            </div>
+            <div class="w-full h-1.5 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
+              <div class="sidebar-progress-bar h-full bg-gradient-to-r from-red-600 to-rose-500 rounded-full transition-all duration-300" style="width: {{ $sPercent }}%;"></div>
+            </div>
+          </div>
+
+          <!-- Quick Prev / Next Jumpers -->
+          <div class="sidebar-quick-jumpers flex items-center justify-between gap-2 py-1.5 px-2.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-200/60 dark:border-slate-800/60 text-xs font-mono">
+            <a href="#sidebar-series-hub" class="sidebar-quick-prev inline-flex items-center gap-1 text-slate-800 dark:text-slate-100 hover:text-red-600 dark:hover:text-red-400 no-underline truncate max-w-[48%]">
+              <span>←</span>
+              <span class="truncate sidebar-quick-prev-title">{{ if eq site.Language.Lang "it" }}Parte Precedente{{ else }}Prev Part{{ end }}</span>
+            </a>
+            <span class="text-slate-300 dark:text-slate-700">|</span>
+            <a href="#sidebar-series-hub" class="sidebar-quick-next inline-flex items-center gap-1 text-slate-800 dark:text-slate-100 hover:text-red-600 dark:hover:text-red-400 no-underline truncate max-w-[48%] ml-auto text-right">
+              <span class="truncate sidebar-quick-next-title">{{ if eq site.Language.Lang "it" }}Parte Successiva{{ else }}Next Part{{ end }}</span>
+              <span>→</span>
+            </a>
+          </div>
+
+          <!-- Track Curriculum (All parts cleanly displayed, NO inner scrollbar!) -->
+          <div class="space-y-1 pt-1 border-t border-slate-100 dark:border-slate-800/80">
+            <div class="flex items-center justify-between py-0.5">
+              <p class="font-mono text-[10.5px] font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 m-0">
+                {{ if eq site.Language.Lang "it" }}Programma del Percorso{{ else }}Track Curriculum{{ end }}
+              </p>
+              <span class="text-[10px] font-mono text-slate-600 dark:text-slate-400">
+                {{ if eq site.Language.Lang "it" }}Clicca per aprire{{ else }}Click to jump{{ end }}
+              </span>
+            </div>
+
+            <div class="space-y-1 sidebar-active-playlist">
+              {{ range $idx, $p := $sSorted }}
+                {{ $partNum := add $idx 1 }}
+                {{ $isHero := and $featured (eq $p.RelPermalink $featured.RelPermalink) }}
+                
+                {{/* Clean Part Title for Sidebar Playlist */}}
+                {{ $partTitle := $p.Title }}
+                {{ $partTitle = replaceRE `^.*?(?:\([Pp]art\s*\d+\)|–\s*[Pp]art\s*\d+)[:\-–—]\s*` "" $partTitle }}
+                {{ $partTitle = replaceRE `\s*\([Pp]art\s*\d+\)$` "" $partTitle }}
+                {{ $partTitle = replaceRE `^(?:Data Engineering on GCP|mTLS for DevOps Engineers|TLS for DevOps Engineers|Passing the Red Hat OpenShift Administrator|EX280 – OpenShift Administrator Tips & Tricks|EX280 Tips & Tricks)\s*[:\-–—]\s*` "" $partTitle }}
+                {{ if eq (trim $partTitle " ") "" }}
+                  {{ $partTitle = $p.Title }}
+                {{ end }}
+
+                <a href="{{ $p.RelPermalink }}"
+                   data-track-part="{{ $partNum }}"
+                   data-track-url="{{ $p.RelPermalink }}"
+                   data-track-title="{{ $partTitle }}"
+                   class="sidebar-track-item flex items-center gap-2 py-1.5 px-2 rounded-lg no-underline transition-all group/item {{ if and $isDefault $isHero }}is-active bg-red-50 dark:bg-red-950/40 border border-red-300/80 dark:border-red-900/60 shadow-2xs{{ else }}hover:bg-slate-50 dark:hover:bg-slate-850 border border-transparent{{ end }}">
+                  
+                  <!-- Number badge -->
+                  <span class="track-badge w-5 h-5 rounded-md flex items-center justify-center font-mono text-[10.5px] font-bold shrink-0 {{ if and $isDefault $isHero }}bg-red-600 text-white shadow-2xs{{ else }}bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 group-hover/item:bg-slate-200 dark:group-hover/item:bg-slate-700{{ end }}">
+                    {{ printf "%02d" $partNum }}
+                  </span>
+
+                  <!-- Part Title -->
+                  <span class="track-title text-xs font-medium {{ if and $isDefault $isHero }}font-bold text-red-950 dark:text-red-200{{ else }}text-slate-800 dark:text-slate-200{{ end }} group-hover/item:text-red-600 dark:group-hover/item:text-red-400 transition-colors line-clamp-1 flex-1">
+                    {{ $partTitle }}
+                  </span>
+
+                  <!-- Duration & Visual Active Indicator -->
+                  <span class="shrink-0 font-mono text-[11px] flex items-center gap-1.5 {{ if and $isDefault $isHero }}font-bold text-red-600 dark:text-red-400{{ else }}text-slate-600 dark:text-slate-400{{ end }}">
+                    <span class="track-dot w-1.5 h-1.5 rounded-full bg-red-500 shrink-0 shadow-xs {{ if not (and $isDefault $isHero) }}hidden{{ end }}" aria-hidden="true"></span>
+                    <span>{{ $p.ReadingTime }}m</span>
+                  </span>
+                </a>
+              {{ end }}
+            </div>
+          </div>
+
+          <!-- Footer Quick Switch to other series -->
+          <div class="pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs">
+            <a href="{{ $sPart1.RelPermalink }}"
+               class="font-mono text-[11px] font-semibold text-slate-600 dark:text-slate-400 hover:text-red-600 dark:hover:text-red-400 no-underline transition-colors">
+              ← {{ if eq site.Language.Lang "it" }}Inizia da Parte 1{{ else }}Start from Part 1{{ end }}
+            </a>
+            <button
+              type="button"
+              class="sidebar-switch-to-all-btn font-mono text-[11px] font-bold text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 cursor-pointer bg-transparent border-0 p-0 inline-flex items-center gap-1 transition-colors group/link">
+              <span>{{ if eq site.Language.Lang "it" }}Tutte le Serie ({{ len $groupedSeries }}){{ else }}All Tracks ({{ len $groupedSeries }}){{ end }}</span>
+              <span class="transition-transform group-hover/link:translate-x-0.5">→</span>
+            </button>
+          </div>
+        </div>
+      {{ end }}
+
+      <!-- Standalone Guide Companion (Dedicated clean card when reading standalone posts) -->
+      <div id="sidebar-standalone-view" class="sidebar-track-view hidden space-y-3" data-is-standalone="true">
+        <!-- Eyebrow Header -->
+        <div class="flex items-center justify-between gap-2">
+          <span class="inline-flex items-center gap-1.5 font-mono text-[10.5px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" aria-hidden="true"></span>
+            <span>{{ if eq site.Language.Lang "it" }}Guida Autonoma{{ else }}Standalone Guide{{ end }}</span>
+          </span>
+          <span id="sidebar-standalone-readtime" class="font-mono text-xs text-slate-600 dark:text-slate-400 font-semibold">
+            ~10m read
+          </span>
+        </div>
+
+        <!-- Standalone Article Title -->
+        <h3 class="text-sm sm:text-[15px] font-bold text-slate-900 dark:text-white leading-snug tracking-tight m-0">
+          <a id="sidebar-standalone-title-link" href="#" class="no-underline text-current hover:text-red-600 dark:hover:text-red-500 transition-colors line-clamp-2">
+            <!-- Populated by JS -->
+          </a>
+        </h3>
+
+        <!-- Context & Navigation Card -->
+        <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200/70 dark:border-slate-800/70 space-y-2.5">
+          <div class="flex items-center gap-2">
+            <i class="fa-solid fa-compass text-emerald-500 text-xs" aria-hidden="true"></i>
+            <span class="font-mono text-[10.5px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
+              {{ if eq site.Language.Lang "it" }}Approfondimento di Architettura{{ else }}Architecture Deep-Dive{{ end }}
+            </span>
+          </div>
+          <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed m-0">
+            {{ if eq site.Language.Lang "it" }}Questa guida affronta un argomento specifico in modo autonomo, fuori dai percorsi multi-parte.{{ else }}This guide covers a specialized topic independently outside structured multi-part tracks.{{ end }}
+          </p>
+          <div class="pt-1 flex flex-col gap-2">
+            <button
+              type="button"
+              id="sidebar-standalone-jump-flagship-btn"
+              class="w-full py-1.5 px-2.5 rounded-lg bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-mono text-[11px] font-semibold flex items-center justify-center gap-1.5 transition-colors cursor-pointer border border-slate-200/80 dark:border-slate-700/80 shadow-2xs">
+              <i class="fa-solid fa-arrow-up text-[10px] text-red-500" aria-hidden="true"></i>
+              <span>{{ if eq site.Language.Lang "it" }}Torna al Percorso Principale (GCP){{ else }}Jump to Flagship Track (GCP){{ end }}</span>
+            </button>
+            <button
+              type="button"
+              id="sidebar-standalone-browse-tracks-btn"
+              class="w-full py-1.5 px-2.5 rounded-lg bg-red-50 hover:bg-red-100 dark:bg-red-950/40 dark:hover:bg-red-900/50 text-red-700 dark:text-red-300 font-mono text-[11px] font-semibold flex items-center justify-center gap-1.5 transition-colors cursor-pointer border border-red-200/60 dark:border-red-900/60">
+              <i class="fa-solid fa-layer-group text-[10px]" aria-hidden="true"></i>
+              <span>{{ if eq site.Language.Lang "it" }}Esplora Tutti i 5 Percorsi{{ else }}Explore All 5 Learning Tracks{{ end }} →</span>
+            </button>
+          </div>
+        </div>
       </div>
     </div>
+
 
     {{/* ============================================================== */}}
     {{/* PANEL 2: ALL SERIES DIRECTORY (SEARCH + DISCOVERABILITY)       */}}

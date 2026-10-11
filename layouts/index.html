@@ -31,7 +31,8 @@
                  data-article-title="{{ with $featured }}{{ .Title }}{{ end }}"
                  data-article-url="{{ with $featured }}{{ .RelPermalink }}{{ end }}"
                  data-article-series="{{ with $featured }}{{ .Params.series | default `` }}{{ end }}"
-                 data-article-series-order="{{ with $featured }}{{ .Params.series_order | default 0 }}{{ end }}">
+                 data-article-series-order="{{ with $featured }}{{ .Params.series_order | default 0 }}{{ end }}"
+                 data-article-readingtime="{{ with $featured }}{{ .ReadingTime }}{{ end }}">
           {{ partial "components/blog-hero" (dict "Featured" $featured "Posts" $posts) }}
         </section>
 
@@ -102,6 +103,7 @@
                        data-article-url="{{ $post.RelPermalink }}"
                        data-article-series="{{ $post.Params.series | default `` }}"
                        data-article-series-order="{{ $post.Params.series_order | default 0 }}"
+                       data-article-readingtime="{{ $post.ReadingTime }}"
                        data-categories="{{ delimit $postCats " " }}">
                     {{ partial "components/blog-card" $post }}
                   </div>
@@ -113,6 +115,7 @@
                        data-article-url="{{ $post.RelPermalink }}"
                        data-article-series="{{ $post.Params.series | default `` }}"
                        data-article-series-order="{{ $post.Params.series_order | default 0 }}"
+                       data-article-readingtime="{{ $post.ReadingTime }}"
                        data-categories="{{ delimit $postCats " " }}"
                        data-extra-article="true"
                        style="display: none;">
