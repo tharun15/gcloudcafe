@@ -251,51 +251,6 @@
     </div>
   </div>
 
-  {{/* ============================================================== */}}
-  {{/* CARD 3: CURATED ARCHITECTURE PICKS (MEDIUM STAFF-PICKS STYLE)  */}}
-  {{/* ============================================================== */}}
-  <div class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0c1220] p-5 sm:p-6 shadow-xs">
-    <div class="flex items-center justify-between gap-2 mb-3.5 pb-2.5 border-b border-slate-100 dark:border-slate-800">
-      <h3 class="font-mono text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-white flex items-center gap-1.5 m-0">
-        <i class="fa-solid fa-bookmark text-red-500 text-xs"></i>
-        <span>{{ if eq site.Language.Lang "it" }}Guide Consigliate{{ else }}Curated Deep Dives{{ end }}</span>
-      </h3>
-    </div>
-
-    {{/* Top 3 non-featured guides across different categories */}}
-    {{ $curatedList := slice }}
-    {{ range $posts }}
-      {{ if and (not .Params.featured) (lt (len $curatedList) 3) }}
-        {{ $curatedList = $curatedList | append . }}
-      {{ end }}
-    {{ end }}
-
-    <div class="space-y-4">
-      {{ range $curatedList }}
-        {{ $firstCat := index (.Params.categories | default (slice "Architecture")) 0 }}
-        <article class="group/pick">
-          <div class="flex items-center gap-2 text-[11px] text-slate-500 dark:text-slate-400 mb-1">
-            <span class="font-bold text-slate-700 dark:text-slate-300">{{ .Params.author | humanize | title }}</span>
-            <span>·</span>
-            <span class="font-mono text-red-600 dark:text-red-400 font-semibold">{{ $firstCat }}</span>
-          </div>
-
-          <h4 class="text-xs sm:text-[13px] font-bold text-slate-900 dark:text-white leading-snug group-hover/pick:text-red-600 dark:group-hover/pick:text-red-500 transition-colors line-clamp-2 mb-1">
-            <a href="{{ .RelPermalink }}" class="no-underline text-current">
-              {{ .Title }}
-            </a>
-          </h4>
-
-          <div class="flex items-center gap-2 text-[11px] font-mono text-slate-400 dark:text-slate-500">
-            <span>{{ .Date.Format "Jan 02" }}</span>
-            <span>·</span>
-            <span>{{ .ReadingTime }} min read</span>
-          </div>
-        </article>
-      {{ end }}
-    </div>
-  </div>
-
 </div>
 
 <!-- Real-time Series Search Script -->
