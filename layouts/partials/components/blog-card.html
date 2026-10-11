@@ -20,6 +20,26 @@
 {{ $firstCat := index ($categories | default (slice "Cloud")) 0 }}
 {{ $firstCatLower := $firstCat | lower }}
 
+{{/* Series & Clean Title Resolution */}}
+{{ $seriesName := $page.Params.series }}
+{{ $seriesOrder := $page.Params.series_order }}
+{{ $seriesPages := slice }}
+{{ $totalSeriesParts := 0 }}
+{{ if $seriesName }}
+  {{ $seriesPages = where site.RegularPages "Params.series" $seriesName }}
+  {{ $totalSeriesParts = len $seriesPages }}
+{{ end }}
+
+{{ $cleanTitle := $page.Title }}
+{{ if $seriesName }}
+  {{ $cleanTitle = replaceRE `^.*?(?:\([Pp]art\s*\d+\)|–\s*[Pp]art\s*\d+)[:\-–—]\s*` "" $cleanTitle }}
+  {{ $cleanTitle = replaceRE `\s*\([Pp]art\s*\d+\)$` "" $cleanTitle }}
+  {{ $cleanTitle = replaceRE `^(?:Data Engineering on GCP|mTLS for DevOps Engineers):\s*` "" $cleanTitle }}
+  {{ if eq (trim $cleanTitle " ") "" }}
+    {{ $cleanTitle = $page.Title }}
+  {{ end }}
+{{ end }}
+
 {{/* Category badges: Refined subtle architectural tags */}}
 {{ $badgeBg := "bg-slate-100 text-slate-700 dark:bg-slate-800/80 dark:text-slate-300" }}
 {{ if or (strings.Contains $firstCatLower "devops") (strings.Contains $firstCatLower "kubernetes") (strings.Contains $firstCatLower "openshift") }}
@@ -40,20 +60,35 @@
                 bg-white dark:bg-[#0c1220] border border-slate-200/90 dark:border-slate-800/90
                 hover:shadow-lg hover:border-slate-300 dark:hover:border-slate-700 transition-all duration-300 p-4 sm:p-5 group">
   <div>
-    <!-- Top Row: Category Badge (Content First) -->
-    <div class="flex items-center justify-between gap-3 mb-3">
+    <!-- Top Row: Category Badge & Series Breadcrumb -->
+    <div class="flex items-center gap-2 mb-3 flex-wrap">
       <a href="{{ `categories/` | relLangURL }}{{ $firstCat | urlize | lower }}/"
          class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-mono font-bold uppercase tracking-wider {{ $badgeBg }} no-underline hover:opacity-90 transition-opacity shrink-0">
         {{ $firstCat | humanize }}
       </a>
+
+      {{ if $seriesName }}
+        <span class="text-slate-300 dark:text-slate-700 select-none">·</span>
+        <!-- Architectural Series Breadcrumb -->
+        <a href="{{ `series/` | relLangURL }}#{{ $seriesName | urlize }}"
+           class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800/80 hover:bg-red-50 dark:hover:bg-red-950/40 border border-slate-200/80 dark:border-slate-700/80 hover:border-red-300 dark:hover:border-red-800/60 text-slate-700 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-400 font-mono text-[11px] transition-colors group/serieslink no-underline"
+           title="Part {{ $seriesOrder }} of {{ $seriesName }}">
+          <i class="fa-solid fa-layer-group text-[9px] text-red-500"></i>
+          <span class="font-medium truncate max-w-[130px] sm:max-w-[170px]">{{ $seriesName }}</span>
+          <span class="text-slate-400 dark:text-slate-500 font-bold">›</span>
+          <span class="text-red-600 dark:text-red-400 font-semibold whitespace-nowrap">
+            Part {{ $seriesOrder }}{{ if gt $totalSeriesParts 0 }}/{{ $totalSeriesParts }}{{ end }}
+          </span>
+        </a>
+      {{ end }}
     </div>
 
     <!-- Full-Width Responsive Preview Banner -->
     <a class="block w-full aspect-[16/10] sm:aspect-[16/9] rounded-xl overflow-hidden bg-slate-900 border border-slate-200 dark:border-slate-800 shrink-0 group-hover:scale-[1.02] transition-transform duration-300 relative shadow-xs no-underline mb-3.5"
        href="{{ $page.RelPermalink }}"
-       aria-label="Read: {{ $page.Title }}">
+       aria-label="Read: {{ $cleanTitle }}">
       {{ with $page.Params.image }}
-        {{ partial "image" (dict "Src" . "Context" $page "Alt" $page.Title "Class" "w-full h-full object-cover" "Loading" "lazy") }}
+        {{ partial "image" (dict "Src" . "Context" $page "Alt" $cleanTitle "Class" "w-full h-full object-cover" "Loading" "lazy") }}
       {{ else }}
         <div class="flex items-center justify-center h-full bg-slate-900 p-2 text-center font-mono text-xs text-slate-400">
           {{ substr $firstCat 0 4 }}
@@ -61,10 +96,10 @@
       {{ end }}
     </a>
 
-    <!-- Big Bold Full-Width Headline -->
+    <!-- Clean, Focused Headline -->
     <h3 class="text-base sm:text-lg lg:text-[19px] font-bold text-slate-900 dark:text-white group-hover:text-red-600 dark:group-hover:text-red-500 transition-colors line-clamp-2 leading-[1.38] tracking-tight mb-2.5">
       <a href="{{ $page.RelPermalink }}" class="no-underline text-current hover:text-red-600 dark:hover:text-red-500">
-        {{ $page.Title }}
+        {{ $cleanTitle }}
       </a>
     </h3>
 
@@ -109,11 +144,11 @@
         type="button"
         data-bookmark-btn
         data-article-url="{{ $page.RelPermalink }}"
-        data-article-title="{{ $page.Title }}"
+        data-article-title="{{ $cleanTitle }}"
         data-article-category="{{ $firstCat }}"
         data-article-readtime="{{ $page.ReadingTime }} {{ i18n `min_read` }}"
         class="w-7 h-7 rounded-lg flex items-center justify-center text-slate-400 hover:text-red-500 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
-        aria-label="Save {{ $page.Title }} for later"
+        aria-label="Save {{ $cleanTitle }} for later"
         title="{{ i18n `save_for_later` }}">
         <i class="fa-regular fa-bookmark text-xs"></i>
       </button>
@@ -130,12 +165,27 @@
                 hover:shadow-xs hover:border-slate-300 dark:hover:border-slate-700 transition-all duration-200 p-4 sm:p-5 lg:p-6 group">
   
   <div>
-    <!-- Top Row: Category Badge -->
-    <div class="flex items-center justify-between gap-3 mb-3">
+    <!-- Top Row: Category Badge & Series Breadcrumb -->
+    <div class="flex items-center gap-2 mb-3 flex-wrap">
       <a href="{{ `categories/` | relLangURL }}{{ $firstCat | urlize | lower }}/"
          class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-mono font-bold uppercase tracking-wider {{ $badgeBg }} no-underline hover:opacity-90 transition-opacity shrink-0">
         {{ $firstCat | humanize }}
       </a>
+
+      {{ if $seriesName }}
+        <span class="text-slate-300 dark:text-slate-700 select-none">·</span>
+        <!-- Architectural Series Breadcrumb -->
+        <a href="{{ `series/` | relLangURL }}#{{ $seriesName | urlize }}"
+           class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800/80 hover:bg-red-50 dark:hover:bg-red-950/40 border border-slate-200/80 dark:border-slate-700/80 hover:border-red-300 dark:hover:border-red-800/60 text-slate-700 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-400 font-mono text-[11px] sm:text-xs transition-colors group/serieslink no-underline"
+           title="Part {{ $seriesOrder }} of {{ $seriesName }}">
+          <i class="fa-solid fa-layer-group text-[9px] text-red-500"></i>
+          <span class="font-medium truncate max-w-[150px] sm:max-w-[200px]">{{ $seriesName }}</span>
+          <span class="text-slate-400 dark:text-slate-500 font-bold">›</span>
+          <span class="text-red-600 dark:text-red-400 font-semibold whitespace-nowrap">
+            Part {{ $seriesOrder }}{{ if gt $totalSeriesParts 0 }}/{{ $totalSeriesParts }}{{ end }}
+          </span>
+        </a>
+      {{ end }}
     </div>
 
     <!-- Main Content Area: Headline + Breathing Teaser (Left), Preview Thumbnail (Right) -->
@@ -144,7 +194,7 @@
         <!-- Readable Headline with Crisp Editorial Scale -->
         <h3 class="text-base sm:text-lg lg:text-[19px] font-bold text-slate-900 dark:text-white group-hover:text-red-600 dark:group-hover:text-red-500 transition-colors line-clamp-2 leading-[1.38] tracking-tight mb-2.5">
           <a href="{{ $page.RelPermalink }}" class="no-underline text-current hover:text-red-600 dark:hover:text-red-500">
-            {{ $page.Title }}
+            {{ $cleanTitle }}
           </a>
         </h3>
 
@@ -157,9 +207,9 @@
       <!-- Preview Thumbnail -->
       <a class="block w-14 h-14 rounded-xl overflow-hidden sm:w-28 sm:h-20 md:w-36 md:h-24 lg:w-40 lg:h-26 bg-slate-900 border border-slate-200 dark:border-slate-800 shrink-0 group-hover:scale-105 transition-transform duration-300 relative shadow-xs no-underline"
          href="{{ $page.RelPermalink }}"
-         aria-label="Read: {{ $page.Title }}">
+         aria-label="Read: {{ $cleanTitle }}">
         {{ with $page.Params.image }}
-          {{ partial "image" (dict "Src" . "Context" $page "Alt" $page.Title "Class" "w-full h-full object-cover" "Loading" "lazy") }}
+          {{ partial "image" (dict "Src" . "Context" $page "Alt" $cleanTitle "Class" "w-full h-full object-cover" "Loading" "lazy") }}
         {{ else }}
           <div class="flex items-center justify-center h-full bg-slate-900 p-2 text-center font-mono text-xs text-slate-400">
             {{ substr $firstCat 0 4 }}
@@ -197,11 +247,11 @@
         type="button"
         data-bookmark-btn
         data-article-url="{{ $page.RelPermalink }}"
-        data-article-title="{{ $page.Title }}"
+        data-article-title="{{ $cleanTitle }}"
         data-article-category="{{ $firstCat }}"
         data-article-readtime="{{ $page.ReadingTime }} {{ i18n `min_read` }}"
         class="w-7 h-7 rounded-lg flex items-center justify-center text-slate-400 hover:text-red-500 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
-        aria-label="Save {{ $page.Title }} for later"
+        aria-label="Save {{ $cleanTitle }} for later"
         title="{{ i18n `save_for_later` }}">
         <i class="fa-regular fa-bookmark text-xs"></i>
       </button>

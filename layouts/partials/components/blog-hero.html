@@ -26,6 +26,26 @@
   {{ $firstCat := index ($categories | default (slice "Architecture")) 0 }}
   {{ $firstCatLower := $firstCat | lower }}
 
+  {{/* Series & Clean Title Resolution */}}
+  {{ $seriesName := $page.Params.series }}
+  {{ $seriesOrder := $page.Params.series_order }}
+  {{ $seriesPages := slice }}
+  {{ $totalSeriesParts := 0 }}
+  {{ if $seriesName }}
+    {{ $seriesPages = where site.RegularPages "Params.series" $seriesName }}
+    {{ $totalSeriesParts = len $seriesPages }}
+  {{ end }}
+
+  {{ $cleanTitle := $page.Title }}
+  {{ if $seriesName }}
+    {{ $cleanTitle = replaceRE `^.*?(?:\([Pp]art\s*\d+\)|–\s*[Pp]art\s*\d+)[:\-–—]\s*` "" $cleanTitle }}
+    {{ $cleanTitle = replaceRE `\s*\([Pp]art\s*\d+\)$` "" $cleanTitle }}
+    {{ $cleanTitle = replaceRE `^(?:Data Engineering on GCP|mTLS for DevOps Engineers):\s*` "" $cleanTitle }}
+    {{ if eq (trim $cleanTitle " ") "" }}
+      {{ $cleanTitle = $page.Title }}
+    {{ end }}
+  {{ end }}
+
   {{/* Category badge: Harmonized architectural tag */}}
   {{ $heroBadgeBg := "bg-slate-100 text-slate-700 dark:bg-slate-800/80 dark:text-slate-300" }}
   {{ if or (strings.Contains $firstCatLower "devops") (strings.Contains $firstCatLower "kubernetes") (strings.Contains $firstCatLower "openshift") }}
@@ -56,20 +76,41 @@
         <!-- Left: Flagship Headline, Expanded Editorial Narrative & Meta Details -->
         <div class="md:col-span-7 flex flex-col justify-between h-full">
           <div>
-            <!-- Category Line -->
-            <div class="flex items-center gap-2.5 mb-3">
+            <!-- Category & Architectural Series Breadcrumb Line -->
+            <div class="flex items-center gap-2 sm:gap-2.5 mb-3 flex-wrap">
               <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] sm:text-xs font-mono font-bold uppercase tracking-wider {{ $heroBadgeBg }}">
                 {{ $firstCat }}
               </span>
-              <span class="hidden sm:inline-flex items-center text-xs font-mono text-slate-400 dark:text-slate-500">
-                · {{ if eq site.Language.Lang "it" }}Guida in Evidenza{{ else }}Featured Guide{{ end }}
-              </span>
+
+              {{ if $seriesName }}
+                <span class="text-slate-300 dark:text-slate-700 select-none">·</span>
+                <!-- Option A: Architectural Series Breadcrumb -->
+                <a href="{{ `series/` | relLangURL }}#{{ $seriesName | urlize }}"
+                   class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800/90 hover:bg-red-50 dark:hover:bg-red-950/40 border border-slate-200/80 dark:border-slate-700/80 hover:border-red-300 dark:hover:border-red-800/60 text-slate-700 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-400 font-mono text-[11px] sm:text-xs transition-colors group/serieslink no-underline"
+                   title="View full curriculum for {{ $seriesName }}">
+                  <i class="fa-solid fa-layer-group text-[10px] text-red-500"></i>
+                  <span class="font-semibold truncate max-w-[180px] sm:max-w-xs">{{ $seriesName }}</span>
+                  <span class="text-slate-400 dark:text-slate-500 font-bold">›</span>
+                  <span class="text-red-600 dark:text-red-400 font-bold whitespace-nowrap">
+                    Part {{ $seriesOrder }}{{ if gt $totalSeriesParts 0 }} of {{ $totalSeriesParts }}{{ end }}
+                  </span>
+                  {{ if and (gt $totalSeriesParts 0) (eq $seriesOrder $totalSeriesParts) }}
+                    <span class="hidden md:inline-flex items-center px-1.5 py-0.2 text-[9px] rounded bg-emerald-100 text-emerald-700 dark:bg-emerald-950/70 dark:text-emerald-400 font-bold uppercase tracking-wider">
+                      Complete
+                    </span>
+                  {{ end }}
+                </a>
+              {{ else }}
+                <span class="hidden sm:inline-flex items-center text-xs font-mono text-slate-400 dark:text-slate-500">
+                  · {{ if eq site.Language.Lang "it" }}Guida in Evidenza{{ else }}Featured Guide{{ end }}
+                </span>
+              {{ end }}
             </div>
 
             <!-- Big, Commanding Headline with Generous Breathing Room -->
             <h1 id="featured-post-title" class="text-xl sm:text-2xl lg:text-[26px] xl:text-[28px] font-bold text-slate-900 dark:text-white leading-[1.36] tracking-tight mb-3.5 group-hover:text-red-600 dark:group-hover:text-red-500 transition-colors">
               <a href="{{ $page.RelPermalink }}" class="no-underline text-current hover:text-red-600 dark:hover:text-red-500">
-                {{ $page.Title }}
+                {{ $cleanTitle }}
               </a>
             </h1>
 
@@ -105,11 +146,11 @@
                 type="button"
                 data-bookmark-btn
                 data-article-url="{{ $page.RelPermalink }}"
-                data-article-title="{{ $page.Title }}"
+                data-article-title="{{ $cleanTitle }}"
                 data-article-category="{{ $firstCat }}"
                 data-article-readtime="{{ $page.ReadingTime }} {{ i18n `min_read` }}"
                 class="w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 hover:text-red-500 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer shrink-0"
-                aria-label="Save {{ $page.Title }} for later"
+                aria-label="Save {{ $cleanTitle }} for later"
                 title="{{ i18n `save_for_later` }}">
                 <i class="fa-regular fa-bookmark text-sm"></i>
               </button>
@@ -120,12 +161,12 @@
         <!-- Right: Architectural Blueprint Artwork (Proportional 5-Col Fit) -->
         <div class="md:col-span-5 w-full">
           <div class="rounded-xl overflow-hidden shadow-xs border border-slate-200/80 dark:border-slate-800 aspect-[16/10] sm:aspect-[16/10] bg-slate-950 hero-blueprint-img group/preview">
-            <a href="{{ $page.RelPermalink }}" class="block w-full h-full relative no-underline overflow-hidden" aria-label="Read blueprint: {{ $page.Title }}">
+            <a href="{{ $page.RelPermalink }}" class="block w-full h-full relative no-underline overflow-hidden" aria-label="Read blueprint: {{ $cleanTitle }}">
               {{ with $page.Params.image }}
-                {{ partial "image" (dict "Src" . "Context" $page "Alt" $page.Title "Class" "w-full h-full object-cover group-hover/preview:scale-[1.03] transition-transform duration-500 ease-out" "Loading" "eager" "FetchPriority" "high") }}
+                {{ partial "image" (dict "Src" . "Context" $page "Alt" $cleanTitle "Class" "w-full h-full object-cover group-hover/preview:scale-[1.03] transition-transform duration-500 ease-out" "Loading" "eager" "FetchPriority" "high") }}
               {{ else }}
                 <div class="w-full h-full flex items-center justify-center p-3 bg-slate-900 text-slate-400 font-mono text-xs text-center">
-                  {{ $page.Title }}
+                  {{ $cleanTitle }}
                 </div>
               {{ end }}
             </a>
