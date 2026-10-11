@@ -102,4 +102,31 @@ describe('Homepage & Site-Wide Usability Heuristics & Accessibility Suite', () =
     expect(jsContent).toContain('function initHomepageCategoryFilters()');
     expect(jsContent).toContain('initHomepageCategoryFilters();');
   });
+
+  it('delivers universal multi-track adaptive reading companion in the homepage sidebar', () => {
+    const sidebarHtml = fs.readFileSync(path.join(rootDir, 'layouts/partials/components/homepage-sidebar.html'), 'utf8');
+    const jsContent = fs.readFileSync(path.join(rootDir, 'assets/js/blog-enhancements.js'), 'utf8');
+    const indexHtml = fs.readFileSync(path.join(rootDir, 'layouts/index.html'), 'utf8');
+
+    // Sidebar renders track views for each series in $groupedSeries
+    expect(sidebarHtml).toContain('class="sidebar-track-view');
+    expect(sidebarHtml).toContain('data-track-series-key=');
+    expect(sidebarHtml).toContain('data-track-series-name=');
+    expect(sidebarHtml).toContain('sidebar-active-playlist');
+
+    // Standalone view for independent deep dives without fake track progress
+    expect(sidebarHtml).toContain('id="sidebar-standalone-view"');
+    expect(sidebarHtml).toContain('id="sidebar-standalone-jump-flagship-btn"');
+    expect(sidebarHtml).toContain('id="sidebar-standalone-browse-tracks-btn"');
+
+    // Feed article tags expose necessary series metadata
+    expect(indexHtml).toContain('data-article-series=');
+    expect(indexHtml).toContain('data-article-series-order=');
+    expect(indexHtml).toContain('data-article-readingtime=');
+
+    // JS manages dynamic activation without cross-track confusion
+    expect(jsContent).toContain('function activateTrack(');
+    expect(jsContent).toContain('function activateStandalone(');
+    expect(jsContent).toContain('evaluateActiveFeedCard();');
+  });
 });
