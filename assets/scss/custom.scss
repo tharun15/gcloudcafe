@@ -82,20 +82,12 @@
   }
 }
 
-/* Editorial Horizontal Stream: Open, breathable, unboxed typography flow */
+/* Horizontal Feed Card Refinements */
 .blog-card.blog-card-horizontal {
-  background-color: transparent !important;
-  border-top: none !important;
-  border-left: none !important;
-  border-right: none !important;
-  border-radius: 0 !important;
-  box-shadow: none !important;
-  transform: none !important;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 
   &:hover {
-    background-color: transparent !important;
-    box-shadow: none !important;
-    transform: none !important;
+    transform: translateY(-2px);
   }
 }
 
