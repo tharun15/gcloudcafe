@@ -107,7 +107,7 @@
           <div class="flex items-center justify-between font-mono text-[11px] mb-1.5">
             <span class="font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
               <span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
-              {{ if eq site.Language.Lang "it" }}Posizione Guida Hero{{ else }}Hero Guide Location{{ end }}
+              {{ if eq site.Language.Lang "it" }}Progresso Curriculum{{ else }}Track Progress{{ end }}
             </span>
             <span class="font-bold text-red-600 dark:text-red-400">
               Part {{ $heroOrder }} of {{ $totalParts }}
@@ -155,16 +155,13 @@
                 {{ $partTitle }}
               </span>
 
-              <!-- Status Tag -->
-              {{ if $isHero }}
-                <span class="shrink-0 text-[9.5px] font-mono font-bold uppercase px-1.5 py-0.5 rounded bg-red-600 text-white tracking-wider">
-                  ★ {{ if eq site.Language.Lang "it" }}Hero{{ else }}Hero Guide{{ end }}
-                </span>
-              {{ else }}
-                <span class="shrink-0 font-mono text-[11px] text-slate-400 dark:text-slate-500">
-                  {{ $p.ReadingTime }}m
-                </span>
-              {{ end }}
+              <!-- Duration & Visual Active Indicator -->
+              <span class="shrink-0 font-mono text-[11px] flex items-center gap-1.5 {{ if $isHero }}font-bold text-red-600 dark:text-red-400{{ else }}text-slate-400 dark:text-slate-500{{ end }}">
+                {{ if $isHero }}
+                  <span class="w-1.5 h-1.5 rounded-full bg-red-500 shrink-0 shadow-xs" aria-hidden="true"></span>
+                {{ end }}
+                <span>{{ $p.ReadingTime }}m</span>
+              </span>
             </a>
           {{ end }}
         </div>
