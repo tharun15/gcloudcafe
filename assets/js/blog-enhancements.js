@@ -10703,36 +10703,43 @@ document.addEventListener('DOMContentLoaded', initDevTerminalBlocks);
       });
     }
 
-    var focalLine = 220; // Reading focal line in pixels from top of viewport
-
     function evaluateActiveFeedCard() {
       var feedArticles = document.querySelectorAll('[data-feed-article="true"]');
       if (!feedArticles || feedArticles.length === 0) return;
 
+      var headerOffset = 75; // sticky header height in pixels
+      var viewportHeight = window.innerHeight || document.documentElement.clientHeight;
+      var focalY = headerOffset + (viewportHeight - headerOffset) * 0.42; // optimal eye-level reading line
+
       var activeTarget = null;
+      var bestScore = -Infinity;
+
       for (var i = 0; i < feedArticles.length; i++) {
         var card = feedArticles[i];
         if (card.offsetParent === null) continue;
         var rect = card.getBoundingClientRect();
-        if (rect.top <= focalLine && rect.bottom > focalLine) {
-          activeTarget = card;
-          break;
-        }
-      }
 
-      if (!activeTarget) {
-        var closestDist = Infinity;
-        for (var j = 0; j < feedArticles.length; j++) {
-          var c = feedArticles[j];
-          if (c.offsetParent === null) continue;
-          var r = c.getBoundingClientRect();
-          if (r.bottom > 0 && r.top < window.innerHeight) {
-            var dist = Math.abs(r.top - focalLine);
-            if (dist < closestDist) {
-              closestDist = dist;
-              activeTarget = c;
-            }
-          }
+        // Skip articles completely outside the reading viewport
+        if (rect.bottom <= headerOffset || rect.top >= viewportHeight) continue;
+
+        var visibleTop = Math.max(headerOffset, rect.top);
+        var visibleBottom = Math.min(viewportHeight, rect.bottom);
+        var visibleHeight = Math.max(0, visibleBottom - visibleTop);
+        if (visibleHeight <= 0) continue;
+
+        var containsFocal = (rect.top <= focalY && rect.bottom >= focalY);
+        var cardCenter = (rect.top + rect.bottom) / 2;
+        var distToFocal = Math.abs(cardCenter - focalY);
+
+        // Combined relevance score: focal line containment + visible prominence - distance to center
+        var score = 0;
+        if (containsFocal) score += 10000;
+        score += visibleHeight * 10;
+        score -= distToFocal;
+
+        if (score > bestScore) {
+          bestScore = score;
+          activeTarget = card;
         }
       }
 
