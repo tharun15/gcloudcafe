@@ -323,8 +323,9 @@
           {{ end }}
 
           <div data-series-card 
+               id="{{ .Key | urlize }}"
                data-domains="{{ delimit $cardDomains " " }}"
-               class="series-card rounded-2xl bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-slate-800 p-5 sm:p-6 shadow-xs hover:border-slate-300 dark:hover:border-slate-700 hover:shadow-sm transition-all duration-300 group">
+               class="scroll-mt-24 series-card rounded-2xl bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-slate-800 p-5 sm:p-6 shadow-xs hover:border-slate-300 dark:hover:border-slate-700 hover:shadow-sm transition-all duration-300 group">
             
             <div class="flex flex-col sm:flex-row items-start justify-between gap-5 sm:gap-6">
               
@@ -368,13 +369,20 @@
 
                   <div class="mt-2.5 pt-2 border-t border-slate-200 dark:border-slate-800 space-y-1">
                     {{ range $idx, $p := $sorted }}
+                      {{ $lessonTitle := $p.Title }}
+                      {{ $lessonTitle = replaceRE `^.*?(?:\([Pp]art\s*\d+\)|–\s*[Pp]art\s*\d+)[:\-–—]\s*` "" $lessonTitle }}
+                      {{ $lessonTitle = replaceRE `\s*\([Pp]art\s*\d+\)$` "" $lessonTitle }}
+                      {{ $lessonTitle = replaceRE `^(?:Data Engineering on GCP|mTLS for DevOps Engineers|TLS for DevOps Engineers):\s*` "" $lessonTitle }}
+                      {{ if eq (trim $lessonTitle " ") "" }}
+                        {{ $lessonTitle = $p.Title }}
+                      {{ end }}
                       <a href="{{ $p.RelPermalink }}" class="flex items-center justify-between p-1.5 rounded-lg hover:bg-white dark:hover:bg-slate-800 text-slate-800 dark:text-slate-200 no-underline transition-all group/item">
                         <div class="flex items-center gap-2 min-w-0 pr-2">
                           <span class="w-4 h-4 rounded flex items-center justify-center font-mono text-[10px] font-bold shrink-0 bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 group-hover/item:bg-red-600 group-hover/item:text-white transition-colors">
                             {{ printf "%02d" (add $idx 1) }}
                           </span>
                           <span class="truncate text-xs font-medium group-hover/item:text-red-600 dark:group-hover/item:text-red-500 transition-colors">
-                            {{ $p.Title }}
+                            {{ $lessonTitle }}
                           </span>
                         </div>
                         <span class="font-mono text-xs text-slate-400 shrink-0">
@@ -444,7 +452,7 @@
     </div>
   </section>
 
-  {{/* Interactive Vanilla JS for Domain Filter Chips */}}
+  {{/* Interactive Vanilla JS for Domain Filter Chips & Deep Linking */}}
   <script>
     document.addEventListener('DOMContentLoaded', function () {
       var filterButtons = document.querySelectorAll('.series-filter-btn');
@@ -455,19 +463,16 @@
         btn.addEventListener('click', function () {
           var targetFilter = this.getAttribute('data-series-filter');
 
-          // Reset all filter buttons
           filterButtons.forEach(function (b) {
             b.classList.remove('category-tab-active', 'bg-white', 'dark:bg-slate-900', 'text-slate-900', 'dark:text-white', 'shadow-2xs', 'font-semibold');
             b.classList.add('text-slate-600', 'dark:text-slate-400', 'font-medium', 'bg-transparent');
             b.setAttribute('aria-selected', 'false');
           });
 
-          // Activate clicked button
           this.classList.remove('text-slate-600', 'dark:text-slate-400', 'font-medium', 'bg-transparent');
           this.classList.add('category-tab-active', 'bg-white', 'dark:bg-slate-900', 'text-slate-900', 'dark:text-white', 'shadow-2xs', 'font-semibold');
           this.setAttribute('aria-selected', 'true');
 
-          // Filter card visibility
           var visibleCount = 0;
           seriesCards.forEach(function (card) {
             var domainsAttr = card.getAttribute('data-domains') || '';
@@ -489,6 +494,40 @@
           }
         });
       });
+
+      // Handle Direct Hash / Deep Linking to Specific Series (e.g. #tls-mtls-architecture-for-devops-engineers)
+      function handleDeepLink() {
+        var hash = window.location.hash;
+        if (!hash) return;
+        var targetId = hash.replace(/^#/, '');
+        var targetCard = document.getElementById(targetId);
+        if (targetCard) {
+          // If card is filtered out, reset filter to "all"
+          if (targetCard.style.display === 'none') {
+            var allBtn = document.querySelector('[data-series-filter="all"]');
+            if (allBtn) allBtn.click();
+          }
+
+          // Open syllabus lessons accordion
+          var drawer = targetCard.querySelector('.series-card-drawer');
+          if (drawer) {
+            drawer.open = true;
+          }
+
+          // Smoothly scroll to target card with offset
+          setTimeout(function () {
+            targetCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            // Add prominent focus glow ring
+            targetCard.classList.add('ring-2', 'ring-red-500', 'shadow-lg');
+            setTimeout(function () {
+              targetCard.classList.remove('ring-2', 'ring-red-500', 'shadow-lg');
+            }, 3500);
+          }, 150);
+        }
+      }
+
+      handleDeepLink();
+      window.addEventListener('hashchange', handleDeepLink);
     });
   </script>
 {{ end }}
