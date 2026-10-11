@@ -25,7 +25,13 @@
       <main class="w-full min-w-0 lg:col-span-8 space-y-8 sm:space-y-10" id="primary-content-column">
         
         <!-- Flagship Hero Guide Card (Positioned At Top Parallel to Right Navigation) -->
-        <section aria-label="Featured Architecture Guide" class="w-full">
+        <section aria-label="Featured Architecture Guide"
+                 class="w-full"
+                 data-feed-article="true"
+                 data-article-title="{{ with $featured }}{{ .Title }}{{ end }}"
+                 data-article-url="{{ with $featured }}{{ .RelPermalink }}{{ end }}"
+                 data-article-series="{{ with $featured }}{{ .Params.series | default `` }}{{ end }}"
+                 data-article-series-order="{{ with $featured }}{{ .Params.series_order | default 0 }}{{ end }}">
           {{ partial "components/blog-hero" (dict "Featured" $featured "Posts" $posts) }}
         </section>
 
@@ -91,12 +97,22 @@
                 {{ if lt $idx 9 }}
                   <div class="w-full transition-all duration-300"
                        data-article-card="true"
+                       data-feed-article="true"
+                       data-article-title="{{ $post.Title }}"
+                       data-article-url="{{ $post.RelPermalink }}"
+                       data-article-series="{{ $post.Params.series | default `` }}"
+                       data-article-series-order="{{ $post.Params.series_order | default 0 }}"
                        data-categories="{{ delimit $postCats " " }}">
                     {{ partial "components/blog-card" $post }}
                   </div>
                 {{ else }}
                   <div class="w-full opacity-0 translate-y-4 transition-all duration-500 ease-out"
                        data-article-card="true"
+                       data-feed-article="true"
+                       data-article-title="{{ $post.Title }}"
+                       data-article-url="{{ $post.RelPermalink }}"
+                       data-article-series="{{ $post.Params.series | default `` }}"
+                       data-article-series-order="{{ $post.Params.series_order | default 0 }}"
                        data-categories="{{ delimit $postCats " " }}"
                        data-extra-article="true"
                        style="display: none;">
