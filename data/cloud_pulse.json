@@ -1,5 +1,24 @@
 [
   {
+    "id": "5a2dc9e4-9490-47b6-b0bb-1666516ff431",
+    "title": "Azure Extends Hardware Life for Sustainable Cloud",
+    "content": "🎯 What Changed: Azure is implementing more efficient systems and Circular Centers to extend the useful life of its datacenter hardware.\n💡 Engineering Impact: This initiative promises a more sustainable and resilient cloud foundation, potentially leading to improved long-term reliability and reduced environmental footprint for cloud-native applications.",
+    "tags": [
+      "#Azure",
+      "#CloudArchitecture",
+      "#CloudNews"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-10-11T11:19:12.259329+00:00",
+    "link_url": "https://azure.microsoft.com/en-us/blog/responsible-infrastructure-at-hyperscale-managing-the-full-lifecycle-of-azure-hardware/",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 101.3h without manual admin curation.",
+    "updated_at": "2026-10-11T14:45:39.984Z"
+  },
+  {
     "id": "aaea00c2-5c3f-4d72-939e-7fb9895968c1",
     "title": "Amazon Bedrock now supports reasoning summaries for OpenAI models",
     "content": "🎯 What Changed: Amazon Bedrock now supports the reasoning.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
@@ -277,25 +296,5 @@
     "eligibility_reason": "[Auto-Published] Published automatically after 76.9h without manual admin curation.",
     "updated_at": "2026-10-10T14:19:59.951+00:00",
     "ageDays": 0.7420631712962963
-  },
-  {
-    "id": "90d84576-ba89-415c-8662-804a9df89e4f",
-    "title": "Lightspeed Secures On-Prem RHEL: Enhanced Vulnerability Management",
-    "content": "🎯 What Changed: Red Hat Lightspeed now offers enhanced on-premise vulnerability monitoring and remediation for RHEL environments, ensuring data sovereignty.\n💡 Engineering Impact: This streamlines vulnerability discovery, prioritization, and remediation for RHEL fleets, reducing operational overhead. Engineers gain better situational awareness and maintain data sovereignty for critical on-premise systems.",
-    "tags": [
-      "#OpenShift",
-      "#RedHat",
-      "#DevOps"
-    ],
-    "upvotes": 1,
-    "downvotes": 0,
-    "score": 1,
-    "author": "Cloud Newsroom Bot",
-    "created_at": "2026-10-10T11:02:29.586178+00:00",
-    "link_url": "https://www.redhat.com/en/blog/using-premise-red-hat-lightspeed-capabilities-monitor-vulnerabilities-and-apply-advisor-remediations",
-    "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 82.4h without manual admin curation.",
-    "updated_at": "2026-10-10T19:53:16.267+00:00",
-    "ageDays": 0.7421136342592592
   }
 ]
