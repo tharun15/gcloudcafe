@@ -82,6 +82,23 @@
   }
 }
 
+/* Editorial Horizontal Stream: Open, breathable, unboxed typography flow */
+.blog-card.blog-card-horizontal {
+  background-color: transparent !important;
+  border-top: none !important;
+  border-left: none !important;
+  border-right: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  transform: none !important;
+
+  &:hover {
+    background-color: transparent !important;
+    box-shadow: none !important;
+    transform: none !important;
+  }
+}
+
 .blog-card-media,
 .blog-hero-media {
   @apply block overflow-hidden relative rounded-t-2xl bg-slate-100 dark:bg-slate-900/60 border-b border-border/40 dark:border-darkmode-border/40;
