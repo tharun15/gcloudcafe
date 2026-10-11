@@ -10658,34 +10658,65 @@ document.addEventListener('DOMContentLoaded', initDevTerminalBlocks);
     }
 
     var feedArticles = document.querySelectorAll('[data-feed-article="true"]');
-    if (feedArticles && feedArticles.length > 0 && ('IntersectionObserver' in window)) {
-      var observer = new IntersectionObserver(function(entries) {
-        var intersecting = entries.filter(function(e) { return e.isIntersecting; });
-        if (intersecting.length === 0) return;
+    if (!feedArticles || feedArticles.length === 0) return;
 
-        intersecting.sort(function(a, b) {
-          return Math.abs(a.boundingClientRect.top - 140) - Math.abs(b.boundingClientRect.top - 140);
-        });
+    var focalLine = 220; // Reading focal line in pixels from top of viewport
 
-        var target = intersecting[0].target;
-        var seriesName = target.getAttribute('data-article-series') || '';
-        var seriesOrder = parseInt(target.getAttribute('data-article-series-order') || '0', 10);
-        var articleTitle = target.getAttribute('data-article-title') || '';
+    function evaluateActiveFeedCard() {
+      var activeTarget = null;
 
-        if (seriesName && seriesName.toLowerCase() === activeSeriesName.toLowerCase() && seriesOrder > 0) {
-          updateToPart(seriesOrder);
-        } else if (articleTitle) {
-          setOutOfTrack(articleTitle);
+      // 1. First priority: find article directly intersecting the reading focal line
+      for (var i = 0; i < feedArticles.length; i++) {
+        var card = feedArticles[i];
+        var rect = card.getBoundingClientRect();
+        if (rect.top <= focalLine && rect.bottom > focalLine) {
+          activeTarget = card;
+          break;
         }
-      }, {
-        rootMargin: '-60px 0px -40% 0px',
-        threshold: [0.1, 0.3, 0.6]
-      });
+      }
 
-      feedArticles.forEach(function(art) {
-        observer.observe(art);
-      });
+      // 2. Second priority: if between cards or at top/bottom, find the visible card closest to focal line
+      if (!activeTarget) {
+        var closestDist = Infinity;
+        for (var j = 0; j < feedArticles.length; j++) {
+          var c = feedArticles[j];
+          var r = c.getBoundingClientRect();
+          if (r.bottom > 0 && r.top < window.innerHeight) {
+            var dist = Math.abs(r.top - focalLine);
+            if (dist < closestDist) {
+              closestDist = dist;
+              activeTarget = c;
+            }
+          }
+        }
+      }
+
+      if (!activeTarget) return;
+
+      var seriesName = activeTarget.getAttribute('data-article-series') || '';
+      var seriesOrder = parseInt(activeTarget.getAttribute('data-article-series-order') || '0', 10);
+      var articleTitle = activeTarget.getAttribute('data-article-title') || '';
+
+      if (seriesName && seriesName.toLowerCase() === activeSeriesName.toLowerCase() && seriesOrder > 0) {
+        updateToPart(seriesOrder);
+      } else if (articleTitle) {
+        setOutOfTrack(articleTitle);
+      }
     }
+
+    var ticking = false;
+    function onScroll() {
+      if (!ticking) {
+        window.requestAnimationFrame(function() {
+          evaluateActiveFeedCard();
+          ticking = false;
+        });
+        ticking = true;
+      }
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll, { passive: true });
 
     if (outOfTrackJumpBtn) {
       outOfTrackJumpBtn.addEventListener('click', function() {
@@ -10695,6 +10726,7 @@ document.addEventListener('DOMContentLoaded', initDevTerminalBlocks);
 
     // Initialize with default order
     updateToPart(initialOrder);
+    evaluateActiveFeedCard();
   }
 
   if (document.readyState === 'loading') {
