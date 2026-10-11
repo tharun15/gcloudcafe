@@ -11,10 +11,9 @@ describe('Homepage & Site-Wide Usability Heuristics & Accessibility Suite', () =
     expect(cardHtml).toContain('text-xs font-mono');
   });
 
-  it('Issue 4: eliminates long all-caps text in Browse all topics heading and site-wide headings', () => {
+  it('Issue 4: eliminates long all-caps text in site-wide headings', () => {
     const indexHtml = fs.readFileSync(path.join(rootDir, 'layouts/index.html'), 'utf8');
     expect(indexHtml).not.toContain('BROWSE ALL TOPICS');
-    expect(indexHtml).toContain('Browse all topics');
 
     const newsletterHtml = fs.readFileSync(path.join(rootDir, 'layouts/newsletter/list.html'), 'utf8');
     expect(newsletterHtml).not.toContain('SAMPLE EDITIONS FROM THE ARCHIVE');
@@ -43,11 +42,11 @@ describe('Homepage & Site-Wide Usability Heuristics & Accessibility Suite', () =
     expect(blogSingleHtml).toContain('text-sm font-medium');
   });
 
-  it('Issue 9: optimizes Browse All Topics grid padding, text size, and removes inline styles', () => {
+  it('Issue 9: streamlines redundant topic grid into accessible horizontal category filter', () => {
     const indexHtml = fs.readFileSync(path.join(rootDir, 'layouts/index.html'), 'utf8');
     expect(indexHtml).not.toContain('style="border: 1px solid #e2e8f0;"');
-    expect(indexHtml).toContain('text-sm sm:text-base font-semibold');
-    expect(indexHtml).toContain('px-4 py-3 sm:py-3.5');
+    expect(indexHtml).toContain('id="homepage-category-filters"');
+    expect(indexHtml).toContain('data-category-filter="all"');
   });
 
   it('Issue 6: aligns header search button with multi-purpose Search & Menu overlay', () => {
