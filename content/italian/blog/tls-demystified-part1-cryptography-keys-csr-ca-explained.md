@@ -13,6 +13,13 @@ series_image: "/images/series-images/tls-series-poster.jpg"
 series_description: "Padroneggia l'architettura TLS e mTLS moderna per DevOps e Kubernetes: generazione chiavi, CSR, catene di fiducia PKI, handshake 1-RTT vs 0-RTT, cipher suite, Java Keystore e ripristino da incidenti di produzione."
 featured: false
 draft: false
+faqs:
+  - question: "Qual è la differenza tra una chiave privata e un CSR in TLS?"
+    answer: "Una chiave privata è una chiave matematica segreta usata per decifrare dati e creare firme digitali. Una Certificate Signing Request (CSR) contiene la chiave pubblica e i dati identificativi dell'organizzazione inviati a una Certificate Authority (CA) per ottenere il certificato X.509."
+  - question: "Cos'è il Subject Alternative Name (SAN) nei certificati TLS moderni?"
+    answer: "SAN è un'estensione X.509 che specifica tutti gli hostname, domini e indirizzi IP protetti dal certificato. I browser e i client TLS moderni richiedono il campo SAN e rifiutano i certificati basati esclusivamente sul Common Name (CN)."
+  - question: "Come verificare una catena di certificati X.509 con OpenSSL?"
+    answer: "Esegui openssl verify -CAfile ca-chain.crt server.crt. Se il certificato è stato firmato correttamente da un'autorità nella catena, OpenSSL restituirà server.crt: OK."
 ---
 
 Quando inserisci una password, invii i dati di una carta di credito o distribuisci una route di ingress in produzione, come fai a sapere che qualcuno non stia intercettando silenziosamente ogni singolo byte trasmesso?

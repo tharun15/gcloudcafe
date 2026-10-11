@@ -10,6 +10,13 @@ author: tharun-vempati
 series: "EX280 – OpenShift Administrator Tips & Tricks"
 series_order: 2
 draft: false
+faqs:
+  - question: "What is the difference between Edge and Re-encrypt routes in OpenShift?"
+    answer: "Edge termination decrypts TLS traffic at the OpenShift Router (HAProxy) and sends plain HTTP to backend pods. Re-encrypt terminates TLS at the Router using a public certificate and re-encrypts traffic to the pod using internal cluster certificates for end-to-end encryption."
+  - question: "How do OpenShift NetworkPolicies enforce pod isolation?"
+    answer: "By default, pod networking is non-isolated. Once a NetworkPolicy selects a pod using podSelector, all ingress traffic not explicitly matched in the policy rules is blocked, enforcing default-deny behavior for selected workloads."
+  - question: "How do you allow ingress traffic only from specific OpenShift projects?"
+    answer: "In the NetworkPolicy ingress.from stanza, use namespaceSelector: matchLabels: ... to restrict ingress traffic strictly to pods residing in namespaces labeled with specified keys."
 ---
 
 Welcome to the second part of my **EX280 – OpenShift Administrator Tips & Tricks** mini-series!  

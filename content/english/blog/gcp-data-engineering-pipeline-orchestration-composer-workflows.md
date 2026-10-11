@@ -13,6 +13,13 @@ series: "Data Engineering on Google Cloud"
 series_order: 7
 series_description: "A practical architecture and hands-on guide to Google Cloud data engineering: Cloud Storage landing, BigLake external connections, partitioned and clustered BigQuery tables, streaming ingestion pipelines, Medallion transformations, and Dataform SQLX pipelines."
 series_image: "/images/series-images/gcp-data-engineering-series-poster.jpg"
+faqs:
+  - question: "What is the difference between Managed Service for Apache Airflow (Cloud Composer) and Cloud Workflows?"
+    answer: "Managed Service for Apache Airflow (Cloud Composer) is designed for complex batch data DAGs, multi-step dependency graphs, backfills, and cross-system ETL. Cloud Workflows is a lightweight, serverless JSON/YAML state machine ideal for fast, event-driven API orchestration."
+  - question: "How do you trigger Dataform transformations from Apache Airflow?"
+    answer: "Use DataformCreateCompilationResultOperator to compile the Git repository revision, followed by DataformCreateWorkflowInvocationOperator to invoke the compiled DAG using Airflow XCom task references."
+  - question: "Why should you use reschedule mode instead of poke mode for Airflow GCS sensors?"
+    answer: "In poke mode, the sensor holds a worker process slot continuously while waiting, exhausting the worker pool. In reschedule mode, the sensor checks the condition, releases the worker slot, and reschedules itself at the next check interval."
 ---
 
 

@@ -10,6 +10,13 @@ author: tharun-vempati
 series: "EX280 – Suggerimenti e Trucchi per l'Amministratore OpenShift"
 series_order: 4
 draft: false
+faqs:
+  - question: "Qual è la differenza tra probe di Liveness e Readiness in OpenShift?"
+    answer: "Il probe di Liveness rileva se un'applicazione è bloccata o in errore irreversibile e riavvia il container. Il probe di Readiness verifica se l'applicazione è pronta a ricevere traffico; se fallisce, il pod viene rimosso temporaneamente dagli endpoint di servizio senza riavviarlo."
+  - question: "Come scala i deployment l'Horizontal Pod Autoscaler (HPA) in OpenShift?"
+    answer: "HPA interroga periodicamente le metriche di risorse (CPU o memoria) dal server delle metriche e regola il valore spec.replicas del Deployment per mantenere l'utilizzo medio target."
+  - question: "Perché le richieste di CPU e memoria devono essere configurate per usare l'HPA?"
+    answer: "HPA calcola le percentuali di utilizzo target rispetto alle richieste (requests) del container. Se le richieste non sono definite nelle specifiche del pod, HPA non può calcolare la percentuale di scaling."
 ---
 
 Benvenuti alla quarta parte della mia mini-serie **EX280 – Suggerimenti e Trucchi per l'Amministratore OpenShift**!  

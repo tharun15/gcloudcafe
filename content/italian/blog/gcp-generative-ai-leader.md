@@ -8,6 +8,13 @@ categories: ["Google Cloud", "AI"]
 author: "tharun-vempati"
 tags: ["generative-ai", "google-cloud", "certification", "prompt-engineering", "gemini", "vertex-ai", "ai-leadership"]
 draft: false
+faqs:
+  - question: "Quali argomenti sono trattati nella certificazione Google Cloud Generative AI Leader?"
+    answer: "La certificazione valuta la comprensione fondamentale dell'IA generativa, i modelli Gemini di Google, Vertex AI Studio, Model Garden, prompt engineering, tecniche di fine-tuning, governance dell'IA e principi di IA responsabile."
+  - question: "Cos'è Vertex AI Model Garden?"
+    answer: "Model Garden è un hub gestito all'interno di Vertex AI che fornisce accesso a modelli proprietari di Google (Gemini, Imagen), modelli open source (Gemma, Llama) e modelli di terze parti con deployment immediato su endpoint gestiti."
+  - question: "Qual è la differenza tra prompt tuning e fine-tuning del modello in Vertex AI?"
+    answer: "Il prompt tuning aggiunge token virtuali apprendibili all'input senza modificare i pesi del modello. Il fine-tuning aggiorna i parametri del modello usando dataset specifici, richiedendo maggiori risorse di calcolo."
 ---
 
 Ieri sera, dopo aver superato la certificazione **Google Cloud Generative AI Leader**, si è aperto un viaggio affascinante nel mondo dell'**Intelligenza Artificiale Generativa**: una storia che non riguarda solo la tecnologia, ma il modo in cui l'**AI sta trasformando la creatività, il business e l'innovazione aziendale**.

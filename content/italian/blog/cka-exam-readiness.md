@@ -8,6 +8,13 @@ categories: ["Kubernetes", "CKA"]
 author: "tharun-vempati"
 tags: ["kubernetes", "cka", "certification", "devops", "cloud-native"]
 draft: false
+faqs:
+  - question: "Qual è il motivo più comune per cui i candidati non superano l'esame CKA?"
+    answer: "La gestione del tempo e la ricerca della sintassi dei comandi. Nell'esame pratico CKA, chi scrive i manifesti YAML da zero rischia di esaurire il tempo a disposizione. Chi supera la prova fa largo uso dei comandi imperativi con kubectl, alias rapidi e cambio veloce di contesto."
+  - question: "L'esame CKA è interamente pratico o prevede domande a risposta multipla?"
+    answer: "L'esame Certified Kubernetes Administrator (CKA) è al 100% pratico e basato su prestazioni. Non ci sono domande a risposta multipla; si risolvono da 15 a 17 problemi reali di cluster direttamente in un emulatore di terminale Linux entro due ore."
+  - question: "Quale documentazione è consentito consultare durante l'esame CKA?"
+    answer: "È consentito aprire una singola scheda del browser per accedere alla documentazione ufficiale di Kubernetes (kubernetes.io/docs) e ai suoi sottodomini. I motori di ricerca esterni e forum come StackOverflow sono rigorosamente bloccati."
 ---
 Ti suona familiare? Prenoti l'esame CKA, poi man mano che la data si avvicina sale l'ansia: *"Sono davvero preparato? Forse ho bisogno di altri 10 giorni..."*. E così rimandi. Dieci giorni dopo tornano gli stessi identici dubbi e il ciclo ricomincia.
 

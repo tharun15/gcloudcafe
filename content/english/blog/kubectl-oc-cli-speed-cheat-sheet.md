@@ -8,6 +8,13 @@ categories: ["Kubernetes", "Certifications", "DevOps", "CKA"]
 tags: ["kubectl", "CKA", "CKAD", "Kubernetes", "CLI", "CheatSheet", "DevOps"]
 author: tharun-vempati
 draft: false
+faqs:
+  - question: "How do you generate Kubernetes YAML manifests quickly without writing from scratch?"
+    answer: "Use the imperative dry-run flag shortcut: export do='--dry-run=client -o yaml'. Appending $do to kubectl run or kubectl create instantly generates clean, valid YAML that you can direct to a file or pipe into kubectl apply."
+  - question: "How do you switch active Kubernetes namespaces quickly?"
+    answer: "Run kubectl config set-context --current --namespace=<namespace> to switch your active context's default namespace, removing the need to append -n <namespace> to subsequent commands."
+  - question: "What is the best way to extract JSONPath fields in kubectl?"
+    answer: "Use kubectl get <resource> -o jsonpath='{.items[*].metadata.name}' or format results cleanly using custom columns: -o custom-columns=NAME:.metadata.name,IP:.status.podIP."
 ---
 
 In hands-on, performance-based exams like the **Certified Kubernetes Administrator (CKA)** and **CKAD**, your biggest bottleneck isn't knowing the concepts—**it's time management**.

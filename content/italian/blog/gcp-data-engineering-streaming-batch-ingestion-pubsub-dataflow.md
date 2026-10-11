@@ -13,6 +13,13 @@ series: "Data Engineering su Google Cloud"
 series_order: 3
 series_description: "Una guida architetturale pratica al data engineering su Google Cloud: Cloud Storage, BigLake, tabelle BigQuery partizionate e clusterizzate, watermark a doppio timestamp, viste materializzate, Time Travel, viste autorizzate e pipeline di streaming ingestion."
 series_image: "/images/series-images/gcp-data-engineering-series-poster.jpg"
+faqs:
+  - question: "Quando scegliere la BigQuery Storage Write API rispetto alle sottoscrizioni BigQuery di Pub/Sub?"
+    answer: "Le sottoscrizioni Pub/Sub a BigQuery offrono ingestion semplice senza codice a basso costo. La Storage Write API fornisce throughput elevato con semantica exactly-once, deduplicazione a livello di riga e validazione dello schema direttamente dal codice dell'applicazione."
+  - question: "Quando è indispensabile Cloud Dataflow in una pipeline di ingestion GCP?"
+    answer: "Dataflow (Apache Beam) è indispensabile quando sono richieste aggregazioni con finestre temporali basate su event-time, sessioni complesse, join tra flussi multipli, arricchimento con dati esterni o instradamento con dead-letter queue (DLQ)."
+  - question: "Come ottenere l'elaborazione exactly-once nelle pipeline Apache Beam su Dataflow?"
+    answer: "Dataflow gestisce nativamente checkpoint e token di sequenza per evento, deduplicando i record ritentati in caso di riavvio dei worker se integrato con sink idempotenti come BigQuery Storage Write API."
 ---
 
 

@@ -13,6 +13,13 @@ series: "Data Engineering su Google Cloud"
 series_order: 2
 series_description: "Una guida architettuale pratica al data engineering su Google Cloud: landing su Cloud Storage, connessioni esterne BigLake, tabelle BigQuery partizionate e clusterizzate, watermark a doppio timestamp, viste materializzate, recupero con Time Travel e viste autorizzate."
 series_image: "/images/series-images/gcp-data-engineering-series-poster.jpg"
+faqs:
+  - question: "Come caricare dati JSON o CSV da Cloud Storage in BigQuery tramite CLI?"
+    answer: "Esegui bq load --source_format=NEWLINE_DELIMITED_JSON --autodetect dataset.tabella gs://bucket/data/*.json. BigQuery avvia il caricamento in background convertendo i dati nel formato colonnare Capacitor."
+  - question: "Come attivare il controllo automatico dei costi con il partizionamento in BigQuery?"
+    answer: "Imposta require_partition_filter=true nelle opzioni della tabella. Qualsiasi query priva di clausola WHERE sulla colonna di partizione verrà rifiutata automaticamente, prevenendo scansioni integrali accidentali."
+  - question: "Qual è il vantaggio delle Viste Materializzate rispetto alle viste standard in BigQuery?"
+    answer: "Le Viste Materializzate precomputano e archiviano i risultati aggregati. L'ottimizzatore di BigQuery riscrive automaticamente le query per leggere dalla vista materializzata quando più veloce, senza richiedere modifiche alle query a valle."
 ---
 
 

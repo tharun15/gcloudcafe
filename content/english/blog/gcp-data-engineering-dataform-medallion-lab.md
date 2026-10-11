@@ -13,6 +13,13 @@ series: "Data Engineering on Google Cloud"
 series_order: 6
 series_description: "A practical architecture and hands-on guide to Google Cloud data engineering: Cloud Storage landing, BigLake external connections, partitioned and clustered BigQuery tables, streaming ingestion pipelines, Medallion transformations, and Dataform SQLX pipelines."
 series_image: "/images/series-images/gcp-data-engineering-series-poster.jpg"
+faqs:
+  - question: "How do you write data quality assertions in Google Cloud Dataform?"
+    answer: "In SQLX, declare assertions: { uniqueKey: ['id'], nonNull: ['date'] } in the config block, or create a separate .sqlx file of type: 'assertion' that selects invalid rows. If any rows are returned, the assertion fails and halts dependent tasks."
+  - question: "How do you handle schema changes and column additions in Dataform incremental tables?"
+    answer: "Set on_schema_change: 'sync_all_columns' or run a full table refresh compilation to regenerate the BigQuery table schema when upstream source schemas evolve."
+  - question: "Where does Dataform store compiled DAG execution artifacts?"
+    answer: "Dataform compiles SQLX files into structured JSON compilation results stored in Google Cloud Dataform repository metadata, which can be triggered via Workflow Invocations or orchestrated by Cloud Composer."
 ---
 
 

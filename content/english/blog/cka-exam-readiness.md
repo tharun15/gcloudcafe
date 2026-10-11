@@ -11,6 +11,13 @@ draft: false
 
 aliases:
   - /blog/intro-to-google-cloud/
+faqs:
+  - question: "What is the most common reason candidates fail the CKA exam?"
+    answer: "Time management and command syntax hunting. In the performance-based CKA exam, candidates who type YAML manifests manually from scratch often run out of time. Candidates who pass rely heavily on imperative kubectl generators, alias shortcuts, and fast context switching."
+  - question: "Is the CKA exam 100% hands-on or does it have multiple choice questions?"
+    answer: "The Certified Kubernetes Administrator (CKA) exam is 100% performance-based and hands-on. There are no multiple-choice questions; you solve 15 to 17 real cluster problems directly in a Linux terminal emulator within two hours."
+  - question: "Which documentation can you access during the CKA exam?"
+    answer: "You are allowed one browser tab to access the official Kubernetes documentation (kubernetes.io/docs) and its subdomains. External search engines like Google or forums like StackOverflow are strictly blocked."
 ---
 Does this sound familiar? You schedule your CKA exam, then as the date approaches, anxiety kicks in. "Am I really prepared? Maybe I need another 10 days..." So you reschedule. Ten days later, the same doubts return, and the cycle continues.
 

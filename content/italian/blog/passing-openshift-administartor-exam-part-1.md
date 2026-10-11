@@ -10,6 +10,13 @@ author: tharun-vempati
 series: "Superare l'Esame OpenShift Administrator"
 series_order: 1
 draft: false
+faqs:
+  - question: "Quali requisiti di sistema sono necessari per l'esame remoto Red Hat EX280?"
+    answer: "È necessario un computer con connessione internet stabile, webcam USB esterna orientabile a 360 gradi e un ambiente live USB avviabile con l'immagine ufficiale Red Hat Remote Exam."
+  - question: "È consentito usare monitor doppi durante l'esame remoto Red Hat EX280?"
+    answer: "No. Gli esami remoti Red Hat vietano rigorosamente monitor doppi, cuffie o dispositivi audio esterni. È permesso un solo monitor durante tutta la sessione."
+  - question: "Come verifica la stanza d'esame il supervisore Red Hat?"
+    answer: "Prima dell'inizio, il proctor richiede una panoramica a 360 gradi della stanza con la webcam, mostrando la scrivania, sotto il tavolo, le porte di accesso, le pareti e il soffitto."
 ---
 
 La scorsa settimana ho superato con successo l'esame **Red Hat OpenShift Administrator (EX280)** — e che avventura è stata!  

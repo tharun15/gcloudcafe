@@ -11,6 +11,13 @@ featured: true
 draft: false
 series: "Data Engineering su Google Cloud"
 series_order: 1
+faqs:
+  - question: "Quali sono le quattro classi di archiviazione di Cloud Storage in GCP e quando usarle?"
+    answer: "Standard Storage è per dati ad accesso frequente senza costi di recupero. Nearline Storage è per dati consultati una volta al mese. Coldline Storage è per consultazioni trimestrali. Archive Storage è per archiviazione di lungo periodo con accesso inferiore a una volta all'anno."
+  - question: "Come collaborano partizionamento e clustering nelle tabelle BigQuery?"
+    answer: "Il partizionamento suddivide tabelle estese in segmenti per data o intervallo numerico evitando scansioni superflue. Il clustering ordina i dati all'interno di ogni partizione fino a quattro colonne, consentendo la potatura granulare dei blocchi durante i filtri."
+  - question: "Cos'è una Vista Autorizzata in BigQuery e come protegge i dati sensibili?"
+    answer: "Una Vista Autorizzata consente di interrogare dati aggregati o filtrati senza concedere agli utenti permessi diretti di lettura sulle tabelle sottostanti, garantendo una rigorosa segregazione dei dati."
 ---
 
 
