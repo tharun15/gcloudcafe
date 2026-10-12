@@ -13,6 +13,13 @@ series: "Data Engineering on Google Cloud"
 series_order: 1
 series_description: "A practical architecture and hands-on guide to Google Cloud data engineering: Cloud Storage landing, BigLake external connections, partitioned and clustered BigQuery tables, streaming ingestion pipelines, and Medallion transformations with Dataform and dbt."
 series_image: "/images/series-images/gcp-data-engineering-series-poster.jpg"
+faqs:
+  - question: "What are the four Cloud Storage classes in Google Cloud and when should you use each?"
+    answer: "Standard Storage is designed for frequently accessed data with zero retrieval fees. Nearline Storage is for data accessed once a month. Coldline Storage is for data accessed once a quarter. Archive Storage is for long-term disaster recovery accessed less than once a year."
+  - question: "How do table partitioning and clustering work together in BigQuery?"
+    answer: "Partitioning divides a large table into distinct segments by date, timestamp, or integer range to eliminate scanning irrelevant partitions. Clustering sorts data within each partition by up to four columns to enable granular block pruning during filtering."
+  - question: "What is an Authorized View in BigQuery and how does it protect sensitive data?"
+    answer: "An Authorized View allows users or groups to query aggregated or filtered subsets of data without granting them direct read permissions on the underlying source tables, maintaining strict data isolation."
 ---
 
 

@@ -11,6 +11,13 @@ series: "TLS & mTLS Architecture for DevOps Engineers"
 series_order: 2
 featured: false
 draft: false
+faqs:
+  - question: "What is the key performance difference between TLS 1.2 and TLS 1.3 handshakes?"
+    answer: "TLS 1.2 requires two network round trips (2-RTT) to negotiate cipher suites and establish keys before encrypted application data can flow. TLS 1.3 reduces the handshake to a single round trip (1-RTT) by combining cipher agreement with the key share exchange."
+  - question: "Why was RSA key exchange removed in TLS 1.3?"
+    answer: "Static RSA key exchange lacked Forward Secrecy: if an attacker recorded encrypted traffic and compromised the server private key years later, all historical traffic could be decrypted. TLS 1.3 mandates ephemeral Diffie-Hellman (ECDHE), guaranteeing Forward Secrecy."
+  - question: "How do you test and troubleshoot a TLS handshake using OpenSSL?"
+    answer: "Use openssl s_client -connect host:443 -servername host -tls1_3. Inspect the certificate verification status, negotiated cipher suite, and session parameters returned in the connection log."
 ---
 
 In [Part 1 of this series](/blog/tls-demystified-part1-cryptography-keys-csr-ca-explained/), we looked at the foundational building blocks of PKI: keeping private keys safe on your servers, using CSRs to request certificates, relying on the Chain of Trust to protect root CAs, and understanding how Diffie-Hellman negotiates session keys.

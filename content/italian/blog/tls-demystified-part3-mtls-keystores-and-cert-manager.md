@@ -13,6 +13,13 @@ series_image: "/images/series-images/tls-series-poster.jpg"
 series_description: "Padroneggia l'architettura TLS e mTLS moderna per DevOps e Kubernetes: generazione chiavi, CSR, catene di fiducia PKI, handshake 1-RTT vs 0-RTT, cipher suite, Java Keystore e ripristino da incidenti di produzione."
 featured: false
 draft: false
+faqs:
+  - question: "Qual è la differenza fondamentale tra TLS standard e mutual TLS (mTLS)?"
+    answer: "Nel TLS standard solo il server dimostra la propria identità al client con un certificato. Nel mutual TLS (mTLS), sia il client che il server scambiano e verificano reciprocamente i certificati, stabilendo un'identità zero-trust bidirezionale."
+  - question: "Qual è la differenza tra un Java KeyStore (JKS) e un TrustStore?"
+    answer: "Un KeyStore custodisce le chiavi private dell'applicazione e i certificati d'identità usati per autenticarsi. Un TrustStore contiene i certificati CA radice e intermedi che l'applicazione considera affidabili per convalidare le connessioni in ingresso."
+  - question: "Come automatizza i certificati TLS cert-manager in Kubernetes?"
+    answer: "cert-manager controlla le risorse custom Certificate e Issuer nel cluster, richiede e rinnova automaticamente certificati con Let's Encrypt o Vault e salva chiavi e certificati nei Secret di Kubernetes."
 ---
 
 Nelle prime due parti della nostra serie abbiamo esplorato le fondamenta di TLS:

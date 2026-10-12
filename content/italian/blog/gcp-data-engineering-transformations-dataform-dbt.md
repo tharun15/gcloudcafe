@@ -13,6 +13,13 @@ series: "Data Engineering su Google Cloud"
 series_order: 5
 series_description: "Una guida architetturale pratica al data engineering su Google Cloud: landing su Cloud Storage, connessioni esterne BigLake, tabelle BigQuery partizionate e clusterizzate, pipeline di streaming ingestion e trasformazioni Medallion con Dataform e dbt."
 series_image: "/images/series-images/gcp-data-engineering-series-poster.jpg"
+faqs:
+  - question: "Cos'è Google Cloud Dataform e come si confronta con dbt su GCP?"
+    answer: "Dataform è il servizio nativo e serverless di GCP per la modellazione e trasformazione dei dati con SQLX. dbt è un framework open source multi-cloud. Entrambi offrono DAG controllati a versioni, build incrementali, documentazione e test di qualità del dato."
+  - question: "Cos'è l'architettura Medallion Lakehouse (Bronze, Silver, Gold)?"
+    answer: "Bronze è il livello grezzo e immutabile di landing. Silver contiene dati puliti, deduplicati e normalizzati. Gold offre tabelle di reportistica aggregate e data mart pronti per la business intelligence."
+  - question: "Come esegue trasformazioni incrementali Dataform in BigQuery?"
+    answer: "Dataform usa la configurazione type: 'incremental' con un blocco where() in SQLX. Nelle esecuzioni successive elabora solo i record più recenti rispetto al timestamp massimo della tabella di destinazione, evitando ricostruzioni integrali."
 ---
 
 Nella [Parte 3](/it/blog/gcp-data-engineering-streaming-batch-ingestion-pubsub-dataflow/) e nella [Parte 4](/it/blog/gcp-data-engineering-streaming-pipeline-lab/), abbiamo costruito il percorso di streaming ingestion per Offvia. Gli eventi di prenotazione, le cancellazioni e gli aggiornamenti dei posti arrivano ora continuamente su BigQuery e Cloud Storage.

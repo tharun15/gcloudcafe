@@ -10,6 +10,13 @@ author: tharun-vempati
 series: "EX280 – OpenShift Administrator Tips & Tricks"
 series_order: 3
 draft: false
+faqs:
+  - question: "How does dynamic storage provisioning work in OpenShift?"
+    answer: "A PersistentVolumeClaim (PVC) specifies a storageClassName. The cluster StorageClass driver automatically provisions the requested cloud storage disk and binds a PersistentVolume (PV) to the PVC without manual administrator intervention."
+  - question: "What are the common access modes for OpenShift Persistent Volumes?"
+    answer: "The three standard access modes are ReadWriteOnce (RWO, mountable as read-write by a single node), ReadOnlyMany (ROX, mountable as read-only by many nodes), and ReadWriteMany (RWX, mountable as read-write by many nodes, typically backed by NFS or CephFS)."
+  - question: "How do you mount Secrets and ConfigMaps as files in OpenShift pods?"
+    answer: "Define a volume referencing the Secret or ConfigMap name in spec.volumes, and mount it under spec.containers.volumeMounts with a specified mountPath directory."
 ---
 
 Welcome to the third part of my **EX280 – OpenShift Administrator Tips & Tricks** mini-series!  

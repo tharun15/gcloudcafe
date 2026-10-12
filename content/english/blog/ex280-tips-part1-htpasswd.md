@@ -10,6 +10,13 @@ author: tharun-vempati
 series: "EX280 – OpenShift Administrator Tips & Tricks"
 series_order: 1
 draft: false
+faqs:
+  - question: "How do you configure HTPasswd identity provider in Red Hat OpenShift?"
+    answer: "Create an htpasswd file using the htpasswd utility, store it in an OpenShift secret under the openshift-config namespace, and reference the secret in the cluster OAuth resource (oauth.config.openshift.io/cluster) under the spec.identityProviders configuration."
+  - question: "What is the difference between cluster-admin and admin roles in OpenShift?"
+    answer: "The cluster-admin role grants superuser access across all projects, nodes, and cluster-wide resources. The admin role grants project-level administrative rights allowing management of resources and role bindings only within that specific namespace."
+  - question: "How do you verify OpenShift OAuth identity provider configuration?"
+    answer: "Run oc get oauth.config.openshift.io cluster -o yaml and check the status of authentication cluster operator pods using oc get co authentication."
 ---
 
 Welcome to the first part of my **EX280 – OpenShift Administrator Tips & Tricks** mini-series!  

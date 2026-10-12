@@ -12,6 +12,13 @@ featured: true
 draft: false
 series: "Costruire Offvia con Gemini Enterprise Agent Platform"
 series_order: 1
+faqs:
+  - question: "Cos'è la modalità Express di Gemini Enterprise Agent Platform?"
+    answer: "Express Mode consente di prototipare agenti IA rapidamente con autenticazione semplificata e iterazioni veloci, evitando configurazioni complesse dell'infrastruttura aziendale nelle prime fasi di sviluppo."
+  - question: "Come garantire output JSON strutturati dai modelli Gemini?"
+    answer: "Imposta response_mime_type='application/json' e fornisci uno schema JSON o modello Pydantic rigoroso in response_schema per ottenere output deterministici e tipizzati."
+  - question: "Quando passare da Express Mode a un'architettura completa Vertex AI Enterprise?"
+    answer: "Passa alla configurazione completa quando l'applicazione richiede controlli di sicurezza VPC, instradamento IP privato, chiavi di cifratura gestite dal cliente (CMEK) e pipeline di valutazione continua."
 ---
 
 Il 22 aprile 2026, Google Cloud ha annunciato **Gemini Enterprise Agent Platform (precedentemente nota come Vertex AI)**: l'evoluzione strategica della piattaforma verso un ambiente unificato per sviluppare, scalare, governare e ottimizzare agenti di intelligenza artificiale di livello enterprise.

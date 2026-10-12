@@ -13,6 +13,13 @@ series: "Data Engineering on Google Cloud"
 series_order: 4
 series_description: "A practical architecture and hands-on guide to Google Cloud data engineering: Cloud Storage landing, BigLake external connections, partitioned and clustered BigQuery tables, dual-timestamp watermarks, materialized views, Time Travel recovery, authorized views, and streaming ingestion pipelines."
 series_image: "/images/series-images/gcp-data-engineering-series-poster.jpg"
+faqs:
+  - question: "How does a Dead-Letter Queue (DLQ) work in streaming data ingestion?"
+    answer: "When an incoming message fails schema validation or serialization parsing, instead of crashing the pipeline or discarding the message, it is tagged with error metadata and written to a separate DLQ topic or bucket for audit and replay."
+  - question: "What is the difference between Event Time and Processing Time in streaming data?"
+    answer: "Event Time is the timestamp when the event actually occurred on the client or source device. Processing Time is the timestamp when the data processing worker observes and computes the event."
+  - question: "How do you handle late-arriving streaming events in Apache Beam and Dataflow?"
+    answer: "Configure windowing with allowedLateness and triggers. Events arriving after the window watermark closes but within the allowed lateness window trigger speculative pane updates rather than being silently dropped."
 ---
 
 

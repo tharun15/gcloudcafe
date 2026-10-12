@@ -13,6 +13,13 @@ series_image: "/images/series-images/tls-series-poster.jpg"
 series_description: "Master modern TLS & mTLS architecture for DevOps & Kubernetes: Key generation, CSRs, PKI trust chains, 1-RTT vs 0-RTT handshakes, cipher suites, Java Keystores, and production incident recovery."
 featured: false
 draft: false
+faqs:
+  - question: "What is the difference between a private key and a CSR in TLS?"
+    answer: "A private key is a secret mathematical key used to decrypt data and generate digital signatures. A Certificate Signing Request (CSR) contains the public key and organization identity information sent to a Certificate Authority (CA) to be signed into an X.509 certificate."
+  - question: "What is a Subject Alternative Name (SAN) in modern TLS certificates?"
+    answer: "SAN is an X.509 extension that specifies all hostnames, domain names, and IP addresses secured by the certificate. Modern browsers and TLS libraries require SAN and reject certificates relying solely on Common Name (CN)."
+  - question: "How do you verify an X.509 certificate chain with OpenSSL?"
+    answer: "Run openssl verify -CAfile ca-chain.crt server.crt. If the certificate was properly signed by an authority within the chain, OpenSSL returns server.crt: OK."
 ---
 
 When you enter a password, submit credit card details, or deploy an ingress route right now, how do you know someone isn't silently sniffing every byte you send?

@@ -11,6 +11,13 @@ series: "TLS & mTLS Architecture for DevOps Engineers"
 series_order: 2
 featured: false
 draft: false
+faqs:
+  - question: "Qual è il vantaggio prestazionale principale dell'handshake TLS 1.3 rispetto a TLS 1.2?"
+    answer: "TLS 1.2 richiede due round trip di rete (2-RTT) per negoziare cipher suite e chiavi prima di trasmettere dati cifrati. TLS 1.3 riduce l'handshake a un singolo round trip (1-RTT) combinando la scelta delle suite con lo scambio della chiave."
+  - question: "Perché lo scambio di chiavi RSA statico è stato rimosso in TLS 1.3?"
+    answer: "RSA statico non offriva Forward Secrecy: se la chiave privata del server veniva compromessa successivamente, tutto il traffico storico registrato poteva essere decifrato. TLS 1.3 impone Diffie-Hellman effimero (ECDHE), garantendo Forward Secrecy."
+  - question: "Come testare e diagnosticare un handshake TLS con OpenSSL?"
+    answer: "Usa openssl s_client -connect host:443 -servername host -tls1_3. Esamina lo stato di verifica del certificato, la cipher suite negoziata e i dettagli della sessione restituiti nel log di connessione."
 ---
 
 Nella [Parte 1: Chiavi, CSR, CA e la Catena di Fiducia](/it/blog/tls-demystified-part1-cryptography-keys-csr-ca-explained/), abbiamo esaminato come le coppie di chiavi asimmetriche e le autorità di certificazione consentano a due parti su Internet di fidarsi reciprocamente dell'identità dell'altro.

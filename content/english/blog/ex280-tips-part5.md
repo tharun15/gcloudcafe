@@ -10,6 +10,13 @@ author: tharun-vempati
 series: "EX280 – OpenShift Administrator Tips & Tricks"
 series_order: 5
 draft: false
+faqs:
+  - question: "How do you customize the default project template in OpenShift?"
+    answer: "Generate the bootstrap project template using oc adm create-bootstrap-project-template -o yaml, modify it with desired quotas and role bindings, save it into the openshift-config namespace, and reference it in the cluster project configuration (project.config.openshift.io/cluster)."
+  - question: "What is the difference between ResourceQuotas and LimitRanges?"
+    answer: "A ResourceQuota enforces aggregate resource consumption limits across an entire namespace (e.g. max 10 CPUs or 20 GiB RAM total). A LimitRange sets minimum, maximum, and default resource limits per individual container or pod within that namespace."
+  - question: "How do you restrict developer project creation in OpenShift?"
+    answer: "Remove the self-provisioner cluster role binding from system:authenticated:oauth to prevent non-administrative users from automatically creating arbitrary projects."
 ---
 
 Welcome to the fifth part of my **EX280 – OpenShift Administrator Tips & Tricks** mini-series!

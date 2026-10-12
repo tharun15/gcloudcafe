@@ -12,6 +12,13 @@ featured: true
 draft: false
 series: "Building Offvia with Gemini Enterprise Agent Platform"
 series_order: 1
+faqs:
+  - question: "What is Gemini Enterprise Agent Platform Express Mode?"
+    answer: "Express Mode enables rapid bootstrapping and prototyping of AI agents with simplified authentication and fast developer iteration, bypassing complex enterprise infrastructure setup during early development phases."
+  - question: "How do you enforce structured JSON outputs from Gemini models?"
+    answer: "Configure response_mime_type='application/json' and supply a strict Pydantic model or JSON schema in response_schema within the model generation config to guarantee deterministic, type-safe output."
+  - question: "When should you transition an agent from Express Mode to full Vertex AI enterprise deployment?"
+    answer: "Transition when your application requires VPC Service Controls, private IP routing, customer-managed encryption keys (CMEK), enterprise IAM role binding, and continuous evaluation pipelines."
 ---
 
 
