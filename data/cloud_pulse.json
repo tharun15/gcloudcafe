@@ -1,22 +1,22 @@
 [
   {
-    "id": "26afaa1e-cc06-4f97-8eb7-ed0144dd6e09",
-    "title": "Cloudera CDP Scales Big Data Analytics on OpenShift Virtualization",
-    "content": "🎯 What Changed: Cloudera Data Platform (CDP) is now validated to run at scale on Red Hat OpenShift Virtualization, supporting over 100 virtualized nodes.\n💡 Engineering Impact: This enables organizations to modernize big data analytics by running traditional VMs alongside containers on a unified OpenShift platform, avoiding immediate application refactoring or maintaining costly, separate infrastructure environments.",
+    "id": "10cdf991-d12e-40fd-ad59-bf4a02ac7441",
+    "title": "Amazon Bedrock now supports reasoning summaries for OpenAI models",
+    "content": "🎯 What Changed: Amazon Bedrock added support for the reasoning.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
     "tags": [
-      "#OpenShift",
-      "#RedHat",
-      "#DevOps"
+      "#AWS",
+      "#CloudArchitecture",
+      "#CloudNews"
     ],
     "upvotes": 1,
     "downvotes": 0,
     "score": 1,
     "author": "Cloud Newsroom Bot",
-    "created_at": "2026-10-11T11:19:07.358329+00:00",
-    "link_url": "https://www.redhat.com/en/blog/scale-enterprise-analytics-running-cloudera-data-platform-openshift-virtualization",
+    "created_at": "2026-10-12T04:02:44.330273+00:00",
+    "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/10/amazon-bedrock-reasoning-summaries-openai/",
     "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 106.5h without manual admin curation.",
-    "updated_at": "2026-10-11T20:01:29.466Z"
+    "eligibility_reason": "[Auto-Published] Published automatically after 115.6h without manual admin curation.",
+    "updated_at": "2026-10-12T05:06:00.133Z"
   },
   {
     "id": "0b6826b6-fc4c-4621-8f9b-bbbea3de16aa",
@@ -36,7 +36,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:48.441634+00:00",
-    "ageDays": 4.4393560300925925
+    "ageDays": 4.817486261574074
   },
   {
     "id": "81213fff-57d4-4c0b-90eb-c84beeb18d4d",
@@ -56,7 +56,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:42.008666+00:00",
-    "ageDays": 4.439430486111111
+    "ageDays": 4.817560717592593
   },
   {
     "id": "1ec5647f-ce95-4be3-ba87-6aa974960da7",
@@ -76,7 +76,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:37.111692+00:00",
-    "ageDays": 4.439487164351852
+    "ageDays": 4.8176173958333335
   },
   {
     "id": "88a2ed59-fb47-488b-b07c-d6be1de35d0b",
@@ -96,7 +96,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:31.276024+00:00",
-    "ageDays": 4.439554699074074
+    "ageDays": 4.817684930555555
   },
   {
     "id": "202f8734-234e-4bd5-9a67-8535691f131a",
@@ -116,7 +116,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:24.859911+00:00",
-    "ageDays": 4.439628969907408
+    "ageDays": 4.817759201388889
   },
   {
     "id": "37fcb780-d57d-4ba9-875a-7665dd9cd981",
@@ -136,7 +136,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T04:06:30.331436+00:00",
-    "ageDays": 4.663176747685185
+    "ageDays": 5.0413069791666665
   },
   {
     "id": "521c6dfa-7eb3-4834-87fb-7ac338d90f9d",
@@ -156,7 +156,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T04:00:33.151279+00:00",
-    "ageDays": 4.667310775462963
+    "ageDays": 5.045441006944444
   },
   {
     "id": "b1f2627d-7930-4c4b-ab57-de042bac55c3",
@@ -176,7 +176,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T04:00:00.696536+00:00",
-    "ageDays": 4.667686412037037
+    "ageDays": 5.045816643518519
   },
   {
     "id": "bf22f4dd-2d54-4b4c-9038-ea09aadef8a2",
@@ -196,7 +196,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T03:59:45.591638+00:00",
-    "ageDays": 4.6678612384259255
+    "ageDays": 5.045991469907407
   },
   {
     "id": "46fd5625-4fda-4793-a2ab-d6b627f3f4df",
@@ -216,7 +216,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T03:59:26.783766+00:00",
-    "ageDays": 4.6680789236111115
+    "ageDays": 5.046209155092592
   },
   {
     "id": "09900f5e-4d21-4d5e-84a6-f5eec4459b40",
@@ -236,7 +236,7 @@
     "status": "approved",
     "eligibility_reason": "Official AWS Release: Ingested & AI synthesized for Admin Approval Queue.",
     "updated_at": "2026-09-12T09:07:10.082273+00:00",
-    "ageDays": 29.454383333333332
+    "ageDays": 29.832513564814814
   },
   {
     "id": "57b1b07d-9511-4a40-b351-2ec2866364b4",
@@ -256,7 +256,7 @@
     "status": "approved",
     "eligibility_reason": "Official Kubernetes Release: Ingested & AI synthesized for Admin Approval Queue.",
     "updated_at": "2026-09-12T09:07:09.525138+00:00",
-    "ageDays": 29.454389780092594
+    "ageDays": 29.832520011574076
   },
   {
     "id": "5a2dc9e4-9490-47b6-b0bb-1666516ff431",
@@ -276,26 +276,26 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 101.3h without manual admin curation.",
     "updated_at": "2026-10-11T14:45:39.984+00:00",
-    "ageDays": 0.3626914699074074
+    "ageDays": 0.7408217013888889
   },
   {
-    "id": "aaea00c2-5c3f-4d72-939e-7fb9895968c1",
-    "title": "Amazon Bedrock now supports reasoning summaries for OpenAI models",
-    "content": "🎯 What Changed: Amazon Bedrock now supports the reasoning.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
+    "id": "26afaa1e-cc06-4f97-8eb7-ed0144dd6e09",
+    "title": "Cloudera CDP Scales Big Data Analytics on OpenShift Virtualization",
+    "content": "🎯 What Changed: Cloudera Data Platform (CDP) is now validated to run at scale on Red Hat OpenShift Virtualization, supporting over 100 virtualized nodes.\n💡 Engineering Impact: This enables organizations to modernize big data analytics by running traditional VMs alongside containers on a unified OpenShift platform, avoiding immediate application refactoring or maintaining costly, separate infrastructure environments.",
     "tags": [
-      "#AWS",
-      "#CloudArchitecture",
-      "#CloudNews"
+      "#OpenShift",
+      "#RedHat",
+      "#DevOps"
     ],
     "upvotes": 1,
     "downvotes": 0,
     "score": 1,
     "author": "Cloud Newsroom Bot",
-    "created_at": "2026-10-11T03:46:46.263188+00:00",
-    "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/10/amazon-bedrock-reasoning-summaries-openai/",
+    "created_at": "2026-10-11T11:19:07.358329+00:00",
+    "link_url": "https://www.redhat.com/en/blog/scale-enterprise-analytics-running-cloudera-data-platform-openshift-virtualization",
     "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 91.4h without manual admin curation.",
-    "updated_at": "2026-10-11T04:51:09.23+00:00",
-    "ageDays": 0.676881238425926
+    "eligibility_reason": "[Auto-Published] Published automatically after 106.5h without manual admin curation.",
+    "updated_at": "2026-10-11T20:01:29.466+00:00",
+    "ageDays": 0.7408784259259259
   }
 ]
