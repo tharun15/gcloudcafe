@@ -5,7 +5,7 @@ description: "Costruisci una pipeline di streaming resiliente su GCP con Pub/Sub
 date: 2026-10-07
 image: "/images/gcp-streaming-pipeline-lab.jpg"
 categories: ["Google Cloud", "Architecture"]
-tags: ["Data Engineering", "GCP", "Pub/Sub", "Dataflow", "BigQuery", "Apache Beam", "Hands-On Lab", "TravelTech"]
+tags: ["Data Engineering", "GCP", "PubSub", "Dataflow", "BigQuery", "Apache Beam", "Hands-On Lab", "TravelTech"]
 author: tharun-vempati
 featured: true
 draft: false

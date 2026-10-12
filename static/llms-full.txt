@@ -8,7 +8,7 @@
 - [Cloud Pulse Live Feed](https://gcloudcafe.com/pulse/): Real-time community-ranked cloud updates, CVE advisories, and micro-news feed.
 - [Technical Blog Index (EN)](https://gcloudcafe.com/blog/): In-depth technical articles on OpenShift 4.x, Kubernetes, GCP, and TLS.
 - [Technical Blog Index (IT)](https://gcloudcafe.com/it/blog/): Archivio articoli tecnici in lingua italiana.
-- [Article Series](https://gcloudcafe.com/series/): Guided curriculum tracks for OpenShift EX280 and TLS Demystified.
+- [Article Series](https://gcloudcafe.com/series/): Guided curriculum tracks for Data Engineering on GCP, OpenShift EX280, and TLS Demystified.
 - [Category Index](https://gcloudcafe.com/categories/): Browse technical articles grouped by category.
 - [Engineering Newsletter](https://gcloudcafe.com/newsletter/): Bi-weekly curated dispatch for cloud engineers.
 - [Author Profile — Tharun Vempati](https://gcloudcafe.com/authors/tharun-vempati/): Author background, enterprise cloud architect profile, and certifications.
@@ -52,11 +52,47 @@
 
 ## 3. Google Cloud Architecture & Data Engineering
 
-### Data Engineering on GCP: Core Storage & Access Building Blocks Demystified
+### Data Engineering on GCP (Part 1): Core Storage & Access Building Blocks Demystified
 - English URL: https://gcloudcafe.com/blog/gcp-data-engineering-storage-building-blocks/
 - Italian URL: https://gcloudcafe.com/it/blog/gcp-data-engineering-storage-building-blocks/
 - Topics: Google Cloud Storage (Standard, Nearline, Coldline, Archive), BigQuery Storage Architecture (Capacitor columnar format), Partitioning & Clustering strategies, Materialized Views, Authorized Views.
 - Summary: Architectural guide to core GCP data primitives. Explains lifecycle management in Cloud Storage, BigQuery slot optimization, query pruning techniques, and column-level security for high-scale enterprise analytical workloads.
+
+### Data Engineering on GCP (Part 2): Production Storage & Access Layer Hands-On Lab
+- English URL: https://gcloudcafe.com/blog/gcp-data-engineering-hands-on-storage-pipeline-lab/
+- Italian URL: https://gcloudcafe.com/it/blog/gcp-data-engineering-hands-on-storage-pipeline-lab/
+- Topics: BigQuery DDL, Storage Transfer Service, Partition Filters, Materialized Views, Row-Level Security, Authorized Views, bq CLI, Cloud Storage Buckets.
+- Summary: End-to-end hands-on lab deploying partitioned BigQuery datasets, strict row-level security policies, and materialized view caching for enterprise flight-booking analytics.
+
+### Data Engineering on GCP (Part 3): Choosing a Reliable Real-Time Ingestion Path
+- English URL: https://gcloudcafe.com/blog/gcp-data-engineering-streaming-batch-ingestion-pubsub-dataflow/
+- Italian URL: https://gcloudcafe.com/it/blog/gcp-data-engineering-streaming-batch-ingestion-pubsub-dataflow/
+- Topics: Cloud Pub/Sub, BigQuery Storage Write API, Cloud Dataflow (Apache Beam), Pub/Sub BigQuery Subscriptions, At-Least-Once Delivery, Deduplication, Dead-Letter Queues.
+- Summary: Comparative engineering evaluation of real-time ingestion paths on GCP. Details trade-offs between zero-ops Pub/Sub subscriptions, high-throughput Storage Write API, and stateful Dataflow pipelines.
+
+### Data Engineering on GCP (Part 4): Building a Production Streaming Pipeline Lab
+- English URL: https://gcloudcafe.com/blog/gcp-data-engineering-streaming-pipeline-lab/
+- Italian URL: https://gcloudcafe.com/it/blog/gcp-data-engineering-streaming-pipeline-lab/
+- Topics: Apache Beam, Dataflow Flex Templates, Cloud Pub/Sub, BigQuery Storage Write API, Dead-Letter Queue (DLQ), Event-Time Windowing, Late Data Handling.
+- Summary: Production lab constructing an event-driven streaming pipeline. Features validation filtering, automated DLQ error routing, sliding window aggregation, and exactly-once BigQuery streaming sinks.
+
+### Data Engineering on GCP (Part 5): Medallion Architecture with Dataform and dbt
+- English URL: https://gcloudcafe.com/blog/gcp-data-engineering-transformations-dataform-dbt/
+- Italian URL: https://gcloudcafe.com/it/blog/gcp-data-engineering-transformations-dataform-dbt/
+- Topics: Medallion Architecture (Bronze, Silver, Gold), Google Cloud Dataform, SQLX, dbt Core, Data Quality Assertions, Incremental Tables, Data Contracts.
+- Summary: Architectural framework for transforming raw streaming data into trusted business marts. Contrasts Dataform vs dbt on GCP and formalizes data testing contracts.
+
+### Data Engineering on GCP (Part 6): Building a Medallion Lakehouse with Dataform Lab
+- English URL: https://gcloudcafe.com/blog/gcp-data-engineering-dataform-medallion-lab/
+- Italian URL: https://gcloudcafe.com/it/blog/gcp-data-engineering-dataform-medallion-lab/
+- Topics: Google Cloud Dataform, SQLX Incremental Models, Late-Arriving Events Deduplication, Quarantine Tables, Dataform Assertions, Release Configurations.
+- Summary: Hands-on implementation of the Medallion Lakehouse using Dataform. Builds automated deduplication models, quality assertions, quarantine error isolation, and scheduled release pipelines.
+
+### Data Engineering on GCP (Part 7): Enterprise Pipeline Orchestration with Cloud Composer & Workflows
+- English URL: https://gcloudcafe.com/blog/gcp-data-engineering-pipeline-orchestration-composer-workflows/
+- Italian URL: https://gcloudcafe.com/it/blog/gcp-data-engineering-pipeline-orchestration-composer-workflows/
+- Topics: Managed Service for Apache Airflow (Cloud Composer), Google Cloud Workflows, Dataform Operators, GCS Sensors, Pipeline SLA Monitoring, Alert Callbacks.
+- Summary: Complete data orchestration guide. Contrasts Airflow vs Workflows, deploys a master DAG coordinating landing sensors, Dataform compilations, assertions, and automated failure notifications.
 
 ### Renewing Google Cloud Professional Cloud Architect Certification Without an Exam
 - English URL: https://gcloudcafe.com/blog/gcp-pca-renewal/

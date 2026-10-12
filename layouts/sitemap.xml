@@ -1,0 +1,61 @@
+{{ printf "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\"?>" | safeHTML }}
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  {{ range .Data.Pages }}
+    {{ $isNoIndex := findRE "noindex" (or .Params.robots "") }}
+    {{ $isAdmin := in (slice "admin-articles" "community-admin" "pulse-admin") .Type }}
+    {{ $is404 := or (eq .Kind "404") (eq .Type "404") }}
+    {{ if not (or $isNoIndex $isAdmin $is404) }}
+  <url>
+    <loc>{{ .Permalink }}</loc>
+    {{ if not .Lastmod.IsZero }}
+    <lastmod>{{ safeHTML ( .Lastmod.Format "2006-01-02T15:04:05-07:00" ) }}</lastmod>
+    {{ end }}
+    {{ with .Sitemap.ChangeFreq }}
+    <changefreq>{{ . }}</changefreq>
+    {{ else }}
+      {{ if .IsHome }}
+    <changefreq>daily</changefreq>
+      {{ else if or (eq .Section "pulse") (eq .Type "pulse") }}
+    <changefreq>daily</changefreq>
+      {{ else if .IsPage }}
+    <changefreq>weekly</changefreq>
+      {{ else }}
+    <changefreq>weekly</changefreq>
+      {{ end }}
+    {{ end }}
+    {{ $p := .Sitemap.Priority }}
+    {{ if lt $p 0 }}
+      {{ if .IsHome }}
+        {{ $p = 1.0 }}
+      {{ else if or (eq .Section "pulse") (eq .Type "pulse") }}
+        {{ $p = 0.9 }}
+      {{ else if eq .Section "blog" }}
+        {{ if .IsPage }}
+          {{ $p = 0.8 }}
+        {{ else }}
+          {{ $p = 0.9 }}
+        {{ end }}
+      {{ else if eq .Section "series" }}
+        {{ $p = 0.8 }}
+      {{ else if eq .Section "categories" }}
+        {{ $p = 0.6 }}
+      {{ else if eq .Section "tags" }}
+        {{ $p = 0.4 }}
+      {{ else }}
+        {{ $p = 0.5 }}
+      {{ end }}
+    {{ end }}
+    <priority>{{ $p }}</priority>
+    {{ if .IsTranslated }}
+      {{ range .AllTranslations }}
+    <xhtml:link
+      rel="alternate"
+      hreflang="{{ .Language.Lang }}"
+      href="{{ .Permalink }}" />
+      {{ end }}
+    {{ end }}
+  </url>
+    {{ end }}
+  {{ end }}
+</urlset>

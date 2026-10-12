@@ -349,6 +349,38 @@
             {{ end }}
           {{ end }}
 
+          {{/* High-Intent Companion Guide Cluster Mesh (Eliminates Orphan Posts) */}}
+          {{ if not .Params.series }}
+            {{ $companionPosts := first 2 (site.RegularPages.Related .) }}
+            {{ if lt (len $companionPosts) 2 }}
+              {{ with index .Params.categories 0 }}
+                {{ $catPosts := where (where site.RegularPages "Section" "blog") ".Params.categories" "intersect" (slice .) }}
+                {{ $catPosts = where $catPosts "Permalink" "!=" $.Permalink }}
+                {{ $companionPosts = $companionPosts | union $catPosts }}
+              {{ end }}
+            {{ end }}
+            {{ $companionPosts = first 2 $companionPosts }}
+            {{ with $companionPosts }}
+              <div class="mb-10 p-5 rounded-2xl border border-primary/25 bg-gradient-to-br from-primary/5 via-transparent to-primary/5 dark:border-primary/30">
+                <div class="flex items-center gap-2 mb-3 text-xs font-mono font-bold uppercase tracking-wider text-primary">
+                  <i class="fa-solid fa-compass"></i> Recommended Companion Guide
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {{ range . }}
+                    <a href="{{ .RelPermalink }}" class="p-3.5 rounded-xl border border-border/70 dark:border-darkmode-border/70 bg-white/70 dark:bg-darkmode-theme-light/70 hover:border-primary transition-all flex flex-col justify-between no-underline group shadow-sm">
+                      <span class="text-xs text-text/70 dark:text-darkmode-text/70 font-mono mb-1">
+                        {{ with .Params.categories }}{{ index . 0 | humanize }}{{ end }}
+                      </span>
+                      <span class="text-sm font-bold text-dark dark:text-darkmode-dark group-hover:text-primary transition-colors line-clamp-2">
+                        {{ .Title }}
+                      </span>
+                    </a>
+                  {{ end }}
+                </div>
+              </div>
+            {{ end }}
+          {{ end }}
+
           <!-- Article Feedback Widget -->
           {{ partial "components/post-feedback" . }}
 

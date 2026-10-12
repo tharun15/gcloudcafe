@@ -5,7 +5,7 @@ description: "Guida pratica per scegliere tra subscription BigQuery di Pub/Sub, 
 date: 2026-10-04
 image: "/images/gcp-data-engineering-streaming-batch-ingestion.jpg"
 categories: ["Google Cloud", "Architecture"]
-tags: ["Data Engineering", "GCP", "Pub/Sub", "Dataflow", "BigQuery", "Streaming", "Architecture", "TravelTech"]
+tags: ["Data Engineering", "GCP", "PubSub", "Dataflow", "BigQuery", "Streaming", "Architecture", "TravelTech"]
 author: tharun-vempati
 featured: true
 draft: false
