@@ -74,6 +74,24 @@ flowchart TD
 
 ---
 
+---
+
+## 📊 Tabella Architetturale: Express Mode vs. Enterprise Agent Platform
+
+Prima di scrivere codice, usa questa matrice decisionale per valutare i requisiti di sicurezza e governance:
+
+| Vettore Architetturale | Express Mode (Sandbox Rapida) | Gemini Enterprise Agent Platform (Produzione) |
+| :--- | :--- | :--- |
+| **Velocità di Onboarding** | **30 Secondi** (Spazio cloud istantaneo) | **2–4 Settimane** (Revisione IAM, fatturazione, peering VPC) |
+| **Autenticazione** | API Key effimera (`x-goog-api-key`) | **Workload Identity Federation / ADC** (`roles/aiplatform.user`) |
+| **Sicurezza di Rete** | Endpoint pubblici Google Cloud | **VPC Service Controls & Private Service Connect (PSC)** |
+| **Cifratura Dati** | Chiavi gestite da Google | **Customer-Managed Encryption Keys (CMEK)** |
+| **Limiti e Quota** | Limiti rigidi di prototipo (RPM/TPM) | **Quote riservate e SLA aziendali al 99.9%** |
+| **Audit e Log** | Log di console di base | **Cloud Audit Logs, Access Transparency ed export BigQuery** |
+| **Casi d'Uso Ideali** | Prototipi, schemi Pydantic, test unitari | **Prenotazioni reali, lakehouse privati, conformità aziendale** |
+
+---
+
 ## 🧭 Il Cambio di Paradigma: Dal Modello Statico al Ciclo Cognitivo
 
 Per oltre quattro anni, Vertex AI ha operato secondo un paradigma **incentrato sul modello**: si inviavano token, si ricevevano indietro stringhe di testo o JSON statici. Il modello non possedeva memoria di sessione, non disponeva di strumenti ed era privo di consapevolezza operativa.
@@ -113,6 +131,57 @@ Invece di invocare il modello isolatamente, l'agente coordina tre livelli fondam
 1. **Motore di Ragionamento (`gemini-2.5-flash`):** Analizza le intenzioni dell'utente, formula ipotesi e scompone i problemi in sotto-task.
 2. **Orchestrazione & Memoria (Google Agent Development Kit / Agent Studio):** Mantiene lo stato di sessione multi-turno e seleziona i tool necessari.
 3. **Toolset Remoti (Protocollo MCP):** Si collega a sistemi esterni come data warehouse BigQuery o API GDS per voli e hotel.
+
+---
+
+---
+
+## 🚨 5 Falsi Miti Fatali Sugli Agenti AI nel Cloud
+
+Prima di scrivere codice, sfatiamo i 5 presupposti più costosi diffusi tra i team di sviluppo:
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4 my-8">
+<div class="p-5 rounded-2xl border border-rose-500/25 bg-rose-50/50 dark:bg-rose-950/20 dark:border-rose-800/40">
+<div class="flex items-center gap-2 mb-2 font-mono text-xs font-bold uppercase text-rose-600 dark:text-rose-400">
+<i class="fa-solid fa-triangle-exclamation"></i> Falso Mito 1: "Express Mode è un Ambiente Giocattolo"
+</div>
+<p class="text-sm text-text/90 dark:text-darkmode-text/90 mb-0">
+<strong>La Realtà:</strong> Express Mode crea un autentico progetto Google Cloud sottostante. La chiave API invoca esattamente l'infrastruttura Gemini 2.5 Flash di produzione con piena capacità di ragionamento multimodale. È un acceleratore di onboarding, non un runtime depotenziato.
+</p>
+</div>
+<div class="p-5 rounded-2xl border border-rose-500/25 bg-rose-50/50 dark:bg-rose-950/20 dark:border-rose-800/40">
+<div class="flex items-center gap-2 mb-2 font-mono text-xs font-bold uppercase text-rose-600 dark:text-rose-400">
+<i class="fa-solid fa-triangle-exclamation"></i> Falso Mito 2: "Il JSON Strutturato Garantisce la Verità"
+</div>
+<p class="text-sm text-text/90 dark:text-darkmode-text/90 mb-0">
+<strong>La Realtà:</strong> I modelli Pydantic validano rigorosamente la <em>sintassi e i tipi di dato</em>, non la realtà. L'LLM può generare un volo sintatticamente perfetto ma inesistente a 40 euro. La verifica spetta esclusivamente ai tool a valle connessi ai database.
+</p>
+</div>
+<div class="p-5 rounded-2xl border border-rose-500/25 bg-rose-50/50 dark:bg-rose-950/20 dark:border-rose-800/40">
+<div class="flex items-center gap-2 mb-2 font-mono text-xs font-bold uppercase text-rose-600 dark:text-rose-400">
+<i class="fa-solid fa-triangle-exclamation"></i> Falso Mito 3: "I Modelli Conoscono le Date Relative"
+</div>
+<p class="text-sm text-text/90 dark:text-darkmode-text/90 mb-0">
+<strong>La Realtà:</strong> Gli LLM non possiedono un orologio interno sincronizzato. Senza ancorare una data ISO di riferimento e il fuso orario del viaggiatore, espressioni come "mercoledì prossimo" generano allucinazioni temporali a cavallo della mezzanotte UTC.
+</p>
+</div>
+<div class="p-5 rounded-2xl border border-rose-500/25 bg-rose-50/50 dark:bg-rose-950/20 dark:border-rose-800/40">
+<div class="flex items-center gap-2 mb-2 font-mono text-xs font-bold uppercase text-rose-600 dark:text-rose-400">
+<i class="fa-solid fa-triangle-exclamation"></i> Falso Mito 4: "Le API Key Vanno Bene Anche in Staging"
+</div>
+<p class="text-sm text-text/90 dark:text-darkmode-text/90 mb-0">
+<strong>La Realtà:</strong> Una chiave API identifica il progetto per la fatturazione, ma non trasporta l'identità del chiamante. Una chiave compromessa può esaurire le quote aziendali. In produzione si deve usare Workload Identity con ruoli IAM a privilegio minimo.
+</p>
+</div>
+<div class="p-5 rounded-2xl border border-rose-500/25 bg-rose-50/50 dark:bg-rose-950/20 dark:border-rose-800/40 md:col-span-2">
+<div class="flex items-center gap-2 mb-2 font-mono text-xs font-bold uppercase text-rose-600 dark:text-rose-400">
+<i class="fa-solid fa-triangle-exclamation"></i> Falso Mito 5: "Un Agente Monolitico Può Fare Tutto"
+</div>
+<p class="text-sm text-text/90 dark:text-darkmode-text/90 mb-0">
+<strong>La Realtà:</strong> Inserire ricerca voli, hotel, calcoli di budget e policy in un unico enorme prompt monolitico provoca deriva contestuale e chiamate a vuoto ai tool. L'affidabilità richiede il <strong>Pattern Supervisor</strong> con sub-agenti specializzati.
+</p>
+</div>
+</div>
 
 ---
 
@@ -282,6 +351,41 @@ Eseguendo lo script, l'agente restituisce un oggetto JSON conforme al 100% allo 
 
 > [!NOTE]
 > Nota come `gemini-2.5-flash` abbia identificato automaticamente che l'utente insieme a 3 amici corrisponde esattamente a `total_travelers: 4`, abbia associato *"Milano"* al codice aeroportuale `MXP` e abbia impostato `direct_flights_preferred: true`.
+
+---
+
+---
+
+## ⚠️ 3 Criticità Operative di Produzione (Dalle Trincee dell'On-Call)
+
+<div class="space-y-4 my-8">
+<div class="p-5 rounded-2xl border border-amber-500/30 bg-amber-50/50 dark:bg-amber-950/20 dark:border-amber-800/50">
+<div class="flex items-center gap-2 mb-1.5 font-mono text-xs font-bold uppercase text-amber-700 dark:text-amber-400">
+<i class="fa-solid fa-clock"></i> Criticità 1: Il Disallineamento Temporale (Timezone Shift)
+</div>
+<p class="text-sm text-text/85 dark:text-darkmode-text/85 mb-0">
+Quando un viaggiatore a San Francisco effettua una richiesta alle 21:00 di martedì sera, in UTC è già mercoledì mattina. Se il server backend calcola la data in UTC senza ancorare <code>REFERENCE_TIMEZONE</code> ed esplicito <code>ref_date</code>, l'espressione "mercoledì prossimo" viene spostata alla settimana successiva.
+</p>
+</div>
+
+<div class="p-5 rounded-2xl border border-amber-500/30 bg-amber-50/50 dark:bg-amber-950/20 dark:border-amber-800/50">
+<div class="flex items-center gap-2 mb-1.5 font-mono text-xs font-bold uppercase text-amber-700 dark:text-amber-400">
+<i class="fa-solid fa-gauge-high"></i> Criticità 2: Il Muro della Concorrenza in Express Mode
+</div>
+<p class="text-sm text-text/85 dark:text-darkmode-text/85 mb-0">
+I progetti Express Mode presentano quote predefinite conservative sulle richieste al minuto (RPM). Se si eseguono test automatici con <code>pytest-xdist</code> su 8 worker paralleli, si incorre immediatamente nell'errore <code>429 RESOURCE_EXHAUSTED</code>. Le pipeline devono integrare rate limiter token-bucket ed exponential backoff.
+</p>
+</div>
+
+<div class="p-5 rounded-2xl border border-amber-500/30 bg-amber-50/50 dark:bg-amber-950/20 dark:border-amber-800/50">
+<div class="flex items-center gap-2 mb-1.5 font-mono text-xs font-bold uppercase text-amber-700 dark:text-amber-400">
+<i class="fa-solid fa-key"></i> Criticità 3: Perdita di Chiavi Git e Migrazione CI/CD
+</div>
+<p class="text-sm text-text/85 dark:text-darkmode-text/85 mb-0">
+Poiché le chiavi Express Mode sono stringhe statiche, capita spesso che vengano salvate per errore in file <code>.env</code> e committate su repository remoti. È essenziale configurare pre-commit hook e, per il rilascio verso l'ambiente di staging, passare direttamente a Google Cloud Workload Identity Federation eliminando qualsiasi segreto statico su disco.
+</p>
+</div>
+</div>
 
 ---
 
