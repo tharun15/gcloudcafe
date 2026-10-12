@@ -1,9 +1,18 @@
 {{ define "main" }}
   {{ $posts := sort (where site.RegularPages "Section" "blog") "Date" "desc" }}
   {{ $featured := false }}
+  {{/* Prioritize explicit hero post if set */}}
   {{ range $posts }}
-    {{ if and (not $featured) .Params.featured }}
+    {{ if and (not $featured) .Params.hero }}
       {{ $featured = . }}
+    {{ end }}
+  {{ end }}
+  {{/* Fallback to most recent featured post */}}
+  {{ if not $featured }}
+    {{ range $posts }}
+      {{ if and (not $featured) .Params.featured }}
+        {{ $featured = . }}
+      {{ end }}
     {{ end }}
   {{ end }}
   {{ if not $featured }}

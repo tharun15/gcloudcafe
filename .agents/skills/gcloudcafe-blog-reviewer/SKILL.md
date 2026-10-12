@@ -42,7 +42,7 @@ Evaluate every article against these 10 criteria tailored to the article's speci
 | **7. Production Operational Value** | 10% | Explains practical debugging, real-world edge cases, cost traps, performance bottlenecks, and incident recovery rather than basic "getting started" tutorials. |
 | **8. SEO & Frontmatter Quality** | 5% | Search-optimized title and description. Full frontmatter (categories, tags, author, image, featured, date, series, series_order). |
 | **9. Topical Clustering & Internal Links** | 5% | Strategic links between related articles, series parts, cheat sheets, and architecture guides on Gcloudcafe. |
-| **10. Diagrams & Visual Polish** | 5% | Clean ASCII pipelines and responsive cards that render without horizontal overflow on mobile screens. |
+| **10. Diagrams, Mermaid & Link Health** | 5% | **Strict Publish-Ready Integrity:**<br>• *Mermaid Syntax:* Node labels with special characters (brackets, parentheses, colons) must be double-quoted (`id["label (info)"]`). Zero syntax crashes.<br>• *Live Links:* 100% of external URLs return HTTP 200/30x (no dead 404s). Internal links use valid canonical routes.<br>• *Visual Polish:* Responsive diagrams & cards render without horizontal overflow on mobile. |
 
 ---
 

@@ -1,16 +1,17 @@
 ---
-title: "Da Vertex AI a Gemini Enterprise Agent Platform: Costruire un Parser di Intenti di Viaggio con Express Mode (Parte 1)"
-meta_title: "Guida a Express Mode di Gemini Enterprise Agent Platform | GCloud Cafe"
-description: "Esplora Express Mode di Google Cloud Gemini Enterprise Agent Platform, confronta API key con ADC e crea un parser di intenti di viaggio con contratti Pydantic in Python."
-date: 2026-09-26
-last_modified: 2026-09-26
+title: "Costruire Agenti AI su Google Cloud (Parte 1): Express Mode e Contratti d'Intento"
+meta_title: "Costruire Agenti AI su Google Cloud: Express Mode (Parte 1)"
+description: "Perché configurare agenti AI aziendali richiede settimane—e come costruire un parser di intenti tipizzato in 30 secondi con Express Mode e Pydantic v2."
+date: 2026-10-12
+last_modified: 2026-10-12
 image: "/images/gemini-agent-platform-express-mode.jpg"
 categories: ["Google Cloud", "AI", "Architecture"]
 tags: ["Gemini Enterprise Agent Platform", "Express Mode", "Vertex AI", "Gemini 2.5 Flash", "Agent Studio", "Google Gen AI SDK", "Python", "TravelTech"]
 author: tharun-vempati
 featured: true
+hero: true
 draft: false
-series: "Costruire Offvia con Gemini Enterprise Agent Platform"
+series: "Costruire Agenti AI su Google Cloud"
 series_order: 1
 faqs:
   - question: "Cos'è la modalità Express di Gemini Enterprise Agent Platform?"
@@ -21,7 +22,7 @@ faqs:
     answer: "Passa alla configurazione completa quando l'applicazione richiede controlli di sicurezza VPC, instradamento IP privato, chiavi di cifratura gestite dal cliente (CMEK) e pipeline di valutazione continua."
 ---
 
-Il 22 aprile 2026, Google Cloud ha annunciato **Gemini Enterprise Agent Platform (precedentemente nota come Vertex AI)**: l'evoluzione strategica della piattaforma verso un ambiente unificato per sviluppare, scalare, governare e ottimizzare agenti di intelligenza artificiale di livello enterprise.
+Da Vertex AI a Gemini Enterprise Agent Platform: l'evoluzione strategica annunciata da Google Cloud segna il passaggio verso un ambiente unificato verso un ambiente unificato per sviluppare, scalare, governare e ottimizzare agenti di intelligenza artificiale di livello enterprise.
 
 Nello stesso momento, il team di prodotto ha introdotto **Express Mode**: un percorso rapido e leggero per la prototipazione. Express Mode consente agli sviluppatori di testare modelli all'avanguardia (come Gemini 2.5 Flash) e costruire catene di agenti utilizzando semplici chiavi API (`x-goog-api-key`), senza dover configurare preventivamente account di fatturazione, complesse gerarchie GCP o autorizzazioni IAM restrittive.
 
@@ -31,7 +32,7 @@ Per gli sviluppatori che hanno affrontato l'onboarding tradizionale su Google Cl
 >
 > **Oggi con Express Mode:** Fai clic su un pulsante nella console, generi una chiave API dedicata al progetto in 30 secondi, esegui `pip install google-genai` e metti in funzione il tuo primo agente cognitivo prima ancora che la pausa caffè sia finita.
 
-In questa prima guida della nostra serie, supereremo la burocrazia cloud, analizzeremo il passaggio da modelli statici ad agenti cognitivi e realizzeremo il primo componente concreto del nostro caso studio reale: **il parser di intenti di viaggio di Offvia**.
+In questa prima guida della nostra trilogia masterclass, supereremo la burocrazia cloud, analizzeremo il passaggio da modelli statici ad agenti cognitivi e realizzeremo il primo componente concreto del nostro caso studio reale: **il parser di intenti di viaggio di Offvia**.
 
 ---
 
@@ -299,7 +300,7 @@ flowchart TD
     S1 --> S2 --> S3 --> S4 --> S5
 ```
 
-Nella **Parte 2** di questa serie, collegheremo il nostro parser a un server remoto con protocollo **Model Context Protocol (MCP)** collegato al data warehouse BigQuery di Offvia, consentendo all'agente di interrogare disponibilità di inventario e storico prezzi in tempo reale.
+Nella **Parte 2: Lo Swarm Multi-Agente — Orchestrazione Supervisor, Google ADK e Tool MCP**, implementeremo il **Pattern Supervisor** con sub-agenti specializzati (Specialista Voli, Concierge Hotel e Guardrail di Policy), collegheremo il data warehouse BigQuery di Offvia tramite server **Model Context Protocol (MCP)** ed esporteremo la logica in codice Python robusto con Google ADK.
 
 ---
 
