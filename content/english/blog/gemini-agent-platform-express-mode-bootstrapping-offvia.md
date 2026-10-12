@@ -1,7 +1,7 @@
 ---
-title: "Building AI Agents on Google Cloud (Part 1): Express Mode & Intent Contracts"
-meta_title: "Building AI Agents on Google Cloud: Express Mode (Part 1)"
-description: "Why enterprise AI agent setup takes weeks—and how to build a production, schema-constrained travel intent parser in 30 seconds with Express Mode and Pydantic v2."
+title: "Bootstrapping a Production AI Travel Agent with Gemini Enterprise Platform (Part 1)"
+meta_title: "Bootstrapping a Production AI Travel Agent on Google Cloud (Part 1)"
+description: "A production guide to bootstrapping Offvia, an AI travel concierge on Google Cloud: bypassing weeks of IAM red tape, Express Mode, and Pydantic v2 data contracts."
 date: 2026-10-12
 last_modified: 2026-10-12
 image: "/images/gemini-agent-platform-express-mode.jpg"

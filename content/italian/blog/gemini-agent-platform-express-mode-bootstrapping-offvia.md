@@ -1,7 +1,7 @@
 ---
-title: "Costruire Agenti AI su Google Cloud (Parte 1): Express Mode e Contratti d'Intento"
-meta_title: "Costruire Agenti AI su Google Cloud: Express Mode (Parte 1)"
-description: "Perché configurare agenti AI aziendali richiede settimane—e come costruire un parser di intenti tipizzato in 30 secondi con Express Mode e Pydantic v2."
+title: "Costruire un Agente di Viaggio AI per la Produzione con Gemini Enterprise (Parte 1)"
+meta_title: "Costruire un Agente di Viaggio AI su Google Cloud (Parte 1)"
+description: "Guida pratica per avviare Offvia, un concierge di viaggio su Google Cloud: superare la burocrazia IAM, Express Mode e contratti di dati con Pydantic v2."
 date: 2026-10-12
 last_modified: 2026-10-12
 image: "/images/gemini-agent-platform-express-mode.jpg"
