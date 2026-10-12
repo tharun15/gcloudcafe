@@ -1,5 +1,24 @@
 [
   {
+    "id": "55fc634e-6c17-426f-a7b7-8f3f577c71c4",
+    "title": "EU CRA Mandates 'Secure by Design' for Open Source Software",
+    "content": "🎯 What Changed: New EU regulations, notably the Cyber Resilience Act (CRA), are making \"secure by design\" the mandatory standard for open source software development.\n💡 Engineering Impact: This shift necessitates integrating security earlier into the development lifecycle, demanding a \"shift-left\" approach in DevOps and proactive architectural changes to meet compliance by December 2027.",
+    "tags": [
+      "#OpenShift",
+      "#RedHat",
+      "#DevOps"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-10-12T12:54:47.130075+00:00",
+    "link_url": "https://www.redhat.com/en/blog/why-secure-design-new-standard-open-source",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 128.1h without manual admin curation.",
+    "updated_at": "2026-10-12T17:32:46.454Z"
+  },
+  {
     "id": "10cdf991-d12e-40fd-ad59-bf4a02ac7441",
     "title": "Amazon Bedrock now supports reasoning summaries for OpenAI models",
     "content": "🎯 What Changed: Amazon Bedrock added support for the reasoning.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
@@ -277,25 +296,5 @@
     "eligibility_reason": "[Auto-Published] Published automatically after 101.3h without manual admin curation.",
     "updated_at": "2026-10-11T14:45:39.984+00:00",
     "ageDays": 0.7408217013888889
-  },
-  {
-    "id": "26afaa1e-cc06-4f97-8eb7-ed0144dd6e09",
-    "title": "Cloudera CDP Scales Big Data Analytics on OpenShift Virtualization",
-    "content": "🎯 What Changed: Cloudera Data Platform (CDP) is now validated to run at scale on Red Hat OpenShift Virtualization, supporting over 100 virtualized nodes.\n💡 Engineering Impact: This enables organizations to modernize big data analytics by running traditional VMs alongside containers on a unified OpenShift platform, avoiding immediate application refactoring or maintaining costly, separate infrastructure environments.",
-    "tags": [
-      "#OpenShift",
-      "#RedHat",
-      "#DevOps"
-    ],
-    "upvotes": 1,
-    "downvotes": 0,
-    "score": 1,
-    "author": "Cloud Newsroom Bot",
-    "created_at": "2026-10-11T11:19:07.358329+00:00",
-    "link_url": "https://www.redhat.com/en/blog/scale-enterprise-analytics-running-cloudera-data-platform-openshift-virtualization",
-    "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 106.5h without manual admin curation.",
-    "updated_at": "2026-10-11T20:01:29.466+00:00",
-    "ageDays": 0.7408784259259259
   }
 ]
