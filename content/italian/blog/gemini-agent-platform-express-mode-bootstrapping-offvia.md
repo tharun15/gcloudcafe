@@ -1,5 +1,5 @@
 ---
-title: "Costruire un Agente di Viaggio AI per la Produzione con Gemini Enterprise (Parte 1)"
+title: "Costruire un Agente di Viaggio AI per la Produzione con Gemini Enterprise Agent Platform (Parte 1)"
 meta_title: "Costruire un Agente di Viaggio AI su Google Cloud (Parte 1)"
 description: "Guida pratica per avviare Offvia, un concierge di viaggio su Google Cloud: superare la burocrazia IAM, Express Mode e contratti di dati con Pydantic v2."
 date: 2026-10-12

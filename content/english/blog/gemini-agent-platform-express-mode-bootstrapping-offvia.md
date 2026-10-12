@@ -1,5 +1,5 @@
 ---
-title: "Bootstrapping a Production AI Travel Agent with Gemini Enterprise Platform (Part 1)"
+title: "Bootstrapping a Production AI Travel Agent with Gemini Enterprise Agent Platform (Part 1)"
 meta_title: "Bootstrapping a Production AI Travel Agent on Google Cloud (Part 1)"
 description: "A production guide to bootstrapping Offvia, an AI travel concierge on Google Cloud: bypassing weeks of IAM red tape, Express Mode, and Pydantic v2 data contracts."
 date: 2026-10-12
