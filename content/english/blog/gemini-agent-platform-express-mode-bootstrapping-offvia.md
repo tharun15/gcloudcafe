@@ -467,7 +467,7 @@ flowchart TD
 
 ## 🚀 What's Next in Part 2?
 
-In **Part 2: The Multi-Agent Swarm — Supervisor Orchestration, Google ADK & MCP Tools**, we will:
+In [**Part 2: Architecting a Production Multi-Agent Swarm with Google ADK & MCP**](/blog/gemini-enterprise-multi-agent-swarm-adk-mcp/), we:
 * Break free of monolithic LLMs by implementing the **Supervisor Pattern** with specialized sub-agents (Flight Specialist, Hotel Concierge, Policy Guardrail).
 * Connect Offvia's analytical BigQuery lakehouse and live flight inventory using **Model Context Protocol (MCP)** tool servers.
 * Coordinate multi-turn state handoffs and prevent infinite token-burning loops.

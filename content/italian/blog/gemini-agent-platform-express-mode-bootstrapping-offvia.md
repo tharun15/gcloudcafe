@@ -404,7 +404,7 @@ flowchart TD
     S1 --> S2 --> S3 --> S4 --> S5
 ```
 
-Nella **Parte 2: Lo Swarm Multi-Agente — Orchestrazione Supervisor, Google ADK e Tool MCP**, implementeremo il **Pattern Supervisor** con sub-agenti specializzati (Specialista Voli, Concierge Hotel e Guardrail di Policy), collegheremo il data warehouse BigQuery di Offvia tramite server **Model Context Protocol (MCP)** ed esporteremo la logica in codice Python robusto con Google ADK.
+Nella [**Parte 2: Architettare uno Swarm Multi-Agente in Produzione con Google ADK e MCP**](/it/blog/gemini-enterprise-multi-agent-swarm-adk-mcp/), implementeremo il **Pattern Supervisor** con sub-agenti specializzati (Specialista Voli, Concierge Hotel e Guardrail di Policy), collegheremo il data warehouse BigQuery di Offvia tramite server **Model Context Protocol (MCP)** ed esporteremo la logica in codice Python robusto con Google ADK.
 
 ---
 
