@@ -1,5 +1,24 @@
 [
   {
+    "id": "07c6ae14-ddfd-49c3-ae90-11fa0d623eeb",
+    "title": "SQL Server on Azure Local GA: Hybrid Data Modernization",
+    "content": "🎯 What Changed: SQL Server on Azure Local is now generally available, enabling hybrid data modernization.\n💡 Engineering Impact: This offers architects and engineers a robust solution for modernizing on-premises SQL Server deployments, ensuring data sovereignty and control while leveraging Azure capabilities.",
+    "tags": [
+      "#Azure",
+      "#CloudArchitecture",
+      "#CloudNews"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-10-13T12:32:35.727283+00:00",
+    "link_url": "https://www.microsoft.com/en-us/sql-server/blog/2026/09/28/sql-server-on-azure-local-is-now-generally-available/",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 153.6h without manual admin curation.",
+    "updated_at": "2026-10-13T19:03:04.192Z"
+  },
+  {
     "id": "0b0c700b-f90d-48da-83c7-f84e0851f7bf",
     "title": "AWS Lambda announces Lambda Web Functions",
     "content": "🎯 What Changed: port.\" (1 sentence) * Sentence 2: \"Why it matters: This eliminates the need.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
@@ -277,25 +296,5 @@
     "eligibility_reason": "[Auto-Published] Published automatically after 128.1h without manual admin curation.",
     "updated_at": "2026-10-12T17:32:46.454+00:00",
     "ageDays": 0.9425618518518518
-  },
-  {
-    "id": "a64d4952-740d-4ed0-9b95-97dfd698283e",
-    "title": "Anthropic Claude 5.5 Models Boost AI in AWS GovCloud (US)",
-    "content": "🎯 What Changed: Anthropic Claude Sonnet 5.5 and Opus 5.5 models are now available in Kiro within AWS GovCloud (US) Regions.\n💡 Engineering Impact: These models offer enhanced performance, with Opus 5.5 delivering more efficient agentic coding and Sonnet 5.5 providing faster, cost-optimized throughput, enabling developers to build more capable and efficient AI applications for sensitive workloads.",
-    "tags": [
-      "#AWS",
-      "#CloudArchitecture",
-      "#CloudNews"
-    ],
-    "upvotes": 1,
-    "downvotes": 0,
-    "score": 1,
-    "author": "Cloud Newsroom Bot",
-    "created_at": "2026-10-12T12:54:43.51912+00:00",
-    "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/06/kiro-claude-5-5-aws-govcloud-us/",
-    "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 136.4h without manual admin curation.",
-    "updated_at": "2026-10-13T01:53:42.799+00:00",
-    "ageDays": 0.9426036458333333
   }
 ]
