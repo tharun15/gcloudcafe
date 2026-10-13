@@ -1,9 +1,9 @@
 ---
 title: "Architecting a Production Multi-Agent Swarm with Google ADK & MCP (Part 2)"
 meta_title: "Multi-Agent Swarm with Google ADK & MCP: Part 2 | Gcloudcafe"
-description: "Architect a production multi-agent travel concierge on Google Cloud: Supervisor orchestration, Google ADK, Model Context Protocol (MCP) tools, and BigQuery."
+description: "Build a production-ready multi-agent travel concierge on Google Cloud using Google ADK, the Supervisor pattern, MCP tool boundaries, and BigQuery."
 date: 2026-10-12
-last_modified: 2026-10-12
+last_modified: 2026-10-13
 image: "/images/gemini-enterprise-multi-agent-swarm-adk-mcp.jpg"
 categories: ["Google Cloud", "AI", "Architecture"]
 tags: ["Multi-Agent Systems", "Google ADK", "Model Context Protocol", "MCP", "Gemini 2.5 Pro", "Vertex AI", "BigQuery", "Python"]
@@ -15,568 +15,804 @@ series: "Building AI Agents on Google Cloud"
 series_order: 2
 faqs:
   - question: "What is the difference between the Transfer Pattern and the Invocation Pattern in Google ADK?"
-    answer: "The Transfer Pattern (sub_agents) delegates conversation ownership to a specialized child agent via transfer_to_agent for multi-turn dialogues. The Invocation Pattern (AgentTool) treats the child agent as a stateless callable tool, keeping conversational ownership with the supervisor."
+    answer: "The Transfer Pattern uses sub_agents to delegate a task or conversation to a specialized child agent. The Invocation Pattern wraps an agent as a callable tool with AgentTool, allowing the supervisor to retain conversational ownership while the child completes a bounded sub-task. For focused, single-turn specialist work, ADK commonly favors sub_agents with mode=\"single_turn\"."
   - question: "Why use Model Context Protocol (MCP) instead of traditional REST APIs for agent tools?"
-    answer: "Model Context Protocol provides standardized bidirectional capability negotiation, runtime tool discovery, structured JSON-RPC error framing, and protocol-level security boundaries, decoupling tool servers from specific agent runtimes."
+    answer: "MCP gives agent frameworks a standard way to discover and invoke external tools and resources. It reduces custom integration work and separates tool implementations from agent logic. It does not replace authentication, authorization, rate limiting, auditability, or data governance."
   - question: "How do you prevent infinite loops and token budget exhaustion in multi-agent systems?"
-    answer: "Implement a centralized Supervisor architecture with an explicit step budget (max_steps limit), recursion depth tracking, cycle detection, and a circuit breaker that halts execution if agents trigger repetitive tool calls."
+    answer: "Use runtime controls rather than relying on prompts alone: enforce a maximum number of tool calls, track recursion depth, detect repeated parameter exchanges, apply timeouts, and halt or escalate when agents repeatedly fail or cycle."
 ---
 
 Single-agent systems hit a cognitive wall when enterprise reality sets in.
 
-In [Part 1 of our trilogy](/blog/gemini-agent-platform-express-mode-bootstrapping-offvia/), we bootstrapped our travel concierge, **Offvia**, by bypassing IAM onboarding friction using Express Mode and enforcing bulletproof Pydantic intent contracts. But once a validated request enters your system—flights, boutique hotels, budget compliance, and real-time inventory—a single model prompt unravels:
+In [Part 1 of our trilogy](/blog/gemini-agent-platform-express-mode-bootstrapping-offvia/), we bootstrapped **Offvia**, our travel concierge, by reducing IAM onboarding friction with Express Mode and enforcing structured intent contracts with Pydantic.
 
-> *"Find me a four-day tech-conference trip to Tokyo from San Francisco for under $2,200, departing next Wednesday. I need a non-stop flight, a boutique hotel near Shibuya with high-speed Wi-Fi, and free cancellation in case my visa decision is delayed."*
+But once a validated request enters the system—flights, boutique hotels, budget compliance, and live inventory—a single model prompt starts to struggle:
 
-Feed this to a monolithic agent with eight Python tools attached, and you get chaos:
-* The model queries flight tables, hallucinates IATA airport codes, and burns 15,000 tokens trying to parse hotel amenities simultaneously.
-* It books a return flight departing two hours before the hotel checkout date.
-* Worse, when the flight tool returns a 429 rate limit, the model loses track of the hotel booking state entirely, loops three times, and exhausts your monthly API quota in four minutes.
+> “Find me a four-day tech-conference trip to Tokyo from San Francisco for under $2,200, departing next Wednesday. I need a non-stop flight, a boutique hotel near Shibuya with high-speed Wi-Fi, and free cancellation in case my visa decision is delayed.”
 
-To build enterprise AI that survives production traffic, you must decompose the monolithic model into a **Multi-Agent System (MAS)**.
+Give this request to one monolithic agent with eight Python tools attached, and things can go wrong quickly:
 
-In this second masterclass of our 3-part trilogy, we move from single-turn intent parsing to full production orchestration. We will dissect Google's **Agent Development Kit (Google ADK)**, implement the **Supervisor Pattern**, connect external enterprise data via the **Model Context Protocol (MCP)**, and wire a resilient multi-agent swarm in clean Python.
+- The model may mix up airport codes, hotel amenities, cancellation rules, and budget constraints.
+- It may choose a return flight that conflicts with the hotel checkout date.
+- If a flight API returns a rate-limit error, the agent may lose track of the booking state, retry repeatedly, and burn tokens without making progress.
+
+To build AI systems that survive production traffic, we need to decompose the monolithic prompt into a **multi-agent system**.
+
+In this second part of the trilogy, we move from single-turn intent parsing to production orchestration. We will use **Google ADK**, apply the **Supervisor pattern**, connect external systems through the **Model Context Protocol (MCP)**, and build a resilient multi-agent travel swarm in Python.
 
 ---
 
-## 🏢 The Mental Model: The Corporate Travel Desk vs The Solitary Operator
+## The mental model: a corporate travel desk
 
-To understand why multi-agent architectures outperform monolithic prompts, consider how an enterprise corporate travel desk operates:
+A useful way to understand multi-agent systems is to compare them with a corporate travel desk.
+
+A single travel operator trying to answer the phone, search airline inventory, check hotel availability, validate expenses, and review visa requirements at the same time will eventually make mistakes. A well-run travel desk separates those responsibilities:
 
 ```mermaid
 flowchart TD
-    subgraph Monolith["❌ The Solitary Operator (Monolithic Prompt)"]
+    subgraph Monolith["The solitary operator"]
         direction TB
-        M1["👤 Single Human Operator"]
-        M2["Answer Phone + Query Amadeus GDS + Check Hotel Availability + Audit Finance Receipts + Verify Visas"]
-        M3["💥 Result: Cognitive Overload, Missed Policies, 20-Minute Delays"]
+        M1["One operator"]
+        M2["Answer calls, search flights, check hotels, audit expenses, validate policies"]
+        M3["Cognitive overload, missed policies, slow responses"]
         M1 --> M2 --> M3
     end
 
-    subgraph MultiAgent["✅ The Specialized Corporate Desk (Supervisor Swarm)"]
+    subgraph MultiAgent["The specialized travel desk"]
         direction TB
-        S["👔 Lead Desk Supervisor<br/>(Greets Traveler, Plans Steps, Enforces Budget)"]
-        W1["✈️ Flight Specialist<br/>(MCP Live GDS Tool)"]
-        W2["🏨 Hotel Concierge<br/>(MCP BigQuery Lakehouse)"]
-        W3["🛡️ Policy Guardrail<br/>(Deterministic Pydantic Tool)"]
-        S -->|"Delegates Flight Search"| W1
-        S -->|"Delegates Lodging Search"| W2
-        S -->|"Validates Total Spend"| W3
+        S["Travel desk supervisor"]
+        W1["Flight specialist"]
+        W2["Hotel concierge"]
+        W3["Policy guardrail"]
+        S -->|"Flight search"| W1
+        S -->|"Lodging search"| W2
+        S -->|"Budget and policy validation"| W3
     end
 ```
 
-<div class="my-8 p-6 rounded-2xl bg-sky-50 dark:bg-sky-950/60 border-2 border-sky-300 dark:border-sky-600/70 text-sky-950 dark:text-sky-100">
-<h4 class="text-xl font-bold flex items-center gap-2 mb-3">
-<span>💡</span> In Plain English: Context Isolation
-</h4>
-<p class="leading-relaxed">
-When an agent searches for flights, it needs airline routing rules, baggage codes, and seat classes. It does <b>not</b> need to know the hotel pet policy or the corporate per-diem breakfast allowance. By isolating each specialist into its own agent runtime with dedicated tools, we slash context window bloat, eliminate token pollution, and prevent reasoning degradation.
-</p>
-</div>
+The supervisor does not need to know every airline rule or hotel amenity. It needs to understand the traveler’s goal, break the work into tasks, delegate those tasks, reconcile the results, and enforce policy.
+
+This is **context isolation**.
+
+When the flight specialist searches for flights, it needs routing rules, cabin classes, baggage constraints, and cancellation policies. It does not need the hotel pet policy or the corporate breakfast allowance. By giving each specialist a narrow role and a limited set of tools, we reduce context bloat and make failures easier to isolate.
 
 ---
 
-## 🏛️ Core Architectural Primitives: Google ADK & MCP
+## Core architecture: Google ADK and MCP
 
-Building a production multi-agent system on Google Cloud requires three distinct architectural layers:
+A production multi-agent system on Google Cloud usually has three layers:
 
 ```mermaid
 flowchart LR
-    subgraph UI["1. Orchestration Layer"]
-        ADK["Google ADK (Agent Development Kit)<br/>Supervisor Node (Gemini 2.5 Pro)"]
+    subgraph Orchestration["Orchestration layer"]
+        ADK["Google ADK supervisor"]
     end
 
-    subgraph Workers["2. Specialist Worker Layer"]
-        A1["Flight Booking Specialist<br/>(Gemini 2.5 Flash)"]
-        A2["Hotel Concierge Specialist<br/>(Gemini 2.5 Flash)"]
-        A3["Policy Compliance Guardrail<br/>(Deterministic Rule Node)"]
+    subgraph Workers["Specialist layer"]
+        A1["Flight specialist"]
+        A2["Hotel specialist"]
+        A3["Policy guardrail"]
     end
 
-    subgraph Data["3. Standardized Tooling Layer (MCP)"]
-        MCP1["Flight GDS MCP Server<br/>(Live Inventory Stream)"]
-        MCP2["BigQuery Lakehouse MCP Server<br/>(Historical Ratings & Deals)"]
+    subgraph Data["Tool and data layer"]
+        MCP1["Flight inventory MCP server"]
+        MCP2["BigQuery hotel MCP server"]
     end
 
-    ADK -->|"Task Delegation"| A1
-    ADK -->|"Task Delegation"| A2
-    ADK -->|"Validation Hook"| A3
+    ADK -->|"Delegate flight task"| A1
+    ADK -->|"Delegate hotel task"| A2
+    ADK -->|"Validate itinerary"| A3
 
-    A1 -->|"JSON-RPC 2.0"| MCP1
-    A2 -->|"JSON-RPC 2.0"| MCP2
+    A1 -->|"MCP"| MCP1
+    A2 -->|"MCP"| MCP2
 ```
 
-### 1. Google Agent Development Kit (Google ADK)
-**Google ADK (`google-adk`)** is Google's open-source, code-first Python and multi-language framework for composing, evaluating, and deploying production AI agents. While **Agent Studio** in the Google Cloud Console offers visual drag-and-drop prototyping, ADK provides the programmatic runtime required for version control, unit testing, and CI/CD pipelines.
+### Google Agent Development Kit
 
-In ADK, multi-agent workflows fall into two primary delegation mechanics:
+**Google ADK** (`google-adk`) is Google’s code-first framework for building, evaluating, and deploying AI agents. While visual tools are useful for prototyping, ADK gives you a programmatic runtime that fits naturally with version control, unit tests, and CI/CD.
 
-* **The Transfer Pattern (`sub_agents`):** The supervisor uses `transfer_to_agent()` to hand over complete conversational ownership to a child specialist. The specialist interacts directly with the user over multiple turns before yielding control back.
-* **The Invocation Pattern (`AgentTool`):** The child agent is encapsulated inside an `AgentTool`. To the supervisor, the worker behaves like an ordinary Python function. The worker runs its reasoning loop in complete isolation (stateless relative to user history) and returns structured JSON back to the supervisor.
+ADK supports several ways to compose agents. For this use case, the two most relevant are:
 
-For Offvia, we use the **Invocation Pattern** for specialist tools and guardrails: the supervisor stays in charge of the conversation, while worker agents execute focused sub-tasks.
+- **Transfer pattern:** The supervisor delegates work to a child agent using `sub_agents`. The child agent can complete a focused task and return control to the supervisor.
+- **Invocation pattern:** A child agent is exposed as a callable tool through `AgentTool`. The supervisor retains conversational ownership while the child completes a bounded sub-task.
 
-### 2. Model Context Protocol (MCP)
-Developed as an open industry standard, the **Model Context Protocol (MCP)** establishes a universal client-server interface between AI models and external tools. Instead of writing proprietary, one-off API wrapper functions for every database or third-party service:
-1. **The MCP Server** exposes available tools, resource schemas, and documentation over standardized `stdio` or HTTP/SSE streams.
-2. **The MCP Client (Google ADK)** connects to the server, discovers available tools dynamically at startup, and translates Gemini function calls into structured JSON-RPC 2.0 execution requests.
-3. **Security Boundary:** The database credentials, SQL dialects, and connection pools live exclusively on the MCP server. The model never touches raw database connection strings.
+For Offvia, the flight and hotel specialists perform focused, single-turn tasks. We will use ADK’s `sub_agents` mechanism with `mode="single_turn"`, which keeps the supervisor in charge of the conversation while allowing specialists to execute narrowly scoped work.
 
----
+### Model Context Protocol
 
-## 📊 Architectural Decision Matrix: Single-Agent vs Multi-Agent Swarm
+The **Model Context Protocol (MCP)** is an open standard for connecting AI applications to external tools, data sources, and systems.
 
-<div class="my-8 overflow-x-auto">
-<div class="inline-block min-w-full align-middle">
-<div class="overflow-hidden rounded-2xl border-2 border-slate-200 dark:border-slate-800 shadow-sm">
-<table class="min-w-full divide-y divide-slate-200 dark:divide-slate-800 text-left text-sm">
-<thead class="bg-slate-100 dark:bg-slate-900 font-semibold text-slate-800 dark:text-slate-200">
-<tr>
-<th scope="col" class="px-6 py-4">Architectural Dimension</th>
-<th scope="col" class="px-6 py-4">Monolithic Agent (Single Prompt)</th>
-<th scope="col" class="px-6 py-4">Google ADK Multi-Agent Swarm + MCP</th>
-</tr>
-</thead>
-<tbody class="divide-y divide-slate-200 dark:divide-slate-800 bg-white dark:bg-slate-950 text-slate-600 dark:text-slate-300">
-<tr>
-<td class="px-6 py-4 font-semibold text-slate-900 dark:text-white">Tool Scalability</td>
-<td class="px-6 py-4 text-rose-600 dark:text-rose-400">Degrades rapidly beyond 5 tools (hallucination & tool confusion)</td>
-<td class="px-6 py-4 text-emerald-600 dark:text-emerald-400 font-medium">Scales horizontally; each specialist owns 1–3 scoped MCP tools</td>
-</tr>
-<tr>
-<td class="px-6 py-4 font-semibold text-slate-900 dark:text-white">Token Efficiency</td>
-<td class="px-6 py-4 text-rose-600 dark:text-rose-400">Raw context expands with all tool definitions and outputs</td>
-<td class="px-6 py-4 text-emerald-600 dark:text-emerald-400 font-medium">Isolated sub-agent contexts; only synthesized results bubble up</td>
-</tr>
-<tr>
-<td class="px-6 py-4 font-semibold text-slate-900 dark:text-white">Model Selection</td>
-<td class="px-6 py-4">Forced to run expensive flagship model for every trivial step</td>
-<td class="px-6 py-4 font-medium text-sky-600 dark:text-sky-400">Hybrid: Gemini 2.5 Pro for Supervisor, Gemini 2.5 Flash for Workers</td>
-</tr>
-<tr>
-<td class="px-6 py-4 font-semibold text-slate-900 dark:text-white">Blast Radius & Debugging</td>
-<td class="px-6 py-4 text-rose-600 dark:text-rose-400">Single failure corrupts entire conversation thread</td>
-<td class="px-6 py-4 text-emerald-600 dark:text-emerald-400 font-medium">Failing tools isolate to specific worker; supervisor initiates fallback</td>
-</tr>
-<tr>
-<td class="px-6 py-4 font-semibold text-slate-900 dark:text-white">Data Governance</td>
-<td class="px-6 py-4">Direct database API secrets injected into agent prompt</td>
-<td class="px-6 py-4 font-medium text-emerald-600 dark:text-emerald-400">Strict MCP boundaries with IAM, VPC Service Controls, and parameterized queries</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</div>
+Instead of writing a bespoke wrapper for every database, SaaS API, or internal service, you can expose capabilities through MCP servers:
+
+1. The MCP server exposes tools, resource metadata, and schemas.
+2. The MCP client—in this case, Google ADK—discovers the available tools.
+3. The agent selects a tool, and ADK routes the invocation to the appropriate MCP server.
+4. The MCP server executes the operation and returns a structured result.
+
+MCP is valuable because it creates a clean architectural boundary between the agent runtime and enterprise systems. Database credentials, connection pools, query logic, and provider-specific details can remain on the server side.
+
+However, MCP is not a security control by itself. You still need authentication, authorization, least-privilege IAM, network controls, input validation, rate limits, and audit logging.
 
 ---
 
-## 🚨 5 Fatal Misconceptions About Multi-Agent Systems
+## Single agent versus multi-agent swarm
 
-<div class="my-8 grid grid-cols-1 md:grid-cols-2 gap-6">
-<div class="p-6 rounded-2xl bg-rose-50/70 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-800/60">
-<div class="flex items-center gap-2 mb-3">
-<span class="text-xl">❌</span>
-<h4 class="text-lg font-bold text-rose-900 dark:text-rose-200">Myth 1: Swarms Should Chat Without a Supervisor</h4>
-</div>
-<p class="text-sm leading-relaxed text-rose-800 dark:text-rose-300">
-Allowing autonomous agents to debate freely in an unmanaged chat room leads to non-deterministic loops ("Thank you!", "No, thank you!"). In enterprise production, <b>hierarchical orchestration with a strict Supervisor state machine is mandatory</b>.
-</p>
-</div>
+| Dimension | Monolithic agent | Google ADK multi-agent swarm with MCP |
+|---|---|---|
+| Tool scalability | Tool-selection accuracy can decline as the number of loosely scoped tools grows | Each specialist owns a small, well-defined tool set |
+| Context efficiency | All tool definitions and outputs compete for the same context | Specialists receive only task-scoped context |
+| Model selection | One model handles every step | A stronger model can coordinate, while faster models handle focused tasks |
+| Failure isolation | A tool failure can corrupt the whole reasoning thread | Failures can be contained within a specialist and handled by the supervisor |
+| Debugging | Harder to identify which responsibility failed | Clearer boundaries between orchestration, domain logic, and tools |
+| Data governance | Credentials and broad data access can leak into the agent runtime if implemented poorly | Tool servers can hold credentials and expose narrowly scoped operations |
+| Determinism | More logic is delegated to the model | Deterministic validation can sit at task boundaries |
 
-<div class="p-6 rounded-2xl bg-rose-50/70 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-800/60">
-<div class="flex items-center gap-2 mb-3">
-<span class="text-xl">❌</span>
-<h4 class="text-lg font-bold text-rose-900 dark:text-rose-200">Myth 2: Sub-Agents Must Receive Full Chat History</h4>
-</div>
-<p class="text-sm leading-relaxed text-rose-800 dark:text-rose-300">
-Forwarding the entire multi-turn chat transcript to a flight specialist causes severe "needle-in-a-haystack" reasoning degradation. Sub-agents must receive <b>only the isolated parameters required for their specific execution step</b>.
-</p>
-</div>
-
-<div class="p-6 rounded-2xl bg-rose-50/70 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-800/60">
-<div class="flex items-center gap-2 mb-3">
-<span class="text-xl">❌</span>
-<h4 class="text-lg font-bold text-rose-900 dark:text-rose-200">Myth 3: MCP is Just Another HTTP REST API</h4>
-</div>
-<p class="text-sm leading-relaxed text-rose-800 dark:text-rose-300">
-REST endpoints lack standardized schema introspection and state negotiation. <b>Model Context Protocol standardizes runtime tool capability discovery</b>, structured JSON-RPC error handling, and protocol-level isolation between the LLM and enterprise data providers.
-</p>
-</div>
-
-<div class="p-6 rounded-2xl bg-rose-50/70 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-800/60">
-<div class="flex items-center gap-2 mb-3">
-<span class="text-xl">❌</span>
-<h4 class="text-lg font-bold text-rose-900 dark:text-rose-200">Myth 4: Agents Should Write Dynamic SQL to BigQuery</h4>
-</div>
-<p class="text-sm leading-relaxed text-rose-800 dark:text-rose-300">
-Giving an agent raw Text-to-SQL access against production BigQuery tables invites prompt injection and massive scanning costs. <b>Expose parameterized MCP tools with bounded queries</b> that restrict scans to clustered partitions.
-</p>
-</div>
-
-<div class="p-6 rounded-2xl bg-rose-50/70 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-800/60 md:col-span-2">
-<div class="flex items-center gap-2 mb-3">
-<span class="text-xl">❌</span>
-<h4 class="text-lg font-bold text-rose-900 dark:text-rose-200">Myth 5: Multi-Agent Systems Eliminate Deterministic Code</h4>
-</div>
-<p class="text-sm leading-relaxed text-rose-800 dark:text-rose-300">
-The opposite is true. The more non-deterministic AI agents in your architecture, the more rigid your boundary code must be. <b>Pydantic validation, explicit recursion counters, timeout envelopes, and circuit breakers</b> are what separate an enterprise product from a prototype demo.
-</p>
-</div>
-</div>
+Multi-agent design does not automatically make a system scalable, secure, or cheaper. It improves modularity. You still need good evaluation, observability, access control, and deployment architecture.
 
 ---
 
-## 🔄 The End-to-End Orchestration Lifecycle
+## Five misconceptions about multi-agent systems
 
-Here is the exact state transition lifecycle executed by the Offvia Multi-Agent Swarm:
+### 1. Agents should chat freely without a supervisor
+
+Unstructured agent-to-agent conversation can become non-deterministic and expensive. Two agents may politely acknowledge each other, repeat requests, or disagree without converging on an answer.
+
+In production, use a supervisor with a clear workflow. The supervisor decides what needs to happen next, delegates bounded tasks, and decides when to stop.
+
+### 2. Sub-agents need the full chat history
+
+Forwarding an entire conversation to every specialist creates noise. A hotel agent does not need forty raw flight-search JSON objects.
+
+Pass only the minimum structured context required for the task:
+
+```python
+{
+    "city": "Tokyo",
+    "neighborhood": "Shibuya",
+    "nights": 4,
+    "max_budget_usd": 1050.00
+}
+```
+
+### 3. MCP is just another REST API
+
+MCP and REST solve overlapping but different problems. REST is a broad architectural style for HTTP-based services. MCP is specifically designed for connecting AI applications to tools and resources in a discoverable, structured way.
+
+MCP provides standardized tool discovery and invocation semantics. It does not eliminate the need for API design, versioning, authentication, or operational monitoring.
+
+### 4. Agents should write arbitrary SQL against BigQuery
+
+Giving an agent unrestricted Text-to-SQL access to production tables is risky. It can lead to expensive scans, data exposure, and prompt-injection-driven queries.
+
+Expose narrow, parameterized MCP tools instead. Use clustered and partitioned tables, query budgets, allowlisted columns, and service accounts with least-privilege access.
+
+### 5. Multi-agent systems remove the need for deterministic code
+
+The opposite is true.
+
+The more non-deterministic components you add, the more important deterministic boundaries become. Use Pydantic models, explicit schemas, validation functions, timeouts, retry policies, recursion limits, and circuit breakers around agent execution.
+
+---
+
+## The Offvia orchestration lifecycle
+
+Here is the intended execution flow for the travel request.
 
 ```mermaid
 sequenceDiagram
     autonumber
     actor User as Traveler
-    participant Sup as Travel Concierge Supervisor (Gemini 2.5 Pro)
-    participant Pol as Policy Guardrail Node (Pydantic Contract)
-    participant Flt as Flight Specialist (Gemini 2.5 Flash)
-    participant MCP_Flt as Flight GDS MCP Server
-    participant Htl as Hotel Specialist (Gemini 2.5 Flash)
-    participant MCP_BQ as BigQuery Hotel MCP Server
+    participant Sup as Travel supervisor
+    participant Pol as Policy guardrail
+    participant Flt as Flight specialist
+    participant MCP_Flt as Flight MCP server
+    participant Htl as Hotel specialist
+    participant MCP_BQ as Hotel MCP server
 
-    User->>Sup: "Book 4-day Tokyo trip under $2,200"
-    Note over Sup: 1. Parse TripIntent & Deconstruct Tasks
-    Sup->>Pol: Validate Budget Limit & Window Constraints
-    Pol-->>Sup: Policy Approved ($2,200 Per-Diem Cap Valid)
-    
-    par Parallel Sub-Agent Execution
-        Sup->>Flt: Invoke with {origin: SFO, dest: HND, date: 2026-10-21}
-        Flt->>MCP_Flt: JSON-RPC tools/call search_flights()
-        MCP_Flt-->>Flt: Non-stop flight: ANA #007 ($1,150)
-        Flt-->>Sup: Return Typed FlightOption
+    User->>Sup: Book a four-day Tokyo trip under $2,200
+    Sup->>Pol: Validate trip constraints and budget
+    Pol-->>Sup: Policy approved
+
+    par Independent specialist tasks
+        Sup->>Flt: Find non-stop SFO to Tokyo flight
+        Flt->>MCP_Flt: Call search_flights
+        MCP_Flt-->>Flt: Return flight option
+        Flt-->>Sup: Return structured flight result
     and
-        Sup->>Htl: Invoke with {city: Tokyo, area: Shibuya, nights: 4}
-        Htl->>MCP_BQ: JSON-RPC tools/call query_hotels()
-        MCP_BQ-->>Htl: Boutique Shibuya Hotel ($820, Wi-Fi 250Mbps)
-        Htl-->>Sup: Return Typed HotelOption
+        Sup->>Htl: Find Shibuya hotel for four nights
+        Htl->>MCP_BQ: Call query_hotels
+        MCP_BQ-->>Htl: Return hotel option
+        Htl-->>Sup: Return structured hotel result
     end
 
-    Note over Sup: 2. State Convergence: Total $1,970 <= $2,200
-    Sup->>User: Present Coordinated Itinerary & Request Booking Authorization
+    Sup->>Pol: Validate combined itinerary
+    Pol-->>Sup: Itinerary is compliant
+    Sup->>User: Present itinerary and request approval
 ```
 
----
-
-## ⚠️ 3 Critical Production Gotchas & Incident War Stories
-
-### 1. The Infinite "Ping-Pong" Deadlock
-* **The Incident:** In testing, our flight specialist returned a flight arriving in Tokyo at 9:00 PM. The hotel specialist rejected the check-in because the hotel reception desk closed at 8:00 PM. The supervisor asked the flight specialist for an earlier flight, which had a layover, causing the policy agent to reject it for violating travel time rules. The agents cycled 14 times, spending $42 in API tokens before timing out.
-* **The Fix:** Implement an explicit **step budget (`max_steps=10`)** and an anti-oscillation tracker inside the supervisor. If any agent pair exchanges messages more than twice on the same parameter, the supervisor breaks the loop and escalates to a human operator.
-
-### 2. Context Window Pollution & Needle Degradation
-* **The Incident:** In an early prototype, the supervisor passed its entire conversation history into the hotel specialist. The prompt included 40 raw JSON objects from previous flight queries. The hotel specialist began recommending hotels located near San Francisco International Airport (SFO) instead of Shibuya, confused by the origin airport in the prompt.
-* **The Fix:** Enforce **Strict Input Isolation**. The supervisor must extract only the destination city, neighborhood, dates, and budget ceiling, passing a sanitized 4-parameter dictionary to the hotel agent.
-
-### 3. MCP Subprocess Zombies & Transport Deadlocks
-* **The Incident:** During a spike in traffic, a local `stdio` MCP server querying BigQuery experienced connection throttling. The Python subprocess blocked on `stdin/stdout` read without a timeout, causing worker threads to hang indefinitely and exhausting the Cloud Run container memory pool.
-* **The Fix:** Always wrap MCP client invocations in asynchronous timeout handlers (`asyncio.wait_for(timeout=15.0)`). For production microservices, favor **Streamable HTTP / SSE transports** over `stdio` processes to decouple process lifecycles.
+The `par` block describes the desired orchestration behavior: flight and hotel searches are independent and can run concurrently. In practice, parallelism must be implemented by the application, orchestration layer, or execution environment. A supervisor model choosing tools one at a time will not automatically parallelize them.
 
 ---
 
-## 🛠️ Hands-On Engineering Lab: Building the Offvia Swarm
+## Production gotchas
 
-Let's build the runnable production multi-agent concierge using Python, Google ADK patterns, and Model Context Protocol tooling.
+### 1. The ping-pong deadlock
 
-### Step 1: Install Dependencies & Setup Environment
+Imagine this sequence:
 
-Create an isolated virtual environment and install the required libraries:
+1. The flight specialist finds a flight arriving in Tokyo at 9:00 PM.
+2. The hotel specialist rejects it because hotel check-in closes at 8:00 PM.
+3. The supervisor asks for an earlier flight.
+4. The earlier flight has a layover.
+5. The policy guardrail rejects the layover because it violates travel-time policy.
+6. The supervisor asks for another flight.
+
+Without limits, this can continue for many iterations.
+
+The fix is not a better prompt alone. Add runtime controls:
+
+- A maximum number of tool calls per user request
+- A maximum recursion or delegation depth
+- Detection of repeated tool calls with the same parameters
+- A circuit breaker after repeated failures
+- A human-escalation path when the system cannot converge
+
+### 2. Context pollution
+
+In an early prototype, the supervisor passed its entire conversation history to the hotel specialist. The prompt contained dozens of raw flight-search results. The hotel agent became confused by the origin airport and recommended hotels near San Francisco instead of Shibuya.
+
+The fix is strict input isolation. The supervisor should extract only the fields the hotel agent needs:
+
+```python
+hotel_request = {
+    "city": "Tokyo",
+    "neighborhood": "Shibuya",
+    "nights": 4,
+    "max_budget_usd": 1050.00
+}
+```
+
+### 3. MCP subprocess hangs
+
+A local `stdio` MCP server can block if its subprocess hangs or its standard input/output pipes stall. Wrapping the call in `asyncio.wait_for()` prevents the calling coroutine from waiting forever, but it does not automatically terminate the subprocess or clean up its resources.
+
+A production-ready implementation should also handle:
+
+- Request-level timeouts
+- Cancellation propagation
+- Process termination and graceful shutdown
+- Connection and subprocess lifecycle management
+- Health checks and restart policies
+
+For long-lived production services, consider Streamable HTTP or SSE-based MCP transports instead of local `stdio` processes.
+
+---
+
+## Hands-on lab: build the Offvia swarm
+
+This example shows the architecture clearly. The flight and hotel tools are represented as local Python functions for readability; in a real deployment, they would be exposed by dedicated MCP servers and consumed through ADK’s `McpToolset`.
+
+### Step 1: Set up the environment
 
 ```bash
 python3 -m venv venv
 source venv/bin/activate
-pip install google-adk pydantic google-genai
+
+pip install google-adk pydantic
 ```
 
-Set your Google Cloud authentication:
+For local prototyping with the Gemini API:
+
+```bash
+export GEMINI_API_KEY="your-api-key-here"
+```
+
+For a Vertex AI-based deployment, configure Google Cloud authentication and project settings instead:
 
 ```bash
 export GOOGLE_CLOUD_PROJECT="offvia-production"
 export GOOGLE_CLOUD_LOCATION="us-central1"
-# For local prototyping with Google GenAI SDK:
-export GEMINI_API_KEY="your-api-key-here"
 ```
 
----
+These are two different integration paths. Use the Gemini API key for quick local experimentation, and use Vertex AI with Google Cloud identities for production workloads.
 
-### Step 2: Define the MCP Tools for External Data
+### Step 2: Define the tool contracts
 
-In a production MCP architecture, tools are hosted by dedicated MCP servers. Below, we define our MCP tool specifications for flight inventory and the BigQuery hotel lakehouse:
+In production, these functions would live behind MCP servers. Here, they model the tool boundary and return structured data.
 
 ```python
 """
-tools/mcp_travel_tools.py
-Standardized MCP Tool definitions for Offvia Travel Swarm.
-"""
-from typing import Dict, Any, List
+tools/travel_tools.py
 
-# Simulating Model Context Protocol (MCP) Tool Endpoints
-def mcp_search_flights(origin: str, destination: str, departure_date: str) -> Dict[str, Any]:
+Tool contracts for the Offvia travel swarm.
+
+In production, expose these operations through dedicated MCP servers:
+- flight-inventory-mcp
+- bigquery-hotels-mcp
+"""
+
+from typing import Any, Dict
+
+
+def search_flights(
+    origin: str,
+    destination: str,
+    departure_date: str,
+) -> Dict[str, Any]:
     """
-    MCP Tool: Queries live Global Distribution System (GDS) for flights.
-    Exposed via MCP Server: amadeus-flight-mcp
+    Search flight inventory.
+
+    In production, this would be exposed by a flight-inventory MCP server
+    and invoked through ADK's McpToolset.
     """
-    # In production, this executes a JSON-RPC 2.0 tools/call to the remote MCP server
-    if origin.upper() == "SFO" and destination.upper() in ["HND", "NRT", "TYO"]:
+    if origin.upper() == "SFO" and destination.upper() in {"HND", "NRT", "TYO"}:
         return {
             "status": "success",
             "provider": "ANA",
             "flight_number": "NH107",
+            "origin": origin.upper(),
+            "destination": "HND",
             "departure": f"{departure_date}T10:45:00",
             "arrival": f"{departure_date}T14:30:00+1",
             "price_usd": 1150.00,
             "cabin": "Economy Flexible",
             "is_nonstop": True,
-            "cancellation_policy": "Full refund up to 24h before departure"
+            "free_cancellation": True,
+            "cancellation_policy": "Full refund up to 24 hours before departure",
         }
+
     return {
         "status": "error",
-        "message": f"No direct flights found for {origin} -> {destination} on {departure_date}"
+        "message": (
+            f"No direct flights found for {origin} to {destination} "
+            f"on {departure_date}."
+        ),
     }
 
 
-def mcp_query_hotel_lakehouse(city: str, neighborhood: str, nights: int, max_budget_usd: float) -> Dict[str, Any]:
+def query_hotels(
+    city: str,
+    neighborhood: str,
+    nights: int,
+    max_budget_usd: float,
+) -> Dict[str, Any]:
     """
-    MCP Tool: Queries BigQuery Lakehouse for curated boutique accommodations.
-    Exposed via MCP Server: bigquery-hotels-mcp
+    Search the hotel lakehouse.
+
+    In production, this would be exposed by a BigQuery-backed MCP server.
+    The underlying query should be parameterized and cost-bounded.
     """
-    # In production, queries partitioned & clustered BigQuery table: travel_dw.hotels_inventory
-    if "tokyo" in city.lower() and "shibuya" in neighborhood.lower():
-        total_rate = 205.00 * nights
-        if total_rate <= max_budget_usd:
+    if city.lower() == "tokyo" and neighborhood.lower() == "shibuya":
+        nightly_rate = 205.00
+        total_price = nightly_rate * nights
+
+        if total_price <= max_budget_usd:
             return {
                 "status": "success",
                 "hotel_name": "Trunk Hotel Shibuya",
-                "neighborhood": "Shibuya, Tokyo",
+                "city": "Tokyo",
+                "neighborhood": "Shibuya",
                 "nights": nights,
-                "nightly_rate_usd": 205.00,
-                "total_price_usd": total_rate,
+                "nightly_rate_usd": nightly_rate,
+                "total_price_usd": total_price,
                 "wifi_speed_mbps": 280,
-                "cancellation_policy": "Free cancellation up to 48 hours before check-in",
-                "verified_rating": 4.8
+                "free_cancellation": True,
+                "cancellation_policy": (
+                    "Free cancellation up to 48 hours before check-in"
+                ),
+                "verified_rating": 4.8,
             }
+
     return {
         "status": "error",
-        "message": f"No hotels matching criteria under ${max_budget_usd} in {neighborhood}, {city}"
+        "message": (
+            f"No hotels matching the criteria were found in {neighborhood}, "
+            f"{city} under ${max_budget_usd:.2f}."
+        ),
     }
 ```
 
----
+### Step 3: Create the specialist agents
 
-### Step 3: Implement Specialized Sub-Agents
-
-Each specialist agent operates with a narrow role, isolated prompt instructions, and access only to its authorized MCP tools:
+Each specialist has one job, a focused instruction, and access only to the tools it needs.
 
 ```python
 """
 agents/specialists.py
-Domain-specific Worker Agents in Google ADK.
 """
-from google.adk.agents.llm_agent import LlmAgent
-from tools.mcp_travel_tools import mcp_search_flights, mcp_query_hotel_lakehouse
 
-# 1. Flight Specialist Agent
+from google.adk.agents.llm_agent import LlmAgent
+from tools.travel_tools import search_flights, query_hotels
+
+
 flight_specialist = LlmAgent(
     name="FlightSpecialist",
     model="gemini-2.5-flash",
-    description="Specialized in searching and booking commercial airline flights.",
+    description=(
+        "Finds flights that match the requested route, date, cabin, "
+        "cancellation, and budget constraints."
+    ),
     instruction="""
     You are Offvia's Flight Specialist.
-    Your sole responsibility is to locate the best flight matching the origin, destination, and departure date.
-    Always prioritize non-stop flights and flexible cancellation policies.
-    Return only validated flight data and prices.
+
+    Your only responsibility is to find a suitable flight using the
+    available flight-search tool.
+
+    Rules:
+    - Prefer non-stop flights.
+    - Prefer flexible or free-cancellation fares.
+    - Do not invent airports, airlines, flight numbers, prices, or schedules.
+    - If no suitable flight is found, return a clear failure result.
+    - Do not search hotels or make policy decisions.
     """,
-    tools=[mcp_search_flights],
+    tools=[search_flights],
+    mode="single_turn",
 )
 
-# 2. Hotel Concierge Specialist Agent
+
 hotel_specialist = LlmAgent(
     name="HotelSpecialist",
     model="gemini-2.5-flash",
-    description="Specialized in discovering boutique hotels and verifying amenity contracts.",
+    description=(
+        "Finds hotels that match location, stay duration, amenities, "
+        "and lodging-budget constraints."
+    ),
     instruction="""
-    You are Offvia's Lodging Concierge.
-    Your sole responsibility is finding boutique accommodations in the requested neighborhood.
-    Verify that the high-speed Wi-Fi meets remote work requirements (>= 100 Mbps).
-    Strictly respect the maximum allocated lodging budget.
+    You are Offvia's Hotel Specialist.
+
+    Your only responsibility is to find suitable accommodation using the
+    available hotel-search tool.
+
+    Rules:
+    - Respect the requested neighborhood and stay duration.
+    - Require high-speed Wi-Fi of at least 100 Mbps.
+    - Respect the lodging budget exactly.
+    - Do not invent hotels, prices, ratings, or amenities.
+    - If no suitable hotel is found, return a clear failure result.
+    - Do not search flights or make policy decisions.
     """,
-    tools=[mcp_query_hotel_lakehouse],
+    tools=[query_hotels],
+    mode="single_turn",
 )
 ```
 
----
+### Step 4: Add deterministic policy validation
 
-### Step 4: Implement Policy Guardrails & Invocation Tools
-
-We wrap the sub-agents and deterministic compliance checks as callable `AgentTool` instances:
+The policy check should not depend on the model’s judgment. Make it a deterministic function with a strict input contract.
 
 ```python
 """
-agents/guardrails.py
-Policy Enforcement and Invocation Tool wrappers.
+agents/policy.py
 """
-from pydantic import BaseModel, Field
-from google.adk.tools.agent_tool import AgentTool
-from agents.specialists import flight_specialist, hotel_specialist
 
-# Expose sub-agents as encapsulated invocation tools to the supervisor
-flight_tool = AgentTool(agent=flight_specialist)
-hotel_tool = AgentTool(agent=hotel_specialist)
+from pydantic import BaseModel, Field
+
 
 class PolicyAuditRequest(BaseModel):
-    total_budget_usd: float = Field(..., le=2500.0, description="Total budget cannot exceed enterprise per-diem cap of $2,500")
-    has_free_cancellation: bool = Field(..., description="Must allow cancellation without penalty")
+    flight_cost_usd: float = Field(ge=0)
+    hotel_cost_usd: float = Field(ge=0)
+    flight_free_cancellation: bool
+    hotel_free_cancellation: bool
 
-def audit_travel_policy(flight_cost: float, hotel_cost: float, free_cancellation: bool) -> dict:
+    total_budget_usd: float = Field(default=2200.00, gt=0)
+
+
+class PolicyAuditResult(BaseModel):
+    compliant: bool
+    total_cost_usd: float
+    remaining_budget_usd: float | None = None
+    reason: str | None = None
+
+
+def audit_travel_policy(request: PolicyAuditRequest) -> PolicyAuditResult:
     """
-    Deterministic Compliance Tool: Validates overall itinerary against Offvia corporate policies.
+    Deterministic compliance check for the proposed itinerary.
     """
-    total_cost = flight_cost + hotel_cost
-    if total_cost > 2200.00:
-        return {
-            "compliant": False,
-            "reason": f"Total itinerary cost ${total_cost:.2f} exceeds strict customer ceiling of $2,200.00"
-        }
-    if not free_cancellation:
-        return {
-            "compliant": False,
-            "reason": "Itinerary fails mandatory policy: free cancellation is required for all bookings"
-        }
-    return {
-        "compliant": True,
-        "total_cost_usd": total_cost,
-        "remaining_budget_usd": 2200.00 - total_cost
-    }
+    total_cost = request.flight_cost_usd + request.hotel_cost_usd
+
+    if total_cost > request.total_budget_usd:
+        return PolicyAuditResult(
+            compliant=False,
+            total_cost_usd=total_cost,
+            reason=(
+                f"Total itinerary cost ${total_cost:.2f} exceeds the "
+                f"${request.total_budget_usd:.2f} budget."
+            ),
+        )
+
+    if not request.flight_free_cancellation:
+        return PolicyAuditResult(
+            compliant=False,
+            total_cost_usd=total_cost,
+            reason="The selected flight does not include free cancellation.",
+        )
+
+    if not request.hotel_free_cancellation:
+        return PolicyAuditResult(
+            compliant=False,
+            total_cost_usd=total_cost,
+            reason="The selected hotel does not include free cancellation.",
+        )
+
+    return PolicyAuditResult(
+        compliant=True,
+        total_cost_usd=total_cost,
+        remaining_budget_usd=request.total_budget_usd - total_cost,
+    )
 ```
 
----
+### Step 5: Build the supervisor
 
-### Step 5: Wire the Travel Concierge Supervisor
+The supervisor coordinates the workflow. It does not search flights or hotels itself; it delegates those tasks and validates the combined result.
 
-The Supervisor Agent coordinates the workflow, maintains top-level state, and enforces the anti-oscillation step limit:
+```python
+"""
+agents/supervisor.py
+"""
+
+from google.adk.agents.llm_agent import LlmAgent
+from agents.policy import audit_travel_policy
+from agents.specialists import flight_specialist, hotel_specialist
+
+
+supervisor_agent = LlmAgent(
+    name="TravelConciergeSupervisor",
+    model="gemini-2.5-pro",
+    description=(
+        "Coordinates flight search, hotel search, policy validation, "
+        "and itinerary presentation for Offvia."
+    ),
+    instruction="""
+    You are Offvia's Lead Travel Concierge Supervisor.
+
+    Your job is to coordinate specialists and return one coherent,
+    policy-compliant travel proposal.
+
+    Workflow:
+    1. Extract the traveler's origin, destination, dates, stay duration,
+       neighborhood preference, and total budget.
+    2. Delegate flight search to FlightSpecialist.
+    3. Delegate hotel search to HotelSpecialist.
+    4. Combine the returned flight and hotel costs.
+    5. Validate the combined itinerary with audit_travel_policy.
+    6. If the itinerary is compliant, present it clearly with itemized costs.
+    7. If it is not compliant, explain the issue and propose a practical adjustment.
+    8. Do not finalize or charge anything without explicit user approval.
+
+    Guardrails:
+    - Prefer no more than five tool calls per user request.
+    - Pass only task-specific parameters to specialists.
+    - Never invent flight, hotel, price, availability, or policy data.
+    - If specialists disagree or repeatedly fail, stop and escalate
+      rather than looping.
+    """,
+    sub_agents=[flight_specialist, hotel_specialist],
+    tools=[audit_travel_policy],
+)
+```
+
+The instruction says “prefer no more than five tool calls” because it is guidance to the model. It is not a hard runtime limit. In production, enforce that limit in the orchestration layer.
+
+### Step 6: Run the agent with ADK Runner
+
+ADK agents are executed through a `Runner`. The runner manages sessions and emits a stream of events.
 
 ```python
 """
 main.py
-Root Supervisor Orchestrator with Recursion Safeguards.
 """
-from google.adk.agents.llm_agent import LlmAgent
-from agents.guardrails import flight_tool, hotel_tool, audit_travel_policy
 
-supervisor_agent = LlmAgent(
-    name="TravelConciergeSupervisor",
-    model="gemini-2.5-pro", # Flagship model for high-order reasoning & state tracking
-    description="Lead corporate travel desk coordinator for Offvia.",
-    instruction="""
-    You are the Lead Travel Concierge Supervisor for Offvia.
-    Your mission is to satisfy the traveler's request by coordinating your specialist tools:
-    
-    Workflow Sequence:
-    1. Parse the traveler's origin, destination, dates, and budget ceiling ($2,200).
-    2. Invoke the FlightSpecialist tool to locate a non-stop flight.
-    3. Invoke the HotelSpecialist tool to locate a boutique hotel in Shibuya.
-    4. Call the audit_travel_policy tool to confirm the total cost is under $2,200 and policies match.
-    5. Present the synthesized itinerary clearly to the traveler with itemized costs.
-    
-    Safety Safeguards:
-    - Never exceed 5 tool calls per user turn.
-    - If total costs exceed budget, do not finalize the booking. Propose adjustments.
-    """,
-    tools=[flight_tool, hotel_tool, audit_travel_policy],
-)
+import asyncio
+
+from google.adk.runners import Runner
+from google.adk.sessions import InMemorySessionService
+from google.genai import types
+
+from agents.supervisor import supervisor_agent
+
+
+APP_NAME = "offvia"
+USER_ID = "traveler_1"
+
+
+async def run_offvia() -> None:
+    session_service = InMemorySessionService()
+
+    runner = Runner(
+        agent=supervisor_agent,
+        app_name=APP_NAME,
+        session_service=session_service,
+    )
+
+    session = await session_service.create_session(
+        app_name=APP_NAME,
+        user_id=USER_ID,
+    )
+
+    test_prompt = (
+        "Book a four-day business trip to Tokyo from San Francisco "
+        "departing 2026-10-21. I need a non-stop flight, a boutique hotel "
+        "in Shibuya with fast Wi-Fi, and free cancellation on both. "
+        "The maximum budget is $2,200."
+    )
+
+    message = types.Content(
+        role="user",
+        parts=[types.Part(text=test_prompt)],
+    )
+
+    final_response = None
+
+    async for event in runner.run_async(
+        user_id=USER_ID,
+        session_id=session.id,
+        new_message=message,
+    ):
+        if event.is_final_response() and event.content and event.content.parts:
+            final_response = "".join(
+                part.text or ""
+                for part in event.content.parts
+                if part.text
+            )
+
+    print("\nOffvia final proposal:\n")
+    print(final_response)
+
 
 if __name__ == "__main__":
-    test_prompt = (
-        "Book a four-day business trip to Tokyo from San Francisco departing 2026-10-21. "
-        "I need a non-stop flight, a boutique hotel in Shibuya with fast Wi-Fi, "
-        "and free cancellation on both. Max budget is $2,200."
-    )
-    
-    print("\n🚀 [OFFVIA ORCHESTRATOR] Initializing Multi-Agent Swarm...\n")
-    response = supervisor_agent.run(test_prompt)
-    print("\n🎯 [SUPERVISOR FINAL PROPOSAL]:\n")
-    print(response.text)
+    asyncio.run(run_offvia())
 ```
 
----
-
-### Step 6: Verify the Execution Trace & Diagnostics
-
-Run the script locally:
+Run it locally:
 
 ```bash
 python main.py
 ```
 
-#### What to Look for in the Execution Trace:
+### Step 7: Use real MCP servers
 
-```text
-🚀 [OFFVIA ORCHESTRATOR] Initializing Multi-Agent Swarm...
+The local Python functions are useful for understanding the tool contracts, but they are not actual MCP servers.
 
-[Supervisor] Tool Call ➔ FlightSpecialist(origin='SFO', destination='HND', departure_date='2026-10-21')
-[FlightSpecialist] MCP Call ➔ mcp_search_flights(origin='SFO', destination='HND', departure_date='2026-10-21')
-[FlightSpecialist] Result: ANA #NH107, Non-stop, $1,150.00 (Refundable)
+For a production implementation, expose `search_flights` and `query_hotels` through dedicated MCP servers, then connect them with `McpToolset`:
 
-[Supervisor] Tool Call ➔ HotelSpecialist(city='Tokyo', neighborhood='Shibuya', nights=4, max_budget_usd=1050.00)
-[HotelSpecialist] MCP Call ➔ mcp_query_hotel_lakehouse(city='Tokyo', neighborhood='Shibuya', nights=4, max_budget_usd=1050.00)
-[HotelSpecialist] Result: Trunk Hotel Shibuya, 4 nights, $820.00 (280 Mbps Wi-Fi, Free Cancel)
+```python
+from google.adk.tools.mcp_tool.mcp_toolset import (
+    McpToolset,
+    StdioServerParameters,
+)
 
-[Supervisor] Tool Call ➔ audit_travel_policy(flight_cost=1150.00, hotel_cost=820.00, free_cancellation=True)
-[PolicyEngine] Output: {'compliant': True, 'total_cost_usd': 1970.00, 'remaining_budget_usd': 230.00}
 
-🎯 [SUPERVISOR FINAL PROPOSAL]:
-Here is your confirmed, policy-compliant travel itinerary for Tokyo:
+flight_mcp = McpToolset(
+    connection_params=StdioServerParameters(
+        command="python",
+        args=["-m", "offvia_mcp.flight_server"],
+    ),
+    tool_filter=["search_flights"],
+)
 
-✈️ Outbound Flight: ANA #NH107 (Non-stop)
-• Departure: SFO on 2026-10-21 at 10:45 AM
-• Arrival: Tokyo Haneda (HND) on 2026-10-22 at 2:30 PM
-• Cost: $1,150.00 (Fully refundable)
-
-🏨 Lodging: Trunk Hotel Shibuya (4 Nights)
-• Neighborhood: Shibuya, Tokyo
-• Total Cost: $820.00 ($205.00/night)
-• Amenities: Verified 280 Mbps High-Speed Wi-Fi
-• Cancellation: Free cancellation up to 48 hours before check-in
-
-📊 Financial Summary:
-• Total Package Cost: $1,970.00 USD
-• Savings Under Budget: $230.00 USD
-• Policy Status: 100% Compliant with corporate travel guidelines
-
-Would you like me to place these reservations on corporate card hold?
+hotel_mcp = McpToolset(
+    connection_params=StdioServerParameters(
+        command="python",
+        args=["-m", "offvia_mcp.hotel_server"],
+    ),
+    tool_filter=["query_hotels"],
+)
 ```
 
-Notice how clean the boundary is: the user receives a unified, polished proposal. The supervisor managed the state, isolated sub-agent token contexts, and deterministically verified corporate policy.
+Then attach the toolsets to the relevant specialist agents:
+
+```python
+flight_specialist = LlmAgent(
+    name="FlightSpecialist",
+    model="gemini-2.5-flash",
+    instruction="...",
+    tools=[flight_mcp],
+    mode="single_turn",
+)
+
+hotel_specialist = LlmAgent(
+    name="HotelSpecialist",
+    model="gemini-2.5-flash",
+    instruction="...",
+    tools=[hotel_mcp],
+    mode="single_turn",
+)
+```
+
+This keeps provider credentials, connection pools, SQL logic, and vendor-specific error handling on the MCP server side.
 
 ---
 
-## 🚀 The Trilogy Roadmap: What's Next in Part 3?
+## Expected result
 
-In this guide, we successfully transformed Offvia from a single-turn parser into a **resilient, multi-agent swarm** with Google ADK, the Supervisor Pattern, and Model Context Protocol data boundaries.
+For the sample request, the expected high-level result is:
 
-However, non-deterministic AI agents pose a massive threat to production reliability:
-* How do you know a prompt tweak in the Flight Specialist won't degrade the Hotel Concierge's accuracy?
-* How do you measure latency regressions across 5 chained agent calls?
-* How do you run automated evaluations in your GitLab or GitHub Actions CI/CD pipeline before merging agent code?
+```text
+Flight:
+- ANA NH107
+- SFO to Tokyo Haneda (HND)
+- Departure: 2026-10-21 at 10:45 AM
+- Arrival: 2026-10-22 at 2:30 PM
+- Price: $1,150.00
+- Non-stop and refundable
 
-In the final chapter, **Part 3: Testing Non-Deterministic AI in CI/CD — The Production Multi-Agent Evaluation Runbook**, we will:
-* Deploy automated **Agent Evaluation Pipelines** using Google Cloud Vertex AI Evaluation metrics (faithfulness, hallucination rate, tool selection precision).
-* Build synthetic user simulations to red-team multi-agent swarms under high-adversity edge cases.
-* Write automated Python evaluation fixtures that gate pull requests in CI/CD when agent accuracy drops below 95%.
+Hotel:
+- Trunk Hotel Shibuya
+- Shibuya, Tokyo
+- Four nights
+- Price: $820.00 total
+- 280 Mbps Wi-Fi
+- Free cancellation up to 48 hours before check-in
+
+Financial summary:
+- Flight: $1,150.00
+- Hotel: $820.00
+- Total: $1,970.00
+- Remaining budget: $230.00
+- Policy status: Compliant
+```
+
+The important point is not the specific hotel or flight. It is the boundary:
+
+- The supervisor owns the traveler interaction and final synthesis.
+- The flight specialist owns flight search.
+- The hotel specialist owns accommodation search.
+- The policy function owns deterministic validation.
+- MCP servers own provider integrations and sensitive connection details.
 
 ---
 
-## 📖 Official Documentation & Verified Standards
+## What this demo does not include
 
-* [Google Cloud Vertex AI Documentation](https://cloud.google.com/vertex-ai/docs)
-* [Google Cloud Gemini Enterprise Platform](https://cloud.google.com/products/gemini)
-* [Google ADK (Agent Development Kit) Python Framework](https://github.com/google/adk-python)
-* [Model Context Protocol (MCP) Official Specification](https://modelcontextprotocol.io/)
-* [BigQuery Documentation](https://cloud.google.com/bigquery/docs)
-* [Pydantic V2 Documentation](https://docs.pydantic.dev/)
+This example is intentionally focused on orchestration. A real booking platform would also need:
+
+- Persistent sessions and user identity
+- Real airline, hotel, and payment-provider integrations
+- Human approval before irreversible bookings or charges
+- Secure secrets management
+- Rate limiting and retry budgets
+- Structured tracing and audit logs
+- Online and offline agent evaluations
+- Deployment, autoscaling, and incident response
+
+---
+
+## Production checklist
+
+- [ ] Use canonical reference data for airports, cities, hotels, and currencies.
+- [ ] Validate every agent input and tool output with strict schemas.
+- [ ] Pass only task-scoped context to specialist agents.
+- [ ] Enforce tool-call budgets, timeouts, retries, and circuit breakers in orchestration code.
+- [ ] Use parameterized, cost-bounded BigQuery queries.
+- [ ] Keep credentials and connection pools on the tool or MCP server side.
+- [ ] Apply least-privilege IAM and network controls.
+- [ ] Log every delegation, tool invocation, policy decision, retry, and fallback.
+- [ ] Run agent evaluations before merging prompt, tool, or model changes.
+- [ ] Gate deployments on accuracy, tool-selection precision, latency, and cost regressions.
+- [ ] Require human approval before irreversible booking or payment actions.
+
+---
+
+## What’s next in Part 3
+
+We have transformed Offvia from a single-turn parser into a modular multi-agent swarm using Google ADK, the Supervisor pattern, and MCP-based tool boundaries.
+
+But non-deterministic systems need rigorous testing.
+
+In Part 3, **Testing Non-Deterministic AI in CI/CD — The Production Multi-Agent Evaluation Runbook**, we will cover:
+
+- Automated agent evaluation pipelines using Vertex AI evaluation capabilities
+- Metrics such as faithfulness, hallucination rate, tool-selection precision, latency, and cost
+- Synthetic user simulations and adversarial edge cases
+- Python evaluation fixtures that can gate pull requests in GitHub Actions or GitLab CI/CD
+
+---
+
+## Official documentation
+
+- [Google Cloud Vertex AI documentation](https://cloud.google.com/vertex-ai/docs)
+- [Google ADK Python repository](https://github.com/google/adk-python)
+- [Google ADK MCP tools documentation](https://adk.dev/tools-custom/mcp-tools/)
+- [Model Context Protocol specification](https://modelcontextprotocol.io/)
+- [BigQuery documentation](https://cloud.google.com/bigquery/docs)
+- [Pydantic documentation](https://docs.pydantic.dev/)
