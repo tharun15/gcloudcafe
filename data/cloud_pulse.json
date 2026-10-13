@@ -1,8 +1,8 @@
 [
   {
-    "id": "07c6ae14-ddfd-49c3-ae90-11fa0d623eeb",
-    "title": "SQL Server on Azure Local GA: Hybrid Data Modernization",
-    "content": "🎯 What Changed: SQL Server on Azure Local is now generally available, enabling hybrid data modernization.\n💡 Engineering Impact: This offers architects and engineers a robust solution for modernizing on-premises SQL Server deployments, ensuring data sovereignty and control while leveraging Azure capabilities.",
+    "id": "ec6abcec-209f-4754-b1f2-1aa6b84e79e2",
+    "title": "Azure Maia 300: New Architecture for Cloud AI Inference",
+    "content": "🎯 What Changed: Azure has detailed the architecture of Maia 300, a new platform designed for cloud-scale agentic AI inference.\n💡 Engineering Impact: This dedicated architecture promises enhanced performance and efficiency for demanding AI workloads, particularly agentic models. Engineers can leverage this specialized hardware for optimized, scalable AI deployments.",
     "tags": [
       "#Azure",
       "#CloudArchitecture",
@@ -12,30 +12,11 @@
     "downvotes": 0,
     "score": 1,
     "author": "Cloud Newsroom Bot",
-    "created_at": "2026-10-13T12:32:35.727283+00:00",
-    "link_url": "https://www.microsoft.com/en-us/sql-server/blog/2026/09/28/sql-server-on-azure-local-is-now-generally-available/",
+    "created_at": "2026-10-13T12:32:30.84204+00:00",
+    "link_url": "https://azure.microsoft.com/en-us/blog/deep-dive-into-azure-maia-300-architecture/",
     "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 153.6h without manual admin curation.",
-    "updated_at": "2026-10-13T19:03:04.192Z"
-  },
-  {
-    "id": "0b0c700b-f90d-48da-83c7-f84e0851f7bf",
-    "title": "AWS Lambda announces Lambda Web Functions",
-    "content": "🎯 What Changed: port.\" (1 sentence) * Sentence 2: \"Why it matters: This eliminates the need.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
-    "tags": [
-      "#AWS",
-      "#CloudArchitecture",
-      "#CloudNews"
-    ],
-    "upvotes": 1,
-    "downvotes": 0,
-    "score": 1,
-    "author": "Cloud Newsroom Bot",
-    "created_at": "2026-10-13T05:11:58.087048+00:00",
-    "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/10/aws-lambda-web-functions/",
-    "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 146.1h without manual admin curation.",
-    "updated_at": "2026-10-13T11:32:05.640Z"
+    "eligibility_reason": "[Auto-Published] Published automatically after 158.2h without manual admin curation.",
+    "updated_at": "2026-10-13T23:39:18.683Z"
   },
   {
     "id": "0b6826b6-fc4c-4621-8f9b-bbbea3de16aa",
@@ -55,7 +36,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:48.441634+00:00",
-    "ageDays": 6.085602233796297
+    "ageDays": 6.590616631944444
   },
   {
     "id": "81213fff-57d4-4c0b-90eb-c84beeb18d4d",
@@ -75,7 +56,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:42.008666+00:00",
-    "ageDays": 6.0856766898148145
+    "ageDays": 6.590691087962963
   },
   {
     "id": "1ec5647f-ce95-4be3-ba87-6aa974960da7",
@@ -95,7 +76,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:37.111692+00:00",
-    "ageDays": 6.085733368055555
+    "ageDays": 6.5907477662037035
   },
   {
     "id": "88a2ed59-fb47-488b-b07c-d6be1de35d0b",
@@ -115,7 +96,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:31.276024+00:00",
-    "ageDays": 6.085800902777778
+    "ageDays": 6.590815300925926
   },
   {
     "id": "202f8734-234e-4bd5-9a67-8535691f131a",
@@ -135,7 +116,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:24.859911+00:00",
-    "ageDays": 6.085875173611111
+    "ageDays": 6.590889571759259
   },
   {
     "id": "37fcb780-d57d-4ba9-875a-7665dd9cd981",
@@ -155,7 +136,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T04:06:30.331436+00:00",
-    "ageDays": 6.309422951388889
+    "ageDays": 6.814437349537037
   },
   {
     "id": "521c6dfa-7eb3-4834-87fb-7ac338d90f9d",
@@ -175,7 +156,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T04:00:33.151279+00:00",
-    "ageDays": 6.313556979166667
+    "ageDays": 6.818571377314814
   },
   {
     "id": "b1f2627d-7930-4c4b-ab57-de042bac55c3",
@@ -195,7 +176,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T04:00:00.696536+00:00",
-    "ageDays": 6.3139326157407405
+    "ageDays": 6.818947013888889
   },
   {
     "id": "bf22f4dd-2d54-4b4c-9038-ea09aadef8a2",
@@ -215,7 +196,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T03:59:45.591638+00:00",
-    "ageDays": 6.31410744212963
+    "ageDays": 6.819121840277778
   },
   {
     "id": "46fd5625-4fda-4793-a2ab-d6b627f3f4df",
@@ -235,7 +216,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T03:59:26.783766+00:00",
-    "ageDays": 6.314325127314815
+    "ageDays": 6.819339525462963
   },
   {
     "id": "09900f5e-4d21-4d5e-84a6-f5eec4459b40",
@@ -255,7 +236,7 @@
     "status": "approved",
     "eligibility_reason": "Official AWS Release: Ingested & AI synthesized for Admin Approval Queue.",
     "updated_at": "2026-09-12T09:07:10.082273+00:00",
-    "ageDays": 31.100629537037037
+    "ageDays": 31.605643935185185
   },
   {
     "id": "57b1b07d-9511-4a40-b351-2ec2866364b4",
@@ -275,26 +256,46 @@
     "status": "approved",
     "eligibility_reason": "Official Kubernetes Release: Ingested & AI synthesized for Admin Approval Queue.",
     "updated_at": "2026-09-12T09:07:09.525138+00:00",
-    "ageDays": 31.100635983796295
+    "ageDays": 31.605650381944443
   },
   {
-    "id": "55fc634e-6c17-426f-a7b7-8f3f577c71c4",
-    "title": "EU CRA Mandates 'Secure by Design' for Open Source Software",
-    "content": "🎯 What Changed: New EU regulations, notably the Cyber Resilience Act (CRA), are making \"secure by design\" the mandatory standard for open source software development.\n💡 Engineering Impact: This shift necessitates integrating security earlier into the development lifecycle, demanding a \"shift-left\" approach in DevOps and proactive architectural changes to meet compliance by December 2027.",
+    "id": "07c6ae14-ddfd-49c3-ae90-11fa0d623eeb",
+    "title": "SQL Server on Azure Local GA: Hybrid Data Modernization",
+    "content": "🎯 What Changed: SQL Server on Azure Local is now generally available, enabling hybrid data modernization.\n💡 Engineering Impact: This offers architects and engineers a robust solution for modernizing on-premises SQL Server deployments, ensuring data sovereignty and control while leveraging Azure capabilities.",
     "tags": [
-      "#OpenShift",
-      "#RedHat",
-      "#DevOps"
+      "#Azure",
+      "#CloudArchitecture",
+      "#CloudNews"
     ],
     "upvotes": 1,
     "downvotes": 0,
     "score": 1,
     "author": "Cloud Newsroom Bot",
-    "created_at": "2026-10-12T12:54:47.130075+00:00",
-    "link_url": "https://www.redhat.com/en/blog/why-secure-design-new-standard-open-source",
+    "created_at": "2026-10-13T12:32:35.727283+00:00",
+    "link_url": "https://www.microsoft.com/en-us/sql-server/blog/2026/09/28/sql-server-on-azure-local-is-now-generally-available/",
     "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 128.1h without manual admin curation.",
-    "updated_at": "2026-10-12T17:32:46.454+00:00",
-    "ageDays": 0.9425618518518518
+    "eligibility_reason": "[Auto-Published] Published automatically after 153.6h without manual admin curation.",
+    "updated_at": "2026-10-13T19:03:04.192+00:00",
+    "ageDays": 0.4629860069444444
+  },
+  {
+    "id": "0b0c700b-f90d-48da-83c7-f84e0851f7bf",
+    "title": "AWS Lambda announces Lambda Web Functions",
+    "content": "🎯 What Changed: port.\" (1 sentence) * Sentence 2: \"Why it matters: This eliminates the need.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
+    "tags": [
+      "#AWS",
+      "#CloudArchitecture",
+      "#CloudNews"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-10-13T05:11:58.087048+00:00",
+    "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/10/aws-lambda-web-functions/",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 146.1h without manual admin curation.",
+    "updated_at": "2026-10-13T11:32:05.64+00:00",
+    "ageDays": 0.7689772106481482
   }
 ]
