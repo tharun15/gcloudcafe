@@ -1,27 +1,8 @@
 [
   {
-    "id": "55fc634e-6c17-426f-a7b7-8f3f577c71c4",
-    "title": "EU CRA Mandates 'Secure by Design' for Open Source Software",
-    "content": "🎯 What Changed: New EU regulations, notably the Cyber Resilience Act (CRA), are making \"secure by design\" the mandatory standard for open source software development.\n💡 Engineering Impact: This shift necessitates integrating security earlier into the development lifecycle, demanding a \"shift-left\" approach in DevOps and proactive architectural changes to meet compliance by December 2027.",
-    "tags": [
-      "#OpenShift",
-      "#RedHat",
-      "#DevOps"
-    ],
-    "upvotes": 1,
-    "downvotes": 0,
-    "score": 1,
-    "author": "Cloud Newsroom Bot",
-    "created_at": "2026-10-12T12:54:47.130075+00:00",
-    "link_url": "https://www.redhat.com/en/blog/why-secure-design-new-standard-open-source",
-    "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 128.1h without manual admin curation.",
-    "updated_at": "2026-10-12T17:32:46.454Z"
-  },
-  {
-    "id": "10cdf991-d12e-40fd-ad59-bf4a02ac7441",
-    "title": "Amazon Bedrock now supports reasoning summaries for OpenAI models",
-    "content": "🎯 What Changed: Amazon Bedrock added support for the reasoning.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
+    "id": "a64d4952-740d-4ed0-9b95-97dfd698283e",
+    "title": "Anthropic Claude 5.5 Models Boost AI in AWS GovCloud (US)",
+    "content": "🎯 What Changed: Anthropic Claude Sonnet 5.5 and Opus 5.5 models are now available in Kiro within AWS GovCloud (US) Regions.\n💡 Engineering Impact: These models offer enhanced performance, with Opus 5.5 delivering more efficient agentic coding and Sonnet 5.5 providing faster, cost-optimized throughput, enabling developers to build more capable and efficient AI applications for sensitive workloads.",
     "tags": [
       "#AWS",
       "#CloudArchitecture",
@@ -31,11 +12,11 @@
     "downvotes": 0,
     "score": 1,
     "author": "Cloud Newsroom Bot",
-    "created_at": "2026-10-12T04:02:44.330273+00:00",
-    "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/10/amazon-bedrock-reasoning-summaries-openai/",
+    "created_at": "2026-10-12T12:54:43.51912+00:00",
+    "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/06/kiro-claude-5-5-aws-govcloud-us/",
     "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 115.6h without manual admin curation.",
-    "updated_at": "2026-10-12T05:06:00.133Z"
+    "eligibility_reason": "[Auto-Published] Published automatically after 136.4h without manual admin curation.",
+    "updated_at": "2026-10-13T01:53:42.799Z"
   },
   {
     "id": "0b6826b6-fc4c-4621-8f9b-bbbea3de16aa",
@@ -55,7 +36,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:48.441634+00:00",
-    "ageDays": 4.817486261574074
+    "ageDays": 5.683953078703704
   },
   {
     "id": "81213fff-57d4-4c0b-90eb-c84beeb18d4d",
@@ -75,7 +56,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:42.008666+00:00",
-    "ageDays": 4.817560717592593
+    "ageDays": 5.684027534722222
   },
   {
     "id": "1ec5647f-ce95-4be3-ba87-6aa974960da7",
@@ -95,7 +76,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:37.111692+00:00",
-    "ageDays": 4.8176173958333335
+    "ageDays": 5.684084212962963
   },
   {
     "id": "88a2ed59-fb47-488b-b07c-d6be1de35d0b",
@@ -115,7 +96,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:31.276024+00:00",
-    "ageDays": 4.817684930555555
+    "ageDays": 5.684151747685185
   },
   {
     "id": "202f8734-234e-4bd5-9a67-8535691f131a",
@@ -135,7 +116,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:24.859911+00:00",
-    "ageDays": 4.817759201388889
+    "ageDays": 5.684226018518519
   },
   {
     "id": "37fcb780-d57d-4ba9-875a-7665dd9cd981",
@@ -155,7 +136,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T04:06:30.331436+00:00",
-    "ageDays": 5.0413069791666665
+    "ageDays": 5.907773796296296
   },
   {
     "id": "521c6dfa-7eb3-4834-87fb-7ac338d90f9d",
@@ -175,7 +156,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T04:00:33.151279+00:00",
-    "ageDays": 5.045441006944444
+    "ageDays": 5.911907824074074
   },
   {
     "id": "b1f2627d-7930-4c4b-ab57-de042bac55c3",
@@ -195,7 +176,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T04:00:00.696536+00:00",
-    "ageDays": 5.045816643518519
+    "ageDays": 5.9122834606481485
   },
   {
     "id": "bf22f4dd-2d54-4b4c-9038-ea09aadef8a2",
@@ -215,7 +196,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T03:59:45.591638+00:00",
-    "ageDays": 5.045991469907407
+    "ageDays": 5.912458287037037
   },
   {
     "id": "46fd5625-4fda-4793-a2ab-d6b627f3f4df",
@@ -235,7 +216,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T03:59:26.783766+00:00",
-    "ageDays": 5.046209155092592
+    "ageDays": 5.912675972222222
   },
   {
     "id": "09900f5e-4d21-4d5e-84a6-f5eec4459b40",
@@ -255,7 +236,7 @@
     "status": "approved",
     "eligibility_reason": "Official AWS Release: Ingested & AI synthesized for Admin Approval Queue.",
     "updated_at": "2026-09-12T09:07:10.082273+00:00",
-    "ageDays": 29.832513564814814
+    "ageDays": 30.698980381944445
   },
   {
     "id": "57b1b07d-9511-4a40-b351-2ec2866364b4",
@@ -275,14 +256,34 @@
     "status": "approved",
     "eligibility_reason": "Official Kubernetes Release: Ingested & AI synthesized for Admin Approval Queue.",
     "updated_at": "2026-09-12T09:07:09.525138+00:00",
-    "ageDays": 29.832520011574076
+    "ageDays": 30.698986828703703
   },
   {
-    "id": "5a2dc9e4-9490-47b6-b0bb-1666516ff431",
-    "title": "Azure Extends Hardware Life for Sustainable Cloud",
-    "content": "🎯 What Changed: Azure is implementing more efficient systems and Circular Centers to extend the useful life of its datacenter hardware.\n💡 Engineering Impact: This initiative promises a more sustainable and resilient cloud foundation, potentially leading to improved long-term reliability and reduced environmental footprint for cloud-native applications.",
+    "id": "55fc634e-6c17-426f-a7b7-8f3f577c71c4",
+    "title": "EU CRA Mandates 'Secure by Design' for Open Source Software",
+    "content": "🎯 What Changed: New EU regulations, notably the Cyber Resilience Act (CRA), are making \"secure by design\" the mandatory standard for open source software development.\n💡 Engineering Impact: This shift necessitates integrating security earlier into the development lifecycle, demanding a \"shift-left\" approach in DevOps and proactive architectural changes to meet compliance by December 2027.",
     "tags": [
-      "#Azure",
+      "#OpenShift",
+      "#RedHat",
+      "#DevOps"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-10-12T12:54:47.130075+00:00",
+    "link_url": "https://www.redhat.com/en/blog/why-secure-design-new-standard-open-source",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 128.1h without manual admin curation.",
+    "updated_at": "2026-10-12T17:32:46.454+00:00",
+    "ageDays": 0.5409126967592592
+  },
+  {
+    "id": "10cdf991-d12e-40fd-ad59-bf4a02ac7441",
+    "title": "Amazon Bedrock now supports reasoning summaries for OpenAI models",
+    "content": "🎯 What Changed: Amazon Bedrock added support for the reasoning.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
+    "tags": [
+      "#AWS",
       "#CloudArchitecture",
       "#CloudNews"
     ],
@@ -290,11 +291,11 @@
     "downvotes": 0,
     "score": 1,
     "author": "Cloud Newsroom Bot",
-    "created_at": "2026-10-11T11:19:12.259329+00:00",
-    "link_url": "https://azure.microsoft.com/en-us/blog/responsible-infrastructure-at-hyperscale-managing-the-full-lifecycle-of-azure-hardware/",
+    "created_at": "2026-10-12T04:02:44.330273+00:00",
+    "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/10/amazon-bedrock-reasoning-summaries-openai/",
     "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 101.3h without manual admin curation.",
-    "updated_at": "2026-10-11T14:45:39.984+00:00",
-    "ageDays": 0.7408217013888889
+    "eligibility_reason": "[Auto-Published] Published automatically after 115.6h without manual admin curation.",
+    "updated_at": "2026-10-12T05:06:00.133+00:00",
+    "ageDays": 0.9103895486111111
   }
 ]
