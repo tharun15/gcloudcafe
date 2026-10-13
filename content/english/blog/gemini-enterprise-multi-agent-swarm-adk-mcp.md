@@ -799,7 +799,7 @@ We have transformed Offvia from a single-turn parser into a modular multi-agent 
 
 But non-deterministic systems need rigorous testing.
 
-In Part 3, **Testing Non-Deterministic AI in CI/CD — The Production Multi-Agent Evaluation Runbook**, we will cover:
+In [**Part 3: Testing Non-Deterministic AI in CI/CD: The Multi-Agent Evaluation Runbook**](/blog/gemini-enterprise-multi-agent-evaluation-cicd-runbook/), we cover:
 
 - Automated agent evaluation pipelines using Vertex AI evaluation capabilities
 - Metrics such as faithfulness, hallucination rate, tool-selection precision, latency, and cost

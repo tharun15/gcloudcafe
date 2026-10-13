@@ -799,7 +799,7 @@ Abbiamo trasformato Offvia da un parser a turno singolo in uno swarm multi-agent
 
 Tuttavia, i sistemi non deterministici richiedono test rigorosi.
 
-Nella Parte 3, **Testare l'AI Non Deterministica in CI/CD — Il Runbook di Valutazione per Sistemi Multi-Agente**, affronteremo:
+Nella [**Parte 3: Testare l'AI Non Deterministica in CI/CD: Il Runbook di Valutazione per Sistemi Multi-Agente**](/it/blog/gemini-enterprise-multi-agent-evaluation-cicd-runbook/), affrontiamo:
 
 - Pipeline automatizzate di valutazione degli agenti con le funzionalità native di Vertex AI
 - Metriche come faithfulness, hallucination rate, precisione nella selezione dei tool, latenza e costi
