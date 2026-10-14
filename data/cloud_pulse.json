@@ -1,5 +1,24 @@
 [
   {
+    "id": "ff454eb3-53fe-42c0-9379-6beb35afca58",
+    "title": "Chaos Engineering: Enterprise Resilience Imperative",
+    "content": "🎯 What Changed: OpenShift emphasizes chaos engineering as a vital practice for achieving enterprise resilience and meeting business SLOs.\n💡 Engineering Impact: This approach helps engineering teams proactively identify weaknesses, improve system availability, and ensure critical data integrity. By integrating chaos engineering, teams can meet stringent SLOs/SLAs, safeguard revenue, and build lasting customer trust.",
+    "tags": [
+      "#OpenShift",
+      "#RedHat",
+      "#DevOps"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-10-14T09:59:48.032871+00:00",
+    "link_url": "https://www.redhat.com/en/blog/chaos-engineering-practice-lessons-enterprise-customers",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 172.0h without manual admin curation.",
+    "updated_at": "2026-10-14T13:26:54.051Z"
+  },
+  {
     "id": "bc8bc60c-d713-4531-944c-20d466fd163d",
     "title": "Amazon DCV releases version 2026.0 with RHEL 10 support and new clients",
     "content": "🎯 What Changed: 0 is now available, adding support for RHEL 10, Rocky Linux 10, CentOS 10, and Ubuntu 26. 04 along with a new macOS client and updated Windows and Linux clients.\n\n💡 Why It Matters: Amazon DCV is a high-performance remote ...",
@@ -277,25 +296,5 @@
     "eligibility_reason": "[Auto-Published] Published automatically after 153.6h without manual admin curation.",
     "updated_at": "2026-10-13T19:03:04.192+00:00",
     "ageDays": 0.6503135763888889
-  },
-  {
-    "id": "ec6abcec-209f-4754-b1f2-1aa6b84e79e2",
-    "title": "Azure Maia 300: New Architecture for Cloud AI Inference",
-    "content": "🎯 What Changed: Azure has detailed the architecture of Maia 300, a new platform designed for cloud-scale agentic AI inference.\n💡 Engineering Impact: This dedicated architecture promises enhanced performance and efficiency for demanding AI workloads, particularly agentic models. Engineers can leverage this specialized hardware for optimized, scalable AI deployments.",
-    "tags": [
-      "#Azure",
-      "#CloudArchitecture",
-      "#CloudNews"
-    ],
-    "upvotes": 1,
-    "downvotes": 0,
-    "score": 1,
-    "author": "Cloud Newsroom Bot",
-    "created_at": "2026-10-13T12:32:30.84204+00:00",
-    "link_url": "https://azure.microsoft.com/en-us/blog/deep-dive-into-azure-maia-300-architecture/",
-    "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 158.2h without manual admin curation.",
-    "updated_at": "2026-10-13T23:39:18.683+00:00",
-    "ageDays": 0.6503701157407408
   }
 ]
