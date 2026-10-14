@@ -1,8 +1,8 @@
 [
   {
-    "id": "ff454eb3-53fe-42c0-9379-6beb35afca58",
-    "title": "Chaos Engineering: Enterprise Resilience Imperative",
-    "content": "🎯 What Changed: OpenShift emphasizes chaos engineering as a vital practice for achieving enterprise resilience and meeting business SLOs.\n💡 Engineering Impact: This approach helps engineering teams proactively identify weaknesses, improve system availability, and ensure critical data integrity. By integrating chaos engineering, teams can meet stringent SLOs/SLAs, safeguard revenue, and build lasting customer trust.",
+    "id": "d239fffe-29fe-469c-853f-bb8bd8abeba1",
+    "title": "RHEL Standardizes OS: Empowering Devs, Reducing Technical Debt",
+    "content": "🎯 What Changed: Red Hat promotes standardizing on enterprise-grade OSs like RHEL to balance developer freedom with organizational stability.\n💡 Engineering Impact: This strategy creates a unified operating environment, streamlining governance, security, and support while freeing developers to focus on innovation and code delivery.",
     "tags": [
       "#OpenShift",
       "#RedHat",
@@ -12,30 +12,11 @@
     "downvotes": 0,
     "score": 1,
     "author": "Cloud Newsroom Bot",
-    "created_at": "2026-10-14T09:59:48.032871+00:00",
-    "link_url": "https://www.redhat.com/en/blog/chaos-engineering-practice-lessons-enterprise-customers",
+    "created_at": "2026-10-14T09:59:42.627527+00:00",
+    "link_url": "https://www.redhat.com/en/blog/developer-first-innovation-reducing-technical-debt-red-hat-enterprise-linux",
     "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 172.0h without manual admin curation.",
-    "updated_at": "2026-10-14T13:26:54.051Z"
-  },
-  {
-    "id": "bc8bc60c-d713-4531-944c-20d466fd163d",
-    "title": "Amazon DCV releases version 2026.0 with RHEL 10 support and new clients",
-    "content": "🎯 What Changed: 0 is now available, adding support for RHEL 10, Rocky Linux 10, CentOS 10, and Ubuntu 26. 04 along with a new macOS client and updated Windows and Linux clients.\n\n💡 Why It Matters: Amazon DCV is a high-performance remote ...",
-    "tags": [
-      "#AWS",
-      "#CloudArchitecture",
-      "#CloudNews"
-    ],
-    "upvotes": 1,
-    "downvotes": 0,
-    "score": 1,
-    "author": "Cloud Newsroom Bot",
-    "created_at": "2026-10-14T03:16:36.667191+00:00",
-    "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/10/amazon-dcv-2026-0/",
-    "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 162.7h without manual admin curation.",
-    "updated_at": "2026-10-14T04:09:03.767Z"
+    "eligibility_reason": "[Auto-Published] Published automatically after 178.6h without manual admin curation.",
+    "updated_at": "2026-10-14T20:03:10.895Z"
   },
   {
     "id": "0b6826b6-fc4c-4621-8f9b-bbbea3de16aa",
@@ -55,7 +36,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:48.441634+00:00",
-    "ageDays": 6.777944201388889
+    "ageDays": 7.440522627314815
   },
   {
     "id": "81213fff-57d4-4c0b-90eb-c84beeb18d4d",
@@ -75,7 +56,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:42.008666+00:00",
-    "ageDays": 6.778018657407407
+    "ageDays": 7.4405970833333335
   },
   {
     "id": "1ec5647f-ce95-4be3-ba87-6aa974960da7",
@@ -95,7 +76,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:37.111692+00:00",
-    "ageDays": 6.778075335648148
+    "ageDays": 7.440653761574074
   },
   {
     "id": "88a2ed59-fb47-488b-b07c-d6be1de35d0b",
@@ -115,7 +96,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:31.276024+00:00",
-    "ageDays": 6.77814287037037
+    "ageDays": 7.440721296296296
   },
   {
     "id": "202f8734-234e-4bd5-9a67-8535691f131a",
@@ -135,7 +116,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:24.859911+00:00",
-    "ageDays": 6.7782171412037036
+    "ageDays": 7.44079556712963
   },
   {
     "id": "37fcb780-d57d-4ba9-875a-7665dd9cd981",
@@ -155,7 +136,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T04:06:30.331436+00:00",
-    "ageDays": 7.001764918981482
+    "ageDays": 7.664343344907407
   },
   {
     "id": "521c6dfa-7eb3-4834-87fb-7ac338d90f9d",
@@ -175,7 +156,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T04:00:33.151279+00:00",
-    "ageDays": 7.00589894675926
+    "ageDays": 7.668477372685185
   },
   {
     "id": "b1f2627d-7930-4c4b-ab57-de042bac55c3",
@@ -195,7 +176,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T04:00:00.696536+00:00",
-    "ageDays": 7.006274583333333
+    "ageDays": 7.6688530092592595
   },
   {
     "id": "bf22f4dd-2d54-4b4c-9038-ea09aadef8a2",
@@ -215,7 +196,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T03:59:45.591638+00:00",
-    "ageDays": 7.006449409722222
+    "ageDays": 7.669027835648148
   },
   {
     "id": "46fd5625-4fda-4793-a2ab-d6b627f3f4df",
@@ -235,7 +216,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T03:59:26.783766+00:00",
-    "ageDays": 7.0066670949074075
+    "ageDays": 7.669245520833333
   },
   {
     "id": "09900f5e-4d21-4d5e-84a6-f5eec4459b40",
@@ -255,7 +236,7 @@
     "status": "approved",
     "eligibility_reason": "Official AWS Release: Ingested & AI synthesized for Admin Approval Queue.",
     "updated_at": "2026-09-12T09:07:10.082273+00:00",
-    "ageDays": 31.79297150462963
+    "ageDays": 32.455549930555556
   },
   {
     "id": "57b1b07d-9511-4a40-b351-2ec2866364b4",
@@ -275,14 +256,34 @@
     "status": "approved",
     "eligibility_reason": "Official Kubernetes Release: Ingested & AI synthesized for Admin Approval Queue.",
     "updated_at": "2026-09-12T09:07:09.525138+00:00",
-    "ageDays": 31.792977951388888
+    "ageDays": 32.455556377314814
   },
   {
-    "id": "07c6ae14-ddfd-49c3-ae90-11fa0d623eeb",
-    "title": "SQL Server on Azure Local GA: Hybrid Data Modernization",
-    "content": "🎯 What Changed: SQL Server on Azure Local is now generally available, enabling hybrid data modernization.\n💡 Engineering Impact: This offers architects and engineers a robust solution for modernizing on-premises SQL Server deployments, ensuring data sovereignty and control while leveraging Azure capabilities.",
+    "id": "ff454eb3-53fe-42c0-9379-6beb35afca58",
+    "title": "Chaos Engineering: Enterprise Resilience Imperative",
+    "content": "🎯 What Changed: OpenShift emphasizes chaos engineering as a vital practice for achieving enterprise resilience and meeting business SLOs.\n💡 Engineering Impact: This approach helps engineering teams proactively identify weaknesses, improve system availability, and ensure critical data integrity. By integrating chaos engineering, teams can meet stringent SLOs/SLAs, safeguard revenue, and build lasting customer trust.",
     "tags": [
-      "#Azure",
+      "#OpenShift",
+      "#RedHat",
+      "#DevOps"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-10-14T09:59:48.032871+00:00",
+    "link_url": "https://www.redhat.com/en/blog/chaos-engineering-practice-lessons-enterprise-customers",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 172.0h without manual admin curation.",
+    "updated_at": "2026-10-14T13:26:54.051+00:00",
+    "ageDays": 0.4189995833333333
+  },
+  {
+    "id": "bc8bc60c-d713-4531-944c-20d466fd163d",
+    "title": "Amazon DCV releases version 2026.0 with RHEL 10 support and new clients",
+    "content": "🎯 What Changed: 0 is now available, adding support for RHEL 10, Rocky Linux 10, CentOS 10, and Ubuntu 26. 04 along with a new macOS client and updated Windows and Linux clients.\n\n💡 Why It Matters: Amazon DCV is a high-performance remote ...",
+    "tags": [
+      "#AWS",
       "#CloudArchitecture",
       "#CloudNews"
     ],
@@ -290,11 +291,11 @@
     "downvotes": 0,
     "score": 1,
     "author": "Cloud Newsroom Bot",
-    "created_at": "2026-10-13T12:32:35.727283+00:00",
-    "link_url": "https://www.microsoft.com/en-us/sql-server/blog/2026/09/28/sql-server-on-azure-local-is-now-generally-available/",
+    "created_at": "2026-10-14T03:16:36.667191+00:00",
+    "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/10/amazon-dcv-2026-0/",
     "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 153.6h without manual admin curation.",
-    "updated_at": "2026-10-13T19:03:04.192+00:00",
-    "ageDays": 0.6503135763888889
+    "eligibility_reason": "[Auto-Published] Published automatically after 162.7h without manual admin curation.",
+    "updated_at": "2026-10-14T04:09:03.767+00:00",
+    "ageDays": 0.6989922337962963
   }
 ]
