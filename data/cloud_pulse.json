@@ -1,8 +1,8 @@
 [
   {
-    "id": "3f4f9430-adba-4573-8228-243e92afba32",
-    "title": "AI Tokenomics: Balance Models for Optimal ROI",
-    "content": "🎯 What Changed: OpenShift advocates a strategic approach to AI tokenomics, balancing open-weight and frontier models to optimize ROI and operational flexibility.\n💡 Engineering Impact: This empowers architects and DevOps teams to design cost-effective, flexible AI solutions by intelligently selecting models based on use cases, preventing over-provisioning of expensive frontier models.",
+    "id": "44f95876-6e40-4134-b89c-4e3ace336785",
+    "title": "Lightwell & Ansible Automate Vulnerability Patching at Scale",
+    "content": "🎯 What Changed: Lightwell now integrates with Red Hat Ansible Automation Platform to deliver backported, cryptographically signed security fixes for enterprise applications without requiring full upgrades.\n💡 Engineering Impact: This integration enables safe, auditable, and scalable remediation of vulnerabilities across applications, OS, VMs, and network infrastructure, significantly reducing patching overhead and improving compliance posture.",
     "tags": [
       "#OpenShift",
       "#RedHat",
@@ -12,30 +12,11 @@
     "downvotes": 0,
     "score": 1,
     "author": "Cloud Newsroom Bot",
-    "created_at": "2026-10-15T09:41:50.455271+00:00",
-    "link_url": "https://www.redhat.com/en/blog/ai-tokenomics-balancing-open-weight-and-frontier-models-optimal-roi",
+    "created_at": "2026-10-15T09:41:45.043263+00:00",
+    "link_url": "https://www.redhat.com/en/blog/how-patch-application-vulnerabilities-without-upgrading",
     "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 199.1h without manual admin curation.",
-    "updated_at": "2026-10-15T16:34:44.698Z"
-  },
-  {
-    "id": "c3964cb3-e04a-42ec-8fae-26a199c92989",
-    "title": "ARC Region switch adds four new capabilities",
-    "content": "🎯 What Changed: Amazon Application Recovery Controller has expanded its Region switch feature with four new capabilities to streamline and automate multi.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
-    "tags": [
-      "#AWS",
-      "#CloudArchitecture",
-      "#CloudNews"
-    ],
-    "upvotes": 1,
-    "downvotes": 0,
-    "score": 1,
-    "author": "Cloud Newsroom Bot",
-    "created_at": "2026-10-15T03:00:39.22576+00:00",
-    "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/10/region-switch-target-health-ssm-lambda/",
-    "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 191.5h without manual admin curation.",
-    "updated_at": "2026-10-15T08:59:59.190Z"
+    "eligibility_reason": "[Auto-Published] Published automatically after 205.5h without manual admin curation.",
+    "updated_at": "2026-10-15T22:56:46.211Z"
   },
   {
     "id": "0b6826b6-fc4c-4621-8f9b-bbbea3de16aa",
@@ -55,7 +36,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:48.441634+00:00",
-    "ageDays": 7.979968599537037
+    "ageDays": 8.561075208333333
   },
   {
     "id": "81213fff-57d4-4c0b-90eb-c84beeb18d4d",
@@ -75,7 +56,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:42.008666+00:00",
-    "ageDays": 7.980043055555556
+    "ageDays": 8.561149664351852
   },
   {
     "id": "1ec5647f-ce95-4be3-ba87-6aa974960da7",
@@ -95,7 +76,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:37.111692+00:00",
-    "ageDays": 7.980099733796297
+    "ageDays": 8.561206342592593
   },
   {
     "id": "88a2ed59-fb47-488b-b07c-d6be1de35d0b",
@@ -115,7 +96,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:31.276024+00:00",
-    "ageDays": 7.980167268518518
+    "ageDays": 8.561273877314814
   },
   {
     "id": "202f8734-234e-4bd5-9a67-8535691f131a",
@@ -135,7 +116,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:24.859911+00:00",
-    "ageDays": 7.9802415393518515
+    "ageDays": 8.561348148148149
   },
   {
     "id": "37fcb780-d57d-4ba9-875a-7665dd9cd981",
@@ -155,7 +136,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T04:06:30.331436+00:00",
-    "ageDays": 8.20378931712963
+    "ageDays": 8.784895925925927
   },
   {
     "id": "521c6dfa-7eb3-4834-87fb-7ac338d90f9d",
@@ -175,7 +156,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T04:00:33.151279+00:00",
-    "ageDays": 8.207923344907407
+    "ageDays": 8.789029953703704
   },
   {
     "id": "b1f2627d-7930-4c4b-ab57-de042bac55c3",
@@ -195,7 +176,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T04:00:00.696536+00:00",
-    "ageDays": 8.208298981481482
+    "ageDays": 8.789405590277777
   },
   {
     "id": "bf22f4dd-2d54-4b4c-9038-ea09aadef8a2",
@@ -215,7 +196,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T03:59:45.591638+00:00",
-    "ageDays": 8.208473807870371
+    "ageDays": 8.789580416666666
   },
   {
     "id": "46fd5625-4fda-4793-a2ab-d6b627f3f4df",
@@ -235,7 +216,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T03:59:26.783766+00:00",
-    "ageDays": 8.208691493055555
+    "ageDays": 8.789798101851853
   },
   {
     "id": "09900f5e-4d21-4d5e-84a6-f5eec4459b40",
@@ -255,7 +236,7 @@
     "status": "approved",
     "eligibility_reason": "Official AWS Release: Ingested & AI synthesized for Admin Approval Queue.",
     "updated_at": "2026-09-12T09:07:10.082273+00:00",
-    "ageDays": 32.99499590277778
+    "ageDays": 33.57610251157407
   },
   {
     "id": "57b1b07d-9511-4a40-b351-2ec2866364b4",
@@ -275,7 +256,27 @@
     "status": "approved",
     "eligibility_reason": "Official Kubernetes Release: Ingested & AI synthesized for Admin Approval Queue.",
     "updated_at": "2026-09-12T09:07:09.525138+00:00",
-    "ageDays": 32.99500234953704
+    "ageDays": 33.576108958333336
+  },
+  {
+    "id": "3f4f9430-adba-4573-8228-243e92afba32",
+    "title": "AI Tokenomics: Balance Models for Optimal ROI",
+    "content": "🎯 What Changed: OpenShift advocates a strategic approach to AI tokenomics, balancing open-weight and frontier models to optimize ROI and operational flexibility.\n💡 Engineering Impact: This empowers architects and DevOps teams to design cost-effective, flexible AI solutions by intelligently selecting models based on use cases, preventing over-provisioning of expensive frontier models.",
+    "tags": [
+      "#OpenShift",
+      "#RedHat",
+      "#DevOps"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-10-15T09:41:50.455271+00:00",
+    "link_url": "https://www.redhat.com/en/blog/ai-tokenomics-balancing-open-weight-and-frontier-models-optimal-roi",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 199.1h without manual admin curation.",
+    "updated_at": "2026-10-15T16:34:44.698+00:00",
+    "ageDays": 0.5520241203703704
   },
   {
     "id": "29368f94-c044-4fcb-9308-d100df648677",
@@ -295,6 +296,6 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 186.4h without manual admin curation.",
     "updated_at": "2026-10-15T03:51:37.324+00:00",
-    "ageDays": 0.24840565972222223
+    "ageDays": 0.8295122685185186
   }
 ]
