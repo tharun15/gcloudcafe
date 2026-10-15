@@ -1,5 +1,24 @@
 [
   {
+    "id": "3f4f9430-adba-4573-8228-243e92afba32",
+    "title": "AI Tokenomics: Balance Models for Optimal ROI",
+    "content": "🎯 What Changed: OpenShift advocates a strategic approach to AI tokenomics, balancing open-weight and frontier models to optimize ROI and operational flexibility.\n💡 Engineering Impact: This empowers architects and DevOps teams to design cost-effective, flexible AI solutions by intelligently selecting models based on use cases, preventing over-provisioning of expensive frontier models.",
+    "tags": [
+      "#OpenShift",
+      "#RedHat",
+      "#DevOps"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-10-15T09:41:50.455271+00:00",
+    "link_url": "https://www.redhat.com/en/blog/ai-tokenomics-balancing-open-weight-and-frontier-models-optimal-roi",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 199.1h without manual admin curation.",
+    "updated_at": "2026-10-15T16:34:44.698Z"
+  },
+  {
     "id": "c3964cb3-e04a-42ec-8fae-26a199c92989",
     "title": "ARC Region switch adds four new capabilities",
     "content": "🎯 What Changed: Amazon Application Recovery Controller has expanded its Region switch feature with four new capabilities to streamline and automate multi.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
@@ -277,25 +296,5 @@
     "eligibility_reason": "[Auto-Published] Published automatically after 186.4h without manual admin curation.",
     "updated_at": "2026-10-15T03:51:37.324+00:00",
     "ageDays": 0.24840565972222223
-  },
-  {
-    "id": "ff454eb3-53fe-42c0-9379-6beb35afca58",
-    "title": "Chaos Engineering: Enterprise Resilience Imperative",
-    "content": "🎯 What Changed: OpenShift emphasizes chaos engineering as a vital practice for achieving enterprise resilience and meeting business SLOs.\n💡 Engineering Impact: This approach helps engineering teams proactively identify weaknesses, improve system availability, and ensure critical data integrity. By integrating chaos engineering, teams can meet stringent SLOs/SLAs, safeguard revenue, and build lasting customer trust.",
-    "tags": [
-      "#OpenShift",
-      "#RedHat",
-      "#DevOps"
-    ],
-    "upvotes": 1,
-    "downvotes": 0,
-    "score": 1,
-    "author": "Cloud Newsroom Bot",
-    "created_at": "2026-10-14T09:59:48.032871+00:00",
-    "link_url": "https://www.redhat.com/en/blog/chaos-engineering-practice-lessons-enterprise-customers",
-    "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 172.0h without manual admin curation.",
-    "updated_at": "2026-10-14T13:26:54.051+00:00",
-    "ageDays": 0.9584455555555556
   }
 ]
