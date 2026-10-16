@@ -1,8 +1,8 @@
 [
   {
-    "id": "add8cbf9-a155-44b6-9cbd-bcc844779835",
-    "title": "Amazon DynamoDB Streams now supports timestamp-based stream processing",
-    "content": "🎯 What Changed: Amazon DynamoDB Streams now supports timestamp-based processing, allowing developers to initiate stream reading from a specific point in time rather than just the beginning or end of the log.\n\n💡 Why It Matters: Why it matters: This granular control streamlines disaster recovery and data backfilling by enabling architects to re-process precise event windows, significantly reducing compute overhead and recovery time objectives in event-driven systems.",
+    "id": "fe1d9dd0-06b4-43c0-912e-dd0a3f5138eb",
+    "title": "Amazon EC2 T8i instances are now available in South America (São Paulo)",
+    "content": "🎯 What Changed: AWS has expanded the availability of Amazon EC2 T8i instances, powered by custom Intel Xeon 6 processors.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
     "tags": [
       "#AWS",
       "#CloudArchitecture",
@@ -12,11 +12,11 @@
     "downvotes": 0,
     "score": 1,
     "author": "Cloud Newsroom Bot",
-    "created_at": "2026-10-16T02:55:06.184593+00:00",
-    "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/10/amazon-dynamodb-streams-timestamp-processing",
+    "created_at": "2026-10-16T02:55:00.777989+00:00",
+    "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/10/ec2-t8i-instances-south-america/",
     "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 210.3h without manual admin curation.",
-    "updated_at": "2026-10-16T03:47:12.410Z"
+    "eligibility_reason": "[Auto-Published] Published automatically after 215.4h without manual admin curation.",
+    "updated_at": "2026-10-16T08:51:21.802Z"
   },
   {
     "id": "0b6826b6-fc4c-4621-8f9b-bbbea3de16aa",
@@ -36,7 +36,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:48.441634+00:00",
-    "ageDays": 8.762766944444444
+    "ageDays": 8.973990729166667
   },
   {
     "id": "81213fff-57d4-4c0b-90eb-c84beeb18d4d",
@@ -56,7 +56,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:42.008666+00:00",
-    "ageDays": 8.762841400462962
+    "ageDays": 8.974065185185186
   },
   {
     "id": "1ec5647f-ce95-4be3-ba87-6aa974960da7",
@@ -76,7 +76,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:37.111692+00:00",
-    "ageDays": 8.762898078703703
+    "ageDays": 8.974121863425927
   },
   {
     "id": "88a2ed59-fb47-488b-b07c-d6be1de35d0b",
@@ -96,7 +96,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:31.276024+00:00",
-    "ageDays": 8.762965613425926
+    "ageDays": 8.974189398148148
   },
   {
     "id": "202f8734-234e-4bd5-9a67-8535691f131a",
@@ -116,7 +116,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:24.859911+00:00",
-    "ageDays": 8.763039884259259
+    "ageDays": 8.974263668981482
   },
   {
     "id": "37fcb780-d57d-4ba9-875a-7665dd9cd981",
@@ -136,7 +136,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T04:06:30.331436+00:00",
-    "ageDays": 8.986587662037037
+    "ageDays": 9.197811446759259
   },
   {
     "id": "521c6dfa-7eb3-4834-87fb-7ac338d90f9d",
@@ -156,7 +156,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T04:00:33.151279+00:00",
-    "ageDays": 8.990721689814816
+    "ageDays": 9.201945474537037
   },
   {
     "id": "b1f2627d-7930-4c4b-ab57-de042bac55c3",
@@ -176,7 +176,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T04:00:00.696536+00:00",
-    "ageDays": 8.99109732638889
+    "ageDays": 9.202321111111111
   },
   {
     "id": "bf22f4dd-2d54-4b4c-9038-ea09aadef8a2",
@@ -196,7 +196,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T03:59:45.591638+00:00",
-    "ageDays": 8.991272152777778
+    "ageDays": 9.2024959375
   },
   {
     "id": "46fd5625-4fda-4793-a2ab-d6b627f3f4df",
@@ -216,7 +216,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T03:59:26.783766+00:00",
-    "ageDays": 8.991489837962963
+    "ageDays": 9.202713622685184
   },
   {
     "id": "09900f5e-4d21-4d5e-84a6-f5eec4459b40",
@@ -236,7 +236,7 @@
     "status": "approved",
     "eligibility_reason": "Official AWS Release: Ingested & AI synthesized for Admin Approval Queue.",
     "updated_at": "2026-09-12T09:07:10.082273+00:00",
-    "ageDays": 33.777794247685186
+    "ageDays": 33.98901803240741
   },
   {
     "id": "57b1b07d-9511-4a40-b351-2ec2866364b4",
@@ -256,7 +256,27 @@
     "status": "approved",
     "eligibility_reason": "Official Kubernetes Release: Ingested & AI synthesized for Admin Approval Queue.",
     "updated_at": "2026-09-12T09:07:09.525138+00:00",
-    "ageDays": 33.777800694444444
+    "ageDays": 33.989024479166666
+  },
+  {
+    "id": "add8cbf9-a155-44b6-9cbd-bcc844779835",
+    "title": "Amazon DynamoDB Streams now supports timestamp-based stream processing",
+    "content": "🎯 What Changed: Amazon DynamoDB Streams now supports timestamp-based processing, allowing developers to initiate stream reading from a specific point in time rather than just the beginning or end of the log.\n\n💡 Why It Matters: Why it matters: This granular control streamlines disaster recovery and data backfilling by enabling architects to re-process precise event windows, significantly reducing compute overhead and recovery time objectives in event-driven systems.",
+    "tags": [
+      "#AWS",
+      "#CloudArchitecture",
+      "#CloudNews"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-10-16T02:55:06.184593+00:00",
+    "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/10/amazon-dynamodb-streams-timestamp-processing",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 210.3h without manual admin curation.",
+    "updated_at": "2026-10-16T03:47:12.41+00:00",
+    "ageDays": 0.2473964814814815
   },
   {
     "id": "3f4f9430-adba-4573-8228-243e92afba32",
@@ -276,26 +296,6 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 199.1h without manual admin curation.",
     "updated_at": "2026-10-15T16:34:44.698+00:00",
-    "ageDays": 0.7537158564814814
-  },
-  {
-    "id": "44f95876-6e40-4134-b89c-4e3ace336785",
-    "title": "Lightwell & Ansible Automate Vulnerability Patching at Scale",
-    "content": "🎯 What Changed: Lightwell now integrates with Red Hat Ansible Automation Platform to deliver backported, cryptographically signed security fixes for enterprise applications without requiring full upgrades.\n💡 Engineering Impact: This integration enables safe, auditable, and scalable remediation of vulnerabilities across applications, OS, VMs, and network infrastructure, significantly reducing patching overhead and improving compliance posture.",
-    "tags": [
-      "#OpenShift",
-      "#RedHat",
-      "#DevOps"
-    ],
-    "upvotes": 1,
-    "downvotes": 0,
-    "score": 1,
-    "author": "Cloud Newsroom Bot",
-    "created_at": "2026-10-15T09:41:45.043263+00:00",
-    "link_url": "https://www.redhat.com/en/blog/how-patch-application-vulnerabilities-without-upgrading",
-    "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 205.5h without manual admin curation.",
-    "updated_at": "2026-10-15T22:56:46.211+00:00",
-    "ageDays": 0.7537784953703703
+    "ageDays": 0.9649396412037037
   }
 ]
