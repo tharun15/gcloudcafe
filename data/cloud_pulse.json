@@ -1,5 +1,24 @@
 [
   {
+    "id": "72e6746e-5df7-4755-bd76-98311d9887ef",
+    "title": "Azure & Hyper-V Strategy Validated: Gartner Names Microsoft a Leader",
+    "content": "🎯 What Changed: Microsoft's strategy for Azure and Hyper-V has been validated by its recognition as a Leader in the 2026 Gartner Magic Quadrant for Server Virtualization Platforms.\n💡 Engineering Impact: This reinforces Azure and Hyper-V as robust platforms for achieving operational and infrastructure consistency, strengthening their role in hybrid cloud strategies with Azure Arc.",
+    "tags": [
+      "#Azure",
+      "#CloudArchitecture",
+      "#CloudNews"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-10-17T09:06:07.629287+00:00",
+    "link_url": "https://azure.microsoft.com/en-us/blog/microsoft-named-a-leader-in-the-2026-gartner-magic-quadrant-for-server-virtualization-platforms/",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 245.8h without manual admin curation.",
+    "updated_at": "2026-10-17T15:14:00.239Z"
+  },
+  {
     "id": "d850d813-de68-419a-9d9e-eb0f4a7c0b5f",
     "title": "Nemotron 3.5 Super VL model now available on Amazon SageMaker JumpStart",
     "content": "🎯 What Changed: Amazon SageMaker JumpStart now supports NVIDIA Nemotron 3.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
@@ -277,25 +296,5 @@
     "eligibility_reason": "[Auto-Published] Published automatically after 234.1h without manual admin curation.",
     "updated_at": "2026-10-17T03:37:20.888+00:00",
     "ageDays": 0.23422356481481482
-  },
-  {
-    "id": "30b6056e-0a48-4b9b-9cd1-a2c5f86cd574",
-    "title": "Top 5 operators for Red Hat OpenShift",
-    "content": "🎯 What Changed: GCloud Cafe highlights the top 5 Red Hat OpenShift Operators that act as 'killer apps' for platform value.\n💡 Engineering Impact: These operators automate complex application deployments and management, enhancing OpenShift's value and streamlining DevOps workflows for greater efficiency.",
-    "tags": [
-      "#OpenShift",
-      "#RedHat",
-      "#DevOps"
-    ],
-    "upvotes": 1,
-    "downvotes": 0,
-    "score": 1,
-    "author": "Cloud Newsroom Bot",
-    "created_at": "2026-10-16T09:35:21.156569+00:00",
-    "link_url": "https://www.redhat.com/en/blog/top-5-operators-red-hat-openshift",
-    "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 222.8h without manual admin curation.",
-    "updated_at": "2026-10-16T16:19:20.163+00:00",
-    "ageDays": 0.9490991319444444
   }
 ]
