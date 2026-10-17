@@ -1,41 +1,22 @@
 [
   {
-    "id": "72e6746e-5df7-4755-bd76-98311d9887ef",
-    "title": "Azure & Hyper-V Strategy Validated: Gartner Names Microsoft a Leader",
-    "content": "🎯 What Changed: Microsoft's strategy for Azure and Hyper-V has been validated by its recognition as a Leader in the 2026 Gartner Magic Quadrant for Server Virtualization Platforms.\n💡 Engineering Impact: This reinforces Azure and Hyper-V as robust platforms for achieving operational and infrastructure consistency, strengthening their role in hybrid cloud strategies with Azure Arc.",
+    "id": "8e9fb463-7bbd-4241-80a1-89e43a76853d",
+    "title": "Shape Red Hat Summit 2027: Call for Proposals Now Open",
+    "content": "🎯 What Changed: Red Hat Summit 2027's Call for Proposals (CFP) is now open for expert submissions.\n💡 Engineering Impact: This offers cloud architects and DevOps professionals a prime opportunity to share advanced technical insights, influence the cloud native roadmap, and connect with the Red Hat ecosystem.",
     "tags": [
-      "#Azure",
-      "#CloudArchitecture",
-      "#CloudNews"
+      "#OpenShift",
+      "#RedHat",
+      "#DevOps"
     ],
     "upvotes": 1,
     "downvotes": 0,
     "score": 1,
     "author": "Cloud Newsroom Bot",
-    "created_at": "2026-10-17T09:06:07.629287+00:00",
-    "link_url": "https://azure.microsoft.com/en-us/blog/microsoft-named-a-leader-in-the-2026-gartner-magic-quadrant-for-server-virtualization-platforms/",
+    "created_at": "2026-10-17T09:06:00.944258+00:00",
+    "link_url": "https://www.redhat.com/en/blog/red-hat-summit-2027-call-proposals-now-open",
     "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 245.8h without manual admin curation.",
-    "updated_at": "2026-10-17T15:14:00.239Z"
-  },
-  {
-    "id": "d850d813-de68-419a-9d9e-eb0f4a7c0b5f",
-    "title": "Nemotron 3.5 Super VL model now available on Amazon SageMaker JumpStart",
-    "content": "🎯 What Changed: Amazon SageMaker JumpStart now supports NVIDIA Nemotron 3.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
-    "tags": [
-      "#AWS",
-      "#CloudArchitecture",
-      "#CloudNews"
-    ],
-    "upvotes": 1,
-    "downvotes": 0,
-    "score": 1,
-    "author": "Cloud Newsroom Bot",
-    "created_at": "2026-10-17T02:44:41.466834+00:00",
-    "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/01/nvidia-nemotron-3.5-super-vl-on-sagemaker-jumpstart/",
-    "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 238.9h without manual admin curation.",
-    "updated_at": "2026-10-17T08:22:04.029Z"
+    "eligibility_reason": "[Auto-Published] Published automatically after 248.8h without manual admin curation.",
+    "updated_at": "2026-10-17T18:17:04.055Z"
   },
   {
     "id": "0b6826b6-fc4c-4621-8f9b-bbbea3de16aa",
@@ -55,7 +36,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:48.441634+00:00",
-    "ageDays": 9.953644444444445
+    "ageDays": 10.366836585648148
   },
   {
     "id": "81213fff-57d4-4c0b-90eb-c84beeb18d4d",
@@ -75,7 +56,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:42.008666+00:00",
-    "ageDays": 9.953718900462963
+    "ageDays": 10.366911041666667
   },
   {
     "id": "1ec5647f-ce95-4be3-ba87-6aa974960da7",
@@ -95,7 +76,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:37.111692+00:00",
-    "ageDays": 9.953775578703704
+    "ageDays": 10.366967719907407
   },
   {
     "id": "88a2ed59-fb47-488b-b07c-d6be1de35d0b",
@@ -115,7 +96,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:31.276024+00:00",
-    "ageDays": 9.953843113425926
+    "ageDays": 10.367035254629629
   },
   {
     "id": "202f8734-234e-4bd5-9a67-8535691f131a",
@@ -135,7 +116,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:24.859911+00:00",
-    "ageDays": 9.95391738425926
+    "ageDays": 10.367109525462963
   },
   {
     "id": "37fcb780-d57d-4ba9-875a-7665dd9cd981",
@@ -155,7 +136,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T04:06:30.331436+00:00",
-    "ageDays": 10.177465162037038
+    "ageDays": 10.590657303240741
   },
   {
     "id": "521c6dfa-7eb3-4834-87fb-7ac338d90f9d",
@@ -175,7 +156,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T04:00:33.151279+00:00",
-    "ageDays": 10.181599189814815
+    "ageDays": 10.594791331018518
   },
   {
     "id": "b1f2627d-7930-4c4b-ab57-de042bac55c3",
@@ -195,7 +176,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T04:00:00.696536+00:00",
-    "ageDays": 10.181974826388888
+    "ageDays": 10.595166967592593
   },
   {
     "id": "bf22f4dd-2d54-4b4c-9038-ea09aadef8a2",
@@ -215,7 +196,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T03:59:45.591638+00:00",
-    "ageDays": 10.182149652777778
+    "ageDays": 10.595341793981481
   },
   {
     "id": "46fd5625-4fda-4793-a2ab-d6b627f3f4df",
@@ -235,7 +216,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T03:59:26.783766+00:00",
-    "ageDays": 10.182367337962964
+    "ageDays": 10.595559479166667
   },
   {
     "id": "09900f5e-4d21-4d5e-84a6-f5eec4459b40",
@@ -255,7 +236,7 @@
     "status": "approved",
     "eligibility_reason": "Official AWS Release: Ingested & AI synthesized for Admin Approval Queue.",
     "updated_at": "2026-09-12T09:07:10.082273+00:00",
-    "ageDays": 34.968671747685185
+    "ageDays": 35.38186388888889
   },
   {
     "id": "57b1b07d-9511-4a40-b351-2ec2866364b4",
@@ -275,7 +256,27 @@
     "status": "approved",
     "eligibility_reason": "Official Kubernetes Release: Ingested & AI synthesized for Admin Approval Queue.",
     "updated_at": "2026-09-12T09:07:09.525138+00:00",
-    "ageDays": 34.96867819444444
+    "ageDays": 35.381870335648145
+  },
+  {
+    "id": "72e6746e-5df7-4755-bd76-98311d9887ef",
+    "title": "Azure & Hyper-V Strategy Validated: Gartner Names Microsoft a Leader",
+    "content": "🎯 What Changed: Microsoft's strategy for Azure and Hyper-V has been validated by its recognition as a Leader in the 2026 Gartner Magic Quadrant for Server Virtualization Platforms.\n💡 Engineering Impact: This reinforces Azure and Hyper-V as robust platforms for achieving operational and infrastructure consistency, strengthening their role in hybrid cloud strategies with Azure Arc.",
+    "tags": [
+      "#Azure",
+      "#CloudArchitecture",
+      "#CloudNews"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-10-17T09:06:07.629287+00:00",
+    "link_url": "https://azure.microsoft.com/en-us/blog/microsoft-named-a-leader-in-the-2026-gartner-magic-quadrant-for-server-virtualization-platforms/",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 245.8h without manual admin curation.",
+    "updated_at": "2026-10-17T15:14:00.239+00:00",
+    "ageDays": 0.382586724537037
   },
   {
     "id": "27adbd49-0d4f-47cb-b56d-e52a232866e7",
@@ -295,6 +296,6 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 234.1h without manual admin curation.",
     "updated_at": "2026-10-17T03:37:20.888+00:00",
-    "ageDays": 0.23422356481481482
+    "ageDays": 0.6474157060185185
   }
 ]
