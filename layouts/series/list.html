@@ -58,8 +58,13 @@
   {{ end }}
 
   <!-- Series Content Hub (Content-First & Editorial) -->
-  <section class="pt-6 sm:pt-8 pb-16 sm:pb-24 bg-white dark:bg-transparent" aria-labelledby="series-tracks-heading">
-    <div class="bytedepth-container">
+  <!-- Series Content Hub (Professional Architectural Curriculum Canvas) -->
+  <section class="series-hub-backdrop relative pt-8 sm:pt-12 pb-20 sm:pb-28 overflow-hidden min-h-screen" aria-labelledby="series-tracks-heading">
+    <!-- Ambient Technical Glow and Architectural Grid Matrix -->
+    <div class="series-ambient-glow pointer-events-none absolute -top-24 left-1/2 -translate-x-1/2 w-[880px] max-w-[96vw] h-[440px] rounded-full blur-[110px] z-0"></div>
+    <div class="series-blueprint-grid pointer-events-none absolute inset-0 z-0"></div>
+
+    <div class="bytedepth-container relative z-10">
       
       <!-- Series Hub Header -->
       <div class="max-w-4xl mx-auto mb-8 sm:mb-10">
@@ -105,7 +110,7 @@
             {{ end }}
           {{ end }}
 
-          <div class="relative mb-12 max-w-4xl mx-auto rounded-2xl bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-slate-800 shadow-xs hover:border-slate-300 dark:hover:border-slate-700 transition-all duration-300 group overflow-hidden">
+          <div class="relative mb-12 max-w-4xl mx-auto rounded-2xl bg-white/95 dark:bg-[#0c1220]/95 backdrop-blur-md border border-slate-200/90 dark:border-slate-800/90 shadow-sm dark:shadow-[0_16px_40px_rgba(0,0,0,0.55)] hover:border-sky-500/35 dark:hover:border-sky-500/40 transition-all duration-300 group overflow-hidden">
             <!-- Sleek Top Brand Glow -->
             <div class="h-1 w-full bg-gradient-to-r from-sky-500 via-blue-500 to-indigo-500"></div>
 
@@ -253,35 +258,35 @@
       {{ end }}
 
       <!-- Domain Filter Segmented Control (Matching Homepage Article Filters) -->
-      <div class="max-w-4xl mx-auto mb-8 pb-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-center sm:justify-start">
+      <div class="max-w-4xl mx-auto mb-8 pb-4 border-b border-slate-200/80 dark:border-slate-800/80 flex items-center justify-center sm:justify-start">
         <h2 class="sr-only">All Learning Tracks</h2>
         <div class="inline-flex items-center gap-1 p-1 rounded-full bg-slate-100/90 dark:bg-slate-800/80 border border-slate-200/70 dark:border-slate-700/70 overflow-x-auto no-scrollbar max-w-full"
              role="tablist"
              aria-label="Filter series by technical domain">
           <button type="button" 
                   data-series-filter="all"
-                  class="series-filter-btn category-tab-active inline-flex items-center px-3.5 py-1.5 rounded-full text-xs font-semibold text-slate-900 dark:text-white bg-white dark:bg-slate-900 shadow-2xs transition-all shrink-0 cursor-pointer border-0"
+                  class="series-filter-btn pulse-filter-chip is-active category-tab-active"
                   aria-selected="true"
                   role="tab">
             All Tracks ({{ $allCount }})
           </button>
           <button type="button" 
                   data-series-filter="google-cloud"
-                  class="series-filter-btn inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/80 dark:hover:bg-slate-900/80 transition-all shrink-0 cursor-pointer border-0 bg-transparent"
+                  class="series-filter-btn pulse-filter-chip"
                   aria-selected="false"
                   role="tab">
             Google Cloud ({{ $gcpCount }})
           </button>
           <button type="button" 
                   data-series-filter="security"
-                  class="series-filter-btn inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/80 dark:hover:bg-slate-900/80 transition-all shrink-0 cursor-pointer border-0 bg-transparent"
+                  class="series-filter-btn pulse-filter-chip"
                   aria-selected="false"
                   role="tab">
             Security &amp; PKI ({{ $secCount }})
           </button>
           <button type="button" 
                   data-series-filter="devops"
-                  class="series-filter-btn inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/80 dark:hover:bg-slate-900/80 transition-all shrink-0 cursor-pointer border-0 bg-transparent"
+                  class="series-filter-btn pulse-filter-chip"
                   aria-selected="false"
                   role="tab">
             Containers &amp; DevOps ({{ $devopsCount }})
@@ -343,7 +348,7 @@
           <div data-series-card 
                id="{{ .Key | urlize }}"
                data-domains="{{ delimit $cardDomains " " }}"
-               class="scroll-mt-24 series-card rounded-2xl bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-slate-800 p-5 sm:p-6 shadow-xs hover:border-sky-500/40 dark:hover:border-sky-500/40 hover:shadow-md transition-all duration-300 group">
+               class="scroll-mt-24 series-card rounded-2xl bg-white/95 dark:bg-[#0c1220]/95 backdrop-blur-md border border-slate-200/90 dark:border-slate-800/90 p-5 sm:p-6 shadow-xs hover:border-sky-500/40 dark:hover:border-sky-500/40 hover:shadow-md dark:hover:shadow-[0_12px_32px_rgba(2,132,199,0.12)] transition-all duration-300 group">
             
             <div class="flex flex-col sm:flex-row items-start justify-between gap-5 sm:gap-6">
               
@@ -482,13 +487,11 @@
           var targetFilter = this.getAttribute('data-series-filter');
 
           filterButtons.forEach(function (b) {
-            b.classList.remove('category-tab-active', 'bg-white', 'dark:bg-slate-900', 'text-slate-900', 'dark:text-white', 'shadow-2xs', 'font-semibold');
-            b.classList.add('text-slate-600', 'dark:text-slate-400', 'font-medium', 'bg-transparent');
+            b.classList.remove('is-active', 'category-tab-active');
             b.setAttribute('aria-selected', 'false');
           });
 
-          this.classList.remove('text-slate-600', 'dark:text-slate-400', 'font-medium', 'bg-transparent');
-          this.classList.add('category-tab-active', 'bg-white', 'dark:bg-slate-900', 'text-slate-900', 'dark:text-white', 'shadow-2xs', 'font-semibold');
+          this.classList.add('is-active', 'category-tab-active');
           this.setAttribute('aria-selected', 'true');
 
           var visibleCount = 0;

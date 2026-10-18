@@ -1394,13 +1394,28 @@ table {
 }
 
 .category-tab-active {
-  color: #b91c1c !important;
-  border-bottom: 2px solid #b91c1c !important;
+  background-color: #ffffff !important;
+  color: #0284c7 !important;
+  border-bottom: 2px solid #0284c7 !important;
   font-weight: 700 !important;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
+
+  * {
+    color: #0284c7 !important;
+  }
 }
+:root.dark .category-tab-active,
+.dark .category-tab-active,
 :is(.dark, [data-theme="dark"]) .category-tab-active {
-  color: #f87171 !important;
-  border-bottom-color: #f87171 !important;
+  background-color: #0f172a !important;
+  color: #38bdf8 !important;
+  border-bottom: 2px solid #38bdf8 !important;
+  font-weight: 700 !important;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.3) !important;
+
+  * {
+    color: #38bdf8 !important;
+  }
 }
 
 /* ByteDepth Unified Grid Container (Perfect Ratio & Centering) */
@@ -2089,7 +2104,7 @@ table {
 
 
 
-/* ── Smart Headline Overflow Animation (Professional Marquee / Pan) ── */
+/* ── Smart Headline Overflow Animation (Calm, Practitioner-Grade Pacing) ── */
 .ticker-title.ticker-auto-pan {
   display: inline-block !important;
   width: max-content !important;
@@ -2098,23 +2113,75 @@ table {
   text-overflow: clip !important;
   white-space: nowrap !important;
   will-change: transform;
-  animation: tickerSmartPan 7.5s cubic-bezier(0.4, 0, 0.2, 1) infinite !important;
+  animation: tickerSmartPan var(--ticker-pan-duration, 12.5s) cubic-bezier(0.38, 0, 0.22, 1) infinite !important;
 }
 
 @keyframes tickerSmartPan {
-  0%, 22% {
+  0%, 25% {
     transform: translateX(0);
   }
-  62%, 82% {
+  75%, 90% {
     transform: translateX(var(--ticker-pan-offset, 0));
   }
-  94%, 100% {
+  98%, 100% {
     transform: translateX(0);
   }
 }
 
-/* On hover/touch, pause pan so reader can read comfortably */
+/* On hover or touch, immediately pause motion so user can comfortably inspect headline */
 .ticker-rotator-stage:hover .ticker-title.ticker-auto-pan,
-.ticker-rotator-item:hover .ticker-title.ticker-auto-pan {
+.ticker-rotator-item:hover .ticker-title.ticker-auto-pan,
+.ticker-rotator-stage:active .ticker-title.ticker-auto-pan,
+.ticker-rotator-item:active .ticker-title.ticker-auto-pan {
   animation-play-state: paused !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ticker-title.ticker-auto-pan {
+    animation: none !important;
+    transform: none !important;
+  }
+}
+
+
+/* ── Engineering Series Hub: Technical Blueprint Grid & Ambient Lighting ── */
+.series-hub-backdrop {
+  position: relative;
+  background-color: #f8fafc; /* Crisp Slate-50 technical base */
+  transition: background-color 0.3s ease;
+}
+
+:root.dark .series-hub-backdrop,
+.dark .series-hub-backdrop {
+  background-color: #060a14 !important; /* Deep space technical navy/slate */
+}
+
+/* Subtle architectural blueprint grid with smooth radial fade-out */
+.series-blueprint-grid {
+  background-image: 
+    linear-gradient(to right, rgba(148, 163, 184, 0.16) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(148, 163, 184, 0.16) 1px, transparent 1px);
+  background-size: 32px 32px;
+  mask-image: radial-gradient(ellipse 85% 75% at 50% 25%, #000 35%, transparent 85%);
+  -webkit-mask-image: radial-gradient(ellipse 85% 75% at 50% 25%, #000 35%, transparent 85%);
+}
+
+:root.dark .series-blueprint-grid,
+.dark .series-blueprint-grid {
+  background-image: 
+    linear-gradient(to right, rgba(56, 189, 248, 0.08) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(56, 189, 248, 0.08) 1px, transparent 1px);
+  background-size: 32px 32px;
+  mask-image: radial-gradient(ellipse 85% 75% at 50% 25%, #000 40%, transparent 90%);
+  -webkit-mask-image: radial-gradient(ellipse 85% 75% at 50% 25%, #000 40%, transparent 90%);
+}
+
+/* Ambient technical glow orb centered behind the masterclasses title */
+.series-ambient-glow {
+  background: radial-gradient(ellipse at center, rgba(2, 132, 199, 0.15) 0%, rgba(99, 102, 241, 0.08) 45%, transparent 72%);
+}
+
+:root.dark .series-ambient-glow,
+.dark .series-ambient-glow {
+  background: radial-gradient(ellipse at center, rgba(56, 189, 248, 0.18) 0%, rgba(99, 102, 241, 0.12) 50%, transparent 75%);
 }
