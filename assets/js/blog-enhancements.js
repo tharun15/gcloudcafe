@@ -9431,11 +9431,13 @@
         return sum + (opt.votes || 0);
       }, 0);
 
-      var resultsHtml = '<div class="flex items-center justify-between pb-1.5 mb-2 text-xs font-mono text-slate-500 dark:text-slate-400">' +
+      var resultsHtml = '<div class="flex items-center justify-between pb-2 mb-2.5 border-b border-slate-100 dark:border-slate-800 text-xs font-mono">' +
         '<span class="flex items-center gap-1.5 font-bold text-slate-800 dark:text-slate-200">' +
-          '<i class="fa-solid fa-chart-simple text-sky-500 text-[11px]"></i> Results' +
+          '<i class="fa-solid fa-chart-simple text-sky-500 text-xs"></i> Results' +
         '</span>' +
-        '<span class="text-[11px] font-mono text-slate-500 dark:text-slate-400">' + (totalVotes === 1 ? '1 vote' : totalVotes + ' votes') + '</span>' +
+        '<span class="inline-flex items-center gap-1 text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold">' +
+          '<i class="fa-solid fa-circle-check text-[10px]"></i> Live Breakdown' +
+        '</span>' +
       '</div>';
       allOptions.forEach(function (opt) {
         var votes = opt.votes || 0;
@@ -9443,7 +9445,7 @@
         var isUserChoice = userVote && userVote.optionId === opt.id;
 
         var cardBorderClass = isUserChoice
-          ? "border-red-500/80 bg-red-50/70 dark:bg-red-950/30 ring-1 ring-red-500/40"
+          ? "border-sky-500/80 bg-sky-50/70 dark:bg-sky-950/30 ring-1 ring-sky-500/30 shadow-xs"
           : "border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/40";
 
         var barBg = isUserChoice
@@ -9459,7 +9461,7 @@
               '</div>' +
               (isUserChoice ? '<div><span class="inline-flex items-center gap-1 text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20"><i class="fa-solid fa-check text-[9px]"></i> Your Choice</span></div>' : '') +
             '</div>' +
-            '<span class="poll-percent-label text-xs sm:text-sm font-mono font-black text-slate-900 dark:text-white shrink-0 pt-0.5" data-target-percent="' + percent + '">' + (animateGradual ? '0.0%' : percent + '%') + '</span>' +
+            '<span class="poll-percent-label text-xs sm:text-sm font-mono font-black text-sky-600 dark:text-sky-400 shrink-0 pt-0.5" data-target-percent="' + percent + '">' + (animateGradual ? '0.0%' : percent + '%') + '</span>' +
           '</div>' +
           '<div class="w-full rounded-full my-2 overflow-hidden bg-slate-200/80 dark:bg-slate-800" style="height: 7px;">' +
             '<div class="poll-progress-bar rounded-full" style="width: 0%; height: 100%; background: ' + barBg + '; transition: width 1.2s cubic-bezier(0.16, 1, 0.3, 1);" data-target-width="' + percent + '%"></div>' +
@@ -10179,7 +10181,7 @@
         var text = btn.querySelector("[data-bookmark-btn-text]");
 
         if (bookmarked) {
-          btn.classList.add("is-bookmarked", "text-red-500", "dark:text-red-400");
+          btn.classList.add("is-bookmarked", "text-sky-500", "dark:text-sky-400");
           btn.setAttribute("aria-pressed", "true");
           btn.setAttribute("title", "Remove from saved bookmarks");
           if (icon) {
@@ -10190,7 +10192,7 @@
             text.textContent = "Saved";
           }
         } else {
-          btn.classList.remove("is-bookmarked", "text-red-500", "dark:text-red-400");
+          btn.classList.remove("is-bookmarked", "text-sky-500", "dark:text-sky-400");
           btn.setAttribute("aria-pressed", "false");
           btn.setAttribute("title", "Save for later");
           if (icon) {
@@ -10239,7 +10241,7 @@
         var cleanTime = escapeHtml(b.readTime || "5 min read");
 
         html +=
-          '<div class="bookmark-item group relative p-3.5 rounded-xl border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/70 hover:border-red-500/40 hover:shadow-md transition-all duration-200">' +
+          '<div class="bookmark-item group relative p-3.5 rounded-xl border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/70 hover:border-sky-500/40 hover:shadow-md transition-all duration-200">' +
             '<div class="flex items-start justify-between gap-3">' +
               '<div class="flex-1 min-w-0">' +
                 '<div class="flex items-center gap-2 mb-1.5 flex-wrap">' +
