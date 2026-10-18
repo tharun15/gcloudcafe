@@ -1394,13 +1394,28 @@ table {
 }
 
 .category-tab-active {
-  color: #b91c1c !important;
-  border-bottom: 2px solid #b91c1c !important;
+  background-color: #ffffff !important;
+  color: #0284c7 !important;
+  border-bottom: 2px solid #0284c7 !important;
   font-weight: 700 !important;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
+
+  * {
+    color: #0284c7 !important;
+  }
 }
+:root.dark .category-tab-active,
+.dark .category-tab-active,
 :is(.dark, [data-theme="dark"]) .category-tab-active {
-  color: #f87171 !important;
-  border-bottom-color: #f87171 !important;
+  background-color: #0f172a !important;
+  color: #38bdf8 !important;
+  border-bottom: 2px solid #38bdf8 !important;
+  font-weight: 700 !important;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.3) !important;
+
+  * {
+    color: #38bdf8 !important;
+  }
 }
 
 /* ByteDepth Unified Grid Container (Perfect Ratio & Centering) */

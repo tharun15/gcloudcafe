@@ -1406,11 +1406,9 @@
 
         link.setAttribute("aria-selected", isActive ? "true" : "false");
         if (isActive) {
-          link.classList.add("category-tab-active", "bg-white", "dark:bg-slate-900", "text-slate-900", "dark:text-white", "shadow-2xs", "font-semibold");
-          link.classList.remove("text-slate-700", "dark:text-slate-300", "text-slate-600", "dark:text-slate-400", "font-medium", "hover:bg-white/80", "dark:hover:bg-slate-900/80");
+          link.classList.add("is-active", "category-tab-active");
         } else {
-          link.classList.remove("category-tab-active", "bg-white", "dark:bg-slate-900", "text-slate-900", "dark:text-white", "shadow-2xs", "font-semibold");
-          link.classList.add("text-slate-700", "dark:text-slate-300", "font-medium", "hover:bg-white/80", "dark:hover:bg-slate-900/80");
+          link.classList.remove("is-active", "category-tab-active");
         }
       });
 

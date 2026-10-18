@@ -70,7 +70,7 @@
                    data-category-filter="all"
                    role="tab"
                    aria-selected="true"
-                   class="category-tab-active inline-flex items-center px-3.5 py-1.5 rounded-full text-xs font-semibold no-underline bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-2xs shrink-0 cursor-pointer">
+                   class="pulse-filter-chip is-active category-tab-active">
                   <span>All</span>
                 </a>
                 {{ $primaryCats := slice "kubernetes" "security" "google-cloud" "devops" "openshift" "certifications" }}
@@ -80,7 +80,7 @@
                        data-category-filter="{{ $catSlug }}"
                        role="tab"
                        aria-selected="false"
-                       class="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-white/80 dark:hover:bg-slate-900/80 transition-all shrink-0 no-underline cursor-pointer">
+                       class="pulse-filter-chip">
                       <span>{{ .Title }}</span>
                     </a>
                   {{ end }}
