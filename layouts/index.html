@@ -1,5 +1,5 @@
 {{ define "main" }}
-  {{ $posts := sort (where site.RegularPages "Section" "blog") "Date" "desc" }}
+  {{ $posts := sort (where (where site.RegularPages "Section" "blog") "Draft" false) "Date" "desc" }}
   {{ $featured := false }}
   {{/* Prioritize explicit hero post if set */}}
   {{ range $posts }}
