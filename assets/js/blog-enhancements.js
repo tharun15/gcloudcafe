@@ -9294,7 +9294,7 @@
               '<span class="w-1.5 h-1.5 rounded-full bg-transparent group-hover:bg-red-500/40"></span>' +
             '</span>' +
             '<div>' +
-              '<div class="text-xs sm:text-sm font-bold text-slate-900 dark:text-slate-100 leading-snug group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors">' + escapeHtml(opt.text) + '</div>' +
+              '<div class="text-xs sm:text-sm font-bold text-slate-900 dark:text-slate-100 leading-snug group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors">' + escapeHtml(opt.text) + '</div>' +
               '<div class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 leading-normal">' + escapeHtml(opt.description) + '</div>' +
             '</div>' +
           '</div>' +
@@ -9310,8 +9310,8 @@
               '<span class="w-1.5 h-1.5 rounded-full bg-transparent group-hover:bg-red-500/40"></span>' +
             '</span>' +
             '<div>' +
-              '<div class="text-xs sm:text-sm font-bold text-slate-900 dark:text-slate-100 leading-snug group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors flex items-center gap-1.5">' +
-                '<i class="fa-regular fa-compass text-red-500 text-xs"></i>' +
+              '<div class="text-xs sm:text-sm font-bold text-slate-900 dark:text-slate-100 leading-snug group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors flex items-center gap-1.5">' +
+                '<i class="fa-regular fa-compass text-sky-500 text-xs"></i>' +
                 '<span>' + escapeHtml(other.text) + '</span>' +
               '</div>' +
               '<div class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 leading-normal">' + escapeHtml(other.description) + '</div>' +
@@ -9368,7 +9368,7 @@
         clickedCard.classList.add("ring-2", "ring-red-500", "border-red-500", "bg-red-50/90", "dark:bg-red-950/40");
         var radioIndicator = clickedCard.querySelector(".poll-radio-indicator");
         if (radioIndicator) {
-          radioIndicator.innerHTML = '<i class="fa-solid fa-circle-check text-[11px] text-red-500"></i>';
+          radioIndicator.innerHTML = '<i class="fa-solid fa-circle-check text-[11px] text-sky-500"></i>';
           radioIndicator.classList.remove("border-slate-400", "dark:border-slate-600");
           radioIndicator.classList.add("border-red-500", "bg-red-500/10");
         }
@@ -9433,7 +9433,7 @@
 
       var resultsHtml = '<div class="flex items-center justify-between pb-1.5 mb-2 text-xs font-mono text-slate-500 dark:text-slate-400">' +
         '<span class="flex items-center gap-1.5 font-bold text-slate-800 dark:text-slate-200">' +
-          '<i class="fa-solid fa-chart-simple text-red-500 text-[11px]"></i> Results' +
+          '<i class="fa-solid fa-chart-simple text-sky-500 text-[11px]"></i> Results' +
         '</span>' +
         '<span class="text-[11px] font-mono text-slate-500 dark:text-slate-400">' + (totalVotes === 1 ? '1 vote' : totalVotes + ' votes') + '</span>' +
       '</div>';
@@ -9447,17 +9447,17 @@
           : "border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/40";
 
         var barBg = isUserChoice
-          ? "linear-gradient(90deg, #ef4444, #f59e0b)"
+          ? "linear-gradient(90deg, #0284c7, #38bdf8)"
           : (votes > 0 ? "linear-gradient(90deg, #64748b, #475569)" : "transparent");
 
         resultsHtml += '<div class="poll-result-card p-3 sm:p-3.5 rounded-xl border ' + cardBorderClass + ' transition-all">' +
           '<div class="flex items-start justify-between gap-3 mb-1.5">' +
             '<div class="min-w-0 flex-grow pr-1 space-y-1">' +
               '<div class="text-xs sm:text-sm font-bold text-slate-900 dark:text-slate-100 leading-snug break-words">' +
-                (opt.id === "other" ? '<i class="fa-regular fa-compass text-red-500 mr-1.5 text-xs"></i>' : '') +
+                (opt.id === "other" ? '<i class="fa-regular fa-compass text-sky-500 mr-1.5 text-xs"></i>' : '') +
                 escapeHtml(opt.text) +
               '</div>' +
-              (isUserChoice ? '<div><span class="inline-flex items-center gap-1 text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20"><i class="fa-solid fa-check text-[9px]"></i> Your Choice</span></div>' : '') +
+              (isUserChoice ? '<div><span class="inline-flex items-center gap-1 text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20"><i class="fa-solid fa-check text-[9px]"></i> Your Choice</span></div>' : '') +
             '</div>' +
             '<span class="poll-percent-label text-xs sm:text-sm font-mono font-black text-slate-900 dark:text-white shrink-0 pt-0.5" data-target-percent="' + percent + '">' + (animateGradual ? '0.0%' : percent + '%') + '</span>' +
           '</div>' +
@@ -10243,14 +10243,14 @@
             '<div class="flex items-start justify-between gap-3">' +
               '<div class="flex-1 min-w-0">' +
                 '<div class="flex items-center gap-2 mb-1.5 flex-wrap">' +
-                  '<span class="inline-block text-[11px] font-semibold tracking-wider uppercase px-2 py-0.5 rounded-full bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-400 border border-red-200/60 dark:border-red-800/40">' + cleanCat + '</span>' +
+                  '<span class="inline-block text-[11px] font-semibold tracking-wider uppercase px-2 py-0.5 rounded-full bg-sky-50 dark:bg-sky-950/40 text-sky-600 dark:text-sky-400 border border-sky-200/60 dark:border-sky-800/40">' + cleanCat + '</span>' +
                   '<span class="text-xs text-slate-400 dark:text-slate-500 flex items-center gap-1"><i class="fa-regular fa-clock text-[10px]"></i>' + cleanTime + '</span>' +
                 '</div>' +
-                '<a href="' + cleanUrl + '" class="block text-sm font-semibold text-slate-900 dark:text-white hover:text-red-600 dark:hover:text-red-400 transition-colors line-clamp-2 leading-snug">' +
+                '<a href="' + cleanUrl + '" class="block text-sm font-semibold text-slate-900 dark:text-white hover:text-sky-600 dark:hover:text-sky-400 transition-colors line-clamp-2 leading-snug">' +
                   cleanTitle +
                 '</a>' +
               '</div>' +
-              '<button type="button" data-remove-bookmark="' + cleanUrl + '" class="text-slate-400 hover:text-red-500 dark:hover:text-red-400 p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" title="Remove bookmark" aria-label="Remove ' + cleanTitle + '">' +
+              '<button type="button" data-remove-bookmark="' + cleanUrl + '" class="text-slate-400 hover:text-sky-600 dark:hover:text-sky-400 p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" title="Remove bookmark" aria-label="Remove ' + cleanTitle + '">' +
                 '<i class="fa-solid fa-trash-can text-xs"></i>' +
               '</button>' +
             '</div>' +
@@ -10461,22 +10461,22 @@ document.addEventListener('DOMContentLoaded', initDevTerminalBlocks);
     function switchTab(view) {
       if (view === 'active') {
         tabActiveBtn.setAttribute('aria-selected', 'true');
-        tabActiveBtn.classList.add('shadow-xs', 'bg-white', 'dark:bg-[#141e33]', 'text-red-600', 'dark:text-red-400', 'border-slate-200/80', 'dark:border-slate-700/80');
+        tabActiveBtn.classList.add('shadow-xs', 'bg-white', 'dark:bg-[#141e33]', 'text-sky-600', 'dark:text-sky-400', 'border-slate-200/80', 'dark:border-slate-700/80');
         tabActiveBtn.classList.remove('text-slate-600', 'dark:text-slate-400', 'border-transparent');
 
         tabAllBtn.setAttribute('aria-selected', 'false');
-        tabAllBtn.classList.remove('shadow-xs', 'bg-white', 'dark:bg-[#141e33]', 'text-red-600', 'dark:text-red-400', 'border-slate-200/80', 'dark:border-slate-700/80');
+        tabAllBtn.classList.remove('shadow-xs', 'bg-white', 'dark:bg-[#141e33]', 'text-sky-600', 'dark:text-sky-400', 'border-slate-200/80', 'dark:border-slate-700/80');
         tabAllBtn.classList.add('text-slate-600', 'dark:text-slate-400', 'border-transparent');
 
         panelActive.classList.remove('hidden');
         panelAll.classList.add('hidden');
       } else {
         tabAllBtn.setAttribute('aria-selected', 'true');
-        tabAllBtn.classList.add('shadow-xs', 'bg-white', 'dark:bg-[#141e33]', 'text-red-600', 'dark:text-red-400', 'border-slate-200/80', 'dark:border-slate-700/80');
+        tabAllBtn.classList.add('shadow-xs', 'bg-white', 'dark:bg-[#141e33]', 'text-sky-600', 'dark:text-sky-400', 'border-slate-200/80', 'dark:border-slate-700/80');
         tabAllBtn.classList.remove('text-slate-600', 'dark:text-slate-400', 'border-transparent');
 
         tabActiveBtn.setAttribute('aria-selected', 'false');
-        tabActiveBtn.classList.remove('shadow-xs', 'bg-white', 'dark:bg-[#141e33]', 'text-red-600', 'dark:text-red-400', 'border-slate-200/80', 'dark:border-slate-700/80');
+        tabActiveBtn.classList.remove('shadow-xs', 'bg-white', 'dark:bg-[#141e33]', 'text-sky-600', 'dark:text-sky-400', 'border-slate-200/80', 'dark:border-slate-700/80');
         tabActiveBtn.classList.add('text-slate-600', 'dark:text-slate-400', 'border-transparent');
 
         panelAll.classList.remove('hidden');
@@ -10622,26 +10622,26 @@ document.addEventListener('DOMContentLoaded', initDevTerminalBlocks);
         var dot = item.querySelector('.track-dot');
 
         if (pNum === partNum) {
-          item.classList.add('is-active', 'bg-red-50', 'dark:bg-red-950/40', 'border-red-300/80', 'dark:border-red-900/60', 'shadow-2xs');
+          item.classList.add('is-active', 'bg-sky-50', 'dark:bg-sky-950/40', 'border-sky-300/80', 'dark:border-sky-900/60', 'shadow-2xs');
           item.classList.remove('border-transparent');
           if (badge) {
-            badge.classList.add('bg-red-600', 'text-white', 'shadow-2xs');
+            badge.classList.add('bg-sky-600', 'text-white', 'shadow-2xs');
             badge.classList.remove('bg-slate-100', 'dark:bg-slate-800', 'text-slate-600', 'dark:text-slate-400');
           }
           if (titleSpan) {
-            titleSpan.classList.add('font-bold', 'text-red-950', 'dark:text-red-200');
+            titleSpan.classList.add('font-bold', 'text-sky-950', 'dark:text-sky-200');
             titleSpan.classList.remove('font-medium', 'text-slate-800', 'dark:text-slate-200');
           }
           if (dot) dot.classList.remove('hidden');
         } else {
-          item.classList.remove('is-active', 'bg-red-50', 'dark:bg-red-950/40', 'border-red-300/80', 'dark:border-red-900/60', 'shadow-2xs');
+          item.classList.remove('is-active', 'bg-sky-50', 'dark:bg-sky-950/40', 'border-sky-300/80', 'dark:border-sky-900/60', 'shadow-2xs');
           item.classList.add('border-transparent');
           if (badge) {
-            badge.classList.remove('bg-red-600', 'text-white', 'shadow-2xs');
+            badge.classList.remove('bg-sky-600', 'text-white', 'shadow-2xs');
             badge.classList.add('bg-slate-100', 'dark:bg-slate-800', 'text-slate-600', 'dark:text-slate-400');
           }
           if (titleSpan) {
-            titleSpan.classList.remove('font-bold', 'text-red-950', 'dark:text-red-200');
+            titleSpan.classList.remove('font-bold', 'text-sky-950', 'dark:text-sky-200');
             titleSpan.classList.add('font-medium', 'text-slate-800', 'dark:text-slate-200');
           }
           if (dot) dot.classList.add('hidden');
