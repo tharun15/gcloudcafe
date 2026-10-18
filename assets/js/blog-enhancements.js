@@ -2617,17 +2617,30 @@
     var currentIndex = 0;
     var totalSlides = 0;
     var isPaused = false;
-    var rotateInterval = null;
-    var ROTATE_DELAY = 7500;
+    var rotateTimeout = null;
+    var currentSlideDelay = 9500;
 
     function getSlides() {
       return marquee.querySelectorAll("[data-ticker-slide]");
     }
 
+    function scheduleNextSlide(delay) {
+      if (rotateTimeout) clearTimeout(rotateTimeout);
+      currentSlideDelay = delay || 9500;
+      rotateTimeout = setTimeout(function() {
+        if (!isPaused) {
+          nextSlide();
+        } else {
+          // If paused by user touch or hover, keep checking every 1s
+          scheduleNextSlide(1000);
+        }
+      }, currentSlideDelay);
+    }
+
     function renderAllCaughtUp() {
-      if (rotateInterval) {
-        clearInterval(rotateInterval);
-        rotateInterval = null;
+      if (rotateTimeout) {
+        clearTimeout(rotateTimeout);
+        rotateTimeout = null;
       }
       marquee.innerHTML = '<div class="ticker-rotator-item is-active w-full flex items-center justify-between text-slate-600 dark:text-slate-300 px-1">'
         + '<a href="/pulse/" class="inline-flex items-center gap-2 text-[13px] sm:text-[14px] text-emerald-600 dark:text-emerald-400 font-medium hover:underline no-underline">'
@@ -2653,21 +2666,31 @@
           slide.setAttribute("aria-hidden", "false");
           slide.querySelectorAll("a, button").forEach(function(el) { el.setAttribute("tabindex", "0"); });
 
-          // Smart Overflow Headline Auto-Pan: Allows reading 100% of the headline without any clicks
+          // Smart Overflow Headline Auto-Pan: Allows reading 100% of the headline calmly and without any clicks
           var titleContainer = slide.querySelector(".ticker-title-container");
           var titleEl = slide.querySelector(".ticker-title");
+          var activeSlideTime = 9500; // Calm default reading duration for standard headlines
+
           if (titleContainer && titleEl) {
             titleEl.classList.remove("ticker-auto-pan");
             titleEl.style.removeProperty("--ticker-pan-offset");
+            titleEl.style.removeProperty("--ticker-pan-duration");
             titleEl.style.removeProperty("transform");
 
             setTimeout(function() {
               var overflowDist = titleEl.scrollWidth - titleContainer.clientWidth;
               if (overflowDist > 6) {
+                // Calculate gentle, human-readable reading pace (~32-38px/second)
+                var panDuration = Math.max(11, Math.min(15.5, 8.5 + (overflowDist / 36)));
                 titleEl.style.setProperty("--ticker-pan-offset", "-" + (overflowDist + 16) + "px");
+                titleEl.style.setProperty("--ticker-pan-duration", panDuration.toFixed(1) + "s");
                 titleEl.classList.add("ticker-auto-pan");
+                activeSlideTime = Math.round(panDuration * 1000) + 600;
               }
+              scheduleNextSlide(activeSlideTime);
             }, 60);
+          } else {
+            scheduleNextSlide(activeSlideTime);
           }
         } else if (idx === prevIndex) {
           slide.classList.add("is-prev");
@@ -2686,12 +2709,7 @@
     }
 
     function startAutoRotate() {
-      if (rotateInterval) clearInterval(rotateInterval);
-      rotateInterval = setInterval(function() {
-        if (!isPaused) {
-          nextSlide();
-        }
-      }, ROTATE_DELAY);
+      scheduleNextSlide(currentSlideDelay);
     }
 
     // Wire up Mobile Complete Visibility Drawer
@@ -2774,9 +2792,11 @@
       }
     });
 
-    // Auto-pause smoothly on hover so user can easily read and click
+    // Auto-pause smoothly on hover/touch so user can easily read at their own pace without rush
     container.addEventListener("mouseenter", function() { isPaused = true; });
     container.addEventListener("mouseleave", function() { isPaused = false; });
+    container.addEventListener("touchstart", function() { isPaused = true; }, { passive: true });
+    container.addEventListener("touchend", function() { isPaused = false; }, { passive: true });
 
     // Handle "Mark as read" click via event delegation
     marquee.addEventListener("click", function(e) {

@@ -2089,7 +2089,7 @@ table {
 
 
 
-/* ── Smart Headline Overflow Animation (Professional Marquee / Pan) ── */
+/* ── Smart Headline Overflow Animation (Calm, Practitioner-Grade Pacing) ── */
 .ticker-title.ticker-auto-pan {
   display: inline-block !important;
   width: max-content !important;
@@ -2098,23 +2098,32 @@ table {
   text-overflow: clip !important;
   white-space: nowrap !important;
   will-change: transform;
-  animation: tickerSmartPan 7.5s cubic-bezier(0.4, 0, 0.2, 1) infinite !important;
+  animation: tickerSmartPan var(--ticker-pan-duration, 12.5s) cubic-bezier(0.38, 0, 0.22, 1) infinite !important;
 }
 
 @keyframes tickerSmartPan {
-  0%, 22% {
+  0%, 25% {
     transform: translateX(0);
   }
-  62%, 82% {
+  75%, 90% {
     transform: translateX(var(--ticker-pan-offset, 0));
   }
-  94%, 100% {
+  98%, 100% {
     transform: translateX(0);
   }
 }
 
-/* On hover/touch, pause pan so reader can read comfortably */
+/* On hover or touch, immediately pause motion so user can comfortably inspect headline */
 .ticker-rotator-stage:hover .ticker-title.ticker-auto-pan,
-.ticker-rotator-item:hover .ticker-title.ticker-auto-pan {
+.ticker-rotator-item:hover .ticker-title.ticker-auto-pan,
+.ticker-rotator-stage:active .ticker-title.ticker-auto-pan,
+.ticker-rotator-item:active .ticker-title.ticker-auto-pan {
   animation-play-state: paused !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ticker-title.ticker-auto-pan {
+    animation: none !important;
+    transform: none !important;
+  }
 }
