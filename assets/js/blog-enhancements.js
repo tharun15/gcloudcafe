@@ -2652,6 +2652,23 @@
           slide.classList.add("is-active");
           slide.setAttribute("aria-hidden", "false");
           slide.querySelectorAll("a, button").forEach(function(el) { el.setAttribute("tabindex", "0"); });
+
+          // Smart Overflow Headline Auto-Pan: Allows reading 100% of the headline without any clicks
+          var titleContainer = slide.querySelector(".ticker-title-container");
+          var titleEl = slide.querySelector(".ticker-title");
+          if (titleContainer && titleEl) {
+            titleEl.classList.remove("ticker-auto-pan");
+            titleEl.style.removeProperty("--ticker-pan-offset");
+            titleEl.style.removeProperty("transform");
+
+            setTimeout(function() {
+              var overflowDist = titleEl.scrollWidth - titleContainer.clientWidth;
+              if (overflowDist > 6) {
+                titleEl.style.setProperty("--ticker-pan-offset", "-" + (overflowDist + 16) + "px");
+                titleEl.classList.add("ticker-auto-pan");
+              }
+            }, 60);
+          }
         } else if (idx === prevIndex) {
           slide.classList.add("is-prev");
           slide.setAttribute("aria-hidden", "true");
@@ -2854,17 +2871,16 @@
         itemsHtml += '<div class="ticker-rotator-item absolute inset-0 flex items-center justify-between gap-1.5 sm:gap-2 '
           + (isFirst ? 'is-active' : 'is-next')
           + '" data-ticker-slide="' + idx + '" data-pulse-id="' + escapeHtml(pulseId) + '" data-pulse-title="' + escapeHtml(safeTitle) + '" data-pulse-tag="' + escapeHtml(tagMeta.label) + '" data-pulse-tag-class="' + escapeHtml(tagMeta.cls) + '" data-pulse-time="' + escapeHtml(timeAgo) + '" aria-hidden="' + (isFirst ? 'false' : 'true') + '">'
-          + '<a href="' + pulsePostLink + '" class="ticker-item group/item inline-flex items-center gap-1.5 sm:gap-2.5 min-w-0 flex-1 no-underline" tabindex="' + (isFirst ? '0' : '-1') + '">'
+          + '<a href="' + pulsePostLink + '" class="ticker-item group/item inline-flex items-center gap-1.5 sm:gap-2.5 min-w-0 flex-1 no-underline overflow-hidden" tabindex="' + (isFirst ? '0' : '-1') + '">'
           + '<span class="ticker-tag ' + tagMeta.cls + ' shrink-0">' + escapeHtml(tagMeta.label) + '</span>'
-          + '<span class="ticker-title font-sans font-medium text-[13.5px] sm:text-[14.5px] md:text-[15px] text-slate-800 dark:text-slate-100 group-hover/item:text-sky-600 dark:group-hover/item:text-sky-400 transition-colors truncate" title="' + escapeHtml(safeTitle) + '">' + safeTitle + '</span>'
-          + '<span class="ticker-time-badge text-[11px] sm:text-[12px] font-mono text-slate-500 dark:text-slate-400 shrink-0 hidden xs:inline-flex items-center gap-1">' + escapeHtml(timeAgo) + '</span>'
+          + '<div class="ticker-title-container overflow-hidden min-w-0 flex-1 relative flex items-center">'
+          + '<span class="ticker-title font-sans font-medium text-[13.5px] sm:text-[14.5px] md:text-[15px] text-slate-800 dark:text-slate-100 group-hover/item:text-sky-600 dark:group-hover/item:text-sky-400 transition-colors whitespace-nowrap" title="' + escapeHtml(safeTitle) + '">' + safeTitle + '</span>'
+          + '</div>'
+          + '<span class="ticker-time-badge text-[11px] sm:text-[12px] font-mono text-slate-500 dark:text-slate-400 shrink-0 hidden md:inline-flex items-center gap-1">' + escapeHtml(timeAgo) + '</span>'
           + '</a>'
-          + '<button type="button" class="ticker-mobile-expand-btn sm:hidden inline-flex items-center justify-center w-6 h-6 text-slate-400 hover:text-slate-800 dark:hover:text-white rounded transition-colors shrink-0" aria-label="Expand complete headline" tabindex="' + (isFirst ? '0' : '-1') + '">'
-          + '<i class="fa-solid fa-chevron-down text-[10px]"></i>'
-          + '</button>'
-          + '<button type="button" class="ticker-mark-read-btn inline-flex items-center gap-1 px-2 py-0.5 text-[11px] sm:text-[12px] font-mono text-slate-500 dark:text-slate-400 hover:text-emerald-700 dark:hover:text-emerald-300 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 rounded border border-slate-200/60 dark:border-slate-800/60 transition-colors shrink-0" data-pulse-mark-read="' + escapeHtml(pulseId) + '" title="Mark as read (hide from ticker)" aria-label="Mark as read" tabindex="' + (isFirst ? '0' : '-1') + '">'
-          + '<i class="fa-solid fa-check text-[10px]"></i>'
-          + '<span class="hidden sm:inline">Mark as read</span>'
+          + '<button type="button" class="ticker-mark-read-btn inline-flex items-center justify-center min-w-[32px] min-h-[32px] sm:min-w-0 sm:min-h-0 sm:h-7 px-2 sm:px-2.5 py-1 text-xs font-mono text-slate-600 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-emerald-500/10 dark:hover:bg-emerald-500/15 rounded-lg border border-slate-300/80 dark:border-slate-700/80 hover:border-emerald-500/40 transition-all shrink-0 active:scale-95 cursor-pointer shadow-2xs" data-pulse-mark-read="' + escapeHtml(pulseId) + '" title="Mark as read (hide from ticker)" aria-label="Mark as read" tabindex="' + (isFirst ? '0' : '-1') + '">'
+          + '<i class="fa-solid fa-check text-xs text-emerald-600 dark:text-emerald-400"></i>'
+          + '<span class="hidden sm:inline font-medium">Mark as read</span>'
           + '</button>'
           + '</div>';
       });
