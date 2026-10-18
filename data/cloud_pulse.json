@@ -1,8 +1,8 @@
 [
   {
-    "id": "c49083e9-4ab8-4544-b69b-f2b0a2b80c2b",
-    "title": "Beam model by Reflection is now available on Amazon SageMaker JumpStart and AWS Trainium",
-    "content": "🎯 What Changed: : \"Format as: Why it matters: \" *.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
+    "id": "58c6d527-afdc-48ef-b3ee-10bd7225ae26",
+    "title": "Nemotron 3.5 Super VL model now available on Amazon SageMaker JumpStart",
+    "content": "🎯 What Changed: NVIDIA's Nemotron 3.5 Super VL vision-language model is now available on Amazon SageMaker Jump.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
     "tags": [
       "#AWS",
       "#CloudArchitecture",
@@ -12,11 +12,11 @@
     "downvotes": 0,
     "score": 1,
     "author": "Cloud Newsroom Bot",
-    "created_at": "2026-10-18T02:46:31.040057+00:00",
-    "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/01/reflection-beam-on-sagemaker-jumpstart-and-aws-trainium/",
+    "created_at": "2026-10-18T02:46:25.055234+00:00",
+    "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/01/nvidia-nemotron-3.5-super-vl-on-sagemaker-jumpstart/",
     "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 258.2h without manual admin curation.",
-    "updated_at": "2026-10-18T03:43:43.654Z"
+    "eligibility_reason": "[Auto-Published] Published automatically after 263.2h without manual admin curation.",
+    "updated_at": "2026-10-18T08:42:11.629Z"
   },
   {
     "id": "0b6826b6-fc4c-4621-8f9b-bbbea3de16aa",
@@ -36,7 +36,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:48.441634+00:00",
-    "ageDays": 10.760353773148148
+    "ageDays": 10.967620763888888
   },
   {
     "id": "81213fff-57d4-4c0b-90eb-c84beeb18d4d",
@@ -56,7 +56,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:42.008666+00:00",
-    "ageDays": 10.760428229166667
+    "ageDays": 10.967695219907407
   },
   {
     "id": "1ec5647f-ce95-4be3-ba87-6aa974960da7",
@@ -76,7 +76,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:37.111692+00:00",
-    "ageDays": 10.760484907407408
+    "ageDays": 10.967751898148148
   },
   {
     "id": "88a2ed59-fb47-488b-b07c-d6be1de35d0b",
@@ -96,7 +96,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:31.276024+00:00",
-    "ageDays": 10.76055244212963
+    "ageDays": 10.967819432870371
   },
   {
     "id": "202f8734-234e-4bd5-9a67-8535691f131a",
@@ -116,7 +116,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:24.859911+00:00",
-    "ageDays": 10.760626712962964
+    "ageDays": 10.967893703703703
   },
   {
     "id": "37fcb780-d57d-4ba9-875a-7665dd9cd981",
@@ -136,7 +136,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T04:06:30.331436+00:00",
-    "ageDays": 10.98417449074074
+    "ageDays": 11.191441481481482
   },
   {
     "id": "521c6dfa-7eb3-4834-87fb-7ac338d90f9d",
@@ -156,7 +156,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T04:00:33.151279+00:00",
-    "ageDays": 10.988308518518519
+    "ageDays": 11.195575509259259
   },
   {
     "id": "b1f2627d-7930-4c4b-ab57-de042bac55c3",
@@ -176,7 +176,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T04:00:00.696536+00:00",
-    "ageDays": 10.988684155092592
+    "ageDays": 11.195951145833334
   },
   {
     "id": "bf22f4dd-2d54-4b4c-9038-ea09aadef8a2",
@@ -196,7 +196,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T03:59:45.591638+00:00",
-    "ageDays": 10.988858981481481
+    "ageDays": 11.196125972222223
   },
   {
     "id": "46fd5625-4fda-4793-a2ab-d6b627f3f4df",
@@ -216,7 +216,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T03:59:26.783766+00:00",
-    "ageDays": 10.989076666666667
+    "ageDays": 11.196343657407407
   },
   {
     "id": "09900f5e-4d21-4d5e-84a6-f5eec4459b40",
@@ -236,7 +236,7 @@
     "status": "approved",
     "eligibility_reason": "Official AWS Release: Ingested & AI synthesized for Admin Approval Queue.",
     "updated_at": "2026-09-12T09:07:10.082273+00:00",
-    "ageDays": 35.77538107638889
+    "ageDays": 35.98264806712963
   },
   {
     "id": "57b1b07d-9511-4a40-b351-2ec2866364b4",
@@ -256,7 +256,27 @@
     "status": "approved",
     "eligibility_reason": "Official Kubernetes Release: Ingested & AI synthesized for Admin Approval Queue.",
     "updated_at": "2026-09-12T09:07:09.525138+00:00",
-    "ageDays": 35.77538752314815
+    "ageDays": 35.98265451388889
+  },
+  {
+    "id": "c49083e9-4ab8-4544-b69b-f2b0a2b80c2b",
+    "title": "Beam model by Reflection is now available on Amazon SageMaker JumpStart and AWS Trainium",
+    "content": "🎯 What Changed: : \"Format as: Why it matters: \" *.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
+    "tags": [
+      "#AWS",
+      "#CloudArchitecture",
+      "#CloudNews"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-10-18T02:46:31.040057+00:00",
+    "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/01/reflection-beam-on-sagemaker-jumpstart-and-aws-trainium/",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 258.2h without manual admin curation.",
+    "updated_at": "2026-10-18T03:43:43.654+00:00",
+    "ageDays": 0.2469888310185185
   },
   {
     "id": "72e6746e-5df7-4755-bd76-98311d9887ef",
@@ -276,26 +296,6 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 245.8h without manual admin curation.",
     "updated_at": "2026-10-17T15:14:00.239+00:00",
-    "ageDays": 0.776103912037037
-  },
-  {
-    "id": "8e9fb463-7bbd-4241-80a1-89e43a76853d",
-    "title": "Shape Red Hat Summit 2027: Call for Proposals Now Open",
-    "content": "🎯 What Changed: Red Hat Summit 2027's Call for Proposals (CFP) is now open for expert submissions.\n💡 Engineering Impact: This offers cloud architects and DevOps professionals a prime opportunity to share advanced technical insights, influence the cloud native roadmap, and connect with the Red Hat ecosystem.",
-    "tags": [
-      "#OpenShift",
-      "#RedHat",
-      "#DevOps"
-    ],
-    "upvotes": 1,
-    "downvotes": 0,
-    "score": 1,
-    "author": "Cloud Newsroom Bot",
-    "created_at": "2026-10-17T09:06:00.944258+00:00",
-    "link_url": "https://www.redhat.com/en/blog/red-hat-summit-2027-call-proposals-now-open",
-    "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 248.8h without manual admin curation.",
-    "updated_at": "2026-10-17T18:17:04.055+00:00",
-    "ageDays": 0.7761812847222223
+    "ageDays": 0.9833709027777777
   }
 ]
