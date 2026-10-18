@@ -13,21 +13,21 @@
       <!-- Breadcrumbs -->
       <nav aria-label="breadcrumb" class="mb-6 pt-2">
         <div class="flex items-center gap-2 text-sm font-medium text-slate-600 dark:text-slate-300 flex-wrap">
-          <a href="{{ site.Home.RelPermalink }}" class="text-slate-700 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-500 no-underline transition-colors flex items-center gap-1.5">
+          <a href="{{ site.Home.RelPermalink }}" class="text-slate-700 dark:text-slate-300 hover:text-sky-600 dark:hover:text-sky-400 no-underline transition-colors flex items-center gap-1.5">
             <i class="fa-solid fa-house text-xs text-slate-400 dark:text-slate-500" aria-hidden="true"></i>
             <span>Home</span>
           </a>
           <span class="text-slate-300 dark:text-slate-700">/</span>
-          <a href="{{ `blog/` | relLangURL }}" class="text-slate-700 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-500 no-underline transition-colors">{{ i18n "breadcrumb_articles" }}</a>
+          <a href="{{ `blog/` | relLangURL }}" class="text-slate-700 dark:text-slate-300 hover:text-sky-600 dark:hover:text-sky-400 no-underline transition-colors">{{ i18n "breadcrumb_articles" }}</a>
           {{ with .Params.series }}
             <span class="text-slate-300 dark:text-slate-700">/</span>
-            <a href="{{ `series/` | relLangURL }}" class="text-slate-700 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-500 no-underline transition-colors">Series</a>
+            <a href="{{ `series/` | relLangURL }}" class="text-slate-700 dark:text-slate-300 hover:text-sky-600 dark:hover:text-sky-400 no-underline transition-colors">Series</a>
             <span class="text-slate-300 dark:text-slate-700">/</span>
             <span class="text-slate-900 dark:text-white font-semibold truncate max-w-xs">{{ . }}</span>
           {{ else }}
             {{ if .Params.categories }}
               <span class="text-slate-300 dark:text-slate-700">/</span>
-              <a href="{{ `categories/` | relLangURL }}{{ index .Params.categories 0 | urlize | lower }}/" class="text-slate-700 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-500 no-underline transition-colors" aria-current="page">
+              <a href="{{ `categories/` | relLangURL }}{{ index .Params.categories 0 | urlize | lower }}/" class="text-slate-700 dark:text-slate-300 hover:text-sky-600 dark:hover:text-sky-400 no-underline transition-colors" aria-current="page">
                 {{ index .Params.categories 0 | humanize }}
               </a>
             {{ end }}
@@ -74,12 +74,12 @@
           <!-- Single Post Series Kicker -->
           <div class="mb-3.5 flex items-center gap-2 flex-wrap">
             <a href="{{ `series/` | relLangURL }}#{{ $seriesName | urlize }}"
-               class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800/90 hover:bg-red-50 dark:hover:bg-red-950/40 border border-slate-200/80 dark:border-slate-700/80 hover:border-red-300 dark:hover:border-red-800/60 text-slate-700 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-400 font-mono text-xs sm:text-[13px] transition-colors group/serieslink no-underline"
+               class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800/90 hover:bg-sky-50 dark:hover:bg-sky-950/40 border border-slate-200/80 dark:border-slate-700/80 hover:border-sky-300 dark:hover:border-sky-800/60 text-slate-700 dark:text-slate-300 hover:text-sky-600 dark:hover:text-sky-400 font-mono text-xs sm:text-[13px] transition-colors group/serieslink no-underline"
                title="View entire series">
-              <i class="fa-solid fa-layer-group text-xs text-red-500"></i>
+              <i class="fa-solid fa-layer-group text-xs text-sky-500"></i>
               <span class="font-bold">{{ $seriesName }}</span>
               <span class="text-slate-400 dark:text-slate-500 font-bold">›</span>
-              <span class="text-red-600 dark:text-red-400 font-bold">Part {{ $seriesOrder }}{{ if gt $totalSeriesParts 0 }} of {{ $totalSeriesParts }}{{ end }}</span>
+              <span class="text-sky-600 dark:text-sky-400 font-bold">Part {{ $seriesOrder }}{{ if gt $totalSeriesParts 0 }} of {{ $totalSeriesParts }}{{ end }}</span>
               {{ if and (gt $totalSeriesParts 0) (eq $seriesOrder $totalSeriesParts) }}
                 <span class="inline-flex items-center px-1.5 py-0.5 text-[9.5px] rounded bg-emerald-100 text-emerald-700 dark:bg-emerald-950/70 dark:text-emerald-400 font-bold uppercase tracking-wider ml-1">
                   Complete Track
@@ -270,7 +270,7 @@
                   {{ end }}
                 </p>
                 <div class="flex items-center justify-center sm:justify-start gap-3">
-                  <a href="{{ `authors/` | relLangURL }}{{ $authorSlug | urlize }}/" class="font-mono text-xs font-semibold text-slate-700 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-400 no-underline inline-flex items-center gap-1 transition-colors">
+                  <a href="{{ `authors/` | relLangURL }}{{ $authorSlug | urlize }}/" class="font-mono text-xs font-semibold text-slate-700 dark:text-slate-300 hover:text-sky-600 dark:hover:text-sky-400 no-underline inline-flex items-center gap-1 transition-colors">
                     <span>{{ if eq site.Language.Lang "it" }}Profilo Autore{{ else }}Author Profile{{ end }}</span>
                     <span class="text-[10px]">→</span>
                   </a>

@@ -2,12 +2,12 @@
   <!-- Breadcrumbs -->
   <div class="bytedepth-container pt-6 pb-4">
     <nav class="flex items-center gap-2 text-sm font-medium text-slate-600 dark:text-slate-300" aria-label="Breadcrumb">
-      <a href="{{ site.Home.RelPermalink }}" class="text-slate-700 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-500 no-underline transition-colors flex items-center gap-1.5">
+      <a href="{{ site.Home.RelPermalink }}" class="text-slate-700 dark:text-slate-300 hover:text-sky-600 dark:hover:text-sky-400 no-underline transition-colors flex items-center gap-1.5">
         <i class="fa-solid fa-house text-xs text-slate-400 dark:text-slate-500" aria-hidden="true"></i>
         <span>Home</span>
       </a>
       <span class="text-slate-300 dark:text-slate-700">/</span>
-      <a href="{{ `authors/` | relLangURL }}" class="text-slate-700 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-500 no-underline transition-colors">Authors</a>
+      <a href="{{ `authors/` | relLangURL }}" class="text-slate-700 dark:text-slate-300 hover:text-sky-600 dark:hover:text-sky-400 no-underline transition-colors">Authors</a>
       <span class="text-slate-300 dark:text-slate-700">/</span>
       <span class="text-slate-900 dark:text-white font-semibold" aria-current="page">{{ .Title }}</span>
     </nav>
@@ -42,14 +42,14 @@
             <div class="flex items-center justify-center gap-2 mb-4">
               {{ range .Params.social }}
                 <a href="{{ .link | safeURL }}" target="_blank" rel="noopener noreferrer" 
-                   class="w-8 h-8 rounded-lg border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-700 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-500 hover:border-slate-400 transition-colors no-underline" 
+                   class="w-8 h-8 rounded-lg border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-700 dark:text-slate-300 hover:text-sky-600 dark:hover:text-sky-400 hover:border-slate-400 transition-colors no-underline" 
                    aria-label="{{ .name }}" title="{{ .name }}">
                   <i class="{{ .icon }} text-xs"></i>
                 </a>
               {{ end }}
               {{ with .Params.email }}
                 <a href="mailto:{{ . }}" 
-                   class="w-8 h-8 rounded-lg border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-700 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-500 hover:border-slate-400 transition-colors no-underline" 
+                   class="w-8 h-8 rounded-lg border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-700 dark:text-slate-300 hover:text-sky-600 dark:hover:text-sky-400 hover:border-slate-400 transition-colors no-underline" 
                    aria-label="Email {{ $.Title }}" title="Email">
                   <i class="fa-regular fa-envelope text-xs"></i>
                 </a>

@@ -1,17 +1,20 @@
+{{/* Pulse Top Headline Rotator Component */}}
 {{ $pulses := site.Data.cloud_pulse }}
 <div id="pulse-rotator-bar" class="ticker-marquee-wrapper ticker-rotator-wrapper group relative flex items-center justify-between w-full h-[40px] min-h-[40px] max-h-[40px] overflow-hidden select-none border-b border-slate-200/80 dark:border-slate-800/80 bg-slate-50/95 dark:bg-[#070b16] text-slate-700 dark:text-slate-200 z-30 transition-all duration-300" aria-label="Cloud Pulse News Updates">
   
-  <!-- Left Lead Anchor: Calm Telemetry Badge -->
-  <div class="ticker-anchor ticker-rotator-anchor h-full flex items-center gap-2 px-3 sm:px-4 py-1 bg-slate-100/90 dark:bg-[#060a15] border-r border-slate-200/90 dark:border-slate-800/90 z-20 shrink-0 select-none shadow-xs dark:shadow-[4px_0_12px_rgba(0,0,0,0.5)]">
-    <span class="w-2 h-2 rounded-full bg-emerald-500 shrink-0 animate-pulse"></span>
-    <a href="/pulse/" class="flex items-center gap-1.5 font-mono text-xs sm:text-[13px] font-extrabold uppercase tracking-wider text-slate-900 dark:!text-slate-100 hover:text-sky-600 dark:hover:text-emerald-400 transition-colors no-underline">
-      <span class="text-emerald-500 text-xs sm:text-[13px]">⚡</span>
-      <span>PULSE</span>
+  <!-- Left Lead Anchor: Compact Live Pulse Beacon (No bulky text to maximize headline space) -->
+  <div class="ticker-anchor ticker-rotator-anchor h-full flex items-center px-2.5 sm:px-3 py-1 bg-slate-100/90 dark:bg-[#060a15] border-r border-slate-200/90 dark:border-slate-800/90 z-20 shrink-0 select-none shadow-xs dark:shadow-[4px_0_12px_rgba(0,0,0,0.5)]">
+    <a href="/pulse/" class="inline-flex items-center justify-center p-1 rounded-md text-emerald-500 hover:text-emerald-400 hover:bg-slate-200/60 dark:hover:bg-slate-800/60 transition-colors no-underline" title="Cloud Pulse Newsroom" aria-label="Cloud Pulse Newsroom">
+      <span class="relative flex h-2 w-2 mr-1">
+        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+        <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+      </span>
+      <span class="text-xs sm:text-[13px] font-bold">⚡</span>
     </a>
   </div>
 
   <!-- Center Stage: Rotator Headline (Top 3 unread items one by one) -->
-  <div class="ticker-rotator-stage relative flex-1 h-full overflow-hidden flex items-center px-2 sm:px-4" data-pulse-ticker-container>
+  <div class="ticker-rotator-stage relative flex-1 h-full overflow-hidden flex items-center px-2 sm:px-3" data-pulse-ticker-container>
     <div class="ticker-rotator-items w-full h-full relative" data-pulse-ticker-marquee>
       {{/* range first 10 $pulses */}}
       {{ range $index, $pulse := first 3 $pulses }}
@@ -53,33 +56,28 @@
              data-pulse-time="{{ if .created_at }}{{ time.Format "Jan 02" .created_at }}{{ else }}Recently{{ end }}"
              aria-hidden="{{ if eq $index 0 }}false{{ else }}true{{ end }}">
           <a href="{{ `/pulse/` | relLangURL }}{{ with .id }}#pulse-{{ . }}{{ end }}"
-             class="ticker-item group/item inline-flex items-center gap-1.5 sm:gap-2.5 min-w-0 flex-1 no-underline"
+             class="ticker-item group/item inline-flex items-center gap-1.5 sm:gap-2.5 min-w-0 flex-1 no-underline overflow-hidden"
              tabindex="{{ if eq $index 0 }}0{{ else }}-1{{ end }}">
             <span class="ticker-tag {{ $tagClass }} shrink-0">{{ $tagLabel }}</span>
-            <span class="ticker-title font-sans font-medium text-[13.5px] sm:text-[14.5px] md:text-[15px] text-slate-800 dark:text-slate-100 group-hover/item:text-sky-600 dark:group-hover/item:text-cyan-300 transition-colors truncate" title="{{ $cleanTitle }}">
-              {{ $cleanTitle }}
-            </span>
-            <span class="ticker-time-badge text-[11px] sm:text-[12px] font-mono text-slate-500 dark:text-slate-400 shrink-0 hidden xs:inline-flex items-center gap-1">
+            <div class="ticker-title-container overflow-hidden min-w-0 flex-1 relative flex items-center">
+              <span class="ticker-title font-sans font-medium text-[13.5px] sm:text-[14.5px] md:text-[15px] text-slate-800 dark:text-slate-100 group-hover/item:text-sky-600 dark:group-hover/item:text-sky-400 transition-colors whitespace-nowrap" title="{{ $cleanTitle }}">
+                {{ $cleanTitle }}
+              </span>
+            </div>
+            <span class="ticker-time-badge text-[11px] sm:text-[12px] font-mono text-slate-500 dark:text-slate-400 shrink-0 hidden md:inline-flex items-center gap-1">
               {{ if .created_at }}{{ time.Format "Jan 02" .created_at }}{{ else }}Recently{{ end }}
             </span>
           </a>
 
-          <!-- Mobile Chevron Expand Button for complete visibility -->
+          <!-- Mobile Friendly Checkmark CTA Button: generous touch target (32x32px minimum) -->
           <button type="button"
-                  class="ticker-mobile-expand-btn sm:hidden inline-flex items-center justify-center w-6 h-6 text-slate-400 hover:text-slate-800 dark:hover:text-white rounded transition-colors shrink-0"
-                  aria-label="Expand complete headline"
-                  tabindex="{{ if eq $index 0 }}0{{ else }}-1{{ end }}">
-            <i class="fa-solid fa-chevron-down text-[10px]"></i>
-          </button>
-
-          <button type="button"
-                  class="ticker-mark-read-btn inline-flex items-center gap-1 px-2 py-0.5 text-[11px] sm:text-[12px] font-mono text-slate-500 dark:text-slate-400 hover:text-emerald-700 dark:hover:text-emerald-300 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 rounded border border-slate-200/60 dark:border-slate-800/60 transition-colors shrink-0"
+                  class="ticker-mark-read-btn inline-flex items-center justify-center min-w-[32px] min-h-[32px] sm:min-w-0 sm:min-h-0 sm:h-7 px-2 sm:px-2.5 py-1 text-xs font-mono text-slate-600 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-emerald-500/10 dark:hover:bg-emerald-500/15 rounded-lg border border-slate-300/80 dark:border-slate-700/80 hover:border-emerald-500/40 transition-all shrink-0 active:scale-95 cursor-pointer shadow-2xs"
                   data-pulse-mark-read="{{ .id }}"
                   tabindex="{{ if eq $index 0 }}0{{ else }}-1{{ end }}"
                   title="Mark as read (hide from ticker)"
                   aria-label="Mark as read">
-            <i class="fa-solid fa-check text-[10px]"></i>
-            <span class="hidden sm:inline">Mark as read</span>
+            <i class="fa-solid fa-check text-xs text-emerald-600 dark:text-emerald-400"></i>
+            <span class="hidden sm:inline font-medium">Mark as read</span>
           </button>
         </div>
       {{ end }}
@@ -88,13 +86,13 @@
 
   <!-- Right Clean Action: View All Link on Desktop -->
   <a href="/pulse/"
-     class="ticker-archive-link h-full hidden md:flex items-center gap-1.5 px-3.5 py-1 bg-slate-100/90 dark:bg-[#060a15] border-l border-slate-200/90 dark:border-slate-800/90 z-20 shrink-0 text-xs font-mono font-semibold text-slate-500 dark:text-slate-400 hover:text-sky-600 dark:hover:text-cyan-400 transition-colors no-underline shadow-xs dark:shadow-[-4px_0_12px_rgba(0,0,0,0.5)] select-none">
+     class="ticker-archive-link h-full hidden md:flex items-center gap-1.5 px-3.5 py-1 bg-slate-100/90 dark:bg-[#060a15] border-l border-slate-200/90 dark:border-slate-800/90 z-20 shrink-0 text-xs font-mono font-semibold text-slate-500 dark:text-slate-400 hover:text-sky-600 dark:hover:text-sky-400 transition-colors no-underline shadow-xs dark:shadow-[-4px_0_12px_rgba(0,0,0,0.5)] select-none">
     <span>VIEW ALL</span>
     <i class="fa-solid fa-arrow-right text-[11px] text-slate-400"></i>
   </a>
 </div>
 
-<!-- Mobile Complete Visibility Pulse Sheet (Drops below ticker bar on chevron tap) -->
+<!-- Mobile Complete Visibility Pulse Sheet (Fallback drawer preserved for deep links) -->
 <div id="pulse-mobile-drawer"
      class="hidden fixed left-0 right-0 top-[40px] z-[60] bg-white/98 dark:bg-[#0c1220]/98 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 shadow-2xl px-4 py-3.5 transition-all duration-200 sm:hidden"
      aria-live="polite">
