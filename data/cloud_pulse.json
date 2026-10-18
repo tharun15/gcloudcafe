@@ -1,5 +1,24 @@
 [
   {
+    "id": "83c3d897-69ce-4728-8b0e-316186ba7667",
+    "title": "Infrastructure for the frontier era: Scaling intelligence through open industry collaboration",
+    "content": "🎯 What Changed: Azure is strategically enhancing its AI infrastructure to prioritize practical, impactful intelligence over just building larger frontier models, emphasizing open industry collaboration.\n💡 Engineering Impact: Engineers gain access to enhanced infrastructure and collaborative tools, enabling more efficient development and deployment of AI solutions that deliver practical, real-world impact. This fosters greater scalability and operational efficiency for advanced intelligence workloads.",
+    "tags": [
+      "#Azure",
+      "#CloudArchitecture",
+      "#CloudNews"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-10-18T09:24:21.414786+00:00",
+    "link_url": "https://azure.microsoft.com/en-us/blog/infrastructure-for-the-frontier-era-scaling-intelligence-through-open-industry-collaboration/",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 270.1h without manual admin curation.",
+    "updated_at": "2026-10-18T15:35:21.652Z"
+  },
+  {
     "id": "58c6d527-afdc-48ef-b3ee-10bd7225ae26",
     "title": "Nemotron 3.5 Super VL model now available on Amazon SageMaker JumpStart",
     "content": "🎯 What Changed: NVIDIA's Nemotron 3.5 Super VL vision-language model is now available on Amazon SageMaker Jump.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
@@ -277,25 +296,5 @@
     "eligibility_reason": "[Auto-Published] Published automatically after 258.2h without manual admin curation.",
     "updated_at": "2026-10-18T03:43:43.654+00:00",
     "ageDays": 0.2469888310185185
-  },
-  {
-    "id": "72e6746e-5df7-4755-bd76-98311d9887ef",
-    "title": "Azure & Hyper-V Strategy Validated: Gartner Names Microsoft a Leader",
-    "content": "🎯 What Changed: Microsoft's strategy for Azure and Hyper-V has been validated by its recognition as a Leader in the 2026 Gartner Magic Quadrant for Server Virtualization Platforms.\n💡 Engineering Impact: This reinforces Azure and Hyper-V as robust platforms for achieving operational and infrastructure consistency, strengthening their role in hybrid cloud strategies with Azure Arc.",
-    "tags": [
-      "#Azure",
-      "#CloudArchitecture",
-      "#CloudNews"
-    ],
-    "upvotes": 1,
-    "downvotes": 0,
-    "score": 1,
-    "author": "Cloud Newsroom Bot",
-    "created_at": "2026-10-17T09:06:07.629287+00:00",
-    "link_url": "https://azure.microsoft.com/en-us/blog/microsoft-named-a-leader-in-the-2026-gartner-magic-quadrant-for-server-virtualization-platforms/",
-    "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 245.8h without manual admin curation.",
-    "updated_at": "2026-10-17T15:14:00.239+00:00",
-    "ageDays": 0.9833709027777777
   }
 ]
