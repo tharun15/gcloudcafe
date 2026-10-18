@@ -2104,7 +2104,7 @@ table {
 
 
 
-/* ── Smart Headline Overflow Animation (Calm, Practitioner-Grade Pacing) ── */
+/* ── Smart Headline Overflow Animation (~1s Initial Hold, Gentle Glide & Backwards Return) ── */
 .ticker-title.ticker-auto-pan {
   display: inline-block !important;
   width: max-content !important;
@@ -2113,17 +2113,17 @@ table {
   text-overflow: clip !important;
   white-space: nowrap !important;
   will-change: transform;
-  animation: tickerSmartPan var(--ticker-pan-duration, 12.5s) cubic-bezier(0.38, 0, 0.22, 1) infinite !important;
+  animation: tickerSmartPan var(--ticker-pan-duration, 11s) ease-in-out infinite !important;
 }
 
 @keyframes tickerSmartPan {
-  0%, 25% {
+  0%, 10% {
     transform: translateX(0);
   }
-  75%, 90% {
+  65%, 78% {
     transform: translateX(var(--ticker-pan-offset, 0));
   }
-  98%, 100% {
+  95%, 100% {
     transform: translateX(0);
   }
 }
