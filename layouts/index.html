@@ -1,5 +1,5 @@
 {{ define "main" }}
-  {{ $posts := sort (where site.RegularPages "Section" "blog") "Date" "desc" }}
+  {{ $posts := sort (where (where site.RegularPages "Section" "blog") "Draft" false) "Date" "desc" }}
   {{ $featured := false }}
   {{/* Prioritize explicit hero post if set */}}
   {{ range $posts }}
@@ -218,7 +218,7 @@
                     <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-red-500/10 text-red-600 dark:text-red-400 font-mono text-[10px] font-bold border border-red-500/20">
                       <i class="fa-solid fa-check text-[9px]"></i> Red Hat EX280
                     </span>
-                    <a href="{{ `about/` | relLangURL }}" class="font-mono text-xs font-semibold text-slate-700 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-400 no-underline inline-flex items-center gap-1 ml-1 transition-colors">
+                    <a href="{{ `about/` | relLangURL }}" class="font-mono text-xs font-semibold text-slate-700 dark:text-slate-300 hover:text-sky-600 dark:hover:text-sky-400 no-underline inline-flex items-center gap-1 ml-1 transition-colors">
                       <span>{{ if eq site.Language.Lang "it" }}Scopri di più{{ else }}Read Author Bio{{ end }}</span>
                       <span class="text-[10px]">→</span>
                     </a>
@@ -238,10 +238,10 @@
         <!-- Compact Sidebar Newsletter Card -->
         <div class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0c1220] p-3.5 sm:p-4 shadow-xs relative overflow-hidden group" aria-labelledby="newsletter-heading">
           <!-- Accent Glow Top Bar -->
-          <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-red-500 via-rose-500 to-amber-500"></div>
+          <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-sky-500 via-blue-500 to-indigo-500"></div>
 
           <div class="flex items-center justify-between gap-2 mb-1.5">
-            <span class="inline-flex items-center gap-1.5 font-mono text-[10px] font-bold uppercase tracking-wider text-red-600 dark:text-red-400 px-2 py-0.5 rounded-full bg-red-500/10 border border-red-500/20">
+            <span class="inline-flex items-center gap-1.5 font-mono text-[10px] font-bold uppercase tracking-wider text-sky-600 dark:text-sky-400 px-2 py-0.5 rounded-full bg-sky-500/10 border border-sky-500/20">
               <i class="fa-regular fa-envelope text-[9px]"></i>
               <span>{{ if eq site.Language.Lang "it" }}Newsletter Tecnica{{ else }}Engineering Digest{{ end }}</span>
             </span>
@@ -265,12 +265,12 @@
                 name="email" 
                 required 
                 placeholder="{{ i18n "newsletter_placeholder" }}" 
-                class="w-full px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-900/60 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-red-500 dark:focus:border-red-500 placeholder:text-slate-400 shadow-2xs"
+                class="w-full px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-900/60 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-sky-500 dark:focus:border-sky-500 placeholder:text-slate-400 shadow-2xs"
                 aria-label="Email address for engineering newsletter">
             </div>
             <button 
               type="submit" 
-              class="btn-primary w-full py-1.5 px-3 rounded-lg bg-red-600 hover:bg-red-700 text-white font-bold text-xs font-mono transition-colors cursor-pointer shadow-xs flex items-center justify-center gap-1.5">
+              class="btn-primary w-full py-2 px-3 rounded-lg bg-sky-600 hover:bg-sky-700 text-white font-bold text-xs font-mono transition-colors cursor-pointer shadow-xs flex items-center justify-center gap-1.5">
               <span>{{ i18n "newsletter_submit" }}</span>
               <span class="text-xs">→</span>
             </button>

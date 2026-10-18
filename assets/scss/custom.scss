@@ -454,7 +454,7 @@ pre code,
   }
 
   &.is-active {
-    @apply font-bold text-red-600 dark:text-red-400 bg-red-500/10 border-l-2 border-red-500 dark:border-red-400 shadow-sm;
+    @apply font-bold text-sky-600 dark:text-sky-400 bg-sky-500/10 border-l-2 border-sky-500 dark:border-sky-400 shadow-sm;
   }
 }
 
@@ -654,7 +654,7 @@ kbd {
 }
 
 .ticker-archive-link {
-  @apply hidden md:flex items-center gap-1.5 px-3 py-1 text-xs font-mono font-semibold text-slate-500 dark:text-slate-400 hover:text-red-600 dark:hover:text-cyan-400 transition-colors no-underline;
+  @apply hidden md:flex items-center gap-1.5 px-3 py-1 text-xs font-mono font-semibold text-slate-500 dark:text-slate-400 hover:text-sky-600 dark:hover:text-sky-400 transition-colors no-underline;
 }
 
 .ticker-symbol {
@@ -1256,13 +1256,13 @@ table {
 
   &.is-active {
     background-color: #ffffff !important;
-    color: #dc2626 !important;
-    border-bottom: 2px solid #dc2626 !important;
+    color: #0284c7 !important;
+    border-bottom: 2px solid #0284c7 !important;
     font-weight: 700 !important;
     box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
 
     * {
-      color: #dc2626 !important;
+      color: #0284c7 !important;
     }
   }
 }
@@ -1281,13 +1281,13 @@ table {
 :root.dark .pulse-filter-chip.is-active,
 .dark .pulse-filter-chip.is-active {
   background-color: #0f172a !important;
-  color: #f87171 !important;
-  border-bottom: 2px solid #dc2626 !important;
+  color: #38bdf8 !important;
+  border-bottom: 2px solid #38bdf8 !important;
   font-weight: 700 !important;
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.3) !important;
 
   * {
-    color: #f87171 !important;
+    color: #38bdf8 !important;
   }
 }
 
@@ -1881,7 +1881,7 @@ table {
   justify-content: center;
   font-weight: 700;
   border-radius: 0.5rem;
-  background-color: #dc2626 !important;
+  background-color: #0284c7 !important;
   color: #ffffff !important;
   border: none !important;
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
@@ -1889,10 +1889,10 @@ table {
   text-decoration: none;
 
   &:hover {
-    background-color: #b91c1c !important;
+    background-color: #0369a1 !important;
     color: #ffffff !important;
     transform: translateY(-1px);
-    box-shadow: 0 4px 6px -1px rgba(220, 38, 38, 0.25);
+    box-shadow: 0 4px 6px -1px rgba(2, 132, 199, 0.25);
   }
   &:active {
     transform: translateY(0);
