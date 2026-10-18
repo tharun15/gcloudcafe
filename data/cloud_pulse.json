@@ -1,8 +1,8 @@
 [
   {
-    "id": "4ec58f4b-c654-4806-a7de-ff1da0abaabf",
-    "title": "Azure Unveils Open-Source Integrated HSM for Enhanced Security",
-    "content": "🎯 What Changed: Azure is advancing hardware security with new open-source Integrated HSM technology and enhanced cryptographic key protection.\n💡 Engineering Impact: This provides a stronger hardware-backed root of trust, significantly enhancing the protection of cryptographic keys for sensitive workloads. Architects can now build more secure applications with greater confidence in the underlying infrastructure.",
+    "id": "2c36f81a-cb26-46b5-a527-35d316f803c6",
+    "title": "Azure Enhances Cloud-Native for AI Scale",
+    "content": "🎯 What Changed: Azure is advancing its cloud-native infrastructure to better support the development and scaling of next-generation AI applications and agents.\n💡 Engineering Impact: This provides architects and developers with a more robust and scalable foundation for deploying AI-driven solutions. It simplifies the operational complexities of managing AI applications, enabling faster innovation and efficient resource utilization.",
     "tags": [
       "#Azure",
       "#CloudArchitecture",
@@ -12,11 +12,11 @@
     "downvotes": 0,
     "score": 1,
     "author": "Cloud Newsroom Bot",
-    "created_at": "2026-10-18T09:24:15.885279+00:00",
-    "link_url": "https://azure.microsoft.com/en-us/blog/advancing-hardware-security-with-open-source-integrated-hsm-technology/",
+    "created_at": "2026-10-18T09:24:10.598547+00:00",
+    "link_url": "https://azure.microsoft.com/en-us/blog/evolving-the-cloud-native-foundation-for-the-next-generation-of-ai/",
     "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 273.0h without manual admin curation.",
-    "updated_at": "2026-10-18T18:30:59.965Z"
+    "eligibility_reason": "[Auto-Published] Published automatically after 276.8h without manual admin curation.",
+    "updated_at": "2026-10-18T22:17:55.382Z"
   },
   {
     "id": "0b6826b6-fc4c-4621-8f9b-bbbea3de16aa",
@@ -36,7 +36,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:48.441634+00:00",
-    "ageDays": 11.376515613425926
+    "ageDays": 11.534099479166667
   },
   {
     "id": "81213fff-57d4-4c0b-90eb-c84beeb18d4d",
@@ -56,7 +56,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:42.008666+00:00",
-    "ageDays": 11.376590069444445
+    "ageDays": 11.534173935185185
   },
   {
     "id": "1ec5647f-ce95-4be3-ba87-6aa974960da7",
@@ -76,7 +76,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:37.111692+00:00",
-    "ageDays": 11.376646747685186
+    "ageDays": 11.534230613425926
   },
   {
     "id": "88a2ed59-fb47-488b-b07c-d6be1de35d0b",
@@ -96,7 +96,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:31.276024+00:00",
-    "ageDays": 11.376714282407407
+    "ageDays": 11.534298148148148
   },
   {
     "id": "202f8734-234e-4bd5-9a67-8535691f131a",
@@ -116,7 +116,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:24.859911+00:00",
-    "ageDays": 11.376788553240742
+    "ageDays": 11.534372418981482
   },
   {
     "id": "37fcb780-d57d-4ba9-875a-7665dd9cd981",
@@ -136,7 +136,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T04:06:30.331436+00:00",
-    "ageDays": 11.600336331018518
+    "ageDays": 11.75792019675926
   },
   {
     "id": "521c6dfa-7eb3-4834-87fb-7ac338d90f9d",
@@ -156,7 +156,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T04:00:33.151279+00:00",
-    "ageDays": 11.604470358796297
+    "ageDays": 11.762054224537037
   },
   {
     "id": "b1f2627d-7930-4c4b-ab57-de042bac55c3",
@@ -176,7 +176,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T04:00:00.696536+00:00",
-    "ageDays": 11.60484599537037
+    "ageDays": 11.76242986111111
   },
   {
     "id": "bf22f4dd-2d54-4b4c-9038-ea09aadef8a2",
@@ -196,7 +196,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T03:59:45.591638+00:00",
-    "ageDays": 11.60502082175926
+    "ageDays": 11.7626046875
   },
   {
     "id": "46fd5625-4fda-4793-a2ab-d6b627f3f4df",
@@ -216,7 +216,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T03:59:26.783766+00:00",
-    "ageDays": 11.605238506944444
+    "ageDays": 11.762822372685186
   },
   {
     "id": "09900f5e-4d21-4d5e-84a6-f5eec4459b40",
@@ -236,7 +236,7 @@
     "status": "approved",
     "eligibility_reason": "Official AWS Release: Ingested & AI synthesized for Admin Approval Queue.",
     "updated_at": "2026-09-12T09:07:10.082273+00:00",
-    "ageDays": 36.391542916666666
+    "ageDays": 36.549126782407406
   },
   {
     "id": "57b1b07d-9511-4a40-b351-2ec2866364b4",
@@ -256,7 +256,7 @@
     "status": "approved",
     "eligibility_reason": "Official Kubernetes Release: Ingested & AI synthesized for Admin Approval Queue.",
     "updated_at": "2026-09-12T09:07:09.525138+00:00",
-    "ageDays": 36.39154936342592
+    "ageDays": 36.549133229166664
   },
   {
     "id": "83c3d897-69ce-4728-8b0e-316186ba7667",
@@ -276,14 +276,14 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 270.1h without manual admin curation.",
     "updated_at": "2026-10-18T15:35:21.652+00:00",
-    "ageDays": 0.3796062037037037
+    "ageDays": 0.5371900694444445
   },
   {
-    "id": "c49083e9-4ab8-4544-b69b-f2b0a2b80c2b",
-    "title": "Beam model by Reflection is now available on Amazon SageMaker JumpStart and AWS Trainium",
-    "content": "🎯 What Changed: : \"Format as: Why it matters: \" *.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
+    "id": "4ec58f4b-c654-4806-a7de-ff1da0abaabf",
+    "title": "Azure Unveils Open-Source Integrated HSM for Enhanced Security",
+    "content": "🎯 What Changed: Azure is advancing hardware security with new open-source Integrated HSM technology and enhanced cryptographic key protection.\n💡 Engineering Impact: This provides a stronger hardware-backed root of trust, significantly enhancing the protection of cryptographic keys for sensitive workloads. Architects can now build more secure applications with greater confidence in the underlying infrastructure.",
     "tags": [
-      "#AWS",
+      "#Azure",
       "#CloudArchitecture",
       "#CloudNews"
     ],
@@ -291,11 +291,11 @@
     "downvotes": 0,
     "score": 1,
     "author": "Cloud Newsroom Bot",
-    "created_at": "2026-10-18T02:46:31.040057+00:00",
-    "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/01/reflection-beam-on-sagemaker-jumpstart-and-aws-trainium/",
+    "created_at": "2026-10-18T09:24:15.885279+00:00",
+    "link_url": "https://azure.microsoft.com/en-us/blog/advancing-hardware-security-with-open-source-integrated-hsm-technology/",
     "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 258.2h without manual admin curation.",
-    "updated_at": "2026-10-18T03:43:43.654+00:00",
-    "ageDays": 0.6558836805555556
+    "eligibility_reason": "[Auto-Published] Published automatically after 273.0h without manual admin curation.",
+    "updated_at": "2026-10-18T18:30:59.965+00:00",
+    "ageDays": 0.5372540625
   }
 ]
