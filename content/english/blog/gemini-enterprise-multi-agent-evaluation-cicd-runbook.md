@@ -1,9 +1,9 @@
 ---
-title: "Testing Non-Deterministic AI in CI/CD: The Multi-Agent Evaluation Runbook (Part 3)"
+title: "Testing Multi-Agent AI in CI/CD: The Evaluation Runbook (Part 3)"
 meta_title: "Testing Multi-Agent AI in CI/CD: Part 3 | Gcloudcafe"
 description: "Build an automated CI/CD evaluation pipeline for multi-agent systems on Google Cloud using Vertex AI EvalTask, Google ADK, and GitHub Actions."
 date: 2026-10-13
-last_modified: 2026-10-13
+last_modified: 2026-10-14
 image: "/images/gemini-enterprise-multi-agent-evaluation-cicd-runbook.jpg"
 categories: ["Google Cloud", "AI", "DevOps"]
 tags: ["Multi-Agent Systems", "Google ADK", "Vertex AI", "CI/CD", "Testing", "Python", "GitHub Actions", "Machine Learning"]
@@ -30,17 +30,19 @@ Forty-eight hours later, your on-call dashboard lights up:
 - Average end-to-end latency spiked from 3.2 seconds to 11.4 seconds as agents entered silent retry loops.
 - Your daily token consumption doubled.
 
-In traditional software, changing a SQL query does not silently break an unrelated Redis caching layer. But in multi-agent swarms, agents are **probabilistically coupled**. A minor phrasing adjustment in Agent A alters its output tokens, which degrades the reasoning of Agent B, causing Agent C to fail its policy audit downstream.
+SQL queries don't silently mutate your caching layer. Multi-agent swarms do.
 
-Traditional unit testing (`assert result == expected`) cannot catch these failures. Probabilistic outputs vary, tool trajectories diverge, and open-ended text cannot be checked with simple string equality.
+In multi-agent architectures, agents are **probabilistically coupled**. A minor phrasing adjustment in Agent A alters its output tokens. That subtle shift degrades the input formatting parsed by Agent B, causing Agent C to fail its deterministic policy audit downstream.
 
-In this concluding masterclass of our 3-part trilogy, we solve this production challenge. Following [Part 1: Bootstrapping & Intent Contracts](/blog/gemini-agent-platform-express-mode-bootstrapping-offvia/) and [Part 2: Multi-Agent Swarms with Google ADK & MCP](/blog/gemini-enterprise-multi-agent-swarm-adk-mcp/), we build an automated **CI/CD evaluation runbook** for our travel concierge, **Offvia**.
+Traditional unit testing (`assert result == expected`) cannot catch these failures. Probabilistic outputs vary, tool trajectories diverge, and open-ended text cannot be verified with simple string equality.
 
-We will implement the **3-tier testing pyramid**, measure **trajectory precision** and **groundedness** using **Google ADK (`adk eval`)** and **Vertex AI `EvalTask`**, and gate pull requests in GitHub Actions.
+In this final part of our trilogy, we tackle the testing and CI/CD challenge directly. Following [Part 1: Bootstrapping & Intent Contracts](/blog/gemini-agent-platform-express-mode-bootstrapping-offvia/) and [Part 2: Multi-Agent Swarms with Google ADK & MCP](/blog/gemini-enterprise-multi-agent-swarm-adk-mcp/), we build an automated **CI/CD evaluation runbook** for our travel concierge, **Offvia**.
+
+We implement a **3-tier testing pyramid**, measure **trajectory precision** and **groundedness** using **Google ADK (`adk eval`)** and **Vertex AI `EvalTask`**, and gate pull requests in GitHub Actions.
 
 ---
 
-## 🌪️ The Mental Model: The Calibrated Wind Tunnel
+## The mental model: the calibrated wind tunnel
 
 To understand how to test multi-agent systems, consider aerospace engineering:
 
@@ -63,15 +65,15 @@ flowchart TD
     end
 ```
 
-Inspecting an individual Python function with a caliper unit test tells you if the function runs. It does **not** tell you how the swarm behaves when subjected to unpredictable crosswinds—such as vague user prompts, API rate limits, or adversarial inputs.
+Inspecting an individual Python function with a caliper unit test tells you if the code executes without syntax errors. It does **not** tell you how the swarm behaves when subjected to unpredictable crosswinds: vague user prompts, API rate limits, or adversarial inputs.
 
 You need a calibrated wind tunnel: a controlled evaluation pipeline that subjects your agents to realistic scenarios, measures intermediate trajectories, and evaluates performance against rigorous quality gates.
 
 ---
 
-## 🏛️ The 3-Tier Multi-Agent Testing Pyramid
+## The 3-tier multi-agent testing pyramid
 
-Running a 200-sample live evaluation with flagship models on every `git push` will bankrupt your cloud budget and stall your CI/CD queue for 45 minutes.
+Running a 200-sample live evaluation with flagship models on every `git push` will exhaust your cloud budget and stall your CI/CD queue for 45 minutes.
 
 Production engineering teams structure their evaluation strategy into three distinct tiers:
 
@@ -120,7 +122,7 @@ flowchart TD
 
 ---
 
-## 📊 Evaluation Metrics Matrix: What to Measure & What to Gate
+## Evaluation metrics matrix: what to measure and what to gate
 
 | Evaluation Dimension | Primary Metric | Target Standard | CI Gate Action | Layer |
 | :--- | :--- | :--- | :--- | :--- |
@@ -135,7 +137,7 @@ flowchart TD
 
 ---
 
-## 🚨 5 Fatal Misconceptions About Multi-Agent Testing
+## Five common misconceptions about multi-agent testing
 
 ### 1. Relying Exclusively on Open-Ended LLM Judges
 Using an unconstrained prompt like *"Rate this agent's response from 1 to 5"* produces noisy, non-reproducible test results. A score of 4.2 on Monday might become 3.8 on Tuesday due to judge model variance.
@@ -146,7 +148,7 @@ If an agent returns the correct hotel recommendation, you might assume the test 
 **Production Rule:** You must evaluate the **intermediate trajectory** (the sequence and parameters of tool invocations) in addition to the final synthesis.
 
 ### 3. Running Large Evaluation Datasets on Every Git Push
-Running 200 multi-agent scenarios per commit overwhelms developers with 30-minute CI delays and generates thousands of dollars in unnecessary API costs.
+Running 200 multi-agent scenarios per commit overwhelms developers with 30-minute CI delays and generates unnecessary API costs.
 **Production Rule:** Tier your pipeline. Run 5–10 golden cases as a fast PR smoke gate; run full 150-case benchmark suites in scheduled nightly pipelines.
 
 ### 4. Testing Only Happy Paths
@@ -159,7 +161,7 @@ Setting `temperature=0.0` reduces randomness, but underlying inference engines c
 
 ---
 
-## 🔄 The CI/CD Evaluation Lifecycle
+## The CI/CD evaluation lifecycle
 
 Here is how the automated quality gate functions when a developer opens a pull request:
 
@@ -190,7 +192,7 @@ sequenceDiagram
 
 ---
 
-## ⚠️ 3 Critical Production Gotchas in Agent CI/CD
+## Three production failure modes in agent CI/CD
 
 ### 1. Flaky CI Pipelines Caused by Evaluation Drift
 * **The Incident:** A team's GitHub Actions pipeline started failing intermittently on Friday afternoons. Developers began clicking "Re-run failed jobs" until the build passed, defeating the purpose of CI.
@@ -211,19 +213,19 @@ sequenceDiagram
 
 ---
 
-## 🛠️ Hands-On Engineering Lab: Building the CI/CD Quality Gate
+## Hands-on implementation: building the CI/CD quality gate
 
-Let's build a runnable automated evaluation suite for our Offvia multi-agent travel platform using `pytest`, Google ADK evaluation datasets, and Vertex AI evaluation patterns.
+The evaluation suite for Offvia tests deterministic boundaries, trajectory precision, and groundedness across three automated scripts.
 
 ### Step 1: Install Dependencies
 
-Set up your evaluation environment:
+Set up your evaluation environment with the required testing and Vertex AI evaluation libraries:
 
 ```bash
 python3 -m venv venv
 source venv/bin/activate
 
-pip install "google-adk[eval]" pydantic pytest pytest-asyncio google-genai vertexai
+pip install pydantic pytest pytest-asyncio "google-cloud-aiplatform[evaluation]" google-genai "google-adk[eval]"
 ```
 
 ---
@@ -291,7 +293,7 @@ Save this file to `tests/eval/golden_trips.json`.
 
 ### Step 3: Implement Trajectory Evaluation with Pytest
 
-Build the automated evaluation fixture that replays scenarios and verifies tool trajectory precision:
+Build the automated evaluation fixture that replays scenarios and verifies tool trajectory precision. For complete test independence, we include the self-contained domain contracts:
 
 ```python
 # tests/test_agent_trajectory.py
@@ -299,9 +301,69 @@ Build the automated evaluation fixture that replays scenarios and verifies tool 
 import json
 import pytest
 from typing import List, Dict, Any
+from pydantic import BaseModel, Field
 
-from agents.policy import PolicyAuditRequest, audit_travel_policy
-from tools.travel_tools import search_flights, query_hotels
+
+# Tier 1 Invariants: Policy Models
+class PolicyAuditRequest(BaseModel):
+    flight_cost_usd: float = Field(ge=0)
+    hotel_cost_usd: float = Field(ge=0)
+    flight_free_cancellation: bool
+    hotel_free_cancellation: bool
+    total_budget_usd: float = Field(default=2200.0)
+
+
+class PolicyAuditResult(BaseModel):
+    compliant: bool
+    remaining_budget_usd: float
+    reason: str
+
+
+def audit_travel_policy(req: PolicyAuditRequest) -> PolicyAuditResult:
+    total_expenditure = req.flight_cost_usd + req.hotel_cost_usd
+    if total_expenditure > req.total_budget_usd:
+        return PolicyAuditResult(
+            compliant=False,
+            remaining_budget_usd=req.total_budget_usd - total_expenditure,
+            reason=f"Total cost ${total_expenditure:.2f} exceeds budget limit of ${req.total_budget_usd:.2f}."
+        )
+    if not (req.flight_free_cancellation and req.hotel_free_cancellation):
+        return PolicyAuditResult(
+            compliant=False,
+            remaining_budget_usd=req.total_budget_usd - total_expenditure,
+            reason="Non-refundable bookings violate company policy."
+        )
+    return PolicyAuditResult(
+        compliant=True,
+        remaining_budget_usd=req.total_budget_usd - total_expenditure,
+        reason="Compliant with enterprise travel policy."
+    )
+
+
+def search_flights(origin: str, destination: str, departure_date: str) -> Dict[str, Any]:
+    return {
+        "status": "success",
+        "flight_number": "NH107",
+        "origin": origin,
+        "destination": destination,
+        "price_usd": 1150.0,
+        "free_cancellation": True,
+        "is_nonstop": True
+    }
+
+
+def query_hotels(city: str, neighborhood: str, nights: int, budget: float = 1200.0) -> Dict[str, Any]:
+    return {
+        "status": "success",
+        "hotel_name": "Trunk Hotel Shibuya",
+        "city": city,
+        "neighborhood": neighborhood,
+        "nights": nights,
+        "nightly_rate_usd": 205.0,
+        "total_price_usd": 820.0,
+        "wifi_speed_mbps": 180,
+        "free_cancellation": True
+    }
 
 
 @pytest.fixture
@@ -313,7 +375,6 @@ def golden_dataset() -> List[Dict[str, Any]]:
 # Tier 1: Deterministic Schema & Policy Unit Tests
 def test_policy_guardrail_deterministic_enforcement():
     """Ensure policy guardrail strictly rejects budgets exceeding ceiling."""
-    # Test valid budget
     valid_req = PolicyAuditRequest(
         flight_cost_usd=1150.0,
         hotel_cost_usd=820.0,
@@ -325,7 +386,6 @@ def test_policy_guardrail_deterministic_enforcement():
     assert result.compliant is True
     assert result.remaining_budget_usd == 230.0
 
-    # Test budget violation
     over_budget_req = PolicyAuditRequest(
         flight_cost_usd=1500.0,
         hotel_cost_usd=900.0,
@@ -356,7 +416,6 @@ def test_hotel_tool_contract_schema():
     assert res["total_price_usd"] <= 1050.0
 
 
-# Trajectory Matcher Function
 def calculate_trajectory_precision(actual_tools: List[str], expected_tools: List[str]) -> float:
     """Calculate trajectory precision score between actual and expected calls."""
     if not actual_tools or not expected_tools:
@@ -370,8 +429,7 @@ def test_trajectory_precision_gate(golden_dataset):
     for case in golden_dataset:
         expected_tools = [step["tool_name"] for step in case.get("expected_trajectory", [])]
         
-        # In a full run, actual_tools is captured from the Runner event stream
-        # Simulating captured execution trajectory:
+        # Simulating captured execution trajectory from the runner:
         if case["eval_id"] == "tokyo_conference_happy_path":
             captured_tools = ["search_flights", "query_hotels", "audit_travel_policy"]
             precision = calculate_trajectory_precision(captured_tools, expected_tools)
@@ -380,47 +438,43 @@ def test_trajectory_precision_gate(golden_dataset):
 
 ---
 
-### Step 4: Implement Vertex AI Groundedness Evaluation
+### Step 4: Implement Groundedness Evaluation with Vertex AI EvalTask
 
-Create the evaluation harness using Vertex AI's Gen AI Evaluation capabilities:
+Evaluating model output for hallucinations requires two complementary layers:
+1. **Fast Local Invariant Checking:** For sub-second PR checks that run without API credentials.
+2. **Vertex AI `EvalTask` Integration:** For nightly regression suites using Gemini as an evaluator.
 
 ```python
 # tests/test_vertex_groundedness.py
 # Model-based Groundedness and Faithfulness Evaluation using Vertex AI.
 import pytest
+import pandas as pd
 from typing import Dict, Any
 
 
+# Layer A: Fast Deterministic Heuristic (PR Gate)
 def evaluate_groundedness_heuristic(response_text: str, source_context: Dict[str, Any]) -> float:
-    """
-    Evaluates whether the agent proposal contains facts strictly present in the tool data.
-    In production, this integrates with vertexai.evaluation.EvalTask using RubricMetric.
-    """
+    """Evaluates whether the agent proposal contains facts strictly present in the tool data."""
     violations = 0
     total_checks = 4
 
-    # Check 1: Flight number grounding
     if source_context["flight_number"] not in response_text:
         violations += 1
 
-    # Check 2: Hotel name grounding
     if source_context["hotel_name"] not in response_text:
         violations += 1
 
-    # Check 3: Price accuracy grounding (ensuring no hallucinated discount)
     expected_total_str = f"${source_context['total_cost']:.2f}"
     if expected_total_str not in response_text and f"{source_context['total_cost']:.0f}" not in response_text:
         violations += 1
 
-    # Check 4: Neighborhood grounding
     if source_context["neighborhood"] not in response_text:
         violations += 1
 
-    groundedness_score = (total_checks - violations) / total_checks
-    return groundedness_score
+    return (total_checks - violations) / total_checks
 
 
-def test_agent_proposal_groundedness():
+def test_agent_proposal_groundedness_heuristic():
     """Assert agent response contains zero hallucinated pricing or amenity claims."""
     source_context = {
         "flight_number": "NH107",
@@ -437,6 +491,51 @@ def test_agent_proposal_groundedness():
 
     score = evaluate_groundedness_heuristic(mock_agent_response, source_context)
     assert score >= 0.90, f"Groundedness score fell below production threshold: {score}"
+
+
+# Layer B: Vertex AI EvalTask Suite (Nightly Scheduled Pipeline)
+def run_vertex_ai_evaltask_benchmark(project_id: str, location: str = "us-central1"):
+    """
+    Executes programmatic agent evaluation with Vertex AI EvalTask.
+    Requires Google Cloud authentication (gcloud auth application-default login).
+    """
+    import vertexai
+    from vertexai.evaluation import EvalTask, PointwiseMetric
+
+    vertexai.init(project=project_id, location=location)
+
+    # Prepare evaluation dataset
+    eval_dataset = pd.DataFrame({
+        "prompt": [
+            "Book a 4-day business trip to Tokyo under $2,200 with non-stop flights and boutique hotel."
+        ],
+        "response": [
+            "Proposed: ANA NH107 ($1,150) + Trunk Hotel Shibuya ($820) = $1,970 total. Free cancellation confirmed."
+        ],
+        "context": [
+            "Flight tool returned NH107 SFO-HND for $1150. Hotel tool returned Trunk Hotel Shibuya for $820."
+        ]
+    })
+
+    # Configure Pointwise Groundedness Metric
+    groundedness_metric = PointwiseMetric(
+        metric="groundedness",
+        metric_prompt_template=(
+            "Evaluate whether the response is fully grounded in the context.\n"
+            "Context: {context}\n"
+            "Response: {response}\n"
+            "Score from 0.0 (hallucinated) to 1.0 (fully grounded)."
+        )
+    )
+
+    eval_task = EvalTask(
+        dataset=eval_dataset,
+        metrics=[groundedness_metric],
+        experiment="offvia-agent-eval-ci"
+    )
+
+    result = eval_task.evaluate()
+    return result.summary_metrics
 ```
 
 ---
@@ -449,7 +548,7 @@ Add edge-case tests to defend against prompt injection and budget override attac
 # tests/test_adversarial_resilience.py
 # Red-teaming edge cases for multi-agent travel swarm.
 import pytest
-from agents.policy import PolicyAuditRequest, audit_travel_policy
+from tests.test_agent_trajectory import PolicyAuditRequest, audit_travel_policy
 
 
 @pytest.mark.parametrize("adversarial_input", [
@@ -460,9 +559,8 @@ from agents.policy import PolicyAuditRequest, audit_travel_policy
 def test_adversarial_budget_injection_resilience(adversarial_input):
     """
     Ensure prompt injection attempts cannot bypass deterministic Python policy logic.
-    Even if an LLM is tricked into proposing high numbers, deterministic code must block it.
+    Even if an LLM is tricked into proposing high numbers, deterministic code blocks it.
     """
-    # Simulated agent attempt to submit $3,500 proposal
     compromised_request = PolicyAuditRequest(
         flight_cost_usd=2000.0,
         hotel_cost_usd=1500.0,
@@ -512,7 +610,7 @@ jobs:
       - name: "Install Evaluation Dependencies"
         run: |
           python -m pip install --upgrade pip
-          pip install "google-adk[eval]" pydantic pytest pytest-asyncio google-genai vertexai
+          pip install pydantic pytest pytest-asyncio "google-cloud-aiplatform[evaluation]" google-genai "google-adk[eval]"
 
       - name: "Execute Tier 1: Deterministic Schema & Policy Gate"
         run: |
@@ -522,9 +620,9 @@ jobs:
         run: |
           pytest tests/test_agent_trajectory.py tests/test_adversarial_resilience.py -v
 
-      - name: "Execute Tier 3: Groundedness & Fact Verification"
+      - name: "Execute Tier 3: Groundedness Invariants"
         run: |
-          pytest tests/test_vertex_groundedness.py -v
+          pytest tests/test_vertex_groundedness.py -k "test_agent_proposal_groundedness_heuristic" -v
 
       - name: "Evaluation Summary"
         if: always()
@@ -535,9 +633,9 @@ jobs:
 
 ---
 
-## 🏁 The Complete Trilogy Retrospective
+## The complete trilogy retrospective
 
-Over this 3-part masterclass trilogy, we built a production-ready AI agent architecture from inception to CI/CD:
+Across three articles, we built an AI agent architecture from local experimentation to production CI/CD:
 
 ```mermaid
 flowchart LR
@@ -554,7 +652,7 @@ flowchart LR
 
 ---
 
-## 📖 Official Documentation & Verified Standards
+## Official documentation and references
 
 - [Google Cloud Vertex AI Gen AI Evaluation Service](https://cloud.google.com/vertex-ai/docs)
 - [Vertex AI Evaluation SDK Documentation](https://cloud.google.com/vertex-ai/generative-ai/docs/models/evaluation-overview)
