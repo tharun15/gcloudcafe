@@ -183,21 +183,24 @@
       <!-- Drawer Top Bar -->
       <div class="flex items-center justify-between pb-2.5 border-b border-slate-100 dark:border-slate-800/80">
         <div class="flex items-center gap-2">
-          <span class="w-2 h-2 rounded-full bg-red-500"></span>
-          <span class="text-[11px] font-mono font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Navigation</span>
+          <span class="relative flex h-2 w-2">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2 w-2 bg-sky-500"></span>
+          </span>
+          <span class="text-[11px] font-mono font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Navigation Hub</span>
         </div>
         <button
           type="button"
           onclick="document.getElementById('mobile-nav-drawer')?.classList.add('hidden'); var b=document.getElementById('mobile-menu-toggle-btn'); if(b){b.setAttribute('aria-expanded','false'); var i=document.getElementById('mobile-menu-icon'); if(i){i.classList.remove('fa-xmark'); i.classList.add('fa-bars');}}"
-          class="text-xs font-mono font-semibold text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 flex items-center gap-1.5 px-2 py-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800/60 transition-colors"
+          class="text-xs font-mono font-semibold text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 flex items-center gap-1.5 px-2.5 py-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800/60 transition-colors"
           aria-label="Close menu">
           <span>Close</span>
           <i class="fa-solid fa-xmark text-[11px]"></i>
         </button>
       </div>
 
-      <!-- Section 1: Main Routes -->
-      <div class="space-y-1">
+      <!-- Section 1: Main Routes with Explanatory Micro-Subtitles -->
+      <div class="space-y-1.5">
         {{ range site.Menus.main }}
           {{ $menuClean := .URL | relLangURL | strings.TrimRight "/" }}
           {{ $isMenuHome := or (eq .URL "/") (eq $menuClean $homeClean) }}
@@ -213,36 +216,54 @@
             {{ $isSeries := or (eq .Name "Series") (eq .Name "Serie") }}
             {{ $isHome := or (eq .Name "Home") (eq .Name "Inizio") }}
             {{ $icon := "fa-solid fa-compass" }}
-            {{ if $isHome }}{{ $icon = "fa-solid fa-house" }}{{ end }}
-            {{ if $isSeries }}{{ $icon = "fa-solid fa-layer-group" }}{{ end }}
-            {{ if $isPulse }}{{ $icon = "fa-solid fa-bolt-lightning" }}{{ end }}
+            {{ $subtitle := "Architecture & cloud engineering articles" }}
+            {{ if $isHome }}
+              {{ $icon = "fa-solid fa-house" }}
+              {{ $subtitle = "Latest articles & architecture deep dives" }}
+            {{ end }}
+            {{ if $isSeries }}
+              {{ $icon = "fa-solid fa-layer-group" }}
+              {{ $subtitle = "Multi-part masterclasses & learning tracks" }}
+            {{ end }}
+            {{ if $isPulse }}
+              {{ $icon = "fa-solid fa-bolt-lightning" }}
+              {{ $subtitle = "Real-time cloud news & architecture radar" }}
+            {{ end }}
 
             <a href="{{ .URL | relLangURL }}"
                class="flex items-center justify-between px-3.5 py-2.5 rounded-xl transition-all no-underline min-h-[48px] group
                       {{ if $active }}
-                        bg-red-50/90 dark:bg-red-500/10 text-red-600 dark:text-red-400 font-bold border border-red-200/80 dark:border-red-500/25 shadow-2xs
+                        bg-sky-50/90 dark:bg-sky-500/10 text-sky-700 dark:text-sky-300 font-bold border border-sky-200/80 dark:border-sky-500/30 shadow-2xs
                       {{ else }}
                         text-slate-700 dark:text-slate-200 hover:bg-slate-100/80 dark:hover:bg-slate-800/60 font-semibold border border-transparent
                       {{ end }}">
               <div class="flex items-center gap-3 min-w-0">
                 <span class="w-8 h-8 rounded-lg flex items-center justify-center text-xs shrink-0 transition-transform group-hover:scale-105
                              {{ if $active }}
-                               bg-red-500 text-white shadow-xs
+                               bg-sky-600 text-white shadow-xs
                              {{ else }}
-                               bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 group-hover:text-slate-900 dark:group-hover:text-white
+                               bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 group-hover:bg-sky-500/15 group-hover:text-sky-600 dark:group-hover:text-sky-400
                              {{ end }}">
                   <i class="{{ $icon }}"></i>
                 </span>
-                <span class="text-sm truncate">{{ .Name }}</span>
+                <div class="min-w-0 flex-1">
+                  <div class="flex items-center gap-1.5">
+                    <span class="text-sm font-semibold truncate">{{ .Name }}</span>
+                    {{ if $active }}
+                      <span class="px-1.5 py-0.2 rounded text-[9px] font-mono font-bold uppercase tracking-wider bg-sky-100 dark:bg-sky-950/80 text-sky-700 dark:text-sky-300 border border-sky-500/20">Current</span>
+                    {{ end }}
+                  </div>
+                  <span class="text-[11px] font-normal text-slate-400 dark:text-slate-400 truncate block">{{ $subtitle }}</span>
+                </div>
               </div>
               <div class="flex items-center gap-2 shrink-0">
                 {{ if $isPulse }}
-                  <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+                  <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
                     <span class="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
                     LIVE
                   </span>
                 {{ end }}
-                <i class="fa-solid fa-chevron-right text-[10px] transition-transform group-hover:translate-x-0.5 {{ if $active }}text-red-500 dark:text-red-400{{ else }}text-slate-300 dark:text-slate-600 group-hover:text-slate-500{{ end }}"></i>
+                <i class="fa-solid fa-chevron-right text-[10px] transition-transform group-hover:translate-x-0.5 {{ if $active }}text-sky-600 dark:text-sky-400{{ else }}text-slate-300 dark:text-slate-600 group-hover:text-slate-500{{ end }}"></i>
               </div>
             </a>
           {{ end }}
@@ -255,15 +276,18 @@
           onclick="document.getElementById('mobile-nav-drawer')?.classList.add('hidden')"
           class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl transition-all cursor-pointer min-h-[48px] group text-slate-700 dark:text-slate-200 hover:bg-slate-100/80 dark:hover:bg-slate-800/60 font-semibold border border-transparent">
           <div class="flex items-center gap-3 min-w-0">
-            <span class="w-8 h-8 rounded-lg flex items-center justify-center text-xs shrink-0 bg-red-500/10 text-red-600 dark:text-red-400 group-hover:scale-105 transition-transform">
+            <span class="w-8 h-8 rounded-lg flex items-center justify-center text-xs shrink-0 bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 group-hover:bg-sky-500/15 group-hover:text-sky-600 dark:group-hover:text-sky-400 group-hover:scale-105 transition-transform">
               <i class="fa-solid fa-bookmark text-[11px]"></i>
             </span>
-            <span class="text-sm truncate">Saved Articles</span>
+            <div class="min-w-0 flex-1 text-left">
+              <span class="text-sm font-semibold truncate block">Saved Articles</span>
+              <span class="text-[11px] font-normal text-slate-400 dark:text-slate-400 truncate block">Your offline &amp; bookmarked reading list</span>
+            </div>
           </div>
           <div class="flex items-center gap-2 shrink-0">
             <span
               data-bookmarks-badge
-              class="hidden px-2 py-0.5 text-[10px] font-bold font-mono rounded-full bg-red-500 text-white shadow-xs">
+              class="hidden px-2 py-0.5 text-[10px] font-bold font-mono rounded-full bg-sky-600 text-white shadow-xs">
               0
             </span>
             <i class="fa-solid fa-chevron-right text-[10px] text-slate-300 dark:text-slate-600 group-hover:text-slate-500 group-hover:translate-x-0.5 transition-transform"></i>
@@ -286,18 +310,26 @@
                 <a href="{{ .URL | relLangURL }}"
                    class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold transition-all no-underline min-h-[44px] group border
                           {{ if $childActive }}
-                            bg-red-50/80 dark:bg-red-500/10 text-red-600 dark:text-red-400 border-red-200/80 dark:border-red-500/25 font-bold
+                            bg-sky-50/90 dark:bg-sky-500/10 text-sky-700 dark:text-sky-300 border-sky-200/80 dark:border-sky-500/30 font-bold shadow-2xs
                           {{ else }}
-                            bg-slate-50/90 dark:bg-slate-800/60 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700/80 hover:text-slate-900 dark:hover:text-white border-slate-200/70 dark:border-slate-700/60
+                            bg-slate-50/90 dark:bg-slate-800/60 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700/80 hover:text-sky-600 dark:hover:text-sky-400 border-slate-200/70 dark:border-slate-700/60
                           {{ end }}">
-                  <span class="w-6 h-6 rounded-md flex items-center justify-center text-xs shrink-0 {{ if $isAbout }}bg-blue-500/10 text-blue-600 dark:text-blue-400{{ else }}bg-emerald-500/10 text-emerald-600 dark:text-emerald-400{{ end }}">
+                  <span class="w-6 h-6 rounded-md flex items-center justify-center text-xs shrink-0 transition-colors
+                               {{ if $childActive }}
+                                 bg-sky-600 text-white shadow-xs
+                               {{ else }}
+                                 bg-sky-500/10 text-sky-600 dark:text-sky-400 group-hover:bg-sky-500/20
+                               {{ end }}">
                     {{ if $isAbout }}
                       <i class="fa-regular fa-building text-[10px]"></i>
                     {{ else }}
                       <i class="fa-regular fa-paper-plane text-[10px]"></i>
                     {{ end }}
                   </span>
-                  <span class="truncate">{{ .Name }}</span>
+                  <div class="min-w-0">
+                    <span class="truncate block font-semibold">{{ .Name }}</span>
+                    <span class="text-[10px] font-normal text-slate-400 block">{{ if $isAbout }}Mission &amp; standards{{ else }}Get in touch{{ end }}</span>
+                  </div>
                 </a>
               {{ end }}
             </div>
