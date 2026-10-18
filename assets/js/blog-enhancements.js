@@ -1954,7 +1954,7 @@
 
       if (sourceLinkEl) {
         if (pulse.link_url) {
-          sourceLinkEl.innerHTML = '<a href="' + escapeHtml(pulse.link_url) + '" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 text-xs font-mono font-bold text-red-600 dark:text-red-500 hover:underline"><i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i> Vendor Docs / Advisory</a>';
+          sourceLinkEl.innerHTML = '<a href="' + escapeHtml(pulse.link_url) + '" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 text-xs font-mono font-bold text-sky-600 dark:text-sky-400 hover:underline"><i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i> Vendor Docs / Advisory</a>';
         } else {
           sourceLinkEl.innerHTML = "";
         }
@@ -2147,7 +2147,7 @@
           '</div>' +
           '<h3 class="text-sm font-bold text-slate-900 dark:text-white mb-1">No pulse updates found</h3>' +
           '<p class="text-xs text-slate-500 dark:text-slate-400 mb-4 max-w-sm mx-auto">Try clearing your search query or selecting "All Updates" to view the latest cloud intelligence.</p>' +
-          '<button id="pulse-reset-filters-btn" type="button" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono font-bold bg-red-600 hover:bg-red-700 text-white cursor-pointer transition-all border-0 shadow-xs">' +
+          '<button id="pulse-reset-filters-btn" type="button" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono font-bold bg-sky-600 hover:bg-sky-700 text-white cursor-pointer transition-all border-0 shadow-xs">' +
             '<i class="fa-solid fa-rotate-left text-[10px]"></i> Reset Filters' +
           '</button>' +
         '</div>';
@@ -2221,7 +2221,7 @@
               rankBadge +
               '<span class="font-mono text-xs text-slate-500 dark:text-slate-400">' + formatDate(p.created_at) + '</span>' +
             '</div>' +
-            '<h4 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white mb-3 leading-snug group-hover:text-red-600 dark:group-hover:text-red-500 transition-colors cursor-pointer" data-pulse-inspect="' + escapeHtml(p.id) + '">' + titleHtml + '</h4>' +
+            '<h4 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white mb-3 leading-snug group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors cursor-pointer" data-pulse-inspect="' + escapeHtml(p.id) + '">' + titleHtml + '</h4>' +
             '<div class="mb-4 space-y-2 text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed font-normal">' + 
               formatPulseContentToHtml(cleanContentText) + 
             '</div>' +
@@ -2856,7 +2856,7 @@
           + '" data-ticker-slide="' + idx + '" data-pulse-id="' + escapeHtml(pulseId) + '" data-pulse-title="' + escapeHtml(safeTitle) + '" data-pulse-tag="' + escapeHtml(tagMeta.label) + '" data-pulse-tag-class="' + escapeHtml(tagMeta.cls) + '" data-pulse-time="' + escapeHtml(timeAgo) + '" aria-hidden="' + (isFirst ? 'false' : 'true') + '">'
           + '<a href="' + pulsePostLink + '" class="ticker-item group/item inline-flex items-center gap-1.5 sm:gap-2.5 min-w-0 flex-1 no-underline" tabindex="' + (isFirst ? '0' : '-1') + '">'
           + '<span class="ticker-tag ' + tagMeta.cls + ' shrink-0">' + escapeHtml(tagMeta.label) + '</span>'
-          + '<span class="ticker-title font-sans font-medium text-[13.5px] sm:text-[14.5px] md:text-[15px] text-slate-800 dark:text-slate-100 group-hover/item:text-red-600 dark:group-hover/item:text-cyan-300 transition-colors truncate" title="' + escapeHtml(safeTitle) + '">' + safeTitle + '</span>'
+          + '<span class="ticker-title font-sans font-medium text-[13.5px] sm:text-[14.5px] md:text-[15px] text-slate-800 dark:text-slate-100 group-hover/item:text-sky-600 dark:group-hover/item:text-sky-400 transition-colors truncate" title="' + escapeHtml(safeTitle) + '">' + safeTitle + '</span>'
           + '<span class="ticker-time-badge text-[11px] sm:text-[12px] font-mono text-slate-500 dark:text-slate-400 shrink-0 hidden xs:inline-flex items-center gap-1">' + escapeHtml(timeAgo) + '</span>'
           + '</a>'
           + '<button type="button" class="ticker-mobile-expand-btn sm:hidden inline-flex items-center justify-center w-6 h-6 text-slate-400 hover:text-slate-800 dark:hover:text-white rounded transition-colors shrink-0" aria-label="Expand complete headline" tabindex="' + (isFirst ? '0' : '-1') + '">'
