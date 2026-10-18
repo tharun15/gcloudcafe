@@ -2678,12 +2678,12 @@
             setTimeout(function() {
               var overflowDist = titleEl.scrollWidth - titleContainer.clientWidth;
               if (overflowDist > 6) {
-                // Calculate gentle, human-readable reading pace (~32-38px/second)
-                var panDuration = Math.max(11, Math.min(15.5, 8.5 + (overflowDist / 36)));
+                // Dynamic pacing: ~1s initial hold, smooth reading glide, brief hold at end, and return
+                var panDuration = Math.max(9.5, Math.min(13.5, 7.5 + (overflowDist / 38)));
                 titleEl.style.setProperty("--ticker-pan-offset", "-" + (overflowDist + 16) + "px");
                 titleEl.style.setProperty("--ticker-pan-duration", panDuration.toFixed(1) + "s");
                 titleEl.classList.add("ticker-auto-pan");
-                activeSlideTime = Math.round(panDuration * 1000) + 600;
+                activeSlideTime = Math.round(panDuration * 1000) + 400;
               }
               scheduleNextSlide(activeSlideTime);
             }, 60);
