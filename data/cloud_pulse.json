@@ -1,41 +1,22 @@
 [
   {
-    "id": "dd2f1a67-5d79-4fc1-9a5d-43abf4b5b85c",
-    "title": "Azure Maia 300 Architecture Revealed for Cloud AI Inference",
-    "content": "🎯 What Changed: Azure unveiled the architecture of Maia 300, a new platform designed for cloud-scale agentic AI inference.\n💡 Engineering Impact: Engineers can leverage this dedicated AI accelerator for optimized performance and efficiency in demanding agentic AI workloads, simplifying the deployment and scaling of advanced AI applications.",
+    "id": "8b2b4708-a9b5-4aeb-b60e-289e7851ec1b",
+    "title": "OpenShift MCP Gateway GA: Enhanced AI AgentOps Governance",
+    "content": "🎯 What Changed: The Model Context Protocol (MCP) gateway for Red Hat OpenShift is now generally available, enhancing enterprise AI AgentOps capabilities.\n💡 Engineering Impact: This GA release provides production-ready features like gateway isolation, stateless sessions, and security hardening. Engineers can now securely govern and scale AI agent tool traffic with robust guardrails and tenant isolation.",
     "tags": [
-      "#Azure",
-      "#CloudArchitecture",
-      "#CloudNews"
+      "#OpenShift",
+      "#RedHat",
+      "#DevOps"
     ],
     "upvotes": 1,
     "downvotes": 0,
     "score": 1,
     "author": "Cloud Newsroom Bot",
-    "created_at": "2026-10-19T10:36:32.083186+00:00",
-    "link_url": "https://azure.microsoft.com/en-us/blog/deep-dive-into-azure-maia-300-architecture/",
+    "created_at": "2026-10-19T10:36:26.875529+00:00",
+    "link_url": "https://www.redhat.com/en/blog/model-context-protocol-gateway-red-hat-openshift-now-generally-available",
     "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 297.0h without manual admin curation.",
-    "updated_at": "2026-10-19T18:31:09.622Z"
-  },
-  {
-    "id": "77de5ed3-98f9-4eb0-8388-7ed7d5ee2539",
-    "title": "Nemotron 3.5 Super VL model now available on Amazon SageMaker JumpStart",
-    "content": "🎯 What Changed: NVIDIA's Nemotron 3.5 Super VL vision-language model is now available on Amazon SageMaker.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
-    "tags": [
-      "#AWS",
-      "#CloudArchitecture",
-      "#CloudNews"
-    ],
-    "upvotes": 1,
-    "downvotes": 0,
-    "score": 1,
-    "author": "Cloud Newsroom Bot",
-    "created_at": "2026-10-19T03:01:45.737597+00:00",
-    "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/01/nvidia-nemotron-3.5-super-vl-on-sagemaker-jumpstart/",
-    "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 288.2h without manual admin curation.",
-    "updated_at": "2026-10-19T09:43:17.425Z"
+    "eligibility_reason": "[Auto-Published] Published automatically after 302.0h without manual admin curation.",
+    "updated_at": "2026-10-19T23:27:02.814Z"
   },
   {
     "id": "0b6826b6-fc4c-4621-8f9b-bbbea3de16aa",
@@ -55,7 +36,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:48.441634+00:00",
-    "ageDays": 12.01004912037037
+    "ageDays": 12.582100439814814
   },
   {
     "id": "81213fff-57d4-4c0b-90eb-c84beeb18d4d",
@@ -75,7 +56,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:42.008666+00:00",
-    "ageDays": 12.010123576388889
+    "ageDays": 12.582174895833333
   },
   {
     "id": "1ec5647f-ce95-4be3-ba87-6aa974960da7",
@@ -95,7 +76,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:37.111692+00:00",
-    "ageDays": 12.01018025462963
+    "ageDays": 12.582231574074074
   },
   {
     "id": "88a2ed59-fb47-488b-b07c-d6be1de35d0b",
@@ -115,7 +96,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:31.276024+00:00",
-    "ageDays": 12.010247789351851
+    "ageDays": 12.582299108796295
   },
   {
     "id": "202f8734-234e-4bd5-9a67-8535691f131a",
@@ -135,7 +116,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:24.859911+00:00",
-    "ageDays": 12.010322060185185
+    "ageDays": 12.58237337962963
   },
   {
     "id": "37fcb780-d57d-4ba9-875a-7665dd9cd981",
@@ -155,7 +136,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T04:06:30.331436+00:00",
-    "ageDays": 12.233869837962963
+    "ageDays": 12.805921157407408
   },
   {
     "id": "521c6dfa-7eb3-4834-87fb-7ac338d90f9d",
@@ -175,7 +156,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T04:00:33.151279+00:00",
-    "ageDays": 12.23800386574074
+    "ageDays": 12.810055185185185
   },
   {
     "id": "b1f2627d-7930-4c4b-ab57-de042bac55c3",
@@ -195,7 +176,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T04:00:00.696536+00:00",
-    "ageDays": 12.238379502314816
+    "ageDays": 12.81043082175926
   },
   {
     "id": "bf22f4dd-2d54-4b4c-9038-ea09aadef8a2",
@@ -215,7 +196,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T03:59:45.591638+00:00",
-    "ageDays": 12.238554328703703
+    "ageDays": 12.810605648148147
   },
   {
     "id": "46fd5625-4fda-4793-a2ab-d6b627f3f4df",
@@ -235,7 +216,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T03:59:26.783766+00:00",
-    "ageDays": 12.23877201388889
+    "ageDays": 12.810823333333333
   },
   {
     "id": "09900f5e-4d21-4d5e-84a6-f5eec4459b40",
@@ -255,7 +236,7 @@
     "status": "approved",
     "eligibility_reason": "Official AWS Release: Ingested & AI synthesized for Admin Approval Queue.",
     "updated_at": "2026-09-12T09:07:10.082273+00:00",
-    "ageDays": 37.02507642361111
+    "ageDays": 37.59712774305556
   },
   {
     "id": "57b1b07d-9511-4a40-b351-2ec2866364b4",
@@ -275,7 +256,27 @@
     "status": "approved",
     "eligibility_reason": "Official Kubernetes Release: Ingested & AI synthesized for Admin Approval Queue.",
     "updated_at": "2026-09-12T09:07:09.525138+00:00",
-    "ageDays": 37.02508287037037
+    "ageDays": 37.59713418981482
+  },
+  {
+    "id": "dd2f1a67-5d79-4fc1-9a5d-43abf4b5b85c",
+    "title": "Azure Maia 300 Architecture Revealed for Cloud AI Inference",
+    "content": "🎯 What Changed: Azure unveiled the architecture of Maia 300, a new platform designed for cloud-scale agentic AI inference.\n💡 Engineering Impact: Engineers can leverage this dedicated AI accelerator for optimized performance and efficiency in demanding agentic AI workloads, simplifying the deployment and scaling of advanced AI applications.",
+    "tags": [
+      "#Azure",
+      "#CloudArchitecture",
+      "#CloudNews"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-10-19T10:36:32.083186+00:00",
+    "link_url": "https://azure.microsoft.com/en-us/blog/deep-dive-into-azure-maia-300-architecture/",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 297.0h without manual admin curation.",
+    "updated_at": "2026-10-19T18:31:09.622+00:00",
+    "ageDays": 0.5350675462962963
   },
   {
     "id": "e56570b7-5e3c-4720-a6fc-14f079062654",
@@ -295,6 +296,6 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 282.4h without manual admin curation.",
     "updated_at": "2026-10-19T03:53:37.874+00:00",
-    "ageDays": 0.27877251157407407
+    "ageDays": 0.8508238310185186
   }
 ]
