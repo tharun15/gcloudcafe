@@ -1,8 +1,8 @@
 [
   {
-    "id": "e56570b7-5e3c-4720-a6fc-14f079062654",
-    "title": "Beam model by Reflection is now available on Amazon SageMaker JumpStart and AWS Trainium",
-    "content": "🎯 What Changed: Reflection has made its frontier open-weight Beam model available on Amazon SageMaker JumpStart with native optimization for AWS Train.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
+    "id": "77de5ed3-98f9-4eb0-8388-7ed7d5ee2539",
+    "title": "Nemotron 3.5 Super VL model now available on Amazon SageMaker JumpStart",
+    "content": "🎯 What Changed: NVIDIA's Nemotron 3.5 Super VL vision-language model is now available on Amazon SageMaker.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
     "tags": [
       "#AWS",
       "#CloudArchitecture",
@@ -12,11 +12,11 @@
     "downvotes": 0,
     "score": 1,
     "author": "Cloud Newsroom Bot",
-    "created_at": "2026-10-19T03:01:50.740874+00:00",
-    "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/01/reflection-beam-on-sagemaker-jumpstart-and-aws-trainium/",
+    "created_at": "2026-10-19T03:01:45.737597+00:00",
+    "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/01/nvidia-nemotron-3.5-super-vl-on-sagemaker-jumpstart/",
     "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 282.4h without manual admin curation.",
-    "updated_at": "2026-10-19T03:53:37.874Z"
+    "eligibility_reason": "[Auto-Published] Published automatically after 288.2h without manual admin curation.",
+    "updated_at": "2026-10-19T09:43:17.425Z"
   },
   {
     "id": "0b6826b6-fc4c-4621-8f9b-bbbea3de16aa",
@@ -36,7 +36,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:48.441634+00:00",
-    "ageDays": 11.767227939814815
+    "ageDays": 12.01004912037037
   },
   {
     "id": "81213fff-57d4-4c0b-90eb-c84beeb18d4d",
@@ -56,7 +56,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:42.008666+00:00",
-    "ageDays": 11.767302395833333
+    "ageDays": 12.010123576388889
   },
   {
     "id": "1ec5647f-ce95-4be3-ba87-6aa974960da7",
@@ -76,7 +76,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:37.111692+00:00",
-    "ageDays": 11.767359074074074
+    "ageDays": 12.01018025462963
   },
   {
     "id": "88a2ed59-fb47-488b-b07c-d6be1de35d0b",
@@ -96,7 +96,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:31.276024+00:00",
-    "ageDays": 11.767426608796296
+    "ageDays": 12.010247789351851
   },
   {
     "id": "202f8734-234e-4bd5-9a67-8535691f131a",
@@ -116,7 +116,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:24.859911+00:00",
-    "ageDays": 11.76750087962963
+    "ageDays": 12.010322060185185
   },
   {
     "id": "37fcb780-d57d-4ba9-875a-7665dd9cd981",
@@ -136,7 +136,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T04:06:30.331436+00:00",
-    "ageDays": 11.991048657407408
+    "ageDays": 12.233869837962963
   },
   {
     "id": "521c6dfa-7eb3-4834-87fb-7ac338d90f9d",
@@ -156,7 +156,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T04:00:33.151279+00:00",
-    "ageDays": 11.995182685185185
+    "ageDays": 12.23800386574074
   },
   {
     "id": "b1f2627d-7930-4c4b-ab57-de042bac55c3",
@@ -176,7 +176,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T04:00:00.696536+00:00",
-    "ageDays": 11.99555832175926
+    "ageDays": 12.238379502314816
   },
   {
     "id": "bf22f4dd-2d54-4b4c-9038-ea09aadef8a2",
@@ -196,7 +196,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T03:59:45.591638+00:00",
-    "ageDays": 11.995733148148148
+    "ageDays": 12.238554328703703
   },
   {
     "id": "46fd5625-4fda-4793-a2ab-d6b627f3f4df",
@@ -216,7 +216,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T03:59:26.783766+00:00",
-    "ageDays": 11.995950833333334
+    "ageDays": 12.23877201388889
   },
   {
     "id": "09900f5e-4d21-4d5e-84a6-f5eec4459b40",
@@ -236,7 +236,7 @@
     "status": "approved",
     "eligibility_reason": "Official AWS Release: Ingested & AI synthesized for Admin Approval Queue.",
     "updated_at": "2026-09-12T09:07:10.082273+00:00",
-    "ageDays": 36.78225524305556
+    "ageDays": 37.02507642361111
   },
   {
     "id": "57b1b07d-9511-4a40-b351-2ec2866364b4",
@@ -256,7 +256,27 @@
     "status": "approved",
     "eligibility_reason": "Official Kubernetes Release: Ingested & AI synthesized for Admin Approval Queue.",
     "updated_at": "2026-09-12T09:07:09.525138+00:00",
-    "ageDays": 36.78226168981482
+    "ageDays": 37.02508287037037
+  },
+  {
+    "id": "e56570b7-5e3c-4720-a6fc-14f079062654",
+    "title": "Beam model by Reflection is now available on Amazon SageMaker JumpStart and AWS Trainium",
+    "content": "🎯 What Changed: Reflection has made its frontier open-weight Beam model available on Amazon SageMaker JumpStart with native optimization for AWS Train.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
+    "tags": [
+      "#AWS",
+      "#CloudArchitecture",
+      "#CloudNews"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-10-19T03:01:50.740874+00:00",
+    "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/01/reflection-beam-on-sagemaker-jumpstart-and-aws-trainium/",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 282.4h without manual admin curation.",
+    "updated_at": "2026-10-19T03:53:37.874+00:00",
+    "ageDays": 0.27877251157407407
   },
   {
     "id": "83c3d897-69ce-4728-8b0e-316186ba7667",
@@ -276,26 +296,6 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 270.1h without manual admin curation.",
     "updated_at": "2026-10-18T15:35:21.652+00:00",
-    "ageDays": 0.7703185300925925
-  },
-  {
-    "id": "4ec58f4b-c654-4806-a7de-ff1da0abaabf",
-    "title": "Azure Unveils Open-Source Integrated HSM for Enhanced Security",
-    "content": "🎯 What Changed: Azure is advancing hardware security with new open-source Integrated HSM technology and enhanced cryptographic key protection.\n💡 Engineering Impact: This provides a stronger hardware-backed root of trust, significantly enhancing the protection of cryptographic keys for sensitive workloads. Architects can now build more secure applications with greater confidence in the underlying infrastructure.",
-    "tags": [
-      "#Azure",
-      "#CloudArchitecture",
-      "#CloudNews"
-    ],
-    "upvotes": 1,
-    "downvotes": 0,
-    "score": 1,
-    "author": "Cloud Newsroom Bot",
-    "created_at": "2026-10-18T09:24:15.885279+00:00",
-    "link_url": "https://azure.microsoft.com/en-us/blog/advancing-hardware-security-with-open-source-integrated-hsm-technology/",
-    "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 273.0h without manual admin curation.",
-    "updated_at": "2026-10-18T18:30:59.965+00:00",
-    "ageDays": 0.7703825231481481
+    "ageDays": 1.0131397106481481
   }
 ]
