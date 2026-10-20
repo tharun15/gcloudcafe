@@ -1,5 +1,24 @@
 [
   {
+    "id": "8cd2f550-ff7d-442d-ab52-cf0488709ddf",
+    "title": "Azure Enhances Enterprise AI Security: Managing Open-Weight Model Risk",
+    "content": "🎯 What Changed: Azure provides new guidance and strategies for enterprises to manage risks associated with deploying open-weight AI models.\n💡 Engineering Impact: This guidance helps architects design more secure and compliant AI solutions, integrating robust risk assessment into enterprise model deployment pipelines. It empowers DevOps teams to safely leverage the growing diversity of open-weight AI models.",
+    "tags": [
+      "#Azure",
+      "#CloudArchitecture",
+      "#CloudNews"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-10-20T09:53:41.819666+00:00",
+    "link_url": "https://azure.microsoft.com/en-us/blog/managing-open-weight-model-risk-in-enterprise-deployments/",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 315.9h without manual admin curation.",
+    "updated_at": "2026-10-20T13:25:29.948Z"
+  },
+  {
     "id": "974d866c-dfbc-441b-aa5d-92d5a1a39870",
     "title": "Amazon GuardDuty adds optional threat detection rules for Runtime Monitoring",
     "content": "🎯 What Changed: Amazon GuardDuty has introduced over 50 optional detection rules for Runtime Monitoring, allowing teams to flag.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
@@ -277,25 +296,5 @@
     "eligibility_reason": "[Auto-Published] Published automatically after 297.0h without manual admin curation.",
     "updated_at": "2026-10-19T18:31:09.622+00:00",
     "ageDays": 0.7283619097222223
-  },
-  {
-    "id": "8b2b4708-a9b5-4aeb-b60e-289e7851ec1b",
-    "title": "OpenShift MCP Gateway GA: Enhanced AI AgentOps Governance",
-    "content": "🎯 What Changed: The Model Context Protocol (MCP) gateway for Red Hat OpenShift is now generally available, enhancing enterprise AI AgentOps capabilities.\n💡 Engineering Impact: This GA release provides production-ready features like gateway isolation, stateless sessions, and security hardening. Engineers can now securely govern and scale AI agent tool traffic with robust guardrails and tenant isolation.",
-    "tags": [
-      "#OpenShift",
-      "#RedHat",
-      "#DevOps"
-    ],
-    "upvotes": 1,
-    "downvotes": 0,
-    "score": 1,
-    "author": "Cloud Newsroom Bot",
-    "created_at": "2026-10-19T10:36:26.875529+00:00",
-    "link_url": "https://www.redhat.com/en/blog/model-context-protocol-gateway-red-hat-openshift-now-generally-available",
-    "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 302.0h without manual admin curation.",
-    "updated_at": "2026-10-19T23:27:02.814+00:00",
-    "ageDays": 0.7284221875
   }
 ]
