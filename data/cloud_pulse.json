@@ -1,8 +1,8 @@
 [
   {
-    "id": "3484fa87-68d1-42b8-a999-f31f2fbfe247",
-    "title": "OpenShift Boosts DevSecOps Efficiency, Cuts Tool Sprawl",
-    "content": "🎯 What Changed: Red Hat OpenShift demonstrates how to unify DevSecOps toolchains to accelerate application delivery.\n💡 Engineering Impact: Platform engineers can reduce integration maintenance, eliminate tool sprawl, and streamline CI/CD, security, and GitOps workflows, freeing up time to focus on shipping code faster.",
+    "id": "1426f12d-7f13-4623-808e-52eafa7201b5",
+    "title": "OpenShift: Accelerating Patch Deployment to Reduce Risk",
+    "content": "🎯 What Changed: OpenShift is focused on drastically reducing the time it takes to deploy security patches into production environments.\n💡 Engineering Impact: Engineers can now achieve faster patch validation and deployment, drastically reducing the window of exposure to exploits and improving overall system resilience.",
     "tags": [
       "#OpenShift",
       "#RedHat",
@@ -12,11 +12,11 @@
     "downvotes": 0,
     "score": 1,
     "author": "Cloud Newsroom Bot",
-    "created_at": "2026-10-20T09:53:35.779418+00:00",
-    "link_url": "https://www.redhat.com/en/blog/5-minute-demo-devsecops-red-hat-openshift-speed-application-delivery",
+    "created_at": "2026-10-20T09:53:30.954175+00:00",
+    "link_url": "https://www.redhat.com/en/blog/patch-only-reduces-risk-when-it-runs-production",
     "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 322.4h without manual admin curation.",
-    "updated_at": "2026-10-20T19:54:17.060Z"
+    "eligibility_reason": "[Auto-Published] Published automatically after 325.5h without manual admin curation.",
+    "updated_at": "2026-10-20T23:01:22.286Z"
   },
   {
     "id": "0b6826b6-fc4c-4621-8f9b-bbbea3de16aa",
@@ -36,7 +36,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:48.441634+00:00",
-    "ageDays": 13.434351898148147
+    "ageDays": 13.564271805555556
   },
   {
     "id": "81213fff-57d4-4c0b-90eb-c84beeb18d4d",
@@ -56,7 +56,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:42.008666+00:00",
-    "ageDays": 13.434426354166666
+    "ageDays": 13.564346261574075
   },
   {
     "id": "1ec5647f-ce95-4be3-ba87-6aa974960da7",
@@ -76,7 +76,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:37.111692+00:00",
-    "ageDays": 13.434483032407407
+    "ageDays": 13.564402939814816
   },
   {
     "id": "88a2ed59-fb47-488b-b07c-d6be1de35d0b",
@@ -96,7 +96,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:31.276024+00:00",
-    "ageDays": 13.43455056712963
+    "ageDays": 13.564470474537037
   },
   {
     "id": "202f8734-234e-4bd5-9a67-8535691f131a",
@@ -116,7 +116,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:24.859911+00:00",
-    "ageDays": 13.434624837962962
+    "ageDays": 13.56454474537037
   },
   {
     "id": "37fcb780-d57d-4ba9-875a-7665dd9cd981",
@@ -136,7 +136,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T04:06:30.331436+00:00",
-    "ageDays": 13.65817261574074
+    "ageDays": 13.788092523148148
   },
   {
     "id": "521c6dfa-7eb3-4834-87fb-7ac338d90f9d",
@@ -156,7 +156,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T04:00:33.151279+00:00",
-    "ageDays": 13.662306643518518
+    "ageDays": 13.792226550925927
   },
   {
     "id": "b1f2627d-7930-4c4b-ab57-de042bac55c3",
@@ -176,7 +176,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T04:00:00.696536+00:00",
-    "ageDays": 13.662682280092593
+    "ageDays": 13.7926021875
   },
   {
     "id": "bf22f4dd-2d54-4b4c-9038-ea09aadef8a2",
@@ -196,7 +196,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T03:59:45.591638+00:00",
-    "ageDays": 13.662857106481482
+    "ageDays": 13.79277701388889
   },
   {
     "id": "46fd5625-4fda-4793-a2ab-d6b627f3f4df",
@@ -216,7 +216,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T03:59:26.783766+00:00",
-    "ageDays": 13.663074791666666
+    "ageDays": 13.792994699074073
   },
   {
     "id": "09900f5e-4d21-4d5e-84a6-f5eec4459b40",
@@ -236,7 +236,7 @@
     "status": "approved",
     "eligibility_reason": "Official AWS Release: Ingested & AI synthesized for Admin Approval Queue.",
     "updated_at": "2026-09-12T09:07:10.082273+00:00",
-    "ageDays": 38.449379201388886
+    "ageDays": 38.5792991087963
   },
   {
     "id": "57b1b07d-9511-4a40-b351-2ec2866364b4",
@@ -256,7 +256,7 @@
     "status": "approved",
     "eligibility_reason": "Official Kubernetes Release: Ingested & AI synthesized for Admin Approval Queue.",
     "updated_at": "2026-09-12T09:07:09.525138+00:00",
-    "ageDays": 38.44938564814815
+    "ageDays": 38.57930555555556
   },
   {
     "id": "8cd2f550-ff7d-442d-ab52-cf0488709ddf",
@@ -276,26 +276,26 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 315.9h without manual admin curation.",
     "updated_at": "2026-10-20T13:25:29.948+00:00",
-    "ageDays": 0.41706743055555556
+    "ageDays": 0.546987337962963
   },
   {
-    "id": "974d866c-dfbc-441b-aa5d-92d5a1a39870",
-    "title": "Amazon GuardDuty adds optional threat detection rules for Runtime Monitoring",
-    "content": "🎯 What Changed: Amazon GuardDuty has introduced over 50 optional detection rules for Runtime Monitoring, allowing teams to flag.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
+    "id": "3484fa87-68d1-42b8-a999-f31f2fbfe247",
+    "title": "OpenShift Boosts DevSecOps Efficiency, Cuts Tool Sprawl",
+    "content": "🎯 What Changed: Red Hat OpenShift demonstrates how to unify DevSecOps toolchains to accelerate application delivery.\n💡 Engineering Impact: Platform engineers can reduce integration maintenance, eliminate tool sprawl, and streamline CI/CD, security, and GitOps workflows, freeing up time to focus on shipping code faster.",
     "tags": [
-      "#AWS",
-      "#CloudArchitecture",
-      "#CloudNews"
+      "#OpenShift",
+      "#RedHat",
+      "#DevOps"
     ],
     "upvotes": 1,
     "downvotes": 0,
     "score": 1,
     "author": "Cloud Newsroom Bot",
-    "created_at": "2026-10-20T03:26:24.909002+00:00",
-    "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/10/guardduty-runtime-optional-detection-rules/",
+    "created_at": "2026-10-20T09:53:35.779418+00:00",
+    "link_url": "https://www.redhat.com/en/blog/5-minute-demo-devsecops-red-hat-openshift-speed-application-delivery",
     "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 306.6h without manual admin curation.",
-    "updated_at": "2026-10-20T04:05:23.265+00:00",
-    "ageDays": 0.6860131481481482
+    "eligibility_reason": "[Auto-Published] Published automatically after 322.4h without manual admin curation.",
+    "updated_at": "2026-10-20T19:54:17.06+00:00",
+    "ageDays": 0.5470572453703704
   }
 ]
