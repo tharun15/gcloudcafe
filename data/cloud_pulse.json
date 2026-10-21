@@ -1,8 +1,8 @@
 [
   {
-    "id": "17fccee4-9acc-4b94-bf58-a14b1d89386d",
-    "title": "vLLM Becomes De Facto Standard for Open Source AI Serving",
-    "content": "🎯 What Changed: The vLLM project has solidified its position as the de facto open-source inference server for large AI models, now part of the PyTorch foundation.\n💡 Engineering Impact: This provides engineers with an efficient, dependable, and community-driven solution for serving powerful open-weight models, streamlining AI deployments and fostering innovation.",
+    "id": "d01bf402-dd4f-48d7-a6e8-f1e52931abdd",
+    "title": "Delta Air Lines Scales AI Dev for 1200 Engineers with OpenShift CDEs",
+    "content": "🎯 What Changed: Delta Air Lines deployed Red Hat OpenShift Dev Spaces as Cloud Development Environments (CDEs) for over 1,200 AI-native engineers.\n💡 Engineering Impact: This initiative significantly improved developer Net Promoter Score, accelerated onboarding from weeks to minutes, and eliminated dependency conflicts, boosting overall engineering productivity and experience.",
     "tags": [
       "#OpenShift",
       "#RedHat",
@@ -12,30 +12,11 @@
     "downvotes": 0,
     "score": 1,
     "author": "Cloud Newsroom Bot",
-    "created_at": "2026-10-21T09:54:37.509821+00:00",
-    "link_url": "https://www.redhat.com/en/blog/crossing-threshold-dependable-open-source-ai-serving",
+    "created_at": "2026-10-21T09:54:33.805037+00:00",
+    "link_url": "https://www.redhat.com/en/blog/how-delta-air-lines-scaled-ai-native-development-1200-engineers-cloud-development-environments",
     "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 343.4h without manual admin curation.",
-    "updated_at": "2026-10-21T16:51:58.273Z"
-  },
-  {
-    "id": "5b7ede59-ede6-436b-8790-624823f84997",
-    "title": "Polly Generative engine upgraded with more natural speech, 14 new voices, and 2 new languages",
-    "content": "🎯 What Changed: AWS has upgraded the Amazon Polly Generative engine with an advanced model offering more natural speech, 1.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
-    "tags": [
-      "#AWS",
-      "#CloudArchitecture",
-      "#CloudNews"
-    ],
-    "upvotes": 1,
-    "downvotes": 0,
-    "score": 1,
-    "author": "Cloud Newsroom Bot",
-    "created_at": "2026-10-21T03:12:58.540166+00:00",
-    "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/10/polly-generative/",
-    "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 335.7h without manual admin curation.",
-    "updated_at": "2026-10-21T09:13:17.465Z"
+    "eligibility_reason": "[Auto-Published] Published automatically after 349.6h without manual admin curation.",
+    "updated_at": "2026-10-21T23:04:49.166Z"
   },
   {
     "id": "0b6826b6-fc4c-4621-8f9b-bbbea3de16aa",
@@ -55,7 +36,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:48.441634+00:00",
-    "ageDays": 13.989214201388888
+    "ageDays": 14.566666331018519
   },
   {
     "id": "81213fff-57d4-4c0b-90eb-c84beeb18d4d",
@@ -75,7 +56,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:42.008666+00:00",
-    "ageDays": 13.989288657407407
+    "ageDays": 14.566740787037038
   },
   {
     "id": "1ec5647f-ce95-4be3-ba87-6aa974960da7",
@@ -95,7 +76,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:37.111692+00:00",
-    "ageDays": 13.989345335648148
+    "ageDays": 14.566797465277778
   },
   {
     "id": "88a2ed59-fb47-488b-b07c-d6be1de35d0b",
@@ -115,7 +96,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:31.276024+00:00",
-    "ageDays": 13.989412870370371
+    "ageDays": 14.566865
   },
   {
     "id": "202f8734-234e-4bd5-9a67-8535691f131a",
@@ -135,7 +116,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:24.859911+00:00",
-    "ageDays": 13.989487141203703
+    "ageDays": 14.566939270833334
   },
   {
     "id": "37fcb780-d57d-4ba9-875a-7665dd9cd981",
@@ -155,7 +136,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T04:06:30.331436+00:00",
-    "ageDays": 14.213034918981482
+    "ageDays": 14.79048704861111
   },
   {
     "id": "521c6dfa-7eb3-4834-87fb-7ac338d90f9d",
@@ -175,7 +156,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T04:00:33.151279+00:00",
-    "ageDays": 14.217168946759259
+    "ageDays": 14.79462107638889
   },
   {
     "id": "b1f2627d-7930-4c4b-ab57-de042bac55c3",
@@ -195,7 +176,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T04:00:00.696536+00:00",
-    "ageDays": 14.217544583333334
+    "ageDays": 14.794996712962963
   },
   {
     "id": "bf22f4dd-2d54-4b4c-9038-ea09aadef8a2",
@@ -215,7 +196,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T03:59:45.591638+00:00",
-    "ageDays": 14.217719409722223
+    "ageDays": 14.795171539351852
   },
   {
     "id": "46fd5625-4fda-4793-a2ab-d6b627f3f4df",
@@ -235,7 +216,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T03:59:26.783766+00:00",
-    "ageDays": 14.217937094907407
+    "ageDays": 14.795389224537036
   },
   {
     "id": "09900f5e-4d21-4d5e-84a6-f5eec4459b40",
@@ -255,7 +236,7 @@
     "status": "approved",
     "eligibility_reason": "Official AWS Release: Ingested & AI synthesized for Admin Approval Queue.",
     "updated_at": "2026-09-12T09:07:10.082273+00:00",
-    "ageDays": 39.00424150462963
+    "ageDays": 39.58169363425926
   },
   {
     "id": "57b1b07d-9511-4a40-b351-2ec2866364b4",
@@ -275,7 +256,27 @@
     "status": "approved",
     "eligibility_reason": "Official Kubernetes Release: Ingested & AI synthesized for Admin Approval Queue.",
     "updated_at": "2026-09-12T09:07:09.525138+00:00",
-    "ageDays": 39.00424795138889
+    "ageDays": 39.58170008101852
+  },
+  {
+    "id": "17fccee4-9acc-4b94-bf58-a14b1d89386d",
+    "title": "vLLM Becomes De Facto Standard for Open Source AI Serving",
+    "content": "🎯 What Changed: The vLLM project has solidified its position as the de facto open-source inference server for large AI models, now part of the PyTorch foundation.\n💡 Engineering Impact: This provides engineers with an efficient, dependable, and community-driven solution for serving powerful open-weight models, streamlining AI deployments and fostering innovation.",
+    "tags": [
+      "#OpenShift",
+      "#RedHat",
+      "#DevOps"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-10-21T09:54:37.509821+00:00",
+    "link_url": "https://www.redhat.com/en/blog/crossing-threshold-dependable-open-source-ai-serving",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 343.4h without manual admin curation.",
+    "updated_at": "2026-10-21T16:51:58.273+00:00",
+    "ageDays": 0.5487373032407408
   },
   {
     "id": "d327d95e-cb0b-47f5-b398-b10662553c2d",
@@ -295,6 +296,6 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 330.4h without manual admin curation.",
     "updated_at": "2026-10-21T03:54:02.277+00:00",
-    "ageDays": 0.24947965277777778
+    "ageDays": 0.8269317824074074
   }
 ]
