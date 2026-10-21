@@ -1,8 +1,8 @@
 [
   {
-    "id": "d327d95e-cb0b-47f5-b398-b10662553c2d",
-    "title": "AWS announces TorchNeuron: Native PyTorch Support for AWS Trainium (Public Beta)",
-    "content": "🎯 What Changed: AWS has launched the public beta of TorchNeuron, an open-source native PyTorch backend engineered specifically.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
+    "id": "5b7ede59-ede6-436b-8790-624823f84997",
+    "title": "Polly Generative engine upgraded with more natural speech, 14 new voices, and 2 new languages",
+    "content": "🎯 What Changed: AWS has upgraded the Amazon Polly Generative engine with an advanced model offering more natural speech, 1.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
     "tags": [
       "#AWS",
       "#CloudArchitecture",
@@ -12,11 +12,11 @@
     "downvotes": 0,
     "score": 1,
     "author": "Cloud Newsroom Bot",
-    "created_at": "2026-10-21T03:14:01.506243+00:00",
-    "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/10/aws-announce-native-pytorch-support-trainium",
+    "created_at": "2026-10-21T03:12:58.540166+00:00",
+    "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/10/polly-generative/",
     "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 330.4h without manual admin curation.",
-    "updated_at": "2026-10-21T03:54:02.277Z"
+    "eligibility_reason": "[Auto-Published] Published automatically after 335.7h without manual admin curation.",
+    "updated_at": "2026-10-21T09:13:17.465Z"
   },
   {
     "id": "0b6826b6-fc4c-4621-8f9b-bbbea3de16aa",
@@ -36,7 +36,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:48.441634+00:00",
-    "ageDays": 13.76750670138889
+    "ageDays": 13.989214201388888
   },
   {
     "id": "81213fff-57d4-4c0b-90eb-c84beeb18d4d",
@@ -56,7 +56,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:42.008666+00:00",
-    "ageDays": 13.767581157407408
+    "ageDays": 13.989288657407407
   },
   {
     "id": "1ec5647f-ce95-4be3-ba87-6aa974960da7",
@@ -76,7 +76,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:37.111692+00:00",
-    "ageDays": 13.767637835648149
+    "ageDays": 13.989345335648148
   },
   {
     "id": "88a2ed59-fb47-488b-b07c-d6be1de35d0b",
@@ -96,7 +96,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:31.276024+00:00",
-    "ageDays": 13.76770537037037
+    "ageDays": 13.989412870370371
   },
   {
     "id": "202f8734-234e-4bd5-9a67-8535691f131a",
@@ -116,7 +116,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:24.859911+00:00",
-    "ageDays": 13.767779641203704
+    "ageDays": 13.989487141203703
   },
   {
     "id": "37fcb780-d57d-4ba9-875a-7665dd9cd981",
@@ -136,7 +136,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T04:06:30.331436+00:00",
-    "ageDays": 13.99132741898148
+    "ageDays": 14.213034918981482
   },
   {
     "id": "521c6dfa-7eb3-4834-87fb-7ac338d90f9d",
@@ -156,7 +156,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T04:00:33.151279+00:00",
-    "ageDays": 13.99546144675926
+    "ageDays": 14.217168946759259
   },
   {
     "id": "b1f2627d-7930-4c4b-ab57-de042bac55c3",
@@ -176,7 +176,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T04:00:00.696536+00:00",
-    "ageDays": 13.995837083333333
+    "ageDays": 14.217544583333334
   },
   {
     "id": "bf22f4dd-2d54-4b4c-9038-ea09aadef8a2",
@@ -196,7 +196,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T03:59:45.591638+00:00",
-    "ageDays": 13.996011909722222
+    "ageDays": 14.217719409722223
   },
   {
     "id": "46fd5625-4fda-4793-a2ab-d6b627f3f4df",
@@ -216,7 +216,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T03:59:26.783766+00:00",
-    "ageDays": 13.996229594907408
+    "ageDays": 14.217937094907407
   },
   {
     "id": "09900f5e-4d21-4d5e-84a6-f5eec4459b40",
@@ -236,7 +236,7 @@
     "status": "approved",
     "eligibility_reason": "Official AWS Release: Ingested & AI synthesized for Admin Approval Queue.",
     "updated_at": "2026-09-12T09:07:10.082273+00:00",
-    "ageDays": 38.78253400462963
+    "ageDays": 39.00424150462963
   },
   {
     "id": "57b1b07d-9511-4a40-b351-2ec2866364b4",
@@ -256,7 +256,27 @@
     "status": "approved",
     "eligibility_reason": "Official Kubernetes Release: Ingested & AI synthesized for Admin Approval Queue.",
     "updated_at": "2026-09-12T09:07:09.525138+00:00",
-    "ageDays": 38.78254045138889
+    "ageDays": 39.00424795138889
+  },
+  {
+    "id": "d327d95e-cb0b-47f5-b398-b10662553c2d",
+    "title": "AWS announces TorchNeuron: Native PyTorch Support for AWS Trainium (Public Beta)",
+    "content": "🎯 What Changed: AWS has launched the public beta of TorchNeuron, an open-source native PyTorch backend engineered specifically.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
+    "tags": [
+      "#AWS",
+      "#CloudArchitecture",
+      "#CloudNews"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-10-21T03:14:01.506243+00:00",
+    "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/10/aws-announce-native-pytorch-support-trainium",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 330.4h without manual admin curation.",
+    "updated_at": "2026-10-21T03:54:02.277+00:00",
+    "ageDays": 0.24947965277777778
   },
   {
     "id": "8cd2f550-ff7d-442d-ab52-cf0488709ddf",
@@ -276,26 +296,6 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 315.9h without manual admin curation.",
     "updated_at": "2026-10-20T13:25:29.948+00:00",
-    "ageDays": 0.7502222337962963
-  },
-  {
-    "id": "3484fa87-68d1-42b8-a999-f31f2fbfe247",
-    "title": "OpenShift Boosts DevSecOps Efficiency, Cuts Tool Sprawl",
-    "content": "🎯 What Changed: Red Hat OpenShift demonstrates how to unify DevSecOps toolchains to accelerate application delivery.\n💡 Engineering Impact: Platform engineers can reduce integration maintenance, eliminate tool sprawl, and streamline CI/CD, security, and GitOps workflows, freeing up time to focus on shipping code faster.",
-    "tags": [
-      "#OpenShift",
-      "#RedHat",
-      "#DevOps"
-    ],
-    "upvotes": 1,
-    "downvotes": 0,
-    "score": 1,
-    "author": "Cloud Newsroom Bot",
-    "created_at": "2026-10-20T09:53:35.779418+00:00",
-    "link_url": "https://www.redhat.com/en/blog/5-minute-demo-devsecops-red-hat-openshift-speed-application-delivery",
-    "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 322.4h without manual admin curation.",
-    "updated_at": "2026-10-20T19:54:17.06+00:00",
-    "ageDays": 0.7502921412037037
+    "ageDays": 0.9719297337962963
   }
 ]
