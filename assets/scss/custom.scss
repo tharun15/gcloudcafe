@@ -2185,3 +2185,94 @@ table {
 .dark .series-ambient-glow {
   background: radial-gradient(ellipse at center, rgba(56, 189, 248, 0.18) 0%, rgba(99, 102, 241, 0.12) 50%, transparent 75%);
 }
+
+/* ==========================================================================
+   OPTION A: PRESTIGE MODERN BROADSHEET DESIGN SYSTEM (The Information / FT Tech)
+   ========================================================================== */
+
+/* True Editorial Serif Typography */
+.font-serif,
+.broadsheet-serif,
+.broadsheet-lead-title,
+.broadsheet-card-title {
+  font-family: 'Newsreader', Charter, 'Bitstream Charter', 'Iowan Old Style', 'Palatino Linotype', 'URW Palladio L', 'Book Antiqua', Georgia, serif !important;
+}
+
+/* Warm Off-White Newsprint Paper Canvas */
+.broadsheet-canvas {
+  background-color: #faf9f5;
+  transition: background-color 0.25s ease;
+}
+
+:root.dark .broadsheet-canvas,
+.dark .broadsheet-canvas {
+  background-color: #080c14 !important;
+}
+
+/* Prestige Broadsheet Folio Masthead Double Rule */
+.broadsheet-folio-header {
+  border-top: 1px solid rgba(148, 163, 184, 0.45);
+  border-bottom: 2px solid rgba(15, 23, 42, 0.9);
+  letter-spacing: 0.07em;
+}
+
+:root.dark .broadsheet-folio-header,
+.dark .broadsheet-folio-header {
+  border-top: 1px solid rgba(51, 65, 85, 0.55);
+  border-bottom: 2px solid rgba(241, 245, 249, 0.85);
+}
+
+/* Broadsheet Lead Story Framing */
+.broadsheet-lead-box {
+  background-color: #ffffff;
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  transition: all 0.3s ease;
+}
+
+:root.dark .broadsheet-lead-box,
+.dark .broadsheet-lead-box {
+  background-color: #0d1320 !important;
+  border-color: rgba(30, 41, 59, 0.9) !important;
+}
+
+.broadsheet-lead-box:hover {
+  border-color: rgba(148, 163, 184, 0.9);
+}
+
+:root.dark .broadsheet-lead-box:hover {
+  border-color: rgba(56, 189, 248, 0.4) !important;
+}
+
+/* Editorial Dateline Prefix */
+.broadsheet-dateline {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* Broadsheet Article Hairline Divider */
+.broadsheet-hairline {
+  border-bottom: 1px solid rgba(226, 232, 240, 0.85);
+}
+
+:root.dark .broadsheet-hairline,
+.dark .broadsheet-hairline {
+  border-bottom: 1px solid rgba(30, 41, 59, 0.85);
+}
+
+/* Broadsheet Figure Caption */
+.broadsheet-caption {
+  font-family: 'Newsreader', Georgia, serif;
+  font-style: italic;
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  color: #64748b;
+}
+
+:root.dark .broadsheet-caption,
+.dark .broadsheet-caption {
+  color: #94a3b8;
+}
+
