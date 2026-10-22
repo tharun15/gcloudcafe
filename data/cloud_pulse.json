@@ -1,46 +1,8 @@
 [
   {
-    "id": "f5e0b9d1-11cf-49b5-8be0-a276e3b70064",
-    "title": "Shared GPUs without shared latency: Priority-aware serving in Red Hat AI",
-    "content": "🎯 What Changed: Red Hat AI 3.5 introduces priority-aware serving, enabling diverse AI workloads to share GPUs without latency bottlenecks.\n💡 Engineering Impact: Built on llm-d flow control, this feature optimizes GPU utilization by prioritizing requests, drastically reducing batch rejections and ensuring low latency for critical applications. It eliminates the need for separate GPU pools, simplifying resource management and cutting operational costs.",
-    "tags": [
-      "#OpenShift",
-      "#RedHat",
-      "#DevOps"
-    ],
-    "upvotes": 1,
-    "downvotes": 0,
-    "score": 1,
-    "author": "Cloud Newsroom Bot",
-    "created_at": "2026-10-22T09:54:47.065717+00:00",
-    "link_url": "https://www.redhat.com/en/blog/shared-gpus-without-shared-latency-priority-aware-serving-in-red-hat-ai",
-    "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 367.4h without manual admin curation.",
-    "updated_at": "2026-10-22T16:52:00.677Z"
-  },
-  {
-    "id": "9af2258b-2440-45f6-8b77-a45ae0b7fe54",
-    "title": "Amazon Aurora and Amazon RDS now support On-Demand Capacity Reservations",
-    "content": "🎯 What Changed: AWS now supports On-Demand Capacity Reservations for Amazon Aurora and Amazon RDS, allowing teams to reserve database compute capacity across specific.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
-    "tags": [
-      "#AWS",
-      "#CloudArchitecture",
-      "#CloudNews"
-    ],
-    "upvotes": 1,
-    "downvotes": 0,
-    "score": 1,
-    "author": "Cloud Newsroom Bot",
-    "created_at": "2026-10-22T03:05:11.738252+00:00",
-    "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/10/amazon-aurora-rds-on-demand-capacity-reservations/",
-    "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 359.8h without manual admin curation.",
-    "updated_at": "2026-10-22T09:16:03.198Z"
-  },
-  {
-    "id": "0b6826b6-fc4c-4621-8f9b-bbbea3de16aa",
-    "title": "K8s v1.37 Hardens Storage with Volume Mount & EmptyDir Controls",
-    "content": "🎯 What Changed: Kubernetes v1.37 introduces new bind mount options and `emptyDir` permission modes for enhanced container storage security.\n💡 Engineering Impact: These features enable architects and DevOps teams to enforce granular security policies like `noexec` on volumes and set specific `emptyDir` permissions, preventing privilege escalation and simplifying compliance without complex workarounds.",
+    "id": "88a2ed59-fb47-488b-b07c-d6be1de35d0b",
+    "title": "Kubernetes Node Swap GA: Triple Pod Density, Slash Costs",
+    "content": "🎯 What Changed: Kubernetes v1.34 officially supports Node Swap, utilizing fast NVMe SSDs to page out dormant memory.\n💡 Engineering Impact: This significantly boosts pod density by up to 3x for memory-intensive AI and bursty workloads, optimizing resource utilization and reducing infrastructure costs. It prevents OOM kills and enhances cluster stability, crucial for modern agentic AI.",
     "tags": [
       "#Kubernetes",
       "#CNCF",
@@ -50,12 +12,12 @@
     "downvotes": 0,
     "score": 3,
     "author": "Cloud Newsroom Bot",
-    "created_at": "2026-10-07T09:28:48.441634+00:00",
-    "link_url": "https://kubernetes.io/blog/2026/09/16/kubernetes-v1-37-hardening-container-storage/",
+    "created_at": "2026-10-07T09:28:31.276024+00:00",
+    "link_url": "https://kubernetes.io/blog/2026/10/05/scaling-kubernetes-workloads-with-node-swap/",
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
-    "updated_at": "2026-10-07T09:28:48.441634+00:00",
-    "ageDays": 14.991134236111112
+    "updated_at": "2026-10-07T09:28:31.276024+00:00",
+    "ageDays": 14.991332905092593
   },
   {
     "id": "81213fff-57d4-4c0b-90eb-c84beeb18d4d",
@@ -78,9 +40,9 @@
     "ageDays": 14.99120869212963
   },
   {
-    "id": "1ec5647f-ce95-4be3-ba87-6aa974960da7",
-    "title": "Spotlight on SIG Apps",
-    "content": "🎯 What Changed: Kubernetes SIG Apps is actively evolving core workload APIs to enhance resilience and support next-gen AI and distributed applications.\n💡 Engineering Impact: This provides platform teams with more robust application lifecycle management, reducing manual intervention and improving resource predictability for critical workloads. New subprojects like JobSet and Agent Sandbox introduce patterns for resilient AI and distributed computing, enhancing operational stability and cost efficiency.",
+    "id": "0b6826b6-fc4c-4621-8f9b-bbbea3de16aa",
+    "title": "K8s v1.37 Hardens Storage with Volume Mount & EmptyDir Controls",
+    "content": "🎯 What Changed: Kubernetes v1.37 introduces new bind mount options and `emptyDir` permission modes for enhanced container storage security.\n💡 Engineering Impact: These features enable architects and DevOps teams to enforce granular security policies like `noexec` on volumes and set specific `emptyDir` permissions, preventing privilege escalation and simplifying compliance without complex workarounds.",
     "tags": [
       "#Kubernetes",
       "#CNCF",
@@ -90,32 +52,12 @@
     "downvotes": 0,
     "score": 3,
     "author": "Cloud Newsroom Bot",
-    "created_at": "2026-10-07T09:28:37.111692+00:00",
-    "link_url": "https://kubernetes.io/blog/2026/09/22/sig-apps-spotlight/",
+    "created_at": "2026-10-07T09:28:48.441634+00:00",
+    "link_url": "https://kubernetes.io/blog/2026/09/16/kubernetes-v1-37-hardening-container-storage/",
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
-    "updated_at": "2026-10-07T09:28:37.111692+00:00",
-    "ageDays": 14.991265370370371
-  },
-  {
-    "id": "88a2ed59-fb47-488b-b07c-d6be1de35d0b",
-    "title": "Kubernetes Node Swap GA: Triple Pod Density, Slash Costs",
-    "content": "🎯 What Changed: Kubernetes v1.34 officially supports Node Swap, utilizing fast NVMe SSDs to page out dormant memory.\n💡 Engineering Impact: This significantly boosts pod density by up to 3x for memory-intensive AI and bursty workloads, optimizing resource utilization and reducing infrastructure costs. It prevents OOM kills and enhances cluster stability, crucial for modern agentic AI.",
-    "tags": [
-      "#Kubernetes",
-      "#CNCF",
-      "#CloudNative"
-    ],
-    "upvotes": 3,
-    "downvotes": 0,
-    "score": 3,
-    "author": "Cloud Newsroom Bot",
-    "created_at": "2026-10-07T09:28:31.276024+00:00",
-    "link_url": "https://kubernetes.io/blog/2026/10/05/scaling-kubernetes-workloads-with-node-swap/",
-    "status": "approved",
-    "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
-    "updated_at": "2026-10-07T09:28:31.276024+00:00",
-    "ageDays": 14.991332905092593
+    "updated_at": "2026-10-07T09:28:48.441634+00:00",
+    "ageDays": 14.991134236111112
   },
   {
     "id": "202f8734-234e-4bd5-9a67-8535691f131a",
@@ -138,6 +80,26 @@
     "ageDays": 14.991407175925925
   },
   {
+    "id": "1ec5647f-ce95-4be3-ba87-6aa974960da7",
+    "title": "Spotlight on SIG Apps",
+    "content": "🎯 What Changed: Kubernetes SIG Apps is actively evolving core workload APIs to enhance resilience and support next-gen AI and distributed applications.\n💡 Engineering Impact: This provides platform teams with more robust application lifecycle management, reducing manual intervention and improving resource predictability for critical workloads. New subprojects like JobSet and Agent Sandbox introduce patterns for resilient AI and distributed computing, enhancing operational stability and cost efficiency.",
+    "tags": [
+      "#Kubernetes",
+      "#CNCF",
+      "#CloudNative"
+    ],
+    "upvotes": 3,
+    "downvotes": 0,
+    "score": 3,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-10-07T09:28:37.111692+00:00",
+    "link_url": "https://kubernetes.io/blog/2026/09/22/sig-apps-spotlight/",
+    "status": "approved",
+    "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
+    "updated_at": "2026-10-07T09:28:37.111692+00:00",
+    "ageDays": 14.991265370370371
+  },
+  {
     "id": "37fcb780-d57d-4ba9-875a-7665dd9cd981",
     "title": "Amazon Redshift adds support for creating and refreshing Apache Iceberg materialized views",
     "content": "Amazon Redshift has introduced support for creating and refreshing Apache Iceberg materialized views, storing pre-computed joins and",
@@ -156,46 +118,6 @@
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T04:06:30.331436+00:00",
     "ageDays": 15.214954953703703
-  },
-  {
-    "id": "521c6dfa-7eb3-4834-87fb-7ac338d90f9d",
-    "title": "AWS Certificate Manager now supports ACME issuance through AWS PrivateLink",
-    "content": "AWS Certificate Manager now supports AWS PrivateLink for ACME public certificate issuance, allowing you to request and renew public",
-    "tags": [
-      "#AWS",
-      "#CloudArchitecture",
-      "#CloudNews"
-    ],
-    "upvotes": 3,
-    "downvotes": 0,
-    "score": 3,
-    "author": "Cloud Newsroom Bot",
-    "created_at": "2026-10-07T04:00:33.151279+00:00",
-    "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/10/AWS-Certificate-Manager-ACME-Privatelink",
-    "status": "approved",
-    "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
-    "updated_at": "2026-10-07T04:00:33.151279+00:00",
-    "ageDays": 15.219088981481482
-  },
-  {
-    "id": "b1f2627d-7930-4c4b-ab57-de042bac55c3",
-    "title": "AWS Batch now publishes job metrics to Amazon CloudWatch",
-    "content": "AWS Batch now automatically publishes job lifecycle and queue health metrics to Amazon CloudWatch for native observability. Why it matters: This eliminates the need for custom monitoring scripts and enables architects to build automated scaling or alerting policies based on real-time workload performance and failure rates.",
-    "tags": [
-      "#AWS",
-      "#CloudArchitecture",
-      "#CloudNews"
-    ],
-    "upvotes": 3,
-    "downvotes": 0,
-    "score": 3,
-    "author": "Cloud Newsroom Bot",
-    "created_at": "2026-10-07T04:00:00.696536+00:00",
-    "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/10/aws-batch-job-cloudwatch-metrics/",
-    "status": "approved",
-    "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
-    "updated_at": "2026-10-07T04:00:00.696536+00:00",
-    "ageDays": 15.219464618055556
   },
   {
     "id": "bf22f4dd-2d54-4b4c-9038-ea09aadef8a2",
@@ -238,24 +160,44 @@
     "ageDays": 15.219857129629629
   },
   {
-    "id": "09900f5e-4d21-4d5e-84a6-f5eec4459b40",
-    "title": "AWS Lambda now supports direct read configuration for Amazon S3 Files",
-    "content": "🎯 What Changed: AWS Lambda now supports direct configuration for S3 file reads, allowing functions to explicitly choose between S3 Files high-performance storage or standard S3 bucket access. This introduces a new control point for data sourcing.\n\n💡 Why It Matters: This enables engineers to optimize Lambda function performance and cost by aligning data access with the appropriate S3 storage tier. It provides critical architectural flexibility for data-intensive serverless applications.",
+    "id": "521c6dfa-7eb3-4834-87fb-7ac338d90f9d",
+    "title": "AWS Certificate Manager now supports ACME issuance through AWS PrivateLink",
+    "content": "AWS Certificate Manager now supports AWS PrivateLink for ACME public certificate issuance, allowing you to request and renew public",
     "tags": [
       "#AWS",
       "#CloudArchitecture",
       "#CloudNews"
     ],
-    "upvotes": 1,
+    "upvotes": 3,
     "downvotes": 0,
-    "score": 2,
+    "score": 3,
     "author": "Cloud Newsroom Bot",
-    "created_at": "2026-09-12T09:07:10.082273+00:00",
-    "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/09/aws-lambda-direct-read-s3files/",
+    "created_at": "2026-10-07T04:00:33.151279+00:00",
+    "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/10/AWS-Certificate-Manager-ACME-Privatelink",
     "status": "approved",
-    "eligibility_reason": "Official AWS Release: Ingested & AI synthesized for Admin Approval Queue.",
-    "updated_at": "2026-09-12T09:07:10.082273+00:00",
-    "ageDays": 40.00616153935185
+    "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
+    "updated_at": "2026-10-07T04:00:33.151279+00:00",
+    "ageDays": 15.219088981481482
+  },
+  {
+    "id": "b1f2627d-7930-4c4b-ab57-de042bac55c3",
+    "title": "AWS Batch now publishes job metrics to Amazon CloudWatch",
+    "content": "AWS Batch now automatically publishes job lifecycle and queue health metrics to Amazon CloudWatch for native observability. Why it matters: This eliminates the need for custom monitoring scripts and enables architects to build automated scaling or alerting policies based on real-time workload performance and failure rates.",
+    "tags": [
+      "#AWS",
+      "#CloudArchitecture",
+      "#CloudNews"
+    ],
+    "upvotes": 3,
+    "downvotes": 0,
+    "score": 3,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-10-07T04:00:00.696536+00:00",
+    "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/10/aws-batch-job-cloudwatch-metrics/",
+    "status": "approved",
+    "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
+    "updated_at": "2026-10-07T04:00:00.696536+00:00",
+    "ageDays": 15.219464618055556
   },
   {
     "id": "57b1b07d-9511-4a40-b351-2ec2866364b4",
@@ -278,6 +220,45 @@
     "ageDays": 40.00616798611111
   },
   {
+    "id": "09900f5e-4d21-4d5e-84a6-f5eec4459b40",
+    "title": "AWS Lambda now supports direct read configuration for Amazon S3 Files",
+    "content": "🎯 What Changed: AWS Lambda now supports direct configuration for S3 file reads, allowing functions to explicitly choose between S3 Files high-performance storage or standard S3 bucket access. This introduces a new control point for data sourcing.\n\n💡 Why It Matters: This enables engineers to optimize Lambda function performance and cost by aligning data access with the appropriate S3 storage tier. It provides critical architectural flexibility for data-intensive serverless applications.",
+    "tags": [
+      "#AWS",
+      "#CloudArchitecture",
+      "#CloudNews"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 2,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-09-12T09:07:10.082273+00:00",
+    "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/09/aws-lambda-direct-read-s3files/",
+    "status": "approved",
+    "eligibility_reason": "Official AWS Release: Ingested & AI synthesized for Admin Approval Queue.",
+    "updated_at": "2026-09-12T09:07:10.082273+00:00",
+    "ageDays": 40.00616153935185
+  },
+  {
+    "id": "f5e0b9d1-11cf-49b5-8be0-a276e3b70064",
+    "title": "Shared GPUs without shared latency: Priority-aware serving in Red Hat AI",
+    "content": "🎯 What Changed: Red Hat AI 3.5 introduces priority-aware serving, enabling diverse AI workloads to share GPUs without latency bottlenecks.\n💡 Engineering Impact: Built on llm-d flow control, this feature optimizes GPU utilization by prioritizing requests, drastically reducing batch rejections and ensuring low latency for critical applications. It eliminates the need for separate GPU pools, simplifying resource management and cutting operational costs.",
+    "tags": [
+      "#OpenShift",
+      "#RedHat",
+      "#DevOps"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-10-22T09:54:47.065717+00:00",
+    "link_url": "https://www.redhat.com/en/blog/shared-gpus-without-shared-latency-priority-aware-serving-in-red-hat-ai",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 367.4h without manual admin curation.",
+    "updated_at": "2026-10-22T16:52:00.677Z"
+  },
+  {
     "id": "348c81f1-2326-4d2d-b66d-65e9b6410a60",
     "title": "Amazon Cognito extends multi-Region replication to AWS GovCloud (US) Regions",
     "content": "🎯 What Changed: Amazon Cognito now supports multi-Region replication across AWS GovCloud (US) Regions, allowing automated synchronization of user and machine.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
@@ -296,5 +277,24 @@
     "eligibility_reason": "[Auto-Published] Published automatically after 354.4h without manual admin curation.",
     "updated_at": "2026-10-22T03:54:14.087+00:00",
     "ageDays": 0.25735439814814814
+  },
+  {
+    "id": "9af2258b-2440-45f6-8b77-a45ae0b7fe54",
+    "title": "Amazon Aurora and Amazon RDS now support On-Demand Capacity Reservations",
+    "content": "🎯 What Changed: AWS now supports On-Demand Capacity Reservations for Amazon Aurora and Amazon RDS, allowing teams to reserve database compute capacity across specific.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
+    "tags": [
+      "#AWS",
+      "#CloudArchitecture",
+      "#CloudNews"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-10-22T03:05:11.738252+00:00",
+    "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/10/amazon-aurora-rds-on-demand-capacity-reservations/",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 359.8h without manual admin curation.",
+    "updated_at": "2026-10-22T09:16:03.198Z"
   }
 ]
