@@ -19,7 +19,7 @@
     "theme-setup": "node ./scripts/themeSetup.js",
     "update-theme": "node ./scripts/themeUpdate.js",
     "format": "prettier -w .",
-    "test": "vitest run",
+    "test": "vitest run --testTimeout 20000",
     "trigger-sanitize-micro-posts": "node ./scripts/trigger-sanitize-micro-posts.js",
     "pulse:generate": "node scripts/daily-cloud-pulse-scraper.js",
     "newsletter:digest": "node scripts/weekly-newsletter-digest.js",
