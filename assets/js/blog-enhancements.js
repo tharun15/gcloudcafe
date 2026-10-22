@@ -1594,30 +1594,51 @@
     return !reason.includes("auto-published");
   }
 
+  function getPulseImpactScore(p) {
+    if (!p) return 0;
+    var score = typeof p.score === "number" ? p.score : ((p.upvotes || 0) - (p.downvotes || 0));
+    var total = score * 10;
+    if (isManualApprovedPulse(p)) {
+      total += 20;
+    }
+
+    var title = (p.title || "").toLowerCase();
+    var content = (p.content || "").toLowerCase();
+    var corpus = title + " " + content;
+
+    // Cost & Efficiency Breakthroughs (+15 points)
+    if (/slash costs|cut cloud costs|triple pod density|cost savings|density/i.test(corpus)) {
+      total += 15;
+    }
+    // Critical Architecture & Migration Shifts (+12 points)
+    if (/cgroup v2|critical migration|mandates|zero-trust|hardens storage|node swap|\bga\b|general availability/i.test(corpus)) {
+      total += 12;
+    }
+    // Frontier Technologies: AI, Hybrid Search, Iceberg, Lakehouse (+10 points)
+    if (/alloydb|hybrid search|apache iceberg|iceberg|genai|\bai\b|\bllm\b|modernize/i.test(corpus)) {
+      total += 10;
+    }
+    // Security & Compliance (+8 points)
+    if (/acme|privatelink|post-quantum|certificate manager|mtls|secrets manager/i.test(corpus)) {
+      total += 8;
+    }
+    // Routine administrative demotion (-15 points)
+    if (/govcloud|direct read configuration|capacity reservations/i.test(title)) {
+      total -= 15;
+    }
+
+    return total;
+  }
+
   function sortCohortByScore(list) {
     return (list || []).slice().sort(function(a, b) {
+      var weightA = getPulseImpactScore(a);
+      var weightB = getPulseImpactScore(b);
+      if (weightB !== weightA) return weightB - weightA;
+
       var dateA = new Date(a.created_at || a.updated_at || 0).getTime();
       var dateB = new Date(b.created_at || b.updated_at || 0).getTime();
-      var timeDiff = dateB - dateA;
-
-      // Priority 1: Freshness window. If one post is significantly fresher (>12h gap),
-      // recency takes priority so breaking news from today is never buried by yesterday's posts.
-      if (Math.abs(timeDiff) > 12 * 60 * 60 * 1000) {
-        return timeDiff;
-      }
-
-      // Priority 2: Within the contemporary 12h window, manual admin curation takes precedence
-      var manualA = isManualApprovedPulse(a) ? 1 : 0;
-      var manualB = isManualApprovedPulse(b) ? 1 : 0;
-      if (manualB !== manualA) return manualB - manualA;
-
-      // Priority 3: Community vote score
-      var scoreA = typeof a.score === "number" ? a.score : ((a.upvotes || 0) - (a.downvotes || 0));
-      var scoreB = typeof b.score === "number" ? b.score : ((b.upvotes || 0) - (b.downvotes || 0));
-      if (scoreB !== scoreA) return scoreB - scoreA;
-
-      // Priority 4: Recency tie-breaker
-      return timeDiff;
+      return dateB - dateA;
     });
   }
 
@@ -1636,13 +1657,19 @@
     }
 
     var allLoadedPulses = [];
-    var filterEngine = window.gcloudcafePulseFilter;
-    var filterState = filterEngine ? filterEngine.parseUrlState() : {
-      provider: "all",
-      domain: "all",
-      searchQuery: "",
-      sortBy: "trending"
-    };
+    function getFilterEngine() {
+      return (typeof window !== "undefined" && window.gcloudcafePulseFilter) || (typeof pulseFilterEngine !== "undefined" ? pulseFilterEngine : null);
+    }
+
+    var filterState = (function() {
+      var engine = getFilterEngine();
+      return engine ? engine.parseUrlState() : {
+        provider: "all",
+        domain: "all",
+        searchQuery: "",
+        sortBy: "trending"
+      };
+    })();
 
     function applyViewTransition(updateFn) {
       if (typeof document !== "undefined" && document.startViewTransition && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
@@ -1653,8 +1680,9 @@
     }
 
     function syncUrlQuery() {
-      if (typeof window === "undefined" || !window.history || !filterEngine) return;
-      var qs = filterEngine.buildQueryString(filterState);
+      var engine = getFilterEngine();
+      if (typeof window === "undefined" || !window.history || !engine) return;
+      var qs = engine.buildQueryString(filterState);
       var newUrl = window.location.pathname + qs;
       window.history.replaceState(null, "", newUrl);
     }
@@ -1672,8 +1700,9 @@
     }
 
     function filterAndRenderPulses() {
-      var filtered = filterEngine 
-        ? filterEngine.filterPulses(allLoadedPulses, filterState)
+      var engine = getFilterEngine();
+      var filtered = engine 
+        ? engine.filterPulses(allLoadedPulses, filterState)
         : allLoadedPulses;
 
       applyViewTransition(function() {
@@ -2886,11 +2915,16 @@
         var timeAgo = formatTimeAgo(item.created_at || item.updated_at);
         var pulseId = item.id ? String(item.id) : "";
 
+        var trendBadge = idx === 0 
+          ? '<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-mono font-black uppercase tracking-wider bg-amber-500/15 text-amber-700 dark:text-amber-400 border border-amber-500/30 shrink-0 select-none"><i class="fa-solid fa-fire text-[9px] text-amber-500 animate-pulse"></i><span class="hidden xs:inline">TOP STORY</span></span>'
+          : '<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-mono font-bold uppercase tracking-wider bg-sky-500/10 text-sky-700 dark:text-sky-400 border border-sky-500/25 shrink-0 select-none"><i class="fa-solid fa-bolt text-[9px] text-sky-500"></i><span class="hidden xs:inline">TRENDING</span></span>';
+
         itemsHtml += '<div class="ticker-rotator-item absolute inset-0 flex items-center justify-between gap-1.5 sm:gap-2 '
           + (isFirst ? 'is-active' : 'is-next')
           + '" data-ticker-slide="' + idx + '" data-pulse-id="' + escapeHtml(pulseId) + '" data-pulse-title="' + escapeHtml(safeTitle) + '" data-pulse-tag="' + escapeHtml(tagMeta.label) + '" data-pulse-tag-class="' + escapeHtml(tagMeta.cls) + '" data-pulse-time="' + escapeHtml(timeAgo) + '" aria-hidden="' + (isFirst ? 'false' : 'true') + '">'
           + '<a href="' + pulsePostLink + '" class="ticker-item group/item inline-flex items-center gap-1.5 sm:gap-2.5 min-w-0 flex-1 no-underline overflow-hidden" tabindex="' + (isFirst ? '0' : '-1') + '">'
           + '<span class="ticker-tag ' + tagMeta.cls + ' shrink-0">' + escapeHtml(tagMeta.label) + '</span>'
+          + trendBadge
           + '<div class="ticker-title-container overflow-hidden min-w-0 flex-1 relative flex items-center">'
           + '<span class="ticker-title font-sans font-medium text-[13.5px] sm:text-[14.5px] md:text-[15px] text-slate-800 dark:text-slate-100 group-hover/item:text-sky-600 dark:group-hover/item:text-sky-400 transition-colors whitespace-nowrap" title="' + escapeHtml(safeTitle) + '">' + safeTitle + '</span>'
           + '</div>'
@@ -9692,9 +9726,9 @@
         if (sortBy === "recent") {
           return new Date(b.created_at || 0) - new Date(a.created_at || 0);
         }
-        var scoreA = typeof a.score === "number" ? a.score : ((a.upvotes || 0) - (a.downvotes || 0));
-        var scoreB = typeof b.score === "number" ? b.score : ((b.upvotes || 0) - (b.downvotes || 0));
-        if (scoreB !== scoreA) return scoreB - scoreA;
+        var weightA = typeof getPulseImpactScore === "function" ? getPulseImpactScore(a) : (typeof a.score === "number" ? a.score : ((a.upvotes || 0) - (a.downvotes || 0)));
+        var weightB = typeof getPulseImpactScore === "function" ? getPulseImpactScore(b) : (typeof b.score === "number" ? b.score : ((b.upvotes || 0) - (b.downvotes || 0)));
+        if (weightB !== weightA) return weightB - weightA;
         return new Date(b.created_at || 0) - new Date(a.created_at || 0);
       });
     },
