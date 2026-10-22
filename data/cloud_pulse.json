@@ -1,43 +1,22 @@
 [
   {
-    "id": "88a2ed59-fb47-488b-b07c-d6be1de35d0b",
-    "title": "Kubernetes Node Swap GA: Triple Pod Density, Slash Costs",
-    "content": "🎯 What Changed: Kubernetes v1.34 officially supports Node Swap, utilizing fast NVMe SSDs to page out dormant memory.\n💡 Engineering Impact: This significantly boosts pod density by up to 3x for memory-intensive AI and bursty workloads, optimizing resource utilization and reducing infrastructure costs. It prevents OOM kills and enhances cluster stability, crucial for modern agentic AI.",
+    "id": "8f21e4c9-acb0-4b89-8935-df07d8fe1268",
+    "title": "Red Hat and HP: Empowering physical AI from bench to fleet",
+    "content": "🎯 What Changed: Red Hat and HP are collaborating to streamline the development and deployment of physical AI and robotics solutions, leveraging OpenShift.\n💡 Engineering Impact: This partnership enhances the repeatability, self-improvement, and traceability of AI/robotics policies, enabling robust production deployments. Engineers gain improved tools for policy quality assessment and verifiable lineage for AI models.",
     "tags": [
-      "#Kubernetes",
-      "#CNCF",
-      "#CloudNative"
+      "#OpenShift",
+      "#RedHat",
+      "#DevOps"
     ],
-    "upvotes": 3,
+    "upvotes": 1,
     "downvotes": 0,
-    "score": 3,
+    "score": 1,
     "author": "Cloud Newsroom Bot",
-    "created_at": "2026-10-07T09:28:31.276024+00:00",
-    "link_url": "https://kubernetes.io/blog/2026/10/05/scaling-kubernetes-workloads-with-node-swap/",
+    "created_at": "2026-10-22T09:54:41.385016+00:00",
+    "link_url": "https://www.redhat.com/en/blog/red-hat-and-hp-empowering-physical-ai-bench-fleet",
     "status": "approved",
-    "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
-    "updated_at": "2026-10-07T09:28:31.276024+00:00",
-    "ageDays": 14.991332905092593
-  },
-  {
-    "id": "81213fff-57d4-4c0b-90eb-c84beeb18d4d",
-    "title": "Kubernetes v1.37: Native PVC Usage Tracking to Cut Cloud Costs",
-    "content": "🎯 What Changed: Kubernetes v1.37 promotes the `PersistentVolumeClaimUnusedSinceTime` feature to Beta, natively adding an `Unused` condition to PVCs to track active pod references.\n💡 Engineering Impact: This feature empowers storage admins and DevOps to easily identify and automate the cleanup of orphaned PVCs, significantly reducing wasted storage capacity and cloud infrastructure costs without custom scripting.",
-    "tags": [
-      "#Kubernetes",
-      "#CNCF",
-      "#CloudNative"
-    ],
-    "upvotes": 3,
-    "downvotes": 0,
-    "score": 3,
-    "author": "Cloud Newsroom Bot",
-    "created_at": "2026-10-07T09:28:42.008666+00:00",
-    "link_url": "https://kubernetes.io/blog/2026/09/21/kubernetes-v1-37-pvc-last-used-time/",
-    "status": "approved",
-    "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
-    "updated_at": "2026-10-07T09:28:42.008666+00:00",
-    "ageDays": 14.99120869212963
+    "eligibility_reason": "[Auto-Published] Published automatically after 373.6h without manual admin curation.",
+    "updated_at": "2026-10-22T23:03:33.811Z"
   },
   {
     "id": "0b6826b6-fc4c-4621-8f9b-bbbea3de16aa",
@@ -57,12 +36,12 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:48.441634+00:00",
-    "ageDays": 14.991134236111112
+    "ageDays": 15.565789363425926
   },
   {
-    "id": "202f8734-234e-4bd5-9a67-8535691f131a",
-    "title": "Kubernetes Mandates cgroup v2: Critical Migration for v1.35+ Clusters",
-    "content": "🎯 What Changed: Kubernetes has deprecated cgroup v1, with v1.35 defaulting to cgroup v2 and v1.38 slated for its removal, making cgroup v2 the mandatory standard.\n💡 Engineering Impact: This shift mandates migration for all Linux nodes to cgroup v2 before upgrading to Kubernetes v1.35+, unlocking superior resource isolation, advanced Memory QoS, and enhanced in-place scaling capabilities. Admins must ensure kernel 5.8+ and compatible container runtimes to prevent kubelet startup failures.",
+    "id": "81213fff-57d4-4c0b-90eb-c84beeb18d4d",
+    "title": "Kubernetes v1.37: Native PVC Usage Tracking to Cut Cloud Costs",
+    "content": "🎯 What Changed: Kubernetes v1.37 promotes the `PersistentVolumeClaimUnusedSinceTime` feature to Beta, natively adding an `Unused` condition to PVCs to track active pod references.\n💡 Engineering Impact: This feature empowers storage admins and DevOps to easily identify and automate the cleanup of orphaned PVCs, significantly reducing wasted storage capacity and cloud infrastructure costs without custom scripting.",
     "tags": [
       "#Kubernetes",
       "#CNCF",
@@ -72,12 +51,12 @@
     "downvotes": 0,
     "score": 3,
     "author": "Cloud Newsroom Bot",
-    "created_at": "2026-10-07T09:28:24.859911+00:00",
-    "link_url": "https://kubernetes.io/blog/2026/10/06/kubernetes-cgroups-v2-shift/",
+    "created_at": "2026-10-07T09:28:42.008666+00:00",
+    "link_url": "https://kubernetes.io/blog/2026/09/21/kubernetes-v1-37-pvc-last-used-time/",
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
-    "updated_at": "2026-10-07T09:28:24.859911+00:00",
-    "ageDays": 14.991407175925925
+    "updated_at": "2026-10-07T09:28:42.008666+00:00",
+    "ageDays": 15.565863819444445
   },
   {
     "id": "1ec5647f-ce95-4be3-ba87-6aa974960da7",
@@ -97,7 +76,47 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:37.111692+00:00",
-    "ageDays": 14.991265370370371
+    "ageDays": 15.565920497685186
+  },
+  {
+    "id": "88a2ed59-fb47-488b-b07c-d6be1de35d0b",
+    "title": "Kubernetes Node Swap GA: Triple Pod Density, Slash Costs",
+    "content": "🎯 What Changed: Kubernetes v1.34 officially supports Node Swap, utilizing fast NVMe SSDs to page out dormant memory.\n💡 Engineering Impact: This significantly boosts pod density by up to 3x for memory-intensive AI and bursty workloads, optimizing resource utilization and reducing infrastructure costs. It prevents OOM kills and enhances cluster stability, crucial for modern agentic AI.",
+    "tags": [
+      "#Kubernetes",
+      "#CNCF",
+      "#CloudNative"
+    ],
+    "upvotes": 3,
+    "downvotes": 0,
+    "score": 3,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-10-07T09:28:31.276024+00:00",
+    "link_url": "https://kubernetes.io/blog/2026/10/05/scaling-kubernetes-workloads-with-node-swap/",
+    "status": "approved",
+    "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
+    "updated_at": "2026-10-07T09:28:31.276024+00:00",
+    "ageDays": 15.565988032407407
+  },
+  {
+    "id": "202f8734-234e-4bd5-9a67-8535691f131a",
+    "title": "Kubernetes Mandates cgroup v2: Critical Migration for v1.35+ Clusters",
+    "content": "🎯 What Changed: Kubernetes has deprecated cgroup v1, with v1.35 defaulting to cgroup v2 and v1.38 slated for its removal, making cgroup v2 the mandatory standard.\n💡 Engineering Impact: This shift mandates migration for all Linux nodes to cgroup v2 before upgrading to Kubernetes v1.35+, unlocking superior resource isolation, advanced Memory QoS, and enhanced in-place scaling capabilities. Admins must ensure kernel 5.8+ and compatible container runtimes to prevent kubelet startup failures.",
+    "tags": [
+      "#Kubernetes",
+      "#CNCF",
+      "#CloudNative"
+    ],
+    "upvotes": 3,
+    "downvotes": 0,
+    "score": 3,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-10-07T09:28:24.859911+00:00",
+    "link_url": "https://kubernetes.io/blog/2026/10/06/kubernetes-cgroups-v2-shift/",
+    "status": "approved",
+    "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
+    "updated_at": "2026-10-07T09:28:24.859911+00:00",
+    "ageDays": 15.566062303240741
   },
   {
     "id": "37fcb780-d57d-4ba9-875a-7665dd9cd981",
@@ -117,47 +136,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T04:06:30.331436+00:00",
-    "ageDays": 15.214954953703703
-  },
-  {
-    "id": "bf22f4dd-2d54-4b4c-9038-ea09aadef8a2",
-    "title": "Introducing Google Cloud Modernize, transforming for (and with) AI",
-    "content": "Google Cloud has launched Google Cloud Modernize, a comprehensive transformation portfolio that leverages AI to accelerate enterprise legacy",
-    "tags": [
-      "#GoogleCloud",
-      "#GCP",
-      "#CloudNews"
-    ],
-    "upvotes": 3,
-    "downvotes": 0,
-    "score": 3,
-    "author": "Cloud Newsroom Bot",
-    "created_at": "2026-10-07T03:59:45.591638+00:00",
-    "link_url": "https://cloud.google.com/blog/products/infrastructure-modernization/google-cloud-modernize-accelerate-transformation-with-ai/",
-    "status": "approved",
-    "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
-    "updated_at": "2026-10-07T03:59:45.591638+00:00",
-    "ageDays": 15.219639444444445
-  },
-  {
-    "id": "46fd5625-4fda-4793-a2ab-d6b627f3f4df",
-    "title": "AlloyDB: A unified database engine for hybrid search",
-    "content": "Google Cloud has introduced a unified engine for AlloyDB that integrates vector search and full-text search into",
-    "tags": [
-      "#GoogleCloud",
-      "#GCP",
-      "#CloudNews"
-    ],
-    "upvotes": 3,
-    "downvotes": 0,
-    "score": 3,
-    "author": "Cloud Newsroom Bot",
-    "created_at": "2026-10-07T03:59:26.783766+00:00",
-    "link_url": "https://cloud.google.com/blog/products/databases/simplify-ai-search-with-alloydb-hybrid-search-and-rrf/",
-    "status": "approved",
-    "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
-    "updated_at": "2026-10-07T03:59:26.783766+00:00",
-    "ageDays": 15.219857129629629
+    "ageDays": 15.789610081018518
   },
   {
     "id": "521c6dfa-7eb3-4834-87fb-7ac338d90f9d",
@@ -177,7 +156,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T04:00:33.151279+00:00",
-    "ageDays": 15.219088981481482
+    "ageDays": 15.793744108796297
   },
   {
     "id": "b1f2627d-7930-4c4b-ab57-de042bac55c3",
@@ -197,27 +176,47 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T04:00:00.696536+00:00",
-    "ageDays": 15.219464618055556
+    "ageDays": 15.79411974537037
   },
   {
-    "id": "57b1b07d-9511-4a40-b351-2ec2866364b4",
-    "title": "Kubernetes v1.37: Introducing Node Lifecycle Conditions",
-    "content": "🎯 What Changed: Kubernetes v1.37 introduces Node Lifecycle Conditions, providing a standardized, unified API for expressing a node's operational state beyond existing disparate signals like readiness or taints.\n\n💡 Why It Matters: This simplifies node management and automation, enabling more robust scheduling decisions, improved cluster autoscaling, and consistent handling of node health across diverse environments.",
+    "id": "bf22f4dd-2d54-4b4c-9038-ea09aadef8a2",
+    "title": "Introducing Google Cloud Modernize, transforming for (and with) AI",
+    "content": "Google Cloud has launched Google Cloud Modernize, a comprehensive transformation portfolio that leverages AI to accelerate enterprise legacy",
     "tags": [
-      "#Kubernetes",
-      "#CNCF",
-      "#CloudNative"
+      "#GoogleCloud",
+      "#GCP",
+      "#CloudNews"
     ],
-    "upvotes": 1,
+    "upvotes": 3,
     "downvotes": 0,
-    "score": 2,
+    "score": 3,
     "author": "Cloud Newsroom Bot",
-    "created_at": "2026-09-12T09:07:09.525138+00:00",
-    "link_url": "https://kubernetes.io/blog/2026/09/09/kubernetes-v1-37-node-lifecycle-conditions/",
+    "created_at": "2026-10-07T03:59:45.591638+00:00",
+    "link_url": "https://cloud.google.com/blog/products/infrastructure-modernization/google-cloud-modernize-accelerate-transformation-with-ai/",
     "status": "approved",
-    "eligibility_reason": "Official Kubernetes Release: Ingested & AI synthesized for Admin Approval Queue.",
-    "updated_at": "2026-09-12T09:07:09.525138+00:00",
-    "ageDays": 40.00616798611111
+    "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
+    "updated_at": "2026-10-07T03:59:45.591638+00:00",
+    "ageDays": 15.79429457175926
+  },
+  {
+    "id": "46fd5625-4fda-4793-a2ab-d6b627f3f4df",
+    "title": "AlloyDB: A unified database engine for hybrid search",
+    "content": "Google Cloud has introduced a unified engine for AlloyDB that integrates vector search and full-text search into",
+    "tags": [
+      "#GoogleCloud",
+      "#GCP",
+      "#CloudNews"
+    ],
+    "upvotes": 3,
+    "downvotes": 0,
+    "score": 3,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-10-07T03:59:26.783766+00:00",
+    "link_url": "https://cloud.google.com/blog/products/databases/simplify-ai-search-with-alloydb-hybrid-search-and-rrf/",
+    "status": "approved",
+    "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
+    "updated_at": "2026-10-07T03:59:26.783766+00:00",
+    "ageDays": 15.794512256944444
   },
   {
     "id": "09900f5e-4d21-4d5e-84a6-f5eec4459b40",
@@ -237,7 +236,27 @@
     "status": "approved",
     "eligibility_reason": "Official AWS Release: Ingested & AI synthesized for Admin Approval Queue.",
     "updated_at": "2026-09-12T09:07:10.082273+00:00",
-    "ageDays": 40.00616153935185
+    "ageDays": 40.580816666666664
+  },
+  {
+    "id": "57b1b07d-9511-4a40-b351-2ec2866364b4",
+    "title": "Kubernetes v1.37: Introducing Node Lifecycle Conditions",
+    "content": "🎯 What Changed: Kubernetes v1.37 introduces Node Lifecycle Conditions, providing a standardized, unified API for expressing a node's operational state beyond existing disparate signals like readiness or taints.\n\n💡 Why It Matters: This simplifies node management and automation, enabling more robust scheduling decisions, improved cluster autoscaling, and consistent handling of node health across diverse environments.",
+    "tags": [
+      "#Kubernetes",
+      "#CNCF",
+      "#CloudNative"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 2,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-09-12T09:07:09.525138+00:00",
+    "link_url": "https://kubernetes.io/blog/2026/09/09/kubernetes-v1-37-node-lifecycle-conditions/",
+    "status": "approved",
+    "eligibility_reason": "Official Kubernetes Release: Ingested & AI synthesized for Admin Approval Queue.",
+    "updated_at": "2026-09-12T09:07:09.525138+00:00",
+    "ageDays": 40.58082311342593
   },
   {
     "id": "f5e0b9d1-11cf-49b5-8be0-a276e3b70064",
@@ -256,7 +275,8 @@
     "link_url": "https://www.redhat.com/en/blog/shared-gpus-without-shared-latency-priority-aware-serving-in-red-hat-ai",
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 367.4h without manual admin curation.",
-    "updated_at": "2026-10-22T16:52:00.677Z"
+    "updated_at": "2026-10-22T16:52:00.677+00:00",
+    "ageDays": 0.5477497337962963
   },
   {
     "id": "348c81f1-2326-4d2d-b66d-65e9b6410a60",
@@ -276,25 +296,6 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 354.4h without manual admin curation.",
     "updated_at": "2026-10-22T03:54:14.087+00:00",
-    "ageDays": 0.25735439814814814
-  },
-  {
-    "id": "9af2258b-2440-45f6-8b77-a45ae0b7fe54",
-    "title": "Amazon Aurora and Amazon RDS now support On-Demand Capacity Reservations",
-    "content": "🎯 What Changed: AWS now supports On-Demand Capacity Reservations for Amazon Aurora and Amazon RDS, allowing teams to reserve database compute capacity across specific.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
-    "tags": [
-      "#AWS",
-      "#CloudArchitecture",
-      "#CloudNews"
-    ],
-    "upvotes": 1,
-    "downvotes": 0,
-    "score": 1,
-    "author": "Cloud Newsroom Bot",
-    "created_at": "2026-10-22T03:05:11.738252+00:00",
-    "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/10/amazon-aurora-rds-on-demand-capacity-reservations/",
-    "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 359.8h without manual admin curation.",
-    "updated_at": "2026-10-22T09:16:03.198Z"
+    "ageDays": 0.8320095254629629
   }
 ]
