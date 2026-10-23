@@ -1,5 +1,24 @@
 [
   {
+    "id": "6497f187-319e-491a-b09d-24e06029526e",
+    "title": "OpenShift Zero Trust: From Concept to Repeatable Blueprint",
+    "content": "🎯 What Changed: Red Hat OpenShift now offers a Layered Zero Trust Validated Pattern, providing a repeatable blueprint for implementing robust security.\n💡 Engineering Impact: This pattern transforms abstract zero trust principles into concrete, deployable actions for platform teams and security architects. It streamlines control integration across Kubernetes environments, ensuring verifiable compliance and operational security.",
+    "tags": [
+      "#OpenShift",
+      "#RedHat",
+      "#DevOps"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-10-23T09:48:59.432303+00:00",
+    "link_url": "https://www.redhat.com/en/blog/buzzword-blueprint-implementing-zero-trust-red-hat-openshift-layered-zero-trust-validated-pattern",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 391.2h without manual admin curation.",
+    "updated_at": "2026-10-23T16:43:26.773Z"
+  },
+  {
     "id": "f8f8decf-694b-4339-9fc2-3588abdf6cc5",
     "title": "Amazon OpenSearch Serverless now supports a 5-second default refresh interval",
     "content": "🎯 What Changed: Amazon OpenSearch Serverless has reduced its default refresh interval to 5 seconds across both search and vector collections.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
@@ -277,25 +296,5 @@
     "eligibility_reason": "[Auto-Published] Published automatically after 378.5h without manual admin curation.",
     "updated_at": "2026-10-23T03:58:11.346+00:00",
     "ageDays": 0.25090127314814814
-  },
-  {
-    "id": "f5e0b9d1-11cf-49b5-8be0-a276e3b70064",
-    "title": "Shared GPUs without shared latency: Priority-aware serving in Red Hat AI",
-    "content": "🎯 What Changed: Red Hat AI 3.5 introduces priority-aware serving, enabling diverse AI workloads to share GPUs without latency bottlenecks.\n💡 Engineering Impact: Built on llm-d flow control, this feature optimizes GPU utilization by prioritizing requests, drastically reducing batch rejections and ensuring low latency for critical applications. It eliminates the need for separate GPU pools, simplifying resource management and cutting operational costs.",
-    "tags": [
-      "#OpenShift",
-      "#RedHat",
-      "#DevOps"
-    ],
-    "upvotes": 1,
-    "downvotes": 0,
-    "score": 1,
-    "author": "Cloud Newsroom Bot",
-    "created_at": "2026-10-22T09:54:47.065717+00:00",
-    "link_url": "https://www.redhat.com/en/blog/shared-gpus-without-shared-latency-priority-aware-serving-in-red-hat-ai",
-    "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 367.4h without manual admin curation.",
-    "updated_at": "2026-10-22T16:52:00.677+00:00",
-    "ageDays": 0.9732651504629629
   }
 ]
