@@ -1,8 +1,8 @@
 [
   {
-    "id": "6497f187-319e-491a-b09d-24e06029526e",
-    "title": "OpenShift Zero Trust: From Concept to Repeatable Blueprint",
-    "content": "🎯 What Changed: Red Hat OpenShift now offers a Layered Zero Trust Validated Pattern, providing a repeatable blueprint for implementing robust security.\n💡 Engineering Impact: This pattern transforms abstract zero trust principles into concrete, deployable actions for platform teams and security architects. It streamlines control integration across Kubernetes environments, ensuring verifiable compliance and operational security.",
+    "id": "1ba3517a-e6b4-442b-a0ba-82482f465c8e",
+    "title": "Simplifying TLS certificate management on Red Hat OpenShift with NEC",
+    "content": "🎯 What Changed: Red Hat OpenShift, in collaboration with NEC, introduces TLS Registry to simplify and enhance observability for platform certificate management.\n💡 Engineering Impact: This new mechanism provides a consistent, verifiable approach to managing TLS certificates, crucial for securing communications across complex, evolving OpenShift environments. It streamlines operations by detecting certificate issues early, reducing operational overhead and improving platform trust.",
     "tags": [
       "#OpenShift",
       "#RedHat",
@@ -12,30 +12,11 @@
     "downvotes": 0,
     "score": 1,
     "author": "Cloud Newsroom Bot",
-    "created_at": "2026-10-23T09:48:59.432303+00:00",
-    "link_url": "https://www.redhat.com/en/blog/buzzword-blueprint-implementing-zero-trust-red-hat-openshift-layered-zero-trust-validated-pattern",
+    "created_at": "2026-10-23T09:48:54.675698+00:00",
+    "link_url": "https://www.redhat.com/en/blog/simplifying-tls-certificate-management-red-hat-openshift-nec",
     "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 391.2h without manual admin curation.",
-    "updated_at": "2026-10-23T16:43:26.773Z"
-  },
-  {
-    "id": "f8f8decf-694b-4339-9fc2-3588abdf6cc5",
-    "title": "Amazon OpenSearch Serverless now supports a 5-second default refresh interval",
-    "content": "🎯 What Changed: Amazon OpenSearch Serverless has reduced its default refresh interval to 5 seconds across both search and vector collections.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
-    "tags": [
-      "#AWS",
-      "#CloudArchitecture",
-      "#CloudNews"
-    ],
-    "upvotes": 1,
-    "downvotes": 0,
-    "score": 1,
-    "author": "Cloud Newsroom Bot",
-    "created_at": "2026-10-23T03:13:25.023341+00:00",
-    "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/10/amazon-opensearch-serverless-supports-5-second-refresh-interval/",
-    "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 383.8h without manual admin curation.",
-    "updated_at": "2026-10-23T09:16:18.374Z"
+    "eligibility_reason": "[Auto-Published] Published automatically after 397.5h without manual admin curation.",
+    "updated_at": "2026-10-23T22:57:30.882Z"
   },
   {
     "id": "0b6826b6-fc4c-4621-8f9b-bbbea3de16aa",
@@ -55,7 +36,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:48.441634+00:00",
-    "ageDays": 15.991304780092593
+    "ageDays": 16.561591828703705
   },
   {
     "id": "81213fff-57d4-4c0b-90eb-c84beeb18d4d",
@@ -75,7 +56,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:42.008666+00:00",
-    "ageDays": 15.991379236111111
+    "ageDays": 16.56166628472222
   },
   {
     "id": "1ec5647f-ce95-4be3-ba87-6aa974960da7",
@@ -95,7 +76,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:37.111692+00:00",
-    "ageDays": 15.991435914351852
+    "ageDays": 16.561722962962964
   },
   {
     "id": "88a2ed59-fb47-488b-b07c-d6be1de35d0b",
@@ -115,7 +96,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:31.276024+00:00",
-    "ageDays": 15.991503449074074
+    "ageDays": 16.561790497685184
   },
   {
     "id": "202f8734-234e-4bd5-9a67-8535691f131a",
@@ -135,7 +116,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:24.859911+00:00",
-    "ageDays": 15.991577719907408
+    "ageDays": 16.561864768518518
   },
   {
     "id": "37fcb780-d57d-4ba9-875a-7665dd9cd981",
@@ -155,7 +136,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T04:06:30.331436+00:00",
-    "ageDays": 16.215125497685186
+    "ageDays": 16.785412546296296
   },
   {
     "id": "521c6dfa-7eb3-4834-87fb-7ac338d90f9d",
@@ -175,7 +156,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T04:00:33.151279+00:00",
-    "ageDays": 16.219259525462963
+    "ageDays": 16.789546574074073
   },
   {
     "id": "b1f2627d-7930-4c4b-ab57-de042bac55c3",
@@ -195,7 +176,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T04:00:00.696536+00:00",
-    "ageDays": 16.219635162037036
+    "ageDays": 16.789922210648147
   },
   {
     "id": "bf22f4dd-2d54-4b4c-9038-ea09aadef8a2",
@@ -215,7 +196,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T03:59:45.591638+00:00",
-    "ageDays": 16.219809988425926
+    "ageDays": 16.790097037037036
   },
   {
     "id": "46fd5625-4fda-4793-a2ab-d6b627f3f4df",
@@ -235,7 +216,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T03:59:26.783766+00:00",
-    "ageDays": 16.22002767361111
+    "ageDays": 16.790314722222224
   },
   {
     "id": "09900f5e-4d21-4d5e-84a6-f5eec4459b40",
@@ -255,7 +236,7 @@
     "status": "approved",
     "eligibility_reason": "Official AWS Release: Ingested & AI synthesized for Admin Approval Queue.",
     "updated_at": "2026-09-12T09:07:10.082273+00:00",
-    "ageDays": 41.006332083333334
+    "ageDays": 41.57661913194445
   },
   {
     "id": "57b1b07d-9511-4a40-b351-2ec2866364b4",
@@ -275,7 +256,27 @@
     "status": "approved",
     "eligibility_reason": "Official Kubernetes Release: Ingested & AI synthesized for Admin Approval Queue.",
     "updated_at": "2026-09-12T09:07:09.525138+00:00",
-    "ageDays": 41.00633853009259
+    "ageDays": 41.576625578703705
+  },
+  {
+    "id": "6497f187-319e-491a-b09d-24e06029526e",
+    "title": "OpenShift Zero Trust: From Concept to Repeatable Blueprint",
+    "content": "🎯 What Changed: Red Hat OpenShift now offers a Layered Zero Trust Validated Pattern, providing a repeatable blueprint for implementing robust security.\n💡 Engineering Impact: This pattern transforms abstract zero trust principles into concrete, deployable actions for platform teams and security architects. It streamlines control integration across Kubernetes environments, ensuring verifiable compliance and operational security.",
+    "tags": [
+      "#OpenShift",
+      "#RedHat",
+      "#DevOps"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-10-23T09:48:59.432303+00:00",
+    "link_url": "https://www.redhat.com/en/blog/buzzword-blueprint-implementing-zero-trust-red-hat-openshift-layered-zero-trust-validated-pattern",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 391.2h without manual admin curation.",
+    "updated_at": "2026-10-23T16:43:26.773+00:00",
+    "ageDays": 0.5475757291666666
   },
   {
     "id": "7387b46e-6acd-48bc-beb6-7de16a649539",
@@ -295,6 +296,6 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 378.5h without manual admin curation.",
     "updated_at": "2026-10-23T03:58:11.346+00:00",
-    "ageDays": 0.25090127314814814
+    "ageDays": 0.8211883217592593
   }
 ]
