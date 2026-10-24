@@ -39,13 +39,17 @@ The model was not the bottleneck. The **execution harness** was.
 
 At its mathematical core, a Large Language Model is a pure, stateless function:
 
-$$\text{Output Tokens} = f(\text{Input Tokens})$$
+<div class="my-6 p-4 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-center font-mono text-base sm:text-lg font-bold text-slate-800 dark:text-sky-400 shadow-sm">
+Output Tokens = f(Input Tokens)
+</div>
 
 It has no clock. It has no filesystem. It cannot see a terminal. It cannot send a network packet. It remembers nothing between invocations.
 
 The **Harness** is the machine that surrounds this function:
 
-$$\text{Agent} = \text{Model} + \text{Harness}$$
+<div class="my-6 p-5 rounded-2xl bg-sky-50 dark:bg-sky-950/60 border-2 border-sky-300 dark:border-sky-600/70 text-center font-mono text-lg sm:text-xl font-black text-sky-950 dark:text-sky-200 shadow-sm tracking-wide">
+Agent = Model + Harness
+</div>
 
 The model is the **reasoning engine**. The harness is the **operating system** that provides:
 1. **Hands:** Tools, process execution, and filesystem mutations.

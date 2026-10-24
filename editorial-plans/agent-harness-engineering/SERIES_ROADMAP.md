@@ -19,7 +19,7 @@
 ## 🏛️ The Overarching Architectural Mental Model
 
 An LLM is a stateless token predictor. The **Harness** is the stateful computer that houses it:
-$$\text{Agent} = \text{Model} + \text{Harness}$$
+**Agent = Model + Harness**
 
 ```mermaid
 flowchart TD
