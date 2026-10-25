@@ -53,8 +53,8 @@ Agent = Model + Harness
 
 The model is the **reasoning engine**. The harness is the **operating system** that provides:
 1. **Hands:** Tools, process execution, and filesystem mutations.
-2. **Senses:** Observation loops, stdout/stderr capture, and error parsing.
-3. **Memory:** Context compaction, file watchers, and persistent state.
+2. **Senses:** Observation loops, terminal output capture, and error parsing.
+3. **Memory:** Context compaction, workspace tracking, and persistent state.
 4. **Guardrails:** Timeouts, resource limits, and isolation boundaries.
 
 ---
@@ -127,24 +127,24 @@ flowchart TD
     classDef alert fill:#FEE2E2,stroke:#DC2626,stroke-width:2px,color:#991B1B;
 
     subgraph ControlPlane ["1. The Control Plane (The Brain)"]
-        LLM["Large Language Model<br/><b>Probabilistic Reasoning</b>"]:::brain
-        ContextManager["Context & State Store<br/><b>Token Compaction Engine</b>"]:::brain
+        LLM["Large Language Model<br/>Probabilistic Reasoning"]:::brain
+        ContextManager["Context & State Store<br/>Token Compaction Engine"]:::brain
     end
 
     subgraph IsolationBarrier ["2. The Security & Validation Gate"]
-        Gateway["Tool Gateway & Validator<br/><b>Schema & Rate Checks</b>"]:::boundary
-        Watchdog["Supervisor Watchdog<br/><b>Timeout & Token Guard</b>"]:::alert
+        Gateway["Tool Gateway & Validator<br/>Schema & Rate Checks"]:::boundary
+        Watchdog["Supervisor Watchdog<br/>Timeout & Token Guard"]:::alert
     end
 
     subgraph ExecutionPlane ["3. The Execution Plane (The Hands)"]
-        Sandbox["Isolated Execution Sandbox<br/><b>MicroVM / Namespace</b>"]:::harness
-        FSWatcher["File & Workspace Monitor<br/><b>State Diff Engine</b>"]:::harness
+        Sandbox["Isolated Execution Sandbox<br/>MicroVM / Namespace"]:::harness
+        WorkspaceTracker["Workspace Tracker<br/>(State Diff Engine)"]:::harness
     end
 
     LLM -->|"1. Propose Mutation"| Gateway
     Gateway -->|"2. Forward Validated Call"| Sandbox
-    Sandbox -->|"3. Execute Action"| FSWatcher
-    FSWatcher -->|"4. Return Ground-Truth Observation"| ContextManager
+    Sandbox -->|"3. Execute Action"| WorkspaceTracker
+    WorkspaceTracker -->|"4. Return Ground-Truth Observation"| ContextManager
     ContextManager -->|"5. Update Active Context"| LLM
     Watchdog -.->|"Kill Signal on Hang"| Sandbox
 ```
@@ -152,7 +152,7 @@ flowchart TD
 ### The Three Operational Tiers:
 1. **The Control Plane (The Brain):** The model parses instructions and selects tools. It stores conversational history. It remains stateless between API calls.
 2. **The Validation Gate (The Filter):** The gateway validates tool arguments against JSON schemas before dispatching them. The supervisor watchdog tracks wall-clock execution time and token consumption.
-3. **The Execution Plane (The Hands):** The sandbox executes commands against real disk blocks and processes. It traps standard output, standard error, and exit codes. It returns ground-truth observations to the model.
+3. **The Execution Plane (The Hands):** The sandbox executes commands against real disk blocks and processes. It traps command outputs and error messages. It returns ground-truth observations to the model.
 
 ---
 
@@ -167,15 +167,15 @@ flowchart TD
     classDef cloud fill:#E0F2FE,stroke:#0284C7,stroke-width:2px,color:#0369A1;
 
     subgraph Archetype1 ["1. Terminal CLI Runner"]
-        A1["<b>Claude Code / Codex CLI / Aider</b><br/>Single-process local REPL<br/>Spawns child shell processes"]:::cli
+        A1["Claude Code / Codex CLI / Aider<br/>Single-process local REPL<br/>Spawns child shell processes"]:::cli
     end
 
     subgraph Archetype2 ["2. Reactive Workspace IDE"]
-        A2["<b>Google Antigravity / Cursor</b><br/>Multi-tier coordinator<br/>Editor AST streaming & event wakeups"]:::ide
+        A2["Google Antigravity / Cursor<br/>Multi-tier coordinator<br/>Editor AST streaming & event wakeups"]:::ide
     end
 
     subgraph Archetype3 ["3. Ephemeral Cloud MicroVM"]
-        A3["<b>Devin / Daytona / E2B</b><br/>Remote hypervisor sandbox<br/>Firecracker microVMs & network egress filters"]:::cloud
+        A3["Devin / Daytona / E2B<br/>Remote hypervisor sandbox<br/>Firecracker microVMs & network egress filters"]:::cloud
     end
 ```
 
@@ -206,9 +206,9 @@ A clean harness switch decouples configuration across three independent layers:
 flowchart TD
     classDef layer fill:#E0F2FE,stroke:#0284C7,stroke-width:2px,color:#0369A1;
 
-    L1["<b>Layer 1: Instruction Portability</b><br/>Proprietary files (CLAUDE.md) ➔ Universal open standards (AGENTS.md)"]:::layer
-    L2["<b>Layer 2: Tool Standardization</b><br/>Custom script bindings ➔ Model Context Protocol (MCP) bus"]:::layer
-    L3["<b>Layer 3: Execution Semantics</b><br/>Synchronous CLI polling ➔ Reactive event wakeups"]:::layer
+    L1["Layer 1: Instruction Portability<br/>Proprietary files (CLAUDE.md) ➔ Universal open standards (AGENTS.md)"]:::layer
+    L2["Layer 2: Tool Standardization<br/>Custom script bindings ➔ Model Context Protocol (MCP) bus"]:::layer
+    L3["Layer 3: Execution Semantics<br/>Synchronous CLI polling ➔ Reactive event wakeups"]:::layer
 
     L1 --> L2 --> L3
 ```
@@ -242,10 +242,10 @@ flowchart TD
     classDef po fill:#F3E8FF,stroke:#9333EA,stroke-width:2px,color:#6B21A8;
     classDef mgr fill:#FEE2E2,stroke:#DC2626,stroke-width:2px,color:#991B1B;
 
-    P1["<b>Software Engineers</b><br/>• Deterministic tool loops<br/>• Clean terminal output sanitization<br/>• Zero zombie background processes"]:::eng
-    P2["<b>System Architects</b><br/>• Zero vendor lock-in<br/>• MCP tool virtualization<br/>• Separation of Control and Execution planes"]:::arch
-    P3["<b>Product Owners</b><br/>• Higher task completion rates<br/>• Predictable customer feature delivery<br/>• Contained blast radius"]:::po
-    P4["<b>Technical Managers</b><br/>• Lower Total Cost of Ownership (TCO)<br/>• Killing runaway token bleed<br/>• Tooling portability across teams"]:::mgr
+    P1["Software Engineers<br/>• Deterministic tool loops<br/>• Clean terminal output sanitization<br/>• Zero zombie background processes"]:::eng
+    P2["System Architects<br/>• Zero vendor lock-in<br/>• MCP tool virtualization<br/>• Separation of Control and Execution planes"]:::arch
+    P3["Product Owners<br/>• Higher task completion rates<br/>• Predictable customer feature delivery<br/>• Contained blast radius"]:::po
+    P4["Technical Managers<br/>• Lower Total Cost of Ownership (TCO)<br/>• Killing runaway token bleed<br/>• Tooling portability across teams"]:::mgr
 ```
 
 * **For Software Engineers:** You understand why agent loops hang, how tool responses are sanitized, and how to debug background processes.

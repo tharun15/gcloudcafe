@@ -29,24 +29,24 @@ flowchart TD
     classDef alert fill:#FEE2E2,stroke:#DC2626,stroke-width:2px,color:#991B1B;
 
     subgraph ControlPlane ["1. The Control Plane (The Brain)"]
-        LLM["Large Language Model<br/><b>Probabilistic Reasoning</b>"]:::brain
-        ContextManager["Context & State Store<br/><b>Token Compaction Engine</b>"]:::brain
+        LLM["Large Language Model<br/>Probabilistic Reasoning"]:::brain
+        ContextManager["Context & State Store<br/>Token Compaction Engine"]:::brain
     end
 
     subgraph IsolationBarrier ["2. The Security & Validation Gate"]
-        Gateway["Tool Gateway & Validator<br/><b>Schema & Rate Checks</b>"]:::boundary
-        Watchdog["Supervisor Watchdog<br/><b>Timeout & Token Guard</b>"]:::alert
+        Gateway["Tool Gateway & Validator<br/>Schema & Rate Checks"]:::boundary
+        Watchdog["Supervisor Watchdog<br/>Timeout & Token Guard"]:::alert
     end
 
     subgraph ExecutionPlane ["3. The Execution Plane (The Hands)"]
-        Sandbox["Isolated Execution Sandbox<br/><b>MicroVM / Namespace</b>"]:::harness
-        FSWatcher["File & Workspace Monitor<br/><b>State Diff Engine</b>"]:::harness
+        Sandbox["Isolated Execution Sandbox<br/>MicroVM / Namespace"]:::harness
+        WorkspaceTracker["File & Workspace Monitor<br/>State Diff Engine"]:::harness
     end
 
     LLM -->|"1. Propose Mutation"| Gateway
     Gateway -->|"2. Forward Validated Call"| Sandbox
-    Sandbox -->|"3. Execute Action"| FSWatcher
-    FSWatcher -->|"4. Return Ground-Truth Observation"| ContextManager
+    Sandbox -->|"3. Execute Action"| WorkspaceTracker
+    WorkspaceTracker -->|"4. Return Ground-Truth Observation"| ContextManager
     ContextManager -->|"5. Update Active Context"| LLM
     Watchdog -.->|"Kill Signal on Hang"| Sandbox
 ```
