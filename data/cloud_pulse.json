@@ -1,5 +1,24 @@
 [
   {
+    "id": "d8ab713a-5da7-4451-89cd-60ef4a41f5c0",
+    "title": "Azure Scales Cloud-Native Infrastructure for AI",
+    "content": "🎯 What Changed: Azure is advancing its cloud-native infrastructure to support the development and scaling of next-generation AI applications and agents.\n💡 Engineering Impact: This evolution provides a robust foundation for architects to design scalable AI solutions and empowers DevOps teams to efficiently deploy and manage AI-driven applications.",
+    "tags": [
+      "#Azure",
+      "#CloudArchitecture",
+      "#CloudNews"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-10-25T09:38:56.215412+00:00",
+    "link_url": "https://azure.microsoft.com/en-us/blog/evolving-the-cloud-native-foundation-for-the-next-generation-of-ai/",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 438.3h without manual admin curation.",
+    "updated_at": "2026-10-25T15:47:24.110Z"
+  },
+  {
     "id": "05c2f768-3009-4f11-92c6-ddca8f40abb9",
     "title": "AWS Transit Gateway and AWS Cloud WAN now support 1:1 NAT",
     "content": "🎯 What Changed: AWS Transit Gateway and AWS Cloud WAN now support managed one-to-one network address translation directly on attachments through integration.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
@@ -277,25 +296,5 @@
     "eligibility_reason": "[Auto-Published] Published automatically after 426.4h without manual admin curation.",
     "updated_at": "2026-10-25T03:51:38.955+00:00",
     "ageDays": 0.25333685185185184
-  },
-  {
-    "id": "969ccd1a-0229-4b3e-ae88-def26888d8d5",
-    "title": "Lead AI & Automation: Transform Your IT Culture",
-    "content": "🎯 What Changed: This guide highlights the critical need for IT managers to actively cultivate an automation-driven culture to overcome adoption bottlenecks.\n💡 Engineering Impact: By addressing cultural resistance, organizations can accelerate AI and automation tool adoption, enhancing DevOps efficiency and freeing engineers for strategic innovation.",
-    "tags": [
-      "#OpenShift",
-      "#RedHat",
-      "#DevOps"
-    ],
-    "upvotes": 1,
-    "downvotes": 0,
-    "score": 1,
-    "author": "Cloud Newsroom Bot",
-    "created_at": "2026-10-24T09:21:48.271+00:00",
-    "link_url": "https://www.redhat.com/en/blog/how-develop-automation-driven-culture",
-    "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 414.1h without manual admin curation.",
-    "updated_at": "2026-10-24T15:36:48.871+00:00",
-    "ageDays": 0.9857290277777778
   }
 ]
