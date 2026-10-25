@@ -1,22 +1,22 @@
 [
   {
-    "id": "c68fd700-3103-46e9-86ed-7b1312bd3b25",
-    "title": "Top 5 AI Agent Use Cases Driving Enterprise Value",
-    "content": "🎯 What Changed: A new report highlights the top 5 practical enterprise use cases for AI agents, clarifying their tangible business impact.\n💡 Engineering Impact: This guidance empowers architects and DevOps teams to strategically integrate AI agents, automating complex workflows and optimizing operational efficiency for significant cost savings.",
+    "id": "1cbf25d7-f08d-4b07-84fd-ef8932a870bc",
+    "title": "Amazon Corretto October 2026 Quarterly Updates",
+    "content": "🎯 What Changed: Amazon has released its October 2026 quarterly security and critical updates for Long-Term Supported versions of Amazon.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
     "tags": [
-      "#OpenShift",
-      "#RedHat",
-      "#DevOps"
+      "#AWS",
+      "#CloudArchitecture",
+      "#CloudNews"
     ],
     "upvotes": 1,
     "downvotes": 0,
     "score": 1,
     "author": "Cloud Newsroom Bot",
-    "created_at": "2026-10-24T09:21:38.118799+00:00",
-    "link_url": "https://www.redhat.com/en/blog/top-5-enterprise-use-cases-ai-agents",
+    "created_at": "2026-10-25T02:56:26.955654+00:00",
+    "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/10/amazon-corretto-october-2026-quarterly-updates",
     "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 420.8h without manual admin curation.",
-    "updated_at": "2026-10-24T22:18:18.366Z"
+    "eligibility_reason": "[Auto-Published] Published automatically after 426.4h without manual admin curation.",
+    "updated_at": "2026-10-25T03:51:38.955Z"
   },
   {
     "id": "0b6826b6-fc4c-4621-8f9b-bbbea3de16aa",
@@ -36,7 +36,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:48.441634+00:00",
-    "ageDays": 17.53436048611111
+    "ageDays": 17.76584849537037
   },
   {
     "id": "81213fff-57d4-4c0b-90eb-c84beeb18d4d",
@@ -56,7 +56,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:42.008666+00:00",
-    "ageDays": 17.53443494212963
+    "ageDays": 17.765922951388887
   },
   {
     "id": "1ec5647f-ce95-4be3-ba87-6aa974960da7",
@@ -76,7 +76,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:37.111692+00:00",
-    "ageDays": 17.53449162037037
+    "ageDays": 17.76597962962963
   },
   {
     "id": "88a2ed59-fb47-488b-b07c-d6be1de35d0b",
@@ -96,7 +96,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:31.276024+00:00",
-    "ageDays": 17.53455915509259
+    "ageDays": 17.766047164351853
   },
   {
     "id": "202f8734-234e-4bd5-9a67-8535691f131a",
@@ -116,7 +116,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:24.859911+00:00",
-    "ageDays": 17.534633425925925
+    "ageDays": 17.766121435185184
   },
   {
     "id": "37fcb780-d57d-4ba9-875a-7665dd9cd981",
@@ -136,7 +136,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T04:06:30.331436+00:00",
-    "ageDays": 17.758181203703703
+    "ageDays": 17.989669212962962
   },
   {
     "id": "521c6dfa-7eb3-4834-87fb-7ac338d90f9d",
@@ -156,7 +156,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T04:00:33.151279+00:00",
-    "ageDays": 17.76231523148148
+    "ageDays": 17.99380324074074
   },
   {
     "id": "b1f2627d-7930-4c4b-ab57-de042bac55c3",
@@ -176,7 +176,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T04:00:00.696536+00:00",
-    "ageDays": 17.762690868055557
+    "ageDays": 17.994178877314816
   },
   {
     "id": "bf22f4dd-2d54-4b4c-9038-ea09aadef8a2",
@@ -196,7 +196,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T03:59:45.591638+00:00",
-    "ageDays": 17.762865694444443
+    "ageDays": 17.994353703703705
   },
   {
     "id": "46fd5625-4fda-4793-a2ab-d6b627f3f4df",
@@ -216,7 +216,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T03:59:26.783766+00:00",
-    "ageDays": 17.76308337962963
+    "ageDays": 17.99457138888889
   },
   {
     "id": "09900f5e-4d21-4d5e-84a6-f5eec4459b40",
@@ -236,7 +236,7 @@
     "status": "approved",
     "eligibility_reason": "Official AWS Release: Ingested & AI synthesized for Admin Approval Queue.",
     "updated_at": "2026-09-12T09:07:10.082273+00:00",
-    "ageDays": 42.549387789351854
+    "ageDays": 42.78087579861111
   },
   {
     "id": "57b1b07d-9511-4a40-b351-2ec2866364b4",
@@ -256,7 +256,7 @@
     "status": "approved",
     "eligibility_reason": "Official Kubernetes Release: Ingested & AI synthesized for Admin Approval Queue.",
     "updated_at": "2026-09-12T09:07:09.525138+00:00",
-    "ageDays": 42.54939423611111
+    "ageDays": 42.78088224537037
   },
   {
     "id": "969ccd1a-0229-4b3e-ae88-def26888d8d5",
@@ -276,7 +276,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 414.1h without manual admin curation.",
     "updated_at": "2026-10-24T15:36:48.871+00:00",
-    "ageDays": 0.5392235648148148
+    "ageDays": 0.7707115740740741
   },
   {
     "id": "9cce5b3c-9781-4e6d-8229-23304805de47",
@@ -296,6 +296,6 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 417.2h without manual admin curation.",
     "updated_at": "2026-10-24T18:39:34.261+00:00",
-    "ageDays": 0.5392890046296296
+    "ageDays": 0.7707770138888889
   }
 ]
