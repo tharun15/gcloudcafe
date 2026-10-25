@@ -1,290 +1,314 @@
 ﻿---
-title: "Beyond the Prompt: Inside the AI Agent Harness"
-meta_title: "Inside the AI Agent Harness: Architecture & Portability"
-description: "Master AI agent harness engineering: The Brain vs Hands mental model, 4 core concepts, 3 harness archetypes, and how to switch runtimes without vendor lock-in."
+title: "AI Agent Harness Architecture: Why Better Models Don't Guarantee Reliable Agents"
+meta_title: "AI Agent Harness Architecture: Tools, Sandboxes, State & Recovery"
+description: "Learn what an AI agent harness does, how its execution loop works, and how to build a minimal guarded Python tool runner with timeouts, workspace checks, and structured results."
 date: 2026-10-24
 image: "/images/agent-harness-architecture-part1.jpg"
 categories: ["Architecture", "AI Engineering", "DevOps"]
-tags: ["AI Agents", "System Design", "Harness Engineering", "Model Context Protocol", "Antigravity", "Distributed Systems"]
+tags: ["AI Agents", "System Design", "Harness Engineering", "Model Context Protocol", "AGENTS.md", "Sandboxing"]
 author: tharun-vempati
 featured: true
 draft: false
 series: "Harness Engineering for AI Agents"
 series_order: 1
-series_description: "A 3-part systems architecture deep dive into AI agent execution harnesses: sandboxing, tool idempotency, state management, and moving between CLI, IDE, and cloud runtimes."
+series_description: "A practical series on AI agent execution harnesses: sandboxing, tool idempotency, state management, failure recovery, and portability across CLI, IDE, and cloud runtimes."
 series_image: "/images/series-images/harness-engineering-series.jpg"
 faqs:
   - question: "What is an AI agent harness?"
-    answer: "An AI agent harness is the deterministic runtime infrastructure surrounding a large language model. It governs process execution, state persistence, tool dispatch, sandboxed isolation, and observation feedback loops."
-  - question: "Why is an agent defined as Model plus Harness?"
-    answer: "A base LLM is a stateless token predictor without system access or memory. The harness provides the operating system layer: file access, network boundaries, tool execution, and error verification."
-  - question: "How do you switch agent harnesses without rewriting tool integrations?"
-    answer: "By standardizing on the Model Context Protocol (MCP) for tool definitions and open instruction standards like AGENTS.md, decoupling the model's tools and instructions from any single runtime."
+    answer: "An AI agent harness is the software around a model that coordinates tools, execution, permissions, working state, observations, and recovery."
+  - question: "Is a stronger AI model enough to make an agent reliable?"
+    answer: "No. Better reasoning helps, but reliable execution also needs bounded tools, meaningful feedback, durable state, and safe failure handling."
+  - question: "Does MCP make an AI agent secure?"
+    answer: "No. MCP defines interoperability for tools and context; authentication, authorization, isolation, and auditing still need to be designed and enforced."
+  - question: "Can AGENTS.md and MCP eliminate vendor lock-in?"
+    answer: "They can reduce migration friction for repository guidance and integrations, but runtime behavior, permissions, and context handling still vary."
 ---
 
-You swap your agent's model from a standard open-weights checkpoint to a frontier reasoning model. You expect autonomous engineering.
+Imagine upgrading your coding agent from a small model to a much stronger reasoning model. You expect cleaner patches and fewer failed runs.
 
-Instead, the agent hangs. It enters a recursive loop. It reads the same configuration file six times, deletes a database directory, and crashes on a missing environment variable.
+Instead, the agent reads the same config file three times, launches a test process that never returns, and retries an operation without knowing whether the first attempt succeeded. The model might be capable of solving the programming problem. The system around it still cannot reliably *execute* the solution.
 
-The model was not the bottleneck. The **execution harness** was.
+This is the problem an **AI agent harness** addresses.
 
----
+> **Definition:** An agent harness is the runtime and coordination layer around a model. It exposes controlled tools, maintains working state, applies execution policies, returns observations, and handles interruptions or failures.
+>
+> 💡 **The Browser Analogy:** Think of the LLM as JavaScript running on a webpage, and the harness as the web browser. The code can calculate whatever it wants, but it cannot touch your local hard drive or open a raw socket unless the browser explicitly grants and mediates that permission.
 
-> ### 🎯 Core Definition
-> An **AI agent harness** is the deterministic runtime infrastructure that surrounds a large language model. It governs process execution, state persistence, tool dispatch, sandboxed isolation, and observation feedback loops to turn text predictions into reliable software changes.
+In this first article of the **Harness Engineering for AI Agents** series, we'll examine the architecture and build a deliberately small Python tool runner. The goal isn't to create a production agent in 50 lines. It's to make the boundaries concrete enough that you can evaluate a real one.
 
----
+## A model is not an execution environment
 
-## 🏛️ The First-Principles Formula
+A useful conceptual shorthand is:
 
-At its mathematical core, a Large Language Model is a pure, stateless function:
+```text
+Agent system ≈ Model + Harness + Tools + Environment
+```
 
-<div class="my-6 p-4 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-center font-mono text-base sm:text-lg font-bold text-slate-800 dark:text-sky-400 shadow-sm">
-Output Tokens = f(Input Tokens)
-</div>
+This is a teaching model, not a formal industry definition. In practice, products distribute these responsibilities differently, and some providers include orchestration features in their APIs.
 
-It has no clock. It has no filesystem. It cannot see a terminal. It cannot send a network packet. It remembers nothing between invocations.
+The model interprets context and proposes actions. A surrounding runtime can decide whether a proposed tool call is permitted, execute it, capture results, and supply the next observation. The model does not intrinsically have access to your filesystem, terminal, network, or persistent workspace; those capabilities depend on the system in which it runs.
 
-The **Harness** is the machine that surrounds this function:
+| Concern | Model | Harness / runtime |
+|---|---|---|
+| Choose a plausible next step | Reasons from context | Presents available tools and constraints |
+| Read or edit repository files | Requests an action | Exposes and mediates file operations |
+| Run a test | Requests execution | Launches a process and captures its result |
+| Persist task progress | Uses supplied context | Stores authoritative state outside the model |
+| Enforce security boundaries | Can follow instructions, imperfectly | Applies actual permissions and isolation |
+| Handle failures | Interprets an error | Detects timeouts, records outcomes, and controls retries |
 
-<div class="my-6 p-5 rounded-2xl bg-sky-50 dark:bg-sky-950/60 border-2 border-sky-300 dark:border-sky-600/70 text-center font-mono text-lg sm:text-xl font-black text-sky-950 dark:text-sky-200 shadow-sm tracking-wide">
-Agent = Model + Harness
-</div>
+The crucial distinction: **a prompt asking an agent to be careful is not the same thing as an enforceable boundary.**
 
-The model is the **reasoning engine**. The harness is the **operating system** that provides:
-1. **Hands:** Tools, process execution, and filesystem mutations.
-2. **Senses:** Observation loops, terminal output capture, and error parsing.
-3. **Memory:** Context compaction, workspace tracking, and persistent state.
-4. **Guardrails:** Timeouts, resource limits, and isolation boundaries.
+## The agent loop: propose, validate, execute, observe
 
----
+Think of the architecture as three collaborating parts:
 
-## 💡 4 Fundamental Concepts of Harness Engineering
-
-To understand how production agents work, engineers must separate probabilistic text generation from deterministic runtime execution.
-
-<div class="grid grid-cols-1 md:grid-cols-2 gap-4 my-6">
-
-<div class="p-5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-2">
-<div class="font-bold text-sky-600 dark:text-sky-400 text-sm">1. REASONING VS. STATE</div>
-<p class="text-xs text-slate-700 dark:text-slate-300 m-0">
-The model plans the logical step. The harness maintains the state machine.
-</p>
-<div class="text-xs font-semibold text-slate-900 dark:text-white">MECHANISM:</div>
-<p class="text-xs text-slate-800 dark:text-slate-200 m-0">
-Models do not remember past turns. The harness stores conversation transcripts, tracks git diffs, compacts token history, and feeds condensed state back into the next prompt.
-</p>
-</div>
-
-<div class="p-5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-2">
-<div class="font-bold text-sky-600 dark:text-sky-400 text-sm">2. PROMPTS VS. KERNEL BOUNDARIES</div>
-<p class="text-xs text-slate-700 dark:text-slate-300 m-0">
-Prompts are soft suggestions. Harnesses are hard security boundaries.
-</p>
-<div class="text-xs font-semibold text-slate-900 dark:text-white">MECHANISM:</div>
-<p class="text-xs text-slate-800 dark:text-slate-200 m-0">
-Telling a model "Do not delete production files" provides zero security. The harness enforces isolation using operating system primitives: Linux namespaces, seccomp syscall filters, and read-only volume mounts.
-</p>
-</div>
-
-<div class="p-5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-2">
-<div class="font-bold text-sky-600 dark:text-sky-400 text-sm">3. THE ACTION-OBSERVATION LOOP</div>
-<p class="text-xs text-slate-700 dark:text-slate-300 m-0">
-An agent loop is not a simple script. It is a transactional workflow.
-</p>
-<div class="text-xs font-semibold text-slate-900 dark:text-white">MECHANISM:</div>
-<p class="text-xs text-slate-800 dark:text-slate-200 m-0">
-The harness intercepts model intents, runs tools deterministically, sanitizes multi-megabyte terminal outputs, strips ANSI escape sequences, and formats raw errors into clear semantic feedback.
-</p>
-</div>
-
-<div class="p-5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-2">
-<div class="font-bold text-sky-600 dark:text-sky-400 text-sm">4. EPHEMERAL EXECUTION & RECOVERY</div>
-<p class="text-xs text-slate-700 dark:text-slate-300 m-0">
-Untrusted execution requires instant recovery points.
-</p>
-<div class="text-xs font-semibold text-slate-900 dark:text-white">MECHANISM:</div>
-<p class="text-xs text-slate-800 dark:text-slate-200 m-0">
-When an agent corrupts a file or hangs on a prompt, the harness rolls back state immediately. High-performance harnesses use Copy-on-Write (CoW) disk layers and memory snapshots restored in under 150 milliseconds.
-</p>
-</div>
-
-</div>
-
----
-
-## 🏛️ The Core Mental Model: The Brain, The Hands, and The Workshop
-
-To understand an AI agent, you do not need a degree in distributed systems. 
-
-Think of the model as an architect sitting in a room with no doors and no windows. The architect can write brilliant instructions on paper, but has no hands to touch a computer or build anything.
-
-The **Harness** is everything outside that room:
-- It takes the architect's note.
-- It checks whether the instruction is safe.
-- It hands the instruction to a worker in a protected workshop.
-- It reports back what happened so the architect can plan the next step.
+1. **Reasoning:** the model interprets the task and proposes the next operation.
+2. **Control:** the harness validates arguments, permissions, resource budgets, and workflow state.
+3. **Execution:** tools run in an appropriately constrained environment and return structured observations.
 
 ```mermaid
 flowchart TD
-    classDef brain fill:#E0F2FE,stroke:#0284C7,stroke-width:2px,color:#0369A1;
-    classDef guard fill:#FEF3C7,stroke:#D97706,stroke-width:2px,color:#92400E;
-    classDef hands fill:#DCFCE7,stroke:#16A34A,stroke-width:2px,color:#166534;
-    classDef alert fill:#FEE2E2,stroke:#DC2626,stroke-width:2px,color:#991B1B;
-
-    subgraph TheBrain ["1. The Brain (Thinking & Planning)"]
-        LLM["AI Model<br/>Decides the next step"]:::brain
-        Memory["Working Memory<br/>Remembers conversation history"]:::brain
-    end
-
-    subgraph TheGuard ["2. The Safety Inspector (Checking & Safety)"]
-        Validator["Action Checker<br/>Catches mistakes before they run"]:::guard
-        Timer["Timer & Budget Guard<br/>Stops infinite loops and freezes"]:::alert
-    end
-
-    subgraph TheHands ["3. The Hands (The Protected Workshop)"]
-        Sandbox["Protected Sandbox<br/>Safe environment where code runs"]:::hands
-        Tracker["Workspace Tracker<br/>Watches which files changed"]:::hands
-    end
-
-    LLM -->|"1. Suggests an action"| Validator
-    Validator -->|"2. Approves safe action"| Sandbox
-    Sandbox -->|"3. Runs the command"| Tracker
-    Tracker -->|"4. Returns the result"| Memory
-    Memory -->|"5. Shows outcome to brain"| LLM
-    Timer -.->|"Stops if stuck"| Sandbox
+    M["Model: propose an action"] --> V["Harness: validate tool and arguments"]
+    V --> P{"Allowed?"}
+    P -->|No| D["Return a structured denial"]
+    P -->|Yes| E["Execute in a constrained environment"]
+    E --> O["Capture status, output, and changes"]
+    O --> S["Update task state"]
+    D --> S
+    S --> M
+    B["Timeouts and resource budgets"] -.-> E
 ```
 
-### How the Three Parts Work Together:
+This diagram is a *desired design*, not a guarantee about every commercial agent. Some local CLI agents run commands directly on the developer's machine. Others use containers, virtual machines, or remote sandboxes. The blast radius depends on the actual configuration.
 
-1. **The Brain (The Model):** It only reads text and writes text. It decides which tool to use next, but it never touches your real machine directly.
-2. **The Safety Inspector (The Guard):** It checks the model's request before anything runs. Did the model ask to delete a critical project folder? Did it freeze waiting for input? The inspector blocks dangerous actions and kills frozen tasks.
-3. **The Hands & The Workshop (The Execution Sandbox):** This is the protected environment where commands execute. If the model makes a mistake or crashes a script, the damage stays trapped inside this room. Your primary machine remains safe.
-4. **The Senses (The Feedback Loop):** Once a command finishes, the harness captures the outcome: *Did the test pass? Did the build fail?* It hands that result back to the brain so it can plan the next move.
+A useful separation is the **control plane**, which authorizes and coordinates actions, and the **execution plane**, which performs them. The observation loop connects the two. If it returns only “something went wrong,” the model has little to work with. If it dumps 50,000 log lines into context, the signal is buried in noise.
 
-*(In technical architecture books, engineers often call this the **Control Plane** for the brain, and the **Execution Plane** for the hands).*
+## A real failure pattern: the test that never finishes
 
----
+Suppose an agent edits a Python service and calls `pytest`. The command starts a test that waits forever on a network dependency. Without a timeout, the agent may block indefinitely. With a naive polling loop, it may keep asking “is it done?” and fill its context with repetitive status messages.
 
-## 🧭 The 3 Modern Harness Archetypes
+A more useful execution contract is:
 
-Engineers encounter three distinct harness architectures in production today:
-
-```mermaid
-flowchart TD
-    classDef cli fill:#FEF3C7,stroke:#D97706,stroke-width:2px,color:#92400E;
-    classDef ide fill:#DCFCE7,stroke:#16A34A,stroke-width:2px,color:#166534;
-    classDef cloud fill:#E0F2FE,stroke:#0284C7,stroke-width:2px,color:#0369A1;
-
-    subgraph Archetype1 ["1. Terminal CLI Runner"]
-        A1["Claude Code / Codex CLI / Aider<br/>Single-process local REPL<br/>Spawns child shell processes"]:::cli
-    end
-
-    subgraph Archetype2 ["2. Reactive Workspace IDE"]
-        A2["Google Antigravity / Cursor<br/>Multi-tier coordinator<br/>Editor AST streaming & event wakeups"]:::ide
-    end
-
-    subgraph Archetype3 ["3. Ephemeral Cloud MicroVM"]
-        A3["Devin / Daytona / E2B<br/>Remote hypervisor sandbox<br/>Firecracker microVMs & network egress filters"]:::cloud
-    end
+```text
+request:  run approved test command
+result:   status=timeout
+          duration_seconds=10.0
+          exit_code=null
+          stderr_excerpt="Test process exceeded the deadline"
+next:     inspect the test/dependency, adjust the plan, or ask for help
 ```
 
----
+The harness does not magically repair the test. It converts a vague hang into a bounded, inspectable failure. That's a practical reliability improvement even if the model stays exactly the same.
 
-## 📊 Technical Comparison Across Harness Archetypes
+## Build a minimal guarded tool runner in Python
 
-| Engineering Dimension | 1. Terminal CLI Runner (Claude Code, Codex CLI) | 2. Reactive Workspace IDE (Antigravity, Cursor) | 3. Cloud MicroVM (Devin, Daytona, E2B) |
-| :--- | :--- | :--- | :--- |
-| **Process Model** | Single local Node.js or Python CLI process. | Multi-tier client/server coordinator inside the editor. | Remote hypervisor managing ephemeral virtual machines. |
-| **Execution Sandbox** | Directly on host OS via child process pipes. | Local workspace with background task managers. | Isolated Firecracker microVM or container boundary. |
-| **Context Awareness** | Manual file reading; blind to open editor tabs. | Live editor stream (open files, active cursor coordinates). | Remote git repository clone; headless environment. |
-| **Concurrency Model** | Synchronous blocking; user waits for completion. | Asynchronous daemon tasks with **reactive event wakeups**. | Parallel remote job queues with webhook callbacks. |
-| **Tool Extensibility** | Hardcoded tool functions and local CLI scripts. | Dynamic **Model Context Protocol (MCP)** server bus. | Remote containerized REST/gRPC API microservices. |
-| **Blast Radius** | High; can modify uncommitted host workspace files. | Medium; constrained to active workspace folder. | Zero; isolated remote virtual machine instance. |
+The following example uses only the Python standard library. It demonstrates a fixed command allowlist, a workspace check, a timeout, and a structured result. It is **illustrative, not a secure sandbox**: the approved test command can still execute arbitrary code from the repository and access whatever the host process can access.
 
----
+> 📌 **Executive takeaway for architects & managers:** Even without complex infrastructure, a dependable runner must enforce three non-negotiables: **(1)** a strict allowlist of executable tools, **(2)** an unyielding deadline so runs never freeze, and **(3)** a structured output envelope that separates stdout from fatal timeouts.
 
-## 🔄 The Mechanics of Switching Harnesses (Zero Vendor Lock-in)
+```python
+from pathlib import Path
+import subprocess
+import time
 
-When an engineering team migrates between agent environments (for example, moving from **Claude Code** to **Google Antigravity**, or from **Codex** to **Cursor**), they are not changing models. 
+WORKSPACE = Path("/workspace/service").resolve()
+ALLOWED_TOOLS = {
+    "run_tests": ["python", "-m", "pytest", "-q"],
+}
 
-They are **switching the runtime harness**.
 
-A clean harness switch decouples configuration across three independent layers:
+def run_tool(tool_name: str, working_directory: str, timeout: int = 30) -> dict:
+    started = time.monotonic()
+    command = ALLOWED_TOOLS.get(tool_name)
+    if command is None:
+        return {"status": "denied", "reason": "Unknown tool"}
 
-```mermaid
-flowchart TD
-    classDef layer fill:#E0F2FE,stroke:#0284C7,stroke-width:2px,color:#0369A1;
+    directory = Path(working_directory).resolve()
+    # Verify working directory is within allowed workspace boundary
+    try:
+        directory.relative_to(WORKSPACE)
+    except ValueError:
+        return {"status": "denied", "reason": "Working directory outside boundary"}
+    if not directory.is_dir():
+        return {"status": "error", "reason": "Workspace does not exist"}
+    if not isinstance(timeout, int) or isinstance(timeout, bool) or not 1 <= timeout <= 60:
+        return {"status": "denied", "reason": "Timeout must be 1-60 seconds"}
 
-    L1["Layer 1: Instruction Portability<br/>Proprietary files (CLAUDE.md) ➔ Universal open standards (AGENTS.md)"]:::layer
-    L2["Layer 2: Tool Standardization<br/>Custom script bindings ➔ Model Context Protocol (MCP) bus"]:::layer
-    L3["Layer 3: Execution Semantics<br/>Synchronous CLI polling ➔ Reactive event wakeups"]:::layer
-
-    L1 --> L2 --> L3
+    try:
+        completed = subprocess.run(
+            command,
+            cwd=directory,
+            capture_output=True,
+            text=True,
+            errors="replace",
+            timeout=timeout,
+            shell=False,
+        )
+        return {
+            "status": "ok" if completed.returncode == 0 else "failed",
+            "exit_code": completed.returncode,
+            "duration_seconds": round(time.monotonic() - started, 2),
+            "stdout_excerpt": completed.stdout[-2000:],
+            "stderr_excerpt": completed.stderr[-2000:],
+        }
+    except subprocess.TimeoutExpired:
+        return {
+            "status": "timeout",
+            "exit_code": None,
+            "duration_seconds": round(time.monotonic() - started, 2),
+            "reason": "Command exceeded its deadline",
+        }
+    except OSError as exc:
+        return {"status": "error", "reason": type(exc).__name__}
 ```
 
-### 1. Instruction Portability: Moving to Universal Standards
-Early agent tools tied instructions to proprietary files, such as `CLAUDE.md` or `.cursorrules`. 
-- **The Problem:** Instructions grew into massive 2,000-line monolithic files, burning 20% of the token context on every request.
-- **The Modern Architecture:** Move to open standards like **`AGENTS.md`** at the repository root, supported by modular rule directories (`.agents/rules/`).
-- **Result:** You change harnesses without rewriting your repository instructions.
+**How to try it:** Create `/workspace/service` with a small Python project and `pytest` installed in the Python environment, then call `run_tool("run_tests", "/workspace/service", timeout=10)`. Adjust the workspace constant for your own test environment. The example is not executed as part of this article, so the output shown above is an illustrative contract, not a measured benchmark.
 
-### 2. Tool Standardization via Model Context Protocol (MCP)
-In legacy setups, adding a database inspection tool required writing custom Python wrappers for one specific framework.
-- **The Problem:** Rewriting tool bindings every time a new agent tool emerged.
-- **The Modern Architecture:** Standardize on the **Model Context Protocol (MCP)**. MCP virtualizes tools into standalone JSON-RPC servers running over `stdio` or Server-Sent Events (SSE).
-- **Result:** Claude Code, Google Antigravity, and Codex CLI connect to the exact same database or GitHub tool server without code changes.
+**What this example gets right:** the model cannot supply an arbitrary shell command, the runner refuses other working directories, a deadline limits the wait, and the result distinguishes test failure from timeout and policy denial.
 
-### 3. Execution Semantics: Polling vs. Reactive Event Wakeups
-In terminal CLI runners, running an integration test forces the agent to block or poll a process.
-- **The Problem:** Polling loops burn tokens, flood history transcripts, and risk network timeouts.
-- **The Modern Architecture:** Modern harnesses use **Reactive Event Wakeups**. The agent issues a background command and terminates tool calls. The operating system notifies the coordinator when the process exits, reviving the agent with the exact exit code and log summary.
-- **Result:** Zero wasted tokens while waiting for multi-minute compilers, test suites, or Docker builds.
+**What it does not secure:** Python tests can read files outside the workspace, spawn subprocesses, access the network, or exfiltrate secrets available to the process. A timeout may also leave descendant processes running on some systems. Truncating the *returned* output does not bound memory used while `subprocess.run` captures it. Production designs need OS-level isolation, bounded output streaming, process-group cleanup, and carefully scoped credentials.
 
----
+This distinction matters: **checking the `cwd` is not filesystem isolation.**
 
-## 👥 The 4-Stakeholder Lens: Why Harness Architecture Matters to Everyone
+## Four responsibilities of a dependable harness
 
-```mermaid
-flowchart TD
-    classDef eng fill:#DCFCE7,stroke:#16A34A,stroke-width:2px,color:#166534;
-    classDef arch fill:#FEF3C7,stroke:#D97706,stroke-width:2px,color:#92400E;
-    classDef po fill:#F3E8FF,stroke:#9333EA,stroke-width:2px,color:#6B21A8;
-    classDef mgr fill:#FEE2E2,stroke:#DC2626,stroke-width:2px,color:#991B1B;
+### 1. Keep state outside the model
 
-    P1["Software Engineers<br/>• Deterministic tool loops<br/>• Clean terminal output sanitization<br/>• Zero zombie background processes"]:::eng
-    P2["System Architects<br/>• Zero vendor lock-in<br/>• MCP tool virtualization<br/>• Clear separation of Brain and Hands"]:::arch
-    P3["Product Owners<br/>• Higher task completion rates<br/>• Predictable customer feature delivery<br/>• Contained blast radius"]:::po
-    P4["Technical Managers<br/>• Lower Total Cost of Ownership (TCO)<br/>• Killing runaway token bleed<br/>• Tooling portability across teams"]:::mgr
+The context window is not a durable task database. A long-running agent needs an authoritative record of the goal, approved actions, repository revision, pending operations, test outcomes, and what has already been attempted.
+
+For example, after a restart, a harness should be able to distinguish “tests have not run” from “tests ran and failed” without asking the model to reconstruct history from a partial transcript. Summaries help control token usage, but they should not replace the authoritative execution record. (For an operational deep-dive into automated evaluation gates and test run tracking, see our guide on [Enterprise Multi-Agent Evaluation & CI/CD Runbooks](/blog/gemini-enterprise-multi-agent-evaluation-cicd-runbook/)).
+
+### 2. Treat tool calls as governed operations
+
+Every tool call should have a defined input schema, permission policy, timeout, result format, and failure semantics. The model might request `deploy_service`; the harness must determine whether the environment, target, and credentials make that operation acceptable.
+
+Prefer structured observations such as `status`, `exit_code`, `duration`, and relevant error excerpts over a wall of raw logs. Treat tool output as **untrusted data**: repository text, web pages, and logs may contain malicious instructions that should not override system policy.
+
+### 3. Enforce isolation rather than merely requesting obedience
+
+For untrusted code, consider disposable containers or VMs, restricted mounts, network egress rules, CPU and memory quotas, short-lived credentials, and approval gates for consequential operations. Linux namespaces, cgroups, and seccomp can be part of a defense-in-depth design, but none is a universal one-line security solution.
+
+The right controls depend on the threat model. A personal coding assistant on a laptop and an autonomous agent modifying production infrastructure should not share the same default permissions.
+
+### 4. Design recovery before adding retries
+
+A timeout does **not** prove that an operation had no effect. A deployment API may have accepted a request just before the connection dropped. Retrying blindly can create duplicate resources or trigger a second deployment.
+
+Record operation identifiers and outcomes, distinguish retryable from uncertain failures, and use idempotency keys where the target API supports them. For destructive changes, design explicit checkpoints, rollback plans, or compensating actions. A rollback is not always possible; some external side effects cannot be undone.
+
+We'll implement these recovery mechanics in Part 2 rather than pretending a basic subprocess wrapper solves distributed systems problems.
+
+## Three common harness shapes
+
+These are useful patterns, not rigid product categories. A single product may combine them.
+
+| Dimension | Local CLI | IDE-integrated | Remote sandbox |
+|---|---|---|---|
+| Main advantage | Close to shell and repository workflows | Rich editor diagnostics and file context | Disposable environments and parallel jobs |
+| Typical risk | Broad host access if not isolated | Coupling to editor-specific behavior | Remote credentials and network permissions |
+| Operational cost | Usually low to start | Integration and event complexity | Provisioning, latency, and infrastructure |
+| Best fit | Developer triage and scripts | Iterative code changes | CI-like tasks and untrusted execution |
+
+**CLI:** convenient, but check whether commands run directly on your host. A confirmation prompt is not equivalent to a container boundary.
+
+**IDE:** can respond to compiler errors and editor events, but portability may suffer if your workflow depends on proprietary editor state.
+
+**Cloud runtime:** can reduce local-machine risk with disposable environments, but isolation alone does not make repository credentials, outbound requests, or production APIs safe.
+
+## Portability: where AGENTS.md and MCP help
+
+A common operational problem is rewriting project guidance and integrations every time you switch agent products. Two useful building blocks address different parts of that problem.
+
+### AGENTS.md: share repository guidance
+
+[AGENTS.md](https://agents.md/) is a convention for giving coding agents repository-level instructions. For example:
+
+```text
+my-service/
+├── AGENTS.md
+├── src/
+├── tests/
+└── Makefile
 ```
 
-* **For Software Engineers:** You understand why agent loops hang, how tool responses are sanitized, and how to debug background processes.
-* **For System Architects:** You design modular platforms that decouple models from runtimes, preventing vendor lock-in through open standards.
-* **For Product Owners:** You recognize that agent reliability depends on harness determinism, not prompt tweaks, directly improving feature delivery rates.
-* **For Technical Managers:** You evaluate the operational trade-offs between CLI, IDE, and Cloud environments, managing infrastructure costs and team productivity.
+```markdown
+# Agent guidance
+
+## Build and test
+- Run `make test` before proposing a change.
+- Do not edit files under `generated/`.
+
+## Safety
+- Ask for approval before database migrations.
+- Never commit secrets or `.env` files.
+
+## Conventions
+- Follow the existing error-handling patterns.
+```
+
+This is a **reviewable instruction document**, not an enforcement mechanism. A rule in `AGENTS.md` saying “do not run migrations” must still be backed by permissions or approval controls if violating it would be dangerous. Different tools may also interpret instruction files differently.
+
+### MCP: standardize tool connectivity
+
+The [Model Context Protocol](https://modelcontextprotocol.io/introduction) provides a common way for AI applications to interact with tools and data sources. Its architecture includes client-server communication, and the protocol uses JSON-RPC messages; supported transports include stdio and Streamable HTTP. See the [MCP specification](https://modelcontextprotocol.io/specification/) for the current protocol details.
+
+```text
+Agent harness ── MCP ──> Repository integration
+Agent harness ── MCP ──> Database inspection tool
+Agent harness ── MCP ──> Internal deployment API
+```
+
+MCP reduces integration friction, but it does **not** grant safe permissions automatically. The application still needs to decide which tools are available, whose credentials they use, whether a write needs approval, and how actions are audited. Compatibility also varies by client and supported protocol features. We explored building production tool servers in our hands-on architecture guide on [Enterprise Multi-Agent Swarms with ADK and MCP](/blog/gemini-enterprise-multi-agent-swarm-adk-mcp/).
+
+**Practical takeaway:** `AGENTS.md` can make *instructions* more portable; MCP can make *tool interfaces* more portable. Neither guarantees equivalent behavior across runtimes or eliminates vendor lock-in.
+
+## Prefer completion signals to wasteful polling
+
+Imagine a build that takes eight minutes. Asking for its status every five seconds can generate dozens of unhelpful tool calls and observations. When the runtime supports asynchronous jobs, prefer a completion event or a single resumable job handle:
+
+```text
+1. Agent submits build job and receives job_id.
+2. Harness records job_id and suspends active waiting.
+3. Worker executes the job with its own limits.
+4. Completion event updates durable state.
+5. Agent receives exit status and relevant diagnostics.
+```
+
+Event-driven execution reduces repetitive context traffic. It doesn't eliminate token costs, and it introduces its own engineering requirements: job identity, durable events, duplicate delivery handling, and recovery after coordinator restarts.
+
+## A checklist before trusting an agent runtime
+
+| Ask this | Why it matters |
+|---|---|
+| Where is authoritative task state stored? | Supports restart and auditability |
+| Can the model invoke arbitrary commands? | Defines the execution risk |
+| Is the workspace actually isolated? | Limits access beyond the intended repository |
+| What happens on timeout? | Prevents indefinite hangs and orphaned work |
+| Are outputs bounded and treated as untrusted? | Controls cost and prompt-injection risk |
+| Are writes idempotent or tracked? | Reduces duplicate side effects |
+| Can risky actions require human approval? | Adds control before irreversible changes |
+| Are credentials scoped and actions logged? | Limits and investigates incidents |
+| Can instructions and integrations move to another runtime? | Reduces migration effort |
+
+The most important question isn't “Which model does this agent use?” It's **“What exactly happens when the model proposes a bad action, a tool hangs, or a write succeeds but the response is lost?”**
+
+## What comes next
+
+This article established the architecture: reasoning, control, execution, observations, and state. The minimal Python runner showed how a timeout and a permission check improve the execution contract—and why those checks alone are not a sandbox.
+
+In **Part 2: Safe Tool Execution**, we'll go deeper into idempotency keys, retry classification, partial failures, snapshots, compensating actions, and the difference between a recoverable error and a decision that needs human intervention.
+
+**A stronger model may make better decisions. A stronger harness makes those decisions safer to execute, easier to observe, and more recoverable when things go wrong.**
 
 ---
 
-## ⚖️ The Architectural Decision Matrix
+*Thanks for reading. This is Part 1 of the Harness Engineering for AI Agents series.*
 
-| Evaluation Dimension | Terminal CLI Runner | Reactive Workspace IDE | Ephemeral Cloud MicroVM |
-| :--- | :--- | :--- | :--- |
-| **Startup Latency** | **Fastest (<1s)** | **Fast (1–3s)** | **Moderate (10–30s)** |
-| **Resource Overhead** | Very Low (single process) | Medium (IDE engine) | High (Remote VM infrastructure) |
-| **Editor Awareness** | Blind to active tabs | Full AST and cursor context | Headless git context |
-| **Blast Radius Containment**| Manual review required | Constrained to folder | Fully isolated VM sandbox |
-| **Task Concurrency** | Synchronous blocking | Asynchronous reactive daemons| Distributed queue workers |
-| **Best Production Fit** | Quick terminal scripts & triage | Daily full-stack software development | Automated CI/CD & untrusted code runs |
+### References and further reading
 
----
-
-## 🔮 What Comes Next
-
-Understanding the harness is the first step. But what happens when an agent executes tools that mutate files, databases, and network connections?
-
-What happens when an agent drops a socket connection halfway through writing a database migration? How do you prevent partial writes from corrupting your system?
-
-In **Part 2**, we explore the **Tool Execution Pipeline**:
-* Why distributed agent tools need **Two-Phase Commits**.
-* How **Idempotency Keys** stop duplicate writes during network retries.
-* The mechanics of **Instant Copy-on-Write Snapshot Rollbacks** when an action fails.
+- [AGENTS.md — project guidance for coding agents](https://agents.md/)
+- [Model Context Protocol — introduction](https://modelcontextprotocol.io/introduction)
+- [Model Context Protocol — specification](https://modelcontextprotocol.io/specification/)
+- [Python documentation — subprocess](https://docs.python.org/3/library/subprocess.html)
+- [OWASP — LLM Prompt Injection Prevention Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html)
