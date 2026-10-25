@@ -1,314 +1,265 @@
-﻿---
-title: "AI Agent Harness Architecture: Why Better Models Don't Guarantee Reliable Agents"
-meta_title: "AI Agent Harness Architecture: Tools, Sandboxes, State & Recovery"
-description: "Learn what an AI agent harness does, how its execution loop works, and how to build a minimal guarded Python tool runner with timeouts, workspace checks, and structured results."
-date: 2026-10-24
+---
+title: "Beyond the Model: Understanding AI Agent Harnesses"
+meta_title: "AI Agent Harnesses Explained: Antigravity vs Codex"
+description: "Why do coding agents behave differently on the same task? Explore the model, harness, tools, context, permissions, and execution environments through an Antigravity vs Codex thought experiment."
+date: 2026-10-25
 image: "/images/agent-harness-architecture-part1.jpg"
 categories: ["Architecture", "AI Engineering", "DevOps"]
-tags: ["AI Agents", "System Design", "Harness Engineering", "Model Context Protocol", "AGENTS.md", "Sandboxing"]
+tags: ["AI Agents", "Agent Harness", "Google Antigravity", "OpenAI Codex", "System Design", "Agent Portability"]
 author: tharun-vempati
 featured: true
 draft: false
 series: "Harness Engineering for AI Agents"
 series_order: 1
-series_description: "A practical series on AI agent execution harnesses: sandboxing, tool idempotency, state management, failure recovery, and portability across CLI, IDE, and cloud runtimes."
+series_description: "A three-part engineering series on understanding AI agent harnesses, designing portable workflows across coding agents, and evaluating reliability through repeatable tests."
 series_image: "/images/series-images/harness-engineering-series.jpg"
 faqs:
   - question: "What is an AI agent harness?"
-    answer: "An AI agent harness is the software around a model that coordinates tools, execution, permissions, working state, observations, and recovery."
-  - question: "Is a stronger AI model enough to make an agent reliable?"
-    answer: "No. Better reasoning helps, but reliable execution also needs bounded tools, meaningful feedback, durable state, and safe failure handling."
-  - question: "Does MCP make an AI agent secure?"
-    answer: "No. MCP defines interoperability for tools and context; authentication, authorization, isolation, and auditing still need to be designed and enforced."
-  - question: "Can AGENTS.md and MCP eliminate vendor lock-in?"
-    answer: "They can reduce migration friction for repository guidance and integrations, but runtime behavior, permissions, and context handling still vary."
+    answer: "An agent harness is the software and execution environment around a model that coordinates tools, context, permissions, execution, feedback, and task state."
+  - question: "Are Google Antigravity and OpenAI Codex just different AI models?"
+    answer: "No. They are agent products and workflows that combine models with orchestration, tools, interfaces, execution environments, and policies. Their behavior depends on product version and configuration."
+  - question: "Can I switch coding agents without changing my repository?"
+    answer: "Often you can reuse your source code, tests, build scripts, and some instructions, but agent-specific integrations, permissions, and context behavior may need adaptation."
+  - question: "Does MCP make agent harnesses interchangeable?"
+    answer: "No. MCP can standardize certain tool and data connections, but it does not standardize an agent's reasoning, permissions, sandbox, or task lifecycle."
 ---
 
-Imagine upgrading your coding agent from a small model to a much stronger reasoning model. You expect cleaner patches and fewer failed runs.
+You give two coding agents the same repository and the same request:
 
-Instead, the agent reads the same config file three times, launches a test process that never returns, and retries an operation without knowing whether the first attempt succeeded. The model might be capable of solving the programming problem. The system around it still cannot reliably *execute* the solution.
+> Add a health-check endpoint, write tests, and tell me exactly what changed.
 
-This is the problem an **AI agent harness** addresses.
+One agent explores the repository, edits two files, runs tests, and reports a clean result. The other repeatedly inspects the same files, requests approval before a command, or declares success without running the test suite.
 
-> **Definition:** An agent harness is the runtime and coordination layer around a model. It exposes controlled tools, maintains working state, applies execution policies, returns observations, and handles interruptions or failures.
->
-> 💡 **The Browser Analogy:** Think of the LLM as JavaScript running on a webpage, and the harness as the web browser. The code can calculate whatever it wants, but it cannot touch your local hard drive or open a raw socket unless the browser explicitly grants and mediates that permission.
+It is tempting to say that one **model** is smarter. But that conclusion skips an important layer: **the agent harness**.
 
-In this first article of the **Harness Engineering for AI Agents** series, we'll examine the architecture and build a deliberately small Python tool runner. The goal isn't to create a production agent in 50 lines. It's to make the boundaries concrete enough that you can evaluate a real one.
+This is the first article in a three-part series about what happens *around* the language model. We'll use **Google Antigravity** and **OpenAI Codex** as recurring examples—not to crown a winner, but to understand why agent products behave differently and what that means if we want to switch between them.
 
-## A model is not an execution environment
+> **Scope:** This article explains the architecture and proposes a fair comparison method. It is **not** a benchmark or a verified feature-by-feature audit of current Antigravity and Codex releases. Capabilities, defaults, and permission settings can change; any empirical claim needs to be tested against named versions and configurations.
 
-A useful conceptual shorthand is:
+## First, separate the model from the agent
+
+At a useful conceptual level, the model receives context and generates a response or proposes a tool call. It does not inherently provide a filesystem, terminal, approval dialog, repository checkout, or persistent task history.
+
+The **harness** is the surrounding software that makes those capabilities available and governs their use. In real products, the boundary between model provider, agent application, and infrastructure may be distributed across several services.
+
+A useful mental model is:
 
 ```text
-Agent system ≈ Model + Harness + Tools + Environment
+Coding agent experience
+  = model + orchestration + tools + execution environment
+    + context/state + policies + user interface
 ```
 
-This is a teaching model, not a formal industry definition. In practice, products distribute these responsibilities differently, and some providers include orchestration features in their APIs.
+This is a teaching model, not a universal implementation formula.
 
-The model interprets context and proposes actions. A surrounding runtime can decide whether a proposed tool call is permitted, execute it, capture results, and supply the next observation. The model does not intrinsically have access to your filesystem, terminal, network, or persistent workspace; those capabilities depend on the system in which it runs.
-
-| Concern | Model | Harness / runtime |
+| Layer | What it does | Question to ask |
 |---|---|---|
-| Choose a plausible next step | Reasons from context | Presents available tools and constraints |
-| Read or edit repository files | Requests an action | Exposes and mediates file operations |
-| Run a test | Requests execution | Launches a process and captures its result |
-| Persist task progress | Uses supplied context | Stores authoritative state outside the model |
-| Enforce security boundaries | Can follow instructions, imperfectly | Applies actual permissions and isolation |
-| Handle failures | Interprets an error | Detects timeouts, records outcomes, and controls retries |
+| Model | Interprets context and proposes actions | Which model and settings are being used? |
+| Orchestrator | Runs the plan/action/observation loop | When does the agent retry, pause, or stop? |
+| Tools | Expose file operations, shell commands, searches, and integrations | What actions can the agent request? |
+| Execution environment | Runs commands and holds working files | Is it on the host, in a container, or remote? |
+| Context and state | Supplies instructions, history, observations, and task progress | What persists across steps and sessions? |
+| Policy and permissions | Approves or blocks actions | What requires human consent? |
+| Interface | Presents plans, diffs, logs, and results | What can the developer inspect and control? |
 
-The crucial distinction: **a prompt asking an agent to be careful is not the same thing as an enforceable boundary.**
+A stronger model can improve decisions, but it cannot compensate for every missing tool, incomplete observation, or unsafe permission boundary.
 
-## The agent loop: propose, validate, execute, observe
+## The loop behind a coding agent
 
-Think of the architecture as three collaborating parts:
-
-1. **Reasoning:** the model interprets the task and proposes the next operation.
-2. **Control:** the harness validates arguments, permissions, resource budgets, and workflow state.
-3. **Execution:** tools run in an appropriately constrained environment and return structured observations.
+Imagine the health-check request again. A typical harness might coordinate the following cycle:
 
 ```mermaid
 flowchart TD
-    M["Model: propose an action"] --> V["Harness: validate tool and arguments"]
-    V --> P{"Allowed?"}
-    P -->|No| D["Return a structured denial"]
-    P -->|Yes| E["Execute in a constrained environment"]
-    E --> O["Capture status, output, and changes"]
-    O --> S["Update task state"]
-    D --> S
-    S --> M
-    B["Timeouts and resource budgets"] -.-> E
+    User["Developer: submit request"] --> Context["Harness: assemble instructions & context"]
+    Context --> Model["Model: propose tool action"]
+    Model --> Check{"Tool call permitted?"}
+    Check -->|No| Feedback["Harness: return policy denial / request approval"]
+    Check -->|Yes| Execute["Sandbox: execute tool in environment"]
+    Execute --> Observe["Harness: capture output, exit code & diff"]
+    Feedback --> State["Harness: record step & task state"]
+    Observe --> State
+    State --> Done{"Task verified complete?"}
+    Done -->|No| Model
+    Done -->|Yes| Report["Harness: report changes & verification evidence"]
 ```
 
-This diagram is a *desired design*, not a guarantee about every commercial agent. Some local CLI agents run commands directly on the developer's machine. Others use containers, virtual machines, or remote sandboxes. The blast radius depends on the actual configuration.
+The diagram is deliberately simplified. Some products schedule background tasks, use parallel workers, or interrupt the loop for approvals. But the central idea holds: the model does not directly become a terminal or a filesystem. The surrounding system interprets and executes actions.
 
-A useful separation is the **control plane**, which authorizes and coordinates actions, and the **execution plane**, which performs them. The observation loop connects the two. If it returns only “something went wrong,” the model has little to work with. If it dumps 50,000 log lines into context, the signal is buried in noise.
+Notice how many failure modes exist outside model reasoning:
 
-## A real failure pattern: the test that never finishes
+- The agent receives a truncated error log and misses the actual failure.
+- A command waits for interactive input while the model expects it to finish.
+- The environment has no network access, so dependency installation fails.
+- The agent edits a file but loses the task state before verifying it.
+- A permission policy blocks the correct command, but the denial is not explained clearly.
 
-Suppose an agent edits a Python service and calls `pytest`. The command starts a test that waits forever on a network dependency. Without a timeout, the agent may block indefinitely. With a naive polling loop, it may keep asking “is it done?” and fill its context with repetitive status messages.
+These are harness and environment questions as much as model questions.
 
-A more useful execution contract is:
+## Antigravity vs Codex: compare workflows, not logos
 
-```text
-request:  run approved test command
-result:   status=timeout
-          duration_seconds=10.0
-          exit_code=null
-          stderr_excerpt="Test process exceeded the deadline"
-next:     inspect the test/dependency, adjust the plan, or ask for help
-```
+Suppose you start a task in **Google Antigravity** and later want to perform a similar task with **OpenAI Codex**. The interesting question is not simply *which model is underneath?* It is *which parts of the working environment and execution contract change?*
 
-The harness does not magically repair the test. It converts a vague hang into a bounded, inspectable failure. That's a practical reliability improvement even if the model stays exactly the same.
+Both names refer to agent products/workflows rather than a single immutable harness implementation. Codex, for example, may be used through different interfaces and execution setups; any comparison must name the mode being tested. Likewise, Antigravity behavior should be evaluated in the actual product version and workspace configuration in use.
 
-## Build a minimal guarded tool runner in Python
+Here is the comparison worksheet I would use before making claims about either product:
 
-The following example uses only the Python standard library. It demonstrates a fixed command allowlist, a workspace check, a timeout, and a structured result. It is **illustrative, not a secure sandbox**: the approved test command can still execute arbitrary code from the repository and access whatever the host process can access.
-
-> 📌 **Executive takeaway for architects & managers:** Even without complex infrastructure, a dependable runner must enforce three non-negotiables: **(1)** a strict allowlist of executable tools, **(2)** an unyielding deadline so runs never freeze, and **(3)** a structured output envelope that separates stdout from fatal timeouts.
-
-```python
-from pathlib import Path
-import subprocess
-import time
-
-WORKSPACE = Path("/workspace/service").resolve()
-ALLOWED_TOOLS = {
-    "run_tests": ["python", "-m", "pytest", "-q"],
-}
-
-
-def run_tool(tool_name: str, working_directory: str, timeout: int = 30) -> dict:
-    started = time.monotonic()
-    command = ALLOWED_TOOLS.get(tool_name)
-    if command is None:
-        return {"status": "denied", "reason": "Unknown tool"}
-
-    directory = Path(working_directory).resolve()
-    # Verify working directory is within allowed workspace boundary
-    try:
-        directory.relative_to(WORKSPACE)
-    except ValueError:
-        return {"status": "denied", "reason": "Working directory outside boundary"}
-    if not directory.is_dir():
-        return {"status": "error", "reason": "Workspace does not exist"}
-    if not isinstance(timeout, int) or isinstance(timeout, bool) or not 1 <= timeout <= 60:
-        return {"status": "denied", "reason": "Timeout must be 1-60 seconds"}
-
-    try:
-        completed = subprocess.run(
-            command,
-            cwd=directory,
-            capture_output=True,
-            text=True,
-            errors="replace",
-            timeout=timeout,
-            shell=False,
-        )
-        return {
-            "status": "ok" if completed.returncode == 0 else "failed",
-            "exit_code": completed.returncode,
-            "duration_seconds": round(time.monotonic() - started, 2),
-            "stdout_excerpt": completed.stdout[-2000:],
-            "stderr_excerpt": completed.stderr[-2000:],
-        }
-    except subprocess.TimeoutExpired:
-        return {
-            "status": "timeout",
-            "exit_code": None,
-            "duration_seconds": round(time.monotonic() - started, 2),
-            "reason": "Command exceeded its deadline",
-        }
-    except OSError as exc:
-        return {"status": "error", "reason": type(exc).__name__}
-```
-
-**How to try it:** Create `/workspace/service` with a small Python project and `pytest` installed in the Python environment, then call `run_tool("run_tests", "/workspace/service", timeout=10)`. Adjust the workspace constant for your own test environment. The example is not executed as part of this article, so the output shown above is an illustrative contract, not a measured benchmark.
-
-**What this example gets right:** the model cannot supply an arbitrary shell command, the runner refuses other working directories, a deadline limits the wait, and the result distinguishes test failure from timeout and policy denial.
-
-**What it does not secure:** Python tests can read files outside the workspace, spawn subprocesses, access the network, or exfiltrate secrets available to the process. A timeout may also leave descendant processes running on some systems. Truncating the *returned* output does not bound memory used while `subprocess.run` captures it. Production designs need OS-level isolation, bounded output streaming, process-group cleanup, and carefully scoped credentials.
-
-This distinction matters: **checking the `cwd` is not filesystem isolation.**
-
-## Four responsibilities of a dependable harness
-
-### 1. Keep state outside the model
-
-The context window is not a durable task database. A long-running agent needs an authoritative record of the goal, approved actions, repository revision, pending operations, test outcomes, and what has already been attempted.
-
-For example, after a restart, a harness should be able to distinguish “tests have not run” from “tests ran and failed” without asking the model to reconstruct history from a partial transcript. Summaries help control token usage, but they should not replace the authoritative execution record. (For an operational deep-dive into automated evaluation gates and test run tracking, see our guide on [Enterprise Multi-Agent Evaluation & CI/CD Runbooks](/blog/gemini-enterprise-multi-agent-evaluation-cicd-runbook/)).
-
-### 2. Treat tool calls as governed operations
-
-Every tool call should have a defined input schema, permission policy, timeout, result format, and failure semantics. The model might request `deploy_service`; the harness must determine whether the environment, target, and credentials make that operation acceptable.
-
-Prefer structured observations such as `status`, `exit_code`, `duration`, and relevant error excerpts over a wall of raw logs. Treat tool output as **untrusted data**: repository text, web pages, and logs may contain malicious instructions that should not override system policy.
-
-### 3. Enforce isolation rather than merely requesting obedience
-
-For untrusted code, consider disposable containers or VMs, restricted mounts, network egress rules, CPU and memory quotas, short-lived credentials, and approval gates for consequential operations. Linux namespaces, cgroups, and seccomp can be part of a defense-in-depth design, but none is a universal one-line security solution.
-
-The right controls depend on the threat model. A personal coding assistant on a laptop and an autonomous agent modifying production infrastructure should not share the same default permissions.
-
-### 4. Design recovery before adding retries
-
-A timeout does **not** prove that an operation had no effect. A deployment API may have accepted a request just before the connection dropped. Retrying blindly can create duplicate resources or trigger a second deployment.
-
-Record operation identifiers and outcomes, distinguish retryable from uncertain failures, and use idempotency keys where the target API supports them. For destructive changes, design explicit checkpoints, rollback plans, or compensating actions. A rollback is not always possible; some external side effects cannot be undone.
-
-We'll implement these recovery mechanics in Part 2 rather than pretending a basic subprocess wrapper solves distributed systems problems.
-
-## Three common harness shapes
-
-These are useful patterns, not rigid product categories. A single product may combine them.
-
-| Dimension | Local CLI | IDE-integrated | Remote sandbox |
+| Dimension | What to inspect in Antigravity | What to inspect in Codex | Why it matters |
 |---|---|---|---|
-| Main advantage | Close to shell and repository workflows | Rich editor diagnostics and file context | Disposable environments and parallel jobs |
-| Typical risk | Broad host access if not isolated | Coupling to editor-specific behavior | Remote credentials and network permissions |
-| Operational cost | Usually low to start | Integration and event complexity | Provisioning, latency, and infrastructure |
-| Best fit | Developer triage and scripts | Iterative code changes | CI-like tasks and untrusted execution |
+| Context discovery | Which files and editor/workspace signals are included? | Which files and session context are included? | Changes what the agent knows before acting |
+| Instructions | How are project rules loaded and prioritized? | How are project rules loaded and prioritized? | Determines whether shared guidance is followed |
+| Tool surface | Which file, terminal, browser, and external tools are available? | Which file, terminal, browser, and external tools are available? | Determines what the agent can actually do |
+| Execution boundary | Where do commands run, and with what filesystem/network access? | Where do commands run, and with what filesystem/network access? | Determines safety and reproducibility |
+| Approval model | Which actions pause for confirmation? | Which actions pause for confirmation? | Affects autonomy and risk |
+| State and recovery | Can interrupted work resume, and what state survives? | Can interrupted work resume, and what state survives? | Affects long-running tasks |
+| Verification | What evidence of tests and changes is shown? | What evidence of tests and changes is shown? | Distinguishes real completion from plausible narration |
 
-**CLI:** convenient, but check whether commands run directly on your host. A confirmation prompt is not equivalent to a container boundary.
+**Do not treat a row in this table as a product feature claim.** It is a checklist for collecting evidence. A fair evaluation requires matching task, repository revision, dependencies, credentials, network conditions, and allowed operations as closely as possible.
 
-**IDE:** can respond to compiler errors and editor events, but portability may suffer if your workflow depends on proprietary editor state.
+### A simple comparison experiment
 
-**Cloud runtime:** can reduce local-machine risk with disposable environments, but isolation alone does not make repository credentials, outbound requests, or production APIs safe.
-
-## Portability: where AGENTS.md and MCP help
-
-A common operational problem is rewriting project guidance and integrations every time you switch agent products. Two useful building blocks address different parts of that problem.
-
-### AGENTS.md: share repository guidance
-
-[AGENTS.md](https://agents.md/) is a convention for giving coding agents repository-level instructions. For example:
+Use a small repository with a failing test and a clearly defined task:
 
 ```text
-my-service/
+agent-harness-lab/
+├── README.md
 ├── AGENTS.md
 ├── src/
+│   └── app.py
 ├── tests/
-└── Makefile
+│   └── test_health.py
+└── scripts/
+    └── verify.sh
 ```
 
-```markdown
-# Agent guidance
+Give both agents the same instruction:
 
-## Build and test
-- Run `make test` before proposing a change.
-- Do not edit files under `generated/`.
+> Implement `GET /health` so it returns HTTP 200 and `{ "status": "ok" }`. Do not modify unrelated files. Run `scripts/verify.sh` and report the command result and changed files.
 
-## Safety
-- Ask for approval before database migrations.
-- Never commit secrets or `.env` files.
+Record **observations**, not impressions:
 
-## Conventions
-- Follow the existing error-handling patterns.
+1. Did the agent discover and follow the repository guidance?
+2. Which tools and commands did it actually use?
+3. Did it ask for approval, and for which action?
+4. Did it modify only the expected files?
+5. Did it run the verification script, and what was its exit code?
+6. Could you reproduce the result from a clean checkout?
+
+A single run is illustrative, not a statistically meaningful benchmark. For a stronger comparison, repeat the task across clean checkouts, record versions/settings, and distinguish model variability from harness behavior. (For structuring repeatable automated tests and evaluation gates, see our guide on [Enterprise Multi-Agent Evaluation & CI/CD Runbooks](/blog/gemini-enterprise-multi-agent-evaluation-cicd-runbook/)).
+
+## Why this matters to DevOps and platform engineers
+
+When an agent writes code, the result is not just a chat answer. It can change a repository, run a shell command, install dependencies, or interact with services. That makes familiar engineering concerns relevant:
+
+**Permissions.** A prompt saying "do not touch production" is not an access-control mechanism. Real controls must be enforced by the execution environment, credentials, and approval policy.
+
+**Observability.** A claim like "tests passed" is weaker than a captured command, exit code, and relevant test output.
+
+**Isolation.** An agent running directly on a developer's host has a different blast radius from one operating in a restricted disposable environment. Isolation still does not eliminate risks from credentials or network access.
+
+**State.** Long tasks need a way to distinguish completed steps from planned steps. Otherwise an interrupted agent may repeat work or lose track of modifications.
+
+**Recovery.** Re-running a read-only command is not the same as retrying a database migration or deployment. Safe retries require understanding side effects.
+
+None of these concerns is unique to AI. What changes is that a probabilistic decision-maker now selects which operations to request next.
+
+## The portability trap
+
+Let's say your team uses Antigravity for several months. You have built up project instructions, workflow conventions, integrations, and habits. Now you want to try Codex—or another coding agent.
+
+Your Git repository still exists. Your tests still exist. But not everything you relied on necessarily moves with it.
+
+I find it useful to separate portability into four layers:
+
+| Portability layer | What you want to reuse | Typical limitation |
+|---|---|---|
+| **Code and verification** | Source files, tests, build commands, CI checks | Environment differences can still affect results |
+| **Instructions** | Repository rules, coding conventions, task contracts | Agents may discover or prioritize instructions differently |
+| **Tool integrations** | Access to repositories, APIs, databases, internal services | Tool support, authentication, and policies may differ |
+| **Runtime behavior** | Approvals, sandboxing, state, retries, UI feedback | Usually the least portable layer |
+
+This explains why *switching models* and *switching agent products* are different projects.
+
+```mermaid
+flowchart TD
+    subgraph SharedRepo ["1. Shared Git Repository (100% Portable)"]
+        Code["Source code & unit tests"]
+        Verify["scripts/verify.sh validation contract"]
+        AgentsMD["AGENTS.md project conventions"]
+    end
+
+    subgraph StandardProtocols ["2. Interoperable Tool Protocols"]
+        MCP["Model Context Protocol (MCP) servers"]
+    end
+
+    subgraph HarnessA ["Harness A: Google Antigravity"]
+        A_Ctx["Workspace IDE context & active buffers"]
+        A_Run["Local background daemons & reactive agents"]
+        A_Pol["Interactive UI confirmation prompts"]
+    end
+
+    subgraph HarnessB ["Harness B: OpenAI Codex"]
+        B_Ctx["Session context & repository snapshot"]
+        B_Run["Cloud microVM or container runner"]
+        B_Pol["Automated sandbox execution policy"]
+    end
+
+    SharedRepo --> StandardProtocols
+    StandardProtocols --> HarnessA
+    StandardProtocols --> HarnessB
 ```
 
-This is a **reviewable instruction document**, not an enforcement mechanism. A rule in `AGENTS.md` saying “do not run migrations” must still be backed by permissions or approval controls if violating it would be dangerous. Different tools may also interpret instruction files differently.
+### Where AGENTS.md and MCP fit
 
-### MCP: standardize tool connectivity
+Two useful building blocks appear in this conversation:
 
-The [Model Context Protocol](https://modelcontextprotocol.io/introduction) provides a common way for AI applications to interact with tools and data sources. Its architecture includes client-server communication, and the protocol uses JSON-RPC messages; supported transports include stdio and Streamable HTTP. See the [MCP specification](https://modelcontextprotocol.io/specification/) for the current protocol details.
+- **`AGENTS.md`** provides repository-level guidance in a format recognized by some coding agents. It can describe build commands, conventions, and boundaries. It is not an enforcement mechanism, and agents do not necessarily interpret it identically.
+- **Model Context Protocol (MCP)** defines ways for AI applications to connect to tools and data sources. It can reduce the need to rewrite every integration, but it does not standardize the entire harness, permission model, or agent lifecycle. (We explored building production tool servers in our hands-on guide on [Enterprise Multi-Agent Swarms with ADK and MCP](/blog/gemini-enterprise-multi-agent-swarm-adk-mcp/)).
 
-```text
-Agent harness ── MCP ──> Repository integration
-Agent harness ── MCP ──> Database inspection tool
-Agent harness ── MCP ──> Internal deployment API
-```
+The practical strategy is to keep your *source of truth* as agent-neutral as possible: source code, tests, documented workflows, and explicit task acceptance criteria. Add thin product-specific adapters only where necessary.
 
-MCP reduces integration friction, but it does **not** grant safe permissions automatically. The application still needs to decide which tools are available, whose credentials they use, whether a write needs approval, and how actions are audited. Compatibility also varies by client and supported protocol features. We explored building production tool servers in our hands-on architecture guide on [Enterprise Multi-Agent Swarms with ADK and MCP](/blog/gemini-enterprise-multi-agent-swarm-adk-mcp/).
+For example, a `scripts/verify.sh` command is useful even if the agent changes. It is a repeatable verification contract outside any particular chat interface. By contrast, a proprietary approval screen or hidden session state cannot simply be checked into Git and replayed elsewhere.
 
-**Practical takeaway:** `AGENTS.md` can make *instructions* more portable; MCP can make *tool interfaces* more portable. Neither guarantees equivalent behavior across runtimes or eliminates vendor lock-in.
+**Portability is not identical behavior.** The goal is to make outcomes verifiable and switching costs manageable—not to pretend that all agents will make the same decisions.
 
-## Prefer completion signals to wasteful polling
+## A practical checklist before choosing an agent
 
-Imagine a build that takes eight minutes. Asking for its status every five seconds can generate dozens of unhelpful tool calls and observations. When the runtime supports asynchronous jobs, prefer a completion event or a single resumable job handle:
+Before adopting an agent for important repository work, ask:
 
-```text
-1. Agent submits build job and receives job_id.
-2. Harness records job_id and suspends active waiting.
-3. Worker executes the job with its own limits.
-4. Completion event updates durable state.
-5. Agent receives exit status and relevant diagnostics.
-```
+- Can I inspect the commands it ran and the files it changed?
+- Can I restrict its filesystem, network, and credential access?
+- Can I provide shared project instructions without duplicating everything?
+- Can I run the same tests independently of the agent?
+- Can I tell the difference between a proposed action and an executed action?
+- Can I recover or restart work after an interruption?
+- If I switch agent products, which instructions and integrations must be rewritten?
 
-Event-driven execution reduces repetitive context traffic. It doesn't eliminate token costs, and it introduces its own engineering requirements: job identity, durable events, duplicate delivery handling, and recovery after coordinator restarts.
+These questions are more durable than a leaderboard screenshot. Models and products will change. The engineering contract around your repository should be easier to reason about.
 
-## A checklist before trusting an agent runtime
+## What's next in this three-part series?
 
-| Ask this | Why it matters |
-|---|---|
-| Where is authoritative task state stored? | Supports restart and auditability |
-| Can the model invoke arbitrary commands? | Defines the execution risk |
-| Is the workspace actually isolated? | Limits access beyond the intended repository |
-| What happens on timeout? | Prevents indefinite hangs and orphaned work |
-| Are outputs bounded and treated as untrusted? | Controls cost and prompt-injection risk |
-| Are writes idempotent or tracked? | Reduces duplicate side effects |
-| Can risky actions require human approval? | Adds control before irreversible changes |
-| Are credentials scoped and actions logged? | Limits and investigates incidents |
-| Can instructions and integrations move to another runtime? | Reduces migration effort |
+**Part 1 — Beyond the Model: Understanding AI Agent Harnesses** *(this article)*  
+We separated the model from the harness, explored the execution loop, and established a fair way to examine Antigravity and Codex.
 
-The most important question isn't “Which model does this agent use?” It's **“What exactly happens when the model proposes a bad action, a tool hangs, or a write succeeds but the response is lost?”**
+**Part 2 — Breaking Agent Lock-In: AGENTS.md, MCP, and Portable Workflows**  
+We'll design a sample repository with shared instructions, reusable verification commands, tool interfaces, and minimal agent-specific adapters. We'll be explicit about what remains non-portable.
 
-## What comes next
+**Part 3 — Trust but Verify: Testing Agent Reliability Across Harnesses**  
+We'll run controlled tasks across agent setups, capture execution evidence, and explore failure handling, permission boundaries, retries, idempotency, and recovery.
 
-This article established the architecture: reasoning, control, execution, observations, and state. The minimal Python runner showed how a timeout and a permission check improve the execution contract—and why those checks alone are not a sandbox.
+## Final thought
 
-In **Part 2: Safe Tool Execution**, we'll go deeper into idempotency keys, retry classification, partial failures, snapshots, compensating actions, and the difference between a recoverable error and a decision that needs human intervention.
+A model can suggest a good next step. The harness determines **how that step is executed, observed, constrained, and carried forward**.
 
-**A stronger model may make better decisions. A stronger harness makes those decisions safer to execute, easier to observe, and more recoverable when things go wrong.**
+If you only compare models, you miss much of the system that shapes the developer experience. And if you plan for portability only after adopting an agent, you may discover that the hardest things to move were never in your repository.
+
+In Part 2, we'll turn that observation into a concrete repository design.
 
 ---
 
-*Thanks for reading. This is Part 1 of the Harness Engineering for AI Agents series.*
+### Further reading
 
-### References and further reading
+- [AGENTS.md project](https://agents.md/) — repository guidance conventions and examples.
+- [Model Context Protocol documentation](https://modelcontextprotocol.io/) — protocol concepts, tools, and transports.
+- [OpenAI Codex documentation](https://developers.openai.com/codex/) — consult the current product and configuration documentation before comparing behavior.
 
-- [AGENTS.md — project guidance for coding agents](https://agents.md/)
-- [Model Context Protocol — introduction](https://modelcontextprotocol.io/introduction)
-- [Model Context Protocol — specification](https://modelcontextprotocol.io/specification/)
-- [Python documentation — subprocess](https://docs.python.org/3/library/subprocess.html)
-- [OWASP — LLM Prompt Injection Prevention Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html)
+*Note: Product behavior discussed in this article is framed as a testable comparison, not as measured results. For an empirical comparison, publish the product versions, runtime settings, repository commit, task prompts, and execution logs alongside the findings.*
