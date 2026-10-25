@@ -28,7 +28,7 @@ flowchart TD
     classDef harness fill:#DCFCE7,stroke:#16A34A,stroke-width:2px,color:#166534;
     classDef alert fill:#FEE2E2,stroke:#DC2626,stroke-width:2px,color:#991B1B;
 
-    subgraph ControlPlane ["1. The Control Plane (The Brain)"]
+    subgraph ControlPlane ["1. The The Brain (Thinking & Planning)"]
         LLM["Large Language Model<br/>Probabilistic Reasoning"]:::brain
         ContextManager["Context & State Store<br/>Token Compaction Engine"]:::brain
     end
@@ -38,7 +38,7 @@ flowchart TD
         Watchdog["Supervisor Watchdog<br/>Timeout & Token Guard"]:::alert
     end
 
-    subgraph ExecutionPlane ["3. The Execution Plane (The Hands)"]
+    subgraph ExecutionPlane ["3. The The Hands (The Protected Workshop)"]
         Sandbox["Isolated Execution Sandbox<br/>MicroVM / Namespace"]:::harness
         WorkspaceTracker["File & Workspace Monitor<br/>State Diff Engine"]:::harness
     end
@@ -57,7 +57,7 @@ flowchart TD
 
 | Part | Catchy, Humanized Title | Slug | Core Concept & Scope | Invariant Behind It | Status |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **01** | *Beyond the Prompt: Inside the AI Agent Harness* | `beyond-the-prompt-inside-the-ai-agent-harness` | What an agent harness is, 4 core concepts, the 3 archetypes (CLI, IDE, Cloud), and the universal blueprint for switching harnesses without vendor lock-in. | Control Plane vs Execution Plane; CLI REPL vs Reactive IDE; MCP tool virtualization and universal `AGENTS.md` rules. | `[✍️ In Progress]` |
+| **01** | *Beyond the Prompt: Inside the AI Agent Harness* | `beyond-the-prompt-inside-the-ai-agent-harness` | What an agent harness is, 4 core concepts, the 3 archetypes (CLI, IDE, Cloud), and the universal blueprint for switching harnesses without vendor lock-in. | The Brain, Hands & Workshop mental model; CLI REPL vs Reactive IDE; MCP tool virtualization and universal `AGENTS.md` rules. | `[✍️ In Progress]` |
 | **02** | *When Tools Fail: How AI Agents Mutate State Safely* | `how-agents-execute-tools-safely` | What happens when an agent drops a network socket halfway through writing to disk? Two-phase execution, idempotency, and rollbacks. | Distributed RPCs, Two-Phase Commits, Idempotency Keys, and Copy-on-Write snapshot rollbacks. | `[💡 Planned]` |
 | **03** | *The Truth Machine: How AI Agents Test Their Own Code* | `how-agents-test-their-own-code` | How do you verify an agent solved a task without hallucinating? Supervisor watchdogs, token budgets, and circuit breakers. | The Oracle Problem; property-based verification, watchdog timers, and circuit breakers. | `[💡 Planned]` |
 

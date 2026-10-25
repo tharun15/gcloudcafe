@@ -14,7 +14,7 @@
 | Dimension | Rating (1–10) | Virality Mechanism |
 | :--- | :--- | :--- |
 | **Title Strength & Curiosity Gap** | **9.6 / 10** | *Beyond the Prompt: Inside the AI Agent Harness* is concise, rejects marketing fluff, and promises an architectural peek under the hood. |
-| **Information Gain vs. SERP** | **9.8 / 10** | Existing articles offer toy LangChain scripts or marketing hype. This is the first deep dive breaking down Control Plane vs. Execution Plane and universal harness portability across Claude Code, Codex, Antigravity, and Cursor. |
+| **Information Gain vs. SERP** | **9.8 / 10** | Existing articles offer toy LangChain scripts or marketing hype. This is the first deep dive breaking down The Brain, Hands & Workshop (Beginner-Friendly Mental Model) and universal harness portability across Claude Code, Codex, Antigravity, and Cursor. |
 | **Cross-Persona Resonance** | **9.7 / 10** | Bridges all 4 roles simultaneously: Engineers (tool execution & loops), Architects (MCP & vendor decoupling), Product Owners (reliability predictability), and Managers (TCO & tooling selection). |
 | **Social / Slack Shareability** | **9.5 / 10** | High "Did you know?" factor: `Agent = Model + Harness`. Explains why upgrading from a 70B model to a frontier model still fails if the harness lacks state isolation. |
 | **Evergreen Half-Life** | **9.8 / 10** | Anchored to timeless distributed systems & OS principles (namespaces, IPC, state restoration, idempotency). Relevant in 2035 regardless of which model dominates. |
