@@ -1081,6 +1081,27 @@ body {
   text-rendering: optimizeLegibility;
 }
 
+
+/* Single Blog Post Asymmetric Reading Layout Container */
+.article-layout-container {
+  width: 100% !important;
+  max-width: 1140px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  padding-left: 1.25rem !important;
+  padding-right: 1.25rem !important;
+
+  @media (min-width: 1024px) {
+    max-width: 1180px !important;
+    padding-left: 2rem !important;
+    padding-right: 2rem !important;
+  }
+
+  @media (min-width: 1280px) {
+    max-width: 1240px !important;
+  }
+}
+
 .container,
 .bytedepth-container {
   width: 100% !important;

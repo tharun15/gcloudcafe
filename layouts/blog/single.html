@@ -9,7 +9,7 @@
   {{ end }}
 
   <section class="section pt-5 pb-16">
-    <div class="container">
+    <div class="container article-layout-container">
       <!-- Breadcrumbs -->
       <nav aria-label="breadcrumb" class="mb-6 pt-2">
         <div class="flex items-center gap-2 text-sm font-medium text-slate-600 dark:text-slate-300 flex-wrap">
@@ -172,10 +172,10 @@
         {{ end }}
       </header>
 
-      <!-- Article Grid: Main Content + Sticky Table of Contents -->
-      <div class="row gx-0 lg:gx-5 min-w-0 max-w-full">
+      <!-- Article Grid: Main Content + Sticky Table of Contents (Asymmetric 12-Col Grid) -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-start min-w-0 max-w-full">
         <!-- Main Article Content -->
-        <article class="single-post lg:col-8 min-w-0 max-w-full overflow-hidden">
+        <article class="single-post lg:col-span-8 min-w-0 max-w-full overflow-hidden">
           <!-- Inline Table of Contents for Mobile -->
           <div class="block lg:hidden mb-8">
             {{ partial "toc.html" (dict "Class" "blog" "Collapsed" false "TableOfContents" .TableOfContents ) }}
@@ -392,11 +392,11 @@
           {{ end }}
         </article>
 
-        <!-- Sticky Table of Contents Sidebar (Desktop) -->
-        <aside class="hidden lg:block lg:col-4">
+        <!-- Sticky Silent Table of Contents Rail (Desktop) -->
+        <aside class="hidden lg:block lg:col-span-4 sticky top-28 self-start pl-2">
           <div class="toc-container">
             <h4 class="toc-title">
-              <i class="fa-solid fa-list-ul mr-1.5 text-primary"></i> {{ i18n "on_this_page" }}
+              <i class="fa-solid fa-list-ul mr-1 text-sky-500"></i> {{ i18n "on_this_page" }}
             </h4>
             <div class="text-xs leading-relaxed">
               {{ .TableOfContents }}
