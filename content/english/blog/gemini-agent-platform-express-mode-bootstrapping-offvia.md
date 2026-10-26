@@ -9,7 +9,7 @@ categories: ["Google Cloud", "AI", "Architecture"]
 tags: ["Gemini Enterprise Agent Platform", "Express Mode", "Vertex AI", "Gemini 2.5 Flash", "Agent Studio", "Google Gen AI SDK", "Python", "TravelTech"]
 author: tharun-vempati
 featured: true
-hero: true
+hero: false
 draft: false
 series: "Building AI Agents on Google Cloud"
 series_order: 1

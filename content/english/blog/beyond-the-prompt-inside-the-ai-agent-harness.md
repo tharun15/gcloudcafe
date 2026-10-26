@@ -1,265 +1,265 @@
 ---
-title: "Beyond the Model: Understanding AI Agent Harnesses"
-meta_title: "AI Agent Harnesses Explained: Antigravity vs Codex"
-description: "Why do coding agents behave differently on the same task? Explore the model, harness, tools, context, permissions, and execution environments through an Antigravity vs Codex thought experiment."
-date: 2026-10-25
+title: "Inside the Harness: What Actually Powers an AI Coding Agent?"
+meta_title: "AI Agent Harness Engineering Explained with Cline"
+description: "A practical, developer-friendly explanation of AI agent harness engineering using open-source Cline: the agent loop, rules, hooks, skills, tools, MCP, state, permissions, and failure handling."
+date: 2026-10-26
 image: "/images/agent-harness-architecture-part1.jpg"
 categories: ["Architecture", "AI Engineering", "DevOps"]
-tags: ["AI Agents", "Agent Harness", "Google Antigravity", "OpenAI Codex", "System Design", "Agent Portability"]
+tags: ["AI Agents", "Agent Harness", "Harness Engineering", "Cline", "Agent Loop", "Rules", "Hooks", "Skills", "MCP", "Sandboxing"]
 author: tharun-vempati
 featured: true
+hero: true
 draft: false
 series: "Harness Engineering for AI Agents"
 series_order: 1
-series_description: "A three-part engineering series on understanding AI agent harnesses, designing portable workflows across coding agents, and evaluating reliability through repeatable tests."
+series_description: "A three-part journey: understand the harness behind a coding agent, learn to migrate between agent ecosystems, and design safe workflows involving multiple agents."
 series_image: "/images/series-images/harness-engineering-series.jpg"
 faqs:
   - question: "What is an AI agent harness?"
-    answer: "An agent harness is the software and execution environment around a model that coordinates tools, context, permissions, execution, feedback, and task state."
-  - question: "Are Google Antigravity and OpenAI Codex just different AI models?"
-    answer: "No. They are agent products and workflows that combine models with orchestration, tools, interfaces, execution environments, and policies. Their behavior depends on product version and configuration."
-  - question: "Can I switch coding agents without changing my repository?"
-    answer: "Often you can reuse your source code, tests, build scripts, and some instructions, but agent-specific integrations, permissions, and context behavior may need adaptation."
-  - question: "Does MCP make agent harnesses interchangeable?"
-    answer: "No. MCP can standardize certain tool and data connections, but it does not standardize an agent's reasoning, permissions, sandbox, or task lifecycle."
+    answer: "The harness is the software around a model that manages its interaction with tools, files, context, permissions, execution, and feedback."
+  - question: "Is Cline an AI model or an agent harness?"
+    answer: "Cline is an open-source coding agent application that provides harness capabilities around a chosen model, including tool use, project context, and user approvals."
+  - question: "What is the difference between rules and hooks?"
+    answer: "Rules are instructions supplied to an agent; hooks are executable integrations at supported lifecycle points. Their behavior and enforcement depend on the harness."
+  - question: "Does MCP replace the agent harness?"
+    answer: "No. MCP standardizes certain tool and data integrations; the harness still controls orchestration, permissions, context, and execution."
 ---
 
-You give two coding agents the same repository and the same request:
+You ask an AI coding agent to fix a failing test. A few seconds later, it opens a file, reads the error, edits the implementation, runs a command, and reports that the test passed.
 
-> Add a health-check endpoint, write tests, and tell me exactly what changed.
+It feels like the model did everything.
 
-One agent explores the repository, edits two files, runs tests, and reports a clean result. The other repeatedly inspects the same files, requests approval before a command, or declares success without running the test suite.
+But consider what actually happened. Something had to decide which files the agent could access, expose a tool for reading them, execute the test command, collect the output, and feed that result back to the model. If the command hung, something needed to stop it. If the proposed edit was risky, something needed to ask for approval.
 
-It is tempting to say that one **model** is smarter. But that conclusion skips an important layer: **the agent harness**.
+**That surrounding system is the agent harness.** And understanding it is a useful step toward understanding why AI coding agents sometimes feel remarkably capable—and sometimes make surprisingly basic operational mistakes.
 
-This is the first article in a three-part series about what happens *around* the language model. We'll use **Google Antigravity** and **OpenAI Codex** as recurring examples—not to crown a winner, but to understand why agent products behave differently and what that means if we want to switch between them.
+In this first article of the *Harness Engineering for AI Agents* series, we'll unpack the harness using **[Cline](https://github.com/cline/cline)**, an open-source coding agent, as a concrete reference. We won't compare vendors or migrate configurations yet. First, we need to understand what we're working with.
 
-> **Scope:** This article explains the architecture and proposes a fair comparison method. It is **not** a benchmark or a verified feature-by-feature audit of current Antigravity and Codex releases. Capabilities, defaults, and permission settings can change; any empirical claim needs to be tested against named versions and configurations.
+## The model is not the whole agent
 
-## First, separate the model from the agent
+A language model receives context and generates a response. That response might be prose, code, or a structured request to call a tool. On its own, the model does not automatically own your terminal, repository, filesystem, or credentials.
 
-At a useful conceptual level, the model receives context and generates a response or proposes a tool call. It does not inherently provide a filesystem, terminal, approval dialog, repository checkout, or persistent task history.
-
-The **harness** is the surrounding software that makes those capabilities available and governs their use. In real products, the boundary between model provider, agent application, and infrastructure may be distributed across several services.
+An **agent** is a system that uses the model to work toward a goal over multiple steps. A **harness** is the runtime and integration layer that makes those steps possible and governs how they happen.
 
 A useful mental model is:
 
 ```text
 Coding agent experience
-  = model + orchestration + tools + execution environment
-    + context/state + policies + user interface
+    = Model reasoning
+    + Harness orchestration and controls
+    + Tools and execution environment
+    + Project context and user decisions
 ```
 
-This is a teaching model, not a universal implementation formula.
+This is a teaching model, not a universal formula. Real products distribute responsibilities differently. But it gives us a good starting point: **the model proposes; the harness coordinates, executes, and observes.**
 
-| Layer | What it does | Question to ask |
-|---|---|---|
-| Model | Interprets context and proposes actions | Which model and settings are being used? |
-| Orchestrator | Runs the plan/action/observation loop | When does the agent retry, pause, or stop? |
-| Tools | Expose file operations, shell commands, searches, and integrations | What actions can the agent request? |
-| Execution environment | Runs commands and holds working files | Is it on the host, in a container, or remote? |
-| Context and state | Supplies instructions, history, observations, and task progress | What persists across steps and sessions? |
-| Policy and permissions | Approves or blocks actions | What requires human consent? |
-| Interface | Presents plans, diffs, logs, and results | What can the developer inspect and control? |
+## Follow one task through the harness
 
-A stronger model can improve decisions, but it cannot compensate for every missing tool, incomplete observation, or unsafe permission boundary.
+Imagine asking Cline:
 
-## The loop behind a coding agent
+> The `/health` endpoint is returning 500. Find the bug, fix it, and run the relevant tests. Don't change unrelated files.
 
-Imagine the health-check request again. A typical harness might coordinate the following cycle:
+A simplified execution loop might look like this:
 
 ```mermaid
 flowchart TD
-    User["Developer: submit request"] --> Context["Harness: assemble instructions & context"]
-    Context --> Model["Model: propose tool action"]
-    Model --> Check{"Tool call permitted?"}
-    Check -->|No| Feedback["Harness: return policy denial / request approval"]
-    Check -->|Yes| Execute["Sandbox: execute tool in environment"]
-    Execute --> Observe["Harness: capture output, exit code & diff"]
-    Feedback --> State["Harness: record step & task state"]
-    Observe --> State
-    State --> Done{"Task verified complete?"}
-    Done -->|No| Model
-    Done -->|Yes| Report["Harness: report changes & verification evidence"]
+    U["Developer: submit request"] --> H["Harness: task & context"]
+    H --> M["Model: propose action"]
+    M --> A{"Next step?"}
+    A -->|File edit / Bash command| T["Harness: validate tool call"]
+    A -->|Task complete| R["Developer: final report & diff"]
+    T --> P{"Policy: action allowed?"}
+    P -->|Denied / Needs approval| O["Harness: structured denial"]
+    P -->|Approved| E["Environment: execute tool"]
+    E --> O["Harness: capture output & exit code"]
+    O --> H
 ```
 
-The diagram is deliberately simplified. Some products schedule background tasks, use parallel workers, or interrupt the loop for approvals. But the central idea holds: the model does not directly become a terminal or a filesystem. The surrounding system interprets and executes actions.
+This diagram is intentionally simplified. It shows **responsibilities**, not a claim about Cline's exact internal function calls or the order of every event in every release.
 
-Notice how many failure modes exist outside model reasoning:
+Let's follow the sequence.
 
-- The agent receives a truncated error log and misses the actual failure.
-- A command waits for interactive input while the model expects it to finish.
-- The environment has no network access, so dependency installation fails.
-- The agent edits a file but loses the task state before verifying it.
-- A permission policy blocks the correct command, but the denial is not explained clearly.
+**1. Assemble context.** The harness gives the model the user's request, relevant conversation, available tool descriptions, and applicable project instructions. It cannot put an unlimited repository into the context window, so it must choose what to include or retrieve.
 
-These are harness and environment questions as much as model questions.
+**2. Propose an action.** The model may ask to inspect the endpoint handler or read the failing test. It is proposing an action through a tool interface—not directly opening the file itself.
 
-## Antigravity vs Codex: compare workflows, not logos
+**3. Check and execute.** The harness handles the request under the configured permissions and approval policy. Reading a file and running a potentially destructive shell command are not equivalent operations.
 
-Suppose you start a task in **Google Antigravity** and later want to perform a similar task with **OpenAI Codex**. The interesting question is not simply *which model is underneath?* It is *which parts of the working environment and execution contract change?*
+**4. Observe the outcome.** The harness returns useful feedback: file content, an error message, command output, or a denial. The model uses that observation to decide what to do next.
 
-Both names refer to agent products/workflows rather than a single immutable harness implementation. Codex, for example, may be used through different interfaces and execution setups; any comparison must name the mode being tested. Likewise, Antigravity behavior should be evaluated in the actual product version and workspace configuration in use.
+**5. Repeat or stop.** The model may edit code, run tests, inspect a diff, or explain why it cannot proceed. This repeated action–observation cycle is the **agent loop**.
 
-Here is the comparison worksheet I would use before making claims about either product:
+The crucial insight is that intelligence is only one part of the loop. **Execution boundaries and feedback quality shape the result.**
 
-| Dimension | What to inspect in Antigravity | What to inspect in Codex | Why it matters |
-|---|---|---|---|
-| Context discovery | Which files and editor/workspace signals are included? | Which files and session context are included? | Changes what the agent knows before acting |
-| Instructions | How are project rules loaded and prioritized? | How are project rules loaded and prioritized? | Determines whether shared guidance is followed |
-| Tool surface | Which file, terminal, browser, and external tools are available? | Which file, terminal, browser, and external tools are available? | Determines what the agent can actually do |
-| Execution boundary | Where do commands run, and with what filesystem/network access? | Where do commands run, and with what filesystem/network access? | Determines safety and reproducibility |
-| Approval model | Which actions pause for confirmation? | Which actions pause for confirmation? | Affects autonomy and risk |
-| State and recovery | Can interrupted work resume, and what state survives? | Can interrupted work resume, and what state survives? | Affects long-running tasks |
-| Verification | What evidence of tests and changes is shown? | What evidence of tests and changes is shown? | Distinguishes real completion from plausible narration |
+## Why Cline is a useful example
 
-**Do not treat a row in this table as a product feature claim.** It is a checklist for collecting evidence. A fair evaluation requires matching task, repository revision, dependencies, credentials, network conditions, and allowed operations as closely as possible.
+Cline is an open-source coding agent with a visible codebase and documentation. It lets us discuss familiar engineering concepts—repository instructions, terminal commands, tool integrations, approvals, and reusable workflows—without treating the entire system as a mysterious black box.
 
-### A simple comparison experiment
+There is an important distinction, though: **Cline is the product; its harness is the set of orchestration and runtime mechanisms inside that product.** Not every feature is a standalone harness component, and the exact configuration paths and lifecycle features can evolve between versions.
 
-Use a small repository with a failing test and a clearly defined task:
+The following sections describe the major capabilities worth looking for in Cline and in agent harnesses more generally.
+
+## 1. Rules: telling the agent how to work
+
+Imagine your team has a few non-negotiable conventions:
+
+- Never edit generated code by hand.
+- Run unit tests before claiming a change is complete.
+- Ask before modifying database migrations.
+- Prefer existing logging utilities over adding new dependencies.
+
+You could repeat those instructions in every chat. Or you could put them in project guidance that the agent can load as context.
+
+Cline supports repository guidance such as `.clinerules` and rules directories; the exact supported locations and conditional-loading behavior should be checked against the version you're using. See the [Cline documentation](https://docs.cline.bot/).
+
+For example, a project rule could contain:
+
+```markdown
+# Backend engineering guidelines
+
+- Follow the existing error-handling conventions in `src/api/`.
+- Add or update tests for behavior changes.
+- Do not modify generated files in `src/generated/`.
+- Ask for approval before changing database schemas.
+```
+
+**What rules do:** influence how the model interprets a task and chooses actions.
+
+**What rules do not automatically do:** enforce filesystem permissions, prevent every prohibited command, or guarantee that tests really ran. A rule is an instruction, not an operating-system security boundary.
+
+That distinction matters. A developer might say, "I told the agent not to touch that directory." A harness engineer asks, "Was that merely in the prompt, or was the directory inaccessible to the execution tool?"
+
+## 2. Hooks: connecting behavior to lifecycle events
+
+A hook is different from a rule. Instead of only providing guidance, a hook lets the surrounding system execute custom logic at a supported point in a workflow.
+
+Depending on the agent and version, lifecycle integrations might be used to inspect an attempted action, capture telemetry, supply extra context, or run validation. Cline documents hook functionality; consult the [current Cline hook documentation](https://docs.cline.bot/) for supported events, configuration, and execution semantics rather than assuming every imaginable event exists.
+
+Consider the engineering intent:
+
+> Before accepting a code change, verify that the repository still passes its checks.
+
+A **rule** can ask the model to run `./scripts/verify.sh`.
+
+A **hook**, where the runtime supports the required event and enforcement behavior, can invoke a check at a defined lifecycle point.
+
+A **CI gate** can independently refuse to merge a change when checks fail.
+
+These three mechanisms serve related purposes but provide different guarantees. Even a hook is only as strong as its failure handling, coverage, and ability to block an action. For critical checks, don't rely on a prompt instruction—or an assumed hook behavior—as your only defense.
+
+## 3. Skills: packaging repeatable engineering knowledge
+
+Suppose you regularly ask the agent to diagnose Kubernetes deployments. Your workflow always involves checking rollout status, reading events, inspecting probes, and avoiding changes to production without approval.
+
+Rather than explaining the process from scratch each time, you can package the guidance as a reusable **skill**. Skills typically describe when they apply, what procedure to follow, and which supporting resources to use. Their discovery and invocation depend on the particular agent implementation.
+
+A skill is especially useful when the work is more than a single rule. "Prefer structured logs" is a rule; "diagnose a failing Kubernetes rollout using this sequence of checks" is a workflow-sized capability.
+
+A skill also does not grant permissions by itself. It may describe how to run a deployment, but the harness and environment still decide whether the agent can execute the command.
+
+## 4. Tools and MCP: giving the model controlled capabilities
+
+A model can request a tool action such as reading a file, searching a codebase, or running a terminal command. The harness exposes tool definitions, routes requests, executes them, and returns results.
+
+The **Model Context Protocol (MCP)** provides a standard way for compatible AI applications to connect to external tools and data sources. An MCP server might expose an issue tracker, documentation search, or internal API.
 
 ```text
-agent-harness-lab/
-├── README.md
-├── AGENTS.md
-├── src/
-│   └── app.py
-├── tests/
-│   └── test_health.py
-└── scripts/
-    └── verify.sh
+Cline / agent harness
+  |-- Built-in file and terminal tools
+  |-- Model and context orchestration
+  `-- MCP client
+        |-- Documentation server
+        `-- Issue tracker server
 ```
 
-Give both agents the same instruction:
+MCP helps standardize connectivity. It **does not replace** the harness, and it does not automatically make an integration secure. Credentials, tool authorization, confirmation policies, network access, and auditability remain design responsibilities. (We explored building production tool servers in our hands-on guide on [Enterprise Multi-Agent Swarms with ADK and MCP](/blog/gemini-enterprise-multi-agent-swarm-adk-mcp/)).
 
-> Implement `GET /health` so it returns HTTP 200 and `{ "status": "ok" }`. Do not modify unrelated files. Run `scripts/verify.sh` and report the command result and changed files.
+A good question to ask whenever you add a tool is: *What can this tool change, and who decides whether the change is allowed?*
 
-Record **observations**, not impressions:
+## 5. Context and state: remembering enough to act sensibly
 
-1. Did the agent discover and follow the repository guidance?
-2. Which tools and commands did it actually use?
-3. Did it ask for approval, and for which action?
-4. Did it modify only the expected files?
-5. Did it run the verification script, and what was its exit code?
-6. Could you reproduce the result from a clean checkout?
+Coding tasks rarely fit into one model response. The agent needs to keep track of the request, previous tool results, files inspected, edits made, tests run, and unresolved problems.
 
-A single run is illustrative, not a statistically meaningful benchmark. For a stronger comparison, repeat the task across clean checkouts, record versions/settings, and distinguish model variability from harness behavior. (For structuring repeatable automated tests and evaluation gates, see our guide on [Enterprise Multi-Agent Evaluation & CI/CD Runbooks](/blog/gemini-enterprise-multi-agent-evaluation-cicd-runbook/)).
+But model context is limited. If a test prints thousands of lines, blindly returning all of them can crowd out the information the model actually needs. A well-designed harness balances observation detail against context cost.
 
-## Why this matters to DevOps and platform engineers
+It also helps to separate three kinds of state:
 
-When an agent writes code, the result is not just a chat answer. It can change a repository, run a shell command, install dependencies, or interact with services. That makes familiar engineering concerns relevant:
-
-**Permissions.** A prompt saying "do not touch production" is not an access-control mechanism. Real controls must be enforced by the execution environment, credentials, and approval policy.
-
-**Observability.** A claim like "tests passed" is weaker than a captured command, exit code, and relevant test output.
-
-**Isolation.** An agent running directly on a developer's host has a different blast radius from one operating in a restricted disposable environment. Isolation still does not eliminate risks from credentials or network access.
-
-**State.** Long tasks need a way to distinguish completed steps from planned steps. Otherwise an interrupted agent may repeat work or lose track of modifications.
-
-**Recovery.** Re-running a read-only command is not the same as retrying a database migration or deployment. Safe retries require understanding side effects.
-
-None of these concerns is unique to AI. What changes is that a probabilistic decision-maker now selects which operations to request next.
-
-## The portability trap
-
-Let's say your team uses Antigravity for several months. You have built up project instructions, workflow conventions, integrations, and habits. Now you want to try Codex—or another coding agent.
-
-Your Git repository still exists. Your tests still exist. But not everything you relied on necessarily moves with it.
-
-I find it useful to separate portability into four layers:
-
-| Portability layer | What you want to reuse | Typical limitation |
+| State | Example | Why it matters |
 |---|---|---|
-| **Code and verification** | Source files, tests, build commands, CI checks | Environment differences can still affect results |
-| **Instructions** | Repository rules, coding conventions, task contracts | Agents may discover or prioritize instructions differently |
-| **Tool integrations** | Access to repositories, APIs, databases, internal services | Tool support, authentication, and policies may differ |
-| **Runtime behavior** | Approvals, sandboxing, state, retries, UI feedback | Usually the least portable layer |
+| Conversation state | What the user requested and what the model has seen | Keeps the agent oriented |
+| Workspace state | Files, diffs, branches, and test artifacts | Shows what has actually changed |
+| External state | A deployment, issue, database record, or API side effect | May persist even if the conversation ends |
 
-This explains why *switching models* and *switching agent products* are different projects.
+The model's recollection of an action is not proof that the action succeeded. The source of truth for a file change is the filesystem and diff; for a test, it is the test result; for a deployment, it is the deployment system.
 
-```mermaid
-flowchart TD
-    subgraph SharedRepo ["1. Shared Git Repository (100% Portable)"]
-        Code["Source code & unit tests"]
-        Verify["scripts/verify.sh validation contract"]
-        AgentsMD["AGENTS.md project conventions"]
-    end
+## 6. Permissions and execution boundaries
 
-    subgraph StandardProtocols ["2. Interoperable Tool Protocols"]
-        MCP["Model Context Protocol (MCP) servers"]
-    end
+This is where harness engineering starts to look familiar to DevOps engineers.
 
-    subgraph HarnessA ["Harness A: Google Antigravity"]
-        A_Ctx["Workspace IDE context & active buffers"]
-        A_Run["Local background daemons & reactive agents"]
-        A_Pol["Interactive UI confirmation prompts"]
-    end
+If an agent can execute shell commands, its operational risk depends on where those commands run and what they can access. A command inside a restricted container is different from the same command running with broad access to a developer's machine.
 
-    subgraph HarnessB ["Harness B: OpenAI Codex"]
-        B_Ctx["Session context & repository snapshot"]
-        B_Run["Cloud microVM or container runner"]
-        B_Pol["Automated sandbox execution policy"]
-    end
+Useful controls include scoped filesystem access, approvals for consequential actions, restricted credentials, network policies, process timeouts, resource limits, and audit trails. Which controls Cline actually provides in a given setup depends on its version, settings, host environment, and integrations.
 
-    SharedRepo --> StandardProtocols
-    StandardProtocols --> HarnessA
-    StandardProtocols --> HarnessB
-```
+**Don't confuse an approval prompt with a sandbox.** Approval asks a human whether to proceed. Isolation constrains what the action can affect even if it proceeds. Stronger systems use both where appropriate.
 
-### Where AGENTS.md and MCP fit
+## 7. Failure handling: the unglamorous part of reliability
 
-Two useful building blocks appear in this conversation:
+Imagine an agent starts a test command that never exits. The model may keep waiting, ask for status repeatedly, or attempt the command again. None of those behaviors automatically fixes the underlying problem.
 
-- **`AGENTS.md`** provides repository-level guidance in a format recognized by some coding agents. It can describe build commands, conventions, and boundaries. It is not an enforcement mechanism, and agents do not necessarily interpret it identically.
-- **Model Context Protocol (MCP)** defines ways for AI applications to connect to tools and data sources. It can reduce the need to rewrite every integration, but it does not standardize the entire harness, permission model, or agent lifecycle. (We explored building production tool servers in our hands-on guide on [Enterprise Multi-Agent Swarms with ADK and MCP](/blog/gemini-enterprise-multi-agent-swarm-adk-mcp/)).
+A harness needs useful failure signals: exit codes, timeouts, bounded logs, cancellation, and clear reporting of partial results. For operations that mutate external systems, retries need extra care. Re-running a read-only test is very different from re-running a payment, migration, or deployment request.
 
-The practical strategy is to keep your *source of truth* as agent-neutral as possible: source code, tests, documented workflows, and explicit task acceptance criteria. Add thin product-specific adapters only where necessary.
+This is why **harness engineering is not simply prompt engineering with more files**. It includes the ordinary discipline of reliable software systems: permissions, observability, state management, failure boundaries, and verification.
 
-For example, a `scripts/verify.sh` command is useful even if the agent changes. It is a repeatable verification contract outside any particular chat interface. By contrast, a proprietary approval screen or hidden session state cannot simply be checked into Git and replayed elsewhere.
+## A five-minute exercise: inspect your own agent loop
 
-**Portability is not identical behavior.** The goal is to make outcomes verifiable and switching costs manageable—not to pretend that all agents will make the same decisions.
+You don't need to read Cline's entire source code to start thinking like a harness engineer. Pick a small repository and ask it to fix one failing unit test.
 
-## A practical checklist before choosing an agent
+Before starting, note which project rules are active and which tools are available. During the task, watch for five moments:
 
-Before adopting an agent for important repository work, ask:
+1. What information did the agent read before editing?
+2. Which actions required permission or confirmation?
+3. What did the agent receive after a command completed or failed?
+4. How did it decide the work was finished?
+5. Can you independently verify the claimed result with a diff and a test run? (For structuring automated evaluation gates and test run tracking, see our guide on [Enterprise Multi-Agent Evaluation & CI/CD Runbooks](/blog/gemini-enterprise-multi-agent-evaluation-cicd-runbook/)).
 
-- Can I inspect the commands it ran and the files it changed?
-- Can I restrict its filesystem, network, and credential access?
-- Can I provide shared project instructions without duplicating everything?
-- Can I run the same tests independently of the agent?
-- Can I tell the difference between a proposed action and an executed action?
-- Can I recover or restart work after an interruption?
-- If I switch agent products, which instructions and integrations must be rewritten?
+If you want to go deeper, inspect Cline's open-source implementation and trace the corresponding UI, tool, and state-management paths. The point is not to memorize internal class names. It is to connect what you see in the interface to the responsibilities of the harness.
 
-These questions are more durable than a leaderboard screenshot. Models and products will change. The engineering contract around your repository should be easier to reason about.
+## A practical checklist for evaluating a harness
 
-## What's next in this three-part series?
+When exploring any coding agent, ask:
 
-**Part 1 — Beyond the Model: Understanding AI Agent Harnesses** *(this article)*  
-We separated the model from the harness, explored the execution loop, and established a fair way to examine Antigravity and Codex.
+| Question | What to look for |
+|---|---|
+| How are project instructions loaded? | Scope, precedence, and conditional activation |
+| What tools can it call? | Tool inventory and argument validation |
+| What can those tools access? | Filesystem, network, credentials, and host privileges |
+| How are risky actions approved? | Confirmation policy and bypass conditions |
+| What happens when commands fail? | Timeouts, error output, cancellation, and retry behavior |
+| Where does task state live? | Conversation, workspace, checkpoints, and external systems |
+| How is success verified? | Test results, diffs, independent checks, and audit logs |
 
-**Part 2 — Breaking Agent Lock-In: AGENTS.md, MCP, and Portable Workflows**  
-We'll design a sample repository with shared instructions, reusable verification commands, tool interfaces, and minimal agent-specific adapters. We'll be explicit about what remains non-portable.
+You may not have answers to all of these on day one. The value is learning to ask the questions before trusting the result.
 
-**Part 3 — Trust but Verify: Testing Agent Reliability Across Harnesses**  
-We'll run controlled tasks across agent setups, capture execution evidence, and explore failure handling, permission boundaries, retries, idempotency, and recovery.
+## What comes next
 
-## Final thought
+We started with a simple observation: when a coding agent edits a file or runs a test, the model is only one part of the system. The harness supplies the loop, the tools, the context, and the execution controls that turn proposed actions into real work.
 
-A model can suggest a good next step. The harness determines **how that step is executed, observed, constrained, and carried forward**.
+Cline gives us a concrete way to explore those layers: **rules guide behavior, hooks connect to lifecycle events, skills package reusable workflows, tools and MCP expose capabilities, and runtime controls determine what actually happens.**
 
-If you only compare models, you miss much of the system that shapes the developer experience. And if you plan for portability only after adopting an agent, you may discover that the hardest things to move were never in your repository.
+That leaves a question worth exploring next: if you've invested time in all of those mechanisms, **what happens when you open the same repository in another coding agent?**
 
-In Part 2, we'll turn that observation into a concrete repository design.
+In **Part 2**, we'll investigate portability: which instructions and integrations can be reused, which behaviors require adaptation, and how to reason about a migration without assuming that copying files is enough.
+
+In **Part 3**, we'll look at the next challenge: using multiple agents together without sacrificing reviewability, workspace isolation, or engineering control.
+
+The model may be the brain, but the harness determines how its decisions meet the real world.
 
 ---
 
 ### Further reading
 
-- [AGENTS.md project](https://agents.md/) — repository guidance conventions and examples.
-- [Model Context Protocol documentation](https://modelcontextprotocol.io/) — protocol concepts, tools, and transports.
-- [OpenAI Codex documentation](https://developers.openai.com/codex/) — consult the current product and configuration documentation before comparing behavior.
+- [Cline: open-source repository](https://github.com/cline/cline)
+- [Cline documentation](https://docs.cline.bot/)
+- [Model Context Protocol documentation](https://modelcontextprotocol.io/introduction)
 
-*Note: Product behavior discussed in this article is framed as a testable comparison, not as measured results. For an empirical comparison, publish the product versions, runtime settings, repository commit, task prompts, and execution logs alongside the findings.*
+*Note: Product-specific configuration and lifecycle features evolve. The examples above illustrate harness concepts; consult the documentation for your installed version before depending on a particular path, hook event, or security behavior.*
