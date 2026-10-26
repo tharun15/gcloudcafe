@@ -289,6 +289,18 @@
     var tocLinks = document.querySelectorAll(".toc-container a, #TableOfContents a, .toc-link");
     if (!tocLinks.length) return;
 
+    // Medium-style scroll fade: hide TOC rail while actively scrolling
+    var scrollFadeTimer = null;
+    window.addEventListener("scroll", function () {
+      if (!document.body.classList.contains("is-scrolling")) {
+        document.body.classList.add("is-scrolling");
+      }
+      clearTimeout(scrollFadeTimer);
+      scrollFadeTimer = setTimeout(function () {
+        document.body.classList.remove("is-scrolling");
+      }, 450);
+    }, { passive: true });
+
     var headingsMap = new Map();
     var container = document.querySelector(".toc-container");
 

@@ -420,30 +420,33 @@ pre code,
   @apply border-rose-500 bg-rose-50 dark:bg-rose-950/40 text-rose-900 dark:text-rose-200;
 }
 
-/* Silent Asymmetric Table of Contents (Netflix TechBlog Inspired) */
+/* Silent Table of Contents (Medium-Style Implementation) */
 .toc-container {
   @apply sticky top-28 max-h-[calc(100vh-8rem)] overflow-y-auto;
   background: transparent !important;
   border: none !important;
   box-shadow: none !important;
   padding: 0.25rem 0 0.5rem 0.25rem !important;
+  opacity: 0.18; /* Quiet ghost state at rest */
+  visibility: visible;
+  transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.3s ease;
 
   /* Subtle micro-scrollbar */
   scrollbar-width: thin;
-  scrollbar-color: rgba(148, 163, 184, 0.2) transparent;
+  scrollbar-color: rgba(148, 163, 184, 0.15) transparent;
   &::-webkit-scrollbar {
-    width: 3px;
+    width: 2px;
   }
   &::-webkit-scrollbar-track {
     background: transparent;
   }
   &::-webkit-scrollbar-thumb {
-    background: rgba(148, 163, 184, 0.25);
+    background: rgba(148, 163, 184, 0.2);
     border-radius: 9999px;
   }
 
   #TableOfContents {
-    border-left: 1px solid rgba(148, 163, 184, 0.25);
+    border-left: 1px solid rgba(148, 163, 184, 0.18);
     margin-left: 2px !important;
     padding-left: 0 !important;
   }
@@ -457,7 +460,7 @@ pre code,
     ul {
       padding-left: 0.65rem !important;
       margin-left: 0.25rem !important;
-      border-left: 1px solid rgba(148, 163, 184, 0.15);
+      border-left: 1px solid rgba(148, 163, 184, 0.1);
     }
 
     li {
@@ -467,13 +470,7 @@ pre code,
 }
 
 .dark .toc-container #TableOfContents {
-  border-left-color: rgba(51, 65, 85, 0.5);
-}
-
-.toc-title {
-  @apply mb-3 text-[11px] font-mono font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 flex items-center gap-1.5;
-  border-bottom: none !important;
-  padding-bottom: 0 !important;
+  border-left-color: rgba(51, 65, 85, 0.35);
 }
 
 .toc-link {
@@ -486,11 +483,28 @@ pre code,
   }
 
   &.is-active {
-    @apply font-semibold text-sky-600 dark:text-sky-400 border-l-2 border-sky-500 dark:border-sky-400;
+    @apply font-medium text-sky-600 dark:text-sky-400 border-l-2 border-sky-500 dark:border-sky-400;
     background: transparent !important;
     box-shadow: none !important;
     margin-left: -1px;
   }
+}
+
+/* Hovering over the right rail area reveals the TOC clearly */
+aside:hover .toc-container,
+.toc-container:hover,
+.toc-container:focus-within {
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+}
+
+/* While the user scrolls: STRICTLY INVISIBLE STATE like Medium */
+body.is-scrolling .toc-container:not(:hover) {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  transition: opacity 0.2s ease, visibility 0.2s ease !important;
 }
 
 /* Scroll-to-top button */

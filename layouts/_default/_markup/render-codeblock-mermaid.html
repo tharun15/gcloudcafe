@@ -1,69 +1,24 @@
-{{ $diagramId := printf "diagram-%s" (md5 .Inner) }}
-<div class="mermaid-card my-8 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 bg-slate-50/50 dark:bg-slate-900/40 shadow-xs overflow-hidden transition-all duration-200" id="{{ $diagramId }}-card">
-  <!-- Engineered Diagram Header Bar -->
-  <div class="mermaid-header px-4 py-2.5 border-b border-slate-200/60 dark:border-slate-800/60 bg-slate-100/60 dark:bg-slate-950/40 flex items-center justify-between text-xs font-mono select-none">
-    <div class="flex items-center gap-2 text-slate-500 dark:text-slate-400">
-      <i class="fa-solid fa-diagram-project text-sky-500 text-xs" aria-hidden="true"></i>
-      <span class="font-bold tracking-wider uppercase text-[10px] sm:text-[11px]">System Architecture Diagram</span>
-    </div>
-    <div class="flex items-center gap-1.5">
-      <button type="button" 
-              class="mermaid-copy-btn px-2.5 py-1 rounded-lg text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100 hover:bg-slate-200/60 dark:hover:bg-slate-800/60 transition-colors inline-flex items-center gap-1.5 cursor-pointer text-[11px]" 
-              data-diagram-id="{{ $diagramId }}" 
-              title="Copy Mermaid syntax"
-              aria-label="Copy Mermaid syntax">
-        <i class="fa-regular fa-copy text-xs"></i>
-        <span class="hidden sm:inline">Copy</span>
-      </button>
-      <button type="button" 
-              class="mermaid-expand-btn px-2.5 py-1 rounded-lg text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100 hover:bg-slate-200/60 dark:hover:bg-slate-800/60 transition-colors inline-flex items-center gap-1.5 cursor-pointer text-[11px]" 
-              data-diagram-id="{{ $diagramId }}" 
-              title="Expand full screen"
-              aria-label="Expand diagram full screen">
-        <i class="fa-solid fa-expand text-xs"></i>
-        <span class="hidden sm:inline">Expand</span>
-      </button>
-    </div>
-  </div>
-
-  <!-- Bounded Viewport (max-height: 480px, responsive, centered) -->
-  <div class="mermaid-viewport flex justify-center items-center p-4 sm:p-6 overflow-hidden text-center">
-    <div class="mermaid w-full flex justify-center items-center" id="{{ $diagramId }}">
+<div class="mermaid flex justify-center my-8 p-4 sm:p-6 bg-slate-50/50 dark:bg-slate-900/40 rounded-2xl border border-slate-200/60 dark:border-slate-800/60 overflow-hidden text-center">
 {{ .Inner | safeHTML }}
-    </div>
-  </div>
-
-  <!-- Hidden raw source for copy button -->
-  <textarea class="mermaid-raw-source" style="display:none;" aria-hidden="true">{{ .Inner }}</textarea>
 </div>
 
 <style>
-  .mermaid-card {
-    contain: paint;
-  }
-  .mermaid-viewport {
+  .mermaid {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
     max-height: 480px !important;
-    width: 100% !important;
     overflow: hidden !important;
-    display: flex !important;
-    justify-content: center !important;
-    align-items: center !important;
   }
-  .mermaid-viewport .mermaid {
-    display: flex !important;
-    justify-content: center !important;
-    align-items: center !important;
-    max-height: 460px !important;
-    width: 100% !important;
-  }
-  .mermaid-viewport .mermaid svg {
+  .mermaid svg {
     max-height: 450px !important;
     width: auto !important;
     max-width: 100% !important;
     height: auto !important;
-    display: block !important;
-    margin: 0 auto !important;
-    object-fit: contain !important;
+    display: block;
+    margin: 0 auto;
+    object-fit: contain;
   }
   .mermaid text {
     font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
@@ -72,128 +27,9 @@
     rx: 8px !important;
     ry: 8px !important;
   }
-  /* Lightbox Modal Styles */
-  #mermaid-modal-overlay {
-    position: fixed;
-    inset: 0;
-    z-index: 9999;
-    background: rgba(11, 17, 32, 0.92);
-    backdrop-filter: blur(8px);
-    display: none;
-    flex-direction: column;
-    padding: 1.5rem;
-    box-sizing: border-box;
-  }
-  #mermaid-modal-overlay.is-open {
-    display: flex;
-    animation: fadeInModal 0.2s ease-out forwards;
-  }
-  @keyframes fadeInModal {
-    from { opacity: 0; transform: scale(0.98); }
-    to { opacity: 1; transform: scale(1); }
-  }
-  #mermaid-modal-content {
-    flex: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: auto;
-    width: 100%;
-    height: 100%;
-    padding: 1rem;
-  }
-  #mermaid-modal-content svg {
-    max-width: 95vw !important;
-    max-height: 85vh !important;
-    width: auto !important;
-    height: auto !important;
-    object-fit: contain;
-  }
 </style>
 
 <script type="module">
-  // Setup singleton modal overlay once in DOM
-  function ensureMermaidModal() {
-    if (document.getElementById('mermaid-modal-overlay')) return;
-    const overlay = document.createElement('div');
-    overlay.id = 'mermaid-modal-overlay';
-    overlay.setAttribute('role', 'dialog');
-    overlay.setAttribute('aria-modal', 'true');
-    overlay.setAttribute('aria-label', 'Full screen diagram viewer');
-    overlay.innerHTML = `
-      <div class="flex items-center justify-between pb-3 border-b border-slate-700/80 mb-2 w-full max-w-7xl mx-auto">
-        <div class="flex items-center gap-2 text-slate-300 font-mono text-xs">
-          <i class="fa-solid fa-diagram-project text-sky-400"></i>
-          <span class="font-bold tracking-wider uppercase">Architecture Diagram Fullscreen View</span>
-        </div>
-        <button type="button" id="mermaid-modal-close" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-xs font-mono transition-colors flex items-center gap-1.5 cursor-pointer">
-          <i class="fa-solid fa-xmark"></i>
-          <span>Close (Esc)</span>
-        </button>
-      </div>
-      <div id="mermaid-modal-content"></div>
-    `;
-    document.body.appendChild(overlay);
-
-    const closeModal = () => {
-      overlay.classList.remove('is-open');
-      const content = document.getElementById('mermaid-modal-content');
-      if (content) content.innerHTML = '';
-      document.body.style.overflow = '';
-    };
-
-    document.getElementById('mermaid-modal-close').addEventListener('click', closeModal);
-    overlay.addEventListener('click', (e) => {
-      if (e.target === overlay || e.target === document.getElementById('mermaid-modal-content')) {
-        closeModal();
-      }
-    });
-    window.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && overlay.classList.contains('is-open')) {
-        closeModal();
-      }
-    });
-  }
-
-  // Setup button handlers (Copy & Expand)
-  function initMermaidControls() {
-    ensureMermaidModal();
-
-    document.querySelectorAll('.mermaid-copy-btn').forEach(btn => {
-      if (btn.dataset.bound) return;
-      btn.dataset.bound = "true";
-      btn.addEventListener('click', () => {
-        const card = btn.closest('.mermaid-card');
-        const raw = card ? card.querySelector('.mermaid-raw-source') : null;
-        if (!raw) return;
-        navigator.clipboard.writeText(raw.value.trim()).then(() => {
-          const original = btn.innerHTML;
-          btn.innerHTML = `<i class="fa-solid fa-check text-emerald-400 text-xs"></i><span class="hidden sm:inline text-emerald-400 font-bold">Copied!</span>`;
-          setTimeout(() => { btn.innerHTML = original; }, 2000);
-        });
-      });
-    });
-
-    document.querySelectorAll('.mermaid-expand-btn').forEach(btn => {
-      if (btn.dataset.bound) return;
-      btn.dataset.bound = "true";
-      btn.addEventListener('click', () => {
-        const diagramId = btn.dataset.diagramId;
-        const container = document.getElementById(diagramId);
-        const svg = container ? container.querySelector('svg') : null;
-        if (!svg) return;
-        const overlay = document.getElementById('mermaid-modal-overlay');
-        const content = document.getElementById('mermaid-modal-content');
-        if (overlay && content) {
-          content.innerHTML = svg.outerHTML;
-          overlay.classList.add('is-open');
-          document.body.style.overflow = 'hidden';
-        }
-      });
-    });
-  }
-
-  // Render Mermaid diagrams
   if (!window.__mermaid_initialized) {
     window.__mermaid_initialized = true;
     try {
@@ -228,15 +64,11 @@
           noteFontSize: 14
         }
       });
-      await mermaid.run({
+      mermaid.run({
         querySelector: '.mermaid'
       });
-      initMermaidControls();
     } catch (e) {
       console.error('Mermaid render error:', e);
     }
-  } else {
-    // If already loaded on navigation
-    setTimeout(initMermaidControls, 300);
   }
 </script>
