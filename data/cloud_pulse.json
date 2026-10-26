@@ -1,8 +1,8 @@
 [
   {
-    "id": "9fb1348a-9630-41bb-96a7-329b552f6f1d",
-    "title": "Amazon Corretto October 2026 Quarterly Updates",
-    "content": "🎯 What Changed: Amazon released its October 2026 quarterly security and critical updates across supported Long-Term Support.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
+    "id": "ed02e71c-3c58-4d2f-b73d-76206ad6f513",
+    "title": "AWS Transit Gateway and AWS Cloud WAN now support 1:1 NAT",
+    "content": "🎯 What Changed: AWS Transit Gateway and AWS Cloud WAN now support managed 1:1 network address translation directly on network attachments.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
     "tags": [
       "#AWS",
       "#CloudArchitecture",
@@ -12,11 +12,11 @@
     "downvotes": 0,
     "score": 1,
     "author": "Cloud Newsroom Bot",
-    "created_at": "2026-10-26T03:14:23.391974+00:00",
-    "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/10/amazon-corretto-october-2026-quarterly-updates",
+    "created_at": "2026-10-26T03:13:54.183982+00:00",
+    "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/10/aws-transit-gateway-cloud-wan-1-1-nat/",
     "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 450.4h without manual admin curation.",
-    "updated_at": "2026-10-26T03:55:34.709Z"
+    "eligibility_reason": "[Auto-Published] Published automatically after 456.5h without manual admin curation.",
+    "updated_at": "2026-10-26T09:55:49.595Z"
   },
   {
     "id": "0b6826b6-fc4c-4621-8f9b-bbbea3de16aa",
@@ -36,7 +36,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:48.441634+00:00",
-    "ageDays": 18.76858505787037
+    "ageDays": 19.018752025462963
   },
   {
     "id": "81213fff-57d4-4c0b-90eb-c84beeb18d4d",
@@ -56,7 +56,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:42.008666+00:00",
-    "ageDays": 18.76865951388889
+    "ageDays": 19.018826481481483
   },
   {
     "id": "1ec5647f-ce95-4be3-ba87-6aa974960da7",
@@ -76,7 +76,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:37.111692+00:00",
-    "ageDays": 18.76871619212963
+    "ageDays": 19.018883159722222
   },
   {
     "id": "88a2ed59-fb47-488b-b07c-d6be1de35d0b",
@@ -96,7 +96,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:31.276024+00:00",
-    "ageDays": 18.76878372685185
+    "ageDays": 19.018950694444445
   },
   {
     "id": "202f8734-234e-4bd5-9a67-8535691f131a",
@@ -116,7 +116,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:24.859911+00:00",
-    "ageDays": 18.768857997685185
+    "ageDays": 19.01902496527778
   },
   {
     "id": "37fcb780-d57d-4ba9-875a-7665dd9cd981",
@@ -136,7 +136,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T04:06:30.331436+00:00",
-    "ageDays": 18.992405775462963
+    "ageDays": 19.242572743055554
   },
   {
     "id": "521c6dfa-7eb3-4834-87fb-7ac338d90f9d",
@@ -156,7 +156,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T04:00:33.151279+00:00",
-    "ageDays": 18.99653980324074
+    "ageDays": 19.246706770833335
   },
   {
     "id": "b1f2627d-7930-4c4b-ab57-de042bac55c3",
@@ -176,7 +176,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T04:00:00.696536+00:00",
-    "ageDays": 18.996915439814813
+    "ageDays": 19.247082407407408
   },
   {
     "id": "bf22f4dd-2d54-4b4c-9038-ea09aadef8a2",
@@ -196,7 +196,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T03:59:45.591638+00:00",
-    "ageDays": 18.997090266203703
+    "ageDays": 19.247257233796297
   },
   {
     "id": "46fd5625-4fda-4793-a2ab-d6b627f3f4df",
@@ -216,7 +216,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T03:59:26.783766+00:00",
-    "ageDays": 18.99730795138889
+    "ageDays": 19.24747491898148
   },
   {
     "id": "09900f5e-4d21-4d5e-84a6-f5eec4459b40",
@@ -236,7 +236,7 @@
     "status": "approved",
     "eligibility_reason": "Official AWS Release: Ingested & AI synthesized for Admin Approval Queue.",
     "updated_at": "2026-09-12T09:07:10.082273+00:00",
-    "ageDays": 43.78361236111111
+    "ageDays": 44.0337793287037
   },
   {
     "id": "57b1b07d-9511-4a40-b351-2ec2866364b4",
@@ -256,7 +256,27 @@
     "status": "approved",
     "eligibility_reason": "Official Kubernetes Release: Ingested & AI synthesized for Admin Approval Queue.",
     "updated_at": "2026-09-12T09:07:09.525138+00:00",
-    "ageDays": 43.78361880787037
+    "ageDays": 44.03378577546296
+  },
+  {
+    "id": "9fb1348a-9630-41bb-96a7-329b552f6f1d",
+    "title": "Amazon Corretto October 2026 Quarterly Updates",
+    "content": "🎯 What Changed: Amazon released its October 2026 quarterly security and critical updates across supported Long-Term Support.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
+    "tags": [
+      "#AWS",
+      "#CloudArchitecture",
+      "#CloudNews"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-10-26T03:14:23.391974+00:00",
+    "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/10/amazon-corretto-october-2026-quarterly-updates",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 450.4h without manual admin curation.",
+    "updated_at": "2026-10-26T03:55:34.709+00:00",
+    "ageDays": 0.27876417824074073
   },
   {
     "id": "d8ab713a-5da7-4451-89cd-60ef4a41f5c0",
@@ -276,26 +296,6 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 438.3h without manual admin curation.",
     "updated_at": "2026-10-25T15:47:24.11+00:00",
-    "ageDays": 0.7615506365740741
-  },
-  {
-    "id": "53bb644e-8ff3-47e6-b874-bbd97029f903",
-    "title": "Designing for sovereign AI: A shared foundation from edge to cloud",
-    "content": "🎯 What Changed: Azure released guidance for a flexible sovereign AI architecture, providing a shared foundation spanning edge to cloud environments.\n💡 Engineering Impact: This architecture enables organizations to deploy AI workloads with required controls and consistency across diverse environments, simplifying compliance and data residency challenges.",
-    "tags": [
-      "#Azure",
-      "#CloudArchitecture",
-      "#CloudNews"
-    ],
-    "upvotes": 1,
-    "downvotes": 0,
-    "score": 1,
-    "author": "Cloud Newsroom Bot",
-    "created_at": "2026-10-25T09:38:52.006546+00:00",
-    "link_url": "https://azure.microsoft.com/en-us/blog/designing-for-sovereign-ai-a-shared-foundation-from-edge-to-cloud/",
-    "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 441.3h without manual admin curation.",
-    "updated_at": "2026-10-25T18:47:52.04+00:00",
-    "ageDays": 0.7615993518518519
+    "ageDays": 1.0117176041666667
   }
 ]
