@@ -1,5 +1,24 @@
 [
   {
+    "id": "04812d47-9efe-4b0c-979f-c91c46f6d363",
+    "title": "Azure Leads Gartner MQ for Server Virtualization Platforms",
+    "content": "🎯 What Changed: Microsoft was recognized as a Leader in the 2026 Gartner Magic Quadrant for Server Virtualization Platforms.\n💡 Engineering Impact: This recognition validates Azure's robust hybrid cloud strategy, leveraging Azure Arc and Hyper-V for consistent operational and infrastructure management across diverse environments.",
+    "tags": [
+      "#Azure",
+      "#CloudArchitecture",
+      "#CloudNews"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-10-26T10:51:51.277419+00:00",
+    "link_url": "https://azure.microsoft.com/en-us/blog/microsoft-named-a-leader-in-the-2026-gartner-magic-quadrant-for-server-virtualization-platforms/",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 465.0h without manual admin curation.",
+    "updated_at": "2026-10-26T18:28:25.679Z"
+  },
+  {
     "id": "ed02e71c-3c58-4d2f-b73d-76206ad6f513",
     "title": "AWS Transit Gateway and AWS Cloud WAN now support 1:1 NAT",
     "content": "🎯 What Changed: AWS Transit Gateway and AWS Cloud WAN now support managed 1:1 network address translation directly on network attachments.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
@@ -277,25 +296,5 @@
     "eligibility_reason": "[Auto-Published] Published automatically after 450.4h without manual admin curation.",
     "updated_at": "2026-10-26T03:55:34.709+00:00",
     "ageDays": 0.27876417824074073
-  },
-  {
-    "id": "d8ab713a-5da7-4451-89cd-60ef4a41f5c0",
-    "title": "Azure Scales Cloud-Native Infrastructure for AI",
-    "content": "🎯 What Changed: Azure is advancing its cloud-native infrastructure to support the development and scaling of next-generation AI applications and agents.\n💡 Engineering Impact: This evolution provides a robust foundation for architects to design scalable AI solutions and empowers DevOps teams to efficiently deploy and manage AI-driven applications.",
-    "tags": [
-      "#Azure",
-      "#CloudArchitecture",
-      "#CloudNews"
-    ],
-    "upvotes": 1,
-    "downvotes": 0,
-    "score": 1,
-    "author": "Cloud Newsroom Bot",
-    "created_at": "2026-10-25T09:38:56.215412+00:00",
-    "link_url": "https://azure.microsoft.com/en-us/blog/evolving-the-cloud-native-foundation-for-the-next-generation-of-ai/",
-    "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 438.3h without manual admin curation.",
-    "updated_at": "2026-10-25T15:47:24.11+00:00",
-    "ageDays": 1.0117176041666667
   }
 ]
