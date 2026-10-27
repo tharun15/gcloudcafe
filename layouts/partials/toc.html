@@ -3,7 +3,7 @@
 {{ $toc := .TableOfContents }}
 
 {{ if and $toc (ne $toc "<nav id=\"TableOfContents\"></nav>") }}
-<div class="mobile-toc-wrapper mb-10">
+<div class="mobile-toc-wrapper mb-10 sm:mb-12">
   <details class="mobile-toc-container group rounded-2xl border border-slate-200/80 dark:border-slate-800/80 bg-slate-50/70 dark:bg-[#0c1220]/70 shadow-2xs overflow-hidden transition-all duration-300 {{ $class }}" {{ if not $collapsed }}open{{ end }} aria-label="{{ i18n "on_this_page" | default "Table of Contents" }}">
     <summary class="flex items-center justify-between px-4 py-3 sm:px-5 sm:py-3.5 cursor-pointer select-none bg-slate-100/70 dark:bg-slate-900/70 border-b border-transparent group-open:border-slate-200/80 dark:group-open:border-slate-800/80 transition-colors">
       <div class="flex items-center gap-2.5">
@@ -25,15 +25,5 @@
       {{ $toc }}
     </div>
   </details>
-
-  <!-- Professional Editorial Section Divider (Separates TOC index from article content) -->
-  <div class="mobile-toc-divider flex items-center justify-center gap-3 mt-8 pt-2" aria-hidden="true">
-    <div class="h-px bg-slate-200/80 dark:bg-slate-800/80 flex-1"></div>
-    <span class="font-mono text-[10px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500 flex items-center gap-1.5">
-      <i class="fa-solid fa-feather-pointed text-sky-500 text-[10px]"></i>
-      {{ if eq site.Language.Lang "it" }}INIZIA A LEGGERE{{ else }}START READING{{ end }}
-    </span>
-    <div class="h-px bg-slate-200/80 dark:bg-slate-800/80 flex-1"></div>
-  </div>
 </div>
 {{ end }}
