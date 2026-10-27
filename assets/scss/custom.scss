@@ -550,7 +550,7 @@ pre code,
       text-overflow: ellipsis;
       padding: 5px 12px;
       border-radius: 8px;
-      font-size: 11.5px;
+      font-size: 13px;
       font-weight: 600;
       line-height: 1.35;
       letter-spacing: -0.01em;
@@ -875,7 +875,7 @@ kbd {
   gap: 4px;
   padding: 3px 8px;
   border-radius: 9999px;
-  font-size: 11.5px;
+  font-size: 13px;
   font-weight: 800 !important;
   border: none;
   background: transparent;
@@ -2253,68 +2253,68 @@ table {
 .notice-lab p,
 .callout-lab p {
   margin: 0;
-  font-size: 0.875rem;
-  line-height: 1.625;
+  font-size: 0.9375rem;
+  line-height: 1.65;
 }
 
-/* ── Medium Golden Reading Typography Standard (Proportioned Headings & 17px/1.62 Body) ── */
+/* ── Medium Golden Reading Typography Standard (Easily Readable 18px/1.72 Body) ── */
 .blog-article-content {
-  font-size: 1.0625rem !important; /* 17px */
-  line-height: 1.62 !important; /* Compact, book-quality reading cadence */
+  font-size: 1.125rem !important; /* 18px */
+  line-height: 1.72 !important; /* Effortless, comfortable reading cadence */
   letter-spacing: -0.003em;
   color: #1e293b;
 
   p,
   div p,
   [class*="text-"] p {
-    font-size: 1.0625rem !important; /* 17px */
-    line-height: 1.62 !important;
-    margin-bottom: 1.35rem !important;
+    font-size: 1.125rem !important; /* 18px */
+    line-height: 1.72 !important;
+    margin-bottom: 1.45rem !important;
     color: #1e293b;
   }
 
-  /* Medium-proportioned headings (calibrated down from gigantic 40px titles) */
+  /* Well-proportioned headings */
   h1 {
-    font-size: 1.75rem !important; /* 28px */
+    font-size: 1.875rem !important; /* 30px */
     font-weight: 800 !important;
     line-height: 1.25 !important;
     letter-spacing: -0.02em !important;
-    margin-top: 2.25rem !important;
-    margin-bottom: 0.85rem !important;
+    margin-top: 2.5rem !important;
+    margin-bottom: 0.95rem !important;
   }
 
   h2 {
-    font-size: 1.4375rem !important; /* 23px - exactly matches Medium example "The cost of good neighbors" */
+    font-size: 1.5625rem !important; /* 25px */
     font-weight: 700 !important;
-    line-height: 1.28 !important;
+    line-height: 1.3 !important;
     letter-spacing: -0.015em !important;
-    margin-top: 2.25rem !important;
-    margin-bottom: 0.75rem !important;
+    margin-top: 2.5rem !important;
+    margin-bottom: 0.85rem !important;
     color: #0f172a !important;
   }
 
   h3 {
-    font-size: 1.2rem !important; /* 19.2px */
+    font-size: 1.28rem !important; /* 20.5px */
     font-weight: 600 !important;
-    line-height: 1.32 !important;
+    line-height: 1.35 !important;
     letter-spacing: -0.01em !important;
-    margin-top: 1.75rem !important;
-    margin-bottom: 0.5rem !important;
+    margin-top: 2rem !important;
+    margin-bottom: 0.6rem !important;
     color: #0f172a !important;
   }
 
   h4 {
-    font-size: 1.0625rem !important; /* 17px */
+    font-size: 1.125rem !important; /* 18px */
     font-weight: 600 !important;
     line-height: 1.4 !important;
-    margin-top: 1.5rem !important;
-    margin-bottom: 0.4rem !important;
+    margin-top: 1.65rem !important;
+    margin-bottom: 0.45rem !important;
   }
 
   li {
-    font-size: 1.0625rem !important;
-    line-height: 1.62 !important;
-    margin-bottom: 0.4rem !important;
+    font-size: 1.125rem !important; /* 18px */
+    line-height: 1.72 !important;
+    margin-bottom: 0.5rem !important;
   }
 
   code:not(pre code) {
@@ -2354,8 +2354,8 @@ table {
 }
 .blog-article-content blockquote p {
   margin: 0;
-  font-size: 0.875rem;
-  line-height: 1.625;
+  font-size: 1.0625rem;
+  line-height: 1.7;
 }
 
 
@@ -2482,12 +2482,12 @@ table {
         }
 
         li {
-          margin: 0.4rem 0 !important;
-          font-size: 0.8125rem !important; /* 13px */
-          line-height: 1.45 !important;
+          margin: 0.5rem 0 !important;
+          font-size: 0.9375rem !important; /* 15px - easily readable */
+          line-height: 1.55 !important;
 
           a {
-            color: #475569 !important; /* slate-600 */
+            color: #334155 !important; /* slate-700 */
             text-decoration: none !important;
             transition: color 0.15s ease, transform 0.15s ease;
             display: inline-block;
@@ -2496,6 +2496,13 @@ table {
               color: #0284c7 !important; /* sky-600 */
               transform: translateX(2px);
             }
+          }
+        }
+
+        ul,
+        ol {
+          li {
+            font-size: 0.875rem !important; /* 14px */
           }
         }
       }
