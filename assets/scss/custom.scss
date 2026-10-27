@@ -2441,3 +2441,13 @@ table {
 .dark .series-ambient-glow {
   background: radial-gradient(ellipse at center, rgba(56, 189, 248, 0.18) 0%, rgba(99, 102, 241, 0.12) 50%, transparent 75%);
 }
+
+/* ── Simplified Homepage Track Rail & Subtle Title Glow ── */
+.active-track-glow {
+  text-shadow: 0 0 16px rgba(56, 189, 248, 0.45);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.track-spine-node {
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
