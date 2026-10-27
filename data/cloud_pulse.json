@@ -1,5 +1,24 @@
 [
   {
+    "id": "2673af97-c62c-437d-86a0-d60008daa45e",
+    "title": "MLOps for edge AI: Keeping models accurate over time",
+    "content": "🎯 What Changed: OpenShift MLOps now provides comprehensive guidance on sustaining edge AI model accuracy and preventing drift over time.\n💡 Engineering Impact: This ensures the long-term value of edge AI investments by providing robust MLOps practices for continuous model monitoring, re-training, and lifecycle management.",
+    "tags": [
+      "#OpenShift",
+      "#RedHat",
+      "#DevOps"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-10-27T10:22:14.892858+00:00",
+    "link_url": "https://www.redhat.com/en/blog/mlops-edge-ai-keeping-models-accurate-over-time",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 484.7h without manual admin curation.",
+    "updated_at": "2026-10-27T14:10:10.954Z"
+  },
+  {
     "id": "808217c4-7008-4205-8bd9-303b093584c1",
     "title": "Amazon Connect Customer expands testing and simulation to validate flow action outcomes",
     "content": "🎯 What Changed: Amazon Connect has expanded its testing and simulation capabilities to let developers validate the specific output data and outcomes of.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
@@ -277,25 +296,5 @@
     "eligibility_reason": "[Auto-Published] Published automatically after 465.0h without manual admin curation.",
     "updated_at": "2026-10-26T18:28:25.679+00:00",
     "ageDays": 0.7259562615740741
-  },
-  {
-    "id": "461a221e-2307-4a68-96d1-5cacb67eebe6",
-    "title": "Azure Strengthens Open-Weight AI Model Governance",
-    "content": "🎯 What Changed: Azure released new guidance and tools to help enterprises manage risks associated with deploying open-weight AI models.\n💡 Engineering Impact: This enables architects and DevOps teams to confidently integrate diverse open-weight AI models, ensuring compliance and mitigating potential vulnerabilities in enterprise solutions.",
-    "tags": [
-      "#Azure",
-      "#CloudArchitecture",
-      "#CloudNews"
-    ],
-    "upvotes": 1,
-    "downvotes": 0,
-    "score": 1,
-    "author": "Cloud Newsroom Bot",
-    "created_at": "2026-10-26T10:51:45.70043+00:00",
-    "link_url": "https://azure.microsoft.com/en-us/blog/managing-open-weight-model-risk-in-enterprise-deployments/",
-    "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 470.2h without manual admin curation.",
-    "updated_at": "2026-10-26T23:38:44.225+00:00",
-    "ageDays": 0.7260208101851852
   }
 ]
