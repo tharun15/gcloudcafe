@@ -423,7 +423,7 @@ pre code,
 /* ── Medium-Style Undisturbed Mini-Bar Table of Contents (Right-Most Pinned) ── */
 .toc-container,
 .toc-minibars-container {
-  @apply sticky top-28 max-h-[calc(100vh-8rem)] overflow-visible;
+  @apply max-h-[calc(100vh-8rem)] overflow-visible;
   background: transparent !important;
   border: none !important;
   box-shadow: none !important;

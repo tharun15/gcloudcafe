@@ -364,6 +364,22 @@
       headingsMap.forEach(function (_, el) {
         observer.observe(el);
       });
+
+    // Fade out fixed TOC rail when reader reaches the footer / related posts
+    var articleElem = document.querySelector(".single-post");
+    var tocRail = document.getElementById("desktop-toc-rail");
+    if (articleElem && tocRail) {
+      window.addEventListener("scroll", function () {
+        var rect = articleElem.getBoundingClientRect();
+        if (rect.bottom < 200) {
+          tocRail.style.opacity = "0";
+          tocRail.style.pointerEvents = "none";
+        } else {
+          tocRail.style.opacity = "1";
+          tocRail.style.pointerEvents = "auto";
+        }
+      }, { passive: true });
+    }
     }
   }
 

@@ -394,12 +394,10 @@
 
         </article>
 
-        <!-- Right-Most Undisturbed Mini-Bar Table of Contents Rail (Desktop) -->
-        <aside class="hidden lg:block absolute right-0 top-0 h-full w-12 pointer-events-none" aria-label="Table of Contents Navigation">
-          <div class="sticky top-28 pointer-events-auto flex flex-col items-end pr-1 xl:pr-2">
-            <div class="toc-container toc-minibars-container" aria-label="Table of Contents">
-              {{ .TableOfContents }}
-            </div>
+        <!-- Right-Most Undisturbed Mini-Bar Table of Contents Rail (Fixed in Viewport Right Margin) -->
+        <aside class="hidden lg:block fixed right-3 xl:right-6 2xl:right-10 top-32 z-30 pointer-events-auto transition-opacity duration-300" id="desktop-toc-rail" aria-label="Table of Contents Navigation">
+          <div class="toc-container toc-minibars-container" aria-label="Table of Contents">
+            {{ .TableOfContents }}
           </div>
         </aside>
       </div>
