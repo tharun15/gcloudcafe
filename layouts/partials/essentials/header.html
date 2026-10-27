@@ -49,7 +49,7 @@
           <div class="relative group/menu py-0.5">
             <button
               type="button"
-              class="relative px-3.5 py-1.5 rounded-full text-xs font-semibold tracking-tight transition-all duration-200 no-underline flex items-center gap-1.5 cursor-pointer
+              class="relative px-3.5 py-1.5 rounded-full text-[13px] sm:text-sm font-semibold tracking-tight transition-all duration-200 no-underline flex items-center gap-1.5 cursor-pointer
                      {{ if or $active $isChildActive }}
                        bg-white dark:bg-slate-800 text-slate-950 dark:text-white font-bold shadow-xs border border-slate-200/50 dark:border-slate-700/50
                      {{ else }}
@@ -99,7 +99,7 @@
           </div>
         {{ else }}
           <a href="{{ .URL | relLangURL }}"
-             class="relative px-3.5 py-1.5 rounded-full text-xs font-semibold tracking-tight transition-all duration-200 no-underline flex items-center gap-1.5
+             class="relative px-3.5 py-1.5 rounded-full text-[13px] sm:text-sm font-semibold tracking-tight transition-all duration-200 no-underline flex items-center gap-1.5
                     {{ if $active }}
                       bg-white dark:bg-slate-800 text-slate-950 dark:text-white font-bold shadow-xs border border-slate-200/50 dark:border-slate-700/50
                     {{ else }}
@@ -248,12 +248,12 @@
                 </span>
                 <div class="min-w-0 flex-1">
                   <div class="flex items-center gap-1.5">
-                    <span class="text-sm font-semibold truncate">{{ .Name }}</span>
+                    <span class="text-[15px] sm:text-base font-semibold truncate">{{ .Name }}</span>
                     {{ if $active }}
                       <span class="px-1.5 py-0.2 rounded text-[9px] font-mono font-bold uppercase tracking-wider bg-sky-100 dark:bg-sky-950/80 text-sky-700 dark:text-sky-300 border border-sky-500/20">Current</span>
                     {{ end }}
                   </div>
-                  <span class="text-[11px] font-normal text-slate-400 dark:text-slate-400 truncate block">{{ $subtitle }}</span>
+                  <span class="text-xs font-normal text-slate-400 dark:text-slate-400 truncate block">{{ $subtitle }}</span>
                 </div>
               </div>
               <div class="flex items-center gap-2 shrink-0">

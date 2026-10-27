@@ -1,0 +1,29 @@
+{{ $class := .Class | default "blog" }}
+{{ $collapsed := .Collapsed | default false }}
+{{ $toc := .TableOfContents }}
+
+{{ if and $toc (ne $toc "<nav id=\"TableOfContents\"></nav>") }}
+<div class="mobile-toc-wrapper mb-10 sm:mb-12">
+  <details class="mobile-toc-container group rounded-2xl border border-slate-200/80 dark:border-slate-800/80 bg-slate-50/70 dark:bg-[#0c1220]/70 shadow-2xs overflow-hidden transition-all duration-300 {{ $class }}" {{ if not $collapsed }}open{{ end }} aria-label="{{ i18n "on_this_page" | default "Table of Contents" }}">
+    <summary class="flex items-center justify-between px-4 py-3 sm:px-5 sm:py-3.5 cursor-pointer select-none bg-slate-100/70 dark:bg-slate-900/70 border-b border-transparent group-open:border-slate-200/80 dark:group-open:border-slate-800/80 transition-colors">
+      <div class="flex items-center gap-2.5">
+        <div class="w-6 h-6 rounded-lg bg-sky-500/10 text-sky-600 dark:text-sky-400 flex items-center justify-center text-xs">
+          <i class="fa-solid fa-list-ul"></i>
+        </div>
+        <span class="font-mono text-[13px] sm:text-sm font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200">
+          {{ i18n "on_this_page" | default "Table of Contents" }}
+        </span>
+      </div>
+      <div class="flex items-center gap-2">
+        <span class="text-xs font-mono text-slate-400 group-open:hidden">Tap to expand</span>
+        <span class="text-xs font-mono text-slate-400 hidden group-open:inline">Tap to collapse</span>
+        <i class="fa-solid fa-chevron-down text-xs text-slate-400 group-open:rotate-180 transition-transform duration-200"></i>
+      </div>
+    </summary>
+
+    <div class="mobile-toc-content px-4 py-3 sm:px-5 sm:py-4 max-h-[50vh] overflow-y-auto custom-scrollbar">
+      {{ $toc }}
+    </div>
+  </details>
+</div>
+{{ end }}
