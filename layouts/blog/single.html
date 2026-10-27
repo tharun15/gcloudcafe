@@ -392,12 +392,10 @@
           {{ end }}
         </article>
 
-        <!-- Sticky Silent Table of Contents Rail (Desktop, Medium-Style Scroll Fade) -->
-        <aside class="hidden lg:block lg:col-span-4 sticky top-28 self-start pl-2">
-          <div class="toc-container">
-            <div class="text-xs leading-relaxed">
-              {{ .TableOfContents }}
-            </div>
+        <!-- Medium-Style Mini-Bar Table of Contents Rail (Desktop) -->
+        <aside class="hidden lg:block lg:col-span-4 sticky top-28 self-start pl-4 xl:pl-8">
+          <div class="toc-container toc-minibars-container" aria-label="Table of Contents">
+            {{ .TableOfContents }}
           </div>
         </aside>
       </div>

@@ -284,28 +284,32 @@
     toggle();
   }
 
-  /* ── Active Table of Contents Tracking (IntersectionObserver with Smooth Offset & Auto-Scroll) ── */
+  /* ── Medium-Style Mini-Bar Table of Contents (Undisturbed Navigation with Floating Tooltips) ── */
   function initActiveTocTracking() {
-    var tocLinks = document.querySelectorAll(".toc-container a, #TableOfContents a, .toc-link");
+    var container = document.querySelector(".toc-container, .toc-minibars-container");
+    if (!container) return;
+
+    var tocNav = container.querySelector("#TableOfContents");
+    if (!tocNav) return;
+
+    var tocLinks = tocNav.querySelectorAll("a");
     if (!tocLinks.length) return;
 
-    // Medium-style scroll fade: hide TOC rail while actively scrolling
-    var scrollFadeTimer = null;
-    window.addEventListener("scroll", function () {
-      if (!document.body.classList.contains("is-scrolling")) {
-        document.body.classList.add("is-scrolling");
-      }
-      clearTimeout(scrollFadeTimer);
-      scrollFadeTimer = setTimeout(function () {
-        document.body.classList.remove("is-scrolling");
-      }, 450);
-    }, { passive: true });
-
     var headingsMap = new Map();
-    var container = document.querySelector(".toc-container");
 
+    // Transform desktop links into Medium-style undisturbed mini-bars
     tocLinks.forEach(function (link) {
       link.classList.add("toc-link");
+      var titleText = link.textContent.trim();
+      var isSub = !!link.closest("ol ol, ul ul");
+      link.classList.add(isSub ? "toc-bar-sub" : "toc-bar-main");
+      link.setAttribute("data-title", titleText);
+      link.setAttribute("aria-label", titleText);
+
+      // Render mini-bar and tooltip
+      link.innerHTML = '<span class="toc-bar-track" aria-hidden="true"><span class="toc-bar"></span></span>' +
+                       '<span class="toc-tooltip" role="tooltip">' + titleText + '</span>';
+
       var href = link.getAttribute("href");
       if (href && href.startsWith("#")) {
         var targetId = decodeURIComponent(href.substring(1));
@@ -339,6 +343,11 @@
 
     if (headingsMap.size === 0) return;
 
+    // Set first heading active by default if at top of page
+    if (tocLinks.length > 0 && window.pageYOffset < 300) {
+      tocLinks[0].classList.add("is-active");
+    }
+
     if ("IntersectionObserver" in window) {
       var observer = new IntersectionObserver(function (entries) {
         entries.forEach(function (entry) {
@@ -347,14 +356,6 @@
             if (activeLink) {
               tocLinks.forEach(function (l) { l.classList.remove("is-active"); });
               activeLink.classList.add("is-active");
-              // Auto-scroll TOC container so active link is always visible
-              if (container) {
-                var containerRect = container.getBoundingClientRect();
-                var linkRect = activeLink.getBoundingClientRect();
-                if (linkRect.top < containerRect.top + 40 || linkRect.bottom > containerRect.bottom - 40) {
-                  activeLink.scrollIntoView({ behavior: "smooth", block: "nearest" });
-                }
-              }
             }
           }
         });
