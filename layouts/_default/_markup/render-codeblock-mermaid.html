@@ -1,19 +1,24 @@
-<div class="mermaid flex justify-center my-8 p-6 bg-slate-50 dark:bg-slate-900/60 rounded-2xl border border-border/80 dark:border-darkmode-border/80 overflow-x-auto shadow-sm text-center">
+<div class="mermaid flex justify-center my-8 p-4 sm:p-6 bg-slate-50/50 dark:bg-slate-900/40 rounded-2xl border border-slate-200/60 dark:border-slate-800/60 overflow-hidden text-center">
 {{ .Inner | safeHTML }}
 </div>
+
 <style>
   .mermaid {
     display: flex;
     justify-content: center;
     align-items: center;
     width: 100%;
+    max-height: 480px !important;
+    overflow: hidden !important;
   }
   .mermaid svg {
-    width: 100% !important;
-    max-width: 840px !important;
+    max-height: 450px !important;
+    width: auto !important;
+    max-width: 100% !important;
     height: auto !important;
     display: block;
     margin: 0 auto;
+    object-fit: contain;
   }
   .mermaid text {
     font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
@@ -23,6 +28,7 @@
     ry: 8px !important;
   }
 </style>
+
 <script type="module">
   if (!window.__mermaid_initialized) {
     window.__mermaid_initialized = true;

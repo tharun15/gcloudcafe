@@ -9,9 +9,9 @@
   {{ end }}
 
   <section class="section pt-5 pb-16">
-    <div class="container">
+    <div class="container article-layout-container">
       <!-- Breadcrumbs -->
-      <nav aria-label="breadcrumb" class="mb-6 pt-2">
+      <nav aria-label="breadcrumb" class="mb-6 pt-2 mx-auto max-w-[780px]">
         <div class="flex items-center gap-2 text-sm font-medium text-slate-600 dark:text-slate-300 flex-wrap">
           <a href="{{ site.Home.RelPermalink }}" class="text-slate-700 dark:text-slate-300 hover:text-sky-600 dark:hover:text-sky-400 no-underline transition-colors flex items-center gap-1.5">
             <i class="fa-solid fa-house text-xs text-slate-400 dark:text-slate-500" aria-hidden="true"></i>
@@ -38,7 +38,7 @@
 
 
       <!-- Article Header -->
-      <header class="article-header mb-8">
+      <header class="article-header mb-8 mx-auto max-w-[780px]">
         {{ $seriesName := .Params.series }}
         {{ $seriesOrder := .Params.series_order }}
         {{ $seriesPages := slice }}
@@ -89,7 +89,7 @@
           </div>
         {{ end }}
 
-        <h1 class="mb-4 text-3xl font-extrabold tracking-tight md:text-5xl lg:leading-tight">
+        <h1 class="mb-4 text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight lg:leading-tight">
           {{ $cleanTitle }}
         </h1>
 
@@ -172,10 +172,10 @@
         {{ end }}
       </header>
 
-      <!-- Article Grid: Main Content + Sticky Table of Contents -->
-      <div class="row gx-0 lg:gx-5 min-w-0 max-w-full">
-        <!-- Main Article Content -->
-        <article class="single-post lg:col-8 min-w-0 max-w-full overflow-hidden">
+      <!-- Article Layout: Centered Content + Pinned Right-Most Mini Bars -->
+      <div class="relative min-w-0 max-w-full">
+        <!-- Centered Main Article Content (Takes more area, perfectly centered) -->
+        <article class="single-post mx-auto max-w-[780px] min-w-0">
           <!-- Inline Table of Contents for Mobile -->
           <div class="block lg:hidden mb-8">
             {{ partial "toc.html" (dict "Class" "blog" "Collapsed" false "TableOfContents" .TableOfContents ) }}
@@ -392,15 +392,11 @@
           {{ end }}
         </article>
 
-        <!-- Sticky Table of Contents Sidebar (Desktop) -->
-        <aside class="hidden lg:block lg:col-4">
-          <div class="toc-container">
-            <h4 class="toc-title">
-              <i class="fa-solid fa-list-ul mr-1.5 text-primary"></i> {{ i18n "on_this_page" }}
-            </h4>
-            <div class="text-xs leading-relaxed">
-              {{ .TableOfContents }}
-            </div>
+        <!-- Right-Most Undisturbed Mini-Bar Table of Contents Rail (Fixed in Viewport Right Margin) -->
+        <aside class="hidden lg:block fixed right-3 xl:right-6 2xl:right-10 top-32 z-30 pointer-events-auto transition-opacity duration-300" id="desktop-toc-rail" aria-label='{{ i18n "on_this_page" }}'>
+          <h2 class="sr-only">{{ i18n "on_this_page" }}</h2>
+          <div class="toc-container toc-minibars-container" aria-label='{{ i18n "on_this_page" }}'>
+            {{ .TableOfContents }}
           </div>
         </aside>
       </div>
