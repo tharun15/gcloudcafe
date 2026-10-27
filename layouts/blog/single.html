@@ -392,11 +392,10 @@
           {{ end }}
         </article>
 
-        </article>
-
         <!-- Right-Most Undisturbed Mini-Bar Table of Contents Rail (Fixed in Viewport Right Margin) -->
-        <aside class="hidden lg:block fixed right-3 xl:right-6 2xl:right-10 top-32 z-30 pointer-events-auto transition-opacity duration-300" id="desktop-toc-rail" aria-label="Table of Contents Navigation">
-          <div class="toc-container toc-minibars-container" aria-label="Table of Contents">
+        <aside class="hidden lg:block fixed right-3 xl:right-6 2xl:right-10 top-32 z-30 pointer-events-auto transition-opacity duration-300" id="desktop-toc-rail" aria-label='{{ i18n "on_this_page" }}'>
+          <h2 class="sr-only">{{ i18n "on_this_page" }}</h2>
+          <div class="toc-container toc-minibars-container" aria-label='{{ i18n "on_this_page" }}'>
             {{ .TableOfContents }}
           </div>
         </aside>
