@@ -234,60 +234,58 @@
       <!-- Right Column: Parallel Sticky Navigation Sidebar (Starts from Top of Page Parallel to Hero!) -->
       <aside class="lg:col-span-4 w-full lg:border-l lg:border-slate-200/70 dark:lg:border-slate-800/70 lg:pl-8 xl:pl-10 lg:sticky lg:top-24 space-y-5 shrink-0" aria-label="Series and Learning Tracks">
         {{ partial "components/homepage-sidebar" (dict "Featured" $featured "Posts" $posts) }}
-
-        <!-- Compact Sidebar Newsletter Card -->
-        <div class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0c1220] p-3.5 sm:p-4 shadow-xs relative overflow-hidden group" aria-labelledby="newsletter-heading">
-          <!-- Accent Glow Top Bar -->
-          <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-sky-500 via-blue-500 to-indigo-500"></div>
-
-          <div class="flex items-center justify-between gap-2 mb-1.5">
-            <span class="inline-flex items-center gap-1.5 font-mono text-[10px] font-bold uppercase tracking-wider text-sky-600 dark:text-sky-400 px-2 py-0.5 rounded-full bg-sky-500/10 border border-sky-500/20">
-              <i class="fa-regular fa-envelope text-[9px]"></i>
-              <span>{{ if eq site.Language.Lang "it" }}Newsletter Tecnica{{ else }}Engineering Digest{{ end }}</span>
-            </span>
-            <span class="font-mono text-[10.5px] text-slate-600 dark:text-slate-400">
-              {{ if eq site.Language.Lang "it" }}2x al mese{{ else }}2x / month{{ end }}
-            </span>
-          </div>
-
-          <h3 id="newsletter-heading" class="text-sm font-bold text-slate-900 dark:text-white leading-snug tracking-tight mb-1">
-            {{ i18n "newsletter_heading" }}
-          </h3>
-
-          <p class="text-[11.5px] text-slate-600 dark:text-slate-400 leading-snug font-normal mb-2.5 line-clamp-2">
-            {{ i18n "newsletter_desc" }}
-          </p>
-
-          <form action="{{ `newsletter/` | relLangURL }}" method="get" data-supabase-subscribe class="space-y-2">
-            <div>
-              <input 
-                type="email" 
-                name="email" 
-                required 
-                placeholder="{{ i18n "newsletter_placeholder" }}" 
-                class="w-full px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-900/60 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-sky-500 dark:focus:border-sky-500 placeholder:text-slate-400 shadow-2xs"
-                aria-label="Email address for engineering newsletter">
-            </div>
-            <button 
-              type="submit" 
-              class="btn-primary w-full py-2 px-3 rounded-lg bg-sky-600 hover:bg-sky-700 text-white font-bold text-xs font-mono transition-colors cursor-pointer shadow-xs flex items-center justify-center gap-1.5">
-              <span>{{ i18n "newsletter_submit" }}</span>
-              <span class="text-xs">→</span>
-            </button>
-          </form>
-
-          <div class="mt-2 pt-2 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-[10px] font-mono text-slate-600 dark:text-slate-400">
-            <span class="flex items-center gap-1">
-              <i class="fa-solid fa-shield-halved text-[9px] text-emerald-500"></i>
-              <span>Zero spam · Unsubscribe anytime</span>
-            </span>
-            <span data-newsletter-status class="hidden text-emerald-500 font-semibold"></span>
-          </div>
-        </div>
       </aside>
 
     </div>
   </div>
+
+  <!-- Pre-Footer Engineering Digest Newsletter Section (Sleek Horizontal Tech Strip) -->
+  <section class="border-t border-slate-200/70 dark:border-slate-800/70 bg-slate-50/50 dark:bg-[#070b14]/50 py-12 px-4 sm:px-6 lg:px-8 mt-16" aria-labelledby="newsletter-heading">
+    <div class="bytedepth-container max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+      <div class="space-y-1.5 text-center md:text-left max-w-md">
+        <div class="flex items-center justify-center md:justify-start gap-2">
+          <span class="inline-flex items-center gap-1.5 font-mono text-[11px] font-bold uppercase tracking-wider text-sky-600 dark:text-sky-400 px-2 py-0.5 rounded-full bg-sky-500/10 border border-sky-500/20">
+            <i class="fa-regular fa-envelope text-[10px]"></i>
+            <span>{{ if eq site.Language.Lang "it" }}Newsletter Tecnica{{ else }}Engineering Digest{{ end }}</span>
+          </span>
+          <span class="font-mono text-xs text-slate-500 dark:text-slate-400">
+            {{ if eq site.Language.Lang "it" }}2x al mese{{ else }}2x / month{{ end }}
+          </span>
+        </div>
+        <h3 id="newsletter-heading" class="text-lg font-bold text-slate-900 dark:text-white tracking-tight m-0">
+          {{ i18n "newsletter_heading" }}
+        </h3>
+        <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed m-0">
+          {{ i18n "newsletter_desc" }}
+        </p>
+      </div>
+
+      <div class="w-full max-w-md">
+        <form action="{{ `newsletter/` | relLangURL }}" method="get" data-supabase-subscribe class="flex flex-col sm:flex-row gap-2">
+          <input 
+            type="email" 
+            name="email" 
+            required 
+            placeholder="{{ i18n "newsletter_placeholder" }}" 
+            class="flex-1 px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-sky-500 dark:focus:border-sky-500 placeholder:text-slate-400 shadow-2xs"
+            aria-label="Email address for engineering newsletter">
+          <button 
+            type="submit" 
+            class="px-5 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-700 text-white font-bold text-xs font-mono transition-colors cursor-pointer shadow-xs shrink-0 flex items-center justify-center gap-1.5">
+            <span>{{ i18n "newsletter_submit" }}</span>
+            <span>→</span>
+          </button>
+        </form>
+        <div class="mt-2 flex items-center justify-center md:justify-start gap-3 text-[10.5px] font-mono text-slate-500 dark:text-slate-400">
+          <span class="flex items-center gap-1">
+            <i class="fa-solid fa-shield-halved text-[9px] text-emerald-500"></i>
+            <span>Zero spam · Unsubscribe anytime</span>
+          </span>
+          <span data-newsletter-status class="hidden text-emerald-500 font-semibold"></span>
+        </div>
+      </div>
+    </div>
+  </section>
 
   <!-- Floating Community Poll Chat Widget (Unobtrusive Popover) -->
   {{ partial "components/floating-poll-widget.html" . }}
