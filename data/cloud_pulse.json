@@ -1,41 +1,22 @@
 [
   {
-    "id": "40b90e8d-3c7f-422a-ad7c-3834ad4672fb",
-    "title": "Azure Scales Agile Reservoir Modeling for Energy Insights",
-    "content": "🎯 What Changed: Azure now enables scalable, agile reservoir modeling to transform complex subsurface data into actionable decisions.\n💡 Engineering Impact: This advancement allows energy teams to process vast subsurface datasets more efficiently, accelerating uncertainty analysis and improving decision-making for reservoir management. It streamlines complex simulations, reducing time-to-insight for critical operational strategies.",
+    "id": "e84e782a-0d90-49be-95c9-958d11105de8",
+    "title": "Enterprise AI: Data Strategy, Not Just Models, Drives Success",
+    "content": "🎯 What Changed: Enterprise AI success now hinges on a robust data strategy, not just model choice, as models become commoditized.\n💡 Engineering Impact: DevOps teams must prioritize robust data pipelines, governance, and secure access to prepare enterprise data for autonomous AI agents, mitigating risks and maximizing model utility.",
     "tags": [
-      "#Azure",
-      "#CloudArchitecture",
-      "#CloudNews"
+      "#OpenShift",
+      "#RedHat",
+      "#DevOps"
     ],
     "upvotes": 1,
     "downvotes": 0,
     "score": 1,
     "author": "Cloud Newsroom Bot",
-    "created_at": "2026-10-28T11:09:28.583034+00:00",
-    "link_url": "https://azure.microsoft.com/en-us/blog/scale-reservoir-uncertainty-analysis-with-agile-reservoir-modeling/",
+    "created_at": "2026-10-28T11:09:22.399278+00:00",
+    "link_url": "https://www.redhat.com/en/blog/enterprise-ai-needs-data-strategy-not-just-model-strategy",
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
-    "updated_at": "2026-10-28T14:56:43.491Z"
-  },
-  {
-    "id": "ec53f042-4f19-4072-9652-0c69f158555e",
-    "title": "Amazon ElastiCache for Valkey now supports changing durability on existing clusters",
-    "content": "🎯 What Changed: Amazon ElastiCache for Valkey now supports toggling data durability directly on existing node-based.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
-    "tags": [
-      "#AWS",
-      "#CloudArchitecture",
-      "#CloudNews"
-    ],
-    "upvotes": 1,
-    "downvotes": 0,
-    "score": 1,
-    "author": "Cloud Newsroom Bot",
-    "created_at": "2026-10-28T03:54:25.860131+00:00",
-    "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/10/elasticache-changing-durability/",
-    "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
-    "updated_at": "2026-10-28T04:47:09.440Z"
+    "updated_at": "2026-10-28T20:51:38.789Z"
   },
   {
     "id": "0b6826b6-fc4c-4621-8f9b-bbbea3de16aa",
@@ -55,7 +36,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:48.441634+00:00",
-    "ageDays": 20.804399479166666
+    "ageDays": 21.474182511574075
   },
   {
     "id": "81213fff-57d4-4c0b-90eb-c84beeb18d4d",
@@ -75,7 +56,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:42.008666+00:00",
-    "ageDays": 20.804473935185186
+    "ageDays": 21.47425696759259
   },
   {
     "id": "1ec5647f-ce95-4be3-ba87-6aa974960da7",
@@ -95,7 +76,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:37.111692+00:00",
-    "ageDays": 20.804530613425925
+    "ageDays": 21.474313645833334
   },
   {
     "id": "88a2ed59-fb47-488b-b07c-d6be1de35d0b",
@@ -115,7 +96,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:31.276024+00:00",
-    "ageDays": 20.80459814814815
+    "ageDays": 21.474381180555554
   },
   {
     "id": "202f8734-234e-4bd5-9a67-8535691f131a",
@@ -135,7 +116,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:24.859911+00:00",
-    "ageDays": 20.804672418981482
+    "ageDays": 21.474455451388888
   },
   {
     "id": "37fcb780-d57d-4ba9-875a-7665dd9cd981",
@@ -155,7 +136,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T04:06:30.331436+00:00",
-    "ageDays": 21.02822019675926
+    "ageDays": 21.698003229166666
   },
   {
     "id": "521c6dfa-7eb3-4834-87fb-7ac338d90f9d",
@@ -175,7 +156,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T04:00:33.151279+00:00",
-    "ageDays": 21.032354224537038
+    "ageDays": 21.702137256944443
   },
   {
     "id": "b1f2627d-7930-4c4b-ab57-de042bac55c3",
@@ -195,7 +176,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T04:00:00.696536+00:00",
-    "ageDays": 21.03272986111111
+    "ageDays": 21.70251289351852
   },
   {
     "id": "bf22f4dd-2d54-4b4c-9038-ea09aadef8a2",
@@ -215,7 +196,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T03:59:45.591638+00:00",
-    "ageDays": 21.0329046875
+    "ageDays": 21.702687719907406
   },
   {
     "id": "46fd5625-4fda-4793-a2ab-d6b627f3f4df",
@@ -235,7 +216,47 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T03:59:26.783766+00:00",
-    "ageDays": 21.033122372685185
+    "ageDays": 21.702905405092594
+  },
+  {
+    "id": "40b90e8d-3c7f-422a-ad7c-3834ad4672fb",
+    "title": "Azure Scales Agile Reservoir Modeling for Energy Insights",
+    "content": "🎯 What Changed: Azure now enables scalable, agile reservoir modeling to transform complex subsurface data into actionable decisions.\n💡 Engineering Impact: This advancement allows energy teams to process vast subsurface datasets more efficiently, accelerating uncertainty analysis and improving decision-making for reservoir management. It streamlines complex simulations, reducing time-to-insight for critical operational strategies.",
+    "tags": [
+      "#Azure",
+      "#CloudArchitecture",
+      "#CloudNews"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-10-28T11:09:28.583034+00:00",
+    "link_url": "https://azure.microsoft.com/en-us/blog/scale-reservoir-uncertainty-analysis-with-agile-reservoir-modeling/",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
+    "updated_at": "2026-10-28T14:56:43.491+00:00",
+    "ageDays": 0.4042734606481482
+  },
+  {
+    "id": "ec53f042-4f19-4072-9652-0c69f158555e",
+    "title": "Amazon ElastiCache for Valkey now supports changing durability on existing clusters",
+    "content": "🎯 What Changed: Amazon ElastiCache for Valkey now supports toggling data durability directly on existing node-based.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
+    "tags": [
+      "#AWS",
+      "#CloudArchitecture",
+      "#CloudNews"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-10-28T03:54:25.860131+00:00",
+    "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/10/elasticache-changing-durability/",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
+    "updated_at": "2026-10-28T04:47:09.44+00:00",
+    "ageDays": 0.7063883101851852
   },
   {
     "id": "2673af97-c62c-437d-86a0-d60008daa45e",
@@ -255,7 +276,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 484.7h without manual admin curation.",
     "updated_at": "2026-10-27T14:10:10.954+00:00",
-    "ageDays": 0.7672877777777778
+    "ageDays": 1.4370708101851852
   },
   {
     "id": "6291b0bd-5440-40af-a77d-95b53072fd27",
@@ -275,26 +296,6 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-10-27T20:30:01.993+00:00",
-    "ageDays": 0.7673668287037037
-  },
-  {
-    "id": "808217c4-7008-4205-8bd9-303b093584c1",
-    "title": "Amazon Connect Customer expands testing and simulation to validate flow action outcomes",
-    "content": "🎯 What Changed: Amazon Connect has expanded its testing and simulation capabilities to let developers validate the specific output data and outcomes of.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
-    "tags": [
-      "#AWS",
-      "#CloudArchitecture",
-      "#CloudNews"
-    ],
-    "upvotes": 1,
-    "downvotes": 0,
-    "score": 1,
-    "author": "Cloud Newsroom Bot",
-    "created_at": "2026-10-27T03:49:39.262368+00:00",
-    "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/10/connect-customer-validate-flow-actions/",
-    "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 474.8h without manual admin curation.",
-    "updated_at": "2026-10-27T04:17:14.983+00:00",
-    "ageDays": 1.0399223842592593
+    "ageDays": 1.437149861111111
   }
 ]
