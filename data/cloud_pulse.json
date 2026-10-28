@@ -1,5 +1,24 @@
 [
   {
+    "id": "40b90e8d-3c7f-422a-ad7c-3834ad4672fb",
+    "title": "Azure Scales Agile Reservoir Modeling for Energy Insights",
+    "content": "🎯 What Changed: Azure now enables scalable, agile reservoir modeling to transform complex subsurface data into actionable decisions.\n💡 Engineering Impact: This advancement allows energy teams to process vast subsurface datasets more efficiently, accelerating uncertainty analysis and improving decision-making for reservoir management. It streamlines complex simulations, reducing time-to-insight for critical operational strategies.",
+    "tags": [
+      "#Azure",
+      "#CloudArchitecture",
+      "#CloudNews"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-10-28T11:09:28.583034+00:00",
+    "link_url": "https://azure.microsoft.com/en-us/blog/scale-reservoir-uncertainty-analysis-with-agile-reservoir-modeling/",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
+    "updated_at": "2026-10-28T14:56:43.491Z"
+  },
+  {
     "id": "ec53f042-4f19-4072-9652-0c69f158555e",
     "title": "Amazon ElastiCache for Valkey now supports changing durability on existing clusters",
     "content": "🎯 What Changed: Amazon ElastiCache for Valkey now supports toggling data durability directly on existing node-based.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
@@ -277,25 +296,5 @@
     "eligibility_reason": "[Auto-Published] Published automatically after 474.8h without manual admin curation.",
     "updated_at": "2026-10-27T04:17:14.983+00:00",
     "ageDays": 1.0399223842592593
-  },
-  {
-    "id": "04812d47-9efe-4b0c-979f-c91c46f6d363",
-    "title": "Azure Leads Gartner MQ for Server Virtualization Platforms",
-    "content": "🎯 What Changed: Microsoft was recognized as a Leader in the 2026 Gartner Magic Quadrant for Server Virtualization Platforms.\n💡 Engineering Impact: This recognition validates Azure's robust hybrid cloud strategy, leveraging Azure Arc and Hyper-V for consistent operational and infrastructure management across diverse environments.",
-    "tags": [
-      "#Azure",
-      "#CloudArchitecture",
-      "#CloudNews"
-    ],
-    "upvotes": 1,
-    "downvotes": 0,
-    "score": 1,
-    "author": "Cloud Newsroom Bot",
-    "created_at": "2026-10-26T10:51:51.277419+00:00",
-    "link_url": "https://azure.microsoft.com/en-us/blog/microsoft-named-a-leader-in-the-2026-gartner-magic-quadrant-for-server-virtualization-platforms/",
-    "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 465.0h without manual admin curation.",
-    "updated_at": "2026-10-26T18:28:25.679+00:00",
-    "ageDays": 1.7467277662037037
   }
 ]
