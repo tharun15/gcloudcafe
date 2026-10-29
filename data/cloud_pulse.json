@@ -1,5 +1,24 @@
 [
   {
+    "id": "10012093-c99d-45a3-a262-c11044060bce",
+    "title": "AI agent security with policy-driven access control",
+    "content": "🎯 What Changed: New policy-driven access control mechanisms are introduced to enhance the security and real-time visibility of agentic AI deployments.\n💡 Engineering Impact: Engineers can now implement granular, real-time access policies for AI agents, mitigating security incidents and improving runtime visibility across enterprise AI deployments.",
+    "tags": [
+      "#OpenShift",
+      "#RedHat",
+      "#DevOps"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-10-29T11:22:52.161739+00:00",
+    "link_url": "https://www.redhat.com/en/blog/ai-agent-security-policy-driven-access-control",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
+    "updated_at": "2026-10-29T15:02:02.175Z"
+  },
+  {
     "id": "b34bd54e-96b1-4d13-a265-ba28249a096c",
     "title": "Introducing time series collections for the next generation of Amazon OpenSearch Serverless",
     "content": "🎯 What Changed: AWS announced support for time series collections on the next generation of Amazon OpenSearch Serverless, providing.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
@@ -277,25 +296,5 @@
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-10-28T04:47:09.44+00:00",
     "ageDays": 1.0442341203703704
-  },
-  {
-    "id": "2673af97-c62c-437d-86a0-d60008daa45e",
-    "title": "MLOps for edge AI: Keeping models accurate over time",
-    "content": "🎯 What Changed: OpenShift MLOps now provides comprehensive guidance on sustaining edge AI model accuracy and preventing drift over time.\n💡 Engineering Impact: This ensures the long-term value of edge AI investments by providing robust MLOps practices for continuous model monitoring, re-training, and lifecycle management.",
-    "tags": [
-      "#OpenShift",
-      "#RedHat",
-      "#DevOps"
-    ],
-    "upvotes": 1,
-    "downvotes": 0,
-    "score": 1,
-    "author": "Cloud Newsroom Bot",
-    "created_at": "2026-10-27T10:22:14.892858+00:00",
-    "link_url": "https://www.redhat.com/en/blog/mlops-edge-ai-keeping-models-accurate-over-time",
-    "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 484.7h without manual admin curation.",
-    "updated_at": "2026-10-27T14:10:10.954+00:00",
-    "ageDays": 1.7749166203703703
   }
 ]
