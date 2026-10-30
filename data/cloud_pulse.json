@@ -1,5 +1,24 @@
 [
   {
+    "id": "68e74730-3919-48b9-8a1d-604ccf09fa93",
+    "title": "ITOps: Governed Automation Unlocks AI Production Value",
+    "content": "🎯 What Changed: The announcement emphasizes that AI's upstream benefits are bottlenecked without a governed automation foundation for production deployment.\n💡 Engineering Impact: Engineers must prioritize integrating robust automation platforms to operationalize AI-driven insights, streamlining deployment and maximizing AI's return on investment.",
+    "tags": [
+      "#OpenShift",
+      "#RedHat",
+      "#DevOps"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-10-30T11:15:15.612694+00:00",
+    "link_url": "https://www.redhat.com/en/blog/why-itops-needs-governed-automation-foundation-ai",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
+    "updated_at": "2026-10-30T14:55:18.268Z"
+  },
+  {
     "id": "74fbec27-057d-4200-95cd-8ace2f55204f",
     "title": "Amazon MSK Connect now supports updating connector plugins and worker configurations",
     "content": "🎯 What Changed: Amazon MSK Connect now supports in-place updates for custom plugins and worker configurations on existing connectors.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
@@ -277,25 +296,5 @@
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-10-29T04:58:08.352+00:00",
     "ageDays": 1.02157125
-  },
-  {
-    "id": "40b90e8d-3c7f-422a-ad7c-3834ad4672fb",
-    "title": "Azure Scales Agile Reservoir Modeling for Energy Insights",
-    "content": "🎯 What Changed: Azure now enables scalable, agile reservoir modeling to transform complex subsurface data into actionable decisions.\n💡 Engineering Impact: This advancement allows energy teams to process vast subsurface datasets more efficiently, accelerating uncertainty analysis and improving decision-making for reservoir management. It streamlines complex simulations, reducing time-to-insight for critical operational strategies.",
-    "tags": [
-      "#Azure",
-      "#CloudArchitecture",
-      "#CloudNews"
-    ],
-    "upvotes": 1,
-    "downvotes": 0,
-    "score": 1,
-    "author": "Cloud Newsroom Bot",
-    "created_at": "2026-10-28T11:09:28.583034+00:00",
-    "link_url": "https://azure.microsoft.com/en-us/blog/scale-reservoir-uncertainty-analysis-with-agile-reservoir-modeling/",
-    "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
-    "updated_at": "2026-10-28T14:56:43.491+00:00",
-    "ageDays": 1.7418341203703704
   }
 ]
