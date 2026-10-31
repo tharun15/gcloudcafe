@@ -1,0 +1,63 @@
+{{- $lang := .Type | default "text" -}}
+{{- $langLower := lower $lang -}}
+{{- $isTerminal := or (in (slice "bash" "sh" "shell" "zsh" "terminal" "console") $langLower) -}}
+{{- $lines := split (trim .Inner "\n\r") "\n" -}}
+{{- $lineCount := len $lines -}}
+{{- $lineText := cond (eq $lineCount 1) "1 line" (printf "%d lines" $lineCount) -}}
+
+{{- $iconClass := "fa-solid fa-file-code" -}}
+{{- $iconColor := "text-amber-400" -}}
+{{- if $isTerminal -}}
+  {{- $iconClass = "fa-solid fa-terminal" -}}
+  {{- $iconColor = "text-emerald-400" -}}
+{{- else if or (eq $langLower "yaml") (eq $langLower "yml") -}}
+  {{- $iconClass = "fa-solid fa-file-code" -}}
+  {{- $iconColor = "text-amber-400" -}}
+{{- else if or (eq $langLower "docker") (eq $langLower "dockerfile") -}}
+  {{- $iconClass = "fa-brands fa-docker" -}}
+  {{- $iconColor = "text-sky-400" -}}
+{{- else if or (eq $langLower "python") (eq $langLower "py") -}}
+  {{- $iconClass = "fa-brands fa-python" -}}
+  {{- $iconColor = "text-amber-400" -}}
+{{- else if or (eq $langLower "golang") (eq $langLower "go") -}}
+  {{- $iconClass = "fa-brands fa-golang" -}}
+  {{- $iconColor = "text-cyan-400" -}}
+{{- else if or (eq $langLower "terraform") (eq $langLower "tf") (eq $langLower "hcl") -}}
+  {{- $iconClass = "fa-solid fa-cubes" -}}
+  {{- $iconColor = "text-purple-400" -}}
+{{- else if or (eq $langLower "sql") (eq $langLower "sqlx") -}}
+  {{- $iconClass = "fa-solid fa-database" -}}
+  {{- $iconColor = "text-rose-400" -}}
+{{- else if eq $langLower "json" -}}
+  {{- $iconClass = "fa-solid fa-code" -}}
+  {{- $iconColor = "text-yellow-400" -}}
+{{- else if or (eq $langLower "javascript") (eq $langLower "js") -}}
+  {{- $iconClass = "fa-brands fa-js" -}}
+  {{- $iconColor = "text-yellow-400" -}}
+{{- end -}}
+
+<div class="code-block-wrapper {{ cond $isTerminal "terminal-block-wrapper is-terminal" "editor-block-wrapper is-code" }}">
+  <div class="code-block-header {{ cond $isTerminal "terminal-header" "editor-header" }}">
+    <div class="flex items-center {{ cond $isTerminal "gap-3" "" }}">
+      {{- if $isTerminal -}}
+        <div class="terminal-dots" aria-hidden="true">
+          <span class="dot-red"></span>
+          <span class="dot-yellow"></span>
+          <span class="dot-green"></span>
+        </div>
+        <span class="lang-tag terminal-tag">
+          <i class="{{ $iconClass }} {{ $iconColor }} mr-1 text-[11px]"></i> {{ upper $lang }}
+        </span>
+      {{- else -}}
+        <span class="lang-tag editor-tag">
+          <i class="{{ $iconClass }} {{ $iconColor }} mr-1 text-[11px]"></i> {{ upper $lang }}
+        </span>
+      {{- end -}}
+      <span class="line-count-tag ml-2 text-slate-500 dark:text-slate-400 font-mono text-[11px]">{{ $lineText }}</span>
+    </div>
+    <button class="copy-code-btn blog-focus-ring {{ cond $isTerminal "terminal-copy-btn" "editor-copy-btn" }}" aria-label="Copy code to clipboard">
+      <i class="fa-regular fa-copy"></i> Copy
+    </button>
+  </div>
+  {{- transform.HighlightCodeBlock . -}}
+</div>

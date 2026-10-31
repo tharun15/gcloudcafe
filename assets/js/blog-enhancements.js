@@ -86,6 +86,28 @@
 
   /* ── Developer-Grade Code Blocks with Icons, Tabs, and Glowing Copy ── */
   function initCopyCode() {
+    // 1. Immediately bind copy buttons on server-rendered code blocks (Zero Layout Shift, Zero Flicker)
+    var existingButtons = document.querySelectorAll(".code-block-wrapper .copy-code-btn");
+    existingButtons.forEach(function (btn) {
+      if (btn.getAttribute("data-copy-bound") === "true") return;
+      btn.setAttribute("data-copy-bound", "true");
+      btn.addEventListener("click", function () {
+        var wrapper = btn.closest(".code-block-wrapper");
+        if (!wrapper) return;
+        var codeEl = wrapper.querySelector("pre code") || wrapper.querySelector("pre");
+        var text = (codeEl ? (codeEl.innerText || codeEl.textContent) : "").trim();
+        if (!navigator.clipboard) {
+          fallbackCopy(text, btn);
+          return;
+        }
+        navigator.clipboard.writeText(text).then(function () {
+          showCopied(btn);
+        }).catch(function () {
+          fallbackCopy(text, btn);
+        });
+      });
+    });
+
     var blocks = document.querySelectorAll("pre");
     if (!blocks.length) return;
 
@@ -321,6 +343,7 @@
 
     // Transform desktop links into Medium-style undisturbed mini-bars
     tocLinks.forEach(function (link) {
+      if (link.classList.contains("toc-link")) return;
       link.classList.add("toc-link");
       var titleText = link.textContent.trim();
       var isSub = !!link.closest("ol ol, ul ul");

@@ -1023,29 +1023,40 @@ kbd {
    MODERN WEB & DEVELOPER-CENTRIC STYLING (VIEW TRANSITIONS & CYBER UI)
    ========================================================================== */
 
-/* ── 1. Native Cross-Document View Transitions (MPA Zero-Flash) ── */
+/* ── 1. Native Cross-Document View Transitions (MPA Zero-Flash, Zero-Jitter) ── */
 @media (prefers-reduced-motion: no-preference) {
   @view-transition {
     navigation: auto;
   }
 
   ::view-transition-old(root) {
-    animation: 0.25s cubic-bezier(0.4, 0, 0.2, 1) both fade-out;
+    animation: 0.18s cubic-bezier(0.4, 0, 0.2, 1) both fade-out;
   }
 
   ::view-transition-new(root) {
-    animation: 0.25s cubic-bezier(0.4, 0, 0.2, 1) both fade-in;
+    animation: 0.18s cubic-bezier(0.4, 0, 0.2, 1) both fade-in;
   }
 
   @keyframes fade-out {
-    from { opacity: 1; transform: translateY(0); }
-    to { opacity: 0; transform: translateY(-4px); }
+    from { opacity: 1; }
+    to { opacity: 0; }
   }
 
   @keyframes fade-in {
-    from { opacity: 0; transform: translateY(4px); }
-    to { opacity: 1; transform: translateY(0); }
+    from { opacity: 0; }
+    to { opacity: 1; }
   }
+}
+
+/* Persistent site header remains stationary during page transitions */
+.header {
+  view-transition-name: main-site-header;
+}
+
+/* TOC rail smoothness */
+.toc-minibars-container {
+  opacity: 0.95;
+  transition: opacity 0.2s ease-in;
 }
 
 /* ── 2. Developer Terminal & Editor Code Block Standardization ── */
@@ -2059,11 +2070,6 @@ table {
   transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease, border-color 0.2s ease;
 }
 
-::view-transition-old(root),
-::view-transition-new(root) {
-  animation-duration: 0.22s;
-  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
-}
 
 .pulse-skeleton-card {
   position: relative !important;

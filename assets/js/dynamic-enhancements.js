@@ -194,9 +194,11 @@
     // Inject a visually hidden % counter into the article header meta list
     var metaList = document.querySelector(".blog-meta-list");
     if (!metaList) return;
+    if (document.getElementById("reading-pct-meta")) return;
 
     var li = document.createElement("li");
     li.id = "reading-pct-meta";
+    li.className = "inline-flex items-center gap-1.5 text-xs text-text/80 dark:text-darkmode-text/80 transition-opacity duration-300";
     li.setAttribute("aria-label", "Reading progress");
     li.innerHTML =
       '<i class="fa-solid fa-gauge-simple-high text-primary"></i>' +
