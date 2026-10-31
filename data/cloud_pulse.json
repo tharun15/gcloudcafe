@@ -1,8 +1,8 @@
 [
   {
-    "id": "c4ab1228-f5a5-416c-b3af-c2bb9472e8f9",
-    "title": "Sovereignty debt: How APAC boards accumulate it and what it costs to repay",
-    "content": "🎯 What Changed: Sovereignty debt is now recognized as a critical board-level liability for cloud systems across the Asia Pacific region.\n💡 Engineering Impact: Engineers must proactively design cloud architectures and contracts to align with regulatory and customer jurisdictional expectations, preventing costly compliance debt.",
+    "id": "72a34a3c-7ce8-401f-a899-881fca8ec567",
+    "title": "OpenShift on AWS: Direct VM IP Routing with BGP Connector",
+    "content": "🎯 What Changed: Red Hat OpenShift Service on AWS now features a BGP cloud connector, enabling direct IP routing to OpenShift Virtualization guest VMs.\n💡 Engineering Impact: This eliminates the need for complex network redesigns in cloud environments, previously required due to Layer 3 limitations. It simplifies VM migrations to AWS, allowing virtualization teams to maintain consistent IP addressing and direct traffic routing.",
     "tags": [
       "#OpenShift",
       "#RedHat",
@@ -12,30 +12,11 @@
     "downvotes": 0,
     "score": 1,
     "author": "Cloud Newsroom Bot",
-    "created_at": "2026-10-31T10:49:37.655489+00:00",
-    "link_url": "https://www.redhat.com/en/blog/sovereignty-debt-how-apac-boards-accumulate-it-and-what-it-costs-repay",
+    "created_at": "2026-10-31T10:49:31.595404+00:00",
+    "link_url": "https://www.redhat.com/en/blog/direct-vm-networking-aws-introducing-bgp-cloud-connector-red-hat-openshift-service-aws",
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
-    "updated_at": "2026-10-31T14:24:04.701Z"
-  },
-  {
-    "id": "12c90cc6-03e7-47bd-bdf6-206528ef2daa",
-    "title": "Daybreak Red from OpenAI now available to eligible customers on Amazon Bedrock in AWS GovCloud (US-East)",
-    "content": "🎯 What Changed: OpenAI Daybreak Red is now available to eligible customers on Amazon Bedrock in the AWS GovCloud (US-East.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
-    "tags": [
-      "#AWS",
-      "#CloudArchitecture",
-      "#CloudNews"
-    ],
-    "upvotes": 1,
-    "downvotes": 0,
-    "score": 1,
-    "author": "Cloud Newsroom Bot",
-    "created_at": "2026-10-31T03:50:20.607726+00:00",
-    "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/10/openai-daybreak-red-govcloud-east/",
-    "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
-    "updated_at": "2026-10-31T04:44:23.257Z"
+    "updated_at": "2026-10-31T19:46:42.242Z"
   },
   {
     "id": "0b6826b6-fc4c-4621-8f9b-bbbea3de16aa",
@@ -55,7 +36,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:48.441634+00:00",
-    "ageDays": 23.802478159722224
+    "ageDays": 24.42908603009259
   },
   {
     "id": "81213fff-57d4-4c0b-90eb-c84beeb18d4d",
@@ -75,7 +56,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:42.008666+00:00",
-    "ageDays": 23.80255261574074
+    "ageDays": 24.429160486111112
   },
   {
     "id": "1ec5647f-ce95-4be3-ba87-6aa974960da7",
@@ -95,7 +76,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:37.111692+00:00",
-    "ageDays": 23.802609293981483
+    "ageDays": 24.42921716435185
   },
   {
     "id": "88a2ed59-fb47-488b-b07c-d6be1de35d0b",
@@ -115,7 +96,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:31.276024+00:00",
-    "ageDays": 23.802676828703703
+    "ageDays": 24.429284699074074
   },
   {
     "id": "202f8734-234e-4bd5-9a67-8535691f131a",
@@ -135,7 +116,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:24.859911+00:00",
-    "ageDays": 23.802751099537037
+    "ageDays": 24.42935896990741
   },
   {
     "id": "37fcb780-d57d-4ba9-875a-7665dd9cd981",
@@ -155,7 +136,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T04:06:30.331436+00:00",
-    "ageDays": 24.026298877314815
+    "ageDays": 24.652906747685186
   },
   {
     "id": "521c6dfa-7eb3-4834-87fb-7ac338d90f9d",
@@ -175,7 +156,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T04:00:33.151279+00:00",
-    "ageDays": 24.030432905092592
+    "ageDays": 24.657040775462963
   },
   {
     "id": "b1f2627d-7930-4c4b-ab57-de042bac55c3",
@@ -195,7 +176,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T04:00:00.696536+00:00",
-    "ageDays": 24.030808541666666
+    "ageDays": 24.657416412037037
   },
   {
     "id": "bf22f4dd-2d54-4b4c-9038-ea09aadef8a2",
@@ -215,7 +196,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T03:59:45.591638+00:00",
-    "ageDays": 24.030983368055555
+    "ageDays": 24.657591238425926
   },
   {
     "id": "46fd5625-4fda-4793-a2ab-d6b627f3f4df",
@@ -235,7 +216,47 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T03:59:26.783766+00:00",
-    "ageDays": 24.03120105324074
+    "ageDays": 24.65780892361111
+  },
+  {
+    "id": "c4ab1228-f5a5-416c-b3af-c2bb9472e8f9",
+    "title": "Sovereignty debt: How APAC boards accumulate it and what it costs to repay",
+    "content": "🎯 What Changed: Sovereignty debt is now recognized as a critical board-level liability for cloud systems across the Asia Pacific region.\n💡 Engineering Impact: Engineers must proactively design cloud architectures and contracts to align with regulatory and customer jurisdictional expectations, preventing costly compliance debt.",
+    "tags": [
+      "#OpenShift",
+      "#RedHat",
+      "#DevOps"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-10-31T10:49:37.655489+00:00",
+    "link_url": "https://www.redhat.com/en/blog/sovereignty-debt-how-apac-boards-accumulate-it-and-what-it-costs-repay",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
+    "updated_at": "2026-10-31T14:24:04.701+00:00",
+    "ageDays": 0.37296086805555556
+  },
+  {
+    "id": "12c90cc6-03e7-47bd-bdf6-206528ef2daa",
+    "title": "Daybreak Red from OpenAI now available to eligible customers on Amazon Bedrock in AWS GovCloud (US-East)",
+    "content": "🎯 What Changed: OpenAI Daybreak Red is now available to eligible customers on Amazon Bedrock in the AWS GovCloud (US-East.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
+    "tags": [
+      "#AWS",
+      "#CloudArchitecture",
+      "#CloudNews"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-10-31T03:50:20.607726+00:00",
+    "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/10/openai-daybreak-red-govcloud-east/",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
+    "updated_at": "2026-10-31T04:44:23.257+00:00",
+    "ageDays": 0.6641304050925926
   },
   {
     "id": "68e74730-3919-48b9-8a1d-604ccf09fa93",
@@ -255,7 +276,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-10-30T14:55:18.268+00:00",
-    "ageDays": 0.7285525694444445
+    "ageDays": 1.3551604398148147
   },
   {
     "id": "217c0aa9-4dd8-4682-839b-4fe5b1e197f6",
@@ -275,26 +296,6 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-10-30T20:33:09.504+00:00",
-    "ageDays": 0.7286463425925926
-  },
-  {
-    "id": "74fbec27-057d-4200-95cd-8ace2f55204f",
-    "title": "Amazon MSK Connect now supports updating connector plugins and worker configurations",
-    "content": "🎯 What Changed: Amazon MSK Connect now supports in-place updates for custom plugins and worker configurations on existing connectors.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
-    "tags": [
-      "#AWS",
-      "#CloudArchitecture",
-      "#CloudNews"
-    ],
-    "upvotes": 1,
-    "downvotes": 0,
-    "score": 1,
-    "author": "Cloud Newsroom Bot",
-    "created_at": "2026-10-30T04:20:10.463624+00:00",
-    "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/10/amazon-msk-connect-update-plugin-worker-configurations",
-    "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
-    "updated_at": "2026-10-30T04:57:43.6+00:00",
-    "ageDays": 1.0168066087962964
+    "ageDays": 1.355254212962963
   }
 ]
