@@ -447,6 +447,13 @@ pre code,
 /* ── Medium-Style Undisturbed Mini-Bar Table of Contents (Right-Most Pinned) ── */
 .toc-container,
 .toc-minibars-container {
+  &.is-ready a.toc-link .toc-bar {
+    transition: width 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+                background-color 0.2s ease,
+                box-shadow 0.2s ease,
+                transform 0.2s ease !important;
+  }
+
   @apply max-h-[calc(100vh-8rem)] overflow-visible;
   background: transparent !important;
   border: none !important;
@@ -456,6 +463,19 @@ pre code,
   display: flex !important;
   flex-direction: column !important;
   align-items: flex-end !important; /* Right-most alignment */
+
+  /* Prevent raw un-transformed text flash BEFORE JavaScript initializes */
+  #TableOfContents a:not(.toc-link) {
+    font-size: 0 !important;
+    line-height: 0 !important;
+    color: transparent !important;
+    display: block;
+    width: 24px;
+    height: 2.5px;
+    border-radius: 9999px;
+    background-color: rgba(148, 163, 184, 0.45);
+    margin: 6px 0;
+  }
 
   #TableOfContents {
     border: none !important;
@@ -522,10 +542,7 @@ pre code,
       height: 2.5px;
       border-radius: 9999px;
       background-color: rgba(148, 163, 184, 0.45);
-      transition: width 0.22s cubic-bezier(0.16, 1, 0.3, 1),
-                  background-color 0.2s ease,
-                  box-shadow 0.2s ease,
-                  transform 0.2s ease;
+      transition: none;
     }
 
     /* Sub-section Bar (H3) - slightly shorter */
@@ -612,6 +629,13 @@ pre code,
 .dark {
   .toc-container,
   .toc-minibars-container {
+  &.is-ready a.toc-link .toc-bar {
+    transition: width 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+                background-color 0.2s ease,
+                box-shadow 0.2s ease,
+                transform 0.2s ease !important;
+  }
+
     a.toc-link {
       .toc-bar {
         background-color: rgba(100, 116, 139, 0.45);
@@ -1023,28 +1047,15 @@ kbd {
    MODERN WEB & DEVELOPER-CENTRIC STYLING (VIEW TRANSITIONS & CYBER UI)
    ========================================================================== */
 
-/* ── 1. Native Cross-Document View Transitions (MPA Zero-Flash, Zero-Jitter) ── */
+/* ── 1. Native Cross-Document View Transitions (Disabled MPA Freeze/Flicker) ── */
 @media (prefers-reduced-motion: no-preference) {
   @view-transition {
-    navigation: auto;
+    navigation: none;
   }
 
-  ::view-transition-old(root) {
-    animation: 0.18s cubic-bezier(0.4, 0, 0.2, 1) both fade-out;
-  }
-
+  ::view-transition-old(root),
   ::view-transition-new(root) {
-    animation: 0.18s cubic-bezier(0.4, 0, 0.2, 1) both fade-in;
-  }
-
-  @keyframes fade-out {
-    from { opacity: 1; }
-    to { opacity: 0; }
-  }
-
-  @keyframes fade-in {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    animation: none !important;
   }
 }
 
@@ -1055,6 +1066,13 @@ kbd {
 
 /* TOC rail smoothness */
 .toc-minibars-container {
+  &.is-ready a.toc-link .toc-bar {
+    transition: width 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+                background-color 0.2s ease,
+                box-shadow 0.2s ease,
+                transform 0.2s ease !important;
+  }
+
   opacity: 0.95;
   transition: opacity 0.2s ease-in;
 }

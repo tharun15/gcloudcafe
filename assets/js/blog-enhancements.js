@@ -394,20 +394,45 @@
     }
 
     if ("IntersectionObserver" in window) {
+      var visibleHeadings = new Set();
       var observer = new IntersectionObserver(function (entries) {
         entries.forEach(function (entry) {
           if (entry.isIntersecting) {
-            var activeLink = headingsMap.get(entry.target);
-            if (activeLink) {
-              tocLinks.forEach(function (l) { l.classList.remove("is-active"); });
-              activeLink.classList.add("is-active");
-            }
+            visibleHeadings.add(entry.target);
+          } else {
+            visibleHeadings.delete(entry.target);
           }
         });
-      }, { rootMargin: "0px 0px -65% 0px", threshold: 0 });
+
+        var topHeading = null;
+        var minTop = Infinity;
+        visibleHeadings.forEach(function (el) {
+          var rect = el.getBoundingClientRect();
+          if (rect.top >= -50 && rect.top < minTop) {
+            minTop = rect.top;
+            topHeading = el;
+          }
+        });
+
+        if (!topHeading && visibleHeadings.size > 0) {
+          topHeading = Array.from(visibleHeadings)[0];
+        }
+
+        if (topHeading) {
+          var activeLink = headingsMap.get(topHeading);
+          if (activeLink && !activeLink.classList.contains("is-active")) {
+            tocLinks.forEach(function (l) { l.classList.remove("is-active"); });
+            activeLink.classList.add("is-active");
+          }
+        }
+      }, { rootMargin: "-80px 0px -50% 0px", threshold: 0 });
 
       headingsMap.forEach(function (_, el) {
         observer.observe(el);
+      });
+
+      requestAnimationFrame(function () {
+        container.classList.add("is-ready");
       });
 
     // Fade out fixed TOC rail when reader reaches the footer / related posts
