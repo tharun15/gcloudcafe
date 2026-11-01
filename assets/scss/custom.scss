@@ -2704,3 +2704,9 @@ table {
   rx: 8px !important;
   ry: 8px !important;
 }
+
+/* Accessible syntax contrast: ensure comments meet WCAG AA 4.5:1 on dark backgrounds */
+.dark .highlight span[style*="color:#75715e"],
+.dark .code-block-wrapper pre span[style*="color:#75715e"] {
+  color: #94a3b8 !important;
+}
