@@ -659,28 +659,15 @@ kbd {
    MODERN WEB & DEVELOPER-CENTRIC STYLING (VIEW TRANSITIONS & CYBER UI)
    ========================================================================== */
 
-/* ── 1. Native Cross-Document View Transitions (MPA Zero-Flash) ── */
+/* ── 1. Native Cross-Document View Transitions (Disabled MPA Freeze/Flicker) ── */
 @media (prefers-reduced-motion: no-preference) {
   @view-transition {
-    navigation: auto;
+    navigation: none;
   }
 
-  ::view-transition-old(root) {
-    animation: 0.25s cubic-bezier(0.4, 0, 0.2, 1) both fade-out;
-  }
-
+  ::view-transition-old(root),
   ::view-transition-new(root) {
-    animation: 0.25s cubic-bezier(0.4, 0, 0.2, 1) both fade-in;
-  }
-
-  @keyframes fade-out {
-    from { opacity: 1; transform: translateY(0); }
-    to { opacity: 0; transform: translateY(-4px); }
-  }
-
-  @keyframes fade-in {
-    from { opacity: 0; transform: translateY(4px); }
-    to { opacity: 1; transform: translateY(0); }
+    animation: none !important;
   }
 }
 

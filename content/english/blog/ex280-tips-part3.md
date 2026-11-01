@@ -66,10 +66,11 @@ spec:
     path: /tmp
     server: 172.17.0.2
   persistentVolumeReclaimPolicy: Retain
----
+```
+
 Two fields here are absolutely critical:
-spec.nfs.path
-spec.nfs.server
+- `spec.nfs.path`
+- `spec.nfs.server`
 
 If either one is incorrect, your PVC will remain in a Pending state forever — which kills your exam time.
 

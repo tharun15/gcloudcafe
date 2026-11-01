@@ -291,15 +291,27 @@ pre code,
   color: #94a3b8;
 
   &::before {
-    content: '';
-    display: inline-block;
-    width: 9px;
-    height: 9px;
-    border-radius: 50%;
-    background: #ef4444;
-    box-shadow: 14px 0 0 #f59e0b, 28px 0 0 #10b981;
-    margin-right: 36px;
+    content: none !important;
+    display: none !important;
+  }
+
+  .terminal-dots,
+  .dev-terminal-dots {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    margin-right: 0.5rem;
     flex-shrink: 0;
+
+    span {
+      width: 0.625rem;
+      height: 0.625rem;
+      border-radius: 9999px;
+      display: inline-block;
+    }
+    .dot-red { background-color: #ff5f56; }
+    .dot-yellow { background-color: #ffbd2e; }
+    .dot-green { background-color: #27c93f; }
   }
 
   .lang-tag {
@@ -314,6 +326,18 @@ pre code,
     font-size: 0.7rem;
     display: inline-flex;
     align-items: center;
+  }
+
+  .terminal-tag {
+    color: #34d399 !important;
+    background: rgba(16, 185, 129, 0.12) !important;
+    border-color: rgba(16, 185, 129, 0.25) !important;
+  }
+
+  .editor-tag {
+    color: #f1f5f9 !important;
+    background: rgba(30, 41, 59, 0.8) !important;
+    border-color: rgba(51, 65, 85, 0.7) !important;
   }
 
   .line-count-tag {
@@ -423,6 +447,13 @@ pre code,
 /* ── Medium-Style Undisturbed Mini-Bar Table of Contents (Right-Most Pinned) ── */
 .toc-container,
 .toc-minibars-container {
+  &.is-ready a.toc-link .toc-bar {
+    transition: width 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+                background-color 0.2s ease,
+                box-shadow 0.2s ease,
+                transform 0.2s ease !important;
+  }
+
   @apply max-h-[calc(100vh-8rem)] overflow-visible;
   background: transparent !important;
   border: none !important;
@@ -432,6 +463,52 @@ pre code,
   display: flex !important;
   flex-direction: column !important;
   align-items: flex-end !important; /* Right-most alignment */
+
+  /* Pixel-perfect pre-JS mini-bars matching a.toc-link exactly (Zero Layout Shift, Zero Accordion Jump) */
+  #TableOfContents a:not(.toc-link) {
+    position: relative;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+    padding: 5px 0 !important;
+    height: 14px !important;
+    box-sizing: content-box !important;
+    font-size: 0 !important;
+    line-height: 0 !important;
+    color: transparent !important;
+    text-decoration: none !important;
+    border: none !important;
+    background: transparent !important;
+    cursor: pointer;
+    overflow: hidden !important;
+
+    &::after {
+      content: '';
+      display: block;
+      width: 24px;
+      height: 2.5px;
+      border-radius: 9999px;
+      background-color: rgba(148, 163, 184, 0.45);
+      transition: none;
+    }
+  }
+
+  /* Pre-JS Sub-headings (H3) match .toc-bar-sub (14px width) */
+  #TableOfContents ul ul a:not(.toc-link)::after,
+  #TableOfContents ol ol a:not(.toc-link)::after {
+    width: 14px !important;
+    height: 2px !important;
+    background-color: rgba(148, 163, 184, 0.3) !important;
+  }
+
+  /* Pre-JS First heading is active by default (36px width, glowing sky-400) */
+  #TableOfContents > ul > li:first-child > a:not(.toc-link)::after,
+  #TableOfContents > ol > li:first-child > a:not(.toc-link)::after {
+    width: 36px !important;
+    height: 3px !important;
+    background-color: #38bdf8 !important;
+    box-shadow: 0 0 10px rgba(56, 189, 248, 0.6) !important;
+  }
 
   #TableOfContents {
     border: none !important;
@@ -498,10 +575,7 @@ pre code,
       height: 2.5px;
       border-radius: 9999px;
       background-color: rgba(148, 163, 184, 0.45);
-      transition: width 0.22s cubic-bezier(0.16, 1, 0.3, 1),
-                  background-color 0.2s ease,
-                  box-shadow 0.2s ease,
-                  transform 0.2s ease;
+      transition: none;
     }
 
     /* Sub-section Bar (H3) - slightly shorter */
@@ -588,6 +662,13 @@ pre code,
 .dark {
   .toc-container,
   .toc-minibars-container {
+  &.is-ready a.toc-link .toc-bar {
+    transition: width 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+                background-color 0.2s ease,
+                box-shadow 0.2s ease,
+                transform 0.2s ease !important;
+  }
+
     a.toc-link {
       .toc-bar {
         background-color: rgba(100, 116, 139, 0.45);
@@ -999,56 +1080,80 @@ kbd {
    MODERN WEB & DEVELOPER-CENTRIC STYLING (VIEW TRANSITIONS & CYBER UI)
    ========================================================================== */
 
-/* ── 1. Native Cross-Document View Transitions (MPA Zero-Flash) ── */
+/* ── 1. Native Cross-Document View Transitions (Disabled MPA Freeze/Flicker) ── */
 @media (prefers-reduced-motion: no-preference) {
   @view-transition {
-    navigation: auto;
+    navigation: none;
   }
 
-  ::view-transition-old(root) {
-    animation: 0.25s cubic-bezier(0.4, 0, 0.2, 1) both fade-out;
-  }
-
+  ::view-transition-old(root),
   ::view-transition-new(root) {
-    animation: 0.25s cubic-bezier(0.4, 0, 0.2, 1) both fade-in;
-  }
-
-  @keyframes fade-out {
-    from { opacity: 1; transform: translateY(0); }
-    to { opacity: 0; transform: translateY(-4px); }
-  }
-
-  @keyframes fade-in {
-    from { opacity: 0; transform: translateY(4px); }
-    to { opacity: 1; transform: translateY(0); }
+    animation: none !important;
   }
 }
 
-/* ── 2. Developer Terminal Code Block Enhancement ── */
-.dev-terminal-wrapper {
+/* Persistent site header remains stationary during page transitions */
+.header {
+  /* view-transition-name: none; */
+}
+
+/* TOC rail smoothness */
+.toc-minibars-container {
+  &.is-ready a.toc-link .toc-bar {
+    transition: width 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+                background-color 0.2s ease,
+                box-shadow 0.2s ease,
+                transform 0.2s ease !important;
+  }
+
+  opacity: 0.95;
+  transition: opacity 0.2s ease-in;
+}
+
+/* ── 2. Developer Terminal & Editor Code Block Standardization ── */
+.dev-terminal-wrapper,
+.terminal-block-wrapper,
+.code-block-wrapper.is-terminal {
   position: relative;
   margin: 1.75rem 0;
-  border-radius: 1rem;
+  border-radius: 1rem !important;
   overflow: hidden;
-  border: 1px solid rgba(56, 189, 248, 0.2);
-  background: #0d1117;
+  border: 1px solid rgba(56, 189, 248, 0.25) !important;
+  background: #070b14 !important;
   box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5), 0 0 20px -5px rgba(56, 189, 248, 0.08);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
   &:hover {
-    border-color: rgba(56, 189, 248, 0.4);
+    border-color: rgba(56, 189, 248, 0.4) !important;
     box-shadow: 0 15px 35px -10px rgba(0, 0, 0, 0.6), 0 0 25px -3px rgba(56, 189, 248, 0.15);
   }
 }
 
-.dev-terminal-bar {
+.editor-block-wrapper,
+.code-block-wrapper.is-code {
+  position: relative;
+  margin: 1.75rem 0;
+  border-radius: 0.875rem !important;
+  overflow: hidden;
+  border: 1px solid #1e293b !important;
+  background: #080d19 !important;
+  box-shadow: 0 8px 24px -6px rgba(0, 0, 0, 0.35);
+  transition: border-color 0.2s ease;
+
+  &:hover {
+    border-color: #334155 !important;
+  }
+}
+
+.dev-terminal-bar,
+.terminal-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.5rem 1rem;
-  background: rgba(15, 23, 42, 0.85);
+  padding: 0.55rem 1rem;
+  background: #050811 !important;
   backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid rgba(56, 189, 248, 0.15);
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   font-size: 0.75rem;
 }
@@ -2016,11 +2121,6 @@ table {
   transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease, border-color 0.2s ease;
 }
 
-::view-transition-old(root),
-::view-transition-new(root) {
-  animation-duration: 0.22s;
-  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
-}
 
 .pulse-skeleton-card {
   position: relative !important;
@@ -2319,8 +2419,13 @@ table {
 
   code:not(pre code) {
     font-size: 0.875em !important;
-    padding: 0.15em 0.35em !important;
+    padding: 0.18em 0.45em !important;
     border-radius: 0.375rem !important;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
+    background-color: rgba(226, 232, 240, 0.65) !important;
+    color: #0369a1 !important;
+    border: 1px solid rgba(203, 213, 225, 0.8) !important;
+    font-weight: 500;
   }
 }
 
@@ -2336,26 +2441,55 @@ table {
   h1, h2, h3, h4 {
     color: #f8fafc !important;
   }
+
+  code:not(pre code) {
+    background-color: rgba(30, 41, 59, 0.75) !important;
+    color: #38bdf8 !important;
+    border-color: rgba(51, 65, 85, 0.8) !important;
+    font-weight: 500;
+  }
 }
+
 .blog-article-content blockquote {
-  margin: 1.5rem 0;
-  border-top-right-radius: 1rem;
-  border-bottom-right-radius: 1rem;
-  border-left: 4px solid #94a3b8;
-  background-color: rgba(248, 250, 252, 0.8);
-  padding: 1.125rem 1.25rem;
-  color: #334155;
-  font-style: italic;
+  margin: 1.75rem 0;
+  border-radius: 0 0.875rem 0.875rem 0;
+  border-left: 4px solid #0284c7;
+  background-color: rgba(241, 245, 249, 0.8);
+  border-top: 1px solid rgba(226, 232, 240, 0.7);
+  border-right: 1px solid rgba(226, 232, 240, 0.7);
+  border-bottom: 1px solid rgba(226, 232, 240, 0.7);
+  padding: 1.15rem 1.4rem;
+  color: #1e293b;
+  font-style: normal;
+  box-shadow: 0 2px 8px -2px rgba(0, 0, 0, 0.05);
 }
+
 .dark .blog-article-content blockquote {
-  border-left-color: #475569;
-  background-color: rgba(15, 23, 42, 0.4);
-  color: #cbd5e1;
+  border-left-color: #38bdf8;
+  background-color: rgba(15, 23, 42, 0.65);
+  border-top-color: rgba(30, 41, 59, 0.8);
+  border-right-color: rgba(30, 41, 59, 0.8);
+  border-bottom-color: rgba(30, 41, 59, 0.8);
+  color: #e2e8f0;
+  box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.25);
 }
+
 .blog-article-content blockquote p {
   margin: 0;
   font-size: 1.0625rem;
-  line-height: 1.7;
+  line-height: 1.72;
+}
+
+.blog-article-content blockquote code:not(pre code) {
+  background-color: rgba(56, 189, 248, 0.12) !important;
+  color: #0369a1 !important;
+  border-color: rgba(56, 189, 248, 0.25) !important;
+}
+
+.dark .blog-article-content blockquote code:not(pre code) {
+  background-color: rgba(56, 189, 248, 0.18) !important;
+  color: #38bdf8 !important;
+  border-color: rgba(56, 189, 248, 0.3) !important;
 }
 
 
@@ -2531,4 +2665,48 @@ table {
       }
     }
   }
+}
+
+/* ==========================================================================
+   MERMAID ARCHITECTURE DIAGRAM STANDARDIZED STYLES
+   ========================================================================== */
+.mermaid-wrapper {
+  min-height: 180px;
+}
+.mermaid {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  max-height: 480px !important;
+  overflow: hidden !important;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease-in;
+}
+.mermaid[data-processed="true"] {
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+.mermaid svg {
+  max-height: 450px !important;
+  width: auto !important;
+  max-width: 100% !important;
+  height: auto !important;
+  display: block;
+  margin: 0 auto;
+  object-fit: contain;
+}
+.mermaid text {
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+}
+.mermaid .cluster rect {
+  rx: 8px !important;
+  ry: 8px !important;
+}
+
+/* Accessible syntax contrast: ensure comments meet WCAG AA 4.5:1 on dark backgrounds */
+.dark .highlight span[style*="color:#75715e"],
+.dark .code-block-wrapper pre span[style*="color:#75715e"] {
+  color: #94a3b8 !important;
 }

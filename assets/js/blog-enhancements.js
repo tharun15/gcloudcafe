@@ -86,15 +86,33 @@
 
   /* ── Developer-Grade Code Blocks with Icons, Tabs, and Glowing Copy ── */
   function initCopyCode() {
+    // 1. Immediately bind copy buttons on server-rendered code blocks (Zero Layout Shift, Zero Flicker)
+    var existingButtons = document.querySelectorAll(".code-block-wrapper .copy-code-btn");
+    existingButtons.forEach(function (btn) {
+      if (btn.getAttribute("data-copy-bound") === "true") return;
+      btn.setAttribute("data-copy-bound", "true");
+      btn.addEventListener("click", function () {
+        var wrapper = btn.closest(".code-block-wrapper");
+        if (!wrapper) return;
+        var codeEl = wrapper.querySelector("pre code") || wrapper.querySelector("pre");
+        var text = (codeEl ? (codeEl.innerText || codeEl.textContent) : "").trim();
+        if (!navigator.clipboard) {
+          fallbackCopy(text, btn);
+          return;
+        }
+        navigator.clipboard.writeText(text).then(function () {
+          showCopied(btn);
+        }).catch(function () {
+          fallbackCopy(text, btn);
+        });
+      });
+    });
+
     var blocks = document.querySelectorAll("pre");
     if (!blocks.length) return;
 
     blocks.forEach(function (pre) {
-      if (pre.parentNode.classList.contains("code-block-wrapper")) return;
-
-      var wrapper = document.createElement("div");
-      wrapper.className = "code-block-wrapper";
-      pre.parentNode.insertBefore(wrapper, pre);
+      if (pre.parentNode.classList.contains("code-block-wrapper") || pre.closest(".code-block-wrapper")) return;
 
       var code = pre.querySelector("code");
       var rawText = (code || pre).innerText || (code || pre).textContent || "";
@@ -120,7 +138,16 @@
       var iconClass = "fa-solid fa-code";
       var iconColor = "text-sky-400";
       var langLower = (lang + " " + filename).toLowerCase();
-      if (langLower.includes("bash") || langLower.includes("sh") || langLower.includes("shell") || langLower.includes("zsh")) {
+      var isTerminal = (
+        langLower.includes("bash") ||
+        langLower.includes("sh") ||
+        langLower.includes("shell") ||
+        langLower.includes("zsh") ||
+        langLower.includes("terminal") ||
+        langLower.includes("console")
+      );
+
+      if (isTerminal) {
         iconClass = "fa-solid fa-terminal";
         iconColor = "text-emerald-400";
       } else if (langLower.includes("yaml") || langLower.includes("yml")) {
@@ -145,6 +172,12 @@
         iconClass = "fa-solid fa-brackets-curly";
         iconColor = "text-yellow-400";
       }
+
+      var wrapper = document.createElement("div");
+      wrapper.className = isTerminal
+        ? "code-block-wrapper terminal-block-wrapper is-terminal"
+        : "code-block-wrapper editor-block-wrapper is-code";
+      pre.parentNode.insertBefore(wrapper, pre);
 
       // Multi-tab / Multi-CLI support inside code snippet
       // Matches: # [kubectl] or # [gcloud] or # [AWS CLI] or # --- TabName ---
@@ -171,16 +204,27 @@
       }
 
       var header = document.createElement("div");
-      header.className = "code-block-header";
+      header.className = isTerminal
+        ? "code-block-header terminal-header"
+        : "code-block-header editor-header";
 
-      var displayLabel = filename || lang;
-      var badgeHtml = '<span class="lang-tag"><i class="' + iconClass + ' ' + iconColor + ' mr-1 text-[11px]"></i> ' + escapeHtml(displayLabel) + '</span>';
+      var displayLabel = filename || (isTerminal && lang === "CODE" ? "TERMINAL" : lang);
+      var badgeHtml = isTerminal
+        ? '<span class="lang-tag terminal-tag"><i class="' + iconClass + ' ' + iconColor + ' mr-1 text-[11px]"></i> ' + escapeHtml(displayLabel) + '</span>'
+        : '<span class="lang-tag editor-tag"><i class="' + iconClass + ' ' + iconColor + ' mr-1 text-[11px]"></i> ' + escapeHtml(displayLabel) + '</span>';
       var lineCountHtml = '<span class="line-count-tag ml-2 text-slate-500 dark:text-slate-400 font-mono text-[11px]">' + lines.length + (lines.length === 1 ? ' line' : ' lines') + '</span>';
 
-      header.innerHTML = '<div class="flex items-center">' + badgeHtml + lineCountHtml + '</div>';
+      if (isTerminal) {
+        // Command line terminal styling with terminal traffic lights
+        var dotsHtml = '<div class="terminal-dots" aria-hidden="true"><span class="dot-red"></span><span class="dot-yellow"></span><span class="dot-green"></span></div>';
+        header.innerHTML = '<div class="flex items-center gap-3">' + dotsHtml + badgeHtml + lineCountHtml + '</div>';
+      } else {
+        // Clean editor styling for non-terminal code (YAML, Python, SQL, etc.) - NO terminal traffic dots
+        header.innerHTML = '<div class="flex items-center">' + badgeHtml + lineCountHtml + '</div>';
+      }
 
       var btn = document.createElement("button");
-      btn.className = "copy-code-btn blog-focus-ring";
+      btn.className = "copy-code-btn blog-focus-ring" + (isTerminal ? " terminal-copy-btn" : " editor-copy-btn");
       btn.setAttribute("aria-label", "Copy code to clipboard");
       btn.innerHTML = '<i class="fa-regular fa-copy"></i> Copy';
       header.appendChild(btn);
@@ -299,6 +343,7 @@
 
     // Transform desktop links into Medium-style undisturbed mini-bars
     tocLinks.forEach(function (link) {
+      if (link.classList.contains("toc-link")) return;
       link.classList.add("toc-link");
       var titleText = link.textContent.trim();
       var isSub = !!link.closest("ol ol, ul ul");
@@ -349,20 +394,45 @@
     }
 
     if ("IntersectionObserver" in window) {
+      var visibleHeadings = new Set();
       var observer = new IntersectionObserver(function (entries) {
         entries.forEach(function (entry) {
           if (entry.isIntersecting) {
-            var activeLink = headingsMap.get(entry.target);
-            if (activeLink) {
-              tocLinks.forEach(function (l) { l.classList.remove("is-active"); });
-              activeLink.classList.add("is-active");
-            }
+            visibleHeadings.add(entry.target);
+          } else {
+            visibleHeadings.delete(entry.target);
           }
         });
-      }, { rootMargin: "0px 0px -65% 0px", threshold: 0 });
+
+        var topHeading = null;
+        var minTop = Infinity;
+        visibleHeadings.forEach(function (el) {
+          var rect = el.getBoundingClientRect();
+          if (rect.top >= -50 && rect.top < minTop) {
+            minTop = rect.top;
+            topHeading = el;
+          }
+        });
+
+        if (!topHeading && visibleHeadings.size > 0) {
+          topHeading = Array.from(visibleHeadings)[0];
+        }
+
+        if (topHeading) {
+          var activeLink = headingsMap.get(topHeading);
+          if (activeLink && !activeLink.classList.contains("is-active")) {
+            tocLinks.forEach(function (l) { l.classList.remove("is-active"); });
+            activeLink.classList.add("is-active");
+          }
+        }
+      }, { rootMargin: "-80px 0px -50% 0px", threshold: 0 });
 
       headingsMap.forEach(function (_, el) {
         observer.observe(el);
+      });
+
+      requestAnimationFrame(function () {
+        container.classList.add("is-ready");
       });
 
     // Fade out fixed TOC rail when reader reaches the footer / related posts
@@ -10500,9 +10570,9 @@
 
     codeBlocks.forEach(function (codeEl) {
       var pre = codeEl.parentElement;
-      if (!pre || pre.closest('.dev-terminal-wrapper')) return;
+      if (!pre || pre.closest('.dev-terminal-wrapper') || pre.closest('.code-block-wrapper')) return;
 
-      // Extract language class e.g. language-bash, language-yaml
+      // Extract language class e.g. language-bash
       var lang = 'terminal';
       var classes = codeEl.className.split(' ');
       for (var i = 0; i < classes.length; i++) {
@@ -10512,14 +10582,20 @@
         }
       }
 
+      var langLower = lang.toLowerCase();
+      var isTerminal = langLower.includes('bash') || langLower.includes('sh') || langLower.includes('shell') || langLower.includes('zsh') || langLower.includes('terminal') || langLower.includes('console');
+      if (!isTerminal) {
+        return; // Only terminal command line blocks receive terminal window chrome
+      }
+
       var wrapper = document.createElement('div');
-      wrapper.className = 'dev-terminal-wrapper';
+      wrapper.className = 'dev-terminal-wrapper code-block-wrapper terminal-block-wrapper is-terminal';
 
       var bar = document.createElement('div');
-      bar.className = 'dev-terminal-bar';
-      bar.innerHTML = '<div class="dev-terminal-dots"><span class="dot-red"></span><span class="dot-yellow"></span><span class="dot-green"></span></div>' +
-                      '<span class="dev-terminal-lang">' + escapeHtml(lang) + '</span>' +
-                      '<button class="dev-copy-btn" aria-label="Copy code to clipboard"><i class="fa-regular fa-copy"></i> Copy</button>';
+      bar.className = 'dev-terminal-bar code-block-header terminal-header';
+      bar.innerHTML = '<div class="dev-terminal-dots terminal-dots" aria-hidden="true"><span class="dot-red"></span><span class="dot-yellow"></span><span class="dot-green"></span></div>' +
+                      '<span class="dev-terminal-lang terminal-tag"><i class="fa-solid fa-terminal text-emerald-400 mr-1 text-[11px]"></i> ' + escapeHtml(lang) + '</span>' +
+                      '<button class="dev-copy-btn copy-code-btn blog-focus-ring" aria-label="Copy code to clipboard"><i class="fa-regular fa-copy"></i> Copy</button>';
 
       pre.parentNode.insertBefore(wrapper, pre);
       wrapper.appendChild(bar);
