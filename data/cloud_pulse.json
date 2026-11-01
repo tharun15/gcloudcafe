@@ -1,5 +1,24 @@
 [
   {
+    "id": "9ae13859-f85f-4d61-b179-2f3df55b9672",
+    "title": "Azure Foundry Agent Service Unlocks Copilot Harness Power",
+    "content": "🎯 What Changed: Azure Foundry Agent Service now offers a public preview of the Microsoft Copilot harness.\n💡 Engineering Impact: This integration empowers developers to easily embed advanced Copilot AI capabilities into custom agents, simplifying complex AI agent development and enhancing agent intelligence.",
+    "tags": [
+      "#Azure",
+      "#CloudArchitecture",
+      "#CloudNews"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-11-01T11:44:57.650795+00:00",
+    "link_url": "https://devblogs.microsoft.com/foundry/microsoft-copilot-harness-in-foundry/",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
+    "updated_at": "2026-11-01T14:50:16.889Z"
+  },
+  {
     "id": "623e6725-4d5f-41b5-866e-00dc1714d606",
     "title": "Daybreak Red from OpenAI now available to eligible customers on Amazon Bedrock in AWS GovCloud (US-East)",
     "content": "🎯 What Changed: OpenAI Daybreak Red is now available on Amazon Bedrock in AWS GovCloud US-East for eligible public.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
@@ -277,25 +296,5 @@
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-10-31T23:10:39.375+00:00",
     "ageDays": 0.7618019560185185
-  },
-  {
-    "id": "12c90cc6-03e7-47bd-bdf6-206528ef2daa",
-    "title": "Daybreak Red from OpenAI now available to eligible customers on Amazon Bedrock in AWS GovCloud (US-East)",
-    "content": "🎯 What Changed: OpenAI Daybreak Red is now available to eligible customers on Amazon Bedrock in the AWS GovCloud (US-East.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
-    "tags": [
-      "#AWS",
-      "#CloudArchitecture",
-      "#CloudNews"
-    ],
-    "upvotes": 1,
-    "downvotes": 0,
-    "score": 1,
-    "author": "Cloud Newsroom Bot",
-    "created_at": "2026-10-31T03:50:20.607726+00:00",
-    "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/10/openai-daybreak-red-govcloud-east/",
-    "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
-    "updated_at": "2026-10-31T04:44:23.257+00:00",
-    "ageDays": 1.052837488425926
   }
 ]
