@@ -1,5 +1,24 @@
 [
   {
+    "id": "39611fdc-df54-4e6b-9adf-1c6765525e42",
+    "title": "Azure Unveils Sovereign AI Architecture for Edge-to-Cloud",
+    "content": "🎯 What Changed: Azure announced a flexible sovereign architecture for AI workloads, enabling consistent control and placement from edge to cloud.\n💡 Engineering Impact: This architecture empowers organizations to deploy AI workloads with granular control over data residency and compliance, ensuring consistency across diverse environments. It simplifies managing sensitive AI applications by providing a unified framework for security and governance.",
+    "tags": [
+      "#Azure",
+      "#CloudArchitecture",
+      "#CloudNews"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-11-02T13:15:54.806831+00:00",
+    "link_url": "https://azure.microsoft.com/en-us/blog/designing-for-sovereign-ai-a-shared-foundation-from-edge-to-cloud/",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
+    "updated_at": "2026-11-02T17:59:42.854Z"
+  },
+  {
     "id": "1edf04bd-e539-414b-8b4f-120e84372827",
     "title": "Daybreak Red from OpenAI now available to eligible customers on Amazon Bedrock in AWS GovCloud (US-East)",
     "content": "🎯 What Changed: OpenAI's Daybreak Red model is now available to eligible customers on Amazon Bedrock within.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
@@ -277,25 +296,5 @@
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-01T05:06:26.243+00:00",
     "ageDays": 1.046069664351852
-  },
-  {
-    "id": "c4ab1228-f5a5-416c-b3af-c2bb9472e8f9",
-    "title": "Sovereignty debt: How APAC boards accumulate it and what it costs to repay",
-    "content": "🎯 What Changed: Sovereignty debt is now recognized as a critical board-level liability for cloud systems across the Asia Pacific region.\n💡 Engineering Impact: Engineers must proactively design cloud architectures and contracts to align with regulatory and customer jurisdictional expectations, preventing costly compliance debt.",
-    "tags": [
-      "#OpenShift",
-      "#RedHat",
-      "#DevOps"
-    ],
-    "upvotes": 1,
-    "downvotes": 0,
-    "score": 1,
-    "author": "Cloud Newsroom Bot",
-    "created_at": "2026-10-31T10:49:37.655489+00:00",
-    "link_url": "https://www.redhat.com/en/blog/sovereignty-debt-how-apac-boards-accumulate-it-and-what-it-costs-repay",
-    "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
-    "updated_at": "2026-10-31T14:24:04.701+00:00",
-    "ageDays": 1.7620130208333333
   }
 ]
