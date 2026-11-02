@@ -1,10 +1,10 @@
 [
   {
-    "id": "76a19521-43c7-4acf-8f5e-f121e95dd8f7",
-    "title": "Azure Cloud HSM: Enhanced Hardware Audit Logging",
-    "content": "🎯 What Changed: Azure Cloud HSM now offers verifiable, hardware-originated audit logging for all operations.\n💡 Engineering Impact: This provides security and compliance teams with irrefutable evidence for monitoring, reporting, and forensic investigations, significantly strengthening regulatory adherence and operational integrity.",
+    "id": "1edf04bd-e539-414b-8b4f-120e84372827",
+    "title": "Daybreak Red from OpenAI now available to eligible customers on Amazon Bedrock in AWS GovCloud (US-East)",
+    "content": "🎯 What Changed: OpenAI's Daybreak Red model is now available to eligible customers on Amazon Bedrock within.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
     "tags": [
-      "#Azure",
+      "#AWS",
       "#CloudArchitecture",
       "#CloudNews"
     ],
@@ -12,11 +12,11 @@
     "downvotes": 0,
     "score": 1,
     "author": "Cloud Newsroom Bot",
-    "created_at": "2026-11-01T11:44:52.952+00:00",
-    "link_url": "https://azure.microsoft.com/en-us/blog/azure-cloud-hsm-hardware-audit-logging-verifiable-audit-trails-for-security-and-compliance/",
+    "created_at": "2026-11-02T04:24:59.054689+00:00",
+    "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/10/openai-daybreak-red-govcloud-east/",
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
-    "updated_at": "2026-11-01T20:20:55.637Z"
+    "updated_at": "2026-11-02T05:06:56.262Z"
   },
   {
     "id": "0b6826b6-fc4c-4621-8f9b-bbbea3de16aa",
@@ -36,7 +36,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:48.441634+00:00",
-    "ageDays": 25.45285
+    "ageDays": 25.81813818287037
   },
   {
     "id": "81213fff-57d4-4c0b-90eb-c84beeb18d4d",
@@ -56,7 +56,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:42.008666+00:00",
-    "ageDays": 25.45292445601852
+    "ageDays": 25.818212638888888
   },
   {
     "id": "1ec5647f-ce95-4be3-ba87-6aa974960da7",
@@ -76,7 +76,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:37.111692+00:00",
-    "ageDays": 25.45298113425926
+    "ageDays": 25.81826931712963
   },
   {
     "id": "88a2ed59-fb47-488b-b07c-d6be1de35d0b",
@@ -96,7 +96,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:31.276024+00:00",
-    "ageDays": 25.45304866898148
+    "ageDays": 25.818336851851853
   },
   {
     "id": "202f8734-234e-4bd5-9a67-8535691f131a",
@@ -116,7 +116,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:24.859911+00:00",
-    "ageDays": 25.453122939814815
+    "ageDays": 25.818411122685184
   },
   {
     "id": "37fcb780-d57d-4ba9-875a-7665dd9cd981",
@@ -136,7 +136,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T04:06:30.331436+00:00",
-    "ageDays": 25.676670717592593
+    "ageDays": 26.041958900462962
   },
   {
     "id": "521c6dfa-7eb3-4834-87fb-7ac338d90f9d",
@@ -156,7 +156,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T04:00:33.151279+00:00",
-    "ageDays": 25.68080474537037
+    "ageDays": 26.04609292824074
   },
   {
     "id": "b1f2627d-7930-4c4b-ab57-de042bac55c3",
@@ -176,7 +176,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T04:00:00.696536+00:00",
-    "ageDays": 25.681180381944444
+    "ageDays": 26.046468564814816
   },
   {
     "id": "bf22f4dd-2d54-4b4c-9038-ea09aadef8a2",
@@ -196,7 +196,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T03:59:45.591638+00:00",
-    "ageDays": 25.681355208333333
+    "ageDays": 26.046643391203705
   },
   {
     "id": "46fd5625-4fda-4793-a2ab-d6b627f3f4df",
@@ -216,7 +216,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T03:59:26.783766+00:00",
-    "ageDays": 25.681572893518517
+    "ageDays": 26.04686107638889
   },
   {
     "id": "9ae13859-f85f-4d61-b179-2f3df55b9672",
@@ -236,7 +236,27 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-01T14:50:16.889+00:00",
-    "ageDays": 0.3582989699074074
+    "ageDays": 0.7235871527777777
+  },
+  {
+    "id": "76a19521-43c7-4acf-8f5e-f121e95dd8f7",
+    "title": "Azure Cloud HSM: Enhanced Hardware Audit Logging",
+    "content": "🎯 What Changed: Azure Cloud HSM now offers verifiable, hardware-originated audit logging for all operations.\n💡 Engineering Impact: This provides security and compliance teams with irrefutable evidence for monitoring, reporting, and forensic investigations, significantly strengthening regulatory adherence and operational integrity.",
+    "tags": [
+      "#Azure",
+      "#CloudArchitecture",
+      "#CloudNews"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-11-01T11:44:52.952+00:00",
+    "link_url": "https://azure.microsoft.com/en-us/blog/azure-cloud-hsm-hardware-audit-logging-verifiable-audit-trails-for-security-and-compliance/",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
+    "updated_at": "2026-11-01T20:20:55.637+00:00",
+    "ageDays": 0.7236415277777778
   },
   {
     "id": "623e6725-4d5f-41b5-866e-00dc1714d606",
@@ -256,7 +276,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-01T05:06:26.243+00:00",
-    "ageDays": 0.6807814814814814
+    "ageDays": 1.046069664351852
   },
   {
     "id": "c4ab1228-f5a5-416c-b3af-c2bb9472e8f9",
@@ -276,26 +296,6 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-10-31T14:24:04.701+00:00",
-    "ageDays": 1.3967248379629629
-  },
-  {
-    "id": "72a34a3c-7ce8-401f-a899-881fca8ec567",
-    "title": "OpenShift on AWS: Direct VM IP Routing with BGP Connector",
-    "content": "🎯 What Changed: Red Hat OpenShift Service on AWS now features a BGP cloud connector, enabling direct IP routing to OpenShift Virtualization guest VMs.\n💡 Engineering Impact: This eliminates the need for complex network redesigns in cloud environments, previously required due to Layer 3 limitations. It simplifies VM migrations to AWS, allowing virtualization teams to maintain consistent IP addressing and direct traffic routing.",
-    "tags": [
-      "#OpenShift",
-      "#RedHat",
-      "#DevOps"
-    ],
-    "upvotes": 1,
-    "downvotes": 0,
-    "score": 1,
-    "author": "Cloud Newsroom Bot",
-    "created_at": "2026-10-31T10:49:31.595404+00:00",
-    "link_url": "https://www.redhat.com/en/blog/direct-vm-networking-aws-introducing-bgp-cloud-connector-red-hat-openshift-service-aws",
-    "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
-    "updated_at": "2026-10-31T19:46:42.242+00:00",
-    "ageDays": 1.396794976851852
+    "ageDays": 1.7620130208333333
   }
 ]
