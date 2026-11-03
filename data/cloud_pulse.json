@@ -1,5 +1,24 @@
 [
   {
+    "id": "7ffc9eba-5435-49ec-af53-cbe3a2c7631c",
+    "title": "The Platform Behind the Next AI Breakthrough",
+    "content": "🎯 What Changed: Azure positions its platform as the core infrastructure for the next generation of AI agents performing strategic, multi-step work.\n💡 Engineering Impact: Architects can now design more sophisticated AI solutions, leveraging Azure's robust infrastructure for complex agent orchestration. This paves the way for advanced automation and strategic decision-making capabilities within applications.",
+    "tags": [
+      "#Azure",
+      "#CloudArchitecture",
+      "#CloudNews"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-11-03T12:41:13.682127+00:00",
+    "link_url": "https://www.wired.com/sponsored/story/the-platform-behind-the-next-ai-breakthrough/",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
+    "updated_at": "2026-11-03T19:16:07.338Z"
+  },
+  {
     "id": "77aa084b-daf0-4cb9-8353-02e0bd4ff52f",
     "title": "Amazon Quick on desktop now uses your organization's existing Amazon Quick sign-in",
     "content": "🎯 What Changed: Amazon Quick on desktop now inherits your organization's existing web sign-in method, eliminating the need for manual.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
@@ -277,25 +296,5 @@
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-02T05:06:56.262+00:00",
     "ageDays": 1.3047556828703704
-  },
-  {
-    "id": "9ae13859-f85f-4d61-b179-2f3df55b9672",
-    "title": "Azure Foundry Agent Service Unlocks Copilot Harness Power",
-    "content": "🎯 What Changed: Azure Foundry Agent Service now offers a public preview of the Microsoft Copilot harness.\n💡 Engineering Impact: This integration empowers developers to easily embed advanced Copilot AI capabilities into custom agents, simplifying complex AI agent development and enhancing agent intelligence.",
-    "tags": [
-      "#Azure",
-      "#CloudArchitecture",
-      "#CloudNews"
-    ],
-    "upvotes": 1,
-    "downvotes": 0,
-    "score": 1,
-    "author": "Cloud Newsroom Bot",
-    "created_at": "2026-11-01T11:44:57.650795+00:00",
-    "link_url": "https://devblogs.microsoft.com/foundry/microsoft-copilot-harness-in-foundry/",
-    "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
-    "updated_at": "2026-11-01T14:50:16.889+00:00",
-    "ageDays": 1.9992163773148148
   }
 ]
