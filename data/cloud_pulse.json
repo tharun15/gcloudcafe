@@ -1,10 +1,10 @@
 [
   {
-    "id": "e2bda646-2ffa-4c48-b559-0869b8c0537d",
-    "title": "Advancing digital sovereignty with greater control and choice",
-    "content": "🎯 What Changed: Across conversations with leaders in government, critical infrastructure and regulated industries, one priority consistently rises to the top: putting technology to work on the most important systems while maintaining...\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
+    "id": "77aa084b-daf0-4cb9-8353-02e0bd4ff52f",
+    "title": "Amazon Quick on desktop now uses your organization's existing Amazon Quick sign-in",
+    "content": "🎯 What Changed: Amazon Quick on desktop now inherits your organization's existing web sign-in method, eliminating the need for manual.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
     "tags": [
-      "#Azure",
+      "#AWS",
       "#CloudArchitecture",
       "#CloudNews"
     ],
@@ -12,11 +12,11 @@
     "downvotes": 0,
     "score": 1,
     "author": "Cloud Newsroom Bot",
-    "created_at": "2026-11-02T13:15:50.027824+00:00",
-    "link_url": "https://blogs.microsoft.com/blog/2026/10/20/advancing-digital-sovereignty-with-greater-control-and-choice/",
+    "created_at": "2026-11-03T05:29:02.400613+00:00",
+    "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/11/amazon-quick-desktop-organization-sign-in/",
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
-    "updated_at": "2026-11-03T02:04:26.791Z"
+    "updated_at": "2026-11-03T11:43:50.746Z"
   },
   {
     "id": "0b6826b6-fc4c-4621-8f9b-bbbea3de16aa",
@@ -36,7 +36,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:48.441634+00:00",
-    "ageDays": 26.691407453703704
+    "ageDays": 27.09376740740741
   },
   {
     "id": "81213fff-57d4-4c0b-90eb-c84beeb18d4d",
@@ -56,7 +56,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:42.008666+00:00",
-    "ageDays": 26.69148190972222
+    "ageDays": 27.093841863425926
   },
   {
     "id": "1ec5647f-ce95-4be3-ba87-6aa974960da7",
@@ -76,7 +76,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:37.111692+00:00",
-    "ageDays": 26.691538587962963
+    "ageDays": 27.093898541666668
   },
   {
     "id": "88a2ed59-fb47-488b-b07c-d6be1de35d0b",
@@ -96,7 +96,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:31.276024+00:00",
-    "ageDays": 26.691606122685187
+    "ageDays": 27.093966076388888
   },
   {
     "id": "202f8734-234e-4bd5-9a67-8535691f131a",
@@ -116,7 +116,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:24.859911+00:00",
-    "ageDays": 26.691680393518517
+    "ageDays": 27.094040347222222
   },
   {
     "id": "37fcb780-d57d-4ba9-875a-7665dd9cd981",
@@ -136,7 +136,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T04:06:30.331436+00:00",
-    "ageDays": 26.915228171296295
+    "ageDays": 27.317588125
   },
   {
     "id": "521c6dfa-7eb3-4834-87fb-7ac338d90f9d",
@@ -156,7 +156,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T04:00:33.151279+00:00",
-    "ageDays": 26.919362199074072
+    "ageDays": 27.321722152777777
   },
   {
     "id": "b1f2627d-7930-4c4b-ab57-de042bac55c3",
@@ -176,7 +176,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T04:00:00.696536+00:00",
-    "ageDays": 26.91973783564815
+    "ageDays": 27.32209778935185
   },
   {
     "id": "bf22f4dd-2d54-4b4c-9038-ea09aadef8a2",
@@ -196,7 +196,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T03:59:45.591638+00:00",
-    "ageDays": 26.91991266203704
+    "ageDays": 27.32227261574074
   },
   {
     "id": "46fd5625-4fda-4793-a2ab-d6b627f3f4df",
@@ -216,7 +216,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T03:59:26.783766+00:00",
-    "ageDays": 26.920130347222223
+    "ageDays": 27.322490300925924
   },
   {
     "id": "39611fdc-df54-4e6b-9adf-1c6765525e42",
@@ -236,7 +236,27 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-02T17:59:42.854+00:00",
-    "ageDays": 0.5336948958333333
+    "ageDays": 0.936054849537037
+  },
+  {
+    "id": "e2bda646-2ffa-4c48-b559-0869b8c0537d",
+    "title": "Advancing digital sovereignty with greater control and choice",
+    "content": "🎯 What Changed: Across conversations with leaders in government, critical infrastructure and regulated industries, one priority consistently rises to the top: putting technology to work on the most important systems while maintaining...\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
+    "tags": [
+      "#Azure",
+      "#CloudArchitecture",
+      "#CloudNews"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-11-02T13:15:50.027824+00:00",
+    "link_url": "https://blogs.microsoft.com/blog/2026/10/20/advancing-digital-sovereignty-with-greater-control-and-choice/",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
+    "updated_at": "2026-11-03T02:04:26.791+00:00",
+    "ageDays": 0.936110162037037
   },
   {
     "id": "1edf04bd-e539-414b-8b4f-120e84372827",
@@ -256,7 +276,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-02T05:06:56.262+00:00",
-    "ageDays": 0.9023957291666667
+    "ageDays": 1.3047556828703704
   },
   {
     "id": "9ae13859-f85f-4d61-b179-2f3df55b9672",
@@ -276,26 +296,6 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-01T14:50:16.889+00:00",
-    "ageDays": 1.5968564236111111
-  },
-  {
-    "id": "76a19521-43c7-4acf-8f5e-f121e95dd8f7",
-    "title": "Azure Cloud HSM: Enhanced Hardware Audit Logging",
-    "content": "🎯 What Changed: Azure Cloud HSM now offers verifiable, hardware-originated audit logging for all operations.\n💡 Engineering Impact: This provides security and compliance teams with irrefutable evidence for monitoring, reporting, and forensic investigations, significantly strengthening regulatory adherence and operational integrity.",
-    "tags": [
-      "#Azure",
-      "#CloudArchitecture",
-      "#CloudNews"
-    ],
-    "upvotes": 1,
-    "downvotes": 0,
-    "score": 1,
-    "author": "Cloud Newsroom Bot",
-    "created_at": "2026-11-01T11:44:52.952+00:00",
-    "link_url": "https://azure.microsoft.com/en-us/blog/azure-cloud-hsm-hardware-audit-logging-verifiable-audit-trails-for-security-and-compliance/",
-    "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
-    "updated_at": "2026-11-01T20:20:55.637+00:00",
-    "ageDays": 1.596910798611111
+    "ageDays": 1.9992163773148148
   }
 ]
