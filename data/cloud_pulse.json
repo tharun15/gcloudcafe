@@ -1,5 +1,24 @@
 [
   {
+    "id": "1568a210-0e0f-4737-8b58-09112bdc815e",
+    "title": "Red Hat AI Enterprise: Post-Quantum Crypto Secures Future AI",
+    "content": "🎯 What Changed: Red Hat AI Enterprise is integrating post-quantum cryptography to secure AI models and data against future quantum computing threats.\n💡 Engineering Impact: This proactive measure safeguards critical AI intellectual property, ensuring long-term data confidentiality and integrity against emerging quantum threats, enabling secure AI strategy development.",
+    "tags": [
+      "#OpenShift",
+      "#RedHat",
+      "#DevOps"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-11-04T12:51:14.36503+00:00",
+    "link_url": "https://www.redhat.com/en/blog/future-proofing-enterprise-ai-impact-post-quantum-cryptography-red-hat-ai-enterprise",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
+    "updated_at": "2026-11-04T19:36:37.627Z"
+  },
+  {
     "id": "d8415eda-5636-481f-8776-47d328e3dcea",
     "title": "Amazon RDS now supports the latest Cumulative Update and GDR updates for Microsoft SQL Server",
     "content": "🎯 What Changed: Amazon RDS for SQL Server now supports the latest Cumulative Updates and General Distribution Release patches for Microsoft SQL Server.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
@@ -277,25 +296,5 @@
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-03T11:43:50.746+00:00",
     "ageDays": 1.268747488425926
-  },
-  {
-    "id": "39611fdc-df54-4e6b-9adf-1c6765525e42",
-    "title": "Azure Unveils Sovereign AI Architecture for Edge-to-Cloud",
-    "content": "🎯 What Changed: Azure announced a flexible sovereign architecture for AI workloads, enabling consistent control and placement from edge to cloud.\n💡 Engineering Impact: This architecture empowers organizations to deploy AI workloads with granular control over data residency and compliance, ensuring consistency across diverse environments. It simplifies managing sensitive AI applications by providing a unified framework for security and governance.",
-    "tags": [
-      "#Azure",
-      "#CloudArchitecture",
-      "#CloudNews"
-    ],
-    "upvotes": 1,
-    "downvotes": 0,
-    "score": 1,
-    "author": "Cloud Newsroom Bot",
-    "created_at": "2026-11-02T13:15:54.806831+00:00",
-    "link_url": "https://azure.microsoft.com/en-us/blog/designing-for-sovereign-ai-a-shared-foundation-from-edge-to-cloud/",
-    "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
-    "updated_at": "2026-11-02T17:59:42.854+00:00",
-    "ageDays": 1.9445298263888888
   }
 ]
