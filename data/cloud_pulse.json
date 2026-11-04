@@ -1,41 +1,22 @@
 [
   {
-    "id": "7ffc9eba-5435-49ec-af53-cbe3a2c7631c",
-    "title": "The Platform Behind the Next AI Breakthrough",
-    "content": "🎯 What Changed: Azure positions its platform as the core infrastructure for the next generation of AI agents performing strategic, multi-step work.\n💡 Engineering Impact: Architects can now design more sophisticated AI solutions, leveraging Azure's robust infrastructure for complex agent orchestration. This paves the way for advanced automation and strategic decision-making capabilities within applications.",
+    "id": "69d7d36f-c9a5-4093-a825-c8ef1ff5201e",
+    "title": "OpenShift Secures Enterprise AI with Data Sovereignty",
+    "content": "🎯 What Changed: OpenShift is highlighted as the strategic platform enabling enterprises to maintain data sovereignty and control over their critical AI deployments.\n💡 Engineering Impact: This empowers architects to design AI solutions meeting strict compliance and data residency. DevOps teams gain tools to deploy and manage AI models securely across hybrid environments, ensuring autonomy and governance.",
     "tags": [
-      "#Azure",
-      "#CloudArchitecture",
-      "#CloudNews"
+      "#OpenShift",
+      "#RedHat",
+      "#DevOps"
     ],
     "upvotes": 1,
     "downvotes": 0,
     "score": 1,
     "author": "Cloud Newsroom Bot",
-    "created_at": "2026-11-03T12:41:13.682127+00:00",
-    "link_url": "https://www.wired.com/sponsored/story/the-platform-behind-the-next-ai-breakthrough/",
+    "created_at": "2026-11-03T12:41:07.178011+00:00",
+    "link_url": "https://www.redhat.com/en/blog/sovereignty-ai-era-choice-control-and-autonomy",
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
-    "updated_at": "2026-11-03T19:16:07.338Z"
-  },
-  {
-    "id": "77aa084b-daf0-4cb9-8353-02e0bd4ff52f",
-    "title": "Amazon Quick on desktop now uses your organization's existing Amazon Quick sign-in",
-    "content": "🎯 What Changed: Amazon Quick on desktop now inherits your organization's existing web sign-in method, eliminating the need for manual.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
-    "tags": [
-      "#AWS",
-      "#CloudArchitecture",
-      "#CloudNews"
-    ],
-    "upvotes": 1,
-    "downvotes": 0,
-    "score": 1,
-    "author": "Cloud Newsroom Bot",
-    "created_at": "2026-11-03T05:29:02.400613+00:00",
-    "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/11/amazon-quick-desktop-organization-sign-in/",
-    "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
-    "updated_at": "2026-11-03T11:43:50.746Z"
+    "updated_at": "2026-11-04T00:28:13.923Z"
   },
   {
     "id": "0b6826b6-fc4c-4621-8f9b-bbbea3de16aa",
@@ -55,7 +36,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:48.441634+00:00",
-    "ageDays": 27.09376740740741
+    "ageDays": 27.62458820601852
   },
   {
     "id": "81213fff-57d4-4c0b-90eb-c84beeb18d4d",
@@ -75,7 +56,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:42.008666+00:00",
-    "ageDays": 27.093841863425926
+    "ageDays": 27.624662662037036
   },
   {
     "id": "1ec5647f-ce95-4be3-ba87-6aa974960da7",
@@ -95,7 +76,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:37.111692+00:00",
-    "ageDays": 27.093898541666668
+    "ageDays": 27.624719340277778
   },
   {
     "id": "88a2ed59-fb47-488b-b07c-d6be1de35d0b",
@@ -115,7 +96,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:31.276024+00:00",
-    "ageDays": 27.093966076388888
+    "ageDays": 27.624786875
   },
   {
     "id": "202f8734-234e-4bd5-9a67-8535691f131a",
@@ -135,7 +116,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:24.859911+00:00",
-    "ageDays": 27.094040347222222
+    "ageDays": 27.624861145833332
   },
   {
     "id": "37fcb780-d57d-4ba9-875a-7665dd9cd981",
@@ -155,7 +136,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T04:06:30.331436+00:00",
-    "ageDays": 27.317588125
+    "ageDays": 27.84840892361111
   },
   {
     "id": "521c6dfa-7eb3-4834-87fb-7ac338d90f9d",
@@ -175,7 +156,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T04:00:33.151279+00:00",
-    "ageDays": 27.321722152777777
+    "ageDays": 27.852542951388887
   },
   {
     "id": "b1f2627d-7930-4c4b-ab57-de042bac55c3",
@@ -195,7 +176,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T04:00:00.696536+00:00",
-    "ageDays": 27.32209778935185
+    "ageDays": 27.852918587962964
   },
   {
     "id": "bf22f4dd-2d54-4b4c-9038-ea09aadef8a2",
@@ -215,7 +196,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T03:59:45.591638+00:00",
-    "ageDays": 27.32227261574074
+    "ageDays": 27.853093414351854
   },
   {
     "id": "46fd5625-4fda-4793-a2ab-d6b627f3f4df",
@@ -235,7 +216,47 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T03:59:26.783766+00:00",
-    "ageDays": 27.322490300925924
+    "ageDays": 27.853311099537038
+  },
+  {
+    "id": "7ffc9eba-5435-49ec-af53-cbe3a2c7631c",
+    "title": "The Platform Behind the Next AI Breakthrough",
+    "content": "🎯 What Changed: Azure positions its platform as the core infrastructure for the next generation of AI agents performing strategic, multi-step work.\n💡 Engineering Impact: Architects can now design more sophisticated AI solutions, leveraging Azure's robust infrastructure for complex agent orchestration. This paves the way for advanced automation and strategic decision-making capabilities within applications.",
+    "tags": [
+      "#Azure",
+      "#CloudArchitecture",
+      "#CloudNews"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-11-03T12:41:13.682127+00:00",
+    "link_url": "https://www.wired.com/sponsored/story/the-platform-behind-the-next-ai-breakthrough/",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
+    "updated_at": "2026-11-03T19:16:07.338+00:00",
+    "ageDays": 0.4909627314814815
+  },
+  {
+    "id": "77aa084b-daf0-4cb9-8353-02e0bd4ff52f",
+    "title": "Amazon Quick on desktop now uses your organization's existing Amazon Quick sign-in",
+    "content": "🎯 What Changed: Amazon Quick on desktop now inherits your organization's existing web sign-in method, eliminating the need for manual.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
+    "tags": [
+      "#AWS",
+      "#CloudArchitecture",
+      "#CloudNews"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-11-03T05:29:02.400613+00:00",
+    "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/11/amazon-quick-desktop-organization-sign-in/",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
+    "updated_at": "2026-11-03T11:43:50.746+00:00",
+    "ageDays": 0.7910933101851851
   },
   {
     "id": "39611fdc-df54-4e6b-9adf-1c6765525e42",
@@ -255,7 +276,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-02T17:59:42.854+00:00",
-    "ageDays": 0.936054849537037
+    "ageDays": 1.4668756481481482
   },
   {
     "id": "e2bda646-2ffa-4c48-b559-0869b8c0537d",
@@ -275,26 +296,6 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-03T02:04:26.791+00:00",
-    "ageDays": 0.936110162037037
-  },
-  {
-    "id": "1edf04bd-e539-414b-8b4f-120e84372827",
-    "title": "Daybreak Red from OpenAI now available to eligible customers on Amazon Bedrock in AWS GovCloud (US-East)",
-    "content": "🎯 What Changed: OpenAI's Daybreak Red model is now available to eligible customers on Amazon Bedrock within.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
-    "tags": [
-      "#AWS",
-      "#CloudArchitecture",
-      "#CloudNews"
-    ],
-    "upvotes": 1,
-    "downvotes": 0,
-    "score": 1,
-    "author": "Cloud Newsroom Bot",
-    "created_at": "2026-11-02T04:24:59.054689+00:00",
-    "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/10/openai-daybreak-red-govcloud-east/",
-    "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
-    "updated_at": "2026-11-02T05:06:56.262+00:00",
-    "ageDays": 1.3047556828703704
+    "ageDays": 1.4669309606481482
   }
 ]
