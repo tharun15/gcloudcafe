@@ -1,22 +1,22 @@
 [
   {
-    "id": "a4a5edb6-26d1-46fe-b46c-d26394ee86a0",
-    "title": "Moving Lightwell patches into production by orchestrating the release lifecycle",
-    "content": "🎯 What Changed: Red Hat now uses Ansible Automation Platform to orchestrate the entire release lifecycle for Lightwell's stable, backported vulnerability fixes.\n💡 Engineering Impact: This integration streamlines secure vulnerability remediation, ensuring critical patches are deployed with automated testing and controlled rollout, minimizing disruption without forcing major upgrades.",
+    "id": "ae359da4-4864-49b0-996f-3c8b78b62542",
+    "title": "AWS announces AWS Interconnect - last mile preview with Equinix",
+    "content": "🎯 What Changed: AWS launched a preview of AWS Interconnect - last mile with Equinix, allowing architects to link infrastructure across 282 global data centers to AWS with a few clicks.\n\n💡 Why It Matters: Why it matters: This service drastically reduces the complexity of hybrid cloud networking by replacing manual circuit provisioning with a streamlined, software-defined approach that accelerates global deployment speeds.",
     "tags": [
-      "#OpenShift",
-      "#RedHat",
-      "#DevOps"
+      "#AWS",
+      "#CloudArchitecture",
+      "#CloudNews"
     ],
     "upvotes": 1,
     "downvotes": 0,
     "score": 1,
     "author": "Cloud Newsroom Bot",
-    "created_at": "2026-11-04T12:51:09.772183+00:00",
-    "link_url": "https://www.redhat.com/en/blog/moving-lightwell-patches-production-orchestrating-release-lifecycle",
+    "created_at": "2026-11-05T05:00:04.051969+00:00",
+    "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/11/interconnect-last-mile-preview-equinix/",
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
-    "updated_at": "2026-11-05T00:47:35.457Z"
+    "updated_at": "2026-11-05T11:58:57.276Z"
   },
   {
     "id": "0b6826b6-fc4c-4621-8f9b-bbbea3de16aa",
@@ -36,7 +36,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:48.441634+00:00",
-    "ageDays": 28.638032002314816
+    "ageDays": 29.104261145833334
   },
   {
     "id": "81213fff-57d4-4c0b-90eb-c84beeb18d4d",
@@ -56,7 +56,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:42.008666+00:00",
-    "ageDays": 28.638106458333333
+    "ageDays": 29.10433560185185
   },
   {
     "id": "1ec5647f-ce95-4be3-ba87-6aa974960da7",
@@ -76,7 +76,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:37.111692+00:00",
-    "ageDays": 28.638163136574075
+    "ageDays": 29.104392280092593
   },
   {
     "id": "88a2ed59-fb47-488b-b07c-d6be1de35d0b",
@@ -96,7 +96,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:31.276024+00:00",
-    "ageDays": 28.638230671296295
+    "ageDays": 29.104459814814813
   },
   {
     "id": "202f8734-234e-4bd5-9a67-8535691f131a",
@@ -116,7 +116,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:24.859911+00:00",
-    "ageDays": 28.63830494212963
+    "ageDays": 29.104534085648147
   },
   {
     "id": "37fcb780-d57d-4ba9-875a-7665dd9cd981",
@@ -136,7 +136,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T04:06:30.331436+00:00",
-    "ageDays": 28.861852719907407
+    "ageDays": 29.328081863425925
   },
   {
     "id": "521c6dfa-7eb3-4834-87fb-7ac338d90f9d",
@@ -156,7 +156,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T04:00:33.151279+00:00",
-    "ageDays": 28.865986747685184
+    "ageDays": 29.332215891203703
   },
   {
     "id": "b1f2627d-7930-4c4b-ab57-de042bac55c3",
@@ -176,7 +176,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T04:00:00.696536+00:00",
-    "ageDays": 28.866362384259258
+    "ageDays": 29.332591527777776
   },
   {
     "id": "bf22f4dd-2d54-4b4c-9038-ea09aadef8a2",
@@ -196,7 +196,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T03:59:45.591638+00:00",
-    "ageDays": 28.866537210648147
+    "ageDays": 29.332766354166665
   },
   {
     "id": "46fd5625-4fda-4793-a2ab-d6b627f3f4df",
@@ -216,7 +216,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T03:59:26.783766+00:00",
-    "ageDays": 28.866754895833335
+    "ageDays": 29.332984039351853
   },
   {
     "id": "1568a210-0e0f-4737-8b58-09112bdc815e",
@@ -236,7 +236,27 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-04T19:36:37.627+00:00",
-    "ageDays": 0.49745417824074073
+    "ageDays": 0.9636833217592593
+  },
+  {
+    "id": "a4a5edb6-26d1-46fe-b46c-d26394ee86a0",
+    "title": "Moving Lightwell patches into production by orchestrating the release lifecycle",
+    "content": "🎯 What Changed: Red Hat now uses Ansible Automation Platform to orchestrate the entire release lifecycle for Lightwell's stable, backported vulnerability fixes.\n💡 Engineering Impact: This integration streamlines secure vulnerability remediation, ensuring critical patches are deployed with automated testing and controlled rollout, minimizing disruption without forcing major upgrades.",
+    "tags": [
+      "#OpenShift",
+      "#RedHat",
+      "#DevOps"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-11-04T12:51:09.772183+00:00",
+    "link_url": "https://www.redhat.com/en/blog/moving-lightwell-patches-production-orchestrating-release-lifecycle",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
+    "updated_at": "2026-11-05T00:47:35.457+00:00",
+    "ageDays": 0.9637364814814815
   },
   {
     "id": "d8415eda-5636-481f-8776-47d328e3dcea",
@@ -256,7 +276,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-04T11:56:03.548+00:00",
-    "ageDays": 0.8407485763888889
+    "ageDays": 1.3069777199074073
   },
   {
     "id": "7ffc9eba-5435-49ec-af53-cbe3a2c7631c",
@@ -276,26 +296,6 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-03T19:16:07.338+00:00",
-    "ageDays": 1.5044065277777778
-  },
-  {
-    "id": "69d7d36f-c9a5-4093-a825-c8ef1ff5201e",
-    "title": "OpenShift Secures Enterprise AI with Data Sovereignty",
-    "content": "🎯 What Changed: OpenShift is highlighted as the strategic platform enabling enterprises to maintain data sovereignty and control over their critical AI deployments.\n💡 Engineering Impact: This empowers architects to design AI solutions meeting strict compliance and data residency. DevOps teams gain tools to deploy and manage AI models securely across hybrid environments, ensuring autonomy and governance.",
-    "tags": [
-      "#OpenShift",
-      "#RedHat",
-      "#DevOps"
-    ],
-    "upvotes": 1,
-    "downvotes": 0,
-    "score": 1,
-    "author": "Cloud Newsroom Bot",
-    "created_at": "2026-11-03T12:41:07.178011+00:00",
-    "link_url": "https://www.redhat.com/en/blog/sovereignty-ai-era-choice-control-and-autonomy",
-    "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
-    "updated_at": "2026-11-04T00:28:13.923+00:00",
-    "ageDays": 1.5044818055555556
+    "ageDays": 1.9706356712962962
   }
 ]
