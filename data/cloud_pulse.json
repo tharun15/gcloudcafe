@@ -1,5 +1,24 @@
 [
   {
+    "id": "b6ca8e95-79e5-4c15-8d47-c28a5c2e08b3",
+    "title": "Red Hat OpenShift: Evolving Modern App Delivery & Lifecycle",
+    "content": "🎯 What Changed: Red Hat OpenShift continues to evolve, enhancing its capabilities for secure, intelligent, and predictable modern application delivery across hybrid environments.\n💡 Engineering Impact: Engineers benefit from a unified platform that streamlines the entire software lifecycle, ensuring faster feature delivery while maintaining rigorous security and compliance across diverse cloud and edge deployments.",
+    "tags": [
+      "#OpenShift",
+      "#RedHat",
+      "#DevOps"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-11-06T12:47:03.526358+00:00",
+    "link_url": "https://www.redhat.com/en/blog/5-minute-demo-how-build-modern-applications-red-hat-openshift",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
+    "updated_at": "2026-11-06T19:04:05.942Z"
+  },
+  {
     "id": "2a85e8ae-ffa4-4fa6-b3c7-42fe6a5575d8",
     "title": "AWS Network Load Balancer is now available in the AWS Phoenix Local Zone",
     "content": "🎯 What Changed: AWS Network Load Balancer is now available in the Phoenix Local Zone (us-west-2-phx-.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
@@ -277,25 +296,5 @@
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-05T11:58:57.276+00:00",
     "ageDays": 1.288175949074074
-  },
-  {
-    "id": "1568a210-0e0f-4737-8b58-09112bdc815e",
-    "title": "Red Hat AI Enterprise: Post-Quantum Crypto Secures Future AI",
-    "content": "🎯 What Changed: Red Hat AI Enterprise is integrating post-quantum cryptography to secure AI models and data against future quantum computing threats.\n💡 Engineering Impact: This proactive measure safeguards critical AI intellectual property, ensuring long-term data confidentiality and integrity against emerging quantum threats, enabling secure AI strategy development.",
-    "tags": [
-      "#OpenShift",
-      "#RedHat",
-      "#DevOps"
-    ],
-    "upvotes": 1,
-    "downvotes": 0,
-    "score": 1,
-    "author": "Cloud Newsroom Bot",
-    "created_at": "2026-11-04T12:51:14.36503+00:00",
-    "link_url": "https://www.redhat.com/en/blog/future-proofing-enterprise-ai-impact-post-quantum-cryptography-red-hat-ai-enterprise",
-    "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
-    "updated_at": "2026-11-04T19:36:37.627+00:00",
-    "ageDays": 1.9609732407407408
   }
 ]
