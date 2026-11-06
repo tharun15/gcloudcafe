@@ -1,8 +1,8 @@
 [
   {
-    "id": "7eeee46d-bb1e-4bce-bba9-58712e1751a7",
-    "title": "Red Hat OpenShift is now generally available in Google Cloud’s sovereign regions",
-    "content": "🎯 What Changed: Data residency rules and sovereignty mandates often determine where a workload is allowed to run.\n\n💡 Why It Matters: To meet those requirements and keep the platform your teams know and trust, Red Hat is expanding its commitment to digi...",
+    "id": "0b40cff4-93d2-45fc-abbe-f09fc840914c",
+    "title": "Why Lightwell pairs dependency backports with upstream collaboration",
+    "content": "🎯 What Changed: Enterprise applications rarely break because of custom business logic; instead, the issue is often related to changes in underlying open source dependencies.\n\n💡 Why It Matters: When a high-severity vulnerability is found in a third-part...",
     "tags": [
       "#OpenShift",
       "#RedHat",
@@ -12,30 +12,11 @@
     "downvotes": 0,
     "score": 1,
     "author": "Cloud Newsroom Bot",
-    "created_at": "2026-11-05T13:00:47.453571+00:00",
-    "link_url": "https://www.redhat.com/en/blog/red-hat-openshift-now-generally-available-google-clouds-sovereign-regions",
+    "created_at": "2026-11-05T13:00:44.080164+00:00",
+    "link_url": "https://www.redhat.com/en/blog/why-lightwell-pairs-dependency-backports-upstream-collaboration",
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
-    "updated_at": "2026-11-05T19:51:13.154Z"
-  },
-  {
-    "id": "ae359da4-4864-49b0-996f-3c8b78b62542",
-    "title": "AWS announces AWS Interconnect - last mile preview with Equinix",
-    "content": "🎯 What Changed: AWS launched a preview of AWS Interconnect - last mile with Equinix, allowing architects to link infrastructure across 282 global data centers to AWS with a few clicks.\n\n💡 Why It Matters: Why it matters: This service drastically reduces the complexity of hybrid cloud networking by replacing manual circuit provisioning with a streamlined, software-defined approach that accelerates global deployment speeds.",
-    "tags": [
-      "#AWS",
-      "#CloudArchitecture",
-      "#CloudNews"
-    ],
-    "upvotes": 1,
-    "downvotes": 0,
-    "score": 1,
-    "author": "Cloud Newsroom Bot",
-    "created_at": "2026-11-05T05:00:04.051969+00:00",
-    "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/11/interconnect-last-mile-preview-equinix/",
-    "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
-    "updated_at": "2026-11-05T11:58:57.276Z"
+    "updated_at": "2026-11-06T00:53:44.439Z"
   },
   {
     "id": "0b6826b6-fc4c-4621-8f9b-bbbea3de16aa",
@@ -55,7 +36,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:48.441634+00:00",
-    "ageDays": 29.104261145833334
+    "ageDays": 29.642307881944443
   },
   {
     "id": "81213fff-57d4-4c0b-90eb-c84beeb18d4d",
@@ -75,7 +56,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:42.008666+00:00",
-    "ageDays": 29.10433560185185
+    "ageDays": 29.642382337962964
   },
   {
     "id": "1ec5647f-ce95-4be3-ba87-6aa974960da7",
@@ -95,7 +76,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:37.111692+00:00",
-    "ageDays": 29.104392280092593
+    "ageDays": 29.642439016203703
   },
   {
     "id": "88a2ed59-fb47-488b-b07c-d6be1de35d0b",
@@ -115,7 +96,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:31.276024+00:00",
-    "ageDays": 29.104459814814813
+    "ageDays": 29.642506550925926
   },
   {
     "id": "202f8734-234e-4bd5-9a67-8535691f131a",
@@ -135,7 +116,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:24.859911+00:00",
-    "ageDays": 29.104534085648147
+    "ageDays": 29.64258082175926
   },
   {
     "id": "37fcb780-d57d-4ba9-875a-7665dd9cd981",
@@ -155,7 +136,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T04:06:30.331436+00:00",
-    "ageDays": 29.328081863425925
+    "ageDays": 29.86612859953704
   },
   {
     "id": "521c6dfa-7eb3-4834-87fb-7ac338d90f9d",
@@ -175,7 +156,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T04:00:33.151279+00:00",
-    "ageDays": 29.332215891203703
+    "ageDays": 29.870262627314816
   },
   {
     "id": "b1f2627d-7930-4c4b-ab57-de042bac55c3",
@@ -195,7 +176,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T04:00:00.696536+00:00",
-    "ageDays": 29.332591527777776
+    "ageDays": 29.87063826388889
   },
   {
     "id": "bf22f4dd-2d54-4b4c-9038-ea09aadef8a2",
@@ -215,7 +196,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T03:59:45.591638+00:00",
-    "ageDays": 29.332766354166665
+    "ageDays": 29.870813090277778
   },
   {
     "id": "46fd5625-4fda-4793-a2ab-d6b627f3f4df",
@@ -235,7 +216,47 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T03:59:26.783766+00:00",
-    "ageDays": 29.332984039351853
+    "ageDays": 29.871030775462962
+  },
+  {
+    "id": "7eeee46d-bb1e-4bce-bba9-58712e1751a7",
+    "title": "Red Hat OpenShift is now generally available in Google Cloud’s sovereign regions",
+    "content": "🎯 What Changed: Data residency rules and sovereignty mandates often determine where a workload is allowed to run.\n\n💡 Why It Matters: To meet those requirements and keep the platform your teams know and trust, Red Hat is expanding its commitment to digi...",
+    "tags": [
+      "#OpenShift",
+      "#RedHat",
+      "#DevOps"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-11-05T13:00:47.453571+00:00",
+    "link_url": "https://www.redhat.com/en/blog/red-hat-openshift-now-generally-available-google-clouds-sovereign-regions",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
+    "updated_at": "2026-11-05T19:51:13.154+00:00",
+    "ageDays": 0.4950970949074074
+  },
+  {
+    "id": "ae359da4-4864-49b0-996f-3c8b78b62542",
+    "title": "AWS announces AWS Interconnect - last mile preview with Equinix",
+    "content": "🎯 What Changed: AWS launched a preview of AWS Interconnect - last mile with Equinix, allowing architects to link infrastructure across 282 global data centers to AWS with a few clicks.\n\n💡 Why It Matters: Why it matters: This service drastically reduces the complexity of hybrid cloud networking by replacing manual circuit provisioning with a streamlined, software-defined approach that accelerates global deployment speeds.",
+    "tags": [
+      "#AWS",
+      "#CloudArchitecture",
+      "#CloudNews"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-11-05T05:00:04.051969+00:00",
+    "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/11/interconnect-last-mile-preview-equinix/",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
+    "updated_at": "2026-11-05T11:58:57.276+00:00",
+    "ageDays": 0.8289327662037037
   },
   {
     "id": "1568a210-0e0f-4737-8b58-09112bdc815e",
@@ -255,7 +276,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-04T19:36:37.627+00:00",
-    "ageDays": 0.9636833217592593
+    "ageDays": 1.5017300578703703
   },
   {
     "id": "a4a5edb6-26d1-46fe-b46c-d26394ee86a0",
@@ -275,26 +296,6 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-05T00:47:35.457+00:00",
-    "ageDays": 0.9637364814814815
-  },
-  {
-    "id": "d8415eda-5636-481f-8776-47d328e3dcea",
-    "title": "Amazon RDS now supports the latest Cumulative Update and GDR updates for Microsoft SQL Server",
-    "content": "🎯 What Changed: Amazon RDS for SQL Server now supports the latest Cumulative Updates and General Distribution Release patches for Microsoft SQL Server.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
-    "tags": [
-      "#AWS",
-      "#CloudArchitecture",
-      "#CloudNews"
-    ],
-    "upvotes": 1,
-    "downvotes": 0,
-    "score": 1,
-    "author": "Cloud Newsroom Bot",
-    "created_at": "2026-11-04T04:36:53.729448+00:00",
-    "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/11/amazon-rds-supports-latest-cumulative-update-gdr-microsoft-sql-server/",
-    "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
-    "updated_at": "2026-11-04T11:56:03.548+00:00",
-    "ageDays": 1.3069777199074073
+    "ageDays": 1.5017832175925927
   }
 ]
