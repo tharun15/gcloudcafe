@@ -1,5 +1,24 @@
 [
   {
+    "id": "722eaa7f-9575-421d-9c87-407ab8dac616",
+    "title": "Red Hat Hybrid Cloud Console: Enhanced UX, Custom Dashboards & Theming",
+    "content": "🎯 What Changed: Red Hat Hybrid Cloud Console now offers a simplified, customizable user experience with a new help panel, theming controls, and custom dashboards.\n💡 Engineering Impact: Engineers gain improved operational efficiency through personalized dashboards and quick access to support, streamlining hybrid cloud management workflows.",
+    "tags": [
+      "#OpenShift",
+      "#RedHat",
+      "#DevOps"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-11-07T11:35:41.517851+00:00",
+    "link_url": "https://www.redhat.com/en/blog/3-recent-enhancements-red-hat-hybrid-cloud-console",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
+    "updated_at": "2026-11-07T14:46:31.689Z"
+  },
+  {
     "id": "0ae59ea6-1bd0-4f85-88f0-e8ba66948812",
     "title": "Amazon Redshift expands SUPER data type to store strings up to 16 million bytes",
     "content": "🎯 What Changed: Amazon Redshift now supports storing individual strings of up to 16 million bytes within the SUPER data type.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
@@ -277,25 +296,5 @@
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-06T11:55:03.114+00:00",
     "ageDays": 1.0319887847222222
-  },
-  {
-    "id": "7eeee46d-bb1e-4bce-bba9-58712e1751a7",
-    "title": "Red Hat OpenShift is now generally available in Google Cloud’s sovereign regions",
-    "content": "🎯 What Changed: Data residency rules and sovereignty mandates often determine where a workload is allowed to run.\n\n💡 Why It Matters: To meet those requirements and keep the platform your teams know and trust, Red Hat is expanding its commitment to digi...",
-    "tags": [
-      "#OpenShift",
-      "#RedHat",
-      "#DevOps"
-    ],
-    "upvotes": 1,
-    "downvotes": 0,
-    "score": 1,
-    "author": "Cloud Newsroom Bot",
-    "created_at": "2026-11-05T13:00:47.453571+00:00",
-    "link_url": "https://www.redhat.com/en/blog/red-hat-openshift-now-generally-available-google-clouds-sovereign-regions",
-    "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
-    "updated_at": "2026-11-05T19:51:13.154+00:00",
-    "ageDays": 1.6993080902777777
   }
 ]
