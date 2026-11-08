@@ -1,22 +1,22 @@
 [
   {
-    "id": "4aab89ff-49ba-41a6-a590-51759e26384a",
-    "title": "IBM & Red Hat Launch Project Lightwell: $5B for Open Source Security",
-    "content": "🎯 What Changed: IBM and Red Hat have launched Project Lightwell, a $5 billion initiative with 20,000 engineers dedicated to securing open-source software.\n💡 Engineering Impact: This initiative will significantly enhance the security posture of shared digital infrastructure, leveraging AI for advanced vulnerability discovery. DevOps teams can anticipate more robust and secure open-source dependencies, reducing supply chain risks.",
+    "id": "205f72fc-ffd7-4aaa-aad2-d1e5cf573398",
+    "title": "Amazon Redshift expands SUPER data type to store strings up to 16 million bytes",
+    "content": "🎯 What Changed: Amazon Redshift now supports storing individual strings up to 16 million bytes within the SUPER data type via an opt-.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
     "tags": [
-      "#OpenShift",
-      "#RedHat",
-      "#DevOps"
+      "#AWS",
+      "#CloudArchitecture",
+      "#CloudNews"
     ],
     "upvotes": 1,
     "downvotes": 0,
     "score": 1,
     "author": "Cloud Newsroom Bot",
-    "created_at": "2026-11-07T11:35:32.900559+00:00",
-    "link_url": "https://www.redhat.com/en/blog/friday-five-november-6-2026-red-hat",
+    "created_at": "2026-11-08T04:19:11.44501+00:00",
+    "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/11/amazon-redshift-expands-super-to-16-million-bytes/",
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
-    "updated_at": "2026-11-07T23:36:03.208Z"
+    "updated_at": "2026-11-08T05:11:52.922Z"
   },
   {
     "id": "0b6826b6-fc4c-4621-8f9b-bbbea3de16aa",
@@ -36,7 +36,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:48.441634+00:00",
-    "ageDays": 31.5883546875
+    "ageDays": 31.821571724537037
   },
   {
     "id": "81213fff-57d4-4c0b-90eb-c84beeb18d4d",
@@ -56,7 +56,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:42.008666+00:00",
-    "ageDays": 31.588429143518518
+    "ageDays": 31.821646180555554
   },
   {
     "id": "1ec5647f-ce95-4be3-ba87-6aa974960da7",
@@ -76,7 +76,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:37.111692+00:00",
-    "ageDays": 31.58848582175926
+    "ageDays": 31.821702858796296
   },
   {
     "id": "88a2ed59-fb47-488b-b07c-d6be1de35d0b",
@@ -96,7 +96,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:31.276024+00:00",
-    "ageDays": 31.58855335648148
+    "ageDays": 31.82177039351852
   },
   {
     "id": "202f8734-234e-4bd5-9a67-8535691f131a",
@@ -116,7 +116,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:24.859911+00:00",
-    "ageDays": 31.588627627314814
+    "ageDays": 31.82184466435185
   },
   {
     "id": "37fcb780-d57d-4ba9-875a-7665dd9cd981",
@@ -136,7 +136,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T04:06:30.331436+00:00",
-    "ageDays": 31.812175405092592
+    "ageDays": 32.04539244212963
   },
   {
     "id": "521c6dfa-7eb3-4834-87fb-7ac338d90f9d",
@@ -156,7 +156,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T04:00:33.151279+00:00",
-    "ageDays": 31.81630943287037
+    "ageDays": 32.049526469907406
   },
   {
     "id": "b1f2627d-7930-4c4b-ab57-de042bac55c3",
@@ -176,7 +176,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T04:00:00.696536+00:00",
-    "ageDays": 31.816685069444443
+    "ageDays": 32.04990210648148
   },
   {
     "id": "bf22f4dd-2d54-4b4c-9038-ea09aadef8a2",
@@ -196,7 +196,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T03:59:45.591638+00:00",
-    "ageDays": 31.816859895833332
+    "ageDays": 32.05007693287037
   },
   {
     "id": "46fd5625-4fda-4793-a2ab-d6b627f3f4df",
@@ -216,7 +216,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T03:59:26.783766+00:00",
-    "ageDays": 31.81707758101852
+    "ageDays": 32.05029461805555
   },
   {
     "id": "722eaa7f-9575-421d-9c87-407ab8dac616",
@@ -236,7 +236,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-07T14:46:31.689+00:00",
-    "ageDays": 0.5002403819444444
+    "ageDays": 0.7334574189814815
   },
   {
     "id": "da615bc3-9d63-44b1-8bab-8bd6cddffdd3",
@@ -256,7 +256,27 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-07T19:59:29.661+00:00",
-    "ageDays": 0.5003001620370371
+    "ageDays": 0.7335171990740741
+  },
+  {
+    "id": "4aab89ff-49ba-41a6-a590-51759e26384a",
+    "title": "IBM & Red Hat Launch Project Lightwell: $5B for Open Source Security",
+    "content": "🎯 What Changed: IBM and Red Hat have launched Project Lightwell, a $5 billion initiative with 20,000 engineers dedicated to securing open-source software.\n💡 Engineering Impact: This initiative will significantly enhance the security posture of shared digital infrastructure, leveraging AI for advanced vulnerability discovery. DevOps teams can anticipate more robust and secure open-source dependencies, reducing supply chain risks.",
+    "tags": [
+      "#OpenShift",
+      "#RedHat",
+      "#DevOps"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-11-07T11:35:32.900559+00:00",
+    "link_url": "https://www.redhat.com/en/blog/friday-five-november-6-2026-red-hat",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
+    "updated_at": "2026-11-07T23:36:03.208+00:00",
+    "ageDays": 0.7335571527777778
   },
   {
     "id": "0ae59ea6-1bd0-4f85-88f0-e8ba66948812",
@@ -276,26 +296,6 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-07T05:47:48.544+00:00",
-    "ageDays": 0.7892886574074074
-  },
-  {
-    "id": "b6ca8e95-79e5-4c15-8d47-c28a5c2e08b3",
-    "title": "Red Hat OpenShift: Evolving Modern App Delivery & Lifecycle",
-    "content": "🎯 What Changed: Red Hat OpenShift continues to evolve, enhancing its capabilities for secure, intelligent, and predictable modern application delivery across hybrid environments.\n💡 Engineering Impact: Engineers benefit from a unified platform that streamlines the entire software lifecycle, ensuring faster feature delivery while maintaining rigorous security and compliance across diverse cloud and edge deployments.",
-    "tags": [
-      "#OpenShift",
-      "#RedHat",
-      "#DevOps"
-    ],
-    "upvotes": 1,
-    "downvotes": 0,
-    "score": 1,
-    "author": "Cloud Newsroom Bot",
-    "created_at": "2026-11-06T12:47:03.526358+00:00",
-    "link_url": "https://www.redhat.com/en/blog/5-minute-demo-how-build-modern-applications-red-hat-openshift",
-    "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
-    "updated_at": "2026-11-06T19:04:05.942+00:00",
-    "ageDays": 1.4506800925925927
+    "ageDays": 1.0225056944444444
   }
 ]
