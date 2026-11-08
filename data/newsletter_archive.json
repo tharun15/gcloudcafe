@@ -1,5 +1,14 @@
 [
   {
+    "id": "edition-2026-11-08",
+    "date": "2026-11-08T15:51:48.459Z",
+    "title": "GCloudCafe Digest: Architecture & Cloud Insights (Nov 8, 2026)",
+    "summary": "This week's edition brings hands-on production deep dives across Kubernetes, Zero-Trust TLS, and Cloud Architecture. Explore practical configurations and our curated micro-pulse updates from major clo",
+    "postCount": 0,
+    "pulseCount": 6,
+    "url": "https://gcloudcafe.com/newsletter/"
+  },
+  {
     "id": "edition-2026-11-01",
     "date": "2026-11-01T15:53:07.205Z",
     "title": "GCloudCafe Digest: Architecture & Cloud Insights (Nov 1, 2026)",
