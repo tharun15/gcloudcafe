@@ -1,5 +1,24 @@
 [
   {
+    "id": "2b788f9f-2ed1-438e-ac1f-5d372e1c0660",
+    "title": "Cloud Pathways GA: Unified ML Runtime for Hyper-Scale AI on GKE",
+    "content": "🎯 What Changed: Cloud Pathways, Google's distributed ML runtime for massive accelerator fleets, is now Generally Available on GKE.\n💡 Engineering Impact: This single-controller architecture simplifies managing massive JAX workloads across thousands of accelerators, boosting resilience and elasticity for AI training and inference on GKE.",
+    "tags": [
+      "#GoogleCloud",
+      "#GCP",
+      "#CloudNews"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-11-09T13:42:29.144152+00:00",
+    "link_url": "https://cloud.google.com/blog/topics/ai-infrastructure/cloud-pathways-a-distributed-ml-runtime-is-ga/",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
+    "updated_at": "2026-11-09T18:30:31.398Z"
+  },
+  {
     "id": "b64bde0e-6f73-40c6-9c09-7e4999625a47",
     "title": "Amazon Redshift expands SUPER data type to store strings up to 16 million bytes",
     "content": "🎯 What Changed: Amazon Redshift has expanded its SUPER data type to support individual strings up to 16 million bytes.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
@@ -277,25 +296,5 @@
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-08T05:11:52.922+00:00",
     "ageDays": 1.045077511574074
-  },
-  {
-    "id": "722eaa7f-9575-421d-9c87-407ab8dac616",
-    "title": "Red Hat Hybrid Cloud Console: Enhanced UX, Custom Dashboards & Theming",
-    "content": "🎯 What Changed: Red Hat Hybrid Cloud Console now offers a simplified, customizable user experience with a new help panel, theming controls, and custom dashboards.\n💡 Engineering Impact: Engineers gain improved operational efficiency through personalized dashboards and quick access to support, streamlining hybrid cloud management workflows.",
-    "tags": [
-      "#OpenShift",
-      "#RedHat",
-      "#DevOps"
-    ],
-    "upvotes": 1,
-    "downvotes": 0,
-    "score": 1,
-    "author": "Cloud Newsroom Bot",
-    "created_at": "2026-11-07T11:35:41.517851+00:00",
-    "link_url": "https://www.redhat.com/en/blog/3-recent-enhancements-red-hat-hybrid-cloud-console",
-    "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
-    "updated_at": "2026-11-07T14:46:31.689+00:00",
-    "ageDays": 1.7419516782407407
   }
 ]
