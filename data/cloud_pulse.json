@@ -1,5 +1,24 @@
 [
   {
+    "id": "5cca8ca1-dba9-4fa9-b023-f6403a8b59b4",
+    "title": "Red Hat OpenShift 5: AI-Powered Autonomous Operations",
+    "content": "🎯 What Changed: Red Hat OpenShift 5 introduces agentic applied AI, transforming Lightspeed into an autonomous agent for hybrid cloud operations.\n💡 Engineering Impact: This enhances operational efficiency by enabling AI to investigate clusters and prepare changes, streamlining management across containers, VMs, and serverless workloads. Engineers gain accelerated, approved automation for hybrid cloud environments.",
+    "tags": [
+      "#OpenShift",
+      "#RedHat",
+      "#DevOps"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-11-10T13:20:45.531847+00:00",
+    "link_url": "https://www.redhat.com/en/blog/intelligent-red-hat-openshift-5",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
+    "updated_at": "2026-11-10T21:42:04.437Z"
+  },
+  {
     "id": "898d31cf-8a88-4929-bd76-d4063441a834",
     "title": "Amazon Quick is now AWS Quick",
     "content": "🎯 What Changed: Amazon Quick has been rebranded to AWS Quick to better align the enterprise AI workspace with native AWS security.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
@@ -277,25 +296,5 @@
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-09T05:24:07.518+00:00",
     "ageDays": 1.3058591203703704
-  },
-  {
-    "id": "71a586bc-8b26-4feb-8c92-272a35779eb1",
-    "title": "Predicting and detecting failures: How Azure strengthens reliability for mission-critical workloads",
-    "content": "🎯 What Changed: Azure Failure Prediction and Detection (AFPD) now proactively predicts hardware failures, automatically relocating eligible workloads and notifying users.\n💡 Engineering Impact: This significantly enhances reliability for mission-critical applications like SAP on Azure, minimizing downtime and reducing operational overhead by proactively addressing hardware issues.",
-    "tags": [
-      "#Azure",
-      "#CloudArchitecture",
-      "#CloudNews"
-    ],
-    "upvotes": 1,
-    "downvotes": 0,
-    "score": 1,
-    "author": "Cloud Newsroom Bot",
-    "created_at": "2026-11-08T11:47:33.85484+00:00",
-    "link_url": "https://azure.microsoft.com/en-us/blog/predicting-and-detecting-failures-how-azure-strengthens-reliability-for-mission-critical-workloads/",
-    "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
-    "updated_at": "2026-11-08T14:52:28.475+00:00",
-    "ageDays": 2.0216041203703705
   }
 ]
