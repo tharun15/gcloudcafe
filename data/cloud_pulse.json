@@ -1,8 +1,8 @@
 [
   {
-    "id": "2b788f9f-2ed1-438e-ac1f-5d372e1c0660",
-    "title": "Cloud Pathways GA: Unified ML Runtime for Hyper-Scale AI on GKE",
-    "content": "🎯 What Changed: Cloud Pathways, Google's distributed ML runtime for massive accelerator fleets, is now Generally Available on GKE.\n💡 Engineering Impact: This single-controller architecture simplifies managing massive JAX workloads across thousands of accelerators, boosting resilience and elasticity for AI training and inference on GKE.",
+    "id": "8fc07d64-11d8-4cfd-abc7-cfe87cf0db79",
+    "title": "Our newest TPUs: 8tx and 8i Max, built for the agentic era",
+    "content": "🎯 What Changed: Google Cloud expanded its 8th-generation TPU portfolio with two new systems, TPU 8tx for confidential inference and TPU 8i Max for massive context windows.\n💡 Engineering Impact: These additions, coupled with software advancements like PyTorch integration and GKE dynamic slicing, enable secure, high-density AI workloads and significantly improve developer experience and operational efficiency for agentic AI.",
     "tags": [
       "#GoogleCloud",
       "#GCP",
@@ -12,30 +12,11 @@
     "downvotes": 0,
     "score": 1,
     "author": "Cloud Newsroom Bot",
-    "created_at": "2026-11-09T13:42:29.144152+00:00",
-    "link_url": "https://cloud.google.com/blog/topics/ai-infrastructure/cloud-pathways-a-distributed-ml-runtime-is-ga/",
+    "created_at": "2026-11-09T13:42:20.987692+00:00",
+    "link_url": "https://cloud.google.com/blog/topics/ai-infrastructure/tpu-8tx-and-tpu-8i-max/",
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
-    "updated_at": "2026-11-09T18:30:31.398Z"
-  },
-  {
-    "id": "b64bde0e-6f73-40c6-9c09-7e4999625a47",
-    "title": "Amazon Redshift expands SUPER data type to store strings up to 16 million bytes",
-    "content": "🎯 What Changed: Amazon Redshift has expanded its SUPER data type to support individual strings up to 16 million bytes.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
-    "tags": [
-      "#AWS",
-      "#CloudArchitecture",
-      "#CloudNews"
-    ],
-    "upvotes": 1,
-    "downvotes": 0,
-    "score": 1,
-    "author": "Cloud Newsroom Bot",
-    "created_at": "2026-11-09T04:58:14.222135+00:00",
-    "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/11/amazon-redshift-expands-super-to-16-million-bytes/",
-    "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
-    "updated_at": "2026-11-09T05:24:07.518Z"
+    "updated_at": "2026-11-10T02:36:01.780Z"
   },
   {
     "id": "0b6826b6-fc4c-4621-8f9b-bbbea3de16aa",
@@ -55,7 +36,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:48.441634+00:00",
-    "ageDays": 32.830065983796295
+    "ageDays": 33.71333983796296
   },
   {
     "id": "81213fff-57d4-4c0b-90eb-c84beeb18d4d",
@@ -75,7 +56,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:42.008666+00:00",
-    "ageDays": 32.83014043981481
+    "ageDays": 33.71341429398148
   },
   {
     "id": "1ec5647f-ce95-4be3-ba87-6aa974960da7",
@@ -95,7 +76,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:37.111692+00:00",
-    "ageDays": 32.83019711805556
+    "ageDays": 33.713470972222225
   },
   {
     "id": "88a2ed59-fb47-488b-b07c-d6be1de35d0b",
@@ -115,7 +96,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:31.276024+00:00",
-    "ageDays": 32.83026465277778
+    "ageDays": 33.713538506944445
   },
   {
     "id": "202f8734-234e-4bd5-9a67-8535691f131a",
@@ -135,7 +116,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:24.859911+00:00",
-    "ageDays": 32.83033892361111
+    "ageDays": 33.713612777777776
   },
   {
     "id": "37fcb780-d57d-4ba9-875a-7665dd9cd981",
@@ -155,7 +136,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T04:06:30.331436+00:00",
-    "ageDays": 33.05388670138889
+    "ageDays": 33.93716055555556
   },
   {
     "id": "521c6dfa-7eb3-4834-87fb-7ac338d90f9d",
@@ -175,7 +156,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T04:00:33.151279+00:00",
-    "ageDays": 33.058020729166664
+    "ageDays": 33.94129458333333
   },
   {
     "id": "b1f2627d-7930-4c4b-ab57-de042bac55c3",
@@ -195,7 +176,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T04:00:00.696536+00:00",
-    "ageDays": 33.05839636574074
+    "ageDays": 33.94167021990741
   },
   {
     "id": "bf22f4dd-2d54-4b4c-9038-ea09aadef8a2",
@@ -215,7 +196,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T03:59:45.591638+00:00",
-    "ageDays": 33.05857119212963
+    "ageDays": 33.941845046296294
   },
   {
     "id": "46fd5625-4fda-4793-a2ab-d6b627f3f4df",
@@ -235,7 +216,47 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T03:59:26.783766+00:00",
-    "ageDays": 33.05878887731482
+    "ageDays": 33.94206273148148
+  },
+  {
+    "id": "2b788f9f-2ed1-438e-ac1f-5d372e1c0660",
+    "title": "Cloud Pathways GA: Unified ML Runtime for Hyper-Scale AI on GKE",
+    "content": "🎯 What Changed: Cloud Pathways, Google's distributed ML runtime for massive accelerator fleets, is now Generally Available on GKE.\n💡 Engineering Impact: This single-controller architecture simplifies managing massive JAX workloads across thousands of accelerators, boosting resilience and elasticity for AI training and inference on GKE.",
+    "tags": [
+      "#GoogleCloud",
+      "#GCP",
+      "#CloudNews"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-11-09T13:42:29.144152+00:00",
+    "link_url": "https://cloud.google.com/blog/topics/ai-infrastructure/cloud-pathways-a-distributed-ml-runtime-is-ga/",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
+    "updated_at": "2026-11-09T18:30:31.398+00:00",
+    "ageDays": 0.5371742939814815
+  },
+  {
+    "id": "b64bde0e-6f73-40c6-9c09-7e4999625a47",
+    "title": "Amazon Redshift expands SUPER data type to store strings up to 16 million bytes",
+    "content": "🎯 What Changed: Amazon Redshift has expanded its SUPER data type to support individual strings up to 16 million bytes.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
+    "tags": [
+      "#AWS",
+      "#CloudArchitecture",
+      "#CloudNews"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-11-09T04:58:14.222135+00:00",
+    "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/11/amazon-redshift-expands-super-to-16-million-bytes/",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
+    "updated_at": "2026-11-09T05:24:07.518+00:00",
+    "ageDays": 0.9012358912037037
   },
   {
     "id": "71a586bc-8b26-4feb-8c92-272a35779eb1",
@@ -255,7 +276,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-08T14:52:28.475+00:00",
-    "ageDays": 0.733707037037037
+    "ageDays": 1.6169808912037038
   },
   {
     "id": "48bca9a2-b816-47cd-a8c4-ce0194f66586",
@@ -275,26 +296,6 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-08T20:17:22.905+00:00",
-    "ageDays": 0.7337635069444445
-  },
-  {
-    "id": "205f72fc-ffd7-4aaa-aad2-d1e5cf573398",
-    "title": "Amazon Redshift expands SUPER data type to store strings up to 16 million bytes",
-    "content": "🎯 What Changed: Amazon Redshift now supports storing individual strings up to 16 million bytes within the SUPER data type via an opt-.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
-    "tags": [
-      "#AWS",
-      "#CloudArchitecture",
-      "#CloudNews"
-    ],
-    "upvotes": 1,
-    "downvotes": 0,
-    "score": 1,
-    "author": "Cloud Newsroom Bot",
-    "created_at": "2026-11-08T04:19:11.44501+00:00",
-    "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/11/amazon-redshift-expands-super-to-16-million-bytes/",
-    "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
-    "updated_at": "2026-11-08T05:11:52.922+00:00",
-    "ageDays": 1.045077511574074
+    "ageDays": 1.617037361111111
   }
 ]
