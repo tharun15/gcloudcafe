@@ -1,8 +1,8 @@
 [
   {
-    "id": "854873b0-f493-4cb8-bbfa-5413f8a41679",
-    "title": "OpenShift Boosts Enterprise AI Agent Security via Sandboxing",
-    "content": "🎯 What Changed: OpenShift now provides enhanced sandboxing capabilities to secure enterprise AI agents, mitigating risks from broad tool access.\n💡 Engineering Impact: This architectural enhancement ensures AI agents operate within defined boundaries, preventing misaligned behavior and enhancing data security, allowing DevOps teams to confidently deploy powerful agentic systems.",
+    "id": "e0c30b7c-37c7-42e9-84e7-c00dffaeef71",
+    "title": "Your move to Red Hat OpenShift Virtualization doesn't have to wait on VDDK",
+    "content": "🎯 What Changed: Red Hat OpenShift Virtualization now enables direct VMware VM migrations, eliminating the previous dependency on the hard-to-obtain VDDK.\n💡 Engineering Impact: This update removes a significant barrier for organizations, accelerating hybrid cloud adoption and simplifying migration planning by eliminating dependency on restricted external tools.",
     "tags": [
       "#OpenShift",
       "#RedHat",
@@ -12,30 +12,11 @@
     "downvotes": 0,
     "score": 1,
     "author": "Cloud Newsroom Bot",
-    "created_at": "2026-11-11T12:39:59.985962+00:00",
-    "link_url": "https://www.redhat.com/en/blog/great-power-comes-great-sandboxing",
+    "created_at": "2026-11-11T12:39:54.247259+00:00",
+    "link_url": "https://www.redhat.com/en/blog/your-move-red-hat-openshift-virtualization-doesnt-have-wait-vddk",
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
-    "updated_at": "2026-11-11T15:56:52.757Z"
-  },
-  {
-    "id": "f76654e7-afea-4ffa-8a4f-84910010b2a3",
-    "title": "Amazon RDS for MySQL 26.10 is now available in Amazon RDS Database Preview Environment",
-    "content": "🎯 What Changed: Amazon RDS for MySQL 26.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
-    "tags": [
-      "#AWS",
-      "#CloudArchitecture",
-      "#CloudNews"
-    ],
-    "upvotes": 1,
-    "downvotes": 0,
-    "score": 1,
-    "author": "Cloud Newsroom Bot",
-    "created_at": "2026-11-11T04:30:47.893554+00:00",
-    "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/11/rds-mysql-26-10-preview-environment/",
-    "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
-    "updated_at": "2026-11-11T05:22:25.477Z"
+    "updated_at": "2026-11-11T22:35:52.488Z"
   },
   {
     "id": "0b6826b6-fc4c-4621-8f9b-bbbea3de16aa",
@@ -55,7 +36,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:48.441634+00:00",
-    "ageDays": 34.82888769675926
+    "ageDays": 35.54656403935185
   },
   {
     "id": "81213fff-57d4-4c0b-90eb-c84beeb18d4d",
@@ -75,7 +56,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:42.008666+00:00",
-    "ageDays": 34.82896215277778
+    "ageDays": 35.546638495370374
   },
   {
     "id": "1ec5647f-ce95-4be3-ba87-6aa974960da7",
@@ -95,7 +76,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:37.111692+00:00",
-    "ageDays": 34.829018831018516
+    "ageDays": 35.54669517361111
   },
   {
     "id": "88a2ed59-fb47-488b-b07c-d6be1de35d0b",
@@ -115,7 +96,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:31.276024+00:00",
-    "ageDays": 34.82908636574074
+    "ageDays": 35.54676270833333
   },
   {
     "id": "202f8734-234e-4bd5-9a67-8535691f131a",
@@ -135,7 +116,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:24.859911+00:00",
-    "ageDays": 34.82916063657407
+    "ageDays": 35.54683697916666
   },
   {
     "id": "37fcb780-d57d-4ba9-875a-7665dd9cd981",
@@ -155,7 +136,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T04:06:30.331436+00:00",
-    "ageDays": 35.052708414351855
+    "ageDays": 35.770384756944445
   },
   {
     "id": "521c6dfa-7eb3-4834-87fb-7ac338d90f9d",
@@ -175,7 +156,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T04:00:33.151279+00:00",
-    "ageDays": 35.05684244212963
+    "ageDays": 35.774518784722225
   },
   {
     "id": "b1f2627d-7930-4c4b-ab57-de042bac55c3",
@@ -195,7 +176,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T04:00:00.696536+00:00",
-    "ageDays": 35.057218078703706
+    "ageDays": 35.774894421296295
   },
   {
     "id": "bf22f4dd-2d54-4b4c-9038-ea09aadef8a2",
@@ -215,7 +196,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T03:59:45.591638+00:00",
-    "ageDays": 35.05739290509259
+    "ageDays": 35.77506924768519
   },
   {
     "id": "46fd5625-4fda-4793-a2ab-d6b627f3f4df",
@@ -235,7 +216,47 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T03:59:26.783766+00:00",
-    "ageDays": 35.057610590277775
+    "ageDays": 35.77528693287037
+  },
+  {
+    "id": "854873b0-f493-4cb8-bbfa-5413f8a41679",
+    "title": "OpenShift Boosts Enterprise AI Agent Security via Sandboxing",
+    "content": "🎯 What Changed: OpenShift now provides enhanced sandboxing capabilities to secure enterprise AI agents, mitigating risks from broad tool access.\n💡 Engineering Impact: This architectural enhancement ensures AI agents operate within defined boundaries, preventing misaligned behavior and enhancing data security, allowing DevOps teams to confidently deploy powerful agentic systems.",
+    "tags": [
+      "#OpenShift",
+      "#RedHat",
+      "#DevOps"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-11-11T12:39:59.985962+00:00",
+    "link_url": "https://www.redhat.com/en/blog/great-power-comes-great-sandboxing",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
+    "updated_at": "2026-11-11T15:56:52.757+00:00",
+    "ageDays": 0.41379153935185187
+  },
+  {
+    "id": "f76654e7-afea-4ffa-8a4f-84910010b2a3",
+    "title": "Amazon RDS for MySQL 26.10 is now available in Amazon RDS Database Preview Environment",
+    "content": "🎯 What Changed: Amazon RDS for MySQL 26.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
+    "tags": [
+      "#AWS",
+      "#CloudArchitecture",
+      "#CloudNews"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-11-11T04:30:47.893554+00:00",
+    "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/11/rds-mysql-26-10-preview-environment/",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
+    "updated_at": "2026-11-11T05:22:25.477+00:00",
+    "ageDays": 0.7535148263888889
   },
   {
     "id": "5cca8ca1-dba9-4fa9-b023-f6403a8b59b4",
@@ -255,7 +276,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-10T21:42:04.437+00:00",
-    "ageDays": 0.6678102662037037
+    "ageDays": 1.3854866087962963
   },
   {
     "id": "898d31cf-8a88-4929-bd76-d4063441a834",
@@ -275,26 +296,6 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-10T12:18:41.132+00:00",
-    "ageDays": 0.9829620833333333
-  },
-  {
-    "id": "2b788f9f-2ed1-438e-ac1f-5d372e1c0660",
-    "title": "Cloud Pathways GA: Unified ML Runtime for Hyper-Scale AI on GKE",
-    "content": "🎯 What Changed: Cloud Pathways, Google's distributed ML runtime for massive accelerator fleets, is now Generally Available on GKE.\n💡 Engineering Impact: This single-controller architecture simplifies managing massive JAX workloads across thousands of accelerators, boosting resilience and elasticity for AI training and inference on GKE.",
-    "tags": [
-      "#GoogleCloud",
-      "#GCP",
-      "#CloudNews"
-    ],
-    "upvotes": 1,
-    "downvotes": 0,
-    "score": 1,
-    "author": "Cloud Newsroom Bot",
-    "created_at": "2026-11-09T13:42:29.144152+00:00",
-    "link_url": "https://cloud.google.com/blog/topics/ai-infrastructure/cloud-pathways-a-distributed-ml-runtime-is-ga/",
-    "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
-    "updated_at": "2026-11-09T18:30:31.398+00:00",
-    "ageDays": 1.6527221527777778
+    "ageDays": 1.700638425925926
   }
 ]
