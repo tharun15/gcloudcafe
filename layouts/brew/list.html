@@ -1,0 +1,571 @@
+{{ define "main" }}
+  {{ $brewPages := .RegularPages.ByDate.Reverse }}
+  {{ $totalCount := len $brewPages }}
+
+  <!-- Cloud Brew Section (Espresso-Sized Engineering Perspectives) -->
+  <section id="cloud-brew-section" class="pulse-hero-backdrop pt-4 sm:pt-6 pb-20 min-h-screen">
+    <div class="bytedepth-container max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+
+      <!-- Header Block: Author-Led Espresso Perspectives -->
+      <div class="mb-5 sm:mb-6">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-2.5">
+          <!-- Brew Status Pill -->
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 dark:bg-amber-500/15 border border-amber-500/25 dark:border-amber-500/35 shadow-2xs">
+            <i class="fa-solid fa-mug-hot text-amber-600 dark:text-amber-400 text-xs"></i>
+            <span class="font-mono text-[11px] font-black uppercase tracking-wider text-amber-700 dark:text-amber-300">
+              CLOUD BREW
+            </span>
+            <span class="text-slate-300 dark:text-slate-700 select-none">·</span>
+            <span class="font-mono text-[10px] font-bold text-slate-600 dark:text-slate-300">
+              60-SECOND PERSPECTIVES
+            </span>
+          </div>
+
+          <!-- Author Byline Pill -->
+          <div class="flex items-center gap-2.5 px-3 py-1 rounded-full bg-white/80 dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-800/80 shadow-2xs">
+            <img
+              src="{{ `/images/authors/profilepic_tharun.png` | relURL }}"
+              alt="Tharun Vempati"
+              width="22"
+              height="22"
+              class="w-5.5 h-5.5 rounded-full object-cover ring-1 ring-amber-500/40"
+              loading="eager"
+            />
+            <span class="text-xs font-semibold text-slate-800 dark:text-slate-200">
+              Written by <strong class="font-bold text-slate-950 dark:text-white">Tharun Vempati</strong>
+            </span>
+            <a
+              href="https://www.linkedin.com/in/tharunvempati"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center gap-1 text-[11px] font-bold text-[#0a66c2] dark:text-sky-400 hover:underline no-underline ml-1"
+              title="Follow Tharun on LinkedIn">
+              <i class="fa-brands fa-linkedin text-xs"></i>
+              <span class="hidden sm:inline">LinkedIn</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Main Headline -->
+        <h1 class="text-2xl sm:text-3xl lg:text-[32px] font-black tracking-tight text-slate-900 dark:text-white mb-2 leading-[1.15]">
+          Cloud Brew
+          <span class="font-bold text-lg sm:text-xl lg:text-2xl block sm:inline mt-0.5 sm:mt-0 sm:ml-2">
+            <span class="text-amber-600 dark:text-amber-400 font-mono font-normal">/</span>
+            <span class="bg-gradient-to-r from-amber-600 via-orange-600 to-sky-600 dark:from-amber-400 dark:via-orange-300 dark:to-sky-400 bg-clip-text text-transparent">
+              Espresso-Sized Engineering Perspectives
+            </span>
+          </span>
+        </h1>
+
+        <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed max-w-3xl mb-0">
+          Not every production lesson needs a 3,000-word tutorial. These are my short, opinionated takes on Cloud Architecture, Kubernetes, Zero-Trust Security, and AI Systems—crafted to read in 60 seconds and share directly on LinkedIn.
+        </p>
+      </div>
+
+      <!-- Command & Filter Deck -->
+      <div class="p-3 sm:p-4 rounded-2xl bg-white/85 dark:bg-slate-900/85 backdrop-blur-md border border-slate-200/90 dark:border-slate-800/90 shadow-sm space-y-3 mb-6">
+        <!-- Row 1: Search + Shot Counter -->
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+          <div class="relative flex-1 max-w-md">
+            <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400 dark:text-slate-500">
+              <i class="fa-solid fa-magnifying-glass text-xs"></i>
+            </span>
+            <input
+              type="text"
+              id="brew-search-input"
+              placeholder="Search perspectives (e.g. mTLS, Airflow, AI Agents, Namespace)..."
+              autocomplete="off"
+              class="w-full pl-9 pr-9 py-2 text-xs font-mono rounded-xl bg-slate-50/90 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-hidden focus:ring-1 focus:ring-amber-500 focus:border-amber-500 transition-all shadow-2xs"
+            />
+            <button
+              id="brew-search-clear"
+              type="button"
+              class="hidden absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer text-xs border-0 bg-transparent"
+              aria-label="Clear search">
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+          </div>
+
+          <div class="flex items-center justify-between sm:justify-end gap-3 text-xs font-mono">
+            <div class="flex items-center gap-1.5 font-bold text-slate-700 dark:text-slate-300 text-xs shrink-0">
+              <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+              <span id="brew-result-count">Showing all {{ $totalCount }} shots</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="h-px bg-slate-200/70 dark:bg-slate-800/70"></div>
+
+        <!-- Row 2: Topic Filter Chips -->
+        <div class="flex items-center gap-2.5 flex-wrap" id="brew-topic-chips">
+          <span class="inline-flex items-center gap-1.5 text-[10px] sm:text-[11px] font-mono uppercase tracking-wider text-slate-400 dark:text-slate-500 font-bold shrink-0 px-0.5">
+            <i class="fa-solid fa-mug-saucer text-amber-500 text-[10px]"></i> Topic:
+          </span>
+          <div class="inline-flex items-center gap-1 p-1 rounded-full bg-slate-100/90 dark:bg-slate-800/80 border border-slate-200/70 dark:border-slate-700/70 overflow-x-auto no-scrollbar max-w-full">
+            <button type="button" data-brew-topic="all" class="pulse-filter-chip is-active">
+              All Shots ({{ $totalCount }})
+            </button>
+            <button type="button" data-brew-topic="ai" class="pulse-filter-chip">
+              <i class="fa-solid fa-brain text-[10px]"></i> AI &amp; Agents
+            </button>
+            <button type="button" data-brew-topic="cloud" class="pulse-filter-chip">
+              <i class="fa-solid fa-cloud text-[10px]"></i> Cloud &amp; Data
+            </button>
+            <button type="button" data-brew-topic="kubernetes" class="pulse-filter-chip">
+              <i class="fa-solid fa-cubes text-[10px]"></i> Kubernetes &amp; OpenShift
+            </button>
+            <button type="button" data-brew-topic="security" class="pulse-filter-chip">
+              <i class="fa-solid fa-shield-halved text-[10px]"></i> Security &amp; TLS
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Empty State -->
+      <div id="brew-empty-state" class="hidden py-16 px-4 text-center flex-col items-center justify-center bg-slate-50/50 dark:bg-slate-900/30 rounded-2xl border border-dashed border-slate-200 dark:border-slate-800 mb-8">
+        <div class="w-12 h-12 rounded-2xl bg-amber-500/10 flex items-center justify-center text-amber-600 dark:text-amber-400 mb-3 mx-auto">
+          <i class="fa-solid fa-mug-hot text-xl"></i>
+        </div>
+        <h4 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white mb-1">
+          No matching perspectives found
+        </h4>
+        <p class="text-xs text-slate-500 dark:text-slate-400 max-w-sm mb-4 mx-auto leading-relaxed">
+          Try clearing your search query or switching back to "All Shots".
+        </p>
+        <button
+          type="button"
+          id="brew-reset-filters-btn"
+          class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-amber-500 transition-all cursor-pointer shadow-xs mx-auto">
+          <i class="fa-solid fa-arrow-rotate-left text-[10px]"></i>
+          <span>Reset Filters</span>
+        </button>
+      </div>
+
+      <!-- Perspectives Feed Grid (2-Column Responsive Editorial Layout) -->
+      <div id="brew-cards-grid" class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+        {{ range $index, $page := $brewPages }}
+          {{ $topicSlug := $page.Params.topic_slug | default "cloud" }}
+          {{ $topicLabel := $page.Params.topic | default "Cloud Architecture" }}
+          {{ $shotTime := $page.Params.shot_time | default "1 min shot" }}
+          {{ $takeaway := $page.Params.takeaway | default "" }}
+          {{ $hashtags := delimit ($page.Params.hashtags | default (slice "#CloudArchitecture" "#DevOps" "#GCloudCafe")) " " }}
+          {{ $permalink := $page.Permalink }}
+          {{ $cardId := printf "brew-card-%d" $index }}
+
+          <article
+            id="{{ $page.File.ContentBaseName }}"
+            data-brew-card
+            data-topic="{{ $topicSlug }}"
+            data-search="{{ lower (printf "%s %s %s %s %s" $page.Title $topicLabel $takeaway $page.Plain $hashtags) }}"
+            class="brew-perspective-card bg-white dark:bg-[#0c1220] border border-slate-200/90 dark:border-slate-800/90 rounded-2xl p-5 sm:p-6 shadow-sm hover:shadow-md transition-all duration-200 flex flex-col justify-between relative overflow-hidden">
+
+            <!-- Subtle Top Accent Bar -->
+            <div class="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-amber-500 via-orange-500 to-sky-500 opacity-85"></div>
+
+            <div>
+              <!-- Card Top Meta Bar -->
+              <div class="flex items-center justify-between gap-2 flex-wrap mb-3.5 pt-1">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-mono font-bold uppercase tracking-wider bg-slate-100 dark:bg-slate-800/90 text-slate-700 dark:text-slate-200 border border-slate-200/70 dark:border-slate-700/70">
+                    {{ if eq $topicSlug "ai" }}
+                      <i class="fa-solid fa-brain text-purple-500 text-[10px]"></i>
+                    {{ else if eq $topicSlug "security" }}
+                      <i class="fa-solid fa-shield-halved text-emerald-500 text-[10px]"></i>
+                    {{ else if eq $topicSlug "kubernetes" }}
+                      <i class="fa-solid fa-cubes text-sky-500 text-[10px]"></i>
+                    {{ else }}
+                      <i class="fa-solid fa-cloud text-amber-500 text-[10px]"></i>
+                    {{ end }}
+                    <span>{{ $topicLabel }}</span>
+                  </span>
+
+                  <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-mono font-semibold bg-amber-500/10 text-amber-700 dark:text-amber-300 border border-amber-500/20">
+                    <i class="fa-solid fa-mug-hot text-[10px]"></i>
+                    <span>{{ $shotTime }}</span>
+                  </span>
+                </div>
+
+                <div class="flex items-center gap-2 text-xs font-mono text-slate-400 dark:text-slate-500">
+                  <time datetime="{{ $page.Date.Format "2006-01-02" }}">
+                    {{ $page.Date.Format "Jan 2, 2006" }}
+                  </time>
+                  <span>·</span>
+                  <a
+                    href="{{ $page.RelPermalink }}"
+                    class="text-slate-400 hover:text-sky-600 dark:hover:text-sky-400 transition-colors no-underline"
+                    title="Open standalone permalink page">
+                    <i class="fa-solid fa-arrow-up-right-from-square text-[11px]"></i>
+                  </a>
+                </div>
+              </div>
+
+              <!-- Title -->
+              <h2 class="text-lg sm:text-xl font-extrabold tracking-tight text-slate-900 dark:text-white mb-3 leading-snug">
+                <a href="{{ $page.RelPermalink }}" class="no-underline text-inherit hover:text-amber-600 dark:hover:text-amber-400 transition-colors">
+                  {{ $page.Title }}
+                </a>
+              </h2>
+
+              <!-- Full Short-Form Perspective Body -->
+              <div class="brew-card-prose prose prose-sm dark:prose-invert max-w-none text-slate-700 dark:text-slate-300 leading-relaxed space-y-2.5 mb-4 text-[14px] sm:text-[14.5px]">
+                {{ $page.Content }}
+              </div>
+
+              <!-- Key Takeaway Callout Box -->
+              {{ if $takeaway }}
+                <div class="p-3.5 rounded-xl bg-amber-50/80 dark:bg-amber-950/25 border border-amber-200/80 dark:border-amber-500/30 mb-4">
+                  <div class="flex items-center gap-1.5 text-[11px] font-mono font-black uppercase tracking-wider text-amber-800 dark:text-amber-300 mb-1">
+                    <i class="fa-solid fa-lightbulb text-amber-500"></i>
+                    <span>The Takeaway</span>
+                  </div>
+                  <p class="text-xs sm:text-[13px] font-semibold text-slate-900 dark:text-slate-100 leading-relaxed mb-0">
+                    {{ $takeaway }}
+                  </p>
+                </div>
+              {{ end }}
+
+              <!-- Optional Related Deep-Dive Link -->
+              {{ if $page.Params.related_url }}
+                <div class="mb-4">
+                  <a
+                    href="{{ $page.Params.related_url | relLangURL }}"
+                    class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-50 hover:bg-sky-50/80 dark:bg-slate-900/70 dark:hover:bg-sky-950/30 border border-slate-200/70 dark:border-slate-800 hover:border-sky-300 dark:hover:border-sky-500/40 text-xs text-slate-600 dark:text-slate-300 hover:text-sky-700 dark:hover:text-sky-300 transition-all no-underline w-full justify-between group">
+                    <span class="truncate">
+                      <strong class="font-mono text-[10px] uppercase tracking-wider text-sky-600 dark:text-sky-400 mr-1.5">Deep Dive:</strong>
+                      {{ $page.Params.related_title | default "Read the full technical guide" }}
+                    </span>
+                    <i class="fa-solid fa-arrow-right text-[10px] shrink-0 transition-transform group-hover:translate-x-0.5"></i>
+                  </a>
+                </div>
+              {{ end }}
+
+              <!-- Hashtags Row -->
+              <div class="flex flex-wrap gap-1.5 mb-4">
+                {{ range ($page.Params.hashtags | default (slice "#CloudArchitecture" "#DevOps")) }}
+                  <span class="text-[11px] font-mono text-slate-500 dark:text-slate-400 bg-slate-100/80 dark:bg-slate-800/60 px-2 py-0.5 rounded-md">
+                    {{ . }}
+                  </span>
+                {{ end }}
+              </div>
+            </div>
+
+            <!-- LinkedIn Share & Copy Bar -->
+            <div class="pt-3.5 mt-1 border-t border-slate-200/80 dark:border-slate-800/80">
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <!-- Left: Primary LinkedIn Actions -->
+                <div class="flex items-center gap-2 flex-wrap">
+                  <button
+                    type="button"
+                    data-brew-copy-linkedin
+                    data-card-id="{{ $cardId }}"
+                    data-title="{{ $page.Title }}"
+                    data-takeaway="{{ $takeaway }}"
+                    data-hashtags="{{ $hashtags }}"
+                    data-url="{{ $permalink }}"
+                    class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold bg-[#0a66c2] hover:bg-[#084e96] text-white transition-all cursor-pointer border-0 shadow-xs active:scale-95">
+                    <i class="fa-brands fa-linkedin text-sm"></i>
+                    <span>Copy for LinkedIn</span>
+                  </button>
+
+                  <a
+                    href="https://www.linkedin.com/sharing/share-offsite/?url={{ $permalink | urlquery }}"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold bg-slate-100 hover:bg-slate-200/80 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 transition-all no-underline border border-slate-200/80 dark:border-slate-700/80"
+                    title="Share link card directly on LinkedIn">
+                    <i class="fa-solid fa-share-nodes text-xs text-[#0a66c2] dark:text-sky-400"></i>
+                    <span>Share Link</span>
+                  </a>
+                </div>
+
+                <!-- Right: Preview LinkedIn Post & Copy Permalink -->
+                <div class="flex items-center gap-1.5">
+                  <button
+                    type="button"
+                    data-brew-toggle-preview
+                    data-card-id="{{ $cardId }}"
+                    class="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[11px] font-mono font-semibold text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white bg-transparent hover:bg-slate-100 dark:hover:bg-slate-800/80 transition-colors cursor-pointer border border-transparent hover:border-slate-200 dark:hover:border-slate-700"
+                    title="Preview & customize formatted LinkedIn post">
+                    <i class="fa-regular fa-eye text-[11px]"></i>
+                    <span>Preview Post</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    data-brew-copy-url="{{ $permalink }}"
+                    class="inline-flex items-center justify-center w-8 h-8 rounded-lg text-xs text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white bg-slate-100/70 hover:bg-slate-200/70 dark:bg-slate-800/60 dark:hover:bg-slate-700 transition-colors cursor-pointer border-0"
+                    title="Copy direct permalink">
+                    <i class="fa-solid fa-link text-[11px]"></i>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Collapsible LinkedIn Composer Preview Drawer -->
+              <div
+                id="{{ $cardId }}-preview"
+                class="hidden mt-3 pt-3 border-t border-dashed border-slate-200 dark:border-slate-800">
+                <div class="flex items-center justify-between mb-1.5">
+                  <span class="text-[11px] font-mono font-bold text-slate-600 dark:text-slate-300 flex items-center gap-1.5">
+                    <i class="fa-brands fa-linkedin text-[#0a66c2]"></i>
+                    <span>LinkedIn Ready-to-Paste Format</span>
+                  </span>
+                  <span data-brew-char-count class="text-[10px] font-mono text-slate-400 dark:text-slate-500">
+                    0 / 3,000 chars
+                  </span>
+                </div>
+                <textarea
+                  id="{{ $cardId }}-textarea"
+                  rows="8"
+                  readonly
+                  class="w-full p-3 rounded-xl text-xs font-mono leading-relaxed bg-slate-50 dark:bg-slate-950/80 border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200 focus:outline-hidden focus:ring-1 focus:ring-[#0a66c2] resize-y"
+                ></textarea>
+                <div class="flex items-center justify-between gap-2 mt-2">
+                  <span class="text-[11px] text-slate-500 dark:text-slate-400">
+                    Tip: Click <strong>Copy &amp; Open LinkedIn</strong>, then press <kbd class="px-1.5 py-0.5 text-[10px] font-mono bg-slate-200/70 dark:bg-slate-800 rounded">Ctrl+V</kbd> in LinkedIn's post box.
+                  </span>
+                  <a
+                    href="https://www.linkedin.com/feed/?shareActive=true"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    data-brew-copy-and-open
+                    data-card-id="{{ $cardId }}"
+                    class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-[#0a66c2] hover:bg-[#084e96] text-white no-underline shrink-0 shadow-2xs">
+                    <i class="fa-solid fa-up-right-from-square text-[10px]"></i>
+                    <span>Copy &amp; Open LinkedIn</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+
+          </article>
+        {{ end }}
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Inline Script for Search, Filtering, and 1-Click LinkedIn Post Formatting -->
+  <script>
+    (function () {
+      const searchInput = document.getElementById('brew-search-input');
+      const searchClear = document.getElementById('brew-search-clear');
+      const resultCount = document.getElementById('brew-result-count');
+      const emptyState = document.getElementById('brew-empty-state');
+      const resetBtn = document.getElementById('brew-reset-filters-btn');
+      const topicChips = document.querySelectorAll('[data-brew-topic]');
+      const cards = Array.from(document.querySelectorAll('[data-brew-card]'));
+
+      let activeTopic = 'all';
+      let searchQuery = '';
+
+      function buildLinkedInText(cardEl, title, takeaway, hashtags, url) {
+        const proseEl = cardEl.querySelector('.brew-card-prose');
+        const blocks = [];
+
+        if (proseEl) {
+          Array.from(proseEl.children).forEach(function (node) {
+            const tag = node.tagName.toLowerCase();
+            if (tag === 'p') {
+              const txt = node.innerText.trim();
+              if (txt) blocks.push(txt);
+            } else if (tag === 'ul' || tag === 'ol') {
+              const items = Array.from(node.querySelectorAll('li')).map(function (li, idx) {
+                const prefix = tag === 'ol' ? (idx + 1) + '. ' : '• ';
+                return prefix + li.innerText.trim();
+              });
+              if (items.length) blocks.push(items.join('\n'));
+            }
+          });
+        }
+
+        const parts = ['☕ ' + title, ''];
+        if (blocks.length) {
+          parts.push(blocks.join('\n\n'));
+          parts.push('');
+        }
+        if (takeaway) {
+          parts.push('💡 Key Takeaway:\n' + takeaway);
+          parts.push('');
+        }
+        parts.push('🔗 Full perspective on GCloudCafe: ' + url);
+        if (hashtags) {
+          parts.push('');
+          parts.push(hashtags);
+        }
+        return parts.join('\n');
+      }
+
+      // Pre-populate preview textareas
+      document.querySelectorAll('[data-brew-copy-linkedin]').forEach(function (btn) {
+        const cardId = btn.getAttribute('data-card-id');
+        const cardEl = btn.closest('[data-brew-card]');
+        const textarea = document.getElementById(cardId + '-textarea');
+        const previewWrap = document.getElementById(cardId + '-preview');
+        if (!cardEl || !textarea) return;
+
+        const formatted = buildLinkedInText(
+          cardEl,
+          btn.getAttribute('data-title') || '',
+          btn.getAttribute('data-takeaway') || '',
+          btn.getAttribute('data-hashtags') || '',
+          btn.getAttribute('data-url') || window.location.href
+        );
+        textarea.value = formatted;
+        textarea.removeAttribute('readonly');
+
+        const countEl = previewWrap ? previewWrap.querySelector('[data-brew-char-count]') : null;
+        if (countEl) {
+          countEl.textContent = formatted.length + ' / 3,000 chars';
+          textarea.addEventListener('input', function () {
+            countEl.textContent = textarea.value.length + ' / 3,000 chars';
+          });
+        }
+      });
+
+      // Copy for LinkedIn button handler
+      document.querySelectorAll('[data-brew-copy-linkedin]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          const cardId = btn.getAttribute('data-card-id');
+          const textarea = document.getElementById(cardId + '-textarea');
+          const textToCopy = textarea ? textarea.value : '';
+
+          navigator.clipboard.writeText(textToCopy).then(function () {
+            const labelSpan = btn.querySelector('span');
+            const originalText = labelSpan ? labelSpan.textContent : 'Copy for LinkedIn';
+            if (labelSpan) labelSpan.textContent = 'Copied for LinkedIn!';
+            btn.classList.add('bg-emerald-600', 'hover:bg-emerald-700');
+            btn.classList.remove('bg-[#0a66c2]', 'hover:bg-[#084e96]');
+
+            setTimeout(function () {
+              if (labelSpan) labelSpan.textContent = originalText;
+              btn.classList.remove('bg-emerald-600', 'hover:bg-emerald-700');
+              btn.classList.add('bg-[#0a66c2]', 'hover:bg-[#084e96]');
+            }, 2200);
+          });
+        });
+      });
+
+      // Copy & Open LinkedIn handler
+      document.querySelectorAll('[data-brew-copy-and-open]').forEach(function (link) {
+        link.addEventListener('click', function () {
+          const cardId = link.getAttribute('data-card-id');
+          const textarea = document.getElementById(cardId + '-textarea');
+          if (textarea && navigator.clipboard) {
+            navigator.clipboard.writeText(textarea.value);
+          }
+        });
+      });
+
+      // Preview drawer toggle
+      document.querySelectorAll('[data-brew-toggle-preview]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          const cardId = btn.getAttribute('data-card-id');
+          const previewEl = document.getElementById(cardId + '-preview');
+          if (!previewEl) return;
+          const isHidden = previewEl.classList.contains('hidden');
+          previewEl.classList.toggle('hidden');
+          const span = btn.querySelector('span');
+          if (span) span.textContent = isHidden ? 'Hide Preview' : 'Preview Post';
+        });
+      });
+
+      // Copy permalink handler
+      document.querySelectorAll('[data-brew-copy-url]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          const url = btn.getAttribute('data-brew-copy-url');
+          if (!url || !navigator.clipboard) return;
+          navigator.clipboard.writeText(url).then(function () {
+            const icon = btn.querySelector('i');
+            if (icon) {
+              icon.className = 'fa-solid fa-check text-[11px] text-emerald-500';
+              setTimeout(function () {
+                icon.className = 'fa-solid fa-link text-[11px]';
+              }, 1800);
+            }
+          });
+        });
+      });
+
+      // Filtering & Search logic
+      function applyFilters() {
+        let visible = 0;
+        const q = searchQuery.trim().toLowerCase();
+
+        cards.forEach(function (card) {
+          const topic = card.getAttribute('data-topic') || '';
+          const haystack = card.getAttribute('data-search') || '';
+          const matchesTopic = activeTopic === 'all' || topic === activeTopic;
+          const matchesSearch = !q || haystack.indexOf(q) !== -1;
+
+          if (matchesTopic && matchesSearch) {
+            card.classList.remove('hidden');
+            visible++;
+          } else {
+            card.classList.add('hidden');
+          }
+        });
+
+        if (resultCount) {
+          resultCount.textContent =
+            visible === cards.length
+              ? 'Showing all ' + cards.length + ' shots'
+              : 'Showing ' + visible + ' of ' + cards.length + ' shots';
+        }
+
+        if (emptyState) {
+          if (visible === 0) {
+            emptyState.classList.remove('hidden');
+            emptyState.classList.add('flex');
+          } else {
+            emptyState.classList.add('hidden');
+            emptyState.classList.remove('flex');
+          }
+        }
+      }
+
+      topicChips.forEach(function (chip) {
+        chip.addEventListener('click', function () {
+          activeTopic = chip.getAttribute('data-brew-topic') || 'all';
+          topicChips.forEach(function (c) {
+            c.classList.toggle('is-active', c === chip);
+          });
+          applyFilters();
+        });
+      });
+
+      if (searchInput) {
+        searchInput.addEventListener('input', function () {
+          searchQuery = searchInput.value || '';
+          if (searchClear) {
+            searchClear.classList.toggle('hidden', !searchQuery.length);
+          }
+          applyFilters();
+        });
+      }
+
+      if (searchClear && searchInput) {
+        searchClear.addEventListener('click', function () {
+          searchInput.value = '';
+          searchQuery = '';
+          searchClear.classList.add('hidden');
+          applyFilters();
+          searchInput.focus();
+        });
+      }
+
+      if (resetBtn) {
+        resetBtn.addEventListener('click', function () {
+          activeTopic = 'all';
+          searchQuery = '';
+          if (searchInput) searchInput.value = '';
+          if (searchClear) searchClear.classList.add('hidden');
+          topicChips.forEach(function (c) {
+            c.classList.toggle('is-active', c.getAttribute('data-brew-topic') === 'all');
+          });
+          applyFilters();
+        });
+      }
+    })();
+  </script>
+{{ end }}
+

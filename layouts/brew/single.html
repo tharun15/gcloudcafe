@@ -1,0 +1,294 @@
+{{ define "main" }}
+  {{ $topicSlug := .Params.topic_slug | default "cloud" }}
+  {{ $topicLabel := .Params.topic | default "Cloud Architecture" }}
+  {{ $shotTime := .Params.shot_time | default "1 min shot" }}
+  {{ $takeaway := .Params.takeaway | default "" }}
+  {{ $hashtags := delimit (.Params.hashtags | default (slice "#CloudArchitecture" "#DevOps" "#GCloudCafe")) " " }}
+  {{ $permalink := .Permalink }}
+
+  <section class="pulse-hero-backdrop pt-5 sm:pt-8 pb-20 min-h-screen">
+    <div class="bytedepth-container max-w-3xl mx-auto px-4 sm:px-6">
+
+      <!-- Top Back Navigation -->
+      <div class=" flex items-center justify-between gap-3 mb-5">
+        <a
+          href="{{ `/brew` | relLangURL }}"
+          class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white bg-white/80 dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-800/80 transition-all no-underline shadow-2xs">
+          <i class="fa-solid fa-arrow-left text-[10px]"></i>
+          <span>All Cloud Brew Shots</span>
+        </a>
+
+        <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-500/10 border border-amber-500/25 text-[11px] font-mono font-bold text-amber-700 dark:text-amber-300">
+          <i class="fa-solid fa-mug-hot text-[10px]"></i>
+          <span>CLOUD BREW PERSPECTIVE</span>
+        </div>
+      </div>
+
+      <!-- Focused Single Perspective Card -->
+      <article
+        id="brew-single-card"
+        data-brew-single
+        class="bg-white dark:bg-[#0c1220] border border-slate-200/90 dark:border-slate-800/90 rounded-2xl p-6 sm:p-8 shadow-md relative overflow-hidden">
+
+        <div class="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r from-amber-500 via-orange-500 to-sky-500"></div>
+
+        <!-- Topic & Reading Time Badges -->
+        <div class="flex items-center justify-between gap-2 flex-wrap mb-4 pt-1">
+          <div class="flex items-center gap-2 flex-wrap">
+            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-mono font-bold uppercase tracking-wider bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200/70 dark:border-slate-700/70">
+              {{ if eq $topicSlug "ai" }}
+                <i class="fa-solid fa-brain text-purple-500 text-[11px]"></i>
+              {{ else if eq $topicSlug "security" }}
+                <i class="fa-solid fa-shield-halved text-emerald-500 text-[11px]"></i>
+              {{ else if eq $topicSlug "kubernetes" }}
+                <i class="fa-solid fa-cubes text-sky-500 text-[11px]"></i>
+              {{ else }}
+                <i class="fa-solid fa-cloud text-amber-500 text-[11px]"></i>
+              {{ end }}
+              <span>{{ $topicLabel }}</span>
+            </span>
+
+            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-mono font-semibold bg-amber-500/10 text-amber-700 dark:text-amber-300 border border-amber-500/20">
+              <i class="fa-solid fa-mug-hot text-[11px]"></i>
+              <span>{{ $shotTime }}</span>
+            </span>
+          </div>
+
+          <time datetime="{{ .Date.Format "2006-01-02" }}" class="text-xs font-mono text-slate-400 dark:text-slate-500">
+            {{ .Date.Format "January 2, 2006" }}
+          </time>
+        </div>
+
+        <!-- Headline -->
+        <h1 class="text-2xl sm:text-3xl font-black tracking-tight text-slate-900 dark:text-white mb-4 leading-tight">
+          {{ .Title }}
+        </h1>
+
+        <!-- Author Strip -->
+        <div class="flex items-center justify-between gap-3 pb-5 mb-5 border-b border-slate-100 dark:border-slate-800/80">
+          <div class="flex items-center gap-3">
+            <img
+              src="{{ `/images/authors/profilepic_tharun.png` | relURL }}"
+              alt="Tharun Vempati"
+              width="38"
+              height="38"
+              class="w-9.5 h-9.5 rounded-full object-cover ring-2 ring-amber-500/30"
+            />
+            <div>
+              <div class="text-sm font-bold text-slate-900 dark:text-white leading-tight">
+                Tharun Vempati
+              </div>
+              <div class="text-xs text-slate-500 dark:text-slate-400">
+                GCP Cloud Architect · CKA · OpenShift Specialist
+              </div>
+            </div>
+          </div>
+
+          <a
+            href="https://www.linkedin.com/in/tharunvempati"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold text-[#0a66c2] dark:text-sky-400 bg-sky-50/80 dark:bg-sky-950/40 border border-sky-200/70 dark:border-sky-500/30 no-underline hover:bg-sky-100/80 transition-colors">
+            <i class="fa-brands fa-linkedin text-sm"></i>
+            <span>Follow on LinkedIn</span>
+          </a>
+        </div>
+
+        <!-- Main Perspective Body -->
+        <div id="brew-single-prose" class="prose prose-slate dark:prose-invert max-w-none text-slate-700 dark:text-slate-200 leading-relaxed space-y-3 mb-6 text-base">
+          {{ .Content }}
+        </div>
+
+        <!-- Key Takeaway Callout -->
+        {{ if $takeaway }}
+          <div class="p-4 sm:p-5 rounded-xl bg-amber-50/90 dark:bg-amber-950/25 border border-amber-200/90 dark:border-amber-500/30 mb-6">
+            <div class="flex items-center gap-1.5 text-xs font-mono font-black uppercase tracking-wider text-amber-800 dark:text-amber-300 mb-1.5">
+              <i class="fa-solid fa-lightbulb text-amber-500"></i>
+              <span>The Takeaway</span>
+            </div>
+            <p class="text-sm sm:text-base font-bold text-slate-900 dark:text-white leading-relaxed mb-0">
+              {{ $takeaway }}
+            </p>
+          </div>
+        {{ end }}
+
+        <!-- Optional Related Deep-Dive Article -->
+        {{ if .Params.related_url }}
+          <div class="mb-6">
+            <a
+              href="{{ .Params.related_url | relLangURL }}"
+              class="flex items-center justify-between gap-3 p-4 rounded-xl bg-slate-50 hover:bg-sky-50/80 dark:bg-slate-900/80 dark:hover:bg-sky-950/30 border border-slate-200/80 dark:border-slate-800 hover:border-sky-400 dark:hover:border-sky-500/50 transition-all no-underline group">
+              <div>
+                <div class="text-[11px] font-mono font-bold uppercase tracking-wider text-sky-600 dark:text-sky-400 mb-0.5">
+                  Want the full architectural deep dive?
+                </div>
+                <div class="text-sm font-bold text-slate-900 dark:text-white group-hover:text-sky-600 dark:group-hover:text-sky-300 transition-colors">
+                  {{ .Params.related_title | default "Read the complete hands-on guide" }}
+                </div>
+              </div>
+              <span class="w-8 h-8 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-600 dark:text-slate-300 group-hover:translate-x-0.5 transition-transform shrink-0">
+                <i class="fa-solid fa-arrow-right text-xs"></i>
+              </span>
+            </a>
+          </div>
+        {{ end }}
+
+        <!-- Hashtags -->
+        <div class="flex flex-wrap gap-1.5 mb-6">
+          {{ range (.Params.hashtags | default (slice "#CloudArchitecture" "#DevOps")) }}
+            <span class="text-xs font-mono text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800/70 px-2.5 py-1 rounded-md">
+              {{ . }}
+            </span>
+          {{ end }}
+        </div>
+
+        <!-- LinkedIn Share & Copy Bar -->
+        <div class="pt-5 border-t border-slate-200 dark:border-slate-800">
+          <div class="flex flex-wrap items-center justify-between gap-3">
+            <div class="flex items-center gap-2.5 flex-wrap">
+              <button
+                type="button"
+                id="brew-single-copy-btn"
+                data-title="{{ .Title }}"
+                data-takeaway="{{ $takeaway }}"
+                data-hashtags="{{ $hashtags }}"
+                data-url="{{ $permalink }}"
+                class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-[#0a66c2] hover:bg-[#084e96] text-white transition-all cursor-pointer border-0 shadow-xs active:scale-95">
+                <i class="fa-brands fa-linkedin text-base"></i>
+                <span>Copy Post for LinkedIn</span>
+              </button>
+
+              <a
+                href="https://www.linkedin.com/sharing/share-offsite/?url={{ $permalink | urlquery }}"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center gap-2 px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold bg-slate-100 hover:bg-slate-200/80 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 transition-all no-underline border border-slate-200 dark:border-slate-700">
+                <i class="fa-solid fa-share-nodes text-xs text-[#0a66c2] dark:text-sky-400"></i>
+                <span>Share Link on LinkedIn</span>
+              </a>
+            </div>
+
+            <a
+              href="https://www.linkedin.com/feed/?shareActive=true"
+              target="_blank"
+              rel="noopener noreferrer"
+              id="brew-single-copy-open"
+              class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-mono font-semibold text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white bg-slate-50 hover:bg-slate-100 dark:bg-slate-900 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800 no-underline transition-colors">
+              <span>Copy &amp; Open LinkedIn Feed</span>
+              <i class="fa-solid fa-up-right-from-square text-[10px]"></i>
+            </a>
+          </div>
+        </div>
+      </article>
+
+      <!-- More Shots Section -->
+      {{ $otherShots := where (where site.RegularPages "Section" "brew") "Permalink" "!=" .Permalink }}
+      {{ if gt (len $otherShots) 0 }}
+        <div class="mt-12">
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="text-lg font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
+              <i class="fa-solid fa-mug-hot text-amber-500 text-sm"></i>
+              <span>More Cloud Brew Shots</span>
+            </h2>
+            <a href="{{ `/brew` | relLangURL }}" class="text-xs font-bold text-amber-600 dark:text-amber-400 hover:underline no-underline">
+              View all shots →
+            </a>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {{ range first 2 $otherShots.ByDate.Reverse }}
+              <a
+                href="{{ .RelPermalink }}"
+                class="p-4 rounded-xl bg-white dark:bg-[#0c1220] border border-slate-200/80 dark:border-slate-800/80 hover:border-amber-500/50 transition-all no-underline flex flex-col justify-between group shadow-2xs">
+                <div>
+                  <span class="inline-block text-[10px] font-mono font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400 mb-1.5">
+                    {{ .Params.topic | default "Cloud Brew" }} · {{ .Params.shot_time | default "1 min shot" }}
+                  </span>
+                  <h3 class="text-sm font-bold text-slate-900 dark:text-white group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors leading-snug mb-2">
+                    {{ .Title }}
+                  </h3>
+                </div>
+                <span class="text-xs text-slate-500 dark:text-slate-400 line-clamp-2">
+                  {{ .Params.takeaway | default .Summary }}
+                </span>
+              </a>
+            {{ end }}
+          </div>
+        </div>
+      {{ end }}
+
+    </div>
+  </section>
+
+  <script>
+    (function () {
+      const copyBtn = document.getElementById('brew-single-copy-btn');
+      const copyOpenBtn = document.getElementById('brew-single-copy-open');
+      const proseEl = document.getElementById('brew-single-prose');
+      if (!copyBtn || !proseEl) return;
+
+      function getFormattedPost() {
+        const blocks = [];
+        Array.from(proseEl.children).forEach(function (node) {
+          const tag = node.tagName.toLowerCase();
+          if (tag === 'p') {
+            const txt = node.innerText.trim();
+            if (txt) blocks.push(txt);
+          } else if (tag === 'ul' || tag === 'ol') {
+            const items = Array.from(node.querySelectorAll('li')).map(function (li, idx) {
+              const prefix = tag === 'ol' ? (idx + 1) + '. ' : '• ';
+              return prefix + li.innerText.trim();
+            });
+            if (items.length) blocks.push(items.join('\n'));
+          }
+        });
+
+        const title = copyBtn.getAttribute('data-title') || '';
+        const takeaway = copyBtn.getAttribute('data-takeaway') || '';
+        const hashtags = copyBtn.getAttribute('data-hashtags') || '';
+        const url = copyBtn.getAttribute('data-url') || window.location.href;
+
+        const parts = ['☕ ' + title, ''];
+        if (blocks.length) {
+          parts.push(blocks.join('\n\n'));
+          parts.push('');
+        }
+        if (takeaway) {
+          parts.push('💡 Key Takeaway:\n' + takeaway);
+          parts.push('');
+        }
+        parts.push('🔗 Full perspective on GCloudCafe: ' + url);
+        if (hashtags) {
+          parts.push('');
+          parts.push(hashtags);
+        }
+        return parts.join('\n');
+      }
+
+      copyBtn.addEventListener('click', function () {
+        const text = getFormattedPost();
+        navigator.clipboard.writeText(text).then(function () {
+          const span = copyBtn.querySelector('span');
+          const orig = span ? span.textContent : 'Copy Post for LinkedIn';
+          if (span) span.textContent = 'Copied for LinkedIn!';
+          copyBtn.classList.add('bg-emerald-600');
+          copyBtn.classList.remove('bg-[#0a66c2]');
+          setTimeout(function () {
+            if (span) span.textContent = orig;
+            copyBtn.classList.remove('bg-emerald-600');
+            copyBtn.classList.add('bg-[#0a66c2]');
+          }, 2200);
+        });
+      });
+
+      if (copyOpenBtn) {
+        copyOpenBtn.addEventListener('click', function () {
+          const text = getFormattedPost();
+          if (navigator.clipboard) {
+            navigator.clipboard.writeText(text);
+          }
+        });
+      }
+    })();
+  </script>
+{{ end }}
+
