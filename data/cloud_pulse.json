@@ -1,5 +1,24 @@
 [
   {
+    "id": "16f5eb42-1979-4ef9-9407-bcae435c247c",
+    "title": "Red Hat Advanced Cluster Management for Kubernetes 5.0: Run your Kubernetes fleet with more control",
+    "content": "🎯 What Changed: Red Hat Advanced Cluster Management for Kubernetes 5.0 enhances Kubernetes fleet visibility, strengthens operations across constrained networks, and refines change management.\n💡 Engineering Impact: This",
+    "tags": [
+      "#OpenShift",
+      "#RedHat",
+      "#DevOps"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-11-12T13:36:55.584796+00:00",
+    "link_url": "https://www.redhat.com/en/blog/red-hat-advanced-cluster-management-kubernetes-5",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
+    "updated_at": "2026-11-12T16:40:03.358Z"
+  },
+  {
     "id": "64b03f19-9019-453a-8b0c-1e009a52d529",
     "title": "AWS Cloud WAN now supports Flow Logs",
     "content": "🎯 What Changed: AWS Cloud WAN now supports VPC Flow Logs, enabling centralized monitoring and capturing of IP traffic details across global enterprise networks.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
@@ -277,25 +296,5 @@
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-11T05:22:25.477+00:00",
     "ageDays": 1.0800906365740741
-  },
-  {
-    "id": "5cca8ca1-dba9-4fa9-b023-f6403a8b59b4",
-    "title": "Red Hat OpenShift 5: AI-Powered Autonomous Operations",
-    "content": "🎯 What Changed: Red Hat OpenShift 5 introduces agentic applied AI, transforming Lightspeed into an autonomous agent for hybrid cloud operations.\n💡 Engineering Impact: This enhances operational efficiency by enabling AI to investigate clusters and prepare changes, streamlining management across containers, VMs, and serverless workloads. Engineers gain accelerated, approved automation for hybrid cloud environments.",
-    "tags": [
-      "#OpenShift",
-      "#RedHat",
-      "#DevOps"
-    ],
-    "upvotes": 1,
-    "downvotes": 0,
-    "score": 1,
-    "author": "Cloud Newsroom Bot",
-    "created_at": "2026-11-10T13:20:45.531847+00:00",
-    "link_url": "https://www.redhat.com/en/blog/intelligent-red-hat-openshift-5",
-    "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
-    "updated_at": "2026-11-10T21:42:04.437+00:00",
-    "ageDays": 1.7120624189814815
   }
 ]
