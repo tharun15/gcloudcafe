@@ -76,7 +76,7 @@ copyright = "© 2023-Present [GCloud Cafe](https://gcloudcafe.com) • Code unde
 [search]
 enable = true
 primary_color = "#121212"
-include_sections = ["blog"]
+include_sections = ["blog", "brew"]
 # include_all_sections = true
 show_image = true
 show_description = true
