@@ -1456,6 +1456,7 @@
             card.classList.add("opacity-100", "translate-y-0");
           }, 30 + index * 60);
         });
+        window.dispatchEvent(new CustomEvent("gcloudcafe:feed-updated"));
 
         // After all cards animate in, show friendly completion indicator
         setTimeout(function () {
@@ -1577,6 +1578,8 @@
           emptyState.classList.add("hidden");
         }
       }
+
+      window.dispatchEvent(new CustomEvent("gcloudcafe:feed-updated"));
     }
 
     // Attach click listeners to filter links
@@ -10625,19 +10628,51 @@ document.addEventListener('DOMContentLoaded', initDevTerminalBlocks);
     var container = document.getElementById('sidebar-series-hub');
     if (!container) return;
 
-    // Adaptive Reading Companion Multi-Track System (Single Vertical Spine with Subtle Active Glow)
     var defaultSeriesKey = (container.getAttribute('data-default-series') || '').trim();
+    var seriesBaseUrl = container.getAttribute('data-series-base-url') || '/series/';
+    var labelPart = container.getAttribute('data-label-part') || 'Part';
+    var labelOf = container.getAttribute('data-label-of') || 'of';
+    var labelInView = container.getAttribute('data-label-in-view') || 'In view · Part';
+    var labelUpcoming = container.getAttribute('data-label-upcoming') || 'Next part in this track — upcoming';
+    var labelActiveTrack = container.getAttribute('data-label-active-track') || 'Active Learning Track';
+    var labelPreviewTrack = container.getAttribute('data-label-preview-track') || 'Previewing Track';
+    var labelMin = container.getAttribute('data-label-min') || 'min';
+
     var allTrackViews = container.querySelectorAll('.sidebar-track-view[data-track-series-name]');
+    var companionCard = document.getElementById('sidebar-companion-card');
+    var companionModeLabel = document.getElementById('sidebar-companion-mode-label');
+    var seriesContextView = document.getElementById('sidebar-series-context-view');
+    var contextPartBadge = document.getElementById('sidebar-context-part-badge');
+    var contextReadTime = document.getElementById('sidebar-context-readtime');
+    var contextPostTitle = document.getElementById('sidebar-context-post-title');
+    var contextSeriesName = document.getElementById('sidebar-context-series-name');
+    var companionProgress = document.getElementById('sidebar-companion-progress');
+    var companionPlaylist = document.getElementById('sidebar-companion-playlist');
+    var companionRoadmapLink = document.getElementById('sidebar-companion-roadmap-link');
+
     var standaloneView = document.getElementById('sidebar-standalone-view');
     var standaloneTitleLink = document.getElementById('sidebar-standalone-title-link');
+    var standaloneReadTime = document.getElementById('sidebar-standalone-readtime');
     var standaloneJumpFlagshipBtn = document.getElementById('sidebar-standalone-jump-flagship-btn');
 
+    var activeDotClass = 'track-spine-node w-2 h-2 rounded-full shrink-0 transition-all bg-sky-500 ring-4 ring-sky-500/15';
+    var idleDotClass = 'track-spine-node w-2 h-2 rounded-full shrink-0 transition-all bg-slate-300 dark:bg-slate-700 group-hover/trackbtn:bg-sky-400';
+    var activeTitleClass = 'track-title text-xs leading-snug truncate transition-colors font-bold text-slate-900 dark:text-white';
+    var idleTitleClass = 'track-title text-xs leading-snug truncate transition-colors font-medium text-slate-600 dark:text-slate-300 group-hover/trackbtn:text-slate-900 dark:group-hover/trackbtn:text-white';
+
     var trackMap = {};
+    var lastSyncedCard = null;
+    var isPreviewMode = false;
+
     allTrackViews.forEach(function(view) {
       var sName = view.getAttribute('data-track-series-name') || '';
       var sKey = sName.toLowerCase().trim();
+      var sSlug = view.getAttribute('data-track-slug') || '';
       var totalParts = parseInt(view.getAttribute('data-total-parts') || '0', 10);
       var playlistItems = view.querySelectorAll('.sidebar-track-item');
+      var toggleBtn = view.querySelector('.track-toggle-btn');
+      var dotEl = view.querySelector('.track-spine-node');
+      var titleEl = view.querySelector('.track-title');
       var partMap = {};
 
       playlistItems.forEach(function(item) {
@@ -10646,100 +10681,251 @@ document.addEventListener('DOMContentLoaded', initDevTerminalBlocks);
           partMap[pNum] = {
             element: item,
             url: item.getAttribute('data-track-url') || item.getAttribute('href'),
-            title: item.getAttribute('data-track-title') || ('Part ' + pNum)
+            title: item.getAttribute('data-track-title') || (labelPart + ' ' + pNum),
+            readTime: item.getAttribute('data-track-readtime') || ''
           };
         }
       });
 
       trackMap[sKey] = {
         view: view,
+        seriesKey: sKey,
         seriesName: sName,
+        slug: sSlug,
         totalParts: totalParts,
-        title: view.querySelector('.track-title'),
-        node: view.querySelector('.track-spine-node'),
-        playlist: view.querySelector('.sidebar-active-playlist'),
-        playlistItems: playlistItems,
+        toggleBtn: toggleBtn,
+        dotEl: dotEl,
+        titleEl: titleEl,
         partMap: partMap
       };
+
+      if (toggleBtn) {
+        toggleBtn.addEventListener('click', function() {
+          isPreviewMode = true;
+          activateTrack(sName, 1, { isPreview: true });
+        });
+      }
     });
 
-    function activateTrack(seriesName, partNum) {
-      var key = (seriesName || '').toLowerCase().trim();
-      var trackInfo = trackMap[key];
-      if (!trackInfo) return;
+    function renderCompanionProgress(totalParts, activePart) {
+      if (!companionProgress) return;
+      while (companionProgress.firstChild) {
+        companionProgress.removeChild(companionProgress.firstChild);
+      }
+      var count = Math.max(1, totalParts || 1);
+      for (var i = 1; i <= count; i++) {
+        var seg = document.createElement('span');
+        seg.className = 'track-progress-seg' + (i <= activePart ? ' is-filled' : '');
+        companionProgress.appendChild(seg);
+      }
+      if (count === 1) {
+        var upcomingSeg = document.createElement('span');
+        upcomingSeg.className = 'track-progress-seg';
+        companionProgress.appendChild(upcomingSeg);
+      }
+    }
 
-      if (standaloneView) standaloneView.classList.add('hidden');
+    function renderCompanionPlaylist(trackInfo, activePart, isPreview) {
+      if (!companionPlaylist) return;
+      while (companionPlaylist.firstChild) {
+        companionPlaylist.removeChild(companionPlaylist.firstChild);
+      }
 
-      allTrackViews.forEach(function(v) {
-        var node = v.querySelector('.track-spine-node');
-        var title = v.querySelector('.track-title');
-        var playlist = v.querySelector('.sidebar-active-playlist');
+      var partNumbers = Object.keys(trackInfo.partMap)
+        .map(function(n) { return parseInt(n, 10); })
+        .sort(function(a, b) { return a - b; });
 
-        if (v === trackInfo.view) {
-          v.classList.remove('opacity-60', 'opacity-65', 'hidden');
-          v.classList.add('is-active', 'opacity-100');
-          if (node) {
-            node.className = 'track-spine-node absolute -left-[22px] top-1 w-2.5 h-2.5 rounded-full border-2 transition-all duration-300 bg-sky-500 border-white dark:border-[#070b14] ring-4 ring-sky-500/20 shadow-[0_0_10px_rgba(56,189,248,0.75)]';
-          }
-          if (title) {
-            title.classList.add('text-sky-500', 'dark:text-sky-400', 'font-bold', 'active-track-glow');
-            title.classList.remove('text-slate-600', 'dark:text-slate-400');
-          }
-          if (playlist) playlist.classList.remove('hidden');
+      partNumbers.forEach(function(pNum) {
+        var part = trackInfo.partMap[pNum];
+        var isCurrent = pNum === activePart;
+        var paddedNum = (pNum < 10 ? '0' : '') + pNum;
 
-          // Highlight specific part in curriculum if provided
-          if (partNum && playlist) {
-            var items = playlist.querySelectorAll('.sidebar-track-item');
-            items.forEach(function(item) {
-              var pNum = parseInt(item.getAttribute('data-track-part'), 10);
-              if (pNum === partNum) {
-                item.classList.add('text-sky-600', 'dark:text-sky-300', 'font-semibold', 'bg-sky-500/10');
-                item.classList.remove('text-slate-500', 'dark:text-slate-400');
-              } else {
-                item.classList.remove('text-sky-600', 'dark:text-sky-300', 'font-semibold', 'bg-sky-500/10');
-                item.classList.add('text-slate-500', 'dark:text-slate-400');
-              }
-            });
-          }
+        var link = document.createElement('a');
+        link.href = part.url || '#';
+        if (isCurrent) link.setAttribute('aria-current', 'true');
+        link.className = 'track-step-row' + (isCurrent ? ' is-current' : '');
+
+        var rail = document.createElement('div');
+        rail.className = 'track-step-rail';
+        rail.setAttribute('aria-hidden', 'true');
+
+        var badge = document.createElement('span');
+        badge.className = 'track-step-badge';
+        badge.textContent = paddedNum;
+
+        var connector = document.createElement('span');
+        connector.className = 'track-step-connector';
+
+        rail.appendChild(badge);
+        rail.appendChild(connector);
+
+        var content = document.createElement('div');
+        content.className = 'track-step-content';
+
+        var box = document.createElement('div');
+        box.className = 'track-step-box';
+
+        if (isCurrent) {
+          var metaRow = document.createElement('div');
+          metaRow.className = 'flex items-center justify-between gap-2 mb-1 font-mono text-[10px] font-bold uppercase tracking-wider text-sky-600 dark:text-sky-400';
+
+          var statusSpan = document.createElement('span');
+          statusSpan.textContent = (isPreview ? (labelPart + ' ' + paddedNum) : ('← ' + labelInView + ' ' + paddedNum));
+
+          var timeSpan = document.createElement('span');
+          timeSpan.className = 'tabular-nums text-slate-400 dark:text-slate-500 font-normal lowercase';
+          timeSpan.textContent = part.readTime ? (part.readTime + 'm') : '';
+
+          metaRow.appendChild(statusSpan);
+          metaRow.appendChild(timeSpan);
+
+          var titleP = document.createElement('p');
+          titleP.className = 'text-[13px] font-bold text-slate-900 dark:text-white leading-snug m-0';
+          titleP.textContent = part.title;
+
+          box.appendChild(metaRow);
+          box.appendChild(titleP);
         } else {
-          v.classList.remove('is-active', 'opacity-100');
-          v.classList.add('opacity-65');
-          if (node) {
-            node.className = 'track-spine-node absolute -left-[22px] top-1 w-2.5 h-2.5 rounded-full border-2 transition-all duration-300 bg-slate-300 dark:bg-slate-700 border-white dark:border-[#070b14]';
-          }
-          if (title) {
-            title.classList.remove('text-sky-500', 'dark:text-sky-400', 'font-bold', 'active-track-glow');
-            title.classList.add('text-slate-600', 'dark:text-slate-400');
-          }
-          if (playlist) playlist.classList.add('hidden');
+          var leftSpan = document.createElement('span');
+          leftSpan.className = 'text-xs font-medium text-slate-600 dark:text-slate-300 leading-snug';
+          leftSpan.textContent = part.title;
+
+          var rightSpan = document.createElement('span');
+          rightSpan.className = 'font-mono text-[10px] tabular-nums text-slate-400 dark:text-slate-500 shrink-0';
+          rightSpan.textContent = part.readTime ? (part.readTime + 'm') : '';
+
+          box.appendChild(leftSpan);
+          box.appendChild(rightSpan);
+        }
+
+        content.appendChild(box);
+        link.appendChild(rail);
+        link.appendChild(content);
+        companionPlaylist.appendChild(link);
+      });
+
+      if (trackInfo.totalParts === 1) {
+        var upcomingDiv = document.createElement('div');
+        upcomingDiv.className = 'track-step-row is-upcoming select-none';
+        upcomingDiv.setAttribute('aria-hidden', 'true');
+
+        var upRail = document.createElement('div');
+        upRail.className = 'track-step-rail';
+
+        var upBadge = document.createElement('span');
+        upBadge.className = 'track-step-badge';
+        upBadge.textContent = '02';
+
+        var upConn = document.createElement('span');
+        upConn.className = 'track-step-connector';
+
+        upRail.appendChild(upBadge);
+        upRail.appendChild(upConn);
+
+        var upContent = document.createElement('div');
+        upContent.className = 'track-step-content';
+
+        var upBox = document.createElement('div');
+        upBox.className = 'track-step-box';
+
+        var upText = document.createElement('span');
+        upText.className = 'text-xs italic text-slate-400 dark:text-slate-500';
+        upText.textContent = labelUpcoming;
+
+        upBox.appendChild(upText);
+        upContent.appendChild(upBox);
+        upcomingDiv.appendChild(upRail);
+        upcomingDiv.appendChild(upContent);
+        companionPlaylist.appendChild(upcomingDiv);
+      }
+    }
+
+    function markFeedCardSynced(targetCard, kind) {
+      var allFeedCards = document.querySelectorAll('[data-feed-article="true"]');
+      allFeedCards.forEach(function(card) {
+        if (card === targetCard) {
+          card.classList.add('is-feed-tracked');
+          card.setAttribute('data-tracked-kind', kind);
+        } else {
+          card.classList.remove('is-feed-tracked');
+          card.removeAttribute('data-tracked-kind');
         }
       });
     }
 
-    function activateStandalone(articleTitle, articleUrl, readTime) {
-      allTrackViews.forEach(function(v) {
-        v.classList.remove('is-active', 'opacity-100');
-        v.classList.add('opacity-65');
-        var node = v.querySelector('.track-spine-node');
-        var title = v.querySelector('.track-title');
-        var playlist = v.querySelector('.sidebar-active-playlist');
-        if (node) {
-          node.className = 'track-spine-node absolute -left-[22px] top-1 w-2.5 h-2.5 rounded-full border-2 transition-all duration-300 bg-slate-300 dark:bg-slate-700 border-white dark:border-[#070b14]';
-        }
-        if (title) {
-          title.classList.remove('text-sky-500', 'dark:text-sky-400', 'font-bold', 'active-track-glow');
-          title.classList.add('text-slate-600', 'dark:text-slate-400');
-        }
-        if (playlist) playlist.classList.add('hidden');
-      });
+    function activateTrack(seriesName, partNum, articleMeta) {
+      var key = (seriesName || '').toLowerCase().trim();
+      var trackInfo = trackMap[key];
+      if (!trackInfo) return;
 
-      if (standaloneView) {
-        standaloneView.classList.remove('hidden');
-        if (standaloneTitleLink) {
-          standaloneTitleLink.textContent = articleTitle;
-          standaloneTitleLink.setAttribute('href', articleUrl || '#');
-        }
+      var activePart = partNum > 0 ? partNum : 1;
+      var partInfo = trackInfo.partMap[activePart];
+      var isPreview = !!(articleMeta && articleMeta.isPreview);
+      var resolvedTitle = (articleMeta && articleMeta.title) || (partInfo && partInfo.title) || trackInfo.seriesName;
+      var resolvedUrl = (articleMeta && articleMeta.url) || (partInfo && partInfo.url) || '#';
+      var resolvedReadTime = (articleMeta && articleMeta.readTime) || (partInfo && partInfo.readTime) || '';
+
+      if (companionCard) companionCard.classList.remove('is-standalone-mode');
+      if (standaloneView) standaloneView.classList.add('hidden');
+      if (seriesContextView) seriesContextView.classList.remove('hidden');
+
+      if (companionModeLabel) {
+        companionModeLabel.textContent = isPreview ? labelPreviewTrack : labelActiveTrack;
       }
+      if (contextPartBadge) {
+        contextPartBadge.textContent = labelPart + ' ' + activePart + ' ' + labelOf + ' ' + trackInfo.totalParts;
+      }
+      if (contextPostTitle) {
+        contextPostTitle.textContent = resolvedTitle;
+        contextPostTitle.setAttribute('href', resolvedUrl);
+      }
+      if (contextReadTime) {
+        contextReadTime.textContent = resolvedReadTime ? (resolvedReadTime + ' ' + labelMin) : '';
+      }
+      if (contextSeriesName) {
+        contextSeriesName.textContent = trackInfo.seriesName;
+      }
+      if (companionRoadmapLink && trackInfo.slug) {
+        companionRoadmapLink.setAttribute('href', seriesBaseUrl + '#' + trackInfo.slug);
+      }
+
+      renderCompanionProgress(trackInfo.totalParts, activePart);
+      renderCompanionPlaylist(trackInfo, activePart, isPreview);
+
+      Object.keys(trackMap).forEach(function(k) {
+        var info = trackMap[k];
+        var isCurrentTrack = (info === trackInfo);
+        info.view.classList.toggle('is-active', isCurrentTrack);
+        if (info.toggleBtn) info.toggleBtn.setAttribute('aria-expanded', isCurrentTrack ? 'true' : 'false');
+        if (info.dotEl) info.dotEl.className = isCurrentTrack ? activeDotClass : idleDotClass;
+        if (info.titleEl) info.titleEl.className = isCurrentTrack ? activeTitleClass : idleTitleClass;
+      });
+    }
+
+    function activateStandalone(articleTitle, articleUrl, readTime) {
+      if (companionCard) companionCard.classList.add('is-standalone-mode');
+      if (seriesContextView) seriesContextView.classList.add('hidden');
+      if (standaloneView) standaloneView.classList.remove('hidden');
+
+      if (standaloneTitleLink) {
+        standaloneTitleLink.textContent = articleTitle;
+        standaloneTitleLink.setAttribute('href', articleUrl || '#');
+      }
+      if (standaloneReadTime) {
+        standaloneReadTime.textContent = readTime ? (readTime + 'm') : '';
+      }
+      if (contextPostTitle) {
+        contextPostTitle.textContent = articleTitle;
+        contextPostTitle.setAttribute('href', articleUrl || '#');
+      }
+
+      Object.keys(trackMap).forEach(function(k) {
+        var info = trackMap[k];
+        info.view.classList.remove('is-active');
+        if (info.toggleBtn) info.toggleBtn.setAttribute('aria-expanded', 'false');
+        if (info.dotEl) info.dotEl.className = idleDotClass;
+        if (info.titleEl) info.titleEl.className = idleTitleClass;
+      });
     }
 
     if (standaloneJumpFlagshipBtn) {
@@ -10748,13 +10934,13 @@ document.addEventListener('DOMContentLoaded', initDevTerminalBlocks);
       });
     }
 
-    function evaluateActiveFeedCard() {
+    function evaluateActiveFeedCard(forceSyncSpine) {
       var feedArticles = document.querySelectorAll('[data-feed-article="true"]');
       if (!feedArticles || feedArticles.length === 0) return;
 
-      var headerOffset = 75; // sticky header height in pixels
+      var headerOffset = 75;
       var viewportHeight = window.innerHeight || document.documentElement.clientHeight;
-      var focalY = headerOffset + (viewportHeight - headerOffset) * 0.42; // optimal eye-level reading line
+      var focalY = headerOffset + (viewportHeight - headerOffset) * 0.42;
 
       var activeTarget = null;
       var bestScore = -Infinity;
@@ -10764,7 +10950,6 @@ document.addEventListener('DOMContentLoaded', initDevTerminalBlocks);
         if (card.offsetParent === null) continue;
         var rect = card.getBoundingClientRect();
 
-        // Skip articles completely outside the reading viewport
         if (rect.bottom <= headerOffset || rect.top >= viewportHeight) continue;
 
         var visibleTop = Math.max(headerOffset, rect.top);
@@ -10776,7 +10961,6 @@ document.addEventListener('DOMContentLoaded', initDevTerminalBlocks);
         var cardCenter = (rect.top + rect.bottom) / 2;
         var distToFocal = Math.abs(cardCenter - focalY);
 
-        // Combined relevance score: focal line containment + visible prominence - distance to center
         var score = 0;
         if (containsFocal) score += 10000;
         score += visibleHeight * 10;
@@ -10790,6 +10974,12 @@ document.addEventListener('DOMContentLoaded', initDevTerminalBlocks);
 
       if (!activeTarget) return;
 
+      if (!forceSyncSpine && isPreviewMode && activeTarget === lastSyncedCard) {
+        return;
+      }
+      isPreviewMode = false;
+      lastSyncedCard = activeTarget;
+
       var seriesName = activeTarget.getAttribute('data-article-series') || '';
       var seriesOrder = parseInt(activeTarget.getAttribute('data-article-series-order') || '0', 10);
       var articleTitle = activeTarget.getAttribute('data-article-title') || '';
@@ -10797,9 +10987,18 @@ document.addEventListener('DOMContentLoaded', initDevTerminalBlocks);
       var articleReadTime = activeTarget.getAttribute('data-article-readingtime') || '';
 
       var sKey = seriesName.toLowerCase().trim();
+      var meta = {
+        title: articleTitle,
+        url: articleUrl,
+        readTime: articleReadTime,
+        isPreview: false
+      };
+
       if (sKey && trackMap[sKey]) {
-        activateTrack(seriesName, seriesOrder > 0 ? seriesOrder : 1);
+        markFeedCardSynced(activeTarget, 'series');
+        activateTrack(seriesName, seriesOrder > 0 ? seriesOrder : 1, meta);
       } else if (articleTitle) {
+        markFeedCardSynced(activeTarget, 'standalone');
         activateStandalone(articleTitle, articleUrl, articleReadTime);
       }
     }
@@ -10808,7 +11007,7 @@ document.addEventListener('DOMContentLoaded', initDevTerminalBlocks);
     function onScroll() {
       if (!ticking) {
         window.requestAnimationFrame(function() {
-          evaluateActiveFeedCard();
+          evaluateActiveFeedCard(false);
           ticking = false;
         });
         ticking = true;
@@ -10817,8 +11016,10 @@ document.addEventListener('DOMContentLoaded', initDevTerminalBlocks);
 
     window.addEventListener('scroll', onScroll, { passive: true });
     window.addEventListener('resize', onScroll, { passive: true });
+    window.addEventListener('gcloudcafe:feed-updated', function() {
+      evaluateActiveFeedCard(true);
+    });
 
-    // Initialize with default series and order
     if (defaultSeriesKey && trackMap[defaultSeriesKey.toLowerCase()]) {
       var def = trackMap[defaultSeriesKey.toLowerCase()];
       activateTrack(def.seriesName, def.defaultOrder || 1);

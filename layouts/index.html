@@ -34,10 +34,20 @@
       <main class="w-full min-w-0 lg:col-span-8 space-y-8 sm:space-y-10" id="primary-content-column">
         
         <!-- Flagship Hero Guide Card (Positioned At Top Parallel to Right Navigation) -->
+        {{ $featuredCleanTitle := "" }}
+        {{ with $featured }}
+          {{ $featuredCleanTitle = .Title }}
+          {{ if .Params.series }}
+            {{ $featuredCleanTitle = replaceRE `^.*?(?:\([Pp]art\s*\d+\)|–\s*[Pp]art\s*\d+)[:\-–—]\s*` "" $featuredCleanTitle }}
+            {{ $featuredCleanTitle = replaceRE `\s*\([Pp]art\s*\d+\)$` "" $featuredCleanTitle }}
+            {{ $featuredCleanTitle = replaceRE `^(?:Data Engineering on GCP|mTLS for DevOps Engineers):\s*` "" $featuredCleanTitle }}
+            {{ if eq (trim $featuredCleanTitle " ") "" }}{{ $featuredCleanTitle = .Title }}{{ end }}
+          {{ end }}
+        {{ end }}
         <section aria-label="Featured Architecture Guide"
                  class="w-full"
                  data-feed-article="true"
-                 data-article-title="{{ with $featured }}{{ .Title }}{{ end }}"
+                 data-article-title="{{ $featuredCleanTitle }}"
                  data-article-url="{{ with $featured }}{{ .RelPermalink }}{{ end }}"
                  data-article-series="{{ with $featured }}{{ .Params.series | default `` }}{{ end }}"
                  data-article-series-order="{{ with $featured }}{{ .Params.series_order | default 0 }}{{ end }}"
@@ -104,11 +114,18 @@
                 {{ range $post.Params.tags }}
                   {{ $postCats = $postCats | append (. | urlize | lower) }}
                 {{ end }}
+                {{ $postCleanTitle := $post.Title }}
+                {{ if $post.Params.series }}
+                  {{ $postCleanTitle = replaceRE `^.*?(?:\([Pp]art\s*\d+\)|–\s*[Pp]art\s*\d+)[:\-–—]\s*` "" $postCleanTitle }}
+                  {{ $postCleanTitle = replaceRE `\s*\([Pp]art\s*\d+\)$` "" $postCleanTitle }}
+                  {{ $postCleanTitle = replaceRE `^(?:Data Engineering on GCP|mTLS for DevOps Engineers):\s*` "" $postCleanTitle }}
+                  {{ if eq (trim $postCleanTitle " ") "" }}{{ $postCleanTitle = $post.Title }}{{ end }}
+                {{ end }}
                 {{ if lt $idx 9 }}
                   <div class="w-full transition-all duration-300"
                        data-article-card="true"
                        data-feed-article="true"
-                       data-article-title="{{ $post.Title }}"
+                       data-article-title="{{ $postCleanTitle }}"
                        data-article-url="{{ $post.RelPermalink }}"
                        data-article-series="{{ $post.Params.series | default `` }}"
                        data-article-series-order="{{ $post.Params.series_order | default 0 }}"
@@ -120,7 +137,7 @@
                   <div class="w-full opacity-0 translate-y-4 transition-all duration-500 ease-out"
                        data-article-card="true"
                        data-feed-article="true"
-                       data-article-title="{{ $post.Title }}"
+                       data-article-title="{{ $postCleanTitle }}"
                        data-article-url="{{ $post.RelPermalink }}"
                        data-article-series="{{ $post.Params.series | default `` }}"
                        data-article-series-order="{{ $post.Params.series_order | default 0 }}"

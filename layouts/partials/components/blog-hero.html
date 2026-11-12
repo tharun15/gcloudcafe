@@ -77,31 +77,26 @@
         <div class="md:col-span-7 flex flex-col justify-between h-full">
           <div>
             <!-- Category & Architectural Series Breadcrumb Line -->
-            <div class="flex items-center gap-2 sm:gap-2.5 mb-3 flex-wrap">
-              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] sm:text-xs font-mono font-bold uppercase tracking-wider {{ $heroBadgeBg }}">
+            <div class="flex items-center gap-2 mb-3.5 min-w-0 flex-wrap sm:flex-nowrap">
+              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] sm:text-xs font-mono font-bold uppercase tracking-wider shrink-0 {{ $heroBadgeBg }}">
                 {{ $firstCat }}
               </span>
 
               {{ if $seriesName }}
-                <span class="text-slate-300 dark:text-slate-700 select-none">·</span>
+                <span class="text-slate-300 dark:text-slate-700 select-none shrink-0">·</span>
                 <!-- Architectural Series Breadcrumb -->
                 <a href="{{ `series/` | relLangURL }}#{{ $seriesName | urlize }}"
-                   class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-sky-50/80 dark:bg-sky-950/40 hover:bg-sky-100 dark:hover:bg-sky-900/50 border border-sky-200/80 dark:border-sky-800/60 hover:border-sky-300 dark:hover:border-sky-700 text-sky-800 dark:text-sky-300 font-mono text-[11px] sm:text-xs transition-colors group/serieslink no-underline"
+                   class="series-pill-badge inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-sky-50/80 dark:bg-sky-950/40 hover:bg-sky-100 dark:hover:bg-sky-900/50 border border-sky-200/80 dark:border-sky-800/60 hover:border-sky-300 dark:hover:border-sky-700 text-sky-800 dark:text-sky-300 font-mono text-[11px] sm:text-xs transition-colors group/serieslink no-underline min-w-0 max-w-full"
                    title="View full curriculum for {{ $seriesName }}">
-                  <i class="fa-solid fa-layer-group text-[10px] text-sky-500"></i>
-                  <span class="font-semibold truncate max-w-[180px] sm:max-w-xs">{{ $seriesName }}</span>
-                  <span class="text-slate-400 dark:text-slate-500 font-bold">›</span>
-                  <span class="text-sky-600 dark:text-sky-400 font-bold whitespace-nowrap">
-                    Part {{ $seriesOrder }}{{ if gt $totalSeriesParts 0 }} of {{ $totalSeriesParts }}{{ end }}
+                  <i class="fa-solid fa-layer-group text-[10px] text-sky-500 shrink-0"></i>
+                  <span class="font-semibold truncate">{{ $seriesName }}</span>
+                  <span class="text-slate-400 dark:text-slate-500 font-bold shrink-0">›</span>
+                  <span class="text-sky-600 dark:text-sky-400 font-bold whitespace-nowrap shrink-0 tabular-nums">
+                    Part {{ $seriesOrder }}{{ if gt $totalSeriesParts 0 }}/{{ $totalSeriesParts }}{{ end }}
                   </span>
-                  {{ if and (gt $totalSeriesParts 0) (eq $seriesOrder $totalSeriesParts) }}
-                    <span class="hidden md:inline-flex items-center px-1.5 py-0.2 text-[9px] rounded bg-emerald-100 text-emerald-700 dark:bg-emerald-950/70 dark:text-emerald-400 font-bold uppercase tracking-wider">
-                      Complete
-                    </span>
-                  {{ end }}
                 </a>
               {{ else }}
-                <span class="hidden sm:inline-flex items-center text-xs font-mono text-slate-400 dark:text-slate-500">
+                <span class="hidden sm:inline-flex items-center text-xs font-mono text-slate-400 dark:text-slate-500 shrink-0">
                   · {{ if eq site.Language.Lang "it" }}Guida in Evidenza{{ else }}Featured Guide{{ end }}
                 </span>
               {{ end }}

@@ -1,115 +1,287 @@
 {{ $featured := .Featured }}
 {{ $posts := .Posts }}
+{{ $isItalian := eq site.Language.Lang "it" }}
 
 {{/* 1. Gather all series and group them */}}
 {{ $seriesPosts := where $posts ".Params.series" "!=" nil }}
 {{ $groupedSeries := $seriesPosts.GroupByParam "series" }}
 
-{{/* 2. Identify Featured Series (from the Hero article) */}}
+{{/* 2. Resolve Featured Post & Series Context for zero-flash SSR */}}
 {{ $featuredSeriesKey := "" }}
+{{ $featuredSeriesOrder := 1 }}
+{{ $featuredTotalParts := 0 }}
+{{ $featuredSorted := slice }}
+{{ $featuredTitle := "" }}
+{{ $featuredUrl := "" }}
+{{ $featuredReadTime := 0 }}
+
 {{ with $featured }}
-  {{ $featuredSeriesKey = .Params.series }}
-{{ end }}
-{{ if not $featuredSeriesKey }}
-  {{ with index $groupedSeries 0 }}
-    {{ $featuredSeriesKey = .Key }}
+  {{ $featuredSeriesKey = .Params.series | default "" }}
+  {{ $featuredSeriesOrder = .Params.series_order | default 1 }}
+  {{ $featuredUrl = .RelPermalink }}
+  {{ $featuredReadTime = .ReadingTime }}
+  {{ $featuredTitle = .Title }}
+  {{ if $featuredSeriesKey }}
+    {{ $featuredTitle = replaceRE `^.*?(?:\([Pp]art\s*\d+\)|–\s*[Pp]art\s*\d+)[:\-–—]\s*` "" $featuredTitle }}
+    {{ $featuredTitle = replaceRE `\s*\([Pp]art\s*\d+\)$` "" $featuredTitle }}
+    {{ $featuredTitle = replaceRE `^(?:Data Engineering on GCP|mTLS for DevOps Engineers|TLS for DevOps Engineers|Passing the Red Hat OpenShift Administrator|EX280 – OpenShift Administrator Tips & Tricks|EX280 Tips & Tricks)\s*[:\-–—]\s*` "" $featuredTitle }}
+    {{ if eq (trim $featuredTitle " ") "" }}
+      {{ $featuredTitle = .Title }}
+    {{ end }}
+    {{ range $groupedSeries }}
+      {{ if eq .Key $featuredSeriesKey }}
+        {{ $featuredSorted = sort .Pages ".Params.series_order" "asc" }}
+        {{ $featuredTotalParts = len $featuredSorted }}
+      {{ end }}
+    {{ end }}
   {{ end }}
 {{ end }}
 
+{{ $hasDefaultSeries := ne $featuredSeriesKey "" }}
+
 <div class="space-y-4" id="sidebar-series-container">
-  <!-- Minimalist Tech Header -->
-  <div class="flex items-center justify-between pb-2.5 border-b border-slate-200/70 dark:border-slate-800/70">
-    <div class="flex items-center gap-2">
-      <span class="w-2 h-2 rounded-full bg-sky-500 animate-pulse" aria-hidden="true"></span>
-      <h2 class="font-mono text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 m-0">
-        {{ if eq site.Language.Lang "it" }}Percorsi Tecnici{{ else }}Learning Tracks{{ end }}
-      </h2>
-    </div>
-    <a href="{{ `series/` | relLangURL }}" class="font-mono text-[11px] font-semibold text-sky-600 dark:text-sky-400 hover:underline no-underline transition-colors">
-      {{ if eq site.Language.Lang "it" }}Tutti ({{ len $groupedSeries }}){{ else }}All Tracks ({{ len $groupedSeries }}){{ end }} →
-    </a>
-  </div>
 
-  <!-- Single Continuous Vertical Spine -->
-  <div class="relative border-l-2 border-slate-200/80 dark:border-slate-800/80 ml-2.5 pl-4 py-1 space-y-5" id="sidebar-series-hub" data-default-series="{{ $featuredSeriesKey }}">
-    
-    {{ range $groupedSeries }}
-      {{ $sKey := .Key }}
-      {{ $sSorted := sort .Pages ".Params.series_order" "asc" }}
-      {{ $sPart1 := index $sSorted 0 }}
-      {{ $sTotalParts := len $sSorted }}
-      {{ $isDefault := eq $sKey $featuredSeriesKey }}
+  <!-- ============================================================ -->
+  <!-- TIER 1: SYNCED LEARNING TRACK COMPANION                      -->
+  <!-- ============================================================ -->
+  <section id="sidebar-companion-card"
+           class="track-companion-card {{ if not $hasDefaultSeries }}is-standalone-mode{{ end }}"
+           aria-label="{{ if $isItalian }}Percorso di apprendimento attivo{{ else }}Active learning track{{ end }}"
+           aria-live="polite">
 
-      <div class="sidebar-track-view relative transition-all duration-300 {{ if $isDefault }}is-active{{ else }}opacity-65 hover:opacity-100{{ end }}"
-           data-track-series-key="{{ $sKey | lower }}"
-           data-track-series-name="{{ $sKey }}"
-           data-total-parts="{{ $sTotalParts }}">
-        
-        <!-- Subtle Node on the Vertical Spine -->
-        <span class="track-spine-node absolute -left-[22px] top-1 w-2.5 h-2.5 rounded-full border-2 transition-all duration-300 {{ if $isDefault }}bg-sky-500 border-white dark:border-[#070b14] ring-4 ring-sky-500/20 shadow-[0_0_10px_rgba(56,189,248,0.75)]{{ else }}bg-slate-300 dark:bg-slate-700 border-white dark:border-[#070b14]{{ end }}" aria-hidden="true"></span>
+    <div id="sidebar-context-bridge">
 
-        <!-- Series Title Link (with Active Glow) -->
-        <div class="flex items-start justify-between gap-2">
-          <h3 class="track-title text-xs sm:text-[13px] font-medium leading-snug tracking-tight m-0 transition-all duration-300 {{ if $isDefault }}text-sky-500 dark:text-sky-400 font-bold active-track-glow{{ else }}text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white{{ end }}">
-            <a href="{{ $sPart1.RelPermalink }}" class="no-underline text-current">
-              {{ $sKey }}
-            </a>
-          </h3>
-          <span class="track-parts-count shrink-0 font-mono text-[10.5px] font-semibold text-slate-400 dark:text-slate-500">
-            {{ $sTotalParts }}p
+      <!-- Series Mode: Synced Ribbon + Parent Track + Connected Stepper -->
+      <div id="sidebar-series-context-view" class="{{ if not $hasDefaultSeries }}hidden{{ end }}">
+        <!-- Top Sync Status Ribbon -->
+        <div class="track-companion-ribbon">
+          <span class="inline-flex items-center gap-1.5 font-mono text-[10.5px] font-bold uppercase tracking-wider text-sky-600 dark:text-sky-400">
+            <span class="hidden lg:inline" aria-hidden="true">←</span>
+            <span id="sidebar-companion-dot" class="w-1.5 h-1.5 rounded-full bg-sky-500 shrink-0" aria-hidden="true"></span>
+            <span id="sidebar-companion-mode-label">{{ if $isItalian }}Sincronizzato col post{{ else }}Synced with post{{ end }}</span>
+          </span>
+          <span id="sidebar-context-part-badge" class="track-part-pill">
+            {{ if $isItalian }}Parte {{ $featuredSeriesOrder }} di {{ $featuredTotalParts }}{{ else }}Part {{ $featuredSeriesOrder }} of {{ $featuredTotalParts }}{{ end }}
           </span>
         </div>
 
-        <!-- Curriculum Parts Playlist -->
-        <div class="sidebar-active-playlist space-y-1 mt-2 {{ if not $isDefault }}hidden{{ end }}">
-          {{ range $idx, $p := $sSorted }}
-            {{ $partNum := add $idx 1 }}
-            {{ $isHero := and $featured (eq $p.RelPermalink $featured.RelPermalink) }}
-            
-            {{/* Clean Part Title */}}
-            {{ $partTitle := $p.Title }}
-            {{ $partTitle = replaceRE `^.*?(?:\([Pp]art\s*\d+\)|–\s*[Pp]art\s*\d+)[:\-–—]\s*` "" $partTitle }}
-            {{ $partTitle = replaceRE `\s*\([Pp]art\s*\d+\)$` "" $partTitle }}
-            {{ $partTitle = replaceRE `^(?:Data Engineering on GCP|mTLS for DevOps Engineers|TLS for DevOps Engineers|Passing the Red Hat OpenShift Administrator|EX280 – OpenShift Administrator Tips & Tricks|EX280 Tips & Tricks)\s*[:\-–—]\s*` "" $partTitle }}
-            {{ if eq (trim $partTitle " ") "" }}
-              {{ $partTitle = $p.Title }}
+        <!-- Track Body -->
+        <div class="track-companion-body">
+          <!-- Eyebrow & Track Title -->
+          <div class="flex items-center gap-1.5 font-mono text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-1">
+            <i class="fa-solid fa-layer-group text-[9px] text-sky-500" aria-hidden="true"></i>
+            <span>{{ if $isItalian }}Percorso di Apprendimento{{ else }}Learning Track{{ end }}</span>
+          </div>
+          <h2 class="text-[15px] font-bold text-slate-900 dark:text-white leading-snug tracking-tight m-0">
+            <span id="sidebar-context-series-name">{{ $featuredSeriesKey }}</span>
+          </h2>
+
+          <!-- Segmented Progress Bar -->
+          <div id="sidebar-companion-progress" class="track-progress-bar" aria-hidden="true">
+            {{ range $idx, $p := $featuredSorted }}
+              {{ $step := add $idx 1 }}
+              <span class="track-progress-seg {{ if le $step $featuredSeriesOrder }}is-filled{{ end }}"></span>
+            {{ end }}
+            {{ if eq $featuredTotalParts 1 }}
+              <span class="track-progress-seg"></span>
+            {{ end }}
+          </div>
+
+          <!-- Hidden hooks for test/DOM compatibility -->
+          <a id="sidebar-context-post-title" href="{{ $featuredUrl | default `#` }}" class="sr-only">{{ $featuredTitle }}</a>
+          <span id="sidebar-context-readtime" class="sr-only">{{ $featuredReadTime }} min</span>
+
+          <!-- Connected Episode Stepper -->
+          <div id="sidebar-companion-playlist" class="track-stepper">
+            {{ range $idx, $p := $featuredSorted }}
+              {{ $partNum := add $idx 1 }}
+              {{ $isCurrent := eq $partNum $featuredSeriesOrder }}
+              {{ $partTitle := $p.Title }}
+              {{ $partTitle = replaceRE `^.*?(?:\([Pp]art\s*\d+\)|–\s*[Pp]art\s*\d+)[:\-–—]\s*` "" $partTitle }}
+              {{ $partTitle = replaceRE `\s*\([Pp]art\s*\d+\)$` "" $partTitle }}
+              {{ $partTitle = replaceRE `^(?:Data Engineering on GCP|mTLS for DevOps Engineers|TLS for DevOps Engineers|Passing the Red Hat OpenShift Administrator|EX280 – OpenShift Administrator Tips & Tricks|EX280 Tips & Tricks)\s*[:\-–—]\s*` "" $partTitle }}
+              {{ if eq (trim $partTitle " ") "" }}{{ $partTitle = $p.Title }}{{ end }}
+
+              <a href="{{ $p.RelPermalink }}"
+                 {{ if $isCurrent }}aria-current="true"{{ end }}
+                 class="track-step-row {{ if $isCurrent }}is-current{{ end }}">
+                <div class="track-step-rail" aria-hidden="true">
+                  <span class="track-step-badge">{{ printf "%02d" $partNum }}</span>
+                  <span class="track-step-connector"></span>
+                </div>
+                <div class="track-step-content">
+                  <div class="track-step-box">
+                    {{ if $isCurrent }}
+                      <div class="flex items-center justify-between gap-2 mb-1 font-mono text-[10px] font-bold uppercase tracking-wider text-sky-600 dark:text-sky-400">
+                        <span>← {{ if $isItalian }}Post selezionato · Parte {{ printf "%02d" $partNum }}{{ else }}Selected post · Part {{ printf "%02d" $partNum }}{{ end }}</span>
+                        <span class="tabular-nums text-slate-400 dark:text-slate-500 font-normal lowercase">{{ $p.ReadingTime }}m</span>
+                      </div>
+                      <p class="text-[13px] font-bold text-slate-900 dark:text-white leading-snug m-0">
+                        {{ $partTitle }}
+                      </p>
+                    {{ else }}
+                      <span class="text-xs font-medium text-slate-600 dark:text-slate-300 leading-snug">
+                        {{ $partTitle }}
+                      </span>
+                      <span class="font-mono text-[10px] tabular-nums text-slate-400 dark:text-slate-500 shrink-0">{{ $p.ReadingTime }}m</span>
+                    {{ end }}
+                  </div>
+                </div>
+              </a>
             {{ end }}
 
-            <a href="{{ $p.RelPermalink }}"
-               data-track-part="{{ $partNum }}"
-               data-track-url="{{ $p.RelPermalink }}"
-               data-track-title="{{ $partTitle }}"
-               class="sidebar-track-item flex items-center gap-1.5 py-0.5 px-1.5 rounded no-underline text-xs transition-colors group/item {{ if and $isDefault $isHero }}text-sky-600 dark:text-sky-300 font-semibold bg-sky-500/10{{ else }}text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200{{ end }}">
-              <span class="font-mono text-[10px] text-slate-400 group-hover/item:text-sky-500 shrink-0">0{{ $partNum }}</span>
-              <span class="truncate flex-1">{{ $partTitle }}</span>
-              <span class="font-mono text-[10px] text-slate-400 shrink-0">{{ $p.ReadingTime }}m</span>
-            </a>
-          {{ end }}
-        </div>
-      </div>
-    {{ end }}
+            {{ if eq $featuredTotalParts 1 }}
+              <div class="track-step-row is-upcoming select-none" aria-hidden="true">
+                <div class="track-step-rail">
+                  <span class="track-step-badge">02</span>
+                  <span class="track-step-connector"></span>
+                </div>
+                <div class="track-step-content">
+                  <div class="track-step-box">
+                    <span class="text-xs italic text-slate-400 dark:text-slate-500">
+                      {{ if $isItalian }}Prossimo episodio in arrivo{{ else }}Next part in this track — upcoming{{ end }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            {{ end }}
+          </div>
 
-    <!-- Standalone Deep-Dive Indicator along the Line -->
-    <div id="sidebar-standalone-view" class="sidebar-track-view relative transition-all duration-300 hidden pt-2" data-is-standalone="true">
-      <span class="track-spine-node absolute -left-[22px] top-3 w-2.5 h-2.5 rounded-full border-2 bg-emerald-500 border-white dark:border-[#070b14] ring-4 ring-emerald-500/20 shadow-[0_0_10px_rgba(16,185,129,0.75)]" aria-hidden="true"></span>
-      <div class="space-y-1">
-        <span class="font-mono text-[10px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 block">
-          {{ if eq site.Language.Lang "it" }}Guida Autonoma{{ else }}Standalone Guide{{ end }}
-        </span>
-        <h3 class="text-xs sm:text-[13px] font-bold text-slate-900 dark:text-white m-0">
-          <a id="sidebar-standalone-title-link" href="#" class="no-underline text-current hover:text-emerald-500 transition-colors line-clamp-2"></a>
-        </h3>
-        <div class="flex items-center gap-3 pt-1 text-[11px] font-mono">
-          <button type="button" id="sidebar-standalone-jump-flagship-btn" class="text-slate-400 hover:text-sky-500 transition-colors cursor-pointer bg-transparent border-0 p-0 inline-flex items-center gap-1">
-            <span>↑ Top</span>
-          </button>
-          <span class="text-slate-300 dark:text-slate-700">·</span>
-          <a href="{{ `series/` | relLangURL }}" id="sidebar-standalone-browse-tracks-btn" class="text-sky-600 dark:text-sky-400 hover:underline no-underline">
-            {{ if eq site.Language.Lang "it" }}Tutte le Serie{{ else }}All Tracks{{ end }} →
-          </a>
+          <!-- Footer Link -->
+          <div class="pt-3 mt-2.5 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-[11px] font-mono">
+            <span class="text-slate-400 dark:text-slate-500 text-[10.5px]">
+              {{ if $isItalian }}Ordine di lettura consigliato{{ else }}Recommended reading order{{ end }}
+            </span>
+            <a id="sidebar-companion-roadmap-link"
+               href="{{ `series/` | relLangURL }}#{{ $featuredSeriesKey | urlize }}"
+               class="font-semibold text-sky-600 dark:text-sky-400 hover:underline no-underline inline-flex items-center gap-1">
+              <span>{{ if $isItalian }}Apri percorso{{ else }}Full track{{ end }}</span>
+              <span aria-hidden="true">→</span>
+            </a>
+          </div>
         </div>
       </div>
+
+      <!-- Standalone Mode: Clean Single-Surface View When Scrolled to an Independent Guide -->
+      <div id="sidebar-standalone-view"
+           class="{{ if $hasDefaultSeries }}hidden{{ end }}"
+           data-is-standalone="true">
+        <div class="track-companion-ribbon is-standalone-ribbon">
+          <span class="inline-flex items-center gap-1.5 font-mono text-[10.5px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
+            <span class="hidden lg:inline" aria-hidden="true">←</span>
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" aria-hidden="true"></span>
+            <span>{{ if $isItalian }}Sincronizzato · Guida Autonoma{{ else }}Synced · Standalone Guide{{ end }}</span>
+          </span>
+          <span id="sidebar-standalone-readtime" class="font-mono text-[11px] text-slate-500 dark:text-slate-400 tabular-nums">{{ $featuredReadTime }}m</span>
+        </div>
+
+        <div class="track-companion-body space-y-2.5">
+          <h2 class="text-[14px] font-bold text-slate-900 dark:text-white leading-snug m-0">
+            <a id="sidebar-standalone-title-link"
+               href="{{ $featuredUrl | default `#` }}"
+               class="no-underline text-current hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors line-clamp-2">
+              {{ $featuredTitle }}
+            </a>
+          </h2>
+
+          <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed m-0">
+            {{ if $isItalian }}Articolo completo e indipendente — non appartiene a una serie multi-parte.{{ else }}Self-contained engineering deep dive — not part of a multi-part learning track.{{ end }}
+          </p>
+
+          <div class="flex items-center justify-between pt-2.5 border-t border-slate-100 dark:border-slate-800/80 text-[11px] font-mono">
+            <button type="button" id="sidebar-standalone-jump-flagship-btn" class="text-slate-500 dark:text-slate-400 hover:text-sky-600 dark:hover:text-sky-400 transition-colors cursor-pointer bg-transparent border-0 p-0 inline-flex items-center gap-1">
+              <span>↑ {{ if $isItalian }}Torna in alto{{ else }}Back to top{{ end }}</span>
+            </button>
+            <a href="{{ `series/` | relLangURL }}" id="sidebar-standalone-browse-tracks-btn" class="text-sky-600 dark:text-sky-400 hover:underline no-underline font-semibold">
+              {{ if $isItalian }}Tutti i Percorsi{{ else }}Browse all tracks{{ end }} →
+            </a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- TIER 2: ALL LEARNING TRACKS SWITCHER (Stable 6-Track List)   -->
+  <!-- ============================================================ -->
+  <section aria-label="{{ if $isItalian }}Tutti i percorsi di apprendimento{{ else }}All learning tracks{{ end }}" class="space-y-2">
+    <div class="flex items-center justify-between px-1">
+      <h3 class="font-mono text-[10.5px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 m-0">
+        {{ if $isItalian }}Tutti i Percorsi ({{ len $groupedSeries }}){{ else }}All Learning Tracks ({{ len $groupedSeries }}){{ end }}
+      </h3>
+      <a href="{{ `series/` | relLangURL }}" class="font-mono text-[11px] font-semibold text-sky-600 dark:text-sky-400 hover:underline no-underline transition-colors">
+        {{ if $isItalian }}Catalogo{{ else }}Directory{{ end }} →
+      </a>
     </div>
 
-  </div>
+    <div class="track-switcher-card divide-y divide-slate-200/70 dark:divide-slate-800/70"
+         id="sidebar-series-hub"
+         data-default-series="{{ $featuredSeriesKey }}"
+         data-series-base-url="{{ `series/` | relLangURL }}"
+         data-label-part="{{ if $isItalian }}Parte{{ else }}Part{{ end }}"
+         data-label-of="{{ if $isItalian }}di{{ else }}of{{ end }}"
+         data-label-in-view="{{ if $isItalian }}Post selezionato · Parte{{ else }}Selected post · Part{{ end }}"
+         data-label-upcoming="{{ if $isItalian }}Prossimo episodio in arrivo{{ else }}Next part in this track — upcoming{{ end }}"
+         data-label-active-track="{{ if $isItalian }}Sincronizzato col post{{ else }}Synced with post{{ end }}"
+         data-label-preview-track="{{ if $isItalian }}Anteprima Percorso{{ else }}Previewing Track{{ end }}"
+         data-label-min="{{ if $isItalian }}min{{ else }}min{{ end }}">
+
+      {{ range $groupedSeries }}
+        {{ $sKey := .Key }}
+        {{ $sSorted := sort .Pages ".Params.series_order" "asc" }}
+        {{ $sTotalParts := len $sSorted }}
+        {{ $isDefault := eq $sKey $featuredSeriesKey }}
+        {{ $playlistId := printf "track-playlist-%s" ($sKey | urlize) }}
+
+        <div class="sidebar-track-view {{ if $isDefault }}is-active{{ end }}"
+             data-track-series-key="{{ $sKey | lower }}"
+             data-track-series-name="{{ $sKey }}"
+             data-track-slug="{{ $sKey | urlize }}"
+             data-total-parts="{{ $sTotalParts }}">
+
+          <button type="button"
+                  class="track-toggle-btn w-full flex items-center justify-between gap-2.5 text-left bg-transparent border-0 p-0 cursor-pointer group/trackbtn rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500/60"
+                  aria-expanded="{{ if $isDefault }}true{{ else }}false{{ end }}"
+                  aria-controls="{{ $playlistId }}">
+            <span class="flex items-center gap-2.5 min-w-0">
+              <span class="track-spine-node w-2 h-2 rounded-full shrink-0 transition-all {{ if $isDefault }}bg-sky-500 ring-4 ring-sky-500/15{{ else }}bg-slate-300 dark:bg-slate-700 group-hover/trackbtn:bg-sky-400{{ end }}" aria-hidden="true"></span>
+              <span class="track-title text-xs leading-snug truncate transition-colors {{ if $isDefault }}font-bold text-slate-900 dark:text-white{{ else }}font-medium text-slate-600 dark:text-slate-300 group-hover/trackbtn:text-slate-900 dark:group-hover/trackbtn:text-white{{ end }}">
+                {{ $sKey }}
+              </span>
+            </span>
+
+            <span class="track-active-pill shrink-0 items-center gap-1 px-2 py-0.5 rounded-full font-mono text-[10px] font-bold bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/25">
+              <span>{{ if $isItalian }}Attivo ↑{{ else }}Active ↑{{ end }}</span>
+            </span>
+
+            <span class="track-idle-count shrink-0 inline-flex items-center gap-1 font-mono text-[10.5px] tabular-nums text-slate-400 dark:text-slate-500 group-hover/trackbtn:text-sky-500 transition-colors">
+              <span>{{ $sTotalParts }} {{ if $isItalian }}{{ if eq $sTotalParts 1 }}parte{{ else }}parti{{ end }}{{ else }}{{ if eq $sTotalParts 1 }}part{{ else }}parts{{ end }}{{ end }}</span>
+              <span aria-hidden="true">›</span>
+            </span>
+          </button>
+
+          <!-- Hidden Curriculum Data Store for JS Stepper Hydration -->
+          <div id="{{ $playlistId }}" class="sidebar-active-playlist hidden">
+            {{ range $idx, $p := $sSorted }}
+              {{ $partNum := add $idx 1 }}
+              {{ $partTitle := $p.Title }}
+              {{ $partTitle = replaceRE `^.*?(?:\([Pp]art\s*\d+\)|–\s*[Pp]art\s*\d+)[:\-–—]\s*` "" $partTitle }}
+              {{ $partTitle = replaceRE `\s*\([Pp]art\s*\d+\)$` "" $partTitle }}
+              {{ $partTitle = replaceRE `^(?:Data Engineering on GCP|mTLS for DevOps Engineers|TLS for DevOps Engineers|Passing the Red Hat OpenShift Administrator|EX280 – OpenShift Administrator Tips & Tricks|EX280 Tips & Tricks)\s*[:\-–—]\s*` "" $partTitle }}
+              {{ if eq (trim $partTitle " ") "" }}{{ $partTitle = $p.Title }}{{ end }}
+
+              <a href="{{ $p.RelPermalink }}"
+                 data-track-part="{{ $partNum }}"
+                 data-track-url="{{ $p.RelPermalink }}"
+                 data-track-title="{{ $partTitle }}"
+                 data-track-readtime="{{ $p.ReadingTime }}"
+                 class="sidebar-track-item">{{ $partTitle }}</a>
+            {{ end }}
+          </div>
+        </div>
+      {{ end }}
+    </div>
+  </section>
+
 </div>
