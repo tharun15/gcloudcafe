@@ -160,11 +160,16 @@ describe('Homepage & Site-Wide Usability Heuristics & Accessibility Suite', () =
     expect(scssContent).toContain('.is-feed-tracked');
   });
 
-  it('renders Substack/Medium editorial card hierarchy with inline series progression strips', () => {
+  it('renders clean content-first editorial cards with bounded non-overflowing series stepper strips', () => {
     const heroHtml = fs.readFileSync(path.join(rootDir, 'layouts/partials/components/blog-hero.html'), 'utf8');
     const cardHtml = fs.readFileSync(path.join(rootDir, 'layouts/partials/components/blog-card.html'), 'utf8');
+    const indexHtml = fs.readFileSync(path.join(rootDir, 'layouts/index.html'), 'utf8');
 
-    // Dedicated Series Kicker Banner & Inline Series Progression Strip in both Hero and Feed Cards
+    // Keep feed section heading screen-reader only so filter bar stays uncluttered
+    expect(indexHtml).toContain('id="articles-heading" class="sr-only"');
+    expect(indexHtml).toContain('id="articles-feed-count" class="sr-only"');
+
+    // Compact flex-wrap series stepper strip that fits all parts (including 7-part tracks) without overflow
     expect(heroHtml).toContain('editorial-series-kicker');
     expect(heroHtml).toContain('editorial-series-strip');
     expect(heroHtml).toContain('editorial-series-step');
@@ -172,6 +177,6 @@ describe('Homepage & Site-Wide Usability Heuristics & Accessibility Suite', () =
     expect(cardHtml).toContain('editorial-series-kicker');
     expect(cardHtml).toContain('editorial-series-strip');
     expect(cardHtml).toContain('editorial-series-step');
-    expect(cardHtml).toContain('Series progression:');
+    expect(cardHtml).not.toContain('overflow-x-auto');
   });
 });
