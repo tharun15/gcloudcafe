@@ -2591,21 +2591,15 @@ table {
   [data-feed-article="true"].is-feed-tracked {
     .spotlight-hero,
     .blog-card-horizontal {
-      border-color: rgba(14, 165, 233, 0.55) !important;
-      box-shadow: 0 12px 32px -12px rgba(14, 165, 233, 0.18), inset -3px 0 0 0 #0ea5e9 !important;
-    }
-
-    .series-pill-badge {
-      background-color: rgba(14, 165, 233, 0.12) !important;
-      border-color: rgba(14, 165, 233, 0.45) !important;
-      box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.08);
+      border-color: rgba(148, 163, 184, 0.55) !important;
+      box-shadow: 0 8px 24px -12px rgba(15, 23, 42, 0.08) !important;
     }
 
     &[data-tracked-kind="standalone"] {
       .spotlight-hero,
       .blog-card-horizontal {
-        border-color: rgba(16, 185, 129, 0.5) !important;
-        box-shadow: 0 12px 32px -12px rgba(16, 185, 129, 0.16), inset -3px 0 0 0 #10b981 !important;
+        border-color: rgba(148, 163, 184, 0.55) !important;
+        box-shadow: 0 8px 24px -12px rgba(15, 23, 42, 0.08) !important;
       }
     }
   }
@@ -2614,21 +2608,15 @@ table {
   .dark [data-feed-article="true"].is-feed-tracked {
     .spotlight-hero,
     .blog-card-horizontal {
-      border-color: rgba(56, 189, 248, 0.5) !important;
-      box-shadow: 0 14px 36px -12px rgba(14, 165, 233, 0.25), inset -3px 0 0 0 #38bdf8 !important;
-    }
-
-    .series-pill-badge {
-      background-color: rgba(56, 189, 248, 0.15) !important;
-      border-color: rgba(56, 189, 248, 0.45) !important;
-      box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.1);
+      border-color: rgba(71, 85, 105, 0.7) !important;
+      box-shadow: 0 12px 28px -12px rgba(0, 0, 0, 0.45) !important;
     }
 
     &[data-tracked-kind="standalone"] {
       .spotlight-hero,
       .blog-card-horizontal {
-        border-color: rgba(52, 211, 153, 0.48) !important;
-        box-shadow: 0 14px 36px -12px rgba(16, 185, 129, 0.22), inset -3px 0 0 0 #34d399 !important;
+        border-color: rgba(71, 85, 105, 0.7) !important;
+        box-shadow: 0 12px 28px -12px rgba(0, 0, 0, 0.45) !important;
       }
     }
   }
