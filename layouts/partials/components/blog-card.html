@@ -63,24 +63,31 @@
                 bg-white dark:bg-[#0c1220] border border-slate-200/90 dark:border-slate-800/90
                 hover:shadow-lg hover:border-slate-300 dark:hover:border-slate-700 transition-all duration-300 p-4 sm:p-5 group">
   <div>
-    <!-- Top Row: Category Badge & Series Breadcrumb -->
+    <!-- Top Row: Distinct Series Eyebrow or Category -->
     <div class="editorial-series-kicker flex items-center gap-2 mb-3 flex-wrap">
-      <a href="{{ `categories/` | relLangURL }}{{ $firstCat | urlize | lower }}/"
-         class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-mono font-bold uppercase tracking-wider {{ $badgeBg }} no-underline hover:opacity-90 transition-opacity shrink-0">
-        {{ $firstCat | humanize }}
-      </a>
-
       {{ if $seriesName }}
-        <span class="text-slate-300 dark:text-slate-700 select-none">·</span>
         <a href="{{ `series/` | relLangURL }}#{{ $seriesName | urlize }}"
-           class="series-pill-badge inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-sky-50/80 dark:bg-sky-950/40 hover:bg-sky-100 dark:hover:bg-sky-900/50 border border-sky-200/80 dark:border-sky-800/60 hover:border-sky-300 dark:hover:border-sky-700 text-sky-800 dark:text-sky-300 font-mono text-[11px] transition-colors group/serieslink no-underline"
-           title="Part {{ $seriesOrder }} of {{ $seriesName }}">
-          <i class="fa-solid fa-layer-group text-[9px] text-sky-500"></i>
-          <span class="font-medium truncate max-w-[130px] sm:max-w-[170px]">{{ $seriesName }}</span>
-          <span class="text-slate-400 dark:text-slate-500 font-bold">›</span>
-          <span class="text-sky-600 dark:text-sky-400 font-semibold whitespace-nowrap tabular-nums">
-            Part {{ $seriesOrder }}{{ if gt $totalSeriesParts 0 }}/{{ $totalSeriesParts }}{{ end }}
+           class="series-pill-badge inline-flex items-center gap-1.5 text-xs no-underline group/serieslink min-w-0"
+           title="{{ $seriesName }}">
+          <span class="font-mono text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 shrink-0">
+            {{ if $isItalian }}Serie{{ else }}Series{{ end }}
           </span>
+          <span class="text-slate-300 dark:text-slate-600 select-none shrink-0">·</span>
+          <span class="font-semibold text-sky-700 dark:text-sky-400 group-hover/serieslink:underline truncate max-w-[140px] sm:max-w-[180px]">
+            {{ $seriesName }}
+          </span>
+          <span class="inline-flex items-center px-1.5 py-0.5 rounded bg-sky-50 dark:bg-sky-950/60 border border-sky-200/70 dark:border-sky-800/70 font-mono text-xs font-semibold text-sky-700 dark:text-sky-300 shrink-0 tabular-nums">
+            {{ if gt $totalSeriesParts 1 }}
+              {{ if $isItalian }}Parte {{ $seriesOrder }}/{{ $totalSeriesParts }}{{ else }}Part {{ $seriesOrder }}/{{ $totalSeriesParts }}{{ end }}
+            {{ else }}
+              {{ if $isItalian }}Parte 1{{ else }}Part 1{{ end }}
+            {{ end }}
+          </span>
+        </a>
+      {{ else }}
+        <a href="{{ `categories/` | relLangURL }}{{ $firstCat | urlize | lower }}/"
+           class="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-mono font-bold uppercase tracking-wider {{ $badgeBg }} no-underline hover:opacity-90 transition-opacity shrink-0">
+          {{ $firstCat | humanize }}
         </a>
       {{ end }}
     </div>
@@ -99,25 +106,16 @@
     </a>
 
     <!-- Clean, Focused Headline -->
-    <h3 class="text-base sm:text-lg lg:text-[19px] font-bold text-slate-900 dark:text-white group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors line-clamp-2 leading-[1.38] tracking-tight mb-2.5">
-      <a href="{{ $page.RelPermalink }}" class="no-underline text-current hover:text-sky-600 dark:hover:text-sky-400">
+    <h3 class="text-base sm:text-lg lg:text-[19px] font-bold text-slate-900 dark:text-white transition-colors line-clamp-2 leading-[1.38] tracking-tight mb-2">
+      <a href="{{ $page.RelPermalink }}" class="no-underline text-current hover:text-sky-600 dark:hover:text-sky-400 transition-colors">
         {{ $cleanTitle }}
       </a>
     </h3>
 
     <!-- Breathing Editorial Teaser -->
-    <p class="text-[13.5px] sm:text-sm text-slate-600 dark:text-slate-300 leading-[1.65] font-normal line-clamp-2 mb-3.5">
+    <p class="text-[13.5px] sm:text-sm text-slate-600 dark:text-slate-300 leading-[1.62] font-normal line-clamp-2 mb-3.5">
       {{ $teaser }}
     </p>
-
-    <!-- Hashtags Strip -->
-    <div class="flex flex-wrap gap-1.5 mb-3">
-      {{ range first 3 ($tags | default (slice)) }}
-        <span class="border border-slate-200 dark:border-slate-800 px-2.5 py-0.5 rounded text-xs font-mono text-slate-600 dark:text-slate-400 bg-slate-50 dark:bg-slate-900/40">
-          #{{ . }}
-        </span>
-      {{ end }}
-    </div>
   </div>
 
   <!-- Card Footer: Author Mention + Read Time + Bookmark -->
@@ -133,12 +131,12 @@
       <div class="flex items-center gap-1.5 text-xs sm:text-[13px] font-medium text-slate-800 dark:text-slate-200 whitespace-nowrap">
         <span class="font-semibold text-slate-900 dark:text-white truncate">{{ $authorName }}</span>
         <span class="text-slate-400 dark:text-slate-600">·</span>
-        <span class="font-mono text-slate-500 dark:text-slate-400">{{ $page.Date.Format "Jan 02" }}</span>
+        <span class="text-xs font-mono text-slate-500 dark:text-slate-400">{{ $page.Date.Format "Jan 02" }}</span>
       </div>
     </div>
 
     <div class="flex items-center gap-2.5 sm:gap-3 shrink-0 ml-auto">
-      <span class="font-mono text-xs sm:text-[12.5px] flex items-center gap-1">
+      <span class="text-xs font-mono flex items-center gap-1">
         <i class="fa-regular fa-clock text-xs"></i> {{ $page.ReadingTime }} {{ i18n "min_read" }}
       </span>
 
@@ -159,172 +157,122 @@
 </article>
 
 {{ else }}
-<!-- ============================================== -->
-<!-- HORIZONTAL CARD LAYOUT (Clean Content-First)   -->
-<!-- ============================================== -->
-<article class="blog-card blog-card-horizontal relative flex flex-col justify-between h-full rounded-2xl sm:rounded-3xl overflow-hidden
-                bg-white dark:bg-[#0c1220] border border-slate-200/80 dark:border-slate-800/80
-                hover:shadow-md dark:hover:shadow-[0_12px_32px_-8px_rgba(0,0,0,0.5)] hover:border-slate-300 dark:hover:border-slate-700 transition-all duration-300 p-5 sm:p-6 lg:p-7 group">
+<!-- ===================================================================== -->
+<!-- HORIZONTAL CARD LAYOUT (Substack-Style Series vs. Article Hierarchy)  -->
+<!-- ===================================================================== -->
+<article class="blog-card blog-card-horizontal relative flex flex-col justify-between h-full rounded-2xl overflow-hidden
+                bg-white dark:bg-[#0c1220] border border-slate-200/85 dark:border-slate-800/85
+                hover:shadow-md dark:hover:shadow-[0_12px_32px_-8px_rgba(0,0,0,0.5)] hover:border-slate-300 dark:hover:border-slate-700 transition-all duration-300 p-5 sm:p-6 group">
 
-  <!-- Interactive Cyber-Cloud Accent Line (gently illuminates on hover) -->
-  <div class="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-sky-500/0 to-transparent group-hover:via-sky-500/80 dark:group-hover:via-sky-400/80 transition-all duration-500 pointer-events-none"></div>
-
-  <div>
-    <!-- Top Row: Category Badge & Series Breadcrumb -->
-    <div class="editorial-series-kicker flex items-center gap-2 mb-3.5 sm:mb-4 flex-wrap">
-      <a href="{{ `categories/` | relLangURL }}{{ $firstCat | urlize | lower }}/"
-         class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-mono font-bold uppercase tracking-wider {{ $badgeBg }} no-underline hover:opacity-90 transition-opacity shrink-0">
-        {{ $firstCat | humanize }}
-      </a>
-
-      {{ if $seriesName }}
-        <span class="text-slate-300 dark:text-slate-700 select-none">·</span>
-        <!-- Architectural Series Breadcrumb -->
-        <a href="{{ `series/` | relLangURL }}#{{ $seriesName | urlize }}"
-           class="series-pill-badge inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-sky-50/80 dark:bg-sky-950/40 hover:bg-sky-100 dark:hover:bg-sky-900/50 border border-sky-200/80 dark:border-sky-800/60 hover:border-sky-300 dark:hover:border-sky-700 text-sky-800 dark:text-sky-300 font-mono text-[11px] sm:text-xs transition-colors group/serieslink no-underline"
-           title="Part {{ $seriesOrder }} of {{ $seriesName }}">
-          <i class="fa-solid fa-layer-group text-[9px] text-sky-500"></i>
-          <span class="font-medium truncate max-w-[160px] sm:max-w-[260px]">{{ $seriesName }}</span>
-          <span class="text-slate-400 dark:text-slate-500 font-bold">›</span>
-          <span class="text-sky-600 dark:text-sky-400 font-semibold whitespace-nowrap tabular-nums">
-            Part {{ $seriesOrder }}{{ if gt $totalSeriesParts 0 }}/{{ $totalSeriesParts }}{{ end }}
-          </span>
-        </a>
-      {{ end }}
-    </div>
-
-    <!-- Main Content Area: Headline + Breathing Teaser (Left), Preview Thumbnail (Right) -->
-    <div class="flex items-start justify-between gap-5 sm:gap-7 lg:gap-8 mb-4">
-      <div class="flex-1 min-w-0">
-        <!-- Readable Headline with Crisp Editorial Scale -->
-        <h3 class="text-base sm:text-lg lg:text-[20px] font-bold text-slate-900 dark:text-white group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors line-clamp-2 leading-[1.36] tracking-tight mb-2" style="text-wrap: balance;">
-          <a href="{{ $page.RelPermalink }}" class="no-underline text-current hover:text-sky-600 dark:hover:text-sky-400">
-            {{ $cleanTitle }}
-          </a>
-        </h3>
-
-        <!-- Natural, Spacious Editorial Teaser -->
-        <p class="text-[13px] sm:text-sm lg:text-[14.5px] text-slate-600 dark:text-slate-300 leading-[1.66] font-normal line-clamp-2 sm:line-clamp-3 mb-0">
-          {{ $teaser }}
-        </p>
-      </div>
-
-      <!-- Preview Thumbnail -->
-      <a class="block w-14 h-14 rounded-xl overflow-hidden sm:w-28 sm:h-20 md:w-36 md:h-24 lg:w-40 lg:h-26 bg-slate-900 border border-slate-200 dark:border-slate-800 shrink-0 group-hover:scale-105 transition-transform duration-300 relative shadow-xs no-underline"
-         href="{{ $page.RelPermalink }}"
-         aria-label="Read: {{ $cleanTitle }}">
-        {{ with $page.Params.image }}
-          {{ partial "image" (dict "Src" . "Context" $page "Alt" $cleanTitle "Class" "w-full h-full object-cover" "Loading" "lazy") }}
-        {{ else }}
-          <div class="flex items-center justify-center h-full bg-slate-900 p-2 text-center font-mono text-xs text-slate-400">
-            {{ substr $firstCat 0 4 }}
-          </div>
-        {{ end }}
-      </a>
-    </div>
-
-    {{ if and $seriesName (gt $totalSeriesParts 1) }}
-      {{/* Resolve Contextual Next / Start Step so the bar stays 1-line and never overflows */}}
-      {{ $targetStepPage := false }}
-      {{ $targetStepLabel := "" }}
-      {{ range $idx, $sp := $sortedSeriesPages }}
-        {{ $pNum := add $idx 1 }}
-        {{ if eq $pNum (add $seriesOrder 1) }}
-          {{ $targetStepPage = $sp }}
-          {{ $targetStepLabel = cond $isItalian (printf "Prossimo: Parte %d" $pNum) (printf "Next: Part %d" $pNum) }}
-        {{ end }}
-      {{ end }}
-      {{ if not $targetStepPage }}
-        {{ $firstPart := index $sortedSeriesPages 0 }}
-        {{ if ne $firstPart.RelPermalink $page.RelPermalink }}
-          {{ $targetStepPage = $firstPart }}
-          {{ $targetStepLabel = cond $isItalian "Inizia da Parte 1" "Start at Part 1" }}
-        {{ end }}
-      {{ end }}
-
-      <!-- Compact, Bounded Series Stepper Strip (All Parts 01..N Fit in Scope Without Horizontal Clipping) -->
-      <div class="editorial-series-strip flex items-center justify-between gap-2.5 flex-wrap py-2 px-3 mb-3.5 rounded-xl bg-slate-50/80 dark:bg-slate-900/45 border border-slate-200/70 dark:border-slate-800/80">
-        <div class="flex items-center gap-1.5 flex-wrap">
-          <span class="font-mono text-xs font-medium text-slate-500 dark:text-slate-400 mr-1">
-            {{ if $isItalian }}Serie:{{ else }}Series:{{ end }}
-          </span>
-          {{ range $idx, $sp := $sortedSeriesPages }}
-            {{ $partNum := add $idx 1 }}
-            {{ $isCurrentPart := eq $sp.RelPermalink $page.RelPermalink }}
-            {{ $spTitle := $sp.Title }}
-            {{ $spTitle = replaceRE `^.*?(?:\([Pp]art\s*\d+\)|–\s*[Pp]art\s*\d+)[:\-–—]\s*` "" $spTitle }}
-            {{ $spTitle = replaceRE `\s*\([Pp]art\s*\d+\)$` "" $spTitle }}
-            {{ $spTitle = replaceRE `^(?:Data Engineering on GCP|mTLS for DevOps Engineers|TLS for DevOps Engineers|Passing the Red Hat OpenShift Administrator|EX280 – OpenShift Administrator Tips & Tricks|EX280 Tips & Tricks)\s*[:\-–—]\s*` "" $spTitle }}
-            {{ if eq (trim $spTitle " ") "" }}{{ $spTitle = $sp.Title }}{{ end }}
-
-            <a href="{{ $sp.RelPermalink }}"
-               {{ if $isCurrentPart }}aria-current="page"{{ end }}
-               title="Part {{ $partNum }}: {{ $spTitle }}"
-               class="editorial-series-step inline-flex items-center justify-center min-w-[26px] h-6 px-1.5 rounded-md font-mono text-xs font-bold tabular-nums no-underline transition-colors {{ if $isCurrentPart }}bg-sky-600 text-white dark:bg-sky-400 dark:text-slate-950 shadow-2xs{{ else if lt $partNum $seriesOrder }}bg-sky-100/80 dark:bg-sky-950/60 text-sky-700 dark:text-sky-300 hover:bg-sky-200/80 dark:hover:bg-sky-900/70{{ else }}bg-white dark:bg-slate-800/90 text-slate-600 dark:text-slate-400 border border-slate-200/80 dark:border-slate-700/80 hover:border-sky-400 hover:text-sky-600 dark:hover:text-sky-400{{ end }}">
-              {{ printf "%02d" $partNum }}
-            </a>
-          {{ end }}
-        </div>
-
-        {{ with $targetStepPage }}
-          <a href="{{ .RelPermalink }}"
-             class="font-mono text-xs font-semibold text-sky-600 dark:text-sky-400 hover:underline no-underline inline-flex items-center gap-1 shrink-0 ml-auto">
-            <span>{{ $targetStepLabel }}</span>
-            <span aria-hidden="true">→</span>
-          </a>
-        {{ end }}
-      </div>
-    {{ else }}
-      <!-- Technical Topic Tags Strip (For Standalone Posts) -->
-      {{ with $tags }}
-        <div class="flex flex-wrap gap-1.5 mb-3.5">
-          {{ range first 3 . }}
-            <span class="border border-slate-200/80 dark:border-slate-800 px-2 py-0.5 rounded text-xs font-mono text-slate-500 dark:text-slate-400 bg-slate-50/80 dark:bg-slate-900/40">
-              #{{ . }}
+  <!-- 2-Column Editorial Split: Story + Byline on Left, Properly Proportioned Artwork on Right -->
+  <div class="flex items-center justify-between gap-5 sm:gap-7 lg:gap-8">
+    <!-- Left Column: Series Eyebrow + Article Headline + 2-Line Deck + Footer Byline -->
+    <div class="flex-1 min-w-0 flex flex-col justify-between">
+      
+      <!-- 1. SERIES / TOPIC EYEBROW (Visually Distinct from Article Headline) -->
+      <div class="editorial-series-kicker flex items-center gap-2 mb-2 flex-wrap">
+        {{ if $seriesName }}
+          <a href="{{ `series/` | relLangURL }}#{{ $seriesName | urlize }}"
+             class="series-pill-badge inline-flex items-center gap-2 text-xs no-underline group/serieslink min-w-0"
+             title="{{ $seriesName }}">
+            <!-- Explicit Uppercase Mono Collection Label -->
+            <span class="inline-flex items-center gap-1.5 font-mono text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 shrink-0">
+              <span class="w-1.5 h-1.5 rounded-full bg-sky-500 dark:bg-sky-400"></span>
+              <span>{{ if $isItalian }}Serie{{ else }}Series{{ end }}</span>
             </span>
-          {{ end }}
-        </div>
-      {{ end }}
-    {{ end }}
-  </div>
+            <span class="text-slate-300 dark:text-slate-700 select-none shrink-0">/</span>
+            <!-- Series Title in Editorial Accent Color -->
+            <span class="font-semibold text-sky-700 dark:text-sky-400 group-hover/serieslink:text-sky-800 dark:group-hover/serieslink:text-sky-300 group-hover/serieslink:underline underline-offset-4 truncate transition-colors">
+              {{ $seriesName }}
+            </span>
+            <!-- Part Counter Pill -->
+            <span class="inline-flex items-center px-2 py-0.5 rounded-full bg-sky-50 dark:bg-sky-950/60 text-sky-700 dark:text-sky-300 border border-sky-200/80 dark:border-sky-800/70 font-mono text-xs font-semibold shrink-0 tabular-nums">
+              {{ if gt $totalSeriesParts 1 }}
+                {{ if $isItalian }}Parte {{ $seriesOrder }} di {{ $totalSeriesParts }}{{ else }}Part {{ $seriesOrder }} of {{ $totalSeriesParts }}{{ end }}
+              {{ else }}
+                {{ if $isItalian }}Parte 1{{ else }}Part 1{{ end }}
+              {{ end }}
+            </span>
+          </a>
+        {{ else }}
+          <a href="{{ `categories/` | relLangURL }}{{ $firstCat | urlize | lower }}/"
+             class="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-mono font-bold uppercase tracking-wider {{ $badgeBg }} no-underline hover:opacity-90 transition-opacity shrink-0">
+            {{ $firstCat | humanize }}
+          </a>
+        {{ end }}
+      </div>
 
-  <!-- Card Footer: Author + Date + Read Time + Bookmark -->
-  <div class="pt-3.5 sm:pt-4 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between gap-3 text-xs sm:text-[13px] text-slate-500 dark:text-slate-400 mt-auto">
-    <!-- Author Details -->
-    <div class="flex items-center gap-2 min-w-0 shrink-0">
-      {{ if $authorImage }}
-        <img src="{{ $authorImage | relURL }}" alt="{{ $authorName }}" class="w-6 h-6 rounded-full object-cover shrink-0" width="24" height="24" decoding="async" loading="lazy" onerror="this.onerror=null; this.src='{{ `/images/avatar.png` | relURL }}';">
-      {{ else }}
-        <div class="w-6 h-6 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-white font-bold text-xs flex items-center justify-center shrink-0">
-          {{ substr $authorName 0 1 }}
+      <!-- 2. ARTICLE HEADLINE (High-Contrast Primary Focus) -->
+      <h3 class="text-lg sm:text-xl lg:text-[21px] font-bold text-slate-900 dark:text-white line-clamp-2 leading-[1.34] tracking-tight mb-2" style="text-wrap: balance;">
+        <a href="{{ $page.RelPermalink }}" class="no-underline text-current hover:text-sky-600 dark:hover:text-sky-400 transition-colors">
+          {{ $cleanTitle }}
+        </a>
+      </h3>
+
+      <!-- 3. 2-LINE EDITORIAL SUMMARY -->
+      <p class="text-[13.5px] sm:text-sm lg:text-[15px] text-slate-600 dark:text-slate-300 leading-[1.6] font-normal line-clamp-2 mb-4">
+        {{ $teaser }}
+      </p>
+
+      <!-- 4. COMPACT BYLINE & SERIES ACTION ROW -->
+      <div class="flex items-center justify-between gap-3 text-xs text-slate-500 dark:text-slate-400">
+        <div class="flex items-center gap-2 min-w-0">
+          {{ if $authorImage }}
+            <img src="{{ $authorImage | relURL }}" alt="{{ $authorName }}" class="w-6 h-6 rounded-full object-cover shrink-0" width="24" height="24" decoding="async" loading="lazy" onerror="this.onerror=null; this.src='{{ `/images/avatar.png` | relURL }}';">
+          {{ else }}
+            <div class="w-6 h-6 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-white font-bold text-xs flex items-center justify-center shrink-0">
+              {{ substr $authorName 0 1 }}
+            </div>
+          {{ end }}
+          <div class="flex items-center gap-1.5 text-xs font-medium text-slate-700 dark:text-slate-300 whitespace-nowrap min-w-0">
+            <span class="font-semibold text-slate-900 dark:text-white truncate">{{ $authorName }}</span>
+            <span class="text-slate-300 dark:text-slate-600">·</span>
+            <span class="text-xs font-mono text-slate-500 dark:text-slate-400">{{ $page.Date.Format "Jan 02, 2006" }}</span>
+            <span class="text-slate-300 dark:text-slate-600 hidden sm:inline">·</span>
+            <span class="text-xs font-mono text-slate-500 dark:text-slate-400 hidden sm:inline-flex items-center gap-1">
+              {{ $page.ReadingTime }} {{ i18n "min_read" }}
+            </span>
+          </div>
         </div>
-      {{ end }}
-      <div class="flex items-center gap-1.5 text-xs sm:text-[13px] font-medium text-slate-800 dark:text-slate-200 whitespace-nowrap">
-        <span class="font-semibold text-slate-900 dark:text-white truncate">{{ $authorName }}</span>
-        <span class="text-slate-400 dark:text-slate-600">·</span>
-        <span class="font-mono text-xs text-slate-500 dark:text-slate-400">{{ $page.Date.Format "Jan 02, 2006" }}</span>
+
+        <div class="flex items-center gap-2.5 shrink-0">
+          {{ if and $seriesName (gt $totalSeriesParts 1) }}
+            <div class="editorial-series-strip hidden sm:flex items-center gap-2">
+              <a href="{{ `series/` | relLangURL }}#{{ $seriesName | urlize }}"
+                 class="editorial-series-step text-xs font-mono font-semibold text-slate-500 dark:text-slate-400 hover:text-sky-600 dark:hover:text-sky-400 no-underline transition-colors whitespace-nowrap">
+                {{ if $isItalian }}Vedi tutte le {{ $totalSeriesParts }} parti →{{ else }}All {{ $totalSeriesParts }} parts →{{ end }}
+              </a>
+            </div>
+          {{ end }}
+
+          <button
+            type="button"
+            data-bookmark-btn
+            data-article-url="{{ $page.RelPermalink }}"
+            data-article-title="{{ $cleanTitle }}"
+            data-article-category="{{ $firstCat }}"
+            data-article-readtime="{{ $page.ReadingTime }} {{ i18n `min_read` }}"
+            class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg flex items-center justify-center text-slate-400 hover:text-sky-600 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+            aria-label="Save {{ $cleanTitle }} for later"
+            title="{{ i18n `save_for_later` }}">
+            <i class="fa-regular fa-bookmark text-xs"></i>
+          </button>
+        </div>
       </div>
     </div>
 
-    <!-- Read Time + Bookmark -->
-    <div class="flex items-center gap-2.5 sm:gap-3 shrink-0">
-      <span class="font-mono text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1">
-        <i class="fa-regular fa-clock text-xs"></i> {{ $page.ReadingTime }} {{ i18n "min_read" }}
-      </span>
-
-      <button
-        type="button"
-        data-bookmark-btn
-        data-article-url="{{ $page.RelPermalink }}"
-        data-article-title="{{ $cleanTitle }}"
-        data-article-category="{{ $firstCat }}"
-        data-article-readtime="{{ $page.ReadingTime }} {{ i18n `min_read` }}"
-        class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg flex items-center justify-center text-slate-400 hover:text-sky-600 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
-        aria-label="Save {{ $cleanTitle }} for later"
-        title="{{ i18n `save_for_later` }}">
-        <i class="fa-regular fa-bookmark text-xs"></i>
-      </button>
-    </div>
+    <!-- Right Column: Properly Proportioned 3:2 Editorial Artwork Thumbnail (Valid Tailwind Height Classes) -->
+    <a class="block w-14 h-14 rounded-xl overflow-hidden sm:w-36 sm:h-24 md:w-44 md:h-28 lg:w-48 lg:h-32 bg-slate-900 border border-slate-200/80 dark:border-slate-800 shrink-0 group-hover:scale-[1.02] transition-transform duration-300 relative shadow-xs no-underline"
+       href="{{ $page.RelPermalink }}"
+       aria-label="Read: {{ $cleanTitle }}">
+      {{ with $page.Params.image }}
+        {{ partial "image" (dict "Src" . "Context" $page "Alt" $cleanTitle "Class" "w-full h-full object-cover" "Loading" "lazy") }}
+      {{ else }}
+        <div class="flex items-center justify-center h-full bg-slate-900 p-2 text-center font-mono text-xs text-slate-400">
+          {{ substr $firstCat 0 4 }}
+        </div>
+      {{ end }}
+    </a>
   </div>
 </article>
 {{ end }}
