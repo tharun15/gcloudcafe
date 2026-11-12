@@ -179,12 +179,12 @@
         <span class="text-slate-300 dark:text-slate-700 select-none">·</span>
         <!-- Architectural Series Breadcrumb -->
         <a href="{{ `series/` | relLangURL }}#{{ $seriesName | urlize }}"
-           class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-sky-50/80 dark:bg-sky-950/40 hover:bg-sky-100 dark:hover:bg-sky-900/50 border border-sky-200/80 dark:border-sky-800/60 hover:border-sky-300 dark:hover:border-sky-700 text-sky-800 dark:text-sky-300 font-mono text-[11px] sm:text-xs transition-colors group/serieslink no-underline"
+           class="series-pill-badge inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-sky-50/80 dark:bg-sky-950/40 hover:bg-sky-100 dark:hover:bg-sky-900/50 border border-sky-200/80 dark:border-sky-800/60 hover:border-sky-300 dark:hover:border-sky-700 text-sky-800 dark:text-sky-300 font-mono text-[11px] sm:text-xs transition-colors group/serieslink no-underline"
            title="Part {{ $seriesOrder }} of {{ $seriesName }}">
           <i class="fa-solid fa-layer-group text-[9px] text-sky-500"></i>
-          <span class="font-medium truncate max-w-[150px] sm:max-w-[220px]">{{ $seriesName }}</span>
+          <span class="font-medium truncate max-w-[150px] sm:max-w-[240px]">{{ $seriesName }}</span>
           <span class="text-slate-400 dark:text-slate-500 font-bold">›</span>
-          <span class="text-sky-600 dark:text-sky-400 font-semibold whitespace-nowrap">
+          <span class="text-sky-600 dark:text-sky-400 font-semibold whitespace-nowrap tabular-nums">
             Part {{ $seriesOrder }}{{ if gt $totalSeriesParts 0 }}/{{ $totalSeriesParts }}{{ end }}
           </span>
         </a>

@@ -129,4 +129,34 @@ describe('Homepage & Site-Wide Usability Heuristics & Accessibility Suite', () =
     expect(jsContent).toContain('function activateStandalone(');
     expect(jsContent).toContain('evaluateActiveFeedCard();');
   });
+
+  it('establishes clear bidirectional Post <-> Learning Track relationship in sidebar and feed cards', () => {
+    const sidebarHtml = fs.readFileSync(path.join(rootDir, 'layouts/partials/components/homepage-sidebar.html'), 'utf8');
+    const heroHtml = fs.readFileSync(path.join(rootDir, 'layouts/partials/components/blog-hero.html'), 'utf8');
+    const cardHtml = fs.readFileSync(path.join(rootDir, 'layouts/partials/components/blog-card.html'), 'utf8');
+    const jsContent = fs.readFileSync(path.join(rootDir, 'assets/js/blog-enhancements.js'), 'utf8');
+    const scssContent = fs.readFileSync(path.join(rootDir, 'assets/scss/custom.scss'), 'utf8');
+
+    // Explicit Active Companion Card + Context Bridge connecting focused article -> parent track
+    expect(sidebarHtml).toContain('id="sidebar-companion-card"');
+    expect(sidebarHtml).toContain('id="sidebar-context-bridge"');
+    expect(sidebarHtml).toContain('id="sidebar-series-context-view"');
+    expect(sidebarHtml).toContain('id="sidebar-context-post-title"');
+    expect(sidebarHtml).toContain('id="sidebar-context-series-name"');
+    expect(sidebarHtml).toContain('id="sidebar-context-part-badge"');
+    expect(sidebarHtml).toContain('id="sidebar-companion-progress"');
+    expect(sidebarHtml).toContain('id="sidebar-companion-playlist"');
+
+    // Interactive track toggle buttons with accessible aria-expanded & aria-controls
+    expect(sidebarHtml).toContain('track-toggle-btn');
+    expect(sidebarHtml).toContain('aria-expanded=');
+
+    // Feed cards expose subtle desktop-only sync styling paired with .is-feed-tracked
+    expect(heroHtml).toContain('series-pill-badge');
+    expect(cardHtml).toContain('series-pill-badge');
+    expect(jsContent).toContain('markFeedCardSynced(');
+    expect(jsContent).toContain('is-feed-tracked');
+    expect(jsContent).toContain('gcloudcafe:feed-updated');
+    expect(scssContent).toContain('.is-feed-tracked');
+  });
 });
