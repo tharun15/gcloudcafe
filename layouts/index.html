@@ -40,7 +40,7 @@
           {{ if .Params.series }}
             {{ $featuredCleanTitle = replaceRE `^.*?(?:\([Pp]art\s*\d+\)|–\s*[Pp]art\s*\d+)[:\-–—]\s*` "" $featuredCleanTitle }}
             {{ $featuredCleanTitle = replaceRE `\s*\([Pp]art\s*\d+\)$` "" $featuredCleanTitle }}
-            {{ $featuredCleanTitle = replaceRE `^(?:Data Engineering on GCP|mTLS for DevOps Engineers):\s*` "" $featuredCleanTitle }}
+            {{ $featuredCleanTitle = replaceRE `^(?:Data Engineering on GCP|mTLS for DevOps Engineers|TLS for DevOps Engineers|Passing the Red Hat OpenShift Administrator|EX280 – OpenShift Administrator Tips & Tricks|EX280 Tips & Tricks)\s*[:\-–—]\s*` "" $featuredCleanTitle }}
             {{ if eq (trim $featuredCleanTitle " ") "" }}{{ $featuredCleanTitle = .Title }}{{ end }}
           {{ end }}
         {{ end }}
@@ -58,12 +58,12 @@
         <!-- Category & Topic Filter Navigation -->
         <section aria-labelledby="articles-heading" class="w-full pt-1">
           <div class="w-full mb-6 sm:mb-7">
-            <div class="flex items-center justify-center sm:justify-start pb-3.5 border-b border-slate-200 dark:border-slate-800">
-              <div class="sr-only">
-                <h2 id="articles-heading" class="sr-only">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-3.5 border-b border-slate-200 dark:border-slate-800">
+              <div class="flex items-baseline gap-2.5">
+                <h2 id="articles-heading" class="text-sm sm:text-base font-extrabold tracking-tight text-slate-900 dark:text-white m-0">
                   {{ if eq site.Language.Lang "it" }}Tutti gli Articoli{{ else }}Latest Architecture Articles{{ end }}
                 </h2>
-                <p id="articles-feed-count" class="sr-only">
+                <p id="articles-feed-count" class="font-mono text-xs text-slate-500 dark:text-slate-400 m-0">
                   {{ len $gridPosts }} {{ if eq site.Language.Lang "it" }}articoli di ingegneria{{ else }}engineering guides &amp; blueprints{{ end }}
                 </p>
               </div>
@@ -100,7 +100,7 @@
           </div>
 
           <!-- 1-Column Articles Feed (Spacious & Engaging Stream) -->
-          <div class="flex flex-col space-y-6 sm:space-y-7 lg:space-y-8 w-full" id="homepage-articles-feed">
+          <div class="flex flex-col space-y-5 sm:space-y-6 w-full" id="homepage-articles-feed">
             {{ if eq (len $gridPosts) 0 }}
               <div class="text-center py-16 bg-white dark:bg-[#0c1220] rounded-xl border border-slate-200 dark:border-slate-800">
                 <p class="text-slate-600 dark:text-slate-400 font-semibold">No additional articles found.</p>
@@ -118,7 +118,7 @@
                 {{ if $post.Params.series }}
                   {{ $postCleanTitle = replaceRE `^.*?(?:\([Pp]art\s*\d+\)|–\s*[Pp]art\s*\d+)[:\-–—]\s*` "" $postCleanTitle }}
                   {{ $postCleanTitle = replaceRE `\s*\([Pp]art\s*\d+\)$` "" $postCleanTitle }}
-                  {{ $postCleanTitle = replaceRE `^(?:Data Engineering on GCP|mTLS for DevOps Engineers):\s*` "" $postCleanTitle }}
+                  {{ $postCleanTitle = replaceRE `^(?:Data Engineering on GCP|mTLS for DevOps Engineers|TLS for DevOps Engineers|Passing the Red Hat OpenShift Administrator|EX280 – OpenShift Administrator Tips & Tricks|EX280 Tips & Tricks)\s*[:\-–—]\s*` "" $postCleanTitle }}
                   {{ if eq (trim $postCleanTitle " ") "" }}{{ $postCleanTitle = $post.Title }}{{ end }}
                 {{ end }}
                 {{ if lt $idx 9 }}

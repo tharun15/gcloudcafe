@@ -159,4 +159,19 @@ describe('Homepage & Site-Wide Usability Heuristics & Accessibility Suite', () =
     expect(jsContent).toContain('gcloudcafe:feed-updated');
     expect(scssContent).toContain('.is-feed-tracked');
   });
+
+  it('renders Substack/Medium editorial card hierarchy with inline series progression strips', () => {
+    const heroHtml = fs.readFileSync(path.join(rootDir, 'layouts/partials/components/blog-hero.html'), 'utf8');
+    const cardHtml = fs.readFileSync(path.join(rootDir, 'layouts/partials/components/blog-card.html'), 'utf8');
+
+    // Dedicated Series Kicker Banner & Inline Series Progression Strip in both Hero and Feed Cards
+    expect(heroHtml).toContain('editorial-series-kicker');
+    expect(heroHtml).toContain('editorial-series-strip');
+    expect(heroHtml).toContain('editorial-series-step');
+
+    expect(cardHtml).toContain('editorial-series-kicker');
+    expect(cardHtml).toContain('editorial-series-strip');
+    expect(cardHtml).toContain('editorial-series-step');
+    expect(cardHtml).toContain('Series progression:');
+  });
 });
