@@ -5,7 +5,7 @@
   {{ $groupedSeries := $seriesPosts.GroupByParam "series" }}
   {{ $allCount := len $groupedSeries }}
 
-  {{/* Uniform series feed: featured series metadata helper */}}
+  {{/* Featured series metadata helper */}}
   {{ $featuredPosts := where (sort $seriesPosts "Date" "desc") ".Params.featured" true }}
   {{ $featuredSeriesKey := "" }}
   {{ range $featuredPosts }}
@@ -14,16 +14,20 @@
     {{ end }}
   {{ end }}
 
-  {{/* 2. Compute domain track counts dynamically for filter chips */}}
+  {{/* 2. Compute domain track counts and total curriculum telemetry */}}
   {{ $gcpCount := 0 }}
   {{ $secCount := 0 }}
   {{ $devopsCount := 0 }}
+  {{ $totalPartsAcrossSite := 0 }}
+  {{ $totalMinutesAcrossSite := 0 }}
 
   {{ range $groupedSeries }}
     {{ $isGcp := false }}
     {{ $isSec := false }}
     {{ $isDev := false }}
+    {{ $totalPartsAcrossSite = add $totalPartsAcrossSite (len .Pages) }}
     {{ range .Pages }}
+      {{ $totalMinutesAcrossSite = add $totalMinutesAcrossSite .ReadingTime }}
       {{ range .Params.categories }}
         {{ $c := lower . }}
         {{ if or (in $c "google") (in $c "cloud") (in $c "ai") }}
@@ -42,70 +46,153 @@
     {{ if $isDev }}{{ $devopsCount = add $devopsCount 1 }}{{ end }}
   {{ end }}
 
-  <!-- Series Content Hub (Netflix-style Content-First Masterclass Grid) -->
-  <section class="series-hub-backdrop relative pt-4 sm:pt-6 pb-20 sm:pb-28 overflow-hidden min-h-screen" aria-labelledby="series-tracks-heading">
-    <!-- Ambient Technical Glow and Architectural Grid Matrix -->
-    <div class="series-ambient-glow pointer-events-none absolute -top-24 left-1/2 -translate-x-1/2 w-[980px] max-w-[96vw] h-[480px] rounded-full blur-[110px] z-0"></div>
-    <div class="series-blueprint-grid pointer-events-none absolute inset-0 z-0"></div>
-
+  <!-- Engineering Series Curriculum Explorer (Homogenous with Pulse & Brew) -->
+  <section id="series-explorer-section" class="pulse-hero-backdrop relative pt-4 sm:pt-6 pb-20 sm:pb-28 overflow-hidden min-h-screen" aria-labelledby="series-tracks-heading">
     <div class="bytedepth-container relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      
-      <!-- Netflix-Style Compact Navigation Bar (Immediate Content Focus) -->
-      <div class="mb-6 sm:mb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b border-slate-200/80 dark:border-slate-800/80 pb-4">
-        <div class="flex items-center gap-3">
-          <div class="w-1.5 h-6 rounded-full bg-sky-500"></div>
-          <h1 id="series-tracks-heading" class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
-            Engineering Series
-          </h1>
-          <span class="font-mono text-xs text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800/80 border border-slate-200/60 dark:border-slate-700/60 px-2.5 py-0.5 rounded-full font-bold">
-            {{ $allCount }} Masterclasses
-          </span>
+
+      <!-- Unified Telemetry Header (Matches Cloud Pulse & Cloud Brew) -->
+      <div class="mb-5 sm:mb-6">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-2.5">
+          <!-- Left Status Pill -->
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-500/10 dark:bg-sky-500/15 border border-sky-500/25 dark:border-sky-500/35 shadow-2xs">
+            <i class="fa-solid fa-layer-group text-sky-600 dark:text-sky-400 text-xs"></i>
+            <span class="font-mono text-[11px] font-black uppercase tracking-wider text-sky-700 dark:text-sky-300">
+              STRUCTURED LEARNING TRACKS
+            </span>
+            <span class="text-slate-300 dark:text-slate-700 select-none">·</span>
+            <span class="font-mono text-[10px] font-bold text-slate-600 dark:text-slate-300">
+              STEP-BY-STEP CURRICULUM
+            </span>
+          </div>
+
+          <!-- Right Curriculum Telemetry Pill -->
+          <div class="hidden sm:inline-flex items-center gap-2.5 px-3 py-1 rounded-full bg-white/80 dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-800/80 font-mono text-[11px] text-slate-600 dark:text-slate-300 shadow-2xs">
+            <span class="inline-flex items-center gap-1.5 font-bold text-slate-800 dark:text-slate-100">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+              {{ $allCount }} Masterclasses
+            </span>
+            <span class="text-slate-300 dark:text-slate-700">·</span>
+            <span>{{ $totalPartsAcrossSite }} Total Lessons</span>
+            <span class="text-slate-300 dark:text-slate-700">·</span>
+            <span class="text-sky-600 dark:text-sky-400 font-bold">~{{ $totalMinutesAcrossSite }}m Deep Dives</span>
+          </div>
         </div>
 
-        <!-- Domain Filter Segmented Control -->
-        <div class="inline-flex items-center gap-1.5 p-1 rounded-full bg-slate-100/90 dark:bg-slate-800/80 border border-slate-200/70 dark:border-slate-700/70 overflow-x-auto no-scrollbar max-w-full"
-             role="tablist"
-             aria-label="Filter series by technical domain">
-          <button type="button" 
-                  data-series-filter="all"
-                  class="series-filter-btn pulse-filter-chip is-active category-tab-active"
-                  aria-selected="true"
-                  role="tab">
-            All Tracks ({{ $allCount }})
-          </button>
-          <button type="button" 
-                  data-series-filter="google-cloud"
-                  class="series-filter-btn pulse-filter-chip"
-                  aria-selected="false"
-                  role="tab">
-            Google Cloud ({{ $gcpCount }})
-          </button>
-          <button type="button" 
-                  data-series-filter="security"
-                  class="series-filter-btn pulse-filter-chip"
-                  aria-selected="false"
-                  role="tab">
-            Security &amp; PKI ({{ $secCount }})
-          </button>
-          <button type="button" 
-                  data-series-filter="devops"
-                  class="series-filter-btn pulse-filter-chip"
-                  aria-selected="false"
-                  role="tab">
-            Containers &amp; DevOps ({{ $devopsCount }})
-          </button>
+        <!-- Headline -->
+        <h1 id="series-tracks-heading" class="text-2xl sm:text-3xl lg:text-[32px] font-black tracking-tight text-slate-900 dark:text-white mb-2 leading-[1.15]">
+          Engineering Series
+          <span class="font-bold text-lg sm:text-xl lg:text-2xl block sm:inline mt-0.5 sm:mt-0 sm:ml-2">
+            <span class="text-sky-600 dark:text-sky-400 font-mono font-normal">/</span>
+            <span class="bg-gradient-to-r from-sky-600 via-blue-600 to-indigo-600 dark:from-sky-400 dark:via-blue-300 dark:to-indigo-300 bg-clip-text text-transparent">
+              Interactive Series &amp; Curriculum Explorer
+            </span>
+          </span>
+        </h1>
+
+        <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed max-w-3xl mb-0">
+          Explore every multi-part engineering series and its individual lessons in one place. Follow the numbered architectural progression from core concepts to production labs—or jump straight to the exact part you need.
+        </p>
+      </div>
+
+      <!-- Integrated Glassmorphic Command & Filter Deck -->
+      <div class="p-3 sm:p-4 rounded-2xl bg-white/85 dark:bg-slate-900/85 backdrop-blur-md border border-slate-200/90 dark:border-slate-800/90 shadow-sm space-y-3 mb-7">
+        <!-- Row 1: Instant Search Across Series & Lessons + Expand All Toggle -->
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+          <div class="relative flex-1 max-w-md">
+            <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400 dark:text-slate-500">
+              <i class="fa-solid fa-magnifying-glass text-xs"></i>
+            </span>
+            <input
+              type="text"
+              id="series-search-input"
+              placeholder="Search tracks or specific parts (e.g. mTLS, Dataform, EX280, Cline)..."
+              autocomplete="off"
+              class="w-full pl-9 pr-9 py-2 text-xs font-mono rounded-xl bg-slate-50/90 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-hidden focus:ring-1 focus:ring-sky-500 focus:border-sky-500 transition-all shadow-2xs"
+            />
+            <button
+              id="series-search-clear"
+              type="button"
+              class="hidden absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer text-xs border-0 bg-transparent"
+              aria-label="Clear search">
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+          </div>
+
+          <div class="flex items-center justify-between sm:justify-end gap-3 text-xs font-mono">
+            <div class="flex items-center gap-1.5 font-bold text-slate-700 dark:text-slate-300 text-xs shrink-0">
+              <span class="w-1.5 h-1.5 rounded-full bg-sky-500"></span>
+              <span id="series-result-count">Showing all {{ $allCount }} tracks</span>
+            </div>
+
+            <button
+              type="button"
+              id="series-expand-all-btn"
+              data-expanded="false"
+              class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-mono font-semibold bg-slate-100 hover:bg-sky-50 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 hover:text-sky-700 dark:text-slate-200 dark:hover:text-sky-300 border border-slate-200/80 dark:border-slate-700/80 transition-all cursor-pointer shrink-0">
+              <i class="fa-solid fa-angles-down text-[10px]"></i>
+              <span>Expand All Parts</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="h-px bg-slate-200/70 dark:bg-slate-800/70"></div>
+
+        <!-- Row 2: Domain Filter Segmented Control -->
+        <div class="flex items-center gap-2.5 flex-wrap">
+          <span class="inline-flex items-center gap-1.5 text-[10px] sm:text-[11px] font-mono uppercase tracking-wider text-slate-400 dark:text-slate-500 font-bold shrink-0 px-0.5">
+            <i class="fa-solid fa-compass text-sky-500 text-[10px]"></i> Domain:
+          </span>
+          <div class="inline-flex items-center gap-1.5 p-1 rounded-full bg-slate-100/90 dark:bg-slate-800/80 border border-slate-200/70 dark:border-slate-700/70 overflow-x-auto no-scrollbar max-w-full"
+               role="tablist"
+               aria-label="Filter series by technical domain">
+            <button type="button"
+                    data-series-filter="all"
+                    class="series-filter-btn pulse-filter-chip is-active category-tab-active"
+                    aria-selected="true"
+                    role="tab">
+              All Tracks ({{ $allCount }})
+            </button>
+            <button type="button"
+                    data-series-filter="google-cloud"
+                    class="series-filter-btn pulse-filter-chip"
+                    aria-selected="false"
+                    role="tab">
+              <i class="fa-brands fa-google text-[10px]"></i> Google Cloud ({{ $gcpCount }})
+            </button>
+            <button type="button"
+                    data-series-filter="security"
+                    class="series-filter-btn pulse-filter-chip"
+                    aria-selected="false"
+                    role="tab">
+              <i class="fa-solid fa-shield-halved text-[10px]"></i> Security &amp; PKI ({{ $secCount }})
+            </button>
+            <button type="button"
+                    data-series-filter="devops"
+                    class="series-filter-btn pulse-filter-chip"
+                    aria-selected="false"
+                    role="tab">
+              <i class="fa-solid fa-cubes text-[10px]"></i> Containers &amp; DevOps ({{ $devopsCount }})
+            </button>
+          </div>
         </div>
       </div>
 
-      <!-- Netflix-Style Multi-Column Grid (Independent Card Dimensions) -->
-      <div id="series-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-6 sm:gap-7 items-start">
+      <!-- Spacious 2-Column Interactive Masterclass Explorer Grid -->
+      <div id="series-grid" class="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-7 items-start">
         {{ range $groupedSeries }}
           {{ $sorted := sort .Pages ".Params.series_order" "asc" }}
           {{ $part1 := index $sorted 0 }}
           {{ $totalParts := len $sorted }}
           {{ $totalMin := 0 }}
+          {{ $labCount := 0 }}
+          {{ $searchHaystack := lower .Key }}
+
           {{ range $sorted }}
             {{ $totalMin = add $totalMin .ReadingTime }}
+            {{ $searchHaystack = printf "%s %s %s" $searchHaystack (lower .Title) (lower (.Params.description | default "")) }}
+            {{ if or (in (lower .Title) "lab") (in (lower .Title) "hands-on") }}
+              {{ $labCount = add $labCount 1 }}
+            {{ end }}
           {{ end }}
 
           {{ $coverImage := "" }}
@@ -149,135 +236,255 @@
             {{ end }}
           {{ end }}
 
-          <article data-series-card 
-               id="{{ .Key | urlize }}"
-               data-domains="{{ delimit $cardDomains " " }}"
-               class="scroll-mt-24 series-card flex flex-col self-start w-full rounded-2xl bg-white/95 dark:bg-[#0c1220]/95 backdrop-blur-md border border-slate-200/80 dark:border-slate-800/80 overflow-hidden shadow-xs hover:border-sky-500/50 dark:hover:border-sky-500/50 hover:shadow-xl dark:hover:shadow-[0_16px_36px_rgba(2,132,199,0.14)] transition-all duration-300 group">
-            
-            <!-- Netflix Poster Cover Image (Aspect 16:9 with Cinematic Gradient Overlay) -->
-            {{ if $coverImage }}
-            <a href="{{ $part1.RelPermalink }}" class="relative block aspect-[16/9] w-full overflow-hidden bg-slate-950 no-underline group/cover">
-              <img src="{{ $coverImage | relURL }}" 
-                   alt="{{ .Key }}" 
-                   class="w-full h-full object-cover group-hover/cover:scale-105 transition-transform duration-500" 
-                   loading="lazy">
-              <!-- Dark Cinematic Gradient Overlay -->
-              <div class="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-slate-950/20 to-transparent pointer-events-none"></div>
+          {{ $seriesDesc := "" }}
+          {{ with $part1.Params.series_description }}
+            {{ $seriesDesc = . }}
+          {{ else }}
+            {{ $seriesDesc = $part1.Params.description | default $part1.Summary | plainify | truncate 180 }}
+          {{ end }}
+          {{ $searchHaystack = printf "%s %s %s" $searchHaystack (lower $seriesDesc) (lower $primaryCardCat) }}
 
-              <!-- Bottom Overlay Badges -->
-              <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between z-10 pointer-events-none">
-                <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md font-mono text-[11px] font-semibold bg-slate-900/85 backdrop-blur-md text-sky-400 border border-white/10 shadow-xs">
-                  <i class="fa-solid fa-layer-group text-[10px]"></i>
-                  {{ $totalParts }} Part{{ if gt $totalParts 1 }}s{{ end }}
-                </span>
-                <span class="font-mono text-[11px] font-medium text-slate-300 bg-slate-900/85 backdrop-blur-md px-2 py-0.5 rounded-md border border-white/10 shadow-xs">
-                  ~{{ $totalMin }}m
-                </span>
-              </div>
-            </a>
-            {{ end }}
+          {{ $inlineLimit := 3 }}
+          {{ $hasOverflow := gt $totalParts $inlineLimit }}
+          {{ $overflowCount := sub $totalParts $inlineLimit }}
 
-            <!-- Card Content Body -->
-            <div class="flex flex-col p-5">
-              
-              <!-- Category Pill -->
-              <div class="flex items-center gap-2 mb-2.5">
-                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full font-mono text-[10px] font-bold uppercase tracking-wider bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200/60 dark:border-slate-700/60">
-                  {{ $primaryCardCat }}
-                </span>
-              </div>
+          <article
+            data-series-card
+            id="{{ .Key | urlize }}"
+            data-domains="{{ delimit $cardDomains " " }}"
+            data-search="{{ $searchHaystack }}"
+            class="scroll-mt-24 series-card flex flex-col self-start w-full rounded-2xl bg-white dark:bg-[#0c1220] border border-slate-200/90 dark:border-slate-800/90 overflow-hidden shadow-sm hover:border-sky-500/50 dark:hover:border-sky-500/50 hover:shadow-xl dark:hover:shadow-[0_16px_36px_rgba(2,132,199,0.14)] transition-all duration-300 group relative">
 
-              <!-- Series Title -->
-              <h2 class="text-base sm:text-lg font-bold tracking-tight text-slate-900 dark:text-white mb-2 leading-snug min-h-[2.75rem]">
-                <a href="{{ $part1.RelPermalink }}" class="no-underline text-inherit group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors line-clamp-2">
-                  {{ .Key }}
-                </a>
-              </h2>
+            <!-- Top Gradient Accent Strip -->
+            <div class="h-1 w-full bg-gradient-to-r from-sky-500 via-blue-600 to-indigo-500 opacity-90"></div>
 
-              <!-- Description -->
-              <p class="text-xs sm:text-[13px] text-slate-600 dark:text-slate-300 line-clamp-2 leading-relaxed mb-4 font-normal min-h-[2.5rem]">
-                {{ with $part1.Params.series_description }}
-                  {{ . }}
-                {{ else }}
-                  {{ $part1.Params.description | default $part1.Summary | plainify | truncate 135 }}
+            <!-- 1. Track Identity Header (Horizontal Split on Desktop, Zero Cramping) -->
+            <div class="p-5 sm:p-6 pb-4 border-b border-slate-100 dark:border-slate-800/80">
+              <div class="flex flex-col sm:flex-row sm:items-start gap-4">
+                {{ if $coverImage }}
+                  <a href="{{ $part1.RelPermalink }}" class="relative block w-full sm:w-40 md:w-44 aspect-[16/10] rounded-xl overflow-hidden bg-slate-950 shrink-0 border border-slate-200/60 dark:border-slate-800 no-underline group/cover shadow-xs">
+                    <img
+                      src="{{ $coverImage | relURL }}"
+                      alt="{{ .Key }}"
+                      class="w-full h-full object-cover group-hover/cover:scale-105 transition-transform duration-500"
+                      loading="lazy"
+                    />
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/15 to-transparent pointer-events-none"></div>
+                    <div class="absolute bottom-2 left-2 right-2 flex items-center justify-between z-10 pointer-events-none">
+                      <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded font-mono text-[10px] font-bold bg-slate-900/90 text-sky-400 border border-white/10">
+                        <i class="fa-solid fa-layer-group text-[9px]"></i>
+                        {{ $totalParts }} Part{{ if gt $totalParts 1 }}s{{ end }}
+                      </span>
+                      <span class="font-mono text-[10px] font-semibold text-slate-200 bg-slate-900/90 px-1.5 py-0.5 rounded border border-white/10">
+                        ~{{ $totalMin }}m
+                      </span>
+                    </div>
+                  </a>
                 {{ end }}
-              </p>
 
-              <!-- Highly Intuitive Interactive Syllabus Drawer Button -->
-              <details class="series-card-drawer group/drawer mb-4 transition-all duration-200">
-                <summary class="list-none [&::-webkit-details-marker]:hidden flex items-center justify-between gap-2 px-3 py-2.5 rounded-xl bg-slate-50/90 dark:bg-slate-800/60 border border-slate-200/90 dark:border-slate-700/80 hover:bg-sky-50/70 dark:hover:bg-slate-800 hover:border-sky-400/80 dark:hover:border-sky-500/80 cursor-pointer select-none transition-all duration-200 group-open/drawer:rounded-b-none group-open/drawer:border-b-transparent group-open/drawer:bg-sky-50/60 dark:group-open/drawer:bg-sky-950/40 group-open/drawer:border-sky-300 dark:group-open/drawer:border-sky-700 shadow-2xs hover:shadow-xs"
-                         title="Click to expand curriculum lessons below"
-                         aria-label="Toggle curriculum syllabus and lessons">
-                  <div class="flex items-center gap-2 min-w-0">
-                    <span class="w-6 h-6 rounded-md bg-sky-500/10 dark:bg-sky-500/20 text-sky-600 dark:text-sky-400 flex items-center justify-center shrink-0 border border-sky-500/20">
-                      <i class="fa-solid fa-list-check text-[11px]"></i>
+                <div class="flex-1 min-w-0">
+                  <!-- Domain & Track Telemetry Row -->
+                  <div class="flex items-center flex-wrap gap-1.5 mb-2">
+                    <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md font-mono text-[10px] font-bold uppercase tracking-wider bg-sky-500/10 dark:bg-sky-500/15 text-sky-700 dark:text-sky-300 border border-sky-500/20">
+                      {{ $primaryCardCat }}
                     </span>
-                    <span class="font-bold text-xs text-slate-800 dark:text-slate-100 whitespace-nowrap">
-                      Syllabus &amp; Lessons
-                    </span>
-                    <span class="font-mono text-[10px] font-bold px-1.5 py-0.2 rounded-full bg-sky-100 dark:bg-sky-900/60 text-sky-700 dark:text-sky-300 border border-sky-200/80 dark:border-sky-800 shrink-0">
-                      {{ $totalParts }}
-                    </span>
-                  </div>
-                  
-                  <div class="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-sky-600 hover:bg-sky-700 text-white dark:bg-sky-500 dark:hover:bg-sky-400 dark:text-slate-950 text-xs font-mono font-bold shadow-xs hover:shadow-sm transition-all duration-200 shrink-0 group-open/drawer:bg-slate-200 group-open/drawer:text-slate-700 dark:group-open/drawer:bg-slate-700 dark:group-open/drawer:text-slate-200">
-                    <span class="group-open/drawer:hidden flex items-center gap-1.5">
-                      <span>View</span>
-                      <i class="fa-solid fa-chevron-down text-[10px] transition-transform"></i>
-                    </span>
-                    <span class="hidden group-open/drawer:flex items-center gap-1.5">
-                      <span>Hide</span>
-                      <i class="fa-solid fa-chevron-up text-[10px]"></i>
-                    </span>
-                  </div>
-                </summary>
 
-                <div class="p-3 bg-white dark:bg-[#090e17] rounded-b-xl border border-t-0 border-sky-200/80 dark:border-sky-800/60 max-h-56 overflow-y-auto space-y-1.5 shadow-inner-xs">
-                  <div class="flex items-center justify-between text-[10px] font-mono text-slate-500 dark:text-slate-400 pb-1.5 mb-1 border-b border-slate-100 dark:border-slate-800/80">
-                    <span class="font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300">
-                      Curriculum Syllabus &amp; Learning Flow:
-                    </span>
-                    <span>{{ $totalParts }} Step{{ if gt $totalParts 1 }}s{{ end }}</span>
+                    {{ if gt $labCount 0 }}
+                      <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md font-mono text-[10px] font-semibold bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border border-emerald-500/20">
+                        <i class="fa-solid fa-terminal text-[9px]"></i>
+                        {{ $labCount }} Hands-On Lab{{ if gt $labCount 1 }}s{{ end }}
+                      </span>
+                    {{ end }}
+
+                    {{ if eq .Key $featuredSeriesKey }}
+                      <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md font-mono text-[10px] font-bold bg-amber-500/10 text-amber-700 dark:text-amber-300 border border-amber-500/25">
+                        <i class="fa-solid fa-star text-[9px]"></i>
+                        Featured Track
+                      </span>
+                    {{ end }}
                   </div>
-                  {{ range $idx, $p := $sorted }}
+
+                  <!-- Full Un-Truncated Series Title -->
+                  <h2 class="text-lg sm:text-xl font-extrabold tracking-tight text-slate-900 dark:text-white mb-1.5 leading-snug">
+                    <a href="{{ $part1.RelPermalink }}" class="no-underline text-inherit hover:text-sky-600 dark:hover:text-sky-400 transition-colors">
+                      {{ .Key }}
+                    </a>
+                  </h2>
+
+                  <!-- Clear Multi-Line Series Description -->
+                  <p class="text-xs sm:text-[13px] text-slate-600 dark:text-slate-300 leading-relaxed mb-0">
+                    {{ $seriesDesc }}
+                  </p>
+                </div>
+              </div>
+
+              <!-- Segmented Learning Track Progress Visual (Homogenous with Homepage Track Companion) -->
+              <div class="mt-4 flex items-center gap-1.5" aria-hidden="true">
+                {{ range $idx, $p := $sorted }}
+                  <span class="h-1 flex-1 rounded-full {{ if eq $idx 0 }}bg-sky-500{{ else }}bg-slate-200 dark:bg-slate-800 group-hover:bg-sky-500/40{{ end }} transition-colors"></span>
+                {{ end }}
+              </div>
+            </div>
+
+            <!-- 2. Always-Visible Connected Curriculum Roadmap (Explore Every Part in One Place) -->
+            <div class="p-5 sm:p-6 pt-4 pb-4 bg-slate-50/50 dark:bg-[#090e17]/60 flex-1 flex flex-col justify-between">
+              <div>
+                <!-- Roadmap Section Header -->
+                <div class="flex items-center justify-between gap-2 text-[11px] font-mono text-slate-500 dark:text-slate-400 mb-3">
+                  <span class="font-bold uppercase tracking-wider text-slate-700 dark:text-slate-200 flex items-center gap-1.5">
+                    <i class="fa-solid fa-route text-sky-500 text-xs"></i>
+                    <span>Curriculum Syllabus &amp; Learning Flow:</span>
+                  </span>
+                  <span class="font-semibold text-slate-500 dark:text-slate-400 shrink-0">
+                    {{ $totalParts }} Step{{ if gt $totalParts 1 }}s{{ end }} · ~{{ $totalMin }}m total
+                  </span>
+                </div>
+
+                <!-- Primary Inline Parts (First 3 Steps Always Visible with Connected Rail) -->
+                <div class="space-y-2 relative" data-series-inline-list>
+                  {{ range $idx, $p := first $inlineLimit $sorted }}
+                    {{ $partNum := add $idx 1 }}
                     {{ $lessonTitle := $p.Title }}
                     {{ $lessonTitle = replaceRE `^.*?(?:\([Pp]art\s*\d+\)|–\s*[Pp]art\s*\d+)[:\-–—]\s*` "" $lessonTitle }}
                     {{ $lessonTitle = replaceRE `\s*\([Pp]art\s*\d+\)$` "" $lessonTitle }}
-                    {{ $lessonTitle = replaceRE `^(?:Data Engineering on GCP|mTLS for DevOps Engineers|TLS for DevOps Engineers):\s*` "" $lessonTitle }}
+                    {{ $lessonTitle = replaceRE `^(?:Data Engineering on GCP|mTLS for DevOps Engineers|TLS for DevOps Engineers|Passing the Red Hat OpenShift Administrator|EX280 – OpenShift Administrator Tips & Tricks|EX280 Tips & Tricks)\s*[:\-–—]\s*` "" $lessonTitle }}
                     {{ if eq (trim $lessonTitle " ") "" }}
                       {{ $lessonTitle = $p.Title }}
                     {{ end }}
                     {{ $isLab := or (in (lower $p.Title) "lab") (in (lower $p.Title) "hands-on") }}
-                    <a href="{{ $p.RelPermalink }}" class="flex items-center justify-between p-1.5 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800/80 text-slate-800 dark:text-slate-200 no-underline transition-all group/item border border-transparent hover:border-slate-200/60 dark:hover:border-slate-700/60">
-                      <div class="flex items-center gap-2 min-w-0 pr-1.5">
-                        <span class="w-4 h-4 rounded flex items-center justify-center font-mono text-[9px] font-bold shrink-0 bg-slate-200/80 dark:bg-slate-700 text-slate-700 dark:text-slate-300 group-hover/item:bg-sky-600 group-hover/item:text-white transition-colors">
-                          {{ printf "%02d" (add $idx 1) }}
+                    {{ $partDesc := $p.Params.description | default $p.Summary | plainify | truncate 115 }}
+
+                    <a
+                      href="{{ $p.RelPermalink }}"
+                      data-series-lesson-item
+                      data-lesson-search="{{ lower (printf "%s %s" $p.Title $partDesc) }}"
+                      class="flex items-start justify-between gap-3 p-2.5 sm:p-3 rounded-xl bg-white dark:bg-[#0c1220] hover:bg-sky-50/60 dark:hover:bg-slate-800/90 border border-slate-200/80 dark:border-slate-800/90 hover:border-sky-400/70 dark:hover:border-sky-500/60 text-slate-800 dark:text-slate-200 no-underline transition-all group/item shadow-2xs">
+                      <div class="flex items-start gap-2.5 min-w-0 flex-1">
+                        <span class="w-6 h-6 rounded-lg flex items-center justify-center font-mono text-[11px] font-bold shrink-0 mt-0.5 bg-sky-500/10 dark:bg-sky-500/15 text-sky-700 dark:text-sky-300 border border-sky-500/25 group-hover/item:bg-sky-600 group-hover/item:text-white transition-colors">
+                          {{ printf "%02d" $partNum }}
                         </span>
-                        <span class="truncate text-xs font-medium text-slate-800 dark:text-slate-200 group-hover/item:text-sky-600 dark:group-hover/item:text-sky-400 transition-colors">
-                          {{ $lessonTitle }}
-                        </span>
+                        <div class="min-w-0 flex-1">
+                          <div class="text-xs sm:text-[13.5px] font-bold text-slate-900 dark:text-slate-100 group-hover/item:text-sky-600 dark:group-hover/item:text-sky-400 transition-colors leading-snug">
+                            {{ $lessonTitle }}
+                          </div>
+                          {{ if $partDesc }}
+                            <p class="text-[11px] text-slate-500 dark:text-slate-400 line-clamp-1 mt-0.5 mb-0 font-normal">
+                              {{ $partDesc }}
+                            </p>
+                          {{ end }}
+                        </div>
                       </div>
-                      <div class="flex items-center gap-1.5 shrink-0">
+
+                      <div class="flex items-center gap-1.5 shrink-0 pt-0.5">
                         {{ if $isLab }}
-                          <span class="hidden xl:inline-block px-1.5 py-0.2 rounded text-[9px] font-mono font-bold bg-emerald-100 dark:bg-emerald-950/70 text-emerald-800 dark:text-emerald-300">
+                          <span class="hidden sm:inline-block px-2 py-0.5 rounded-md text-[9.5px] font-mono font-bold bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border border-emerald-500/20">
                             Production Lab
                           </span>
                         {{ else }}
-                          <span class="hidden xl:inline-block px-1.5 py-0.2 rounded text-[9px] font-mono font-bold bg-blue-100 dark:bg-blue-950/70 text-blue-800 dark:text-blue-300">
+                          <span class="hidden sm:inline-block px-2 py-0.5 rounded-md text-[9.5px] font-mono font-bold bg-sky-500/10 text-sky-700 dark:text-sky-300 border border-sky-500/20">
                             Core Architecture
                           </span>
                         {{ end }}
-                        <span class="font-mono text-[11px] text-slate-400">
+                        <span class="font-mono text-[11px] text-slate-400 dark:text-slate-500 tabular-nums">
                           {{ $p.ReadingTime }}m
                         </span>
+                        <i class="fa-solid fa-chevron-right text-[9px] text-slate-300 dark:text-slate-600 group-hover/item:text-sky-500 group-hover/item:translate-x-0.5 transition-all"></i>
                       </div>
                     </a>
                   {{ end }}
                 </div>
-              </details>
 
-              <!-- Card Footer: Author & CTA Button -->
-              <div class="flex items-center justify-between gap-2 pt-3 border-t border-slate-100 dark:border-slate-800/80">
+                <!-- Expandable Syllabus Drawer for Remaining Parts (or Full Lesson Index) -->
+                <details class="series-card-drawer group/drawer mt-2.5 transition-all duration-200" {{ if not $hasOverflow }}open{{ end }}>
+                  <summary
+                    class="{{ if not $hasOverflow }}sr-only{{ else }}list-none [&::-webkit-details-marker]:hidden flex items-center justify-between gap-3 px-3.5 py-2.5 rounded-xl bg-white dark:bg-slate-900/90 border border-slate-200/90 dark:border-slate-800 hover:border-sky-400 dark:hover:border-sky-500/70 cursor-pointer select-none transition-all duration-200 shadow-2xs{{ end }}"
+                    title="Expand all curriculum lessons in this series"
+                    aria-label="Toggle curriculum syllabus and lessons">
+                    <div class="flex items-center gap-2 min-w-0">
+                      <span class="w-5 h-5 rounded-md bg-sky-500/10 dark:bg-sky-500/20 text-sky-600 dark:text-sky-400 flex items-center justify-center shrink-0">
+                        <i class="fa-solid fa-list-check text-[10px]"></i>
+                      </span>
+                      <span class="font-bold text-xs text-slate-800 dark:text-slate-100">
+                        Syllabus &amp; Lessons
+                      </span>
+                      {{ if $hasOverflow }}
+                        <span class="font-mono text-[10px] font-bold px-2 py-0.5 rounded-full bg-sky-100 dark:bg-sky-950 text-sky-700 dark:text-sky-300 border border-sky-200/80 dark:border-sky-800/80">
+                          +{{ $overflowCount }} more part{{ if gt $overflowCount 1 }}s{{ end }} (Parts {{ printf "%02d" (add $inlineLimit 1) }}–{{ printf "%02d" $totalParts }})
+                        </span>
+                      {{ end }}
+                    </div>
+
+                    <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-sky-600/10 text-sky-700 dark:bg-sky-500/15 dark:text-sky-300 text-xs font-mono font-bold shrink-0">
+                      <span class="group-open/drawer:hidden flex items-center gap-1">
+                        <span>Explore All {{ $totalParts }}</span>
+                        <i class="fa-solid fa-chevron-down text-[10px]"></i>
+                      </span>
+                      <span class="hidden group-open/drawer:flex items-center gap-1">
+                        <span>Collapse</span>
+                        <i class="fa-solid fa-chevron-up text-[10px]"></i>
+                      </span>
+                    </div>
+                  </summary>
+
+                  {{ if $hasOverflow }}
+                    <div class="space-y-2 mt-2 pt-2 border-t border-dashed border-slate-200 dark:border-slate-800">
+                      {{ range $idx, $p := after $inlineLimit $sorted }}
+                        {{ $partNum := add (add $idx $inlineLimit) 1 }}
+                        {{ $lessonTitle := $p.Title }}
+                        {{ $lessonTitle = replaceRE `^.*?(?:\([Pp]art\s*\d+\)|–\s*[Pp]art\s*\d+)[:\-–—]\s*` "" $lessonTitle }}
+                        {{ $lessonTitle = replaceRE `\s*\([Pp]art\s*\d+\)$` "" $lessonTitle }}
+                        {{ $lessonTitle = replaceRE `^(?:Data Engineering on GCP|mTLS for DevOps Engineers|TLS for DevOps Engineers|Passing the Red Hat OpenShift Administrator|EX280 – OpenShift Administrator Tips & Tricks|EX280 Tips & Tricks)\s*[:\-–—]\s*` "" $lessonTitle }}
+                        {{ if eq (trim $lessonTitle " ") "" }}
+                          {{ $lessonTitle = $p.Title }}
+                        {{ end }}
+                        {{ $isLab := or (in (lower $p.Title) "lab") (in (lower $p.Title) "hands-on") }}
+                        {{ $partDesc := $p.Params.description | default $p.Summary | plainify | truncate 115 }}
+
+                        <a
+                          href="{{ $p.RelPermalink }}"
+                          data-series-lesson-item
+                          data-lesson-search="{{ lower (printf "%s %s" $p.Title $partDesc) }}"
+                          class="flex items-start justify-between gap-3 p-2.5 sm:p-3 rounded-xl bg-white dark:bg-[#0c1220] hover:bg-sky-50/60 dark:hover:bg-slate-800/90 border border-slate-200/80 dark:border-slate-800/90 hover:border-sky-400/70 dark:hover:border-sky-500/60 text-slate-800 dark:text-slate-200 no-underline transition-all group/item shadow-2xs">
+                          <div class="flex items-start gap-2.5 min-w-0 flex-1">
+                            <span class="w-6 h-6 rounded-lg flex items-center justify-center font-mono text-[11px] font-bold shrink-0 mt-0.5 bg-sky-500/10 dark:bg-sky-500/15 text-sky-700 dark:text-sky-300 border border-sky-500/25 group-hover/item:bg-sky-600 group-hover/item:text-white transition-colors">
+                              {{ printf "%02d" $partNum }}
+                            </span>
+                            <div class="min-w-0 flex-1">
+                              <div class="text-xs sm:text-[13.5px] font-bold text-slate-900 dark:text-slate-100 group-hover/item:text-sky-600 dark:group-hover/item:text-sky-400 transition-colors leading-snug">
+                                {{ $lessonTitle }}
+                              </div>
+                              {{ if $partDesc }}
+                                <p class="text-[11px] text-slate-500 dark:text-slate-400 line-clamp-1 mt-0.5 mb-0 font-normal">
+                                  {{ $partDesc }}
+                                </p>
+                              {{ end }}
+                            </div>
+                          </div>
+
+                          <div class="flex items-center gap-1.5 shrink-0 pt-0.5">
+                            {{ if $isLab }}
+                              <span class="hidden sm:inline-block px-2 py-0.5 rounded-md text-[9.5px] font-mono font-bold bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border border-emerald-500/20">
+                                Production Lab
+                              </span>
+                            {{ else }}
+                              <span class="hidden sm:inline-block px-2 py-0.5 rounded-md text-[9.5px] font-mono font-bold bg-sky-500/10 text-sky-700 dark:text-sky-300 border border-sky-500/20">
+                                Core Architecture
+                              </span>
+                            {{ end }}
+                            <span class="font-mono text-[11px] text-slate-400 dark:text-slate-500 tabular-nums">
+                              {{ $p.ReadingTime }}m
+                            </span>
+                            <i class="fa-solid fa-chevron-right text-[9px] text-slate-300 dark:text-slate-600 group-hover/item:text-sky-500 group-hover/item:translate-x-0.5 transition-all"></i>
+                          </div>
+                        </a>
+                      {{ end }}
+                    </div>
+                  {{ end }}
+                </details>
+              </div>
+
+              <!-- 3. Spacious Card Footer: Full Author Name & Primary Start Track CTA -->
+              <div class="flex items-center justify-between gap-3 pt-4 mt-4 border-t border-slate-200/80 dark:border-slate-800/80">
                 {{ $sAuthorSlug := $part1.Params.author | default "tharun-vempati" }}
                 {{ $sAuthorName := $sAuthorSlug | humanize | title }}
                 {{ $sAuthorImg := "" }}
@@ -285,23 +492,31 @@
                   {{ $sAuthorName = .Title }}
                   {{ with .Params.image }}{{ $sAuthorImg = . }}{{ end }}
                 {{ end }}
-                <div class="flex items-center gap-2 min-w-0">
+                <div class="flex items-center gap-2.5 min-w-0">
                   {{ if $sAuthorImg }}
-                    <img src="{{ $sAuthorImg | relURL }}" alt="{{ $sAuthorName }}" class="w-6 h-6 rounded-full object-cover shrink-0" width="24" height="24" decoding="async" loading="lazy">
+                    <img src="{{ $sAuthorImg | relURL }}" alt="{{ $sAuthorName }}" class="w-7 h-7 rounded-full object-cover shrink-0 ring-1 ring-slate-200 dark:ring-slate-700" width="28" height="28" decoding="async" loading="lazy">
                   {{ else }}
-                    <div class="w-6 h-6 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-white font-bold text-[10px] flex items-center justify-center shrink-0">
+                    <div class="w-7 h-7 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-white font-bold text-xs flex items-center justify-center shrink-0">
                       {{ substr $sAuthorName 0 1 }}
                     </div>
                   {{ end }}
-                  <span class="font-medium text-xs text-slate-800 dark:text-slate-200 truncate">{{ $sAuthorName }}</span>
+                  <div class="min-w-0">
+                    <span class="font-bold text-xs sm:text-[13px] text-slate-900 dark:text-white block leading-tight">
+                      {{ $sAuthorName }}
+                    </span>
+                    <span class="text-[10px] font-mono text-slate-500 dark:text-slate-400 block leading-tight">
+                      Track Author
+                    </span>
+                  </div>
                 </div>
 
-                <a href="{{ $part1.RelPermalink }}" class="shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-sky-600/10 dark:bg-sky-500/15 hover:bg-sky-600 hover:text-white dark:hover:bg-sky-500 dark:hover:text-white text-sky-600 dark:text-sky-400 text-xs font-mono font-bold uppercase tracking-wider transition-all duration-200 no-underline border border-sky-500/25 dark:border-sky-500/35 group-hover:bg-sky-600 group-hover:text-white">
+                <a
+                  href="{{ $part1.RelPermalink }}"
+                  class="shrink-0 inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-sky-600 hover:bg-sky-700 dark:bg-sky-500 dark:hover:bg-sky-400 text-white dark:text-slate-950 text-xs font-mono font-bold uppercase tracking-wider transition-all duration-200 no-underline shadow-xs hover:shadow-sm">
                   <span>Start Track</span>
                   <i class="fa-solid fa-arrow-right text-[10px] group-hover:translate-x-0.5 transition-transform"></i>
                 </a>
               </div>
-
             </div>
 
           </article>
@@ -309,25 +524,86 @@
       </div>
 
       <!-- Empty State -->
-      <div id="series-empty-state" class="hidden text-center py-16 px-4 rounded-2xl border border-dashed border-slate-300 dark:border-slate-800 mt-6 max-w-4xl mx-auto">
-        <i class="fa-solid fa-filter-circle-xmark text-3xl text-slate-400 mb-2"></i>
-        <h3 class="text-sm font-bold text-slate-800 dark:text-slate-200 mb-1">No series found in this domain</h3>
-        <p class="text-xs text-slate-500 dark:text-slate-400 max-w-sm mx-auto">Try selecting another domain or view "All Tracks" to explore the full curriculum.</p>
+      <div id="series-empty-state" class="hidden text-center py-16 px-4 rounded-2xl border border-dashed border-slate-300 dark:border-slate-800 mt-6 max-w-4xl mx-auto bg-slate-50/50 dark:bg-slate-900/30">
+        <div class="w-12 h-12 rounded-2xl bg-sky-500/10 flex items-center justify-center text-sky-600 dark:text-sky-400 mb-3 mx-auto">
+          <i class="fa-solid fa-filter-circle-xmark text-xl"></i>
+        </div>
+        <h3 class="text-sm sm:text-base font-bold text-slate-800 dark:text-slate-200 mb-1">No matching series or lessons found</h3>
+        <p class="text-xs text-slate-500 dark:text-slate-400 max-w-sm mx-auto mb-4">
+          Try clearing your search filter or switching back to "All Tracks" to explore the full curriculum.
+        </p>
+        <button
+          type="button"
+          id="series-reset-filters-btn"
+          class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-sky-500 transition-all cursor-pointer shadow-xs mx-auto">
+          <i class="fa-solid fa-arrow-rotate-left text-[10px]"></i>
+          <span>Reset All Filters</span>
+        </button>
       </div>
 
     </div>
   </section>
 
-  {{/* Interactive Vanilla JS for Domain Filter Chips & Deep Linking */}}
+  {{/* Interactive Vanilla JS for Domain Filter Chips, Live Part Search, Expand All & Deep Linking */}}
   <script>
     document.addEventListener('DOMContentLoaded', function () {
       var filterButtons = document.querySelectorAll('.series-filter-btn');
       var seriesCards = document.querySelectorAll('[data-series-card]');
       var emptyState = document.getElementById('series-empty-state');
+      var searchInput = document.getElementById('series-search-input');
+      var searchClear = document.getElementById('series-search-clear');
+      var resultCount = document.getElementById('series-result-count');
+      var expandAllBtn = document.getElementById('series-expand-all-btn');
+      var resetBtn = document.getElementById('series-reset-filters-btn');
+
+      var activeDomain = 'all';
+      var searchQuery = '';
+
+      function applySeriesFilters() {
+        var visibleCount = 0;
+        var q = searchQuery.trim().toLowerCase();
+
+        seriesCards.forEach(function (card) {
+          var domainsAttr = card.getAttribute('data-domains') || '';
+          var domains = domainsAttr.split(' ');
+          var haystack = card.getAttribute('data-search') || '';
+
+          var matchesDomain = activeDomain === 'all' || domains.indexOf(activeDomain) !== -1;
+          var matchesSearch = !q || haystack.indexOf(q) !== -1;
+
+          if (matchesDomain && matchesSearch) {
+            card.style.display = '';
+            visibleCount++;
+
+            // When searching, auto-open overflow drawer if a lesson matches
+            var drawer = card.querySelector('.series-card-drawer');
+            if (q && drawer) {
+              drawer.open = true;
+            }
+          } else {
+            card.style.display = 'none';
+          }
+        });
+
+        if (resultCount) {
+          resultCount.textContent =
+            visibleCount === seriesCards.length
+              ? 'Showing all ' + seriesCards.length + ' tracks'
+              : 'Showing ' + visibleCount + ' of ' + seriesCards.length + ' tracks';
+        }
+
+        if (emptyState) {
+          if (visibleCount === 0) {
+            emptyState.classList.remove('hidden');
+          } else {
+            emptyState.classList.add('hidden');
+          }
+        }
+      }
 
       filterButtons.forEach(function (btn) {
         btn.addEventListener('click', function () {
-          var targetFilter = this.getAttribute('data-series-filter');
+          activeDomain = this.getAttribute('data-series-filter') || 'all';
 
           filterButtons.forEach(function (b) {
             b.classList.remove('is-active', 'category-tab-active');
@@ -337,27 +613,66 @@
           this.classList.add('is-active', 'category-tab-active');
           this.setAttribute('aria-selected', 'true');
 
-          var visibleCount = 0;
-          seriesCards.forEach(function (card) {
-            var domainsAttr = card.getAttribute('data-domains') || '';
-            var domains = domainsAttr.split(' ');
-            if (targetFilter === 'all' || domains.indexOf(targetFilter) !== -1) {
-              card.style.display = '';
-              visibleCount++;
-            } else {
-              card.style.display = 'none';
-            }
-          });
-
-          if (emptyState) {
-            if (visibleCount === 0) {
-              emptyState.classList.remove('hidden');
-            } else {
-              emptyState.classList.add('hidden');
-            }
-          }
+          applySeriesFilters();
         });
       });
+
+      if (searchInput) {
+        searchInput.addEventListener('input', function () {
+          searchQuery = searchInput.value || '';
+          if (searchClear) {
+            searchClear.classList.toggle('hidden', !searchQuery.length);
+          }
+          applySeriesFilters();
+        });
+      }
+
+      if (searchClear && searchInput) {
+        searchClear.addEventListener('click', function () {
+          searchInput.value = '';
+          searchQuery = '';
+          searchClear.classList.add('hidden');
+          applySeriesFilters();
+          searchInput.focus();
+        });
+      }
+
+      if (resetBtn) {
+        resetBtn.addEventListener('click', function () {
+          activeDomain = 'all';
+          searchQuery = '';
+          if (searchInput) searchInput.value = '';
+          if (searchClear) searchClear.classList.add('hidden');
+          filterButtons.forEach(function (b) {
+            var isAll = b.getAttribute('data-series-filter') === 'all';
+            b.classList.toggle('is-active', isAll);
+            b.classList.toggle('category-tab-active', isAll);
+            b.setAttribute('aria-selected', isAll ? 'true' : 'false');
+          });
+          applySeriesFilters();
+        });
+      }
+
+      if (expandAllBtn) {
+        expandAllBtn.addEventListener('click', function () {
+          var isExpanded = expandAllBtn.getAttribute('data-expanded') === 'true';
+          var nextState = !isExpanded;
+          expandAllBtn.setAttribute('data-expanded', nextState ? 'true' : 'false');
+
+          document.querySelectorAll('.series-card-drawer').forEach(function (drawer) {
+            drawer.open = nextState;
+          });
+
+          var span = expandAllBtn.querySelector('span');
+          var icon = expandAllBtn.querySelector('i');
+          if (span) span.textContent = nextState ? 'Collapse Extra Parts' : 'Expand All Parts';
+          if (icon) {
+            icon.className = nextState
+              ? 'fa-solid fa-angles-up text-[10px]'
+              : 'fa-solid fa-angles-down text-[10px]';
+          }
+        });
+      }
 
       // Handle Direct Hash / Deep Linking to Specific Series (e.g. #tls-mtls-architecture-for-devops-engineers)
       function handleDeepLink() {
@@ -366,22 +681,18 @@
         var targetId = hash.replace(/^#/, '');
         var targetCard = document.getElementById(targetId);
         if (targetCard) {
-          // If card is filtered out, reset filter to "all"
           if (targetCard.style.display === 'none') {
             var allBtn = document.querySelector('[data-series-filter="all"]');
             if (allBtn) allBtn.click();
           }
 
-          // Open syllabus lessons accordion
           var drawer = targetCard.querySelector('.series-card-drawer');
           if (drawer) {
             drawer.open = true;
           }
 
-          // Smoothly scroll to target card with offset
           setTimeout(function () {
             targetCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            // Add prominent focus glow ring in brand Sky Blue
             targetCard.classList.add('ring-2', 'ring-sky-500', 'shadow-lg');
             setTimeout(function () {
               targetCard.classList.remove('ring-2', 'ring-sky-500', 'shadow-lg');
