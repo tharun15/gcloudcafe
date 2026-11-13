@@ -50,48 +50,14 @@
   <section id="series-explorer-section" class="pulse-hero-backdrop relative pt-4 sm:pt-6 pb-20 sm:pb-28 overflow-hidden min-h-screen" aria-labelledby="series-tracks-heading">
     <div class="bytedepth-container relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-      <!-- Unified Telemetry Header (Matches Cloud Pulse & Cloud Brew) -->
-      <div class="mb-5 sm:mb-6">
-        <div class="flex flex-wrap items-center justify-between gap-2 mb-2.5">
-          <!-- Left Status Pill -->
-          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-500/10 dark:bg-sky-500/15 border border-sky-500/25 dark:border-sky-500/35 shadow-2xs">
-            <i class="fa-solid fa-layer-group text-sky-600 dark:text-sky-400 text-xs"></i>
-            <span class="font-mono text-[11px] font-black uppercase tracking-wider text-sky-700 dark:text-sky-300">
-              STRUCTURED LEARNING TRACKS
-            </span>
-            <span class="text-slate-300 dark:text-slate-700 select-none">·</span>
-            <span class="font-mono text-[10px] font-bold text-slate-600 dark:text-slate-300">
-              STEP-BY-STEP CURRICULUM
-            </span>
-          </div>
-
-          <!-- Right Curriculum Telemetry Pill -->
-          <div class="hidden sm:inline-flex items-center gap-2.5 px-3 py-1 rounded-full bg-white/80 dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-800/80 font-mono text-[11px] text-slate-600 dark:text-slate-300 shadow-2xs">
-            <span class="inline-flex items-center gap-1.5 font-bold text-slate-800 dark:text-slate-100">
-              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-              {{ $allCount }} Masterclasses
-            </span>
-            <span class="text-slate-300 dark:text-slate-700">·</span>
-            <span>{{ $totalPartsAcrossSite }} Total Lessons</span>
-            <span class="text-slate-300 dark:text-slate-700">·</span>
-            <span class="text-sky-600 dark:text-sky-400 font-bold">~{{ $totalMinutesAcrossSite }}m Deep Dives</span>
-          </div>
-        </div>
-
-        <!-- Headline -->
-        <h1 id="series-tracks-heading" class="text-2xl sm:text-3xl lg:text-[32px] font-black tracking-tight text-slate-900 dark:text-white mb-2 leading-[1.15]">
+      <!-- Clean Header -->
+      <div class="flex flex-wrap items-baseline justify-between gap-2 mb-4">
+        <h1 id="series-tracks-heading" class="text-2xl sm:text-3xl font-black tracking-tight text-slate-900 dark:text-white m-0">
           Engineering Series
-          <span class="font-bold text-lg sm:text-xl lg:text-2xl block sm:inline mt-0.5 sm:mt-0 sm:ml-2">
-            <span class="text-sky-600 dark:text-sky-400 font-mono font-normal">/</span>
-            <span class="bg-gradient-to-r from-sky-600 via-blue-600 to-indigo-600 dark:from-sky-400 dark:via-blue-300 dark:to-indigo-300 bg-clip-text text-transparent">
-              Interactive Series &amp; Curriculum Explorer
-            </span>
-          </span>
         </h1>
-
-        <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed max-w-3xl mb-0">
-          Explore every multi-part engineering series and its individual lessons in one place. Follow the numbered architectural progression from core concepts to production labs—or jump straight to the exact part you need.
-        </p>
+        <span class="font-mono text-xs text-slate-500 dark:text-slate-400">
+          {{ $allCount }} series · {{ $totalPartsAcrossSite }} parts
+        </span>
       </div>
 
       <!-- Integrated Glassmorphic Command & Filter Deck -->
@@ -105,7 +71,7 @@
             <input
               type="text"
               id="series-search-input"
-              placeholder="Search tracks or specific parts (e.g. mTLS, Dataform, EX280, Cline)..."
+              placeholder="Search series or parts..."
               autocomplete="off"
               class="w-full pl-9 pr-9 py-2 text-xs font-mono rounded-xl bg-slate-50/90 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-hidden focus:ring-1 focus:ring-sky-500 focus:border-sky-500 transition-all shadow-2xs"
             />
@@ -333,10 +299,10 @@
                 <div class="flex items-center justify-between gap-2 text-[11px] font-mono text-slate-500 dark:text-slate-400 mb-3">
                   <span class="font-bold uppercase tracking-wider text-slate-700 dark:text-slate-200 flex items-center gap-1.5">
                     <i class="fa-solid fa-route text-sky-500 text-xs"></i>
-                    <span>Curriculum Syllabus &amp; Learning Flow:</span>
+                    <span>Parts</span>
                   </span>
                   <span class="font-semibold text-slate-500 dark:text-slate-400 shrink-0">
-                    {{ $totalParts }} Step{{ if gt $totalParts 1 }}s{{ end }} · ~{{ $totalMin }}m total
+                    {{ $totalParts }} Part{{ if gt $totalParts 1 }}s{{ end }} · ~{{ $totalMin }}m
                   </span>
                 </div>
 
@@ -504,9 +470,6 @@
                     <span class="font-bold text-xs sm:text-[13px] text-slate-900 dark:text-white block leading-tight">
                       {{ $sAuthorName }}
                     </span>
-                    <span class="text-[10px] font-mono text-slate-500 dark:text-slate-400 block leading-tight">
-                      Track Author
-                    </span>
                   </div>
                 </div>
 
@@ -528,10 +491,7 @@
         <div class="w-12 h-12 rounded-2xl bg-sky-500/10 flex items-center justify-center text-sky-600 dark:text-sky-400 mb-3 mx-auto">
           <i class="fa-solid fa-filter-circle-xmark text-xl"></i>
         </div>
-        <h3 class="text-sm sm:text-base font-bold text-slate-800 dark:text-slate-200 mb-1">No matching series or lessons found</h3>
-        <p class="text-xs text-slate-500 dark:text-slate-400 max-w-sm mx-auto mb-4">
-          Try clearing your search filter or switching back to "All Tracks" to explore the full curriculum.
-        </p>
+        <h3 class="text-sm sm:text-base font-bold text-slate-800 dark:text-slate-200 mb-3">No matching series found</h3>
         <button
           type="button"
           id="series-reset-filters-btn"

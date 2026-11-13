@@ -6,16 +6,12 @@ describe('Google AdSense Program Policy Compliance & Trust Pages Suite', () => {
   const rootDir = path.resolve(__dirname, '..');
   const publicDir = path.join(rootDir, 'public');
 
-  it('verifies English and Italian trust & policy markdown files exist', () => {
+  it('verifies English trust & policy markdown files exist', () => {
     const requiredFiles = [
       'content/english/pages/privacy-policy.md',
       'content/english/pages/terms-of-service.md',
       'content/english/pages/cookie-policy.md',
       'content/english/pages/disclaimer.md',
-      'content/italian/pages/privacy-policy.md',
-      'content/italian/pages/terms-of-service.md',
-      'content/italian/pages/cookie-policy.md',
-      'content/italian/pages/disclaimer.md',
     ];
 
     for (const relPath of requiredFiles) {
@@ -24,22 +20,18 @@ describe('Google AdSense Program Policy Compliance & Trust Pages Suite', () => {
     }
   });
 
-  it('verifies Italian pages _index.md prevents empty container rendering', () => {
-    const itIndex = fs.readFileSync(path.join(rootDir, 'content/italian/pages/_index.md'), 'utf-8');
-    expect(itIndex).toContain('render: never');
-    expect(itIndex).toContain('list: never');
+  it('verifies English pages _index.md prevents empty container rendering', () => {
+    const enIndex = fs.readFileSync(path.join(rootDir, 'content/english/pages/_index.md'), 'utf-8');
+    expect(enIndex).toContain('render: never');
+    expect(enIndex).toContain('list: never');
   });
 
-  it('verifies public builds all English and Italian legal policy pages', () => {
+  it('verifies public builds all English legal policy pages', () => {
     const publicPages = [
       'privacy-policy/index.html',
       'terms-of-service/index.html',
       'cookie-policy/index.html',
       'disclaimer/index.html',
-      'it/privacy-policy/index.html',
-      'it/terms-of-service/index.html',
-      'it/cookie-policy/index.html',
-      'it/disclaimer/index.html',
     ];
 
     for (const relPath of publicPages) {
@@ -71,9 +63,6 @@ describe('Google AdSense Program Policy Compliance & Trust Pages Suite', () => {
     // Present on home and article pages
     const homeHtml = fs.readFileSync(path.join(publicDir, 'index.html'), 'utf-8');
     expect(homeHtml).toContain(pubSnippet);
-
-    const itHomeHtml = fs.readFileSync(path.join(publicDir, 'it/index.html'), 'utf-8');
-    expect(itHomeHtml).toContain(pubSnippet);
 
     // Gated from 404 page
     const notFoundHtml = fs.readFileSync(path.join(publicDir, '404.html'), 'utf-8');

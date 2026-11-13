@@ -32,44 +32,14 @@ function hasVisibleText(html, str) {
 // 1. LANGUAGE SWITCHER URL CORRECTNESS
 // ─────────────────────────────────────────────────────────────────────────────
 describe('Language Switcher — URL correctness', () => {
-  it('EN homepage switcher renders links for BOTH EN and IT languages', () => {
+  it('EN homepage switcher renders link for EN language', () => {
     const html = fs.readFileSync(path.join(publicDir, 'index.html'), 'utf-8');
     const switcherStart = html.indexOf('data-lang-switcher');
     const block = html.slice(switcherStart, switcherStart + 6000);
     const links = block.match(/<a[^>]+href=[^>]+>/g) || [];
 
-    expect(links.length, `Expected 2 switcher links, got: ${JSON.stringify(links)}`).toBe(2);
+    expect(links.length, `Expected 1 switcher link, got: ${JSON.stringify(links)}`).toBe(1);
     expect(links.some(a => a.includes('hreflang="en"') || a.includes('hreflang=en')), 'EN link missing hreflang=en').toBe(true);
-    expect(links.some(a => a.includes('/it/')), 'IT link should point to /it/').toBe(true);
-  });
-
-  it('IT homepage switcher renders links for BOTH EN and IT languages', () => {
-    const html = fs.readFileSync(path.join(publicDir, 'it/index.html'), 'utf-8');
-    const switcherStart = html.indexOf('data-lang-switcher');
-    const block = html.slice(switcherStart, switcherStart + 6000);
-    const links = block.match(/<a[^>]+href=[^>]+>/g) || [];
-
-    expect(links.length, `Expected 2 switcher links, got: ${JSON.stringify(links)}`).toBe(2);
-    expect(links.some(a => a.includes('hreflang="en"') || a.includes('hreflang=en')), 'EN link missing from IT homepage switcher').toBe(true);
-    expect(links.some(a => a.includes('/it/')), 'IT link should stay on /it/').toBe(true);
-  });
-
-  it('IT blog article switcher links to correct EN and IT article URLs', () => {
-    const articleSlug = 'cka-exam-readiness';
-    const html = fs.readFileSync(path.join(publicDir, `it/blog/${articleSlug}/index.html`), 'utf-8');
-    const switcherStart = html.indexOf('data-lang-switcher');
-    const block = html.slice(switcherStart, switcherStart + 6000);
-    const links = block.match(/<a[^>]+href=[^>]+>/g) || [];
-
-    expect(links.length, `Expected 2 switcher links, got: ${JSON.stringify(links)}`).toBe(2);
-    expect(
-      links.some(a => a.includes(`/it/blog/${articleSlug}/`)),
-      `IT link should point to /it/blog/${articleSlug}/`
-    ).toBe(true);
-    expect(
-      links.some(a => !a.includes('/it/') && a.includes(`/blog/${articleSlug}/`)),
-      `EN link should point to /blog/${articleSlug}/`
-    ).toBe(true);
   });
 
   it('language-switcher.html uses site.Sites (not deprecated site.Home.AllTranslations)', () => {
@@ -81,47 +51,7 @@ describe('Language Switcher — URL correctness', () => {
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
-// 2. HARDCODED EN VISIBLE TEXT IN BUILT ITALIAN PAGES
-// ─────────────────────────────────────────────────────────────────────────────
-describe('Built IT pages — no hardcoded English visible text', () => {
-  const EN_STRINGS = [
-    'Engineering insights, twice a month',
-    'Save for later',
-    'Explore track',
-    'View all tracks',
-    'Start Here',
-    'Browse all topics',
-    'Continue Reading',
-    'Related Articles',
-    'On This Page',
-    'Previous in Series',
-    'Next in Series',
-    'Share this guide:',
-    'Copy Link',
-    'Share on LinkedIn',
-  ];
-
-  it('IT homepage (public/it/index.html) has no hardcoded EN visible text', () => {
-    const html = fs.readFileSync(path.join(publicDir, 'it/index.html'), 'utf-8');
-    for (const str of EN_STRINGS) {
-      expect(hasVisibleText(html, str), `Found hardcoded EN string on IT homepage: "${str}"`).toBe(false);
-    }
-  });
-
-  it('IT blog article has no hardcoded EN visible text', () => {
-    const html = fs.readFileSync(path.join(publicDir, 'it/blog/cka-exam-readiness/index.html'), 'utf-8');
-    const articleStrings = [
-      'Save for later', 'Copy Link', 'Share on LinkedIn',
-      'Share this guide:', 'On This Page', 'Continue Reading',
-    ];
-    for (const str of articleStrings) {
-      expect(hasVisibleText(html, str), `Found hardcoded EN string in IT article: "${str}"`).toBe(false);
-    }
-  });
-});
-
-// ─────────────────────────────────────────────────────────────────────────────
-// 3. TEMPLATE i18n KEY USAGE (source files)
+// 2. TEMPLATE i18n KEY USAGE (source files)
 // ─────────────────────────────────────────────────────────────────────────────
 describe('Layout templates — use i18n keys, not hardcoded EN strings', () => {
   it('layouts/index.html uses i18n for newsletter', () => {
@@ -173,9 +103,9 @@ describe('Layout templates — use i18n keys, not hardcoded EN strings', () => {
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
-// 4. i18n YAML KEY COMPLETENESS
+// 3. i18n YAML KEY COMPLETENESS
 // ─────────────────────────────────────────────────────────────────────────────
-describe('i18n YAML files — required keys present in both EN and IT', () => {
+describe('i18n YAML files — required keys present in EN', () => {
   const REQUIRED_KEYS = [
     'newsletter_heading',
     'newsletter_desc',
@@ -204,26 +134,6 @@ describe('i18n YAML files — required keys present in both EN and IT', () => {
     const yaml = fs.readFileSync(path.join(i18nDir, 'en.yaml'), 'utf-8');
     for (const key of REQUIRED_KEYS) {
       expect(yaml, `Missing key in en.yaml: ${key}`).toContain(`${key}:`);
-    }
-  });
-
-  it('i18n/it.yaml contains all required UI string keys', () => {
-    const yaml = fs.readFileSync(path.join(i18nDir, 'it.yaml'), 'utf-8');
-    for (const key of REQUIRED_KEYS) {
-      expect(yaml, `Missing key in it.yaml: ${key}`).toContain(`${key}:`);
-    }
-  });
-
-  it('i18n/it.yaml has Italian translations (different from EN for key strings)', () => {
-    const enYaml = fs.readFileSync(path.join(i18nDir, 'en.yaml'), 'utf-8');
-    const itYaml = fs.readFileSync(path.join(i18nDir, 'it.yaml'), 'utf-8');
-    const mustDiffer = ['newsletter_heading', 'newsletter_desc', 'share_on_linkedin', 'explore_track'];
-    for (const key of mustDiffer) {
-      const enMatch = enYaml.match(new RegExp(`${key}:\\s*['"]?([^'"\\n]+)`));
-      const itMatch = itYaml.match(new RegExp(`${key}:\\s*['"]?([^'"\\n]+)`));
-      if (enMatch && itMatch) {
-        expect(enMatch[1].trim(), `IT translation for "${key}" is same as EN — should be translated`).not.toBe(itMatch[1].trim());
-      }
     }
   });
 });

@@ -38,10 +38,10 @@ track_series_desc: Comprehensive guides arranged in sequential episodes with pro
 # Newsletter section
 newsletter_label: NEWSLETTER
 newsletter_heading: Engineering insights, twice a month
-newsletter_desc: Deep dives on cloud architecture, distributed systems, Kubernetes, and security. Written by practitioners, not content teams.
+newsletter_desc: New guides on Cloud, Kubernetes, and Security.
 newsletter_placeholder: you@company.com
 newsletter_submit: Subscribe
-newsletter_footer: 'Curated architecture & DevOps insights. Zero spam, unsubscribe anytime.'
+newsletter_footer: 'Zero spam · Unsubscribe anytime'
 
 # Blog single page
 breadcrumb_articles: Articles
@@ -64,4 +64,4 @@ footer_cookies: Cookies
 footer_copyright: '© 2026 GCloudCafe. All rights reserved.'
 footer_disclaimer: Disclaimer
 weekly_poll_heading: "What's your take this week?"
-weekly_poll_subheading: 'Drop your vote and see where other engineers stand. No fluff—just real opinions from teams building in production.'
+weekly_poll_subheading: 'Vote to see community results.'

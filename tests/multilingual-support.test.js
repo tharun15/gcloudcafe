@@ -2,52 +2,39 @@ import { describe, it, expect } from 'vitest';
 import fs from 'fs';
 import path from 'path';
 
-describe('Multilingual Capabilities & Italian Language Support Suite', () => {
+describe('Language Configuration & Single-Language Canonical Integrity Suite', () => {
   const rootDir = path.resolve(__dirname, '..');
   const publicDir = path.join(rootDir, 'public');
 
-  it('verifies config/_default/languages.toml defines both English and Italian languages', () => {
+  it('verifies config/_default/languages.toml defines English as sole active language (Italian removed)', () => {
     const langToml = fs.readFileSync(path.join(rootDir, 'config/_default/languages.toml'), 'utf-8');
     expect(langToml).toContain('[en]');
-    expect(langToml).toContain('[it]');
-    expect(langToml).toContain('content/italian');
-    expect(langToml).toContain('Italiano');
+    expect(langToml).toContain('content/english');
+    expect(langToml).not.toContain('[it]');
+    expect(langToml).not.toContain('content/italian');
   });
 
-  it('verifies Italian navigation menus and i18n translation files exist', () => {
-    const menusItPath = path.join(rootDir, 'config/_default/menus.it.toml');
-    expect(fs.existsSync(menusItPath)).toBe(true);
-
-    const menusIt = fs.readFileSync(menusItPath, 'utf-8');
-    expect(menusIt).toContain('Chi Siamo');
-    expect(menusIt).toContain('Contatti');
-    expect(menusIt).toContain('Serie');
-
-    const i18nItPath = path.join(rootDir, 'i18n/it.yaml');
-    expect(fs.existsSync(i18nItPath)).toBe(true);
-
-    const i18nIt = fs.readFileSync(i18nItPath, 'utf-8');
-    expect(i18nIt).toContain('Leggi di più');
-    expect(i18nIt).toContain('Categorie');
+  it('verifies Italian content directory and config files are completely removed', () => {
+    expect(fs.existsSync(path.join(rootDir, 'content/italian'))).toBe(false);
+    expect(fs.existsSync(path.join(rootDir, 'config/_default/menus.it.toml'))).toBe(false);
+    expect(fs.existsSync(path.join(rootDir, 'i18n/it.yaml'))).toBe(false);
+    expect(fs.existsSync(path.join(rootDir, 'static/images/og/it'))).toBe(false);
+    expect(fs.existsSync(path.join(publicDir, 'it'))).toBe(false);
   });
 
-  it('verifies public/it/ builds with Italian homepage and translated navigation', () => {
-    const itIndexPath = path.join(publicDir, 'it/index.html');
-    expect(fs.existsSync(itIndexPath)).toBe(true);
+  it('verifies English navigation menus and i18n translation files exist', () => {
+    const menusEnPath = path.join(rootDir, 'config/_default/menus.en.toml');
+    expect(fs.existsSync(menusEnPath)).toBe(true);
 
-    const itHtml = fs.readFileSync(itIndexPath, 'utf-8');
-    expect(itHtml).toContain('Chi Siamo');
-    expect(itHtml).toContain('Contatti');
-    expect(itHtml).toContain('Serie');
+    const i18nEnPath = path.join(rootDir, 'i18n/en.yaml');
+    expect(fs.existsSync(i18nEnPath)).toBe(true);
   });
 
-  it('verifies language switcher component is integrated in header for desktop and mobile', () => {
+  it('verifies language switcher component is preserved in header', () => {
     const headerPath = path.join(rootDir, 'layouts/partials/essentials/header.html');
     const headerHtml = fs.readFileSync(headerPath, 'utf-8');
 
     expect(headerHtml).toContain('components/language-switcher');
-    expect(headerHtml).toContain('Mobile Language Switcher');
-    expect(headerHtml).toContain('Language / Lingua');
 
     const switcherPath = path.join(rootDir, 'layouts/partials/components/language-switcher.html');
     expect(fs.existsSync(switcherPath)).toBe(true);
@@ -56,12 +43,5 @@ describe('Multilingual Capabilities & Italian Language Support Suite', () => {
     expect(switcherHtml).toContain('data-lang-switcher');
     expect(switcherHtml).toContain('fa-globe');
   });
-
-  it('verifies translated Italian edition of flagship blog post builds in public/it/blog/', () => {
-    const itPostPath = path.join(publicDir, 'it/blog/gemini-agent-platform-express-mode-bootstrapping-offvia/index.html');
-    expect(fs.existsSync(itPostPath)).toBe(true);
-
-    const itPostHtml = fs.readFileSync(itPostPath, 'utf-8');
-    expect(itPostHtml).toContain('Da Vertex AI a Gemini Enterprise Agent Platform');
-  });
 });
+
