@@ -30,7 +30,8 @@ describe('Contact Form Experience, Dual-Persistence & AdSense Certification Guar
     // Ensures internal technical IDs or database confirmation badges are not exposed to the user
     expect(enHtml).not.toContain('Database Confirmed');
     expect(enHtml).toMatch(/id=(["']?)contact-reset-btn\1/);
-    expect(enHtml).toContain('Thank you for contacting us');
+    expect(enHtml).toContain('Message Sent');
+    expect(enHtml).toContain('We will reply within');
   });
 
   it('verifies dual-persistence architecture for contact form submissions', () => {
@@ -70,9 +71,8 @@ describe('Contact Form Experience, Dual-Persistence & AdSense Certification Guar
     const enHtml = fs.readFileSync(ex280En, 'utf-8');
 
     // English disclaimer check
-    expect(enHtml).toContain('Independent Study Guide');
-    expect(enHtml).toContain('NDA Safe');
-    expect(enHtml).toContain('strictly adheres to candidate NDAs');
+    expect(enHtml).toContain('Independent study guide based on public documentation');
+    expect(enHtml).toContain('NDA compliant');
     expect(enHtml).toMatch(/href=(["']?)\/disclaimer\/\1/);
   });
 
