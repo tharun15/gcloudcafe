@@ -10998,9 +10998,12 @@ document.addEventListener('DOMContentLoaded', initDevTerminalBlocks);
       }
 
       var x1 = Math.round(cardRect.right * 10) / 10;
-      var y1 = Math.round(Math.max(minStartY, Math.min(maxStartY, rawStartY)) * 10) / 10;
+      var targetBadgeY = badgeRect.top + badgeRect.height / 2;
+      // If badge center Y is within card vertical span, align y1 directly with y2 for a clean straight horizontal bridge!
+      var targetStartY = (targetBadgeY >= minStartY && targetBadgeY <= maxStartY) ? targetBadgeY : rawStartY;
+      var y1 = Math.round(Math.max(minStartY, Math.min(maxStartY, targetStartY)) * 10) / 10;
       var x2 = Math.round((badgeRect.left - 3) * 10) / 10;
-      var y2 = Math.round((badgeRect.top + badgeRect.height / 2) * 10) / 10;
+      var y2 = Math.round(targetBadgeY * 10) / 10;
 
       var companionRect = companionCard ? companionCard.getBoundingClientRect() : null;
       var gutterRight = companionRect && companionRect.left > x1 + 12 ? companionRect.left : x2;
