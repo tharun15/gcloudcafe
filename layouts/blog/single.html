@@ -191,25 +191,20 @@
           {{/* Educational & NDA Study Guide Disclaimer for Certification Articles (AdSense & IP Compliance) */}}
           {{ $isCertification := or (in .Params.categories "Certifications") (in .Params.categories "certifications") (in .Params.tags "Certification") (in .Params.tags "EX280") (in .Params.tags "CKA") }}
           {{ if $isCertification }}
-            <aside class="mb-8 p-4.5 sm:p-5 rounded-2xl border border-amber-500/30 bg-amber-500/5 dark:bg-amber-950/20 text-slate-800 dark:text-slate-200 text-xs leading-relaxed shadow-2xs" aria-label="Educational Study Guide Disclaimer">
-              <div class="flex items-start gap-3.5">
-                <div class="w-8 h-8 rounded-xl bg-amber-500/15 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0 text-sm mt-0.5 border border-amber-500/25">
-                  <i class="fa-solid fa-shield-halved"></i>
-                </div>
-                <div class="space-y-1">
-                  <div class="font-bold text-slate-900 dark:text-white text-xs sm:text-sm tracking-tight flex items-center gap-2">
-                    <span>{{ if eq site.Language.Lang "it" }}Avvertenza Formativa & Esami (Conformità NDA){{ else }}Independent Study Guide & Candidate NDA Compliance Notice{{ end }}</span>
-                    <span class="inline-block px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-amber-500/20 text-amber-700 dark:text-amber-300">NDA Safe</span>
-                  </div>
-                  <p class="m-0 text-slate-600 dark:text-slate-300 text-[11px] sm:text-xs leading-relaxed">
-                    {{ if eq site.Language.Lang "it" }}
-                    Questa guida è materiale formativo indipendente basato rigorosamente sulla documentazione ufficiale, sul programma pubblico e su esercitazioni pratiche di laboratorio. GCloudCafe non è affiliato né sponsorizzato da Red Hat, Google Cloud o CNCF e rispetta scrupolosamente gli accordi di riservatezza (NDA). Nessun quesito d'esame reale o contenuto proprietario viene divulgato. Consulta il nostro <a href="{{ `disclaimer/` | relLangURL }}" class="underline font-semibold hover:text-amber-600 dark:hover:text-amber-400">Disclaimer Legale & Tecnico</a>.
-                    {{ else }}
-                    This guide is independent educational engineering material based strictly on publicly available documentation, official syllabus objectives, and reproducible hands-on lab exercises. GCloudCafe is not affiliated with, endorsed by, or sponsored by Red Hat, Inc., Google Cloud, or the CNCF, and strictly adheres to candidate NDAs. No proprietary, leaked, or actual exam questions are published or distributed. Review our complete <a href="{{ `disclaimer/` | relLangURL }}" class="underline font-semibold hover:text-amber-600 dark:hover:text-amber-400">Legal & Exam Disclaimer</a>.
-                    {{ end }}
-                  </p>
-                </div>
-              </div>
+            <aside class="mb-6 px-4 py-3 rounded-xl border border-amber-500/30 bg-amber-500/5 dark:bg-amber-950/20 text-slate-700 dark:text-slate-300 text-xs flex items-center justify-between gap-3 flex-wrap" aria-label="Educational Study Guide Disclaimer">
+              <span class="inline-flex items-center gap-2">
+                <i class="fa-solid fa-shield-halved text-amber-600 dark:text-amber-400"></i>
+                <span>
+                  {{ if eq site.Language.Lang "it" }}
+                    Avvertenza Formativa: rispetta scrupolosamente gli accordi di riservatezza (NDA).
+                  {{ else }}
+                    Independent Study Guide Independent study guide based on public documentation and lab exercises (NDA compliant). Candidate NDA Compliance Notice: strictly adheres to candidate NDAs (NDA Safe).
+                  {{ end }}
+                </span>
+              </span>
+              <a href="{{ `disclaimer/` | relLangURL }}" class="underline font-semibold hover:text-amber-600 dark:hover:text-amber-400 shrink-0">
+                {{ if eq site.Language.Lang "it" }}Disclaimer{{ else }}Disclaimer{{ end }}
+              </a>
             </aside>
           {{ end }}
 
@@ -268,9 +263,9 @@
                 </div>
                 <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed mb-3">
                   {{ if eq site.Language.Lang "it" }}
-                    Ingegnere con esperienza in sistemi backend Java, orchestrazione Kubernetes e automazione cloud. Questo articolo si basa su test di laboratorio reali e considerazioni pratiche di produzione.
+                    Cloud Architect &amp; DevOps Engineer focalizzato su Kubernetes, OpenShift, Google Cloud e sicurezza TLS.
                   {{ else }}
-                    Backend and DevOps engineer focused on Kubernetes, OpenShift, Google Cloud, and zero-trust security. All tutorials are tested in reproducible labs with production-minded reasoning.
+                    Cloud Architect &amp; DevOps Engineer focused on Kubernetes, OpenShift, Google Cloud, and TLS security.
                   {{ end }}
                 </p>
                 <div class="flex items-center justify-center sm:justify-start gap-3">

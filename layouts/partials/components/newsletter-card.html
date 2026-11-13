@@ -2,22 +2,18 @@
 <aside class="blog-newsletter-card my-10 p-6 sm:p-8 rounded-3xl border border-primary/20 bg-linear-to-br from-primary/5 via-theme-light to-theme-light dark:from-primary/10 dark:via-darkmode-theme-light dark:to-darkmode-theme-light shadow-sm" aria-label="{{ if $isIt }}Iscrizione Newsletter{{ else }}Newsletter Subscription{{ end }}">
   <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
     <div class="max-w-xl">
-      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[11px] font-bold tracking-wider uppercase bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary mb-3">
-        <i class="fa-solid fa-envelope-open-text"></i>
-        <span>{{ if $isIt }}NEWSLETTER BISETTIMANALE{{ else }}BI-WEEKLY NEWSLETTER{{ end }}</span>
-      </div>
-      <h3 class="text-xl sm:text-2xl font-bold text-dark dark:text-darkmode-dark tracking-tight mb-2">
+      <h3 class="text-lg sm:text-xl font-bold text-dark dark:text-darkmode-dark tracking-tight mb-1">
         {{ if $isIt }}
-          Migliora le tue competenze di Cloud Architecture
+          Iscriviti alla Newsletter
         {{ else }}
-          Level Up Your Cloud &amp; DevOps Engineering
+          Subscribe to the Newsletter
         {{ end }}
       </h3>
-      <p class="text-sm text-text/90 dark:text-darkmode-text/90 leading-relaxed">
+      <p class="text-xs sm:text-sm text-text/90 dark:text-darkmode-text/90 leading-relaxed m-0">
         {{ if $isIt }}
-          Unisciti a oltre 1.000 ingegneri. Ricevi guide tecniche su Kubernetes, GCP, OpenShift, sicurezza TLS e strategie di certificazione direttamente nella tua casella di posta.
+          Nuove guide su Cloud, Kubernetes e Sicurezza, due volte al mese.
         {{ else }}
-          Join 1,000+ engineers. Get battle-tested architectural deep dives, Kubernetes guides, TLS security, and cloud exam teardowns directly to your inbox.
+          New guides on Cloud, Kubernetes, and Security, twice a month.
         {{ end }}
       </p>
     </div>

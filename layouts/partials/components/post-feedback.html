@@ -2,16 +2,10 @@
   <div class="post-feedback-widget rounded-3xl p-6 sm:p-8 bg-theme-light/60 dark:bg-darkmode-theme-light/40 border border-border/60 dark:border-darkmode-border/60 shadow-xs" data-post-feedback="{{ .RelPermalink }}" data-supabase-url="{{ site.Params.supabase.url }}" data-supabase-key="{{ site.Params.supabase.anon_key }}">
     
     <!-- Reaction Header & Emoji Bar -->
-    <div class="mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-      <div>
-        <span class="blog-badge mb-2 inline-flex items-center gap-1.5"><i class="fa-solid fa-heart text-red-500"></i> Reader Feedback</span>
-        <h2 id="post-engagement-heading" class="text-xl font-bold tracking-tight sm:text-2xl">
-          Did you find this article valuable?
-        </h2>
-        <p class="text-sm text-text/80 dark:text-darkmode-text/80 mt-1">
-          Tap a reaction to let us know. Instant, private, and brews better content!
-        </p>
-      </div>
+    <div class="mb-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+      <h2 id="post-engagement-heading" class="text-lg font-bold tracking-tight sm:text-xl m-0">
+        Was this article helpful?
+      </h2>
 
       <!-- Playful Reactions Group -->
       <div class="flex flex-wrap items-center gap-2 sm:gap-3" role="group" aria-label="Post reactions">

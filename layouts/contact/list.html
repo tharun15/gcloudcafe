@@ -15,18 +15,15 @@
       </nav>
 
       <!-- Hero Header -->
-      <div class="max-w-3xl mb-12 sm:mb-16">
-        <span class="font-mono text-xs font-bold uppercase tracking-widest text-sky-600 dark:text-sky-400 block mb-3">
-          {{ if eq site.Language.Lang "it" }}CONTATTI · COLLABORAZIONE TECNICA{{ else }}GET IN TOUCH · TECHNICAL COLLABORATION{{ end }}
-        </span>
-        <h1 class="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 dark:text-white tracking-tight mb-4 leading-tight">
-          {{ if eq site.Language.Lang "it" }}Parla con il team ingegneristico di GCloudCafe{{ else }}Contact the Engineering & Editorial Team{{ end }}
+      <div class="max-w-3xl mb-10">
+        <h1 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight mb-2 leading-tight">
+          {{ if eq site.Language.Lang "it" }}Contatti{{ else }}Contact{{ end }}
         </h1>
-        <p class="text-slate-600 dark:text-slate-300 text-base sm:text-lg leading-relaxed m-0">
+        <p class="text-slate-600 dark:text-slate-300 text-sm sm:text-base leading-relaxed m-0">
           {{ if eq site.Language.Lang "it" }}
-          Hai una domanda su un'architettura cloud, hai riscontrato un refuso o desideri collaborare su guide tecniche? Revisioniamo tutti i messaggi e rispondiamo entro 24–48 ore lavorative.
+          Domande tecniche, segnalazioni di errori o collaborazioni.
           {{ else }}
-          Have a question about one of our Kubernetes or GCP architecture deep dives, spotted a technical erratum, or want to discuss enterprise cloud collaboration? We review all inquiries and respond within 24–48 business hours.
+          Questions, technical errata, or collaboration inquiries.
           {{ end }}
         </p>
       </div>
@@ -52,13 +49,6 @@
                 </p>
               </div>
             </div>
-            <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed m-0">
-              {{ if eq site.Language.Lang "it" }}
-              Preferisci il tuo client email? Scrivici direttamente in qualsiasi momento con log, frammenti di codice o dettagli di progetto.
-              {{ else }}
-              Prefer your own email client? Send logs, stack traces, or partnership decks directly to our editorial inbox.
-              {{ end }}
-            </p>
             <a href="mailto:contact@gcloudcafe.com" class="inline-flex items-center gap-2 text-xs font-bold text-red-600 dark:text-red-400 hover:underline no-underline">
               <span>{{ if eq site.Language.Lang "it" }}Invia email diretta{{ else }}Send direct email{{ end }}</span>
               <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
@@ -70,9 +60,9 @@
             <i class="fa-solid fa-shield-check text-slate-400 text-lg shrink-0"></i>
             <p class="text-xs text-slate-500 dark:text-slate-400 m-0 leading-relaxed">
               {{ if eq site.Language.Lang "it" }}
-              I tuoi dati non saranno mai condivisi né venduti. Trattiamo le informazioni nel pieno rispetto del GDPR e della nostra <a href="{{ `privacy-policy/` | relLangURL }}" class="underline hover:text-slate-700 dark:hover:text-slate-200">Privacy Policy</a>.
+              Usiamo i tuoi dati solo per rispondere. Leggi la <a href="{{ `privacy-policy/` | relLangURL }}" class="underline hover:text-slate-700 dark:hover:text-slate-200">Privacy Policy</a>.
               {{ else }}
-              Your contact details are strictly used to reply to your inquiry. We never sell data or send unsolicited spam. Review our <a href="{{ `privacy-policy/` | relLangURL }}" class="underline hover:text-slate-700 dark:hover:text-slate-200">Privacy Policy</a>.
+              Used only to reply to your message. See our <a href="{{ `privacy-policy/` | relLangURL }}" class="underline hover:text-slate-700 dark:hover:text-slate-200">Privacy Policy</a>.
               {{ end }}
             </p>
           </div>
@@ -90,13 +80,13 @@
               </div>
               <div class="space-y-2">
                 <h2 class="text-2xl font-black text-slate-900 dark:text-white tracking-tight m-0">
-                  {{ if eq site.Language.Lang "it" }}Messaggio Ricevuto con Successo!{{ else }}Message Received Successfully!{{ end }}
+                  {{ if eq site.Language.Lang "it" }}Messaggio Ricevuto!{{ else }}Message Sent{{ end }}
                 </h2>
                 <p class="text-sm text-slate-600 dark:text-slate-300 max-w-md mx-auto leading-relaxed m-0">
                   {{ if eq site.Language.Lang "it" }}
-                  Grazie per averci contattato! Abbiamo ricevuto la tua richiesta. Il team editoriale di GCloudCafe ti risponderà entro <strong>24–48 ore lavorative</strong> all'indirizzo <span id="contact-success-email" class="font-semibold text-slate-900 dark:text-white"></span>.
+                  Grazie per averci contattato! Risponderemo entro <strong>24–48 ore</strong> a <span id="contact-success-email" class="font-semibold text-slate-900 dark:text-white"></span>.
                   {{ else }}
-                  Thank you for contacting us! We have received your message. Our engineering and editorial team will review it and reach out to you within <strong>24–48 business hours</strong> at <span id="contact-success-email" class="font-semibold text-slate-900 dark:text-white"></span>.
+                  Thank you for contacting us! We will reply within <strong>24–48 hours</strong> to <span id="contact-success-email" class="font-semibold text-slate-900 dark:text-white"></span>.
                   {{ end }}
                 </p>
               </div>
@@ -116,11 +106,8 @@
               <!-- Form Header -->
               <div class="border-b border-slate-100 dark:border-slate-800 pb-4">
                 <h2 class="text-xl font-black text-slate-900 dark:text-white tracking-tight m-0">
-                  {{ if eq site.Language.Lang "it" }}Invia un messaggio all'autore{{ else }}Send a Message{{ end }}
+                  {{ if eq site.Language.Lang "it" }}Invia un messaggio{{ else }}Send a Message{{ end }}
                 </h2>
-                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 m-0">
-                  {{ if eq site.Language.Lang "it" }}Compila i campi sottostanti per iniziare una conversazione.{{ else }}Fill in the fields below to start a conversation with our engineering team.{{ end }}
-                </p>
               </div>
 
               <!-- Error Alert Banner (Hidden by default) -->

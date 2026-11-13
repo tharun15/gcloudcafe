@@ -38,10 +38,10 @@ track_series_desc: Guide complete suddivise in episodi sequenziali con laborator
 # Sezione Newsletter
 newsletter_label: NEWSLETTER
 newsletter_heading: Approfondimenti di ingegneria, due volte al mese
-newsletter_desc: Analisi approfondite su architettura cloud, sistemi distribuiti, Kubernetes e sicurezza. Scritto da professionisti, non da redazioni di contenuto.
+newsletter_desc: Nuove guide su Cloud, Kubernetes e Sicurezza.
 newsletter_placeholder: tu@azienda.com
 newsletter_submit: Iscriviti
-newsletter_footer: 'Approfondimenti curati su architettura e DevOps. Zero spam, cancellati quando vuoi.'
+newsletter_footer: 'Zero spam · Cancellati quando vuoi'
 
 # Pagina articolo singolo
 breadcrumb_articles: Articoli
@@ -64,4 +64,4 @@ footer_cookies: Cookie
 footer_copyright: '© 2026 GCloudCafe. Tutti i diritti riservati.'
 footer_disclaimer: Disclaimer
 weekly_poll_heading: 'Qual è la tua opinione questa settimana?'
-weekly_poll_subheading: 'Esprimi il tuo voto e scopri cosa ne pensano gli altri ingegneri. Opinioni reali dai team che costruiscono in produzione.'
+weekly_poll_subheading: 'Vota per vedere i risultati.'
