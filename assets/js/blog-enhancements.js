@@ -10998,9 +10998,12 @@ document.addEventListener('DOMContentLoaded', initDevTerminalBlocks);
       }
 
       var x1 = Math.round(cardRect.right * 10) / 10;
-      var y1 = Math.round(Math.max(minStartY, Math.min(maxStartY, rawStartY)) * 10) / 10;
+      var targetBadgeY = badgeRect.top + badgeRect.height / 2;
+      // If badge center Y is within card vertical span, align y1 directly with y2 for a clean straight horizontal bridge!
+      var targetStartY = (targetBadgeY >= minStartY && targetBadgeY <= maxStartY) ? targetBadgeY : rawStartY;
+      var y1 = Math.round(Math.max(minStartY, Math.min(maxStartY, targetStartY)) * 10) / 10;
       var x2 = Math.round((badgeRect.left - 3) * 10) / 10;
-      var y2 = Math.round((badgeRect.top + badgeRect.height / 2) * 10) / 10;
+      var y2 = Math.round(targetBadgeY * 10) / 10;
 
       var companionRect = companionCard ? companionCard.getBoundingClientRect() : null;
       var gutterRight = companionRect && companionRect.left > x1 + 12 ? companionRect.left : x2;
@@ -11009,10 +11012,13 @@ document.addEventListener('DOMContentLoaded', initDevTerminalBlocks);
       var dy = y2 - y1;
       var pathData = '';
 
+      // Professional technical blueprint connector:
+      // Emerges cleanly from the right edge of the card, routes horizontally, then makes a crisp
+      // rounded orthogonal transition into the active step badge in the sidebar companion.
+      var r = Math.min(8, Math.abs(dy) / 2, Math.max(3, gutterWidth * 0.25));
       if (Math.abs(dy) < 2) {
         pathData = 'M ' + x1 + ' ' + y1 + ' L ' + x2 + ' ' + y2;
       } else {
-        var r = Math.min(11, Math.abs(dy) / 2, Math.max(4, gutterWidth * 0.35));
         var signY = dy > 0 ? 1 : -1;
         pathData =
           'M ' + x1 + ' ' + y1 +
@@ -11034,9 +11040,10 @@ document.addEventListener('DOMContentLoaded', initDevTerminalBlocks);
         anchorStart.setAttribute('cy', y1);
       }
       if (anchorEnd) {
+        // Minimalist terminal tick flush with step badge
         anchorEnd.setAttribute(
           'd',
-          'M ' + (x2 - 4) + ' ' + (y2 - 3.5) + ' L ' + x2 + ' ' + y2 + ' L ' + (x2 - 4) + ' ' + (y2 + 3.5)
+          'M ' + (x2 - 3) + ' ' + (y2 - 2.5) + ' L ' + x2 + ' ' + y2 + ' L ' + (x2 - 3) + ' ' + (y2 + 2.5)
         );
       }
 
