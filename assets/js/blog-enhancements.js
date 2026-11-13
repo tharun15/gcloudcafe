@@ -10655,6 +10655,13 @@ document.addEventListener('DOMContentLoaded', initDevTerminalBlocks);
     var standaloneReadTime = document.getElementById('sidebar-standalone-readtime');
     var standaloneJumpFlagshipBtn = document.getElementById('sidebar-standalone-jump-flagship-btn');
 
+    var connectorSvg = document.getElementById('series-tracker-connector-svg');
+    var connectorGlow = document.getElementById('series-tracker-connector-glow');
+    var connectorPath = document.getElementById('series-tracker-connector-path');
+    var anchorStartRing = document.getElementById('series-tracker-anchor-start-ring');
+    var anchorStart = document.getElementById('series-tracker-anchor-start');
+    var anchorEnd = document.getElementById('series-tracker-anchor-end');
+
     var activeDotClass = 'track-spine-node w-2 h-2 rounded-full shrink-0 transition-all bg-sky-500 ring-4 ring-sky-500/15';
     var idleDotClass = 'track-spine-node w-2 h-2 rounded-full shrink-0 transition-all bg-slate-300 dark:bg-slate-700 group-hover/trackbtn:bg-sky-400';
     var activeTitleClass = 'track-title text-xs leading-snug truncate transition-colors font-bold text-slate-900 dark:text-white';
@@ -10703,6 +10710,7 @@ document.addEventListener('DOMContentLoaded', initDevTerminalBlocks);
         toggleBtn.addEventListener('click', function() {
           isPreviewMode = true;
           activateTrack(sName, 1, { isPreview: true });
+          updateSeriesConnectorLine();
         });
       }
     });
@@ -10934,6 +10942,107 @@ document.addEventListener('DOMContentLoaded', initDevTerminalBlocks);
       });
     }
 
+    function hideSeriesConnectorLine() {
+      if (connectorSvg) {
+        connectorSvg.classList.remove('is-visible');
+      }
+    }
+
+    function updateSeriesConnectorLine() {
+      if (!connectorSvg || !connectorPath) return;
+
+      if (window.innerWidth < 1024 || isPreviewMode || !lastSyncedCard) {
+        hideSeriesConnectorLine();
+        return;
+      }
+
+      if (lastSyncedCard.getAttribute('data-tracked-kind') !== 'series') {
+        hideSeriesConnectorLine();
+        return;
+      }
+
+      if (!seriesContextView || seriesContextView.classList.contains('hidden')) {
+        hideSeriesConnectorLine();
+        return;
+      }
+
+      var cardEl = lastSyncedCard.querySelector('.spotlight-hero, .blog-card-horizontal') || lastSyncedCard;
+      var badgeEl = companionPlaylist ? companionPlaylist.querySelector('.track-step-row.is-current .track-step-badge') : null;
+      if (!cardEl || !badgeEl) {
+        hideSeriesConnectorLine();
+        return;
+      }
+
+      var cardRect = cardEl.getBoundingClientRect();
+      var badgeRect = badgeEl.getBoundingClientRect();
+      var viewportHeight = window.innerHeight || document.documentElement.clientHeight;
+      var headerClearance = 76;
+
+      if (
+        badgeRect.width === 0 ||
+        badgeRect.height === 0 ||
+        cardRect.bottom <= headerClearance + 16 ||
+        cardRect.top >= viewportHeight - 16 ||
+        cardRect.right >= badgeRect.left - 8
+      ) {
+        hideSeriesConnectorLine();
+        return;
+      }
+
+      var rawStartY = (cardRect.top + cardRect.bottom) / 2;
+      var minStartY = Math.max(cardRect.top + 28, headerClearance + 12);
+      var maxStartY = Math.min(cardRect.bottom - 28, viewportHeight - 20);
+      if (minStartY > maxStartY) {
+        hideSeriesConnectorLine();
+        return;
+      }
+
+      var x1 = Math.round(cardRect.right * 10) / 10;
+      var y1 = Math.round(Math.max(minStartY, Math.min(maxStartY, rawStartY)) * 10) / 10;
+      var x2 = Math.round((badgeRect.left - 3) * 10) / 10;
+      var y2 = Math.round((badgeRect.top + badgeRect.height / 2) * 10) / 10;
+
+      var companionRect = companionCard ? companionCard.getBoundingClientRect() : null;
+      var gutterRight = companionRect && companionRect.left > x1 + 12 ? companionRect.left : x2;
+      var gutterWidth = Math.max(12, gutterRight - x1);
+      var midX = Math.round((x1 + gutterWidth * 0.5) * 10) / 10;
+      var dy = y2 - y1;
+      var pathData = '';
+
+      if (Math.abs(dy) < 2) {
+        pathData = 'M ' + x1 + ' ' + y1 + ' L ' + x2 + ' ' + y2;
+      } else {
+        var r = Math.min(11, Math.abs(dy) / 2, Math.max(4, gutterWidth * 0.35));
+        var signY = dy > 0 ? 1 : -1;
+        pathData =
+          'M ' + x1 + ' ' + y1 +
+          ' L ' + (midX - r) + ' ' + y1 +
+          ' Q ' + midX + ' ' + y1 + ' ' + midX + ' ' + (y1 + signY * r) +
+          ' L ' + midX + ' ' + (y2 - signY * r) +
+          ' Q ' + midX + ' ' + y2 + ' ' + (midX + r) + ' ' + y2 +
+          ' L ' + x2 + ' ' + y2;
+      }
+
+      connectorPath.setAttribute('d', pathData);
+      if (connectorGlow) connectorGlow.setAttribute('d', pathData);
+      if (anchorStartRing) {
+        anchorStartRing.setAttribute('cx', x1);
+        anchorStartRing.setAttribute('cy', y1);
+      }
+      if (anchorStart) {
+        anchorStart.setAttribute('cx', x1);
+        anchorStart.setAttribute('cy', y1);
+      }
+      if (anchorEnd) {
+        anchorEnd.setAttribute(
+          'd',
+          'M ' + (x2 - 4) + ' ' + (y2 - 3.5) + ' L ' + x2 + ' ' + y2 + ' L ' + (x2 - 4) + ' ' + (y2 + 3.5)
+        );
+      }
+
+      connectorSvg.classList.add('is-visible');
+    }
+
     function evaluateActiveFeedCard(forceSyncSpine) {
       var feedArticles = document.querySelectorAll('[data-feed-article="true"]');
       if (!feedArticles || feedArticles.length === 0) return;
@@ -11001,6 +11110,7 @@ document.addEventListener('DOMContentLoaded', initDevTerminalBlocks);
         markFeedCardSynced(activeTarget, 'standalone');
         activateStandalone(articleTitle, articleUrl, articleReadTime);
       }
+      updateSeriesConnectorLine();
     }
 
     var ticking = false;
@@ -11008,6 +11118,7 @@ document.addEventListener('DOMContentLoaded', initDevTerminalBlocks);
       if (!ticking) {
         window.requestAnimationFrame(function() {
           evaluateActiveFeedCard(false);
+          updateSeriesConnectorLine();
           ticking = false;
         });
         ticking = true;
@@ -11025,6 +11136,7 @@ document.addEventListener('DOMContentLoaded', initDevTerminalBlocks);
       activateTrack(def.seriesName, def.defaultOrder || 1);
     }
     evaluateActiveFeedCard();
+    window.requestAnimationFrame(updateSeriesConnectorLine);
   }
 
   if (document.readyState === 'loading') {
