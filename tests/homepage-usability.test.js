@@ -179,4 +179,28 @@ describe('Homepage & Site-Wide Usability Heuristics & Accessibility Suite', () =
     expect(cardHtml).toContain('editorial-series-step');
     expect(cardHtml).not.toContain('overflow-x-auto');
   });
+
+  it('renders a lightweight SVG connector line linking the active feed article card to its position in the series tracker', () => {
+    const sidebarHtml = fs.readFileSync(path.join(rootDir, 'layouts/partials/components/homepage-sidebar.html'), 'utf8');
+    const jsContent = fs.readFileSync(path.join(rootDir, 'assets/js/blog-enhancements.js'), 'utf8');
+    const scssContent = fs.readFileSync(path.join(rootDir, 'assets/scss/custom.scss'), 'utf8');
+
+    // Lightweight decorative SVG overlay with path and start/end anchor nodes
+    expect(sidebarHtml).toContain('id="series-tracker-connector-svg"');
+    expect(sidebarHtml).toContain('id="series-tracker-connector-glow"');
+    expect(sidebarHtml).toContain('id="series-tracker-connector-path"');
+    expect(sidebarHtml).toContain('id="series-tracker-anchor-start"');
+    expect(sidebarHtml).toContain('id="series-tracker-anchor-end"');
+    expect(sidebarHtml).toContain('aria-hidden="true"');
+
+    // Dynamic orthogonal rounded path calculation and rAF sync in JS
+    expect(jsContent).toContain('function updateSeriesConnectorLine(');
+    expect(jsContent).toContain('series-tracker-connector-svg');
+    expect(jsContent).toContain('series-tracker-connector-path');
+
+    // Styles for light/dark themes, pointer-events: none, and reduced-motion compliance
+    expect(scssContent).toContain('.series-tracker-connector-svg');
+    expect(scssContent).toContain('.series-tracker-connector-path');
+    expect(scssContent).toContain('pointer-events: none');
+  });
 });
