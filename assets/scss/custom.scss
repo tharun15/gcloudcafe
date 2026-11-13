@@ -2632,7 +2632,7 @@ table {
   z-index: 25;
   overflow: visible;
   opacity: 0;
-  transition: opacity 150ms cubic-bezier(0.0, 0.0, 0.2, 1);
+  transition: opacity 180ms cubic-bezier(0.16, 1, 0.3, 1);
 
   &.is-visible {
     opacity: 1;
@@ -2640,49 +2640,52 @@ table {
 }
 
 .series-tracker-connector-glow {
-  stroke: rgba(14, 165, 233, 0.12);
-  stroke-width: 5px;
+  stroke: rgba(14, 165, 233, 0.05);
+  stroke-width: 3px;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
 
 .series-tracker-connector-path {
-  stroke: #0284c7;
-  stroke-width: 1.5px;
+  stroke: rgba(2, 132, 199, 0.65);
+  stroke-width: 1px;
+  stroke-dasharray: 4 3;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
 
 .series-tracker-anchor-ring {
-  fill: rgba(14, 165, 233, 0.14);
+  fill: rgba(14, 165, 233, 0.1);
+  r: 4.5px;
 }
 
 .series-tracker-anchor-dot {
   fill: #ffffff;
   stroke: #0284c7;
-  stroke-width: 1.75px;
+  stroke-width: 1.25px;
+  r: 2.25px;
 }
 
 .series-tracker-anchor-chevron {
   stroke: #0284c7;
-  stroke-width: 1.75px;
+  stroke-width: 1.25px;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
 
 :root.dark .series-tracker-connector-glow,
 .dark .series-tracker-connector-glow {
-  stroke: rgba(56, 189, 248, 0.14);
+  stroke: rgba(56, 189, 248, 0.06);
 }
 
 :root.dark .series-tracker-connector-path,
 .dark .series-tracker-connector-path {
-  stroke: #38bdf8;
+  stroke: rgba(56, 189, 248, 0.55);
 }
 
 :root.dark .series-tracker-anchor-ring,
 .dark .series-tracker-anchor-ring {
-  fill: rgba(56, 189, 248, 0.18);
+  fill: rgba(56, 189, 248, 0.12);
 }
 
 :root.dark .series-tracker-anchor-dot,
