@@ -1,22 +1,22 @@
 [
   {
-    "id": "4aa717a9-31b4-4f08-9b05-675c0353d620",
-    "title": "Red Hat OpenShift Virtualization 5: Unify VMs, Cut Costs, Power AI",
-    "content": "🎯 What Changed: Red Hat OpenShift Virtualization 5 is released, offering a unified platform to manage legacy VMs and cloud-native workloads.\n💡 Engineering Impact: This release enables consolidation of legacy VMs onto OpenShift, significantly reducing hypervisor licensing costs and optimizing hardware. It also streamlines AI workload adoption and accelerates the shift towards integrated cloud-native workflows.",
+    "id": "2dd6af13-dd5f-459e-b7ec-3e39e93eb199",
+    "title": "Amazon Connect Customer supports merging and linking related cases in the agent workspace",
+    "content": "🎯 What Changed: Amazon Connect now enables agents to merge and link related customer cases directly within the unified agent workspace to consolidate duplicate interactions.\n\n💡 Why It Matters: Why it matters: This update reduces data fragmentation and simplifies state management, allowing architects to build more efficient event-driven workflows and maintain a cleaner single source of truth for customer support analytics.",
     "tags": [
-      "#OpenShift",
-      "#RedHat",
-      "#DevOps"
+      "#AWS",
+      "#CloudArchitecture",
+      "#CloudNews"
     ],
     "upvotes": 1,
     "downvotes": 0,
     "score": 1,
     "author": "Cloud Newsroom Bot",
-    "created_at": "2026-11-12T13:36:48.391094+00:00",
-    "link_url": "https://www.redhat.com/en/blog/unlocking-next-generation-workloads-whats-new-red-hat-openshift-virtualization-5",
+    "created_at": "2026-11-13T05:31:21.928159+00:00",
+    "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/11/amazon-connect-cases-merge-link/",
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
-    "updated_at": "2026-11-13T00:57:03.332Z"
+    "updated_at": "2026-11-13T11:58:03.384Z"
   },
   {
     "id": "0b6826b6-fc4c-4621-8f9b-bbbea3de16aa",
@@ -36,7 +36,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:48.441634+00:00",
-    "ageDays": 36.64459733796296
+    "ageDays": 37.103634409722225
   },
   {
     "id": "81213fff-57d4-4c0b-90eb-c84beeb18d4d",
@@ -56,7 +56,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:42.008666+00:00",
-    "ageDays": 36.64467179398148
+    "ageDays": 37.10370886574074
   },
   {
     "id": "1ec5647f-ce95-4be3-ba87-6aa974960da7",
@@ -76,7 +76,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:37.111692+00:00",
-    "ageDays": 36.64472847222222
+    "ageDays": 37.10376554398148
   },
   {
     "id": "88a2ed59-fb47-488b-b07c-d6be1de35d0b",
@@ -96,7 +96,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:31.276024+00:00",
-    "ageDays": 36.644796006944446
+    "ageDays": 37.1038330787037
   },
   {
     "id": "202f8734-234e-4bd5-9a67-8535691f131a",
@@ -116,7 +116,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:24.859911+00:00",
-    "ageDays": 36.64487027777778
+    "ageDays": 37.10390734953704
   },
   {
     "id": "37fcb780-d57d-4ba9-875a-7665dd9cd981",
@@ -136,7 +136,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T04:06:30.331436+00:00",
-    "ageDays": 36.86841805555556
+    "ageDays": 37.32745512731481
   },
   {
     "id": "521c6dfa-7eb3-4834-87fb-7ac338d90f9d",
@@ -156,7 +156,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T04:00:33.151279+00:00",
-    "ageDays": 36.87255208333333
+    "ageDays": 37.331589155092594
   },
   {
     "id": "b1f2627d-7930-4c4b-ab57-de042bac55c3",
@@ -176,7 +176,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T04:00:00.696536+00:00",
-    "ageDays": 36.87292771990741
+    "ageDays": 37.331964791666664
   },
   {
     "id": "bf22f4dd-2d54-4b4c-9038-ea09aadef8a2",
@@ -196,7 +196,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T03:59:45.591638+00:00",
-    "ageDays": 36.873102546296295
+    "ageDays": 37.33213961805556
   },
   {
     "id": "46fd5625-4fda-4793-a2ab-d6b627f3f4df",
@@ -216,7 +216,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T03:59:26.783766+00:00",
-    "ageDays": 36.87332023148148
+    "ageDays": 37.33235730324074
   },
   {
     "id": "16f5eb42-1979-4ef9-9407-bcae435c247c",
@@ -236,7 +236,27 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-12T16:40:03.358+00:00",
-    "ageDays": 0.4722924421296296
+    "ageDays": 0.9313295138888888
+  },
+  {
+    "id": "4aa717a9-31b4-4f08-9b05-675c0353d620",
+    "title": "Red Hat OpenShift Virtualization 5: Unify VMs, Cut Costs, Power AI",
+    "content": "🎯 What Changed: Red Hat OpenShift Virtualization 5 is released, offering a unified platform to manage legacy VMs and cloud-native workloads.\n💡 Engineering Impact: This release enables consolidation of legacy VMs onto OpenShift, significantly reducing hypervisor licensing costs and optimizing hardware. It also streamlines AI workload adoption and accelerates the shift towards integrated cloud-native workflows.",
+    "tags": [
+      "#OpenShift",
+      "#RedHat",
+      "#DevOps"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-11-12T13:36:48.391094+00:00",
+    "link_url": "https://www.redhat.com/en/blog/unlocking-next-generation-workloads-whats-new-red-hat-openshift-virtualization-5",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
+    "updated_at": "2026-11-13T00:57:03.332+00:00",
+    "ageDays": 0.9314127662037037
   },
   {
     "id": "64b03f19-9019-453a-8b0c-1e009a52d529",
@@ -256,7 +276,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-12T06:26:09.323+00:00",
-    "ageDays": 0.7961208680555556
+    "ageDays": 1.2551579398148147
   },
   {
     "id": "854873b0-f493-4cb8-bbfa-5413f8a41679",
@@ -276,26 +296,6 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-11T15:56:52.757+00:00",
-    "ageDays": 1.5118248379629629
-  },
-  {
-    "id": "e0c30b7c-37c7-42e9-84e7-c00dffaeef71",
-    "title": "Your move to Red Hat OpenShift Virtualization doesn't have to wait on VDDK",
-    "content": "🎯 What Changed: Red Hat OpenShift Virtualization now enables direct VMware VM migrations, eliminating the previous dependency on the hard-to-obtain VDDK.\n💡 Engineering Impact: This update removes a significant barrier for organizations, accelerating hybrid cloud adoption and simplifying migration planning by eliminating dependency on restricted external tools.",
-    "tags": [
-      "#OpenShift",
-      "#RedHat",
-      "#DevOps"
-    ],
-    "upvotes": 1,
-    "downvotes": 0,
-    "score": 1,
-    "author": "Cloud Newsroom Bot",
-    "created_at": "2026-11-11T12:39:54.247259+00:00",
-    "link_url": "https://www.redhat.com/en/blog/your-move-red-hat-openshift-virtualization-doesnt-have-wait-vddk",
-    "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
-    "updated_at": "2026-11-11T22:35:52.488+00:00",
-    "ageDays": 1.51189125
+    "ageDays": 1.9708619097222222
   }
 ]
