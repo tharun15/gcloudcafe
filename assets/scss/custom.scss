@@ -2591,8 +2591,8 @@ table {
   [data-feed-article="true"].is-feed-tracked {
     .spotlight-hero,
     .blog-card-horizontal {
-      border-color: rgba(148, 163, 184, 0.55) !important;
-      box-shadow: 0 8px 24px -12px rgba(15, 23, 42, 0.08) !important;
+      border-color: rgba(14, 165, 233, 0.42) !important;
+      box-shadow: 0 8px 24px -12px rgba(15, 23, 42, 0.08), 0 0 0 1px rgba(14, 165, 233, 0.08) !important;
     }
 
     &[data-tracked-kind="standalone"] {
@@ -2608,8 +2608,8 @@ table {
   .dark [data-feed-article="true"].is-feed-tracked {
     .spotlight-hero,
     .blog-card-horizontal {
-      border-color: rgba(71, 85, 105, 0.7) !important;
-      box-shadow: 0 12px 28px -12px rgba(0, 0, 0, 0.45) !important;
+      border-color: rgba(56, 189, 248, 0.4) !important;
+      box-shadow: 0 12px 28px -12px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(56, 189, 248, 0.1) !important;
     }
 
     &[data-tracked-kind="standalone"] {
@@ -2622,31 +2622,111 @@ table {
   }
 }
 
+/* Lightweight SVG Connector Bridge (Article Card -> Active Series Step Badge) */
+.series-tracker-connector-svg {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 25;
+  overflow: visible;
+  opacity: 0;
+  transition: opacity 150ms cubic-bezier(0.0, 0.0, 0.2, 1);
+
+  &.is-visible {
+    opacity: 1;
+  }
+}
+
+.series-tracker-connector-glow {
+  stroke: rgba(14, 165, 233, 0.12);
+  stroke-width: 5px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.series-tracker-connector-path {
+  stroke: #0284c7;
+  stroke-width: 1.5px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.series-tracker-anchor-ring {
+  fill: rgba(14, 165, 233, 0.14);
+}
+
+.series-tracker-anchor-dot {
+  fill: #ffffff;
+  stroke: #0284c7;
+  stroke-width: 1.75px;
+}
+
+.series-tracker-anchor-chevron {
+  stroke: #0284c7;
+  stroke-width: 1.75px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+:root.dark .series-tracker-connector-glow,
+.dark .series-tracker-connector-glow {
+  stroke: rgba(56, 189, 248, 0.14);
+}
+
+:root.dark .series-tracker-connector-path,
+.dark .series-tracker-connector-path {
+  stroke: #38bdf8;
+}
+
+:root.dark .series-tracker-anchor-ring,
+.dark .series-tracker-anchor-ring {
+  fill: rgba(56, 189, 248, 0.18);
+}
+
+:root.dark .series-tracker-anchor-dot,
+.dark .series-tracker-anchor-dot {
+  fill: #0c1220;
+  stroke: #38bdf8;
+}
+
+:root.dark .series-tracker-anchor-chevron,
+.dark .series-tracker-anchor-chevron {
+  stroke: #38bdf8;
+}
+
+@media (max-width: 1023px) {
+  .series-tracker-connector-svg {
+    display: none !important;
+  }
+}
+
 /* Active Learning Track Companion Card */
 .track-companion-card {
   position: relative;
   border-radius: 1rem;
   overflow: hidden;
   background: #ffffff;
-  border: 1px solid rgba(14, 165, 233, 0.35);
-  box-shadow: 0 10px 26px -10px rgba(15, 23, 42, 0.07), 0 2px 6px -1px rgba(14, 165, 233, 0.05), inset 3px 0 0 0 #0ea5e9;
+  border: 1px solid rgba(14, 165, 233, 0.28);
+  box-shadow: 0 10px 26px -10px rgba(15, 23, 42, 0.06), 0 2px 6px -1px rgba(14, 165, 233, 0.04);
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 
   &.is-standalone-mode {
-    border-color: rgba(16, 185, 129, 0.38);
-    box-shadow: 0 10px 26px -10px rgba(15, 23, 42, 0.07), inset 3px 0 0 0 #10b981;
+    border-color: rgba(16, 185, 129, 0.32);
+    box-shadow: 0 10px 26px -10px rgba(15, 23, 42, 0.06), inset 3px 0 0 0 #10b981;
   }
 }
 
 :root.dark .track-companion-card,
 .dark .track-companion-card {
   background: linear-gradient(180deg, rgba(15, 23, 42, 0.96) 0%, rgba(12, 18, 32, 0.99) 100%);
-  border-color: rgba(56, 189, 248, 0.34);
-  box-shadow: 0 14px 34px -10px rgba(0, 0, 0, 0.55), inset 3px 0 0 0 #38bdf8;
+  border-color: rgba(56, 189, 248, 0.28);
+  box-shadow: 0 14px 34px -10px rgba(0, 0, 0, 0.5);
 
   &.is-standalone-mode {
-    border-color: rgba(52, 211, 153, 0.35);
-    box-shadow: 0 14px 34px -10px rgba(0, 0, 0, 0.55), inset 3px 0 0 0 #34d399;
+    border-color: rgba(52, 211, 153, 0.32);
+    box-shadow: 0 14px 34px -10px rgba(0, 0, 0, 0.5), inset 3px 0 0 0 #34d399;
   }
 }
 
@@ -2936,7 +3016,8 @@ table {
   .track-companion-card,
   .track-step-badge,
   .track-progress-seg,
-  .sidebar-track-view {
+  .sidebar-track-view,
+  .series-tracker-connector-svg {
     transition: none;
   }
 }
