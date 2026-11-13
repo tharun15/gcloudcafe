@@ -1,5 +1,24 @@
 [
   {
+    "id": "72a57170-204a-428d-993c-85d160127cf2",
+    "title": "OpenShift Lightspeed 2: AI Assistant Streamlines Operations",
+    "content": "🎯 What Changed: Red Hat OpenShift Lightspeed 2 evolves its AI assistant beyond chat-based instructions to streamline developer and operations workflows.\n💡 Engineering Impact: This update significantly enhances DevOps efficiency",
+    "tags": [
+      "#OpenShift",
+      "#RedHat",
+      "#DevOps"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-11-13T12:55:54.346077+00:00",
+    "link_url": "https://www.redhat.com/en/blog/whats-new-red-hat-openshift-lightspeed-2",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
+    "updated_at": "2026-11-13T19:32:04.889Z"
+  },
+  {
     "id": "2dd6af13-dd5f-459e-b7ec-3e39e93eb199",
     "title": "Amazon Connect Customer supports merging and linking related cases in the agent workspace",
     "content": "🎯 What Changed: Amazon Connect now enables agents to merge and link related customer cases directly within the unified agent workspace to consolidate duplicate interactions.\n\n💡 Why It Matters: Why it matters: This update reduces data fragmentation and simplifies state management, allowing architects to build more efficient event-driven workflows and maintain a cleaner single source of truth for customer support analytics.",
@@ -277,25 +296,5 @@
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-12T06:26:09.323+00:00",
     "ageDays": 1.2551579398148147
-  },
-  {
-    "id": "854873b0-f493-4cb8-bbfa-5413f8a41679",
-    "title": "OpenShift Boosts Enterprise AI Agent Security via Sandboxing",
-    "content": "🎯 What Changed: OpenShift now provides enhanced sandboxing capabilities to secure enterprise AI agents, mitigating risks from broad tool access.\n💡 Engineering Impact: This architectural enhancement ensures AI agents operate within defined boundaries, preventing misaligned behavior and enhancing data security, allowing DevOps teams to confidently deploy powerful agentic systems.",
-    "tags": [
-      "#OpenShift",
-      "#RedHat",
-      "#DevOps"
-    ],
-    "upvotes": 1,
-    "downvotes": 0,
-    "score": 1,
-    "author": "Cloud Newsroom Bot",
-    "created_at": "2026-11-11T12:39:59.985962+00:00",
-    "link_url": "https://www.redhat.com/en/blog/great-power-comes-great-sandboxing",
-    "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
-    "updated_at": "2026-11-11T15:56:52.757+00:00",
-    "ageDays": 1.9708619097222222
   }
 ]
