@@ -4,7 +4,6 @@
 
 ## Editions & Languages
 - [English Edition (Default)](https://gcloudcafe.com/): Primary platform with all technical articles, guides, and Cloud Pulse.
-- [Italian Edition (Edizione Italiana)](https://gcloudcafe.com/it/): Edizione italiana completa con traduzioni integrali degli articoli di architettura cloud, Kubernetes e certificazioni.
 
 ## Core Platform Navigation
 - [GCloud Cafe Home](https://gcloudcafe.com/): Practical cloud architecture tutorials, exam guides, and platform overview.

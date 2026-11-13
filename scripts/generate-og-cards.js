@@ -157,8 +157,7 @@ function batchGenerateOgCards(options = {}) {
   const rootDir = options.rootDir || path.resolve(__dirname, '..');
   const outputDir = options.outputDir || path.join(rootDir, 'static/images/og');
   const contentDirs = options.contentDirs || [
-    { dir: path.join(rootDir, 'content/english/blog'), outDir: outputDir },
-    { dir: path.join(rootDir, 'content/italian/blog'), outDir: path.join(outputDir, 'it') }
+    { dir: path.join(rootDir, 'content/english/blog'), outDir: outputDir }
   ];
   const force = options.force || false;
 

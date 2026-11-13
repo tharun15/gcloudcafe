@@ -3,48 +3,11 @@
   <section id="cloud-pulse-section" class="pulse-hero-backdrop pt-4 sm:pt-6 pb-16">
     <div class="bytedepth-container">
 
-      <!-- Telemetry Newsroom Header (Compact & High-Impact) -->
-      <div class="mb-4 sm:mb-5">
-        <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
-          {{/* Live Status Pill with EKG Heartbeat Waveform */}}
-          <div class="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-sky-500/10 dark:bg-sky-500/15 border border-sky-500/25 dark:border-sky-500/35 shadow-2xs">
-            <span class="relative flex h-2 w-2">
-              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-500 opacity-75"></span>
-              <span class="relative inline-flex rounded-full h-2 w-2 bg-sky-500"></span>
-            </span>
-            <span class="font-mono text-[11px] font-black uppercase tracking-wider text-sky-600 dark:text-sky-400">
-              LIVE CLOUD NEWSROOM
-            </span>
-            <span class="text-slate-300 dark:text-slate-700 select-none">·</span>
-            
-            {{/* Animated SVG Oscilloscope / Heartbeat Frequency Line */}}
-            <svg class="pulse-waveform-svg h-3 w-12 text-sky-500/80 dark:text-sky-400" viewBox="0 0 56 14" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-              <path d="M0 7h12l3-5 5 11 4-9 3 5 4-2h15" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="pulse-waveform-line"/>
-            </svg>
-
-            <span class="hidden sm:inline font-mono text-[10px] font-bold text-slate-500 dark:text-slate-400">
-              UPDATED DAILY
-            </span>
-          </div>
-
-          {{/* Telemetry Meta Indicator */}}
-          <div class="hidden sm:flex items-center gap-2 font-mono text-[11px] text-slate-500 dark:text-slate-400">
-            <span class="inline-block w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-            <span>REAL-TIME INTELLIGENCE</span>
-          </div>
-        </div>
-
-        {{/* High-Contrast Bold Headline with Clear Subtitle */}}
-        <h1 class="text-2xl sm:text-3xl lg:text-[32px] font-black tracking-tight text-slate-900 dark:text-white mb-1.5 leading-[1.15]">
+      <!-- Header -->
+      <div class="mb-4">
+        <h1 class="text-2xl sm:text-3xl font-black tracking-tight text-slate-900 dark:text-white m-0">
           Cloud Pulse
-          <span class="font-bold text-lg sm:text-xl lg:text-2xl block sm:inline mt-0.5 sm:mt-0 sm:ml-2">
-            <span class="text-sky-600 dark:text-sky-400 font-mono font-normal">/</span> <span class="bg-gradient-to-r from-sky-600 via-blue-600 to-indigo-600 dark:from-sky-400 dark:via-blue-300 dark:to-indigo-300 bg-clip-text text-transparent">Micro-News &amp; Architecture Shifts</span>
-          </span>
         </h1>
-
-        <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed max-w-3xl mb-0">
-          Curated cloud release notes &amp; architectural shifts synthesized into crisp 2-bullet engineering takeaways. Upvote what matters most to your team.
-        </p>
       </div>
 
       <!-- Integrated Glassmorphic Command & Filter Deck -->
@@ -61,7 +24,7 @@
             <input 
               type="text" 
               id="pulse-search-input" 
-              placeholder="Search 36+ cloud updates (e.g. EKS, BigQuery, mTLS, Llama)..." 
+              placeholder="Search cloud updates..." 
               autocomplete="off"
               class="w-full pl-9 pr-9 py-2 text-xs font-mono rounded-xl bg-slate-50/90 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-hidden focus:ring-1 focus:ring-sky-500 focus:border-sky-500 transition-all shadow-2xs"
             />
@@ -159,12 +122,9 @@
         <div class="w-12 h-12 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400 dark:text-slate-500 mb-3 mx-auto">
           <i class="fa-solid fa-filter-circle-xmark text-xl"></i>
         </div>
-        <h4 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white mb-1">
-          No matching cloud updates found
+        <h4 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white mb-3">
+          No matching updates found
         </h4>
-        <p class="text-xs text-slate-500 dark:text-slate-400 max-w-sm mb-4 mx-auto leading-relaxed">
-          We couldn't find any approved micro-pulses matching your current search and filter combination.
-        </p>
         <button
           type="button"
           id="pulse-reset-filters-btn"
@@ -221,9 +181,6 @@
             <h3 class="text-xl sm:text-2xl font-black tracking-tight text-slate-900 dark:text-white">
               {{ i18n "weekly_poll_heading" | default "What's your take this week?" }}
             </h3>
-            <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1 max-w-md mx-auto leading-relaxed">
-              {{ i18n "weekly_poll_subheading" | default "Drop your vote and see where other engineers stand. No fluff—just real opinions from teams building in production." }}
-            </p>
           </div>
 
           {{ partial "components/weekly-poll.html" . }}
@@ -231,9 +188,9 @@
       </div>
 
       <!-- Legal Attribution Notice -->
-      <div class="mt-14 bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-slate-800 rounded-xl p-5 text-center shadow-xs">
-        <p class="font-mono text-xs text-slate-500 dark:text-slate-400 leading-relaxed mb-0">
-          <i class="fa-solid fa-scale-balanced mr-1 text-slate-700 dark:text-slate-300"></i> <strong>Attribution Notice:</strong> Cloud Pulse aggregates publicly available release notes from official vendor channels (Google Cloud, AWS, CNCF Kubernetes, Red Hat) for news curation and educational purposes under Fair Use.
+      <div class="mt-12 text-center">
+        <p class="font-mono text-xs text-slate-500 dark:text-slate-400 m-0">
+          Release notes curated from official vendor channels (Google Cloud, AWS, CNCF, Red Hat).
         </p>
       </div>
 

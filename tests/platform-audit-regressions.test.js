@@ -27,20 +27,13 @@ describe('Platform Audit Regression Suite', () => {
   describe('2. Image Optimization & Payload Regression Gates', () => {
     it('ensures high-resolution exam setup screenshots in passing-openshift-administartor-exam-part-1 use optimized webp format', () => {
       const enPost = path.join(projectRoot, 'content/english/blog/passing-openshift-administartor-exam-part-1.md');
-      const itPost = path.join(projectRoot, 'content/italian/blog/passing-openshift-administartor-exam-part-1.md');
 
       const enContent = fs.readFileSync(enPost, 'utf-8');
-      const itContent = fs.readFileSync(itPost, 'utf-8');
 
       expect(enContent).toContain('/images/post3-envsetup-1.webp');
       expect(enContent).toContain('/images/post3-essentials-2.webp');
       expect(enContent).not.toContain('/images/post3-envsetup-1.png');
       expect(enContent).not.toContain('/images/post3-essentials-2.png');
-
-      expect(itContent).toContain('/images/post3-envsetup-1.webp');
-      expect(itContent).toContain('/images/post3-essentials-2.webp');
-      expect(itContent).not.toContain('/images/post3-envsetup-1.png');
-      expect(itContent).not.toContain('/images/post3-essentials-2.png');
     });
 
     it('asserts webp image assets are compressed under 200 KB', () => {

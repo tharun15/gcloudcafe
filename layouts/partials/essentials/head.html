@@ -44,20 +44,23 @@
      crossorigin="anonymous"></script>
 {{ end }}
 
-<!-- Canonical URL (Fixes Semrush Duplicate/Indexation Errors) -->
-<link rel="canonical" href="{{ .Permalink }}" />
-
-<!-- Multilingual Alternate Hreflang Tags (Google/Bing International SEO) -->
-{{ if .IsTranslated }}
-  {{ range .AllTranslations }}
-<link rel="alternate" hreflang="{{ .Language.Lang }}" href="{{ .Permalink }}" />
-  {{ end }}
-  {{ with (index (where .AllTranslations "Language.Lang" "en") 0) }}
-<link rel="alternate" hreflang="x-default" href="{{ .Permalink }}" />
-  {{ else }}
-<link rel="alternate" hreflang="x-default" href="{{ .Permalink }}" />
+<!-- Canonical URL (Fixes Google Search Console & Semrush Duplicate/Indexation Errors) -->
+{{ $canonicalURL := .Permalink }}
+{{ with .Params.canonical }}
+  {{ $canonicalURL = . | absURL }}
+{{ else }}
+  {{ if and (eq .Section "blog") (not .IsPage) }}
+    {{ $pag := .Paginate (sort .RegularPages "Date" "desc") }}
+    {{ if gt $pag.PageNumber 1 }}
+      {{ $canonicalURL = $pag.URL | absURL }}
+    {{ end }}
   {{ end }}
 {{ end }}
+<link rel="canonical" href="{{ $canonicalURL }}" />
+
+<!-- Alternate Hreflang Tags (Google/Bing International SEO) -->
+<link rel="alternate" hreflang="{{ .Language.Lang }}" href="{{ $canonicalURL }}" />
+<link rel="alternate" hreflang="x-default" href="{{ $canonicalURL }}" />
 
 <!-- LCP Hero Image Preload for Instant First Paint & 95+ Core Web Vitals -->
 {{ $lcpImage := false }}
@@ -126,14 +129,9 @@
 <meta property="og:site_name" content="GCloud Cafe" />
 <meta property="og:title" content="{{ .Params.meta_title | default .Title | default "GCloud Cafe | Cloud Architecture & Certifications" }}" />
 <meta property="og:description" content="{{ $metaDesc | truncate 200 }}" />
-<meta property="og:url" content="{{ .Permalink }}" />
+<meta property="og:url" content="{{ $canonicalURL }}" />
 <meta property="og:type" content="{{ if .IsPage }}article{{ else }}website{{ end }}" />
-<meta property="og:locale" content="{{ if eq site.Language.Lang "it" }}it_IT{{ else }}en_US{{ end }}" />
-{{ if eq site.Language.Lang "it" }}
-<meta property="og:locale:alternate" content="en_US" />
-{{ else }}
-<meta property="og:locale:alternate" content="it_IT" />
-{{ end }}
+<meta property="og:locale" content="en_US" />
 
 {{ $imageURL := "" }}
 {{ $imageExt := "png" }}
@@ -141,14 +139,7 @@
 {{ with .File }}
   {{ $slug = .BaseFileName }}
 {{ end }}
-{{ $lang := .Language.Lang }}
 {{ $dynamicOgRel := printf "images/og/%s.png" $slug }}
-{{ if eq $lang "it" }}
-  {{ $dynamicOgItRel := printf "images/og/it/%s.png" $slug }}
-  {{ if fileExists (printf "static/%s" $dynamicOgItRel) }}
-    {{ $dynamicOgRel = $dynamicOgItRel }}
-  {{ end }}
-{{ end }}
 {{ $dynamicOgStatic := printf "static/%s" $dynamicOgRel }}
 
 {{ if .Params.og_image }}

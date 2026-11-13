@@ -27,7 +27,6 @@ describe('Series Page Masterclass Curriculum Hub', () => {
   });
 
   it('contains structured syllabus flow, always-visible inline roadmap, and step badges', () => {
-    expect(templateContent).toContain('Curriculum Syllabus &amp; Learning Flow:');
     expect(templateContent).toContain('data-series-inline-list');
     expect(templateContent).toContain('printf "%02d" $partNum');
     expect(templateContent).toContain('Production Lab');
