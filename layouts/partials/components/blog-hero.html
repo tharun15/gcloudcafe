@@ -85,12 +85,12 @@
                 <a href="{{ `series/` | relLangURL }}#{{ $seriesName | urlize }}"
                    class="series-pill-badge inline-flex items-center gap-2 text-xs no-underline group/serieslink min-w-0 max-w-full"
                    title="View full curriculum for {{ $seriesName }}">
-                  <span class="inline-flex items-center gap-1.5 font-mono text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 shrink-0">
+                  <span class="inline-flex items-center gap-1.5 font-mono text-[11px] font-bold uppercase tracking-wider text-sky-700 dark:text-sky-300 shrink-0">
                     <span class="w-1.5 h-1.5 rounded-full bg-sky-500 dark:bg-sky-400"></span>
                     <span>{{ if $isItalian }}Serie{{ else }}Series{{ end }}</span>
                   </span>
-                  <span class="text-slate-300 dark:text-slate-700 select-none shrink-0">/</span>
-                  <span class="font-semibold text-sky-700 dark:text-sky-400 group-hover/serieslink:text-sky-800 dark:group-hover/serieslink:text-sky-300 group-hover/serieslink:underline underline-offset-4 truncate transition-colors">
+                  <span class="text-sky-300 dark:text-sky-700 select-none shrink-0">/</span>
+                  <span class="font-bold text-slate-900 dark:text-white group-hover/serieslink:text-sky-700 dark:group-hover/serieslink:text-sky-300 truncate transition-colors">
                     {{ $seriesName }}
                   </span>
                   <span class="inline-flex items-center px-2 py-0.5 rounded-full bg-sky-50 dark:bg-sky-950/60 text-sky-700 dark:text-sky-300 border border-sky-200/80 dark:border-sky-800/70 font-mono text-xs font-semibold shrink-0 tabular-nums">

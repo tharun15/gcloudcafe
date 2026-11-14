@@ -10646,9 +10646,9 @@ document.addEventListener('DOMContentLoaded', initDevTerminalBlocks);
     var labelPart = container.getAttribute('data-label-part') || 'Part';
     var labelOf = container.getAttribute('data-label-of') || 'of';
     var labelInView = container.getAttribute('data-label-in-view') || 'In view · Part';
-    var labelUpcoming = container.getAttribute('data-label-upcoming') || 'Next part in this track — upcoming';
-    var labelActiveTrack = container.getAttribute('data-label-active-track') || 'Active Learning Track';
-    var labelPreviewTrack = container.getAttribute('data-label-preview-track') || 'Previewing Track';
+    var labelUpcoming = container.getAttribute('data-label-upcoming') || 'Next part in this series — upcoming';
+    var labelActiveTrack = container.getAttribute('data-label-active-track') || 'Series';
+    var labelPreviewTrack = container.getAttribute('data-label-preview-track') || 'Previewing Series';
     var labelMin = container.getAttribute('data-label-min') || 'min';
 
     var allTrackViews = container.querySelectorAll('.sidebar-track-view[data-track-series-name]');
