@@ -1,5 +1,24 @@
 [
   {
+    "id": "040c43da-0a4f-4cdc-8bc0-d1595456b6d1",
+    "title": "Node management in Red Hat OpenShift 5: Server-level visibility for bare metal",
+    "content": "🎯 What Changed: Red Hat OpenShift 5 introduces enhanced server-level visibility and management for bare-metal nodes directly within the console.\n💡 Engineering Impact: This streamlines operations for bare-metal OpenShift deployments, offering a unified console experience and simplifying the transition from traditional virtualization layers, boosting DevOps efficiency.",
+    "tags": [
+      "#OpenShift",
+      "#RedHat",
+      "#DevOps"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-11-14T06:15:51.651402+00:00",
+    "link_url": "https://www.redhat.com/en/blog/node-management-red-hat-openshift-5-bare-metal",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
+    "updated_at": "2026-11-14T06:21:43.820Z"
+  },
+  {
     "id": "89503f87-ea73-4b21-b8d3-b21380204092",
     "title": "Introducing Red Hat Advanced Cluster Security for Kubernetes 5: Bring Red Hat Enterprise Linux virtual machines into vulnerability management",
     "content": "🎯 What Changed: Red Hat Advanced Cluster Security for Kubernetes 5 now extends vulnerability management to Red Hat Enterprise Linux (RHEL) virtual machines.\n💡 Engineering Impact: This enables security teams to centralize vulnerability scanning and reporting across both containers and RHEL VMs running on OpenShift, enhancing overall security posture and compliance.",
