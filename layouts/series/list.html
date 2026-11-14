@@ -46,105 +46,105 @@
     {{ if $isDev }}{{ $devopsCount = add $devopsCount 1 }}{{ end }}
   {{ end }}
 
-  <!-- Engineering Series Curriculum Explorer (Homogenous with Pulse & Brew) -->
-  <section id="series-explorer-section" class="pulse-hero-backdrop relative pt-4 sm:pt-6 pb-20 sm:pb-28 overflow-hidden min-h-screen" aria-labelledby="series-tracks-heading">
+  <!-- Engineering Series Curriculum Explorer (Compact, High-Clarity Grid) -->
+  <section id="series-explorer-section" class="pulse-hero-backdrop relative pt-3 sm:pt-4 pb-14 sm:pb-20 overflow-hidden min-h-screen" aria-labelledby="series-tracks-heading">
     <div class="bytedepth-container relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-      <!-- Clean Header -->
-      <div class="flex flex-wrap items-baseline justify-between gap-2 mb-4">
-        <h1 id="series-tracks-heading" class="text-2xl sm:text-3xl font-black tracking-tight text-slate-900 dark:text-white m-0">
+      <!-- Compact Header -->
+      <div class="flex flex-wrap items-baseline justify-between gap-2 mb-3">
+        <h1 id="series-tracks-heading" class="text-xl sm:text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white m-0">
           Engineering Series
         </h1>
-        <span class="font-mono text-xs text-slate-500 dark:text-slate-400">
-          {{ $allCount }} series · {{ $totalPartsAcrossSite }} parts
+        <span class="font-mono text-[11px] text-slate-500 dark:text-slate-400">
+          {{ $allCount }} series · {{ $totalPartsAcrossSite }} parts · ~{{ $totalMinutesAcrossSite }}m
         </span>
       </div>
 
-      <!-- Integrated Glassmorphic Command & Filter Deck -->
-      <div class="p-3 sm:p-4 rounded-2xl bg-white/85 dark:bg-slate-900/85 backdrop-blur-md border border-slate-200/90 dark:border-slate-800/90 shadow-sm space-y-3 mb-7">
-        <!-- Row 1: Instant Search Across Series & Lessons + Expand All Toggle -->
-        <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
-          <div class="relative flex-1 max-w-md">
-            <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400 dark:text-slate-500">
-              <i class="fa-solid fa-magnifying-glass text-xs"></i>
+      <!-- Compact Command & Filter Deck -->
+      <div class="p-2.5 sm:p-3 rounded-xl bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border border-slate-200/80 dark:border-slate-800/80 shadow-2xs space-y-2 mb-5">
+        <!-- Row 1: Search + Result Count + Expand All -->
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5">
+          <div class="relative flex-1 max-w-sm">
+            <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400 dark:text-slate-500">
+              <i class="fa-solid fa-magnifying-glass text-[11px]"></i>
             </span>
             <input
               type="text"
               id="series-search-input"
               placeholder="Search series or parts..."
               autocomplete="off"
-              class="w-full pl-9 pr-9 py-2 text-xs font-mono rounded-xl bg-slate-50/90 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-hidden focus:ring-1 focus:ring-sky-500 focus:border-sky-500 transition-all shadow-2xs"
+              class="w-full pl-8 pr-8 py-1.5 text-xs font-mono rounded-lg bg-slate-50/90 dark:bg-slate-950/60 border border-slate-200/90 dark:border-slate-800 text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-hidden focus:ring-1 focus:ring-sky-500 focus:border-sky-500 transition-all"
             />
             <button
               id="series-search-clear"
               type="button"
-              class="hidden absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer text-xs border-0 bg-transparent"
+              class="hidden absolute inset-y-0 right-0 pr-2.5 flex items-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer text-xs border-0 bg-transparent"
               aria-label="Clear search">
               <i class="fa-solid fa-xmark"></i>
             </button>
           </div>
 
-          <div class="flex items-center justify-between sm:justify-end gap-3 text-xs font-mono">
-            <div class="flex items-center gap-1.5 font-bold text-slate-700 dark:text-slate-300 text-xs shrink-0">
+          <div class="flex items-center justify-between sm:justify-end gap-2.5 text-[11px] font-mono">
+            <div class="flex items-center gap-1.5 font-semibold text-slate-600 dark:text-slate-300 shrink-0">
               <span class="w-1.5 h-1.5 rounded-full bg-sky-500"></span>
-              <span id="series-result-count">Showing all {{ $allCount }} tracks</span>
+              <span id="series-result-count">Showing all {{ $allCount }} series</span>
             </div>
 
             <button
               type="button"
               id="series-expand-all-btn"
               data-expanded="false"
-              class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-mono font-semibold bg-slate-100 hover:bg-sky-50 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 hover:text-sky-700 dark:text-slate-200 dark:hover:text-sky-300 border border-slate-200/80 dark:border-slate-700/80 transition-all cursor-pointer shrink-0">
-              <i class="fa-solid fa-angles-down text-[10px]"></i>
+              class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-mono font-semibold bg-slate-100/90 hover:bg-sky-50 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 hover:text-sky-700 dark:text-slate-200 dark:hover:text-sky-300 border border-slate-200/80 dark:border-slate-700/80 transition-all cursor-pointer shrink-0">
+              <i class="fa-solid fa-angles-down text-[9px]"></i>
               <span>Expand All Parts</span>
             </button>
           </div>
         </div>
 
-        <div class="h-px bg-slate-200/70 dark:bg-slate-800/70"></div>
+        <div class="h-px bg-slate-200/60 dark:bg-slate-800/70"></div>
 
         <!-- Row 2: Domain Filter Segmented Control -->
-        <div class="flex items-center gap-2.5 flex-wrap">
-          <span class="inline-flex items-center gap-1.5 text-[10px] sm:text-[11px] font-mono uppercase tracking-wider text-slate-400 dark:text-slate-500 font-bold shrink-0 px-0.5">
-            <i class="fa-solid fa-compass text-sky-500 text-[10px]"></i> Domain:
+        <div class="flex items-center gap-2 flex-wrap">
+          <span class="inline-flex items-center gap-1 text-[10px] font-mono uppercase tracking-wider text-slate-400 dark:text-slate-500 font-bold shrink-0 px-0.5">
+            <i class="fa-solid fa-compass text-sky-500 text-[9px]"></i> Domain:
           </span>
-          <div class="inline-flex items-center gap-1.5 p-1 rounded-full bg-slate-100/90 dark:bg-slate-800/80 border border-slate-200/70 dark:border-slate-700/70 overflow-x-auto no-scrollbar max-w-full"
+          <div class="inline-flex items-center gap-1 p-0.5 rounded-full bg-slate-100/80 dark:bg-slate-800/70 border border-slate-200/70 dark:border-slate-700/70 overflow-x-auto no-scrollbar max-w-full"
                role="tablist"
                aria-label="Filter series by technical domain">
             <button type="button"
                     data-series-filter="all"
-                    class="series-filter-btn pulse-filter-chip is-active category-tab-active"
+                    class="series-filter-btn pulse-filter-chip is-active category-tab-active text-[11px]! py-1! px-2.5!"
                     aria-selected="true"
                     role="tab">
-              All Tracks ({{ $allCount }})
+              All Series ({{ $allCount }})
             </button>
             <button type="button"
                     data-series-filter="google-cloud"
-                    class="series-filter-btn pulse-filter-chip"
+                    class="series-filter-btn pulse-filter-chip text-[11px]! py-1! px-2.5!"
                     aria-selected="false"
                     role="tab">
-              <i class="fa-brands fa-google text-[10px]"></i> Google Cloud ({{ $gcpCount }})
+              <i class="fa-brands fa-google text-[9px]"></i> Google Cloud ({{ $gcpCount }})
             </button>
             <button type="button"
                     data-series-filter="security"
-                    class="series-filter-btn pulse-filter-chip"
+                    class="series-filter-btn pulse-filter-chip text-[11px]! py-1! px-2.5!"
                     aria-selected="false"
                     role="tab">
-              <i class="fa-solid fa-shield-halved text-[10px]"></i> Security &amp; PKI ({{ $secCount }})
+              <i class="fa-solid fa-shield-halved text-[9px]"></i> Security &amp; PKI ({{ $secCount }})
             </button>
             <button type="button"
                     data-series-filter="devops"
-                    class="series-filter-btn pulse-filter-chip"
+                    class="series-filter-btn pulse-filter-chip text-[11px]! py-1! px-2.5!"
                     aria-selected="false"
                     role="tab">
-              <i class="fa-solid fa-cubes text-[10px]"></i> Containers &amp; DevOps ({{ $devopsCount }})
+              <i class="fa-solid fa-cubes text-[9px]"></i> Containers &amp; DevOps ({{ $devopsCount }})
             </button>
           </div>
         </div>
       </div>
 
-      <!-- Spacious 2-Column Interactive Masterclass Explorer Grid -->
-      <div id="series-grid" class="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-7 items-start">
+      <!-- Compact 2-Column Interactive Series Grid -->
+      <div id="series-grid" class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-5 items-start">
         {{ range $groupedSeries }}
           {{ $sorted := sort .Pages ".Params.series_order" "asc" }}
           {{ $part1 := index $sorted 0 }}
@@ -219,29 +219,29 @@
             id="{{ .Key | urlize }}"
             data-domains="{{ delimit $cardDomains " " }}"
             data-search="{{ $searchHaystack }}"
-            class="scroll-mt-24 series-card flex flex-col self-start w-full rounded-2xl bg-white dark:bg-[#0c1220] border border-slate-200/90 dark:border-slate-800/90 overflow-hidden shadow-sm hover:border-sky-500/50 dark:hover:border-sky-500/50 hover:shadow-xl dark:hover:shadow-[0_16px_36px_rgba(2,132,199,0.14)] transition-all duration-300 group relative">
+            class="scroll-mt-24 series-card flex flex-col self-start w-full rounded-xl bg-white dark:bg-[#0c1220] border border-slate-200/85 dark:border-slate-800/85 overflow-hidden shadow-2xs hover:border-sky-400/60 dark:hover:border-sky-500/50 hover:shadow-md dark:hover:shadow-[0_10px_28px_rgba(2,132,199,0.12)] transition-all duration-200 group relative">
 
-            <!-- Top Gradient Accent Strip -->
-            <div class="h-1 w-full bg-gradient-to-r from-sky-500 via-blue-600 to-indigo-500 opacity-90"></div>
+            <!-- Subtle Hairline Gradient Strip -->
+            <div class="h-0.5 w-full bg-gradient-to-r from-sky-500/80 via-blue-500/70 to-indigo-500/80"></div>
 
-            <!-- 1. Track Identity Header (Horizontal Split on Desktop, Zero Cramping) -->
-            <div class="p-5 sm:p-6 pb-4 border-b border-slate-100 dark:border-slate-800/80">
-              <div class="flex flex-col sm:flex-row sm:items-start gap-4">
+            <!-- 1. Compact Series Identity Header -->
+            <div class="p-3.5 sm:p-4 pb-3 border-b border-slate-100 dark:border-slate-800/80">
+              <div class="flex flex-col sm:flex-row sm:items-start gap-3">
                 {{ if $coverImage }}
-                  <a href="{{ $part1.RelPermalink }}" class="relative block w-full sm:w-40 md:w-44 aspect-[16/10] rounded-xl overflow-hidden bg-slate-950 shrink-0 border border-slate-200/60 dark:border-slate-800 no-underline group/cover shadow-xs">
+                  <a href="{{ $part1.RelPermalink }}" class="relative block w-full sm:w-32 md:w-36 aspect-[16/10] rounded-lg overflow-hidden bg-slate-950 shrink-0 border border-slate-200/60 dark:border-slate-800 no-underline group/cover">
                     <img
                       src="{{ $coverImage | relURL }}"
                       alt="{{ .Key }}"
                       class="w-full h-full object-cover group-hover/cover:scale-105 transition-transform duration-500"
                       loading="lazy"
                     />
-                    <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/15 to-transparent pointer-events-none"></div>
-                    <div class="absolute bottom-2 left-2 right-2 flex items-center justify-between z-10 pointer-events-none">
-                      <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded font-mono text-[10px] font-bold bg-slate-900/90 text-sky-400 border border-white/10">
-                        <i class="fa-solid fa-layer-group text-[9px]"></i>
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-950/75 via-slate-950/10 to-transparent pointer-events-none"></div>
+                    <div class="absolute bottom-1.5 left-1.5 right-1.5 flex items-center justify-between z-10 pointer-events-none">
+                      <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded font-mono text-[9.5px] font-bold bg-slate-900/85 text-sky-400 border border-white/10">
+                        <i class="fa-solid fa-layer-group text-[8px]"></i>
                         {{ $totalParts }} Part{{ if gt $totalParts 1 }}s{{ end }}
                       </span>
-                      <span class="font-mono text-[10px] font-semibold text-slate-200 bg-slate-900/90 px-1.5 py-0.5 rounded border border-white/10">
+                      <span class="font-mono text-[9.5px] font-semibold text-slate-200 bg-slate-900/85 px-1.5 py-0.5 rounded border border-white/10">
                         ~{{ $totalMin }}m
                       </span>
                     </div>
@@ -249,65 +249,65 @@
                 {{ end }}
 
                 <div class="flex-1 min-w-0">
-                  <!-- Domain & Track Telemetry Row -->
-                  <div class="flex items-center flex-wrap gap-1.5 mb-2">
-                    <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md font-mono text-[10px] font-bold uppercase tracking-wider bg-sky-500/10 dark:bg-sky-500/15 text-sky-700 dark:text-sky-300 border border-sky-500/20">
+                  <!-- Subtle Domain & Telemetry Row -->
+                  <div class="flex items-center flex-wrap gap-1.5 mb-1.5">
+                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded font-mono text-[9.5px] font-bold uppercase tracking-wider bg-sky-500/8 dark:bg-sky-500/12 text-sky-700 dark:text-sky-300 border border-sky-500/15">
                       {{ $primaryCardCat }}
                     </span>
 
                     {{ if gt $labCount 0 }}
-                      <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md font-mono text-[10px] font-semibold bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border border-emerald-500/20">
-                        <i class="fa-solid fa-terminal text-[9px]"></i>
-                        {{ $labCount }} Hands-On Lab{{ if gt $labCount 1 }}s{{ end }}
+                      <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded font-mono text-[9.5px] font-semibold bg-emerald-500/8 text-emerald-700 dark:text-emerald-300 border border-emerald-500/15">
+                        <i class="fa-solid fa-terminal text-[8px]"></i>
+                        {{ $labCount }} Lab{{ if gt $labCount 1 }}s{{ end }}
                       </span>
                     {{ end }}
 
                     {{ if eq .Key $featuredSeriesKey }}
-                      <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md font-mono text-[10px] font-bold bg-amber-500/10 text-amber-700 dark:text-amber-300 border border-amber-500/25">
-                        <i class="fa-solid fa-star text-[9px]"></i>
-                        Featured Track
+                      <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded font-mono text-[9.5px] font-bold bg-amber-500/10 text-amber-700 dark:text-amber-300 border border-amber-500/20">
+                        <i class="fa-solid fa-star text-[8px]"></i>
+                        Featured
                       </span>
                     {{ end }}
                   </div>
 
-                  <!-- Full Un-Truncated Series Title -->
-                  <h2 class="text-lg sm:text-xl font-extrabold tracking-tight text-slate-900 dark:text-white mb-1.5 leading-snug">
+                  <!-- Crisp Series Title -->
+                  <h2 class="text-[15px] sm:text-base font-bold tracking-tight text-slate-900 dark:text-white mb-1 leading-snug">
                     <a href="{{ $part1.RelPermalink }}" class="no-underline text-inherit hover:text-sky-600 dark:hover:text-sky-400 transition-colors">
                       {{ .Key }}
                     </a>
                   </h2>
 
-                  <!-- Clear Multi-Line Series Description -->
-                  <p class="text-xs sm:text-[13px] text-slate-600 dark:text-slate-300 leading-relaxed mb-0">
+                  <!-- Concise 2-Line Description -->
+                  <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed line-clamp-2 mb-0">
                     {{ $seriesDesc }}
                   </p>
                 </div>
               </div>
 
-              <!-- Segmented Learning Track Progress Visual (Homogenous with Homepage Track Companion) -->
-              <div class="mt-4 flex items-center gap-1.5" aria-hidden="true">
+              <!-- Subtle Hairline Segmented Progress Visual -->
+              <div class="mt-2.5 flex items-center gap-1" aria-hidden="true">
                 {{ range $idx, $p := $sorted }}
-                  <span class="h-1 flex-1 rounded-full {{ if eq $idx 0 }}bg-sky-500{{ else }}bg-slate-200 dark:bg-slate-800 group-hover:bg-sky-500/40{{ end }} transition-colors"></span>
+                  <span class="h-[3px] flex-1 rounded-full {{ if eq $idx 0 }}bg-sky-500/90{{ else }}bg-slate-200/90 dark:bg-slate-800 group-hover:bg-sky-500/35{{ end }} transition-colors"></span>
                 {{ end }}
               </div>
             </div>
 
-            <!-- 2. Always-Visible Connected Curriculum Roadmap (Explore Every Part in One Place) -->
-            <div class="p-5 sm:p-6 pt-4 pb-4 bg-slate-50/50 dark:bg-[#090e17]/60 flex-1 flex flex-col justify-between">
+            <!-- 2. Compact Connected Curriculum List -->
+            <div class="p-3.5 sm:p-4 pt-2.5 pb-3 bg-slate-50/40 dark:bg-[#090e17]/50 flex-1 flex flex-col justify-between">
               <div>
-                <!-- Roadmap Section Header -->
-                <div class="flex items-center justify-between gap-2 text-[11px] font-mono text-slate-500 dark:text-slate-400 mb-3">
-                  <span class="font-bold uppercase tracking-wider text-slate-700 dark:text-slate-200 flex items-center gap-1.5">
-                    <i class="fa-solid fa-route text-sky-500 text-xs"></i>
+                <!-- Compact Parts Header -->
+                <div class="flex items-center justify-between gap-2 text-[10.5px] font-mono text-slate-500 dark:text-slate-400 mb-2">
+                  <span class="font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 flex items-center gap-1.5">
+                    <i class="fa-solid fa-route text-sky-500/80 text-[10px]"></i>
                     <span>Parts</span>
                   </span>
-                  <span class="font-semibold text-slate-500 dark:text-slate-400 shrink-0">
+                  <span class="font-medium text-slate-400 dark:text-slate-500 shrink-0 tabular-nums">
                     {{ $totalParts }} Part{{ if gt $totalParts 1 }}s{{ end }} · ~{{ $totalMin }}m
                   </span>
                 </div>
 
-                <!-- Primary Inline Parts (First 3 Steps Always Visible with Connected Rail) -->
-                <div class="space-y-2 relative" data-series-inline-list>
+                <!-- Primary Inline Parts (Compact Single-Line Scan Rows) -->
+                <div class="space-y-1 relative" data-series-inline-list>
                   {{ range $idx, $p := first $inlineLimit $sorted }}
                     {{ $partNum := add $idx 1 }}
                     {{ $lessonTitle := $p.Title }}
@@ -324,76 +324,69 @@
                       href="{{ $p.RelPermalink }}"
                       data-series-lesson-item
                       data-lesson-search="{{ lower (printf "%s %s" $p.Title $partDesc) }}"
-                      class="flex items-start justify-between gap-3 p-2.5 sm:p-3 rounded-xl bg-white dark:bg-[#0c1220] hover:bg-sky-50/60 dark:hover:bg-slate-800/90 border border-slate-200/80 dark:border-slate-800/90 hover:border-sky-400/70 dark:hover:border-sky-500/60 text-slate-800 dark:text-slate-200 no-underline transition-all group/item shadow-2xs">
-                      <div class="flex items-start gap-2.5 min-w-0 flex-1">
-                        <span class="w-6 h-6 rounded-lg flex items-center justify-center font-mono text-[11px] font-bold shrink-0 mt-0.5 bg-sky-500/10 dark:bg-sky-500/15 text-sky-700 dark:text-sky-300 border border-sky-500/25 group-hover/item:bg-sky-600 group-hover/item:text-white transition-colors">
+                      class="flex items-center justify-between gap-2.5 px-2.5 py-1.5 rounded-lg bg-white/90 dark:bg-[#0c1220]/90 hover:bg-sky-50/70 dark:hover:bg-slate-800/80 border border-slate-200/70 dark:border-slate-800/80 hover:border-sky-400/60 dark:hover:border-sky-500/50 text-slate-800 dark:text-slate-200 no-underline transition-all group/item">
+                      <div class="flex items-center gap-2 min-w-0 flex-1">
+                        <span class="w-5 h-5 rounded flex items-center justify-center font-mono text-[10px] font-bold shrink-0 bg-sky-500/8 dark:bg-sky-500/12 text-sky-700 dark:text-sky-300 border border-sky-500/20 group-hover/item:bg-sky-600 group-hover/item:text-white transition-colors">
                           {{ printf "%02d" $partNum }}
                         </span>
-                        <div class="min-w-0 flex-1">
-                          <div class="text-xs sm:text-[13.5px] font-bold text-slate-900 dark:text-slate-100 group-hover/item:text-sky-600 dark:group-hover/item:text-sky-400 transition-colors leading-snug">
-                            {{ $lessonTitle }}
-                          </div>
-                          {{ if $partDesc }}
-                            <p class="text-[11px] text-slate-500 dark:text-slate-400 line-clamp-1 mt-0.5 mb-0 font-normal">
-                              {{ $partDesc }}
-                            </p>
-                          {{ end }}
-                        </div>
+                        <span class="text-xs font-semibold text-slate-800 dark:text-slate-200 group-hover/item:text-sky-600 dark:group-hover/item:text-sky-400 transition-colors leading-snug truncate">
+                          {{ $lessonTitle }}
+                        </span>
                       </div>
 
-                      <div class="flex items-center gap-1.5 shrink-0 pt-0.5">
+                      <div class="flex items-center gap-1.5 shrink-0">
                         {{ if $isLab }}
-                          <span class="hidden sm:inline-block px-2 py-0.5 rounded-md text-[9.5px] font-mono font-bold bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border border-emerald-500/20">
+                          <span class="hidden sm:inline-block px-1.5 py-0.5 rounded text-[9px] font-mono font-semibold bg-emerald-500/8 text-emerald-700 dark:text-emerald-300 border border-emerald-500/15">
                             Production Lab
                           </span>
                         {{ else }}
-                          <span class="hidden sm:inline-block px-2 py-0.5 rounded-md text-[9.5px] font-mono font-bold bg-sky-500/10 text-sky-700 dark:text-sky-300 border border-sky-500/20">
+                          <span class="hidden sm:inline-block px-1.5 py-0.5 rounded text-[9px] font-mono font-semibold bg-slate-100 dark:bg-slate-800/80 text-slate-500 dark:text-slate-400 border border-slate-200/70 dark:border-slate-700/70">
                             Core Architecture
                           </span>
                         {{ end }}
-                        <span class="font-mono text-[11px] text-slate-400 dark:text-slate-500 tabular-nums">
+                        <span class="font-mono text-[10.5px] text-slate-400 dark:text-slate-500 tabular-nums w-6 text-right">
                           {{ $p.ReadingTime }}m
                         </span>
-                        <i class="fa-solid fa-chevron-right text-[9px] text-slate-300 dark:text-slate-600 group-hover/item:text-sky-500 group-hover/item:translate-x-0.5 transition-all"></i>
+                        <i class="fa-solid fa-chevron-right text-[8px] text-slate-300 dark:text-slate-600 group-hover/item:text-sky-500 group-hover/item:translate-x-0.5 transition-all"></i>
                       </div>
                     </a>
                   {{ end }}
                 </div>
 
-                <!-- Expandable Syllabus Drawer for Remaining Parts (or Full Lesson Index) -->
-                <details class="series-card-drawer group/drawer mt-2.5 transition-all duration-200" {{ if not $hasOverflow }}open{{ end }}>
+                <!-- Compact Expandable Syllabus Drawer -->
+                <details class="series-card-drawer group/drawer mt-1.5 transition-all duration-200" {{ if not $hasOverflow }}open{{ end }}>
                   <summary
-                    class="{{ if not $hasOverflow }}sr-only{{ else }}list-none [&::-webkit-details-marker]:hidden flex items-center justify-between gap-3 px-3.5 py-2.5 rounded-xl bg-white dark:bg-slate-900/90 border border-slate-200/90 dark:border-slate-800 hover:border-sky-400 dark:hover:border-sky-500/70 cursor-pointer select-none transition-all duration-200 shadow-2xs{{ end }}"
+                    class="{{ if not $hasOverflow }}sr-only{{ else }}list-none [&::-webkit-details-marker]:hidden flex items-center justify-between gap-2 px-2.5 py-1.5 rounded-lg bg-white/80 dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-800 hover:border-sky-400/70 dark:hover:border-sky-500/60 cursor-pointer select-none transition-all duration-200{{ end }}"
                     title="Expand all curriculum lessons in this series"
                     aria-label="Toggle curriculum syllabus and lessons">
-                    <div class="flex items-center gap-2 min-w-0">
-                      <span class="w-5 h-5 rounded-md bg-sky-500/10 dark:bg-sky-500/20 text-sky-600 dark:text-sky-400 flex items-center justify-center shrink-0">
-                        <i class="fa-solid fa-list-check text-[10px]"></i>
+                    <div class="flex items-center gap-1.5 min-w-0">
+                      <span class="w-4 h-4 rounded bg-sky-500/10 dark:bg-sky-500/20 text-sky-600 dark:text-sky-400 flex items-center justify-center shrink-0">
+                        <i class="fa-solid fa-list-check text-[9px]"></i>
                       </span>
-                      <span class="font-bold text-xs text-slate-800 dark:text-slate-100">
+                      <span class="font-semibold text-[11.5px] text-slate-700 dark:text-slate-200">
                         Syllabus &amp; Lessons
                       </span>
                       {{ if $hasOverflow }}
-                        <span class="font-mono text-[10px] font-bold px-2 py-0.5 rounded-full bg-sky-100 dark:bg-sky-950 text-sky-700 dark:text-sky-300 border border-sky-200/80 dark:border-sky-800/80">
-                          +{{ $overflowCount }} more part{{ if gt $overflowCount 1 }}s{{ end }} (Parts {{ printf "%02d" (add $inlineLimit 1) }}–{{ printf "%02d" $totalParts }})
+                        <span class="font-mono text-[9.5px] font-semibold px-1.5 py-0.5 rounded-full bg-sky-50 dark:bg-sky-950/70 text-sky-700 dark:text-sky-300 border border-sky-200/70 dark:border-sky-800/70">
+                          +{{ $overflowCount }} more (Parts {{ printf "%02d" (add $inlineLimit 1) }}–{{ printf "%02d" $totalParts }})
                         </span>
                       {{ end }}
                     </div>
 
-                    <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-sky-600/10 text-sky-700 dark:bg-sky-500/15 dark:text-sky-300 text-xs font-mono font-bold shrink-0">
+                    <div class="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-sky-500/10 text-sky-700 dark:bg-sky-500/15 dark:text-sky-300 text-[10.5px] font-mono font-semibold shrink-0">
                       <span class="group-open/drawer:hidden flex items-center gap-1">
                         <span>Explore All {{ $totalParts }}</span>
-                        <i class="fa-solid fa-chevron-down text-[10px]"></i>
+                        <i class="fa-solid fa-chevron-down text-[9px]"></i>
                       </span>
                       <span class="hidden group-open/drawer:flex items-center gap-1">
                         <span>Collapse</span>
-                        <i class="fa-solid fa-chevron-up text-[10px]"></i>
+                        <i class="fa-solid fa-chevron-up text-[9px]"></i>
                       </span>
                     </div>
                   </summary>
 
                   {{ if $hasOverflow }}
-                    <div class="space-y-2 mt-2 pt-2 border-t border-dashed border-slate-200 dark:border-slate-800">
+                    <div class="space-y-1 mt-1.5 pt-1.5 border-t border-dashed border-slate-200/80 dark:border-slate-800">
                       {{ range $idx, $p := after $inlineLimit $sorted }}
                         {{ $partNum := add (add $idx $inlineLimit) 1 }}
                         {{ $lessonTitle := $p.Title }}
@@ -410,37 +403,30 @@
                           href="{{ $p.RelPermalink }}"
                           data-series-lesson-item
                           data-lesson-search="{{ lower (printf "%s %s" $p.Title $partDesc) }}"
-                          class="flex items-start justify-between gap-3 p-2.5 sm:p-3 rounded-xl bg-white dark:bg-[#0c1220] hover:bg-sky-50/60 dark:hover:bg-slate-800/90 border border-slate-200/80 dark:border-slate-800/90 hover:border-sky-400/70 dark:hover:border-sky-500/60 text-slate-800 dark:text-slate-200 no-underline transition-all group/item shadow-2xs">
-                          <div class="flex items-start gap-2.5 min-w-0 flex-1">
-                            <span class="w-6 h-6 rounded-lg flex items-center justify-center font-mono text-[11px] font-bold shrink-0 mt-0.5 bg-sky-500/10 dark:bg-sky-500/15 text-sky-700 dark:text-sky-300 border border-sky-500/25 group-hover/item:bg-sky-600 group-hover/item:text-white transition-colors">
+                          class="flex items-center justify-between gap-2.5 px-2.5 py-1.5 rounded-lg bg-white/90 dark:bg-[#0c1220]/90 hover:bg-sky-50/70 dark:hover:bg-slate-800/80 border border-slate-200/70 dark:border-slate-800/80 hover:border-sky-400/60 dark:hover:border-sky-500/50 text-slate-800 dark:text-slate-200 no-underline transition-all group/item">
+                          <div class="flex items-center gap-2 min-w-0 flex-1">
+                            <span class="w-5 h-5 rounded flex items-center justify-center font-mono text-[10px] font-bold shrink-0 bg-sky-500/8 dark:bg-sky-500/12 text-sky-700 dark:text-sky-300 border border-sky-500/20 group-hover/item:bg-sky-600 group-hover/item:text-white transition-colors">
                               {{ printf "%02d" $partNum }}
                             </span>
-                            <div class="min-w-0 flex-1">
-                              <div class="text-xs sm:text-[13.5px] font-bold text-slate-900 dark:text-slate-100 group-hover/item:text-sky-600 dark:group-hover/item:text-sky-400 transition-colors leading-snug">
-                                {{ $lessonTitle }}
-                              </div>
-                              {{ if $partDesc }}
-                                <p class="text-[11px] text-slate-500 dark:text-slate-400 line-clamp-1 mt-0.5 mb-0 font-normal">
-                                  {{ $partDesc }}
-                                </p>
-                              {{ end }}
-                            </div>
+                            <span class="text-xs font-semibold text-slate-800 dark:text-slate-200 group-hover/item:text-sky-600 dark:group-hover/item:text-sky-400 transition-colors leading-snug truncate">
+                              {{ $lessonTitle }}
+                            </span>
                           </div>
 
-                          <div class="flex items-center gap-1.5 shrink-0 pt-0.5">
+                          <div class="flex items-center gap-1.5 shrink-0">
                             {{ if $isLab }}
-                              <span class="hidden sm:inline-block px-2 py-0.5 rounded-md text-[9.5px] font-mono font-bold bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border border-emerald-500/20">
+                              <span class="hidden sm:inline-block px-1.5 py-0.5 rounded text-[9px] font-mono font-semibold bg-emerald-500/8 text-emerald-700 dark:text-emerald-300 border border-emerald-500/15">
                                 Production Lab
                               </span>
                             {{ else }}
-                              <span class="hidden sm:inline-block px-2 py-0.5 rounded-md text-[9.5px] font-mono font-bold bg-sky-500/10 text-sky-700 dark:text-sky-300 border border-sky-500/20">
+                              <span class="hidden sm:inline-block px-1.5 py-0.5 rounded text-[9px] font-mono font-semibold bg-slate-100 dark:bg-slate-800/80 text-slate-500 dark:text-slate-400 border border-slate-200/70 dark:border-slate-700/70">
                                 Core Architecture
                               </span>
                             {{ end }}
-                            <span class="font-mono text-[11px] text-slate-400 dark:text-slate-500 tabular-nums">
+                            <span class="font-mono text-[10.5px] text-slate-400 dark:text-slate-500 tabular-nums w-6 text-right">
                               {{ $p.ReadingTime }}m
                             </span>
-                            <i class="fa-solid fa-chevron-right text-[9px] text-slate-300 dark:text-slate-600 group-hover/item:text-sky-500 group-hover/item:translate-x-0.5 transition-all"></i>
+                            <i class="fa-solid fa-chevron-right text-[8px] text-slate-300 dark:text-slate-600 group-hover/item:text-sky-500 group-hover/item:translate-x-0.5 transition-all"></i>
                           </div>
                         </a>
                       {{ end }}
@@ -449,8 +435,8 @@
                 </details>
               </div>
 
-              <!-- 3. Spacious Card Footer: Full Author Name & Primary Start Track CTA -->
-              <div class="flex items-center justify-between gap-3 pt-4 mt-4 border-t border-slate-200/80 dark:border-slate-800/80">
+              <!-- 3. Compact Card Footer -->
+              <div class="flex items-center justify-between gap-2 pt-2.5 mt-2.5 border-t border-slate-200/70 dark:border-slate-800/70">
                 {{ $sAuthorSlug := $part1.Params.author | default "tharun-vempati" }}
                 {{ $sAuthorName := $sAuthorSlug | humanize | title }}
                 {{ $sAuthorImg := "" }}
@@ -458,26 +444,24 @@
                   {{ $sAuthorName = .Title }}
                   {{ with .Params.image }}{{ $sAuthorImg = . }}{{ end }}
                 {{ end }}
-                <div class="flex items-center gap-2.5 min-w-0">
+                <div class="flex items-center gap-2 min-w-0">
                   {{ if $sAuthorImg }}
-                    <img src="{{ $sAuthorImg | relURL }}" alt="{{ $sAuthorName }}" class="w-7 h-7 rounded-full object-cover shrink-0 ring-1 ring-slate-200 dark:ring-slate-700" width="28" height="28" decoding="async" loading="lazy">
+                    <img src="{{ $sAuthorImg | relURL }}" alt="{{ $sAuthorName }}" class="w-5 h-5 rounded-full object-cover shrink-0 ring-1 ring-slate-200 dark:ring-slate-700" width="20" height="20" decoding="async" loading="lazy">
                   {{ else }}
-                    <div class="w-7 h-7 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-white font-bold text-xs flex items-center justify-center shrink-0">
+                    <div class="w-5 h-5 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-white font-bold text-[10px] flex items-center justify-center shrink-0">
                       {{ substr $sAuthorName 0 1 }}
                     </div>
                   {{ end }}
-                  <div class="min-w-0">
-                    <span class="font-bold text-xs sm:text-[13px] text-slate-900 dark:text-white block leading-tight">
-                      {{ $sAuthorName }}
-                    </span>
-                  </div>
+                  <span class="font-medium text-[11.5px] text-slate-600 dark:text-slate-300 truncate">
+                    {{ $sAuthorName }}
+                  </span>
                 </div>
 
                 <a
                   href="{{ $part1.RelPermalink }}"
-                  class="shrink-0 inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-sky-600 hover:bg-sky-700 dark:bg-sky-500 dark:hover:bg-sky-400 text-white dark:text-slate-950 text-xs font-mono font-bold uppercase tracking-wider transition-all duration-200 no-underline shadow-xs hover:shadow-sm">
+                  class="shrink-0 inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-sky-600 hover:bg-sky-700 dark:bg-sky-500 dark:hover:bg-sky-400 text-white dark:text-slate-950 text-[11px] font-mono font-bold uppercase tracking-wider transition-all duration-200 no-underline">
                   <span>Start Track</span>
-                  <i class="fa-solid fa-arrow-right text-[10px] group-hover:translate-x-0.5 transition-transform"></i>
+                  <i class="fa-solid fa-arrow-right text-[9px] group-hover:translate-x-0.5 transition-transform"></i>
                 </a>
               </div>
             </div>
@@ -548,8 +532,8 @@
         if (resultCount) {
           resultCount.textContent =
             visibleCount === seriesCards.length
-              ? 'Showing all ' + seriesCards.length + ' tracks'
-              : 'Showing ' + visibleCount + ' of ' + seriesCards.length + ' tracks';
+              ? 'Showing all ' + seriesCards.length + ' series'
+              : 'Showing ' + visibleCount + ' of ' + seriesCards.length + ' series';
         }
 
         if (emptyState) {
