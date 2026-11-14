@@ -1,5 +1,24 @@
 [
   {
+    "id": "d5406a89-159f-4a11-b60c-c0a9147db790",
+    "title": "Kubernetes Elevates AI Conformance to Core Architecture",
+    "content": "🎯 What Changed: Kubernetes AI Conformance has transitioned from a temporary Working Group to a permanent subproject under SIG Architecture, formalizing its role in core platform governance.\n💡 Engineering Impact: This ensures ongoing architectural oversight for AI workloads, preventing ecosystem fragmentation and promoting consistent, vendor-neutral standards for AI infrastructure across Kubernetes platforms.",
+    "tags": [
+      "#Kubernetes",
+      "#CNCF",
+      "#CloudNative"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-11-14T06:15:41.692801+00:00",
+    "link_url": "https://kubernetes.io/blog/2026/10/29/sig-arch-ai-conformance-2026/",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
+    "updated_at": "2026-11-14T17:47:08.373Z"
+  },
+  {
     "id": "c4e6fdb3-cc1c-4391-a95a-5c6db5ef4e0c",
     "title": "Headlamp Plugin Streamlines Kueue Job Admission Debugging",
     "content": "🎯 What Changed: A new 0.1.0-alpha Kueue plugin for Headlamp now offers visual, read-only views to trace Kubernetes Job admission states and resource relationships.\n💡 Engineering Impact: This significantly simplifies troubleshooting pending Kueue-managed Jobs by providing a unified UI for admission policies, quotas, and resource flavors, reducing reliance on complex `kubectl` commands and accelerating DevOps debugging.",
@@ -677,25 +696,5 @@
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-06T19:04:05.942+00:00",
     "ageDays": 7.937033425925926
-  },
-  {
-    "id": "5ac09fb3-70ed-4d55-91ee-4e2d047effc7",
-    "title": "OpenShift Lightwell: New Lessons Bridge Open Source Security Gap",
-    "content": "🎯 What Changed: OpenShift Lightwell now offers two new lessons to help enterprises address the critical open source software supply chain remediation gap.\n💡 Engineering Impact: These lessons empower teams to remediate vulnerabilities in pinned dependencies without risky upstream version upgrades, enhancing production stability and accelerating secure software delivery.",
-    "tags": [
-      "#OpenShift",
-      "#RedHat",
-      "#DevOps"
-    ],
-    "upvotes": 1,
-    "downvotes": 0,
-    "score": 1,
-    "author": "Cloud Newsroom Bot",
-    "created_at": "2026-11-06T12:46:57.880911+00:00",
-    "link_url": "https://www.redhat.com/en/blog/bridging-open-source-remediation-gap-introducing-two-new-lessons-lightwell",
-    "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
-    "updated_at": "2026-11-06T23:59:38.172+00:00",
-    "ageDays": 7.937098773148148
   }
 ]
