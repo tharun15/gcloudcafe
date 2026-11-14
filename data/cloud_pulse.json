@@ -1,41 +1,22 @@
 [
   {
-    "id": "040c43da-0a4f-4cdc-8bc0-d1595456b6d1",
-    "title": "Node management in Red Hat OpenShift 5: Server-level visibility for bare metal",
-    "content": "🎯 What Changed: Red Hat OpenShift 5 introduces enhanced server-level visibility and management for bare-metal nodes directly within the console.\n💡 Engineering Impact: This streamlines operations for bare-metal OpenShift deployments, offering a unified console experience and simplifying the transition from traditional virtualization layers, boosting DevOps efficiency.",
+    "id": "c4e6fdb3-cc1c-4391-a95a-5c6db5ef4e0c",
+    "title": "Headlamp Plugin Streamlines Kueue Job Admission Debugging",
+    "content": "🎯 What Changed: A new 0.1.0-alpha Kueue plugin for Headlamp now offers visual, read-only views to trace Kubernetes Job admission states and resource relationships.\n💡 Engineering Impact: This significantly simplifies troubleshooting pending Kueue-managed Jobs by providing a unified UI for admission policies, quotas, and resource flavors, reducing reliance on complex `kubectl` commands and accelerating DevOps debugging.",
     "tags": [
-      "#OpenShift",
-      "#RedHat",
-      "#DevOps"
+      "#Kubernetes",
+      "#CNCF",
+      "#CloudNative"
     ],
     "upvotes": 1,
     "downvotes": 0,
     "score": 1,
     "author": "Cloud Newsroom Bot",
-    "created_at": "2026-11-14T06:15:51.651402+00:00",
-    "link_url": "https://www.redhat.com/en/blog/node-management-red-hat-openshift-5-bare-metal",
+    "created_at": "2026-11-14T06:15:47.44407+00:00",
+    "link_url": "https://kubernetes.io/blog/2026/10/14/tracing-kueue-admission-with-headlamp/",
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
-    "updated_at": "2026-11-14T06:21:43.820Z"
-  },
-  {
-    "id": "89503f87-ea73-4b21-b8d3-b21380204092",
-    "title": "Introducing Red Hat Advanced Cluster Security for Kubernetes 5: Bring Red Hat Enterprise Linux virtual machines into vulnerability management",
-    "content": "🎯 What Changed: Red Hat Advanced Cluster Security for Kubernetes 5 now extends vulnerability management to Red Hat Enterprise Linux (RHEL) virtual machines.\n💡 Engineering Impact: This enables security teams to centralize vulnerability scanning and reporting across both containers and RHEL VMs running on OpenShift, enhancing overall security posture and compliance.",
-    "tags": [
-      "#OpenShift",
-      "#RedHat",
-      "#DevOps"
-    ],
-    "upvotes": 1,
-    "downvotes": 0,
-    "score": 1,
-    "author": "Cloud Newsroom Bot",
-    "created_at": "2026-11-13T12:55:46.253273+00:00",
-    "link_url": "https://www.redhat.com/en/blog/introducing-red-hat-advanced-cluster-security-kubernetes-5-bring-red-hat-enterprise-linux-virtual-machines-vulnerability-management",
-    "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
-    "updated_at": "2026-11-14T00:47:06.489Z"
+    "updated_at": "2026-11-14T11:16:24.075Z"
   },
   {
     "id": "0b6826b6-fc4c-4621-8f9b-bbbea3de16aa",
@@ -55,7 +36,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:48.441634+00:00",
-    "ageDays": 37.63769837962963
+    "ageDays": 38.074708020833334
   },
   {
     "id": "81213fff-57d4-4c0b-90eb-c84beeb18d4d",
@@ -75,7 +56,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:42.008666+00:00",
-    "ageDays": 37.63777283564815
+    "ageDays": 38.07478247685185
   },
   {
     "id": "1ec5647f-ce95-4be3-ba87-6aa974960da7",
@@ -95,7 +76,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:37.111692+00:00",
-    "ageDays": 37.63782951388889
+    "ageDays": 38.07483915509259
   },
   {
     "id": "88a2ed59-fb47-488b-b07c-d6be1de35d0b",
@@ -115,7 +96,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:31.276024+00:00",
-    "ageDays": 37.63789704861111
+    "ageDays": 38.07490668981482
   },
   {
     "id": "202f8734-234e-4bd5-9a67-8535691f131a",
@@ -135,7 +116,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:24.859911+00:00",
-    "ageDays": 37.637971319444446
+    "ageDays": 38.07498096064815
   },
   {
     "id": "37fcb780-d57d-4ba9-875a-7665dd9cd981",
@@ -155,7 +136,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T04:06:30.331436+00:00",
-    "ageDays": 37.86151909722222
+    "ageDays": 38.29852873842593
   },
   {
     "id": "521c6dfa-7eb3-4834-87fb-7ac338d90f9d",
@@ -175,7 +156,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T04:00:33.151279+00:00",
-    "ageDays": 37.865653125
+    "ageDays": 38.3026627662037
   },
   {
     "id": "b1f2627d-7930-4c4b-ab57-de042bac55c3",
@@ -195,7 +176,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T04:00:00.696536+00:00",
-    "ageDays": 37.86602876157407
+    "ageDays": 38.30303840277778
   },
   {
     "id": "bf22f4dd-2d54-4b4c-9038-ea09aadef8a2",
@@ -215,7 +196,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T03:59:45.591638+00:00",
-    "ageDays": 37.866203587962964
+    "ageDays": 38.303213229166666
   },
   {
     "id": "46fd5625-4fda-4793-a2ab-d6b627f3f4df",
@@ -235,7 +216,27 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T03:59:26.783766+00:00",
-    "ageDays": 37.86642127314815
+    "ageDays": 38.30343091435185
+  },
+  {
+    "id": "040c43da-0a4f-4cdc-8bc0-d1595456b6d1",
+    "title": "Node management in Red Hat OpenShift 5: Server-level visibility for bare metal",
+    "content": "🎯 What Changed: Red Hat OpenShift 5 introduces enhanced server-level visibility and management for bare-metal nodes directly within the console.\n💡 Engineering Impact: This streamlines operations for bare-metal OpenShift deployments, offering a unified console experience and simplifying the transition from traditional virtualization layers, boosting DevOps efficiency.",
+    "tags": [
+      "#OpenShift",
+      "#RedHat",
+      "#DevOps"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-11-14T06:15:51.651402+00:00",
+    "link_url": "https://www.redhat.com/en/blog/node-management-red-hat-openshift-5-bare-metal",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
+    "updated_at": "2026-11-14T06:21:43.82+00:00",
+    "ageDays": 0.20869864583333333
   },
   {
     "id": "72a57170-204a-428d-993c-85d160127cf2",
@@ -255,7 +256,27 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-13T19:32:04.889+00:00",
-    "ageDays": 0.49388003472222225
+    "ageDays": 0.930889675925926
+  },
+  {
+    "id": "89503f87-ea73-4b21-b8d3-b21380204092",
+    "title": "Introducing Red Hat Advanced Cluster Security for Kubernetes 5: Bring Red Hat Enterprise Linux virtual machines into vulnerability management",
+    "content": "🎯 What Changed: Red Hat Advanced Cluster Security for Kubernetes 5 now extends vulnerability management to Red Hat Enterprise Linux (RHEL) virtual machines.\n💡 Engineering Impact: This enables security teams to centralize vulnerability scanning and reporting across both containers and RHEL VMs running on OpenShift, enhancing overall security posture and compliance.",
+    "tags": [
+      "#OpenShift",
+      "#RedHat",
+      "#DevOps"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-11-13T12:55:46.253273+00:00",
+    "link_url": "https://www.redhat.com/en/blog/introducing-red-hat-advanced-cluster-security-kubernetes-5-bring-red-hat-enterprise-linux-virtual-machines-vulnerability-management",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
+    "updated_at": "2026-11-14T00:47:06.489+00:00",
+    "ageDays": 0.9309833449074074
   },
   {
     "id": "2dd6af13-dd5f-459e-b7ec-3e39e93eb199",
@@ -275,7 +296,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-13T11:58:03.384+00:00",
-    "ageDays": 0.8025885763888889
+    "ageDays": 1.2395982175925926
   },
   {
     "id": "16f5eb42-1979-4ef9-9407-bcae435c247c",
@@ -295,7 +316,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-12T16:40:03.358+00:00",
-    "ageDays": 1.4653934837962963
+    "ageDays": 1.902403125
   },
   {
     "id": "4aa717a9-31b4-4f08-9b05-675c0353d620",
@@ -315,6 +336,366 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-13T00:57:03.332+00:00",
-    "ageDays": 1.4654767361111112
+    "ageDays": 1.9024863773148148
+  },
+  {
+    "id": "64b03f19-9019-453a-8b0c-1e009a52d529",
+    "title": "AWS Cloud WAN now supports Flow Logs",
+    "content": "🎯 What Changed: AWS Cloud WAN now supports VPC Flow Logs, enabling centralized monitoring and capturing of IP traffic details across global enterprise networks.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
+    "tags": [
+      "#AWS",
+      "#CloudArchitecture",
+      "#CloudNews"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-11-12T05:50:36.80831+00:00",
+    "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/11/aws-cloud-wan-flow-logs/",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
+    "updated_at": "2026-11-12T06:26:09.323+00:00",
+    "ageDays": 2.226231550925926
+  },
+  {
+    "id": "854873b0-f493-4cb8-bbfa-5413f8a41679",
+    "title": "OpenShift Boosts Enterprise AI Agent Security via Sandboxing",
+    "content": "🎯 What Changed: OpenShift now provides enhanced sandboxing capabilities to secure enterprise AI agents, mitigating risks from broad tool access.\n💡 Engineering Impact: This architectural enhancement ensures AI agents operate within defined boundaries, preventing misaligned behavior and enhancing data security, allowing DevOps teams to confidently deploy powerful agentic systems.",
+    "tags": [
+      "#OpenShift",
+      "#RedHat",
+      "#DevOps"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-11-11T12:39:59.985962+00:00",
+    "link_url": "https://www.redhat.com/en/blog/great-power-comes-great-sandboxing",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
+    "updated_at": "2026-11-11T15:56:52.757+00:00",
+    "ageDays": 2.9419355208333333
+  },
+  {
+    "id": "e0c30b7c-37c7-42e9-84e7-c00dffaeef71",
+    "title": "Your move to Red Hat OpenShift Virtualization doesn't have to wait on VDDK",
+    "content": "🎯 What Changed: Red Hat OpenShift Virtualization now enables direct VMware VM migrations, eliminating the previous dependency on the hard-to-obtain VDDK.\n💡 Engineering Impact: This update removes a significant barrier for organizations, accelerating hybrid cloud adoption and simplifying migration planning by eliminating dependency on restricted external tools.",
+    "tags": [
+      "#OpenShift",
+      "#RedHat",
+      "#DevOps"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-11-11T12:39:54.247259+00:00",
+    "link_url": "https://www.redhat.com/en/blog/your-move-red-hat-openshift-virtualization-doesnt-have-wait-vddk",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
+    "updated_at": "2026-11-11T22:35:52.488+00:00",
+    "ageDays": 2.94200193287037
+  },
+  {
+    "id": "f76654e7-afea-4ffa-8a4f-84910010b2a3",
+    "title": "Amazon RDS for MySQL 26.10 is now available in Amazon RDS Database Preview Environment",
+    "content": "🎯 What Changed: Amazon RDS for MySQL 26.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
+    "tags": [
+      "#AWS",
+      "#CloudArchitecture",
+      "#CloudNews"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-11-11T04:30:47.893554+00:00",
+    "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/11/rds-mysql-26-10-preview-environment/",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
+    "updated_at": "2026-11-11T05:22:25.477+00:00",
+    "ageDays": 3.2816588078703703
+  },
+  {
+    "id": "5cca8ca1-dba9-4fa9-b023-f6403a8b59b4",
+    "title": "Red Hat OpenShift 5: AI-Powered Autonomous Operations",
+    "content": "🎯 What Changed: Red Hat OpenShift 5 introduces agentic applied AI, transforming Lightspeed into an autonomous agent for hybrid cloud operations.\n💡 Engineering Impact: This enhances operational efficiency by enabling AI to investigate clusters and prepare changes, streamlining management across containers, VMs, and serverless workloads. Engineers gain accelerated, approved automation for hybrid cloud environments.",
+    "tags": [
+      "#OpenShift",
+      "#RedHat",
+      "#DevOps"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-11-10T13:20:45.531847+00:00",
+    "link_url": "https://www.redhat.com/en/blog/intelligent-red-hat-openshift-5",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
+    "updated_at": "2026-11-10T21:42:04.437+00:00",
+    "ageDays": 3.9136305902777777
+  },
+  {
+    "id": "898d31cf-8a88-4929-bd76-d4063441a834",
+    "title": "Amazon Quick is now AWS Quick",
+    "content": "🎯 What Changed: Amazon Quick has been rebranded to AWS Quick to better align the enterprise AI workspace with native AWS security.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
+    "tags": [
+      "#AWS",
+      "#CloudArchitecture",
+      "#CloudNews"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-11-10T05:46:56.414419+00:00",
+    "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/11/amazon-quick-aws-quick/",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
+    "updated_at": "2026-11-10T12:18:41.132+00:00",
+    "ageDays": 4.228782407407407
+  },
+  {
+    "id": "2b788f9f-2ed1-438e-ac1f-5d372e1c0660",
+    "title": "Cloud Pathways GA: Unified ML Runtime for Hyper-Scale AI on GKE",
+    "content": "🎯 What Changed: Cloud Pathways, Google's distributed ML runtime for massive accelerator fleets, is now Generally Available on GKE.\n💡 Engineering Impact: This single-controller architecture simplifies managing massive JAX workloads across thousands of accelerators, boosting resilience and elasticity for AI training and inference on GKE.",
+    "tags": [
+      "#GoogleCloud",
+      "#GCP",
+      "#CloudNews"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-11-09T13:42:29.144152+00:00",
+    "link_url": "https://cloud.google.com/blog/topics/ai-infrastructure/cloud-pathways-a-distributed-ml-runtime-is-ga/",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
+    "updated_at": "2026-11-09T18:30:31.398+00:00",
+    "ageDays": 4.898542476851852
+  },
+  {
+    "id": "8fc07d64-11d8-4cfd-abc7-cfe87cf0db79",
+    "title": "Our newest TPUs: 8tx and 8i Max, built for the agentic era",
+    "content": "🎯 What Changed: Google Cloud expanded its 8th-generation TPU portfolio with two new systems, TPU 8tx for confidential inference and TPU 8i Max for massive context windows.\n💡 Engineering Impact: These additions, coupled with software advancements like PyTorch integration and GKE dynamic slicing, enable secure, high-density AI workloads and significantly improve developer experience and operational efficiency for agentic AI.",
+    "tags": [
+      "#GoogleCloud",
+      "#GCP",
+      "#CloudNews"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-11-09T13:42:20.987692+00:00",
+    "link_url": "https://cloud.google.com/blog/topics/ai-infrastructure/tpu-8tx-and-tpu-8i-max/",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
+    "updated_at": "2026-11-10T02:36:01.78+00:00",
+    "ageDays": 4.898636886574074
+  },
+  {
+    "id": "b64bde0e-6f73-40c6-9c09-7e4999625a47",
+    "title": "Amazon Redshift expands SUPER data type to store strings up to 16 million bytes",
+    "content": "🎯 What Changed: Amazon Redshift has expanded its SUPER data type to support individual strings up to 16 million bytes.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
+    "tags": [
+      "#AWS",
+      "#CloudArchitecture",
+      "#CloudNews"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-11-09T04:58:14.222135+00:00",
+    "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/11/amazon-redshift-expands-super-to-16-million-bytes/",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
+    "updated_at": "2026-11-09T05:24:07.518+00:00",
+    "ageDays": 5.2626040740740745
+  },
+  {
+    "id": "71a586bc-8b26-4feb-8c92-272a35779eb1",
+    "title": "Predicting and detecting failures: How Azure strengthens reliability for mission-critical workloads",
+    "content": "🎯 What Changed: Azure Failure Prediction and Detection (AFPD) now proactively predicts hardware failures, automatically relocating eligible workloads and notifying users.\n💡 Engineering Impact: This significantly enhances reliability for mission-critical applications like SAP on Azure, minimizing downtime and reducing operational overhead by proactively addressing hardware issues.",
+    "tags": [
+      "#Azure",
+      "#CloudArchitecture",
+      "#CloudNews"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-11-08T11:47:33.85484+00:00",
+    "link_url": "https://azure.microsoft.com/en-us/blog/predicting-and-detecting-failures-how-azure-strengthens-reliability-for-mission-critical-workloads/",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
+    "updated_at": "2026-11-08T14:52:28.475+00:00",
+    "ageDays": 5.978349074074074
+  },
+  {
+    "id": "48bca9a2-b816-47cd-a8c4-ce0194f66586",
+    "title": "Designing Azure silicon on Azure silicon: EDA workloads on Cobalt 200",
+    "content": "🎯 What Changed: Azure Cobalt 200 VMs are now accelerating Electronic Design Automation (EDA) workloads for silicon development.\n💡 Engineering Impact: This enables engineers to achieve faster simulation, verification, and analysis, leveraging scalable cloud infrastructure for complex silicon design and rapid iteration.",
+    "tags": [
+      "#Azure",
+      "#CloudArchitecture",
+      "#CloudNews"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-11-08T11:47:28.97512+00:00",
+    "link_url": "https://azure.microsoft.com/en-us/blog/designing-azure-silicon-on-azure-silicon-eda-workloads-on-cobalt-200/",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
+    "updated_at": "2026-11-08T20:17:22.905+00:00",
+    "ageDays": 5.978405543981482
+  },
+  {
+    "id": "205f72fc-ffd7-4aaa-aad2-d1e5cf573398",
+    "title": "Amazon Redshift expands SUPER data type to store strings up to 16 million bytes",
+    "content": "🎯 What Changed: Amazon Redshift now supports storing individual strings up to 16 million bytes within the SUPER data type via an opt-.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
+    "tags": [
+      "#AWS",
+      "#CloudArchitecture",
+      "#CloudNews"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-11-08T04:19:11.44501+00:00",
+    "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/11/amazon-redshift-expands-super-to-16-million-bytes/",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
+    "updated_at": "2026-11-08T05:11:52.922+00:00",
+    "ageDays": 6.289719548611111
+  },
+  {
+    "id": "722eaa7f-9575-421d-9c87-407ab8dac616",
+    "title": "Red Hat Hybrid Cloud Console: Enhanced UX, Custom Dashboards & Theming",
+    "content": "🎯 What Changed: Red Hat Hybrid Cloud Console now offers a simplified, customizable user experience with a new help panel, theming controls, and custom dashboards.\n💡 Engineering Impact: Engineers gain improved operational efficiency through personalized dashboards and quick access to support, streamlining hybrid cloud management workflows.",
+    "tags": [
+      "#OpenShift",
+      "#RedHat",
+      "#DevOps"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-11-07T11:35:41.517851+00:00",
+    "link_url": "https://www.redhat.com/en/blog/3-recent-enhancements-red-hat-hybrid-cloud-console",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
+    "updated_at": "2026-11-07T14:46:31.689+00:00",
+    "ageDays": 6.9865937152777775
+  },
+  {
+    "id": "da615bc3-9d63-44b1-8bab-8bd6cddffdd3",
+    "title": "OpenShift Evolves: Unified Multicluster Management for Hybrid Clouds",
+    "content": "🎯 What Changed: Red Hat OpenShift now provides unified multicluster management, evolving beyond individual cluster operations.\n💡 Engineering Impact: This enhances architectural consistency and simplifies DevOps by centralizing application lifecycle, configuration, and compliance across public, private, and edge environments, significantly reducing operational overhead and improving security.",
+    "tags": [
+      "#OpenShift",
+      "#RedHat",
+      "#DevOps"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-11-07T11:35:36.35277+00:00",
+    "link_url": "https://www.redhat.com/en/blog/5-minute-demo-how-manage-applications-scale-red-hat-openshift",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
+    "updated_at": "2026-11-07T19:59:29.661+00:00",
+    "ageDays": 6.98665349537037
+  },
+  {
+    "id": "4aab89ff-49ba-41a6-a590-51759e26384a",
+    "title": "IBM & Red Hat Launch Project Lightwell: $5B for Open Source Security",
+    "content": "🎯 What Changed: IBM and Red Hat have launched Project Lightwell, a $5 billion initiative with 20,000 engineers dedicated to securing open-source software.\n💡 Engineering Impact: This initiative will significantly enhance the security posture of shared digital infrastructure, leveraging AI for advanced vulnerability discovery. DevOps teams can anticipate more robust and secure open-source dependencies, reducing supply chain risks.",
+    "tags": [
+      "#OpenShift",
+      "#RedHat",
+      "#DevOps"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-11-07T11:35:32.900559+00:00",
+    "link_url": "https://www.redhat.com/en/blog/friday-five-november-6-2026-red-hat",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
+    "updated_at": "2026-11-07T23:36:03.208+00:00",
+    "ageDays": 6.986693449074074
+  },
+  {
+    "id": "0ae59ea6-1bd0-4f85-88f0-e8ba66948812",
+    "title": "Amazon Redshift expands SUPER data type to store strings up to 16 million bytes",
+    "content": "🎯 What Changed: Amazon Redshift now supports storing individual strings of up to 16 million bytes within the SUPER data type.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
+    "tags": [
+      "#AWS",
+      "#CloudArchitecture",
+      "#CloudNews"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-11-07T04:39:27.746661+00:00",
+    "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/11/amazon-redshift-expands-super-to-16-million-bytes/",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
+    "updated_at": "2026-11-07T05:47:48.544+00:00",
+    "ageDays": 7.27564199074074
+  },
+  {
+    "id": "b6ca8e95-79e5-4c15-8d47-c28a5c2e08b3",
+    "title": "Red Hat OpenShift: Evolving Modern App Delivery & Lifecycle",
+    "content": "🎯 What Changed: Red Hat OpenShift continues to evolve, enhancing its capabilities for secure, intelligent, and predictable modern application delivery across hybrid environments.\n💡 Engineering Impact: Engineers benefit from a unified platform that streamlines the entire software lifecycle, ensuring faster feature delivery while maintaining rigorous security and compliance across diverse cloud and edge deployments.",
+    "tags": [
+      "#OpenShift",
+      "#RedHat",
+      "#DevOps"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-11-06T12:47:03.526358+00:00",
+    "link_url": "https://www.redhat.com/en/blog/5-minute-demo-how-build-modern-applications-red-hat-openshift",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
+    "updated_at": "2026-11-06T19:04:05.942+00:00",
+    "ageDays": 7.937033425925926
+  },
+  {
+    "id": "5ac09fb3-70ed-4d55-91ee-4e2d047effc7",
+    "title": "OpenShift Lightwell: New Lessons Bridge Open Source Security Gap",
+    "content": "🎯 What Changed: OpenShift Lightwell now offers two new lessons to help enterprises address the critical open source software supply chain remediation gap.\n💡 Engineering Impact: These lessons empower teams to remediate vulnerabilities in pinned dependencies without risky upstream version upgrades, enhancing production stability and accelerating secure software delivery.",
+    "tags": [
+      "#OpenShift",
+      "#RedHat",
+      "#DevOps"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-11-06T12:46:57.880911+00:00",
+    "link_url": "https://www.redhat.com/en/blog/bridging-open-source-remediation-gap-introducing-two-new-lessons-lightwell",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
+    "updated_at": "2026-11-06T23:59:38.172+00:00",
+    "ageDays": 7.937098773148148
   }
 ]
