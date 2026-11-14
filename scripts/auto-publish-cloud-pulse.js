@@ -353,6 +353,51 @@ async function executePulseHousekeeping(options = {}) {
   };
 }
 
+/**
+ * Scores a candidate pulse for engineering relevance (used by both scraper & auto-publisher).
+ * Prioritizes Kubernetes, Cloud Infra, Security, Databases, and AI systems over niche SaaS/CRM or digests.
+ */
+function scorePulseCandidate(candidate) {
+  if (!candidate) return 0;
+  const title = (candidate.title || "").toLowerCase();
+  const body = (candidate.content || candidate.summary || "").toLowerCase();
+  const corpus = title + " " + body;
+  let score = 0;
+
+  // Core container, Kubernetes & cloud-native infrastructure (+15)
+  if (/\b(kubernetes|k8s|gke|eks|aks|openshift|helm|istio|cilium|ebpf|gateway api|service mesh|terraform|containerd|etcd)\b/i.test(corpus)) {
+    score += 15;
+  }
+  // Architecture, GA launches, cost & performance breakthroughs (+12)
+  if (/\b(general availability|ga|autoscaling|serverless|cloud run|lambda|bigquery|alloydb|iceberg|postgres|gpu|tpu|vllm|inference|llm|genai|rag|agentic)\b/i.test(corpus)) {
+    score += 12;
+  }
+  // Security, networking & IAM (+10)
+  if (/\b(zero-trust|mtls|tls|post-quantum|privatelink|iam|rbac|cve|vulnerability|kms|secrets manager|waf|cloud armor|vpc)\b/i.test(corpus)) {
+    score += 10;
+  }
+
+  // Demote niche SaaS/CRM, digests & marketing noise (-25)
+  if (/\b(amazon connect|contact center|call center|agent workspace|friday five|weekly recap|podcast|webinar|event recap|partner of the year|gartner|forrester|case study)\b/i.test(corpus)) {
+    score -= 25;
+  }
+
+  return score;
+}
+
+/**
+ * Selects the highest-impact candidate from pending_approval pulses, using recency as tiebreaker.
+ */
+function selectBestPendingCandidate(pendingPulses = []) {
+  if (!Array.isArray(pendingPulses) || pendingPulses.length === 0) return null;
+  const sorted = pendingPulses.slice().sort((a, b) => {
+    const scoreDiff = scorePulseCandidate(b) - scorePulseCandidate(a);
+    if (scoreDiff !== 0) return scoreDiff;
+    return new Date(b.created_at || 0) - new Date(a.created_at || 0);
+  });
+  return sorted[0];
+}
+
 async function runAutoPublisher(options = {}) {
   const isDryRun = options.dryRun || process.argv.includes("--dry-run");
   const force = options.force || process.argv.includes("--force");
@@ -392,10 +437,10 @@ async function runAutoPublisher(options = {}) {
 
   console.log(`?? Admin has not approved any micro-posts in >= ${INACTIVITY_THRESHOLD_HOURS} hours (or --force active). Proceeding to auto-publish freshest candidate...`);
 
-  // 2. Fetch freshest candidate from pending_approval queue
+  // 2. Fetch pending candidates from pending_approval queue
   let pendingPulses = [];
   try {
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/cloud_pulses?status=eq.pending_approval&order=created_at.desc&limit=10`, {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/cloud_pulses?status=eq.pending_approval&order=created_at.desc&limit=20`, {
       headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` }
     });
     if (res.ok) {
@@ -413,9 +458,9 @@ async function runAutoPublisher(options = {}) {
     };
   }
 
-  // 3. Select freshest candidate & strictly validate / enforce analogy format
-  const candidate = pendingPulses[0];
-  console.log(`\n?? Selected candidate for auto-publishing: "${candidate.title}" (ID: ${candidate.id})`);
+  // 3. Select highest-impact candidate & strictly validate / enforce analogy format
+  const candidate = selectBestPendingCandidate(pendingPulses);
+  console.log(`\n?? Selected candidate for auto-publishing: "${candidate.title}" (ID: ${candidate.id}, relevance score: ${scorePulseCandidate(candidate)})`);
 
   const analogyResult = validateAndEnforceAnalogy(candidate.title, candidate.content);
   if (analogyResult.synthesized) {
@@ -465,7 +510,7 @@ async function runAutoPublisher(options = {}) {
           const raw = fs.readFileSync(localPath, 'utf8');
           const localData = JSON.parse(raw);
           const updatedCandidate = { ...candidate, ...updatePayload };
-          const newArray = [updatedCandidate].concat(localData.filter(p => p.id !== candidate.id)).slice(0, 15);
+          const newArray = [updatedCandidate].concat(localData.filter(p => p.id !== candidate.id)).slice(0, DEFAULT_MAX_ACTIVE_PULSES);
           fs.writeFileSync(localPath, JSON.stringify(newArray, null, 2));
           console.log("? Synchronized local data/cloud_pulse.json fallback cache.");
         }
@@ -496,6 +541,8 @@ if (require.main === module) {
 module.exports = {
   evaluatePulseHousekeeping,
   executePulseHousekeeping,
+  scorePulseCandidate,
+  selectBestPendingCandidate,
   isManualApproval,
   cleanText,
   createSmartFallbackHook,

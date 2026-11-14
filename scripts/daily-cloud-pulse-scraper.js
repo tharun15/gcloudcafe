@@ -1,4 +1,4 @@
-const { createSmartFallbackHook, executePulseHousekeeping } = require('./auto-publish-cloud-pulse.js');
+const { createSmartFallbackHook, executePulseHousekeeping, scorePulseCandidate } = require('./auto-publish-cloud-pulse.js');
 /**
  * Autonomous Cloud Pulse Newsroom Scraper & Gemini AI Synthesizer
  * 
@@ -60,7 +60,15 @@ function cleanText(text) {
 
 function isHighRelevanceCandidate(title, summary) {
   const text = (title + " " + summary).toLowerCase();
-  if (text.includes("customer bug fixes") || text.includes("internal release") || text.includes("routine maintenance") || text.includes("webinar recap")) return false;
+  if (
+    text.includes("customer bug fixes") ||
+    text.includes("internal release") ||
+    text.includes("routine maintenance") ||
+    text.includes("webinar recap") ||
+    text.includes("friday five") ||
+    text.includes("weekly recap") ||
+    text.includes("event recap")
+  ) return false;
   if (summary.length < 30) return false;
   return true;
 }
@@ -278,7 +286,8 @@ async function runScraper() {
 
   console.log(`\n✨ ${toProcess.length} fresh, unique candidates to process.`);
 
-  // Limit to top 6 freshest candidates for the Admin queue
+  // Rank across all feeds by engineering relevance and limit to top 6 for the Admin queue
+  toProcess.sort((a, b) => scorePulseCandidate(b) - scorePulseCandidate(a));
   const finalBatch = toProcess.slice(0, 6);
   let insertedCount = 0;
 

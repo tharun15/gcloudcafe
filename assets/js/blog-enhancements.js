@@ -1729,6 +1729,19 @@
       total -= 15;
     }
 
+    // Time-decay so older curated posts naturally yield to fresh cloud updates
+    var timestamp = new Date(p.created_at || p.updated_at || 0).getTime();
+    if (timestamp > 0 && !isNaN(timestamp)) {
+      var ageDays = Math.max(0, (Date.now() - timestamp) / (1000 * 60 * 60 * 24));
+      if (ageDays <= 3) {
+        total += 25;
+      } else if (ageDays <= 7) {
+        total += 12;
+      } else {
+        total -= Math.min(90, Math.floor((ageDays - 7) * 3));
+      }
+    }
+
     return total;
   }
 
@@ -1769,7 +1782,7 @@
         provider: "all",
         domain: "all",
         searchQuery: "",
-        sortBy: "trending"
+        sortBy: "recent"
       };
     })();
 
@@ -1879,7 +1892,7 @@
       sortBtns.forEach(function(btn) {
         btn.addEventListener("click", function(e) {
           e.preventDefault();
-          var sortVal = btn.getAttribute("data-pulse-sort") || "trending";
+          var sortVal = btn.getAttribute("data-pulse-sort") || "recent";
           filterState.sortBy = sortVal;
           updateSortButtonsUI();
           syncUrlQuery();
@@ -9813,7 +9826,7 @@
       var provider = opts.provider || "all";
       var domain = opts.domain || "all";
       var query = opts.searchQuery || "";
-      var sortBy = opts.sortBy || "trending";
+      var sortBy = opts.sortBy || "recent";
 
       var self = this;
       var filtered = (pulses || []).filter(function (pulse) {
@@ -9842,7 +9855,7 @@
         provider: params.get("provider") || "all",
         domain: params.get("topic") || params.get("domain") || "all",
         searchQuery: params.get("q") || params.get("search") || "",
-        sortBy: params.get("sort") === "recent" ? "recent" : "trending"
+        sortBy: params.get("sort") === "trending" ? "trending" : "recent"
       };
     },
 
@@ -9852,7 +9865,7 @@
       if (s.provider && s.provider !== "all") params.set("provider", s.provider);
       if (s.domain && s.domain !== "all") params.set("topic", s.domain);
       if (s.searchQuery && s.searchQuery.trim().length > 0) params.set("q", s.searchQuery.trim());
-      if (s.sortBy && s.sortBy !== "trending") params.set("sort", s.sortBy);
+      if (s.sortBy && s.sortBy !== "recent") params.set("sort", s.sortBy);
 
       var str = params.toString();
       return str.length > 0 ? "?" + str : "";

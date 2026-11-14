@@ -199,13 +199,18 @@ describe('Cloud Pulse Multi-Filter & Real-Time Search Engine', () => {
   });
 
   describe('6. URL Query String Synchronization', () => {
+    it('defaults sortBy to recent when no sort param is present', () => {
+      const state = window.gcloudcafePulseFilter.parseUrlState('');
+      expect(state.sortBy).toBe('recent');
+    });
+
     it('parses URL query params into filter state', () => {
-      const search = '?provider=aws&topic=security&q=quantum&sort=recent';
+      const search = '?provider=aws&topic=security&q=quantum&sort=trending';
       const state = window.gcloudcafePulseFilter.parseUrlState(search);
       expect(state.provider).toBe('aws');
       expect(state.domain).toBe('security');
       expect(state.searchQuery).toBe('quantum');
-      expect(state.sortBy).toBe('recent');
+      expect(state.sortBy).toBe('trending');
     });
 
     it('builds clean URL query string ignoring default values', () => {
@@ -213,7 +218,7 @@ describe('Cloud Pulse Multi-Filter & Real-Time Search Engine', () => {
         provider: 'aws',
         domain: 'all',
         searchQuery: '',
-        sortBy: 'trending'
+        sortBy: 'recent'
       });
       expect(qs).toBe('?provider=aws');
 
@@ -221,12 +226,12 @@ describe('Cloud Pulse Multi-Filter & Real-Time Search Engine', () => {
         provider: 'gcp',
         domain: 'databases',
         searchQuery: 'bigquery',
-        sortBy: 'recent'
+        sortBy: 'trending'
       });
       expect(qsFull).toContain('provider=gcp');
       expect(qsFull).toContain('topic=databases');
       expect(qsFull).toContain('q=bigquery');
-      expect(qsFull).toContain('sort=recent');
+      expect(qsFull).toContain('sort=trending');
     });
   });
 
