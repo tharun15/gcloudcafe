@@ -347,3 +347,33 @@ describe('Cloud Pulse Autonomous Housekeeping & Cohort Retention Engine', () => 
     expect(result.stats.stale_pending).toBe(1);
   });
 });
+
+describe('Cloud Pulse Candidate Relevance Scoring', () => {
+  const { scorePulseCandidate, selectBestPendingCandidate } = require('../scripts/auto-publish-cloud-pulse.js');
+
+  it('ranks core Kubernetes, AI, and security infrastructure above niche SaaS/CRM or digests', () => {
+    const crm = {
+      id: 'crm-1',
+      title: 'Amazon Connect Customer supports merging and linking related cases in the agent workspace',
+      content: 'Contact center agents can now merge related customer support cases.',
+      created_at: '2026-11-13T10:00:00Z'
+    };
+    const digest = {
+      id: 'digest-1',
+      title: 'Friday Five — November 13, 2026 | Red Hat',
+      content: 'Weekly recap of blog posts and podcast episodes.',
+      created_at: '2026-11-13T11:00:00Z'
+    };
+    const k8s = {
+      id: 'k8s-1',
+      title: 'Kubernetes Gateway API v1.3 reaches General Availability with zero-trust mTLS',
+      content: 'GKE and EKS clusters gain native Gateway API ingress and mTLS enforcement.',
+      created_at: '2026-11-13T06:00:00Z'
+    };
+
+    expect(scorePulseCandidate(k8s)).toBeGreaterThan(scorePulseCandidate(crm));
+    expect(scorePulseCandidate(k8s)).toBeGreaterThan(scorePulseCandidate(digest));
+    const best = selectBestPendingCandidate([crm, digest, k8s]);
+    expect(best.id).toBe('k8s-1');
+  });
+});
