@@ -42,42 +42,38 @@
 <div class="space-y-4" id="sidebar-series-container">
 
   <!-- ============================================================ -->
-  <!-- TIER 1: SYNCED LEARNING TRACK COMPANION                      -->
+  <!-- TIER 1: SYNCED SERIES COMPANION                              -->
   <!-- ============================================================ -->
   <section id="sidebar-companion-card"
            class="track-companion-card {{ if not $hasDefaultSeries }}is-standalone-mode{{ end }}"
-           aria-label="{{ if $isItalian }}Percorso di apprendimento attivo{{ else }}Active learning track{{ end }}"
+           aria-label="{{ if $isItalian }}Serie attiva{{ else }}Active series{{ end }}"
            aria-live="polite">
 
     <div id="sidebar-context-bridge">
 
       <!-- Series Mode: Synced Ribbon + Parent Track + Connected Stepper -->
       <div id="sidebar-series-context-view" class="{{ if not $hasDefaultSeries }}hidden{{ end }}">
-        <!-- Top Sync Status Ribbon -->
-        <div class="track-companion-ribbon">
-          <span class="inline-flex items-center gap-1.5 font-mono text-[10.5px] font-bold uppercase tracking-wider text-sky-600 dark:text-sky-400">
-            <span class="hidden lg:inline" aria-hidden="true">←</span>
-            <span id="sidebar-companion-dot" class="w-1.5 h-1.5 rounded-full bg-sky-500 shrink-0" aria-hidden="true"></span>
-            <span id="sidebar-companion-mode-label">{{ if $isItalian }}Sincronizzato col post{{ else }}Synced with post{{ end }}</span>
-          </span>
-          <span id="sidebar-context-part-badge" class="track-part-pill">
-            {{ if $isItalian }}Parte {{ $featuredSeriesOrder }} di {{ $featuredTotalParts }}{{ else }}Part {{ $featuredSeriesOrder }} of {{ $featuredTotalParts }}{{ end }}
-          </span>
-        </div>
-
-        <!-- Track Body -->
-        <div class="track-companion-body">
-          <!-- Eyebrow & Track Title -->
-          <div class="flex items-center gap-1.5 font-mono text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-1">
-            <i class="fa-solid fa-layer-group text-[9px] text-sky-500" aria-hidden="true"></i>
-            <span>{{ if $isItalian }}Percorso di Apprendimento{{ else }}Learning Track{{ end }}</span>
+        <!-- Unified Series Header (Kicker + Part Pill + Highlighted Series Title) -->
+        <div class="track-companion-ribbon flex-col items-stretch gap-2">
+          <div class="flex items-center justify-between gap-2">
+            <span class="inline-flex items-center gap-1.5 font-mono text-[10.5px] font-bold uppercase tracking-wider text-sky-700 dark:text-sky-300">
+              <span id="sidebar-companion-dot" class="w-1.5 h-1.5 rounded-full bg-sky-500 shrink-0" aria-hidden="true"></span>
+              <span id="sidebar-companion-mode-label">{{ if $isItalian }}Serie{{ else }}Series{{ end }}</span>
+            </span>
+            <span id="sidebar-context-part-badge" class="track-part-pill">
+              {{ if $isItalian }}Parte {{ $featuredSeriesOrder }} di {{ $featuredTotalParts }}{{ else }}Part {{ $featuredSeriesOrder }} of {{ $featuredTotalParts }}{{ end }}
+            </span>
           </div>
-          <h2 class="text-[15px] font-bold text-slate-900 dark:text-white leading-snug tracking-tight m-0">
+          <h2 class="flex items-start gap-2 text-[15.5px] font-extrabold text-slate-950 dark:text-white leading-snug tracking-tight m-0">
+            <i class="fa-solid fa-layer-group text-[12px] text-sky-600 dark:text-sky-400 mt-1 shrink-0" aria-hidden="true"></i>
             <span id="sidebar-context-series-name">{{ $featuredSeriesKey }}</span>
           </h2>
+        </div>
 
+        <!-- Series Body -->
+        <div class="track-companion-body">
           <!-- Segmented Progress Bar -->
-          <div id="sidebar-companion-progress" class="track-progress-bar" aria-hidden="true">
+          <div id="sidebar-companion-progress" class="track-progress-bar mt-0" aria-hidden="true">
             {{ range $idx, $p := $featuredSorted }}
               {{ $step := add $idx 1 }}
               <span class="track-progress-seg {{ if le $step $featuredSeriesOrder }}is-filled{{ end }}"></span>
@@ -139,7 +135,7 @@
                 <div class="track-step-content">
                   <div class="track-step-box">
                     <span class="text-xs italic text-slate-400 dark:text-slate-500">
-                      {{ if $isItalian }}Prossimo episodio in arrivo{{ else }}Next part in this track — upcoming{{ end }}
+                      {{ if $isItalian }}Prossimo episodio in arrivo{{ else }}Next part in this series — upcoming{{ end }}
                     </span>
                   </div>
                 </div>
@@ -152,7 +148,7 @@
             <a id="sidebar-companion-roadmap-link"
                href="{{ `series/` | relLangURL }}#{{ $featuredSeriesKey | urlize }}"
                class="font-semibold text-sky-600 dark:text-sky-400 hover:underline no-underline inline-flex items-center gap-1">
-              <span>{{ if $isItalian }}Apri percorso{{ else }}Full track{{ end }}</span>
+              <span>{{ if $isItalian }}Apri serie{{ else }}Full series{{ end }}</span>
               <span aria-hidden="true">→</span>
             </a>
           </div>
@@ -190,7 +186,7 @@
               <span>↑ {{ if $isItalian }}Torna in alto{{ else }}Back to top{{ end }}</span>
             </button>
             <a href="{{ `series/` | relLangURL }}" id="sidebar-standalone-browse-tracks-btn" class="text-sky-600 dark:text-sky-400 hover:underline no-underline font-semibold">
-              {{ if $isItalian }}Tutti i Percorsi{{ else }}Browse all tracks{{ end }} →
+              {{ if $isItalian }}Tutte le Serie{{ else }}Browse all series{{ end }} →
             </a>
           </div>
         </div>
@@ -200,12 +196,12 @@
   </section>
 
   <!-- ============================================================ -->
-  <!-- TIER 2: ALL LEARNING TRACKS SWITCHER (Stable 6-Track List)   -->
+  <!-- TIER 2: ALL SERIES SWITCHER (Stable Series List)             -->
   <!-- ============================================================ -->
-  <section aria-label="{{ if $isItalian }}Tutti i percorsi di apprendimento{{ else }}All learning tracks{{ end }}" class="space-y-2">
+  <section aria-label="{{ if $isItalian }}Tutte le serie{{ else }}All series{{ end }}" class="space-y-2">
     <div class="flex items-center justify-between px-1">
       <h3 class="font-mono text-[10.5px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 m-0">
-        {{ if $isItalian }}Tutti i Percorsi ({{ len $groupedSeries }}){{ else }}All Learning Tracks ({{ len $groupedSeries }}){{ end }}
+        {{ if $isItalian }}Tutte le Serie ({{ len $groupedSeries }}){{ else }}All Series ({{ len $groupedSeries }}){{ end }}
       </h3>
       <a href="{{ `series/` | relLangURL }}" class="font-mono text-[11px] font-semibold text-sky-600 dark:text-sky-400 hover:underline no-underline transition-colors">
         {{ if $isItalian }}Catalogo{{ else }}Directory{{ end }} →
@@ -219,9 +215,9 @@
          data-label-part="{{ if $isItalian }}Parte{{ else }}Part{{ end }}"
          data-label-of="{{ if $isItalian }}di{{ else }}of{{ end }}"
          data-label-in-view="{{ if $isItalian }}Post selezionato · Parte{{ else }}Selected post · Part{{ end }}"
-         data-label-upcoming="{{ if $isItalian }}Prossimo episodio in arrivo{{ else }}Next part in this track — upcoming{{ end }}"
-         data-label-active-track="{{ if $isItalian }}Sincronizzato col post{{ else }}Synced with post{{ end }}"
-         data-label-preview-track="{{ if $isItalian }}Anteprima Percorso{{ else }}Previewing Track{{ end }}"
+         data-label-upcoming="{{ if $isItalian }}Prossimo episodio in arrivo{{ else }}Next part in this series — upcoming{{ end }}"
+         data-label-active-track="{{ if $isItalian }}Serie{{ else }}Series{{ end }}"
+         data-label-preview-track="{{ if $isItalian }}Anteprima Serie{{ else }}Previewing Series{{ end }}"
          data-label-min="{{ if $isItalian }}min{{ else }}min{{ end }}">
 
       {{ range $groupedSeries }}
