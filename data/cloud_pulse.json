@@ -1,5 +1,24 @@
 [
   {
+    "id": "69f1f471-09d7-4d6b-82b8-e9904f2fd720",
+    "title": "Red Hat Cloud Extensions Enable Sovereign AI on OpenShift",
+    "content": "🎯 What Changed: Red Hat introduced Cloud Extensions, based on the OSAC project, enabling cloud providers to offer sovereign AI clouds with OpenShift on-premises.\n💡 Engineering Impact: This provides a standardized, multi-tenant operational model for AI workloads requiring strict data sovereignty and local control, enhancing isolation and reducing vendor lock-in.",
+    "tags": [
+      "#OpenShift",
+      "#RedHat",
+      "#DevOps"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-11-15T12:34:12.048108+00:00",
+    "link_url": "https://www.redhat.com/en/blog/introducing-red-hat-cloud-extensions-sovereign-ai-clouds-your-own-infrastructure",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
+    "updated_at": "2026-11-15T15:28:22.281Z"
+  },
+  {
     "id": "9d96572b-0b5c-4e4a-9673-e017d2343630",
     "title": "Powering agentic cloud governance: What's new in Organization Policy",
     "content": "🎯 What Changed: , Sentence 1 + \"Why it matters: \" + Sentence 2 forms 2 grammatical sentences.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
@@ -677,25 +696,5 @@
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-07T19:59:29.661+00:00",
     "ageDays": 7.74882837962963
-  },
-  {
-    "id": "4aab89ff-49ba-41a6-a590-51759e26384a",
-    "title": "IBM & Red Hat Launch Project Lightwell: $5B for Open Source Security",
-    "content": "🎯 What Changed: IBM and Red Hat have launched Project Lightwell, a $5 billion initiative with 20,000 engineers dedicated to securing open-source software.\n💡 Engineering Impact: This initiative will significantly enhance the security posture of shared digital infrastructure, leveraging AI for advanced vulnerability discovery. DevOps teams can anticipate more robust and secure open-source dependencies, reducing supply chain risks.",
-    "tags": [
-      "#OpenShift",
-      "#RedHat",
-      "#DevOps"
-    ],
-    "upvotes": 1,
-    "downvotes": 0,
-    "score": 1,
-    "author": "Cloud Newsroom Bot",
-    "created_at": "2026-11-07T11:35:32.900559+00:00",
-    "link_url": "https://www.redhat.com/en/blog/friday-five-november-6-2026-red-hat",
-    "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
-    "updated_at": "2026-11-07T23:36:03.208+00:00",
-    "ageDays": 7.748868333333333
   }
 ]
