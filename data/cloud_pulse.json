@@ -1,5 +1,24 @@
 [
   {
+    "id": "a693953d-ad7f-467e-8e5d-8c57a0ebc58f",
+    "title": "From OLAP to OLTP: How Copel Simplified Reverse ETL Using BigQuery's Native Export to AlloyDB",
+    "content": "🎯 What Changed: Google Cloud now supports native data export directly from BigQuery to AlloyDB, eliminating the traditional pipeline complexity required to synchronize.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
+    "tags": [
+      "#GoogleCloud",
+      "#GCP",
+      "#CloudNews"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-11-16T04:35:39.020285+00:00",
+    "link_url": "https://cloud.google.com/blog/products/data-analytics/reverse-etl-bigquery-exports-to-alloydb/",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
+    "updated_at": "2026-11-16T18:07:20.269Z"
+  },
+  {
     "id": "20728940-4618-473c-8753-8b7b0f00ccc6",
     "title": "Powering agentic cloud governance: What's new in Organization Policy",
     "content": "🎯 What Changed: Google Cloud has introduced new agentic governance capabilities to Organization Policy to automate the detection and prevention of critical resource misconfigurations.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
@@ -677,25 +696,5 @@
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-08T20:17:22.905+00:00",
     "ageDays": 7.740007013888889
-  },
-  {
-    "id": "205f72fc-ffd7-4aaa-aad2-d1e5cf573398",
-    "title": "Amazon Redshift expands SUPER data type to store strings up to 16 million bytes",
-    "content": "🎯 What Changed: Amazon Redshift now supports storing individual strings up to 16 million bytes within the SUPER data type via an opt-.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
-    "tags": [
-      "#AWS",
-      "#CloudArchitecture",
-      "#CloudNews"
-    ],
-    "upvotes": 1,
-    "downvotes": 0,
-    "score": 1,
-    "author": "Cloud Newsroom Bot",
-    "created_at": "2026-11-08T04:19:11.44501+00:00",
-    "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/11/amazon-redshift-expands-super-to-16-million-bytes/",
-    "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
-    "updated_at": "2026-11-08T05:11:52.922+00:00",
-    "ageDays": 8.051321018518518
   }
 ]
