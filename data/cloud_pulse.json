@@ -1,5 +1,24 @@
 [
   {
+    "id": "92d46267-8079-4c4c-98c3-3f85134a77eb",
+    "title": "OpenShift Service Mesh 3.5: Ambient Mode & Zero Trust GA",
+    "content": "🎯 What Changed: 🎯 What Changed: OpenShift Service Mesh 3.\n\n💡 Why It Matters: 5 is GA, upgrading to Istio 1.",
+    "tags": [
+      "#OpenShift",
+      "#RedHat",
+      "#DevOps"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-11-17T14:12:23.993723+00:00",
+    "link_url": "https://www.redhat.com/en/blog/introducing-red-hat-openshift-service-mesh-35",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
+    "updated_at": "2026-11-17T23:24:13.533Z"
+  },
+  {
     "id": "da977c2a-4900-4b3d-bfa1-ed7b0e9d7991",
     "title": "Amazon Redshift now supports multi-statement transactions, conflict resolution, and time travel for Apache Iceberg",
     "content": "🎯 What Changed: Amazon Redshift now natively supports multi-statement transactions, automatic write-conflict resolution, and time travel queries for Apache Iceberg tables.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
@@ -677,25 +696,5 @@
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-10T02:36:01.78+00:00",
     "ageDays": 7.965802708333333
-  },
-  {
-    "id": "b64bde0e-6f73-40c6-9c09-7e4999625a47",
-    "title": "Amazon Redshift expands SUPER data type to store strings up to 16 million bytes",
-    "content": "🎯 What Changed: Amazon Redshift has expanded its SUPER data type to support individual strings up to 16 million bytes.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
-    "tags": [
-      "#AWS",
-      "#CloudArchitecture",
-      "#CloudNews"
-    ],
-    "upvotes": 1,
-    "downvotes": 0,
-    "score": 1,
-    "author": "Cloud Newsroom Bot",
-    "created_at": "2026-11-09T04:58:14.222135+00:00",
-    "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/11/amazon-redshift-expands-super-to-16-million-bytes/",
-    "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
-    "updated_at": "2026-11-09T05:24:07.518+00:00",
-    "ageDays": 8.329769895833333
   }
 ]
