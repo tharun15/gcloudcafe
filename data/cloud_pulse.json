@@ -1,5 +1,24 @@
 [
   {
+    "id": "547b643c-4283-4709-8eea-bcc6c815504e",
+    "title": "Azure Red Hat OpenShift Hosted Control Planes GA: Cost Savings & Simpler Ops",
+    "content": "🎯 What Changed: Azure Red Hat OpenShift (ARO) now offers generally available hosted control planes, reducing infrastructure costs and simplifying operations.\n💡 Engineering Impact: Engineers benefit from reduced infrastructure overhead and enhanced flexibility for cluster provisioning, streamlining Day 2 operations and ensuring consistent deployment of diverse workloads across hybrid clouds.",
+    "tags": [
+      "#OpenShift",
+      "#RedHat",
+      "#DevOps"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-11-18T13:48:30.986617+00:00",
+    "link_url": "https://www.redhat.com/en/blog/azure-red-hat-openshift-hosted-control-planes-now-generally-available",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
+    "updated_at": "2026-11-18T17:01:57.982Z"
+  },
+  {
     "id": "7a563f72-1971-4b14-9eff-2727cee427cc",
     "title": "Amazon EMR 8.2 is now available",
     "content": "🎯 What Changed: Amazon EMR 8.2 is now generally available across EC2, EKS, and Server.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
@@ -677,25 +696,5 @@
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-10T12:18:41.132+00:00",
     "ageDays": 8.033404467592593
-  },
-  {
-    "id": "2b788f9f-2ed1-438e-ac1f-5d372e1c0660",
-    "title": "Cloud Pathways GA: Unified ML Runtime for Hyper-Scale AI on GKE",
-    "content": "🎯 What Changed: Cloud Pathways, Google's distributed ML runtime for massive accelerator fleets, is now Generally Available on GKE.\n💡 Engineering Impact: This single-controller architecture simplifies managing massive JAX workloads across thousands of accelerators, boosting resilience and elasticity for AI training and inference on GKE.",
-    "tags": [
-      "#GoogleCloud",
-      "#GCP",
-      "#CloudNews"
-    ],
-    "upvotes": 1,
-    "downvotes": 0,
-    "score": 1,
-    "author": "Cloud Newsroom Bot",
-    "created_at": "2026-11-09T13:42:29.144152+00:00",
-    "link_url": "https://cloud.google.com/blog/topics/ai-infrastructure/cloud-pathways-a-distributed-ml-runtime-is-ga/",
-    "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
-    "updated_at": "2026-11-09T18:30:31.398+00:00",
-    "ageDays": 8.703164537037036
   }
 ]
