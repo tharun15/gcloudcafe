@@ -1,5 +1,24 @@
 [
   {
+    "id": "bb002fc0-816e-4188-a70f-4fa45fefbea3",
+    "title": "OpenShift 5 Now GA on Azure Red Hat OpenShift with Hosted Control Planes",
+    "content": "🎯 What Changed: Red Hat OpenShift 5 is now generally available on Azure Red Hat OpenShift (ARO), featuring hosted control planes.\n💡 Engineering Impact: This release enhances intelligence, security, and predictability for critical workloads, streamlining hybrid cloud strategies and Azure migrations. Hosted control planes reduce operational overhead, building on OpenShift 4's proven architecture.",
+    "tags": [
+      "#OpenShift",
+      "#RedHat",
+      "#DevOps"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-11-19T14:12:36.912345+00:00",
+    "link_url": "https://www.redhat.com/en/blog/red-hat-openshift-5-now-available-azure-red-hat-openshift",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
+    "updated_at": "2026-11-19T22:56:54.222Z"
+  },
+  {
     "id": "bfe38ddc-02ed-418b-83c4-6540f3d5a15e",
     "title": "Amazon SageMaker AI now supports cross-Region inference routing",
     "content": "🎯 What Changed: Amazon SageMaker AI has launched cross-Region inference routing to automatically redirect model requests to alternative AWS Regions when.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
@@ -677,25 +696,5 @@
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-11T22:35:52.488+00:00",
     "ageDays": 7.998595636574074
-  },
-  {
-    "id": "f76654e7-afea-4ffa-8a4f-84910010b2a3",
-    "title": "Amazon RDS for MySQL 26.10 is now available in Amazon RDS Database Preview Environment",
-    "content": "🎯 What Changed: Amazon RDS for MySQL 26.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
-    "tags": [
-      "#AWS",
-      "#CloudArchitecture",
-      "#CloudNews"
-    ],
-    "upvotes": 1,
-    "downvotes": 0,
-    "score": 1,
-    "author": "Cloud Newsroom Bot",
-    "created_at": "2026-11-11T04:30:47.893554+00:00",
-    "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/11/rds-mysql-26-10-preview-environment/",
-    "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
-    "updated_at": "2026-11-11T05:22:25.477+00:00",
-    "ageDays": 8.338252511574074
   }
 ]
