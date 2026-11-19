@@ -1,22 +1,22 @@
 [
   {
-    "id": "3b2a3076-ef51-4991-ac91-c9154588d358",
-    "title": "OpenShift Virtualization 5: Intuitive VM Network Control",
-    "content": "🎯 What Changed: OpenShift Virtualization 5 introduces enhanced web console workflows for simplified VM network creation and management, leveraging the Kubernetes networking model.\n💡 Engineering Impact: Engineers gain clearer visibility into VM network configurations and dependencies directly within the console, drastically improving troubleshooting and operational efficiency and streamlining DevOps workflows.",
+    "id": "bfe38ddc-02ed-418b-83c4-6540f3d5a15e",
+    "title": "Amazon SageMaker AI now supports cross-Region inference routing",
+    "content": "🎯 What Changed: Amazon SageMaker AI has launched cross-Region inference routing to automatically redirect model requests to alternative AWS Regions when.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
     "tags": [
-      "#OpenShift",
-      "#RedHat",
-      "#DevOps"
+      "#AWS",
+      "#CloudArchitecture",
+      "#CloudNews"
     ],
     "upvotes": 1,
     "downvotes": 0,
     "score": 1,
     "author": "Cloud Newsroom Bot",
-    "created_at": "2026-11-18T13:48:41.59062+00:00",
-    "link_url": "https://www.redhat.com/en/blog/how-red-hat-openshift-console-connects-virtual-machines-networks-they-use",
+    "created_at": "2026-11-19T06:20:42.711952+00:00",
+    "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/11/sagemaker-cross-region-routing/",
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
-    "updated_at": "2026-11-19T01:46:18.617Z"
+    "updated_at": "2026-11-19T12:37:53.832Z"
   },
   {
     "id": "0b6826b6-fc4c-4621-8f9b-bbbea3de16aa",
@@ -36,7 +36,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:48.441634+00:00",
-    "ageDays": 42.67881267361111
+    "ageDays": 43.13130172453704
   },
   {
     "id": "81213fff-57d4-4c0b-90eb-c84beeb18d4d",
@@ -56,7 +56,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:42.008666+00:00",
-    "ageDays": 42.67888712962963
+    "ageDays": 43.131376180555556
   },
   {
     "id": "1ec5647f-ce95-4be3-ba87-6aa974960da7",
@@ -76,7 +76,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:37.111692+00:00",
-    "ageDays": 42.67894380787037
+    "ageDays": 43.131432858796295
   },
   {
     "id": "88a2ed59-fb47-488b-b07c-d6be1de35d0b",
@@ -96,7 +96,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:31.276024+00:00",
-    "ageDays": 42.679011342592595
+    "ageDays": 43.13150039351852
   },
   {
     "id": "202f8734-234e-4bd5-9a67-8535691f131a",
@@ -116,7 +116,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T09:28:24.859911+00:00",
-    "ageDays": 42.679085613425926
+    "ageDays": 43.13157466435185
   },
   {
     "id": "37fcb780-d57d-4ba9-875a-7665dd9cd981",
@@ -136,7 +136,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T04:06:30.331436+00:00",
-    "ageDays": 42.9026333912037
+    "ageDays": 43.35512244212963
   },
   {
     "id": "521c6dfa-7eb3-4834-87fb-7ac338d90f9d",
@@ -156,7 +156,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T04:00:33.151279+00:00",
-    "ageDays": 42.90676741898148
+    "ageDays": 43.35925646990741
   },
   {
     "id": "b1f2627d-7930-4c4b-ab57-de042bac55c3",
@@ -176,7 +176,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T04:00:00.696536+00:00",
-    "ageDays": 42.90714305555556
+    "ageDays": 43.359632106481484
   },
   {
     "id": "bf22f4dd-2d54-4b4c-9038-ea09aadef8a2",
@@ -196,7 +196,7 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T03:59:45.591638+00:00",
-    "ageDays": 42.907317881944444
+    "ageDays": 43.35980693287037
   },
   {
     "id": "46fd5625-4fda-4793-a2ab-d6b627f3f4df",
@@ -216,7 +216,27 @@
     "status": "approved",
     "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
     "updated_at": "2026-10-07T03:59:26.783766+00:00",
-    "ageDays": 42.90753556712963
+    "ageDays": 43.360024618055554
+  },
+  {
+    "id": "3b2a3076-ef51-4991-ac91-c9154588d358",
+    "title": "OpenShift Virtualization 5: Intuitive VM Network Control",
+    "content": "🎯 What Changed: OpenShift Virtualization 5 introduces enhanced web console workflows for simplified VM network creation and management, leveraging the Kubernetes networking model.\n💡 Engineering Impact: Engineers gain clearer visibility into VM network configurations and dependencies directly within the console, drastically improving troubleshooting and operational efficiency and streamlining DevOps workflows.",
+    "tags": [
+      "#OpenShift",
+      "#RedHat",
+      "#DevOps"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-11-18T13:48:41.59062+00:00",
+    "link_url": "https://www.redhat.com/en/blog/how-red-hat-openshift-console-connects-virtual-machines-networks-they-use",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
+    "updated_at": "2026-11-19T01:46:18.617+00:00",
+    "ageDays": 0.950825462962963
   },
   {
     "id": "547b643c-4283-4709-8eea-bcc6c815504e",
@@ -236,7 +256,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-18T17:01:57.982+00:00",
-    "ageDays": 0.4984591435185185
+    "ageDays": 0.9509481944444445
   },
   {
     "id": "7a563f72-1971-4b14-9eff-2727cee427cc",
@@ -256,7 +276,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-18T06:35:03.514+00:00",
-    "ageDays": 0.8352256134259259
+    "ageDays": 1.2877146643518518
   },
   {
     "id": "92d46267-8079-4c4c-98c3-3f85134a77eb",
@@ -276,7 +296,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-17T23:24:13.533+00:00",
-    "ageDays": 1.481873414351852
+    "ageDays": 1.9343624652777778
   },
   {
     "id": "da977c2a-4900-4b3d-bfa1-ed7b0e9d7991",
@@ -296,7 +316,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-17T12:53:07.337+00:00",
-    "ageDays": 1.8119510069444444
+    "ageDays": 2.2644400578703703
   },
   {
     "id": "20728940-4618-473c-8753-8b7b0f00ccc6",
@@ -316,7 +336,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-16T05:33:06.28+00:00",
-    "ageDays": 2.875697465277778
+    "ageDays": 3.328186516203704
   },
   {
     "id": "a693953d-ad7f-467e-8e5d-8c57a0ebc58f",
@@ -336,7 +356,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-16T18:07:20.269+00:00",
-    "ageDays": 2.8823939351851853
+    "ageDays": 3.334882986111111
   },
   {
     "id": "1637b730-15a6-4011-a5d4-1945dcdbe873",
@@ -356,7 +376,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-17T02:49:23.348+00:00",
-    "ageDays": 2.8854977199074074
+    "ageDays": 3.3379867708333335
   },
   {
     "id": "69f1f471-09d7-4d6b-82b8-e9904f2fd720",
@@ -376,7 +396,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-15T15:28:22.281+00:00",
-    "ageDays": 3.5500672222222223
+    "ageDays": 4.002556273148148
   },
   {
     "id": "9d96572b-0b5c-4e4a-9673-e017d2343630",
@@ -396,7 +416,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-15T05:33:56.099+00:00",
-    "ageDays": 3.8532353125
+    "ageDays": 4.305724363425926
   },
   {
     "id": "7565e9e4-5599-4874-a6cf-b2833157b024",
@@ -416,7 +436,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-15T20:53:54.91+00:00",
-    "ageDays": 3.8677553587962965
+    "ageDays": 4.320244409722222
   },
   {
     "id": "040c43da-0a4f-4cdc-8bc0-d1595456b6d1",
@@ -436,7 +456,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-14T06:21:43.82+00:00",
-    "ageDays": 4.812803298611111
+    "ageDays": 5.265292349537037
   },
   {
     "id": "c4e6fdb3-cc1c-4391-a95a-5c6db5ef4e0c",
@@ -456,7 +476,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-14T11:16:24.075+00:00",
-    "ageDays": 4.81285199074074
+    "ageDays": 5.265341041666667
   },
   {
     "id": "d5406a89-159f-4a11-b60c-c0a9147db790",
@@ -476,7 +496,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-14T17:47:08.373+00:00",
-    "ageDays": 4.812918564814815
+    "ageDays": 5.265407615740741
   },
   {
     "id": "05d514b7-4d70-435f-9c01-dbb30aa0411e",
@@ -496,7 +516,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-14T23:44:33.048+00:00",
-    "ageDays": 4.865554143518518
+    "ageDays": 5.318043194444445
   },
   {
     "id": "72a57170-204a-428d-993c-85d160127cf2",
@@ -516,7 +536,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-13T19:32:04.889+00:00",
-    "ageDays": 5.534994328703704
+    "ageDays": 5.98748337962963
   },
   {
     "id": "89503f87-ea73-4b21-b8d3-b21380204092",
@@ -536,7 +556,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-14T00:47:06.489+00:00",
-    "ageDays": 5.535087997685185
+    "ageDays": 5.9875770486111115
   },
   {
     "id": "2dd6af13-dd5f-459e-b7ec-3e39e93eb199",
@@ -556,7 +576,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-13T11:58:03.384+00:00",
-    "ageDays": 5.84370287037037
+    "ageDays": 6.2961919212962965
   },
   {
     "id": "16f5eb42-1979-4ef9-9407-bcae435c247c",
@@ -576,7 +596,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-12T16:40:03.358+00:00",
-    "ageDays": 6.506507777777777
+    "ageDays": 6.958996828703704
   },
   {
     "id": "4aa717a9-31b4-4f08-9b05-675c0353d620",
@@ -596,7 +616,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-13T00:57:03.332+00:00",
-    "ageDays": 6.506591030092593
+    "ageDays": 6.959080081018518
   },
   {
     "id": "64b03f19-9019-453a-8b0c-1e009a52d529",
@@ -616,7 +636,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-12T06:26:09.323+00:00",
-    "ageDays": 6.830336203703704
+    "ageDays": 7.282825254629629
   },
   {
     "id": "854873b0-f493-4cb8-bbfa-5413f8a41679",
@@ -636,7 +656,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-11T15:56:52.757+00:00",
-    "ageDays": 7.546040173611111
+    "ageDays": 7.998529224537037
   },
   {
     "id": "e0c30b7c-37c7-42e9-84e7-c00dffaeef71",
@@ -656,7 +676,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-11T22:35:52.488+00:00",
-    "ageDays": 7.546106585648148
+    "ageDays": 7.998595636574074
   },
   {
     "id": "f76654e7-afea-4ffa-8a4f-84910010b2a3",
@@ -676,26 +696,6 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-11T05:22:25.477+00:00",
-    "ageDays": 7.885763460648148
-  },
-  {
-    "id": "5cca8ca1-dba9-4fa9-b023-f6403a8b59b4",
-    "title": "Red Hat OpenShift 5: AI-Powered Autonomous Operations",
-    "content": "🎯 What Changed: Red Hat OpenShift 5 introduces agentic applied AI, transforming Lightspeed into an autonomous agent for hybrid cloud operations.\n💡 Engineering Impact: This enhances operational efficiency by enabling AI to investigate clusters and prepare changes, streamlining management across containers, VMs, and serverless workloads. Engineers gain accelerated, approved automation for hybrid cloud environments.",
-    "tags": [
-      "#OpenShift",
-      "#RedHat",
-      "#DevOps"
-    ],
-    "upvotes": 1,
-    "downvotes": 0,
-    "score": 1,
-    "author": "Cloud Newsroom Bot",
-    "created_at": "2026-11-10T13:20:45.531847+00:00",
-    "link_url": "https://www.redhat.com/en/blog/intelligent-red-hat-openshift-5",
-    "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
-    "updated_at": "2026-11-10T21:42:04.437+00:00",
-    "ageDays": 8.517735243055556
+    "ageDays": 8.338252511574074
   }
 ]
