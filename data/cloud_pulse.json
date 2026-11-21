@@ -1,222 +1,22 @@
 [
   {
-    "id": "35d8454b-6e50-42b7-b70e-97c197bff1d2",
-    "title": "Scheduling the removal of the kube-proxy IPVS backend",
-    "content": "🎯 What Changed: Kubernetes is removing the `ipvs` backend for kube-proxy in version 1.40, following its deprecation in 1.35.\n💡 Engineering Impact: This requires `ipvs` users to migrate to the `nftables` (recommended for K8s 1.36+) or the significantly improved `iptables` backend, ensuring continued, more stable service proxy functionality.",
+    "id": "3ee0f6e5-2268-4ffb-b4ce-1209c7fe2cb2",
+    "title": "DynaPORT modernization on Google Cloud with AlloyDB for PostgreSQL and GKE",
+    "content": "🎯 What Changed: Format instruction: ` Why it matters: ` * Let.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
     "tags": [
-      "#Kubernetes",
-      "#CNCF",
-      "#CloudNative"
+      "#GoogleCloud",
+      "#GCP",
+      "#CloudNews"
     ],
     "upvotes": 1,
     "downvotes": 0,
     "score": 1,
     "author": "Cloud Newsroom Bot",
-    "created_at": "2026-11-20T13:54:13.716997+00:00",
-    "link_url": "https://kubernetes.io/blog/2026/11/16/ipvs-removal/",
+    "created_at": "2026-11-21T05:34:07.587175+00:00",
+    "link_url": "https://cloud.google.com/blog/products/databases/dynaport-modernizes-with-alloydb/",
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
-    "updated_at": "2026-11-21T01:11:44.704Z"
-  },
-  {
-    "id": "0b6826b6-fc4c-4621-8f9b-bbbea3de16aa",
-    "title": "K8s v1.37 Hardens Storage with Volume Mount & EmptyDir Controls",
-    "content": "🎯 What Changed: Kubernetes v1.37 introduces new bind mount options and `emptyDir` permission modes for enhanced container storage security.\n💡 Engineering Impact: These features enable architects and DevOps teams to enforce granular security policies like `noexec` on volumes and set specific `emptyDir` permissions, preventing privilege escalation and simplifying compliance without complex workarounds.",
-    "tags": [
-      "#Kubernetes",
-      "#CNCF",
-      "#CloudNative"
-    ],
-    "upvotes": 3,
-    "downvotes": 0,
-    "score": 3,
-    "author": "Cloud Newsroom Bot",
-    "created_at": "2026-10-07T09:28:48.441634+00:00",
-    "link_url": "https://kubernetes.io/blog/2026/09/16/kubernetes-v1-37-hardening-container-storage/",
-    "status": "approved",
-    "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
-    "updated_at": "2026-10-07T09:28:48.441634+00:00",
-    "ageDays": 44.654806388888886
-  },
-  {
-    "id": "81213fff-57d4-4c0b-90eb-c84beeb18d4d",
-    "title": "Kubernetes v1.37: Native PVC Usage Tracking to Cut Cloud Costs",
-    "content": "🎯 What Changed: Kubernetes v1.37 promotes the `PersistentVolumeClaimUnusedSinceTime` feature to Beta, natively adding an `Unused` condition to PVCs to track active pod references.\n💡 Engineering Impact: This feature empowers storage admins and DevOps to easily identify and automate the cleanup of orphaned PVCs, significantly reducing wasted storage capacity and cloud infrastructure costs without custom scripting.",
-    "tags": [
-      "#Kubernetes",
-      "#CNCF",
-      "#CloudNative"
-    ],
-    "upvotes": 3,
-    "downvotes": 0,
-    "score": 3,
-    "author": "Cloud Newsroom Bot",
-    "created_at": "2026-10-07T09:28:42.008666+00:00",
-    "link_url": "https://kubernetes.io/blog/2026/09/21/kubernetes-v1-37-pvc-last-used-time/",
-    "status": "approved",
-    "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
-    "updated_at": "2026-10-07T09:28:42.008666+00:00",
-    "ageDays": 44.65488084490741
-  },
-  {
-    "id": "1ec5647f-ce95-4be3-ba87-6aa974960da7",
-    "title": "Spotlight on SIG Apps",
-    "content": "🎯 What Changed: Kubernetes SIG Apps is actively evolving core workload APIs to enhance resilience and support next-gen AI and distributed applications.\n💡 Engineering Impact: This provides platform teams with more robust application lifecycle management, reducing manual intervention and improving resource predictability for critical workloads. New subprojects like JobSet and Agent Sandbox introduce patterns for resilient AI and distributed computing, enhancing operational stability and cost efficiency.",
-    "tags": [
-      "#Kubernetes",
-      "#CNCF",
-      "#CloudNative"
-    ],
-    "upvotes": 3,
-    "downvotes": 0,
-    "score": 3,
-    "author": "Cloud Newsroom Bot",
-    "created_at": "2026-10-07T09:28:37.111692+00:00",
-    "link_url": "https://kubernetes.io/blog/2026/09/22/sig-apps-spotlight/",
-    "status": "approved",
-    "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
-    "updated_at": "2026-10-07T09:28:37.111692+00:00",
-    "ageDays": 44.65493752314815
-  },
-  {
-    "id": "88a2ed59-fb47-488b-b07c-d6be1de35d0b",
-    "title": "Kubernetes Node Swap GA: Triple Pod Density, Slash Costs",
-    "content": "🎯 What Changed: Kubernetes v1.34 officially supports Node Swap, utilizing fast NVMe SSDs to page out dormant memory.\n💡 Engineering Impact: This significantly boosts pod density by up to 3x for memory-intensive AI and bursty workloads, optimizing resource utilization and reducing infrastructure costs. It prevents OOM kills and enhances cluster stability, crucial for modern agentic AI.",
-    "tags": [
-      "#Kubernetes",
-      "#CNCF",
-      "#CloudNative"
-    ],
-    "upvotes": 3,
-    "downvotes": 0,
-    "score": 3,
-    "author": "Cloud Newsroom Bot",
-    "created_at": "2026-10-07T09:28:31.276024+00:00",
-    "link_url": "https://kubernetes.io/blog/2026/10/05/scaling-kubernetes-workloads-with-node-swap/",
-    "status": "approved",
-    "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
-    "updated_at": "2026-10-07T09:28:31.276024+00:00",
-    "ageDays": 44.65500505787037
-  },
-  {
-    "id": "202f8734-234e-4bd5-9a67-8535691f131a",
-    "title": "Kubernetes Mandates cgroup v2: Critical Migration for v1.35+ Clusters",
-    "content": "🎯 What Changed: Kubernetes has deprecated cgroup v1, with v1.35 defaulting to cgroup v2 and v1.38 slated for its removal, making cgroup v2 the mandatory standard.\n💡 Engineering Impact: This shift mandates migration for all Linux nodes to cgroup v2 before upgrading to Kubernetes v1.35+, unlocking superior resource isolation, advanced Memory QoS, and enhanced in-place scaling capabilities. Admins must ensure kernel 5.8+ and compatible container runtimes to prevent kubelet startup failures.",
-    "tags": [
-      "#Kubernetes",
-      "#CNCF",
-      "#CloudNative"
-    ],
-    "upvotes": 3,
-    "downvotes": 0,
-    "score": 3,
-    "author": "Cloud Newsroom Bot",
-    "created_at": "2026-10-07T09:28:24.859911+00:00",
-    "link_url": "https://kubernetes.io/blog/2026/10/06/kubernetes-cgroups-v2-shift/",
-    "status": "approved",
-    "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
-    "updated_at": "2026-10-07T09:28:24.859911+00:00",
-    "ageDays": 44.65507932870371
-  },
-  {
-    "id": "37fcb780-d57d-4ba9-875a-7665dd9cd981",
-    "title": "Amazon Redshift adds support for creating and refreshing Apache Iceberg materialized views",
-    "content": "Amazon Redshift has introduced support for creating and refreshing Apache Iceberg materialized views, storing pre-computed joins and",
-    "tags": [
-      "#AWS",
-      "#CloudArchitecture",
-      "#CloudNews"
-    ],
-    "upvotes": 3,
-    "downvotes": 0,
-    "score": 3,
-    "author": "Cloud Newsroom Bot",
-    "created_at": "2026-10-07T04:06:30.331436+00:00",
-    "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/10/redshift-iceberg-materialized-views",
-    "status": "approved",
-    "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
-    "updated_at": "2026-10-07T04:06:30.331436+00:00",
-    "ageDays": 44.87862710648148
-  },
-  {
-    "id": "521c6dfa-7eb3-4834-87fb-7ac338d90f9d",
-    "title": "AWS Certificate Manager now supports ACME issuance through AWS PrivateLink",
-    "content": "AWS Certificate Manager now supports AWS PrivateLink for ACME public certificate issuance, allowing you to request and renew public",
-    "tags": [
-      "#AWS",
-      "#CloudArchitecture",
-      "#CloudNews"
-    ],
-    "upvotes": 3,
-    "downvotes": 0,
-    "score": 3,
-    "author": "Cloud Newsroom Bot",
-    "created_at": "2026-10-07T04:00:33.151279+00:00",
-    "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/10/AWS-Certificate-Manager-ACME-Privatelink",
-    "status": "approved",
-    "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
-    "updated_at": "2026-10-07T04:00:33.151279+00:00",
-    "ageDays": 44.88276113425926
-  },
-  {
-    "id": "b1f2627d-7930-4c4b-ab57-de042bac55c3",
-    "title": "AWS Batch now publishes job metrics to Amazon CloudWatch",
-    "content": "AWS Batch now automatically publishes job lifecycle and queue health metrics to Amazon CloudWatch for native observability. Why it matters: This eliminates the need for custom monitoring scripts and enables architects to build automated scaling or alerting policies based on real-time workload performance and failure rates.",
-    "tags": [
-      "#AWS",
-      "#CloudArchitecture",
-      "#CloudNews"
-    ],
-    "upvotes": 3,
-    "downvotes": 0,
-    "score": 3,
-    "author": "Cloud Newsroom Bot",
-    "created_at": "2026-10-07T04:00:00.696536+00:00",
-    "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/10/aws-batch-job-cloudwatch-metrics/",
-    "status": "approved",
-    "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
-    "updated_at": "2026-10-07T04:00:00.696536+00:00",
-    "ageDays": 44.88313677083333
-  },
-  {
-    "id": "bf22f4dd-2d54-4b4c-9038-ea09aadef8a2",
-    "title": "Introducing Google Cloud Modernize, transforming for (and with) AI",
-    "content": "Google Cloud has launched Google Cloud Modernize, a comprehensive transformation portfolio that leverages AI to accelerate enterprise legacy",
-    "tags": [
-      "#GoogleCloud",
-      "#GCP",
-      "#CloudNews"
-    ],
-    "upvotes": 3,
-    "downvotes": 0,
-    "score": 3,
-    "author": "Cloud Newsroom Bot",
-    "created_at": "2026-10-07T03:59:45.591638+00:00",
-    "link_url": "https://cloud.google.com/blog/products/infrastructure-modernization/google-cloud-modernize-accelerate-transformation-with-ai/",
-    "status": "approved",
-    "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
-    "updated_at": "2026-10-07T03:59:45.591638+00:00",
-    "ageDays": 44.883311597222225
-  },
-  {
-    "id": "46fd5625-4fda-4793-a2ab-d6b627f3f4df",
-    "title": "AlloyDB: A unified database engine for hybrid search",
-    "content": "Google Cloud has introduced a unified engine for AlloyDB that integrates vector search and full-text search into",
-    "tags": [
-      "#GoogleCloud",
-      "#GCP",
-      "#CloudNews"
-    ],
-    "upvotes": 3,
-    "downvotes": 0,
-    "score": 3,
-    "author": "Cloud Newsroom Bot",
-    "created_at": "2026-10-07T03:59:26.783766+00:00",
-    "link_url": "https://cloud.google.com/blog/products/databases/simplify-ai-search-with-alloydb-hybrid-search-and-rrf/",
-    "status": "approved",
-    "eligibility_reason": "Official Release: Curated & approved for live newsroom feed.",
-    "updated_at": "2026-10-07T03:59:26.783766+00:00",
-    "ageDays": 44.88352928240741
+    "updated_at": "2026-11-21T12:17:32.410Z"
   },
   {
     "id": "2d4a866d-881f-4656-b8ef-7e60616bcad6",
@@ -236,7 +36,27 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-20T16:48:22.226+00:00",
-    "ageDays": 0.4703965277777778
+    "ageDays": 0.9327543634259259
+  },
+  {
+    "id": "35d8454b-6e50-42b7-b70e-97c197bff1d2",
+    "title": "Scheduling the removal of the kube-proxy IPVS backend",
+    "content": "🎯 What Changed: Kubernetes is removing the `ipvs` backend for kube-proxy in version 1.40, following its deprecation in 1.35.\n💡 Engineering Impact: This requires `ipvs` users to migrate to the `nftables` (recommended for K8s 1.36+) or the significantly improved `iptables` backend, ensuring continued, more stable service proxy functionality.",
+    "tags": [
+      "#Kubernetes",
+      "#CNCF",
+      "#CloudNative"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-11-20T13:54:13.716997+00:00",
+    "link_url": "https://kubernetes.io/blog/2026/11/16/ipvs-removal/",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
+    "updated_at": "2026-11-21T01:11:44.704+00:00",
+    "ageDays": 0.932843912037037
   },
   {
     "id": "c2fa506c-c44f-4a45-9059-18c41630d5a5",
@@ -256,7 +76,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-20T06:24:35.09+00:00",
-    "ageDays": 0.8187274652777777
+    "ageDays": 1.281085300925926
   },
   {
     "id": "bb002fc0-816e-4188-a70f-4fa45fefbea3",
@@ -276,7 +96,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-19T22:56:54.222+00:00",
-    "ageDays": 1.4577176041666666
+    "ageDays": 1.9200754398148148
   },
   {
     "id": "bfe38ddc-02ed-418b-83c4-6540f3d5a15e",
@@ -296,7 +116,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-19T12:37:53.832+00:00",
-    "ageDays": 1.785428263888889
+    "ageDays": 2.247786099537037
   },
   {
     "id": "3b2a3076-ef51-4991-ac91-c9154588d358",
@@ -316,7 +136,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-19T01:46:18.617+00:00",
-    "ageDays": 2.474330127314815
+    "ageDays": 2.9366879629629628
   },
   {
     "id": "547b643c-4283-4709-8eea-bcc6c815504e",
@@ -336,7 +156,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-18T17:01:57.982+00:00",
-    "ageDays": 2.474452858796296
+    "ageDays": 2.9368106944444445
   },
   {
     "id": "7a563f72-1971-4b14-9eff-2727cee427cc",
@@ -356,7 +176,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-18T06:35:03.514+00:00",
-    "ageDays": 2.8112193287037037
+    "ageDays": 3.2735771643518516
   },
   {
     "id": "92d46267-8079-4c4c-98c3-3f85134a77eb",
@@ -376,7 +196,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-17T23:24:13.533+00:00",
-    "ageDays": 3.4578671296296295
+    "ageDays": 3.920224965277778
   },
   {
     "id": "da977c2a-4900-4b3d-bfa1-ed7b0e9d7991",
@@ -396,7 +216,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-17T12:53:07.337+00:00",
-    "ageDays": 3.787944722222222
+    "ageDays": 4.250302557870371
   },
   {
     "id": "20728940-4618-473c-8753-8b7b0f00ccc6",
@@ -416,7 +236,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-16T05:33:06.28+00:00",
-    "ageDays": 4.851691180555555
+    "ageDays": 5.314049016203704
   },
   {
     "id": "a693953d-ad7f-467e-8e5d-8c57a0ebc58f",
@@ -436,7 +256,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-16T18:07:20.269+00:00",
-    "ageDays": 4.858387650462963
+    "ageDays": 5.320745486111111
   },
   {
     "id": "1637b730-15a6-4011-a5d4-1945dcdbe873",
@@ -456,7 +276,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-17T02:49:23.348+00:00",
-    "ageDays": 4.861491435185185
+    "ageDays": 5.323849270833334
   },
   {
     "id": "69f1f471-09d7-4d6b-82b8-e9904f2fd720",
@@ -476,7 +296,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-15T15:28:22.281+00:00",
-    "ageDays": 5.5260609375
+    "ageDays": 5.988418773148148
   },
   {
     "id": "9d96572b-0b5c-4e4a-9673-e017d2343630",
@@ -496,7 +316,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-15T05:33:56.099+00:00",
-    "ageDays": 5.829229027777778
+    "ageDays": 6.291586863425926
   },
   {
     "id": "7565e9e4-5599-4874-a6cf-b2833157b024",
@@ -516,7 +336,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-15T20:53:54.91+00:00",
-    "ageDays": 5.843749074074074
+    "ageDays": 6.306106909722223
   },
   {
     "id": "040c43da-0a4f-4cdc-8bc0-d1595456b6d1",
@@ -536,7 +356,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-14T06:21:43.82+00:00",
-    "ageDays": 6.788797013888889
+    "ageDays": 7.251154849537037
   },
   {
     "id": "c4e6fdb3-cc1c-4391-a95a-5c6db5ef4e0c",
@@ -556,7 +376,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-14T11:16:24.075+00:00",
-    "ageDays": 6.7888457060185186
+    "ageDays": 7.2512035416666665
   },
   {
     "id": "d5406a89-159f-4a11-b60c-c0a9147db790",
@@ -576,7 +396,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-14T17:47:08.373+00:00",
-    "ageDays": 6.7889122800925925
+    "ageDays": 7.25127011574074
   },
   {
     "id": "05d514b7-4d70-435f-9c01-dbb30aa0411e",
@@ -596,7 +416,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-14T23:44:33.048+00:00",
-    "ageDays": 6.841547858796297
+    "ageDays": 7.3039056944444445
   },
   {
     "id": "72a57170-204a-428d-993c-85d160127cf2",
@@ -616,7 +436,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-13T19:32:04.889+00:00",
-    "ageDays": 7.510988043981482
+    "ageDays": 7.97334587962963
   },
   {
     "id": "89503f87-ea73-4b21-b8d3-b21380204092",
@@ -636,7 +456,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-14T00:47:06.489+00:00",
-    "ageDays": 7.511081712962963
+    "ageDays": 7.973439548611111
   },
   {
     "id": "2dd6af13-dd5f-459e-b7ec-3e39e93eb199",
@@ -656,7 +476,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-13T11:58:03.384+00:00",
-    "ageDays": 7.819696585648148
+    "ageDays": 8.282054421296296
   },
   {
     "id": "16f5eb42-1979-4ef9-9407-bcae435c247c",
@@ -676,7 +496,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-12T16:40:03.358+00:00",
-    "ageDays": 8.482501493055555
+    "ageDays": 8.944859328703703
   },
   {
     "id": "4aa717a9-31b4-4f08-9b05-675c0353d620",
@@ -696,6 +516,26 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-13T00:57:03.332+00:00",
-    "ageDays": 8.48258474537037
+    "ageDays": 8.944942581018518
+  },
+  {
+    "id": "64b03f19-9019-453a-8b0c-1e009a52d529",
+    "title": "AWS Cloud WAN now supports Flow Logs",
+    "content": "🎯 What Changed: AWS Cloud WAN now supports VPC Flow Logs, enabling centralized monitoring and capturing of IP traffic details across global enterprise networks.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
+    "tags": [
+      "#AWS",
+      "#CloudArchitecture",
+      "#CloudNews"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-11-12T05:50:36.80831+00:00",
+    "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/11/aws-cloud-wan-flow-logs/",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
+    "updated_at": "2026-11-12T06:26:09.323+00:00",
+    "ageDays": 9.26868775462963
   }
 ]
