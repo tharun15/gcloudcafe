@@ -1,5 +1,24 @@
 [
   {
+    "id": "ca2574fa-f2cf-47ee-8cb4-568d8de0d696",
+    "title": "Azure Red Hat OpenShift: Hosted Control Planes Now GA",
+    "content": "🎯 What Changed: Azure Red Hat OpenShift with hosted control planes is now generally available, alongside a deeper virtualization alliance on Azure.\n💡 Engineering Impact: This enhances operational efficiency and scalability for OpenShift deployments by offloading control plane management, enabling engineers to focus more on application development.",
+    "tags": [
+      "#OpenShift",
+      "#RedHat",
+      "#DevOps"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-11-21T13:17:20.103091+00:00",
+    "link_url": "https://www.redhat.com/en/blog/red-hat-microsoft-ignite-2026-partnership-action",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
+    "updated_at": "2026-11-21T21:29:57.427Z"
+  },
+  {
     "id": "3ee0f6e5-2268-4ffb-b4ce-1209c7fe2cb2",
     "title": "DynaPORT modernization on Google Cloud with AlloyDB for PostgreSQL and GKE",
     "content": "🎯 What Changed: Format instruction: ` Why it matters: ` * Let.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
