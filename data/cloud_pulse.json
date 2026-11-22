@@ -1,5 +1,24 @@
 [
   {
+    "id": "85ff89c4-abf9-4f31-adeb-c6dd7241998c",
+    "title": "DynaPORT modernization on Google Cloud with AlloyDB for PostgreSQL and GKE",
+    "content": "🎯 What Changed: DynaPORT modernized its mission-critical Terminal Operating System by migrating its workload to Google Kubernetes Engine and AlloyDB.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
+    "tags": [
+      "#GoogleCloud",
+      "#GCP",
+      "#CloudNews"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-11-22T04:47:44.869854+00:00",
+    "link_url": "https://cloud.google.com/blog/products/databases/dynaport-modernizes-with-alloydb/",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
+    "updated_at": "2026-11-22T05:48:05.971Z"
+  },
+  {
     "id": "ca2574fa-f2cf-47ee-8cb4-568d8de0d696",
     "title": "Azure Red Hat OpenShift: Hosted Control Planes Now GA",
     "content": "🎯 What Changed: Azure Red Hat OpenShift with hosted control planes is now generally available, alongside a deeper virtualization alliance on Azure.\n💡 Engineering Impact: This enhances operational efficiency and scalability for OpenShift deployments by offloading control plane management, enabling engineers to focus more on application development.",
