@@ -1,5 +1,24 @@
 [
   {
+    "id": "b96b36c8-5170-4a65-8f4d-9e251542ad93",
+    "title": "Azure Cobalt 200 VMs GA for Cloud-Native & Agentic AI",
+    "content": "🎯 What Changed: Azure Cobalt 200 Virtual Machines are now generally available, offering enhanced performance and efficiency.\n💡 Engineering Impact: These new VMs are optimized for cloud-native applications, databases, developer tools, and agentic AI, enabling architects to design more efficient and performant solutions. This translates to better resource utilization and potentially lower operational costs for demanding workloads.",
+    "tags": [
+      "#Azure",
+      "#CloudArchitecture",
+      "#CloudNews"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-11-22T13:09:48.531972+00:00",
+    "link_url": "https://azure.microsoft.com/en-us/blog/azure-cobalt-200-vms-now-available-proven-on-real-workloads-and-built-for-the-agentic-era/",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
+    "updated_at": "2026-11-23T00:37:57.907Z"
+  },
+  {
     "id": "c050adbb-3b27-4a03-b3b0-a3cecffc57b9",
     "title": "The Shift to cgroup v2 in Kubernetes: What You Need to Know",
     "content": "🎯 What Changed: Kubernetes v1.35+ now defaults to failing on cgroup v1 nodes, making cgroup v2 the mandatory standard for resource management.\n💡 Engineering Impact: Migrating to cgroup v2 unlocks advanced features like Memory QoS and improved in-place scaling, enhancing resource isolation and performance. Teams must upgrade Linux nodes to cgroup v2 before K8s v1.35 or plan for temporary overrides, as v1 support is slated for removal by v1.38.",
