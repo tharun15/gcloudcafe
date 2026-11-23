@@ -1,5 +1,24 @@
 [
   {
+    "id": "afb8067b-2d9b-4e23-9d7f-4bce61f3d6aa",
+    "title": "DynaPORT modernization on Google Cloud with AlloyDB for PostgreSQL and GKE",
+    "content": "🎯 What Changed: DynaPORT modernized its mission-critical maritime Terminal Operating System by re-architecting the platform.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
+    "tags": [
+      "#GoogleCloud",
+      "#GCP",
+      "#CloudNews"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-11-23T05:30:43.709892+00:00",
+    "link_url": "https://cloud.google.com/blog/products/databases/dynaport-modernizes-with-alloydb/",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
+    "updated_at": "2026-11-23T14:11:55.521Z"
+  },
+  {
     "id": "b96b36c8-5170-4a65-8f4d-9e251542ad93",
     "title": "Azure Cobalt 200 VMs GA for Cloud-Native & Agentic AI",
     "content": "🎯 What Changed: Azure Cobalt 200 Virtual Machines are now generally available, offering enhanced performance and efficiency.\n💡 Engineering Impact: These new VMs are optimized for cloud-native applications, databases, developer tools, and agentic AI, enabling architects to design more efficient and performant solutions. This translates to better resource utilization and potentially lower operational costs for demanding workloads.",
