@@ -1,5 +1,24 @@
 [
   {
+    "id": "261abfbf-d2e8-42de-a78b-3201a236b9a9",
+    "title": "How Sinch modernized its enterprise data warehouse from Snowflake to BigQuery to power AI",
+    "content": "🎯 What Changed: Sinch modernized its global communications data architecture by migrating its enterprise data warehouse from Snowflake to Google Cloud Big.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
+    "tags": [
+      "#GoogleCloud",
+      "#GCP",
+      "#CloudNews"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-11-24T08:06:52.788169+00:00",
+    "link_url": "https://cloud.google.com/blog/products/data-analytics/how-sinch-migrated-from-snowflake-to-bigquery-to-power-ai/",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
+    "updated_at": "2026-11-24T14:39:49.235Z"
+  },
+  {
     "id": "96fcea86-0802-45c0-a8fb-5ef1bea45a26",
     "title": "Introducing Azure Catalyst agentic modernization and new AI infrastructure innovations",
     "content": "🎯 What Changed: Azure Catalyst launches a co-engineered AI stack, optimizing models, silicon, and cloud infrastructure for agentic modernization.\n💡 Engineering Impact: Engineers can expect significant improvements in agent speed, security, and cost-efficiency by leveraging this optimized, full-stack AI infrastructure with enhanced execution and inference.",
