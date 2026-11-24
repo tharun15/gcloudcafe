@@ -1,5 +1,24 @@
 [
   {
+    "id": "96fcea86-0802-45c0-a8fb-5ef1bea45a26",
+    "title": "Introducing Azure Catalyst agentic modernization and new AI infrastructure innovations",
+    "content": "🎯 What Changed: Azure Catalyst launches a co-engineered AI stack, optimizing models, silicon, and cloud infrastructure for agentic modernization.\n💡 Engineering Impact: Engineers can expect significant improvements in agent speed, security, and cost-efficiency by leveraging this optimized, full-stack AI infrastructure with enhanced execution and inference.",
+    "tags": [
+      "#Azure",
+      "#CloudArchitecture",
+      "#CloudNews"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-11-23T15:46:40.440149+00:00",
+    "link_url": "https://azure.microsoft.com/en-us/blog/introducing-azure-catalyst-agentic-modernization-and-new-ai-infrastructure-innovations/",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
+    "updated_at": "2026-11-24T02:47:32.318Z"
+  },
+  {
     "id": "afb8067b-2d9b-4e23-9d7f-4bce61f3d6aa",
     "title": "DynaPORT modernization on Google Cloud with AlloyDB for PostgreSQL and GKE",
     "content": "🎯 What Changed: DynaPORT modernized its mission-critical maritime Terminal Operating System by re-architecting the platform.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
