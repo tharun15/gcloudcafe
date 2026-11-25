@@ -1,5 +1,24 @@
 [
   {
+    "id": "886aa3fc-2b0e-4f5c-902c-05c6de0ce0ca",
+    "title": "How to build a self-improving RAG retrieval pipeline with ZenML and Red Hat OpenShift AI",
+    "content": "🎯 What Changed: Red Hat OpenShift AI now integrates with ZenML to enable the creation of self-improving RAG retrieval pipelines.\n💡 Engineering Impact: This integration streamlines MLOps for RAG applications, ensuring higher quality retrieval and boosting AI agent effectiveness by addressing enterprise knowledge bottlenecks.",
+    "tags": [
+      "#OpenShift",
+      "#RedHat",
+      "#DevOps"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-11-24T15:38:10.941795+00:00",
+    "link_url": "https://www.redhat.com/en/blog/how-build-self-improving-rag-retrieval-pipeline-zenml-and-red-hat-openshift-ai",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
+    "updated_at": "2026-11-25T00:27:35.049Z"
+  },
+  {
     "id": "261abfbf-d2e8-42de-a78b-3201a236b9a9",
     "title": "How Sinch modernized its enterprise data warehouse from Snowflake to BigQuery to power AI",
     "content": "🎯 What Changed: Sinch modernized its global communications data architecture by migrating its enterprise data warehouse from Snowflake to Google Cloud Big.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
