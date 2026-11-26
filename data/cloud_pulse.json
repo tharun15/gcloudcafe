@@ -1,5 +1,24 @@
 [
   {
+    "id": "01ac2a55-1e8e-481c-a49b-ab5c2e6eec58",
+    "title": "OpenShift: Bridging Digital Sovereignty & Operational Resilience",
+    "content": "🎯 What Changed: A new Red Hat-sponsored study reveals a critical gap between digital sovereignty compliance efforts and actual operational resilience.\n💡 Engineering Impact: Architects must prioritize resilient, automated infrastructure to achieve true digital sovereignty, moving beyond basic data residency to comprehensive operational readiness.",
+    "tags": [
+      "#OpenShift",
+      "#RedHat",
+      "#DevOps"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-11-25T15:23:09.82432+00:00",
+    "link_url": "https://www.redhat.com/en/blog/digital-sovereignty-paradox-closing-gap-between-compliance-and-operational-resilience",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
+    "updated_at": "2026-11-26T00:03:22.889Z"
+  },
+  {
     "id": "712a8f94-442a-48b7-8dff-71f671aadc9b",
     "title": "Amazon OpenSearch Serverless is now available in the Africa (Cape Town) Region",
     "content": "🎯 What Changed: Amazon OpenSearch Serverless is now available in the AWS Africa (Cape Town) region, providing a fully managed search,.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
@@ -668,25 +687,5 @@
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-12T16:40:03.358+00:00",
     "ageDays": 8.944859328703703
-  },
-  {
-    "id": "4aa717a9-31b4-4f08-9b05-675c0353d620",
-    "title": "Red Hat OpenShift Virtualization 5: Unify VMs, Cut Costs, Power AI",
-    "content": "🎯 What Changed: Red Hat OpenShift Virtualization 5 is released, offering a unified platform to manage legacy VMs and cloud-native workloads.\n💡 Engineering Impact: This release enables consolidation of legacy VMs onto OpenShift, significantly reducing hypervisor licensing costs and optimizing hardware. It also streamlines AI workload adoption and accelerates the shift towards integrated cloud-native workflows.",
-    "tags": [
-      "#OpenShift",
-      "#RedHat",
-      "#DevOps"
-    ],
-    "upvotes": 1,
-    "downvotes": 0,
-    "score": 1,
-    "author": "Cloud Newsroom Bot",
-    "created_at": "2026-11-12T13:36:48.391094+00:00",
-    "link_url": "https://www.redhat.com/en/blog/unlocking-next-generation-workloads-whats-new-red-hat-openshift-virtualization-5",
-    "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
-    "updated_at": "2026-11-13T00:57:03.332+00:00",
-    "ageDays": 8.944942581018518
   }
 ]
