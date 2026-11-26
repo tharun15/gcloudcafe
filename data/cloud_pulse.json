@@ -1,5 +1,24 @@
 [
   {
+    "id": "268efa5d-e299-441a-bb64-6606c508d297",
+    "title": "AWS Lambda now supports orchestrating MicroVMs with Lambda durable functions",
+    "content": "🎯 What Changed: AWS has released a developer preview extension that enables developers to orchestrate and manage the lifecycle of Lambda MicroVM.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
+    "tags": [
+      "#AWS",
+      "#CloudArchitecture",
+      "#CloudNews"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-11-26T07:19:12.326343+00:00",
+    "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/11/lambda-durable-microvm/",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
+    "updated_at": "2026-11-26T13:39:17.486Z"
+  },
+  {
     "id": "01ac2a55-1e8e-481c-a49b-ab5c2e6eec58",
     "title": "OpenShift: Bridging Digital Sovereignty & Operational Resilience",
     "content": "🎯 What Changed: A new Red Hat-sponsored study reveals a critical gap between digital sovereignty compliance efforts and actual operational resilience.\n💡 Engineering Impact: Architects must prioritize resilient, automated infrastructure to achieve true digital sovereignty, moving beyond basic data residency to comprehensive operational readiness.",
@@ -16,7 +35,8 @@
     "link_url": "https://www.redhat.com/en/blog/digital-sovereignty-paradox-closing-gap-between-compliance-and-operational-resilience",
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
-    "updated_at": "2026-11-26T00:03:22.889Z"
+    "updated_at": "2026-11-26T00:03:22.889+00:00",
+    "ageDays": 0.9278585185185185
   },
   {
     "id": "712a8f94-442a-48b7-8dff-71f671aadc9b",
@@ -35,7 +55,8 @@
     "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/11/amazon-opensearch-serverless-available-cape-town-region/",
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
-    "updated_at": "2026-11-25T13:59:43.010Z"
+    "updated_at": "2026-11-25T13:59:43.01+00:00",
+    "ageDays": 1.2862905902777777
   },
   {
     "id": "886aa3fc-2b0e-4f5c-902c-05c6de0ce0ca",
@@ -54,7 +75,8 @@
     "link_url": "https://www.redhat.com/en/blog/how-build-self-improving-rag-retrieval-pipeline-zenml-and-red-hat-openshift-ai",
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
-    "updated_at": "2026-11-25T00:27:35.049Z"
+    "updated_at": "2026-11-25T00:27:35.049+00:00",
+    "ageDays": 1.917428923611111
   },
   {
     "id": "261abfbf-d2e8-42de-a78b-3201a236b9a9",
@@ -73,7 +95,8 @@
     "link_url": "https://cloud.google.com/blog/products/data-analytics/how-sinch-migrated-from-snowflake-to-bigquery-to-power-ai/",
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
-    "updated_at": "2026-11-24T14:39:49.235Z"
+    "updated_at": "2026-11-24T14:39:49.235+00:00",
+    "ageDays": 2.2308334722222223
   },
   {
     "id": "96fcea86-0802-45c0-a8fb-5ef1bea45a26",
@@ -92,7 +115,8 @@
     "link_url": "https://azure.microsoft.com/en-us/blog/introducing-azure-catalyst-agentic-modernization-and-new-ai-infrastructure-innovations/",
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
-    "updated_at": "2026-11-24T02:47:32.318Z"
+    "updated_at": "2026-11-24T02:47:32.318+00:00",
+    "ageDays": 2.9115319444444445
   },
   {
     "id": "afb8067b-2d9b-4e23-9d7f-4bce61f3d6aa",
@@ -111,7 +135,8 @@
     "link_url": "https://cloud.google.com/blog/products/databases/dynaport-modernizes-with-alloydb/",
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
-    "updated_at": "2026-11-23T14:11:55.521Z"
+    "updated_at": "2026-11-23T14:11:55.521+00:00",
+    "ageDays": 3.3392718865740743
   },
   {
     "id": "b96b36c8-5170-4a65-8f4d-9e251542ad93",
@@ -130,7 +155,8 @@
     "link_url": "https://azure.microsoft.com/en-us/blog/azure-cobalt-200-vms-now-available-proven-on-real-workloads-and-built-for-the-agentic-era/",
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
-    "updated_at": "2026-11-23T00:37:57.907Z"
+    "updated_at": "2026-11-23T00:37:57.907+00:00",
+    "ageDays": 4.020466076388889
   },
   {
     "id": "c050adbb-3b27-4a03-b3b0-a3cecffc57b9",
@@ -149,7 +175,8 @@
     "link_url": "https://kubernetes.io/blog/2026/10/06/kubernetes-cgroups-v2-shift/",
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
-    "updated_at": "2026-11-22T16:02:12.672Z"
+    "updated_at": "2026-11-22T16:02:12.672+00:00",
+    "ageDays": 4.020653877314815
   },
   {
     "id": "85ff89c4-abf9-4f31-adeb-c6dd7241998c",
@@ -168,7 +195,8 @@
     "link_url": "https://cloud.google.com/blog/products/databases/dynaport-modernizes-with-alloydb/",
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
-    "updated_at": "2026-11-22T05:48:05.971Z"
+    "updated_at": "2026-11-22T05:48:05.971+00:00",
+    "ageDays": 4.369119571759259
   },
   {
     "id": "ca2574fa-f2cf-47ee-8cb4-568d8de0d696",
@@ -187,7 +215,8 @@
     "link_url": "https://www.redhat.com/en/blog/red-hat-microsoft-ignite-2026-partnership-action",
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
-    "updated_at": "2026-11-21T21:29:57.427Z"
+    "updated_at": "2026-11-21T21:29:57.427+00:00",
+    "ageDays": 5.015239548611111
   },
   {
     "id": "3ee0f6e5-2268-4ffb-b4ce-1209c7fe2cb2",
@@ -206,7 +235,8 @@
     "link_url": "https://cloud.google.com/blog/products/databases/dynaport-modernizes-with-alloydb/",
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
-    "updated_at": "2026-11-21T12:17:32.410Z"
+    "updated_at": "2026-11-21T12:17:32.41+00:00",
+    "ageDays": 5.3369121875
   },
   {
     "id": "2d4a866d-881f-4656-b8ef-7e60616bcad6",
@@ -226,7 +256,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-20T16:48:22.226+00:00",
-    "ageDays": 0.9327543634259259
+    "ageDays": 5.9895294791666664
   },
   {
     "id": "35d8454b-6e50-42b7-b70e-97c197bff1d2",
@@ -246,7 +276,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-21T01:11:44.704+00:00",
-    "ageDays": 0.932843912037037
+    "ageDays": 5.989619027777778
   },
   {
     "id": "c2fa506c-c44f-4a45-9059-18c41630d5a5",
@@ -266,7 +296,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-20T06:24:35.09+00:00",
-    "ageDays": 1.281085300925926
+    "ageDays": 6.3378604166666666
   },
   {
     "id": "bb002fc0-816e-4188-a70f-4fa45fefbea3",
@@ -286,7 +316,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-19T22:56:54.222+00:00",
-    "ageDays": 1.9200754398148148
+    "ageDays": 6.976850555555556
   },
   {
     "id": "bfe38ddc-02ed-418b-83c4-6540f3d5a15e",
@@ -306,7 +336,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-19T12:37:53.832+00:00",
-    "ageDays": 2.247786099537037
+    "ageDays": 7.3045612152777775
   },
   {
     "id": "3b2a3076-ef51-4991-ac91-c9154588d358",
@@ -326,7 +356,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-19T01:46:18.617+00:00",
-    "ageDays": 2.9366879629629628
+    "ageDays": 7.993463078703703
   },
   {
     "id": "547b643c-4283-4709-8eea-bcc6c815504e",
@@ -346,7 +376,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-18T17:01:57.982+00:00",
-    "ageDays": 2.9368106944444445
+    "ageDays": 7.993585810185185
   },
   {
     "id": "7a563f72-1971-4b14-9eff-2727cee427cc",
@@ -366,7 +396,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-18T06:35:03.514+00:00",
-    "ageDays": 3.2735771643518516
+    "ageDays": 8.330352280092592
   },
   {
     "id": "92d46267-8079-4c4c-98c3-3f85134a77eb",
@@ -386,7 +416,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-17T23:24:13.533+00:00",
-    "ageDays": 3.920224965277778
+    "ageDays": 8.977000081018518
   },
   {
     "id": "da977c2a-4900-4b3d-bfa1-ed7b0e9d7991",
@@ -406,7 +436,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-17T12:53:07.337+00:00",
-    "ageDays": 4.250302557870371
+    "ageDays": 9.307077673611111
   },
   {
     "id": "20728940-4618-473c-8753-8b7b0f00ccc6",
@@ -426,7 +456,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-16T05:33:06.28+00:00",
-    "ageDays": 5.314049016203704
+    "ageDays": 10.370824131944444
   },
   {
     "id": "a693953d-ad7f-467e-8e5d-8c57a0ebc58f",
@@ -446,7 +476,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-16T18:07:20.269+00:00",
-    "ageDays": 5.320745486111111
+    "ageDays": 10.377520601851852
   },
   {
     "id": "1637b730-15a6-4011-a5d4-1945dcdbe873",
@@ -466,7 +496,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-17T02:49:23.348+00:00",
-    "ageDays": 5.323849270833334
+    "ageDays": 10.380624386574073
   },
   {
     "id": "69f1f471-09d7-4d6b-82b8-e9904f2fd720",
@@ -486,7 +516,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-15T15:28:22.281+00:00",
-    "ageDays": 5.988418773148148
+    "ageDays": 11.045193888888889
   },
   {
     "id": "9d96572b-0b5c-4e4a-9673-e017d2343630",
@@ -506,7 +536,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-15T05:33:56.099+00:00",
-    "ageDays": 6.291586863425926
+    "ageDays": 11.348361979166667
   },
   {
     "id": "7565e9e4-5599-4874-a6cf-b2833157b024",
@@ -526,7 +556,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-15T20:53:54.91+00:00",
-    "ageDays": 6.306106909722223
+    "ageDays": 11.362882025462962
   },
   {
     "id": "040c43da-0a4f-4cdc-8bc0-d1595456b6d1",
@@ -546,7 +576,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-14T06:21:43.82+00:00",
-    "ageDays": 7.251154849537037
+    "ageDays": 12.307929965277777
   },
   {
     "id": "c4e6fdb3-cc1c-4391-a95a-5c6db5ef4e0c",
@@ -566,7 +596,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-14T11:16:24.075+00:00",
-    "ageDays": 7.2512035416666665
+    "ageDays": 12.307978657407407
   },
   {
     "id": "d5406a89-159f-4a11-b60c-c0a9147db790",
@@ -586,7 +616,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-14T17:47:08.373+00:00",
-    "ageDays": 7.25127011574074
+    "ageDays": 12.308045231481481
   },
   {
     "id": "05d514b7-4d70-435f-9c01-dbb30aa0411e",
@@ -606,7 +636,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-14T23:44:33.048+00:00",
-    "ageDays": 7.3039056944444445
+    "ageDays": 12.360680810185185
   },
   {
     "id": "72a57170-204a-428d-993c-85d160127cf2",
@@ -626,7 +656,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-13T19:32:04.889+00:00",
-    "ageDays": 7.97334587962963
+    "ageDays": 13.030120995370371
   },
   {
     "id": "89503f87-ea73-4b21-b8d3-b21380204092",
@@ -646,7 +676,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-14T00:47:06.489+00:00",
-    "ageDays": 7.973439548611111
+    "ageDays": 13.030214664351853
   },
   {
     "id": "2dd6af13-dd5f-459e-b7ec-3e39e93eb199",
@@ -666,26 +696,6 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-13T11:58:03.384+00:00",
-    "ageDays": 8.282054421296296
-  },
-  {
-    "id": "16f5eb42-1979-4ef9-9407-bcae435c247c",
-    "title": "Red Hat Advanced Cluster Management for Kubernetes 5.0: Run your Kubernetes fleet with more control",
-    "content": "🎯 What Changed: Red Hat Advanced Cluster Management for Kubernetes 5.0 enhances Kubernetes fleet visibility, strengthens operations across constrained networks, and refines change management.\n💡 Engineering Impact: This",
-    "tags": [
-      "#OpenShift",
-      "#RedHat",
-      "#DevOps"
-    ],
-    "upvotes": 1,
-    "downvotes": 0,
-    "score": 1,
-    "author": "Cloud Newsroom Bot",
-    "created_at": "2026-11-12T13:36:55.584796+00:00",
-    "link_url": "https://www.redhat.com/en/blog/red-hat-advanced-cluster-management-kubernetes-5",
-    "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
-    "updated_at": "2026-11-12T16:40:03.358+00:00",
-    "ageDays": 8.944859328703703
+    "ageDays": 13.338829537037038
   }
 ]
