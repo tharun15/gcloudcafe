@@ -1,5 +1,24 @@
 [
   {
+    "id": "12b6f8db-afb0-4951-b67b-f211130090b5",
+    "title": "OpenShift AI + Odine MACE: Sovereign Telco Cloud Management",
+    "content": "🎯 What Changed: Red Hat and Odine partnered to run Odine's MACE multiagent platform natively on Red Hat OpenShift, leveraging OpenShift AI for carrier-grade AI capabilities.\n💡 Engineering Impact: This integration offers telco service providers a unified, sovereign-by-design platform for managing cloud, AI, and digital infrastructure. It ensures MACE operates securely within the same trusted OpenShift environment as critical workloads, streamlining orchestration and governance.",
+    "tags": [
+      "#OpenShift",
+      "#RedHat",
+      "#DevOps"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-11-27T14:49:31.156907+00:00",
+    "link_url": "https://www.redhat.com/en/blog/how-red-hat-and-odine-unify-sovereign-telco-cloud-management",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
+    "updated_at": "2026-11-27T23:56:45.101Z"
+  },
+  {
     "id": "4276f579-62f9-4d72-b49b-390e16cf53f9",
     "title": "AWS Lambda now supports orchestrating MicroVMs with Lambda durable functions",
     "content": "🎯 What Changed: AWS introduced a developer preview extension that enables AWS Lambda durable functions to orchestrate and manage the full lifecycle of Micro.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
@@ -677,25 +696,5 @@
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-14T23:44:33.048+00:00",
     "ageDays": 13.358079837962963
-  },
-  {
-    "id": "72a57170-204a-428d-993c-85d160127cf2",
-    "title": "OpenShift Lightspeed 2: AI Assistant Streamlines Operations",
-    "content": "🎯 What Changed: Red Hat OpenShift Lightspeed 2 evolves its AI assistant beyond chat-based instructions to streamline developer and operations workflows.\n💡 Engineering Impact: This update significantly enhances DevOps efficiency",
-    "tags": [
-      "#OpenShift",
-      "#RedHat",
-      "#DevOps"
-    ],
-    "upvotes": 1,
-    "downvotes": 0,
-    "score": 1,
-    "author": "Cloud Newsroom Bot",
-    "created_at": "2026-11-13T12:55:54.346077+00:00",
-    "link_url": "https://www.redhat.com/en/blog/whats-new-red-hat-openshift-lightspeed-2",
-    "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
-    "updated_at": "2026-11-13T19:32:04.889+00:00",
-    "ageDays": 14.027520023148147
   }
 ]
