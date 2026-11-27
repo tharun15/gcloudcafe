@@ -1,5 +1,24 @@
 [
   {
+    "id": "e997741e-fa0f-4aec-8b3b-d137bd3ec1b8",
+    "title": "Breaking free from proprietary lock-In: Red Hat and CODESYS deliver software-defined control for industrial automation",
+    "content": "🎯 What Changed: Red Hat OpenShift and CODESYS now enable software-defined control for industrial automation, decoupling PLC logic from proprietary hardware.\n💡 Engineering Impact: This shift empowers machine builders with greater flexibility, simplifies fleet-wide updates, and accelerates the integration of edge AI and analytics by eliminating proprietary hardware lock-in.",
+    "tags": [
+      "#OpenShift",
+      "#RedHat",
+      "#DevOps"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-11-26T14:50:51.468772+00:00",
+    "link_url": "https://www.redhat.com/en/blog/breaking-free-proprietary-lock-red-hat-and-codesys-deliver-software-defined-control-industrial-automation",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
+    "updated_at": "2026-11-27T00:24:21.341Z"
+  },
+  {
     "id": "268efa5d-e299-441a-bb64-6606c508d297",
     "title": "AWS Lambda now supports orchestrating MicroVMs with Lambda durable functions",
     "content": "🎯 What Changed: AWS has released a developer preview extension that enables developers to orchestrate and manage the lifecycle of Lambda MicroVM.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
@@ -677,25 +696,5 @@
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-14T00:47:06.489+00:00",
     "ageDays": 13.030214664351853
-  },
-  {
-    "id": "2dd6af13-dd5f-459e-b7ec-3e39e93eb199",
-    "title": "Amazon Connect Customer supports merging and linking related cases in the agent workspace",
-    "content": "🎯 What Changed: Amazon Connect now enables agents to merge and link related customer cases directly within the unified agent workspace to consolidate duplicate interactions.\n\n💡 Why It Matters: Why it matters: This update reduces data fragmentation and simplifies state management, allowing architects to build more efficient event-driven workflows and maintain a cleaner single source of truth for customer support analytics.",
-    "tags": [
-      "#AWS",
-      "#CloudArchitecture",
-      "#CloudNews"
-    ],
-    "upvotes": 1,
-    "downvotes": 0,
-    "score": 1,
-    "author": "Cloud Newsroom Bot",
-    "created_at": "2026-11-13T05:31:21.928159+00:00",
-    "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/11/amazon-connect-cases-merge-link/",
-    "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
-    "updated_at": "2026-11-13T11:58:03.384+00:00",
-    "ageDays": 13.338829537037038
   }
 ]
