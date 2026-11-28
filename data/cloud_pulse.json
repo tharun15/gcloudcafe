@@ -1,5 +1,24 @@
 [
   {
+    "id": "73e3a735-c813-4fb1-af87-9a6400694665",
+    "title": "How Sinch modernized its enterprise data warehouse from Snowflake to BigQuery to power AI",
+    "content": "🎯 What Changed: Global communications platform Sinch migrated its enterprise data warehouse from Snowflake to Google Cloud BigQuery to better.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
+    "tags": [
+      "#GoogleCloud",
+      "#GCP",
+      "#CloudNews"
+    ],
+    "upvotes": 1,
+    "downvotes": 0,
+    "score": 1,
+    "author": "Cloud Newsroom Bot",
+    "created_at": "2026-11-28T06:14:00.040228+00:00",
+    "link_url": "https://cloud.google.com/blog/products/data-analytics/how-sinch-migrated-from-snowflake-to-bigquery-to-power-ai/",
+    "status": "approved",
+    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
+    "updated_at": "2026-11-28T07:27:58.194Z"
+  },
+  {
     "id": "12b6f8db-afb0-4951-b67b-f211130090b5",
     "title": "OpenShift AI + Odine MACE: Sovereign Telco Cloud Management",
     "content": "🎯 What Changed: Red Hat and Odine partnered to run Odine's MACE multiagent platform natively on Red Hat OpenShift, leveraging OpenShift AI for carrier-grade AI capabilities.\n💡 Engineering Impact: This integration offers telco service providers a unified, sovereign-by-design platform for managing cloud, AI, and digital infrastructure. It ensures MACE operates securely within the same trusted OpenShift environment as critical workloads, streamlining orchestration and governance.",
@@ -16,7 +35,8 @@
     "link_url": "https://www.redhat.com/en/blog/how-red-hat-and-odine-unify-sovereign-telco-cloud-management",
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
-    "updated_at": "2026-11-27T23:56:45.101Z"
+    "updated_at": "2026-11-27T23:56:45.101+00:00",
+    "ageDays": 0.6933607638888889
   },
   {
     "id": "4276f579-62f9-4d72-b49b-390e16cf53f9",
@@ -35,7 +55,8 @@
     "link_url": "https://aws.amazon.com/about-aws/whats-new/2026/11/lambda-durable-microvm/",
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
-    "updated_at": "2026-11-27T13:35:32.981Z"
+    "updated_at": "2026-11-27T13:35:32.981+00:00",
+    "ageDays": 1.0221056134259259
   },
   {
     "id": "e997741e-fa0f-4aec-8b3b-d137bd3ec1b8",
@@ -55,7 +76,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-27T00:24:21.341+00:00",
-    "ageDays": 0.9476922222222223
+    "ageDays": 1.6924312268518518
   },
   {
     "id": "268efa5d-e299-441a-bb64-6606c508d297",
@@ -75,7 +96,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-26T13:39:17.486+00:00",
-    "ageDays": 1.2613396990740742
+    "ageDays": 2.006078703703704
   },
   {
     "id": "01ac2a55-1e8e-481c-a49b-ab5c2e6eec58",
@@ -95,7 +116,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-26T00:03:22.889+00:00",
-    "ageDays": 1.9252575462962962
+    "ageDays": 2.669996550925926
   },
   {
     "id": "712a8f94-442a-48b7-8dff-71f671aadc9b",
@@ -115,7 +136,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-25T13:59:43.01+00:00",
-    "ageDays": 2.2836896180555555
+    "ageDays": 3.028428622685185
   },
   {
     "id": "886aa3fc-2b0e-4f5c-902c-05c6de0ce0ca",
@@ -135,7 +156,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-25T00:27:35.049+00:00",
-    "ageDays": 2.914827951388889
+    "ageDays": 3.6595669560185184
   },
   {
     "id": "261abfbf-d2e8-42de-a78b-3201a236b9a9",
@@ -155,7 +176,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-24T14:39:49.235+00:00",
-    "ageDays": 3.2282325
+    "ageDays": 3.9729715046296294
   },
   {
     "id": "96fcea86-0802-45c0-a8fb-5ef1bea45a26",
@@ -175,7 +196,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-24T02:47:32.318+00:00",
-    "ageDays": 3.908930972222222
+    "ageDays": 4.653669976851852
   },
   {
     "id": "afb8067b-2d9b-4e23-9d7f-4bce61f3d6aa",
@@ -195,7 +216,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-23T14:11:55.521+00:00",
-    "ageDays": 4.336670914351852
+    "ageDays": 5.081409918981482
   },
   {
     "id": "b96b36c8-5170-4a65-8f4d-9e251542ad93",
@@ -215,7 +236,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-23T00:37:57.907+00:00",
-    "ageDays": 5.017865104166667
+    "ageDays": 5.762604108796296
   },
   {
     "id": "c050adbb-3b27-4a03-b3b0-a3cecffc57b9",
@@ -235,7 +256,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-22T16:02:12.672+00:00",
-    "ageDays": 5.018052905092593
+    "ageDays": 5.762791909722222
   },
   {
     "id": "85ff89c4-abf9-4f31-adeb-c6dd7241998c",
@@ -255,7 +276,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-22T05:48:05.971+00:00",
-    "ageDays": 5.366518599537037
+    "ageDays": 6.111257604166667
   },
   {
     "id": "ca2574fa-f2cf-47ee-8cb4-568d8de0d696",
@@ -275,7 +296,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-21T21:29:57.427+00:00",
-    "ageDays": 6.0126385763888885
+    "ageDays": 6.757377581018519
   },
   {
     "id": "3ee0f6e5-2268-4ffb-b4ce-1209c7fe2cb2",
@@ -295,7 +316,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-21T12:17:32.41+00:00",
-    "ageDays": 6.334311215277777
+    "ageDays": 7.0790502199074075
   },
   {
     "id": "2d4a866d-881f-4656-b8ef-7e60616bcad6",
@@ -315,7 +336,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-20T16:48:22.226+00:00",
-    "ageDays": 6.9869285069444445
+    "ageDays": 7.7316675115740745
   },
   {
     "id": "35d8454b-6e50-42b7-b70e-97c197bff1d2",
@@ -335,7 +356,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-21T01:11:44.704+00:00",
-    "ageDays": 6.987018055555556
+    "ageDays": 7.731757060185185
   },
   {
     "id": "c2fa506c-c44f-4a45-9059-18c41630d5a5",
@@ -355,7 +376,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-20T06:24:35.09+00:00",
-    "ageDays": 7.3352594444444446
+    "ageDays": 8.079998449074074
   },
   {
     "id": "bb002fc0-816e-4188-a70f-4fa45fefbea3",
@@ -375,7 +396,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-19T22:56:54.222+00:00",
-    "ageDays": 7.974249583333333
+    "ageDays": 8.718988587962963
   },
   {
     "id": "bfe38ddc-02ed-418b-83c4-6540f3d5a15e",
@@ -395,7 +416,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-19T12:37:53.832+00:00",
-    "ageDays": 8.301960243055555
+    "ageDays": 9.046699247685185
   },
   {
     "id": "3b2a3076-ef51-4991-ac91-c9154588d358",
@@ -415,7 +436,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-19T01:46:18.617+00:00",
-    "ageDays": 8.990862106481481
+    "ageDays": 9.73560111111111
   },
   {
     "id": "547b643c-4283-4709-8eea-bcc6c815504e",
@@ -435,7 +456,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-18T17:01:57.982+00:00",
-    "ageDays": 8.990984837962962
+    "ageDays": 9.735723842592593
   },
   {
     "id": "7a563f72-1971-4b14-9eff-2727cee427cc",
@@ -455,7 +476,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-18T06:35:03.514+00:00",
-    "ageDays": 9.32775130787037
+    "ageDays": 10.0724903125
   },
   {
     "id": "92d46267-8079-4c4c-98c3-3f85134a77eb",
@@ -475,7 +496,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-17T23:24:13.533+00:00",
-    "ageDays": 9.974399108796296
+    "ageDays": 10.719138113425926
   },
   {
     "id": "da977c2a-4900-4b3d-bfa1-ed7b0e9d7991",
@@ -495,7 +516,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-17T12:53:07.337+00:00",
-    "ageDays": 10.30447670138889
+    "ageDays": 11.049215706018519
   },
   {
     "id": "20728940-4618-473c-8753-8b7b0f00ccc6",
@@ -515,7 +536,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-16T05:33:06.28+00:00",
-    "ageDays": 11.368223159722222
+    "ageDays": 12.112962164351853
   },
   {
     "id": "a693953d-ad7f-467e-8e5d-8c57a0ebc58f",
@@ -535,7 +556,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-16T18:07:20.269+00:00",
-    "ageDays": 11.37491962962963
+    "ageDays": 12.11965863425926
   },
   {
     "id": "1637b730-15a6-4011-a5d4-1945dcdbe873",
@@ -555,7 +576,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-17T02:49:23.348+00:00",
-    "ageDays": 11.378023414351851
+    "ageDays": 12.122762418981482
   },
   {
     "id": "69f1f471-09d7-4d6b-82b8-e9904f2fd720",
@@ -575,7 +596,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-15T15:28:22.281+00:00",
-    "ageDays": 12.042592916666667
+    "ageDays": 12.787331921296296
   },
   {
     "id": "9d96572b-0b5c-4e4a-9673-e017d2343630",
@@ -595,7 +616,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-15T05:33:56.099+00:00",
-    "ageDays": 12.345761006944445
+    "ageDays": 13.090500011574074
   },
   {
     "id": "7565e9e4-5599-4874-a6cf-b2833157b024",
@@ -615,7 +636,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-15T20:53:54.91+00:00",
-    "ageDays": 12.36028105324074
+    "ageDays": 13.10502005787037
   },
   {
     "id": "040c43da-0a4f-4cdc-8bc0-d1595456b6d1",
@@ -635,7 +656,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-14T06:21:43.82+00:00",
-    "ageDays": 13.305328993055555
+    "ageDays": 14.050067997685185
   },
   {
     "id": "c4e6fdb3-cc1c-4391-a95a-5c6db5ef4e0c",
@@ -655,7 +676,7 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-14T11:16:24.075+00:00",
-    "ageDays": 13.305377685185185
+    "ageDays": 14.050116689814814
   },
   {
     "id": "d5406a89-159f-4a11-b60c-c0a9147db790",
@@ -675,26 +696,6 @@
     "status": "approved",
     "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
     "updated_at": "2026-11-14T17:47:08.373+00:00",
-    "ageDays": 13.305444259259259
-  },
-  {
-    "id": "05d514b7-4d70-435f-9c01-dbb30aa0411e",
-    "title": "Powering agentic cloud governance: What's new in Organization Policy",
-    "content": "🎯 What Changed: Google Cloud has expanded Organization Policy with new features that enable agentic cloud governance to automatically prevent fundamental resource misconfigurations.\n\n💡 Why It Matters: Delivers architectural improvements, enhanced security postures, and operational efficiencies for cloud infrastructure teams.",
-    "tags": [
-      "#GoogleCloud",
-      "#GCP",
-      "#CloudNews"
-    ],
-    "upvotes": 1,
-    "downvotes": 0,
-    "score": 1,
-    "author": "Cloud Newsroom Bot",
-    "created_at": "2026-11-14T04:59:53.978031+00:00",
-    "link_url": "https://cloud.google.com/blog/products/identity-security/ai-powered-cloud-governance-whats-new-in-organization-policy/",
-    "status": "approved",
-    "eligibility_reason": "[Auto-Published] Published automatically after 12+h without manual admin curation.",
-    "updated_at": "2026-11-14T23:44:33.048+00:00",
-    "ageDays": 13.358079837962963
+    "ageDays": 14.050183263888888
   }
 ]
